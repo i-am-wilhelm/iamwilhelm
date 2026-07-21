@@ -38,11 +38,19 @@ const {
       import { initGreatFade } from '../lib/fade';
       import { initReveals } from '../lib/timing';
       import { initEggs } from '../lib/eggs-wiring';
+      import { initKnock } from '../lib/knock';
+      import { initWeather } from '../lib/weather';
+      import { initInitiate } from '../lib/initiate';
+      import { initDawn } from '../lib/dawn';
       import { isMuted, wake } from '../lib/audio/engine';
 
       initGreatFade();
       initReveals();
       initEggs();
+      initKnock();
+      initWeather();
+      initInitiate();
+      initDawn();
 
       // Audio re-entry: the AudioContext dies with each page navigation,
       // and autoplay policy demands a fresh gesture. If the visitor
