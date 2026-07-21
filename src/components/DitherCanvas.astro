@@ -1,0 +1,175 @@
+---
+/**
+ * <DitherCanvas> — declarative wrapper around the glyph dither engine.
+ *
+ * Lazy: the engine and source image initialize only when the element
+ * nears the viewport, and the rAF loop pauses whenever it leaves.
+ * Reduced motion renders a single resolved still.
+ *
+ * Give the element a height via `class` or the `ratio` prop.
+ */
+interface Props {
+  /** Source image URL. Omit to draw a seeded procedural abstract. */
+  src?: string;
+  /** 'ascii' | 'greek' */
+  palette?: string;
+  /** 'static' | 'resolve' | 'dissolve' | 'rain' (rain lands in Phase 3) */
+  mode?: string;
+  /** CSS px per glyph cell. */
+  cell?: number;
+  /** Glyph color; the chromatic fringe splits from this. */
+  accent?: string;
+  seed?: number;
+  /** Placeholder flavor when src is omitted: 'form' | 'stars' */
+  variant?: string;
+  /** Accessible description. Empty = decorative. */
+  label?: string;
+  ratio?: string;
+  class?: string;
+}
+
+const {
+  src,
+  palette = 'ascii',
+  mode = 'static',
+  cell = 12,
+  accent = '#e8e6e1',
+  seed = 1,
+  variant = 'form',
+  label = '',
+  ratio = '16 / 9',
+  class: className,
+} = Astro.props;
+---
+
+<glyph-dither
+  class={className}
+  style={`aspect-ratio: ${ratio};`}
+  data-src={src}
+  data-palette={palette}
+  data-mode={mode}
+  data-cell={cell}
+  data-accent={accent}
+  data-seed={seed}
+  data-variant={variant}
+  role={label ? 'img' : 'presentation'}
+  aria-label={label || undefined}
+>
+  <canvas aria-hidden="true"></canvas>
+</glyph-dither>
+
+<style>
+  glyph-dither {
+    display: block;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    contain: content;
+  }
+  glyph-dither canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  import { GlyphDither } from '../lib/filters/dither';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  class GlyphDitherElement extends HTMLElement {
+    private engine: GlyphDither | null = null;
+    private visible = false;
+    private io?: IntersectionObserver;
+    private ro?: ResizeObserver;
+    private onScroll = () => this.driveProgress();
+    private onVisibility = () => this.syncRunning();
+
+    connectedCallback() {
+      // lazy-init: wake the engine only as the element approaches the fold
+      const wake = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            wake.disconnect();
+            this.init();
+          }
+        },
+        { rootMargin: '300px 0px' }
+      );
+      wake.observe(this);
+    }
+
+    private async init() {
+      const canvas = this.querySelector('canvas')!;
+      const d = this.dataset;
+      this.engine = new GlyphDither(canvas, {
+        palette: d.palette,
+        mode: (d.mode as any) ?? 'static',
+        cell: Number(d.cell) || 12,
+        accent: this.resolveAccent(d.accent || '#e8e6e1'),
+        seed: Number(d.seed) || 1,
+        reducedMotion,
+      });
+      await this.engine.load(d.src || null, (d.variant as any) || 'form');
+
+      this.io = new IntersectionObserver(
+        (entries) => {
+          this.visible = entries.some((e) => e.isIntersecting);
+          this.syncRunning();
+        },
+        { threshold: 0 }
+      );
+      this.io.observe(this);
+
+      this.ro = new ResizeObserver(() => this.engine?.resize());
+      this.ro.observe(this);
+
+      if (d.mode === 'resolve' || d.mode === 'dissolve') {
+        window.addEventListener('scroll', this.onScroll, { passive: true });
+        this.addEventListener('pointerenter', () => this.engine?.setProgress(1), {
+          once: true,
+        });
+        this.driveProgress();
+      }
+      document.addEventListener('visibilitychange', this.onVisibility);
+      this.syncRunning();
+    }
+
+    /** var(--smoke-*) accents resolve against the element's computed style. */
+    private resolveAccent(value: string): string {
+      if (!value.startsWith('var(')) return value;
+      const name = value.slice(4, -1).trim();
+      return getComputedStyle(this).getPropertyValue(name).trim() || '#e8e6e1';
+    }
+
+    /** Scroll position → resolve progress across the lower viewport. */
+    private driveProgress() {
+      if (!this.engine || !this.visible) return;
+      const rect = this.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const p = (vh * 0.92 - rect.top) / (vh * 0.6);
+      this.engine.setProgress(p);
+    }
+
+    private syncRunning() {
+      if (!this.engine) return;
+      if (this.visible && !document.hidden) this.engine.start();
+      else this.engine.stop();
+    }
+
+    disconnectedCallback() {
+      this.io?.disconnect();
+      this.ro?.disconnect();
+      window.removeEventListener('scroll', this.onScroll);
+      document.removeEventListener('visibilitychange', this.onVisibility);
+      this.engine?.destroy();
+      this.engine = null;
+    }
+  }
+
+  if (!customElements.get('glyph-dither')) {
+    customElements.define('glyph-dither', GlyphDitherElement);
+  }
+</script>
