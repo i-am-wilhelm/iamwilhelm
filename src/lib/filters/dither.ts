@@ -43,6 +43,14 @@ export interface DitherOptions {
 const STEP_MS = 1000 / 12; // shimmer tick rate
 const DPR_CAP = 1.5;
 
+/**
+ * Minimum ms between `dither:rare` dispatches per instance — one 7/8 bar
+ * (keep in sync with BAR in ../timing.ts). The event bubbles from the
+ * canvas so page-level systems (the egg framework) can observe rare
+ * glyphs without reaching into the engine.
+ */
+const RARE_EVENT_MS = 980;
+
 /* ---------------------------------------------------------------- */
 /* Deterministic noise                                              */
 /* ---------------------------------------------------------------- */
@@ -186,6 +194,7 @@ export class GlyphDither {
   private rafId = 0;
   private lastStep = 0;
   private tick = 0;
+  private lastRareAt = 0;
 
   constructor(canvas: HTMLCanvasElement, opts: DitherOptions = {}) {
     this.canvas = canvas;
@@ -215,9 +224,15 @@ export class GlyphDither {
     if (src) {
       const img = new Image();
       img.decoding = 'async';
-      img.src = src;
       try {
-        await img.decode();
+        // wait on the load event, not decode(): decode() can defer
+        // indefinitely in hidden/background tabs, while drawImage on a
+        // loaded image forces synchronous decode reliably
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error(`image failed: ${src}`));
+          img.src = src;
+        });
         // cover-fit into a modest sampling buffer
         const sw = 480;
         const sh = Math.round((sw * 9) / 16);
@@ -319,6 +334,25 @@ export class GlyphDither {
     this.luma = new Float32Array(0);
   }
 
+  /**
+   * Additive Phase-2 hook: re-skin the running engine in place.
+   * Only the provided fields change; mode and resolve progress are
+   * untouched. Passing `src` reloads the source image asynchronously
+   * (load() ends in resize(), which resamples and repaints); the sync
+   * fields repaint immediately when the loop is idle.
+   */
+  swap(opts: { palette?: string; accent?: string; seed?: number; src?: string } = {}): void {
+    if (opts.palette !== undefined) this.palette = getPalette(opts.palette);
+    if (opts.accent !== undefined) this.accent = parseColor(opts.accent);
+    if (opts.seed !== undefined) this.seed = opts.seed;
+    if (opts.src !== undefined) {
+      void this.load(opts.src);
+      return;
+    }
+    this.dirty = true;
+    if (!this.running) this.paint();
+  }
+
   /* -------------------------------------------------------------- */
 
   private paint(): void {
@@ -339,6 +373,7 @@ export class GlyphDither {
     const t = this.tick;
     const p = this.progress;
     const shimmerP = 0.03 * this.shimmer;
+    let rareHit: { glyph: string; col: number; row: number } | null = null;
 
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
@@ -366,6 +401,7 @@ export class GlyphDither {
             hash(cellSeed ^ 0x9e3779b9 ^ Math.floor(t / 8)) < palette.rareChance * 40
           ) {
             glyph = palette.rare[Math.floor(hash(cellSeed + 17) * palette.rare.length)]!;
+            if (!rareHit) rareHit = { glyph, col: x, row: y };
           }
         } else {
           // unresolved: dim noise, churning slowly
@@ -380,6 +416,14 @@ export class GlyphDither {
       }
     }
     g.globalAlpha = 1;
+
+    // Phase-2 hook: announce a surfaced rare glyph, throttled to one bar
+    if (rareHit && performance.now() - this.lastRareAt >= RARE_EVENT_MS) {
+      this.lastRareAt = performance.now();
+      this.canvas.dispatchEvent(
+        new CustomEvent('dither:rare', { detail: rareHit, bubbles: true })
+      );
+    }
 
     // chromatic fringe: composite the mono layer per channel with offsets
     const out = this.ctx;

@@ -137,6 +137,22 @@ const {
       this.syncRunning();
     }
 
+    /**
+     * Additive Phase-2 hook: swap palette/accent/seed/src on the live
+     * engine (the egg framework's style-swap uses this). Accepts
+     * var(--smoke-*) accents; `src` reloads the source image. Returns
+     * false when the engine has not woken yet.
+     */
+    swap(
+      opts: { palette?: string; accent?: string; seed?: number; src?: string } = {}
+    ): boolean {
+      if (!this.engine) return false;
+      const next = { ...opts };
+      if (next.accent !== undefined) next.accent = this.resolveAccent(next.accent);
+      this.engine.swap(next);
+      return true;
+    }
+
     /** var(--smoke-*) accents resolve against the element's computed style. */
     private resolveAccent(value: string): string {
       if (!value.startsWith('var(')) return value;
