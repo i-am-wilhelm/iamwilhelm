@@ -1,0 +1,88 @@
+---
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import Marginalia from '../../components/Marginalia.astro';
+import { getWritings } from '../../lib/content';
+
+const writings = await getWritings();
+const dateFmt = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Base title="Writings — Michael Wilhelm" description="Writings by Michael Wilhelm.">
+  <main class="section" style="--accent: var(--smoke-medea);">
+    <div class="section-inner">
+      <p class="term"><a href="/">&lt; iamwilhelm.com</a></p>
+      <h1>Writings</h1>
+      <Marginalia text="The Fumigation from Myrrh." />
+      <ul class="index-list" role="list">
+        {
+          writings.map((w) => (
+            <li>
+              <a href={`/writings/${w.slug}/`} style={`--accent: ${w.accent};`}>
+                <span class="index-glyph" aria-hidden="true">
+                  {w.symbol.glyph}
+                </span>
+                <span>
+                  <span class="index-title">{w.title}</span>
+                  <span class="index-desc">{w.description}</span>
+                </span>
+                <time class="index-date" datetime={w.date.toISOString()}>
+                  {dateFmt.format(w.date)}
+                </time>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  main {
+    min-height: 80vh;
+    justify-content: flex-start;
+    padding-top: var(--space-4);
+  }
+  .index-list {
+    margin: var(--space-3) 0;
+    padding: 0;
+    list-style: none;
+  }
+  .index-list a {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--space-2);
+    align-items: baseline;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--hairline);
+    text-decoration: none;
+  }
+  .index-glyph {
+    color: var(--accent);
+    font-size: var(--text-lg);
+  }
+  .index-title {
+    display: block;
+    font-size: var(--text-lg);
+    transition: color var(--pulse-2) var(--ease-veil);
+  }
+  .index-list a:hover .index-title {
+    color: var(--accent);
+  }
+  .index-desc {
+    display: block;
+    color: var(--ink-dim);
+    font-size: var(--text-sm);
+  }
+  .index-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-dim);
+  }
+</style>
