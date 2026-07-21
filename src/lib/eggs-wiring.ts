@@ -158,6 +158,49 @@ function initOuterGlyphs(): void {
 }
 
 /* ---------------------------------------------------------------- */
+/* Egg 7 — the golden bough (the underworld door)                     */
+/* ---------------------------------------------------------------- */
+
+/**
+ * A small branch glyph sleeping over the bottom-left corner of the
+ * philosophy field — home page only, since that field exists nowhere
+ * else. Invisible until hovered, when it wakes in aged gold; clicking
+ * it marks the door and descends. Like every hotspot here it carries
+ * no affordance: no cursor change, no label, no tab stop.
+ */
+function initGoldenBough(): void {
+  const host = document.querySelector<HTMLElement>('#philosophy glyph-dither');
+  if (!host) return;
+
+  const zone = document.createElement('div');
+  zone.setAttribute('aria-hidden', 'true');
+  zone.style.cssText =
+    'position:absolute;bottom:0;left:0;width:44px;height:44px;' +
+    'display:flex;align-items:center;justify-content:center;z-index:1;';
+
+  const bough = document.createElement('span');
+  bough.textContent = '⌥'; // the branch, hanging down into the dark
+  bough.style.cssText =
+    'color:var(--smoke-pallas,#b08d3f);font-size:1.15rem;opacity:0;' +
+    `transition:opacity var(--pulse-3,420ms) ${EASE_VEIL};`;
+  zone.appendChild(bough);
+
+  zone.addEventListener('pointerenter', () => {
+    bough.style.opacity = '0.6';
+  });
+  zone.addEventListener('pointerleave', () => {
+    bough.style.opacity = '0';
+  });
+  zone.addEventListener('click', (e) => {
+    e.stopPropagation(); // the door is not the field
+    mark('golden-bough');
+    window.location.assign('/underworld/');
+  });
+
+  host.appendChild(zone);
+}
+
+/* ---------------------------------------------------------------- */
 /* Egg 8 — style-swap hotspots (Homestar mode)                        */
 /* ---------------------------------------------------------------- */
 
@@ -263,5 +306,6 @@ export function initEggs(): void {
   initColophon();
   initEighthHouse();
   initOuterGlyphs();
+  initGoldenBough();
   initStyleSwap();
 }
