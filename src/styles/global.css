@@ -1,0 +1,140 @@
+@import './tokens.css';
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img,
+canvas,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--pulse-2) var(--ease-veil);
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent, var(--ink-dim));
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--accent, var(--ink));
+  color: var(--bg);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  margin: 0 0 var(--space-2);
+}
+
+/* ============================================================
+   Shared patterns
+   ============================================================ */
+
+/* One section = one smoke. Set --accent on the section element. */
+.section {
+  position: relative;
+  min-height: 60vh;
+  padding: var(--space-section) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-inner {
+  width: 100%;
+  max-width: var(--measure);
+}
+
+/* Terminal-style intro lines */
+.term {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.03em;
+  color: var(--accent, var(--ink));
+}
+
+/* Fumigation marginalia: small, italic, one per section */
+.marginalia {
+  font-style: italic;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink-dim);
+  margin-block: var(--space-2);
+}
+
+/* Reveal-on-scroll elements pulse in on the 2+2+3 grid.
+   JS (timing.ts) assigns --reveal-delay; no-JS falls through visible. */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity var(--pulse-3) var(--ease-veil),
+    transform var(--pulse-3) var(--ease-veil);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js .reveal.is-lit {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   Reduced motion: static frames, no shimmer, instant transitions
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}

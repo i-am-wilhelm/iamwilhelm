@@ -1,0 +1,62 @@
+/* ============================================================
+   iamwilhelm.com — design tokens
+   The whole site is monochrome (the Great Fade, nigredo → albedo)
+   plus one accent per section: its incense smoke.
+   ============================================================ */
+
+:root {
+  /* --- the fade endpoints ------------------------------------ */
+  --void: #050505;          /* nigredo — the black the site opens on */
+  --paper: #f4f2ee;         /* albedo — the near-white it closes on  */
+
+  /* live fade state, driven by scroll (see fade.ts).
+     --fade: 0 at the hero, 1 at the dawn close. */
+  --fade: 0;
+  --bg: var(--void);
+  --ink: #e8e6e1;
+  --ink-dim: rgba(232, 230, 225, 0.55);
+  --hairline: rgba(128, 128, 128, 0.25);
+
+  /* --- fumigation accents (one smoke per section) ------------- */
+  --smoke-swan: #b8cfe8;      /* cold spectral blue-white          */
+  --smoke-sky: #c9cdd6;       /* starlight silver                  */
+  --smoke-medea: #6b3a7d;     /* bruised purple — the fumigation   */
+  --smoke-babalon: #a3122c;   /* scarlet                           */
+  --smoke-saturn: #26262b;    /* leaden near-black gray            */
+  --smoke-pallas: #b08d3f;    /* aged gold                         */
+  --smoke-monsoon: #8a4a2b;   /* rust — shifts storm-green in the break */
+  --smoke-monsoon-late: #4a6b5a; /* storm-green end of the shift   */
+  --smoke-venus: #dcb8bc;     /* pale rose — the morning star      */
+
+  /* --- type --------------------------------------------------- */
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-mono: 'Berkeley Mono', ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+
+  --text-xs: 0.72rem;
+  --text-sm: 0.85rem;
+  --text-base: 1.05rem;
+  --text-lg: 1.35rem;
+  --text-xl: 1.9rem;
+  --text-2xl: clamp(2.4rem, 6vw, 4rem);
+
+  --leading-tight: 1.15;
+  --leading-body: 1.65;
+  --tracking-wide: 0.14em;
+
+  /* --- space -------------------------------------------------- */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 2rem;
+  --space-4: 4rem;
+  --space-section: clamp(6rem, 18vh, 12rem);
+  --measure: 62ch;
+
+  /* --- odd-meter motion (everything moves in seven) ------------
+     The pulse unit is one eighth-note. Reveals stagger in 2+2+3.
+     See src/lib/timing.ts for the JS side of this system. */
+  --pulse: 140ms;
+  --pulse-2: calc(var(--pulse) * 2);   /* 280ms */
+  --pulse-3: calc(var(--pulse) * 3);   /* 420ms */
+  --bar-7-8: calc(var(--pulse) * 7);   /* 980ms — one full bar */
+  --ease-veil: cubic-bezier(0.32, 0, 0.24, 1);
+}
