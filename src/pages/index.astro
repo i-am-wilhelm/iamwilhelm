@@ -122,13 +122,16 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
     <div class="section-inner">
       <p class="term reveal">&gt; memoir</p>
       <!--
-        TODO(phase-3): the monsoon system — three states across this
-        section's scroll: drought (sparse, heat-shimmer, bone/rust) →
-        the break (Greek glyph rain, single-frame chromatic lightning,
-        sub-bass thunder) → release (dense dither cooling to PNW
-        greens/grays). Phase 1 holds the drought still.
+        Phase 3: the monsoon system — three states across this section's
+        scroll, driven by src/lib/monsoon.ts: drought (sparse, heat-
+        shimmer, rust) → the break (Greek glyph rain, single-frame
+        chromatic lightning, monsoon:lightning → sub-bass thunder) →
+        release (dense field cooling rust → storm-green). The field
+        below opens in the drought still; the state machine takes over
+        on scroll.
         TODO(phase-4): Open-Meteo live-weather flag — real rain in
-        Phoenix runs the rain state site-wide, subtly.
+        Phoenix runs the rain state site-wide, subtly (see forceState
+        in src/lib/monsoon.ts).
       -->
       <DitherCanvas
         src="/img/placeholder-monsoon.svg"
@@ -138,7 +141,7 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
         seed={41}
         accent="var(--smoke-monsoon)"
         ratio="16 / 8"
-        label="Drought — sparse glyphs over cracked ground, waiting for the break"
+        label="The monsoon — drought glyphs breaking into Greek rain, easing toward storm-green release"
       />
       <p class="reveal">
         <!-- TODO(copy): memoir excerpt from Michael -->
@@ -147,6 +150,12 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
       <Marginalia text="The Fumigation from Torches." />
     </div>
   </section>
+
+  <!-- the monsoon state machine (owns only the #memoir field above) -->
+  <script>
+    import { initMonsoon } from '../lib/monsoon';
+    initMonsoon();
+  </script>
 
   <!-- ═══ Dawn close — Venus as morning star ═══ -->
   <section class="section dawn" id="dawn" style="--accent: var(--smoke-venus);">

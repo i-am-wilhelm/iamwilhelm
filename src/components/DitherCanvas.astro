@@ -75,7 +75,7 @@ const {
 </style>
 
 <script>
-  import { GlyphDither } from '../lib/filters/dither';
+  import { GlyphDither, type DitherWeather } from '../lib/filters/dither';
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -135,6 +135,31 @@ const {
       }
       document.addEventListener('visibilitychange', this.onVisibility);
       this.syncRunning();
+
+      // Phase-3 hook: announce the engine waking, so lazy clients (the
+      // monsoon state machine) can push their first state immediately
+      this.dispatchEvent(new CustomEvent('dither:ready', { bubbles: true }));
+    }
+
+    /**
+     * Additive Phase-3 hook: drive monsoon weather on the live engine
+     * (mode, rain density/speed, wobble, sparsity, coverage, accent
+     * lerp). Returns false while the engine is still dormant.
+     */
+    setWeather(w: DitherWeather): boolean {
+      if (!this.engine) return false;
+      this.engine.setWeather(w);
+      return true;
+    }
+
+    /**
+     * Additive Phase-3 hook: one-paint lightning strike. Returns false
+     * when dormant; no-op under reduced motion (the engine guards).
+     */
+    flash(): boolean {
+      if (!this.engine) return false;
+      this.engine.flash();
+      return true;
     }
 
     /**
