@@ -1,0 +1,125 @@
+---
+/**
+ * MuteToggle — the lyre in the corner.
+ *
+ * A small fixed control on every page (mounted in Base.astro). Three
+ * states: dormant (engine not yet awake — dim, strings slack), on
+ * (sounding), muted (slashed). Unmuting is itself a user gesture, so a
+ * visitor who entered in silence can wake the engine here later: the
+ * click unmutes AND wakes.
+ *
+ * aria-pressed answers "is sound on": true only when awake and unmuted.
+ */
+---
+
+<button
+  class="mute-toggle"
+  id="mute-toggle"
+  type="button"
+  data-state="dormant"
+  aria-pressed="false"
+  aria-label="Sound"
+>
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
+    <!-- the lyre: two arms, crossbar, three strings, bowl -->
+    <path class="lyre-frame" d="M6.5 3.5 C5 8 5.5 12 8.5 15.5" />
+    <path class="lyre-frame" d="M17.5 3.5 C19 8 18.5 12 15.5 15.5" />
+    <path class="lyre-frame" d="M8.5 15.5 a3.5 2.8 0 0 0 7 0" />
+    <line class="lyre-frame" x1="6" y1="6" x2="18" y2="6" />
+    <line class="lyre-string" x1="9.6" y1="6" x2="9.9" y2="16.8" />
+    <line class="lyre-string" x1="12" y1="6" x2="12" y2="17.4" />
+    <line class="lyre-string" x1="14.4" y1="6" x2="14.1" y2="16.8" />
+    <line class="lyre-slash" x1="4.5" y1="20" x2="19.5" y2="4" />
+  </svg>
+</button>
+
+<style>
+  .mute-toggle {
+    position: fixed;
+    right: var(--space-2);
+    bottom: var(--space-2);
+    z-index: 90; /* under the threshold (100), over everything else */
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-dim);
+    opacity: 0.65;
+    transition:
+      opacity var(--pulse-2) var(--ease-veil),
+      color var(--pulse-2) var(--ease-veil);
+  }
+  .mute-toggle:hover,
+  .mute-toggle:focus-visible {
+    opacity: 1;
+  }
+  .mute-toggle:focus-visible {
+    outline: 1px solid var(--ink-dim);
+    outline-offset: 3px;
+  }
+  .lyre-frame,
+  .lyre-string,
+  .lyre-slash {
+    stroke: currentColor;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+  }
+  .lyre-string {
+    stroke-width: 0.9;
+    transition: opacity var(--pulse-2) var(--ease-veil);
+  }
+  .lyre-slash {
+    opacity: 0;
+    transition: opacity var(--pulse-2) var(--ease-veil);
+  }
+  /* dormant: the instrument waits, strings slack */
+  .mute-toggle[data-state='dormant'] {
+    opacity: 0.35;
+  }
+  .mute-toggle[data-state='dormant'] .lyre-string {
+    opacity: 0.35;
+  }
+  /* muted: slashed, strings silent */
+  .mute-toggle[data-state='muted'] .lyre-string {
+    opacity: 0.25;
+  }
+  .mute-toggle[data-state='muted'] .lyre-slash {
+    opacity: 1;
+  }
+  .mute-toggle[data-state='on'] {
+    color: var(--ink);
+  }
+</style>
+
+<script>
+  import { wake, isAwake, isMuted, setMuted } from '../lib/audio/engine';
+
+  const btn = document.getElementById('mute-toggle');
+
+  function render(): void {
+    if (!btn) return;
+    const muted = isMuted();
+    const on = isAwake() && !muted;
+    btn.dataset.state = muted ? 'muted' : on ? 'on' : 'dormant';
+    btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? 'Sound — on' : 'Sound — off');
+  }
+
+  btn?.addEventListener('click', () => {
+    if (isMuted() || !isAwake()) {
+      // this click is a gesture: unmute and (if needed) wake
+      setMuted(false);
+      void wake();
+    } else {
+      setMuted(true);
+    }
+    render();
+  });
+
+  document.addEventListener('audio:state', render);
+  render();
+</script>

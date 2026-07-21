@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import MuteToggle from '../components/MuteToggle.astro';
 
 interface Props {
   title: string;
@@ -32,14 +33,35 @@ const {
   </head>
   <body>
     <slot />
+    <MuteToggle />
     <script>
       import { initGreatFade } from '../lib/fade';
       import { initReveals } from '../lib/timing';
       import { initEggs } from '../lib/eggs-wiring';
+      import { isMuted, wake } from '../lib/audio/engine';
 
       initGreatFade();
       initReveals();
       initEggs();
+
+      // Audio re-entry: the AudioContext dies with each page navigation,
+      // and autoplay policy demands a fresh gesture. If the visitor
+      // already crossed the threshold with sound ('wilhelm.entered' is
+      // set by ThresholdGate), the first interaction on any page quietly
+      // wakes the engine again.
+      let entered = false;
+      try {
+        entered = sessionStorage.getItem('wilhelm.entered') === '1';
+      } catch {}
+      if (entered && !isMuted()) {
+        const resume = () => {
+          void wake();
+          window.removeEventListener('pointerdown', resume);
+          window.removeEventListener('keydown', resume);
+        };
+        window.addEventListener('pointerdown', resume, { once: true });
+        window.addEventListener('keydown', resume, { once: true });
+      }
     </script>
   </body>
 </html>

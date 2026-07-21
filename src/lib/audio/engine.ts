@@ -1,37 +1,55 @@
 /**
- * Audio engine — Phase 3 scaffold.
+ * Audio engine — the public face.
  *
- * The plan (see README / build prompt §6):
- *  - Generative drones via Tone.js, one per section, tuned around the
- *    circle of fifths so scroll-crossfades are perfect-fifth modulations.
- *  - Greek modes per section character (Dorian for Philosophy, Phrygian
- *    for Babalon, Lydian-melancholic for Memoir — document each choice
- *    where the drone is defined).
- *  - Dither sonification: granular static resolving toward tone.
- *    Neptune = washes/reverb tails on dissolves; Uranus = crackle and
- *    hard cuts on glitches.
- *  - Soft lyre-pluck UI sounds. Mixed quiet. Visible mute toggle.
+ * This module stays featherweight: no Tone.js import, static or
+ * otherwise. wake() dynamic-imports the runtime chunk (which carries
+ * Tone) inside the visitor's first gesture — the threshold's Enter
+ * click, or the mute toggle on any later page. Everything is safe to
+ * call at any time, in any order, on any page; if Tone fails to load
+ * the site simply stays silent.
  *
- * Phase 1 ships this silent stub so the threshold's Enter click already
- * performs the visitor's first offering: waking the engine inside a user
- * gesture, which is what browser autoplay policy demands.
+ * State changes are announced on document as `audio:state`
+ * ({ awake, muted }) so UI like the mute toggle can follow along.
  */
 
 const MUTE_KEY = 'wilhelm.muted';
 
-let awake = false;
+type Runtime = typeof import('./runtime');
 
-/** Called from the threshold's Enter click (a user gesture). */
+let runtime: Runtime | null = null;
+let waking: Promise<void> | null = null;
+let failed = false;
+
+function announce(): void {
+  document.dispatchEvent(
+    new CustomEvent('audio:state', { detail: { awake: isAwake(), muted: isMuted() } })
+  );
+}
+
+/**
+ * Called from a user gesture (the threshold's Enter, or unmuting).
+ * Idempotent; concurrent calls share one load.
+ */
 export async function wake(): Promise<void> {
-  if (awake) return;
-  awake = true;
-  // TODO(phase-3): dynamic-import Tone.js here, await Tone.start(),
-  // and begin the hero drone. Keeping Tone out of the Phase 1 bundle
-  // holds the JS budget.
+  if (runtime || failed) return;
+  if (waking) return waking;
+  waking = (async () => {
+    try {
+      const rt = await import('./runtime');
+      await rt.start(isMuted());
+      runtime = rt;
+      announce();
+    } catch {
+      failed = true; // Tone unavailable — the site keeps its silence
+    } finally {
+      waking = null;
+    }
+  })();
+  return waking;
 }
 
 export function isAwake(): boolean {
-  return awake;
+  return runtime !== null;
 }
 
 export function setMuted(muted: boolean): void {
@@ -40,7 +58,8 @@ export function setMuted(muted: boolean): void {
   } catch {
     /* no persistence available */
   }
-  // TODO(phase-3): Tone.Destination.mute = muted
+  runtime?.setMuted(muted);
+  announce();
 }
 
 export function isMuted(): boolean {

@@ -98,6 +98,7 @@ import DitherCanvas from './DitherCanvas.astro';
   } else {
     document.body.style.overflow = 'hidden';
     document.getElementById('threshold-enter')?.addEventListener('click', () => {
+      setMuted(false); // Enter is the sound path — it clears an old silence
       void wake(); // the first offering
       close();
     });
