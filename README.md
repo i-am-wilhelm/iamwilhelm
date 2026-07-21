@@ -41,12 +41,21 @@ this one interface. A future swap to a headless Ghost backend touches this
 file only. Posts declare a governing `symbol` and optional `accent` in
 frontmatter; the template themes the page to them.
 
-**Later phases** (scaffolded, not yet wired):
-`src/lib/eggs.ts` (the egg registry and mark tokens), `src/lib/audio/engine.ts`
-(Tone.js drones on the circle of fifths — the threshold's Enter click already
-wakes it as the visitor's first offering), `/underworld` (hidden route, the
-descent and the Orpheus rule), the monsoon states, the orchestra pit, the
-dawn gate. Search `TODO(phase-` for every seam.
+**The initiation** (all four phases built): the egg registry
+(`src/lib/eggs.ts`) holds eleven marks wired across the site — from the
+Mercury cazimi hidden in Sol Niger to the 7/8 secret knock that summons
+the Orchestra Pit (`src/lib/knock.ts`, `src/lib/pit/`). The audio engine
+(`src/lib/audio/`) walks drones up the circle of fifths D→C♯ with Greek
+modes per section, Tone.js loading only inside the first gesture. The
+underworld (`/underworld`, `src/lib/underworld.ts`) descends through
+seven stations under the Orpheus rule. The monsoon (`src/lib/monsoon.ts`)
+breaks over the memoir in three states, and real Phoenix rain runs it
+site-wide (`src/lib/weather.ts`, Open-Meteo, feature-flagged). The chain
+ends at the dawn gate (`src/lib/dawn.ts`): all marks held, the hour
+before local sunrise, the Seikilos epitaph as the opening tone, and the
+permanent initiate state for whoever walks it. Testing flags:
+`wilhelm.dawn.force`, `wilhelm.weather.force` in localStorage. Search
+`TODO(copy)` and `TODO(michael)` for the remaining human inputs.
 
 ## Local development
 
