@@ -87,7 +87,7 @@ needed (the field behind glyphs is always black).
 | # | Asset | Slot | Size / format | Notes |
 |---|-------|------|---------------|-------|
 | 1 | Black Swan hero art | `public/img/` → hero `<DitherCanvas src>` in `index.astro` | 1600×1000px (16:10), grayscale PNG/JPG | Barely-there; form suggested more than shown. Replaces `placeholder-swan.svg`. |
-| 2 | Facecard portrait | hero section (`TODO(asset)` marker) | 800×1000px (4:5), grayscale | Will render through the filter; strong key light works best. |
+| 2 | Facecard portrait | hero section | — | **Supplied** — `public/img/facecard.jpg` (serious, 1024×1024 B&W) is the hero; `public/img/facecard-smile.jpg` is the alternate pose for other spots (style-swap egg, about contexts). |
 | 3 | Atlas / Columbia / Pallas art | philosophy section | 1600×900px (16:9), grayscale | Phase 2 morphs Atlas → Columbia/Pallas; one still is enough for Phase 1. Replaces `placeholder-atlas.svg`. |
 | 4 | Monsoon / drought still | memoir section | 1600×800px (2:1), grayscale | Cracked earth under a storm shelf. Replaces `placeholder-monsoon.svg`. |
 | 5 | Symbol art ×12 | constellation sky + writings headers (Janus, Orpheus, Babalon, Prometheus, Hermes, Medea, Ouroboros, Sol Niger, Saturn, Pleiades, the Cross, Pan) | 800×800px each, white-on-black line art | Phase 2 turns these into star-clusters; until then a glyph mark stands in (`src/lib/symbols.ts`). |

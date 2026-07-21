@@ -33,14 +33,27 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
         label="The Black Swan — a form suggested more than shown, brilliant and terrifying"
       />
     </div>
-    <div class="section-inner">
-      <p class="term reveal">&gt; Michael Wilhelm</p>
-      <h1 class="hero-title reveal">Builder. Writer. Reader of symbols.</h1>
-      <p class="hero-lede reveal">
-        There is a world beneath the one you were handed. This is where I map it.
-      </p>
-      <!-- TODO(asset): facecard portrait — see README asset checklist -->
-      <Marginalia text="The Fumigation from Storax." />
+    <div class="section-inner hero-card">
+      <div class="hero-face">
+        <DitherCanvas
+          src="/img/facecard.jpg"
+          palette="ascii"
+          mode="resolve"
+          cell={7}
+          seed={3}
+          accent="var(--smoke-swan)"
+          ratio="1 / 1"
+          label="Michael Wilhelm — portrait resolving out of glyphs"
+        />
+      </div>
+      <div class="hero-bio">
+        <p class="term reveal">&gt; Michael Wilhelm</p>
+        <h1 class="hero-title reveal">Builder. Writer. Reader of symbols.</h1>
+        <p class="hero-lede reveal">
+          There is a world beneath the one you were handed. This is where I map it.
+        </p>
+        <Marginalia text="The Fumigation from Storax." />
+      </div>
     </div>
   </section>
 
@@ -168,6 +181,21 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
   .hero-art {
     width: min(100%, 780px);
     margin-bottom: var(--space-3);
+  }
+  .hero-card {
+    display: grid;
+    grid-template-columns: minmax(160px, 240px) 1fr;
+    gap: var(--space-3);
+    align-items: center;
+    max-width: 56rem;
+  }
+  @media (max-width: 640px) {
+    .hero-card {
+      grid-template-columns: 1fr;
+    }
+    .hero-face {
+      max-width: 240px;
+    }
   }
   .hero-title {
     font-size: var(--text-2xl);
