@@ -1,0 +1,43 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Pages outside the initiation (underworld) opt out of indexing. */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Michael Wilhelm. Builder. Writer. Reader of symbols.',
+  noindex = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-phase="nigredo">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#050505" />
+    <title>{title}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      import { initGreatFade } from '../lib/fade';
+      import { initReveals } from '../lib/timing';
+
+      initGreatFade();
+      initReveals();
+    </script>
+  </body>
+</html>

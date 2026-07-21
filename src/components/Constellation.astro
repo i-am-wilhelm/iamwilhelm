@@ -1,0 +1,87 @@
+---
+/**
+ * Constellation Sky — Phase 1 placeholder, Phase 2 system.
+ *
+ * Phase 2 replaces this with true symbol-constellations resolving out of
+ * the star dither with layered parallax, including:
+ *   - Cross → Black Cube: the cross's stars fold (a cube net) into a cube
+ *   - Thoth → Hermes morph, lingering on the superimposed midpoint
+ *   - Saturn pinned to the very top of its viewport (egg #2)
+ *   - Mercury cazimi at Sol Niger's exact center (egg #1)
+ *   - three constellations at an exact 120° grand trine (egg #3)
+ *
+ * Phase 1 renders the dither starfield with the twelve symbols as quiet
+ * clickable marks scattered across it.
+ */
+import DitherCanvas from './DitherCanvas.astro';
+import { SYMBOLS } from '../lib/symbols';
+
+// deterministic scatter for the placeholder marks
+const placed = Object.values(SYMBOLS).map((s, i) => ({
+  ...s,
+  left: 8 + ((i * 37 + (s.seed % 13) * 5) % 84),
+  top: 12 + ((i * 53 + (s.seed % 7) * 9) % 72),
+}));
+---
+
+<div class="sky">
+  <DitherCanvas
+    palette="greek"
+    mode="static"
+    variant="stars"
+    cell={11}
+    seed={12}
+    accent="var(--smoke-sky)"
+    ratio="auto"
+    class="sky-field"
+    label="A sky of glyph-stars"
+  />
+  <ul class="sky-symbols" role="list">
+    {
+      placed.map((s) => (
+        <li style={`left:${s.left}%; top:${s.top}%;`}>
+          <a href="/writings/" title={s.name} aria-label={s.name}>
+            {s.glyph}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .sky {
+    position: relative;
+    width: 100%;
+  }
+  .sky :global(.sky-field) {
+    aspect-ratio: auto;
+    height: min(120vh, 900px);
+  }
+  .sky-symbols {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sky-symbols li {
+    position: absolute;
+  }
+  .sky-symbols a {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    text-decoration: none;
+    font-size: var(--text-lg);
+    color: var(--smoke-sky);
+    opacity: 0.55;
+    transition: opacity var(--pulse-2) var(--ease-veil), text-shadow var(--pulse-2) var(--ease-veil);
+  }
+  .sky-symbols a:hover,
+  .sky-symbols a:focus-visible {
+    opacity: 1;
+    text-shadow: 0 0 14px currentColor;
+  }
+</style>

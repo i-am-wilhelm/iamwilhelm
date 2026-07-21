@@ -1,0 +1,9 @@
+---
+/** The section's fumigation line — small, italic, Orphic-hymnal. */
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+
+<p class="marginalia" aria-hidden="true">{text}</p>

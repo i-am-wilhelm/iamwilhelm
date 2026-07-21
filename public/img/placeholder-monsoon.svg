@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480">
+  <!-- Placeholder dither-abstract: the Monsoon slot. Drought earth under
+       a heavy sky. Replace with final art — see README asset checklist. -->
+  <defs>
+    <linearGradient id="skywall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a3a3a"/>
+      <stop offset="55%" stop-color="#0d0d0d"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <filter id="soft3" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  <rect width="960" height="480" fill="url(#skywall)"/>
+  <!-- the storm shelf -->
+  <ellipse cx="480" cy="80" rx="520" ry="90" fill="#cfcfcf" opacity="0.5" filter="url(#soft3)"/>
+  <ellipse cx="300" cy="120" rx="260" ry="60" fill="#9a9a9a" opacity="0.4" filter="url(#soft3)"/>
+  <!-- cracked ground -->
+  <rect y="380" width="960" height="100" fill="#161616"/>
+  <g stroke="#4a4a4a" stroke-width="3" opacity="0.8">
+    <path d="M 80 480 L 140 400 L 200 480" fill="none"/>
+    <path d="M 320 480 L 360 410 L 430 480" fill="none"/>
+    <path d="M 560 480 L 620 395 L 700 480" fill="none"/>
+    <path d="M 790 480 L 840 420 L 900 480" fill="none"/>
+  </g>
+  <!-- one bright fissure where the rain will come -->
+  <path d="M 480 100 L 470 220 L 500 230 L 460 360" stroke="#ffffff"
+        stroke-width="5" fill="none" opacity="0.75" filter="url(#soft3)"/>
+</svg>
