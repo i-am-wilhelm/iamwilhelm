@@ -1,0 +1,27 @@
+# Cloudflare Workers deploy for iamwilhelm.com
+#
+# The site is fully prerendered; the Worker serves static assets, and the
+# @astrojs/cloudflare adapter's worker entry handles anything rendered
+# on demand later (live weather, Ghost swap).
+
+name = "iamwilhelm"
+main = "dist/_worker.js/index.js"
+compatibility_date = "2026-07-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+[observability]
+enabled = true
+
+# Custom domain — attach after `wrangler deploy` succeeds once and the
+# zone for iamwilhelm.com exists on this Cloudflare account.
+[[routes]]
+pattern = "iamwilhelm.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.iamwilhelm.com"
+custom_domain = true
