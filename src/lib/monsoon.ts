@@ -140,12 +140,15 @@ const FORCED_P: Record<MonsoonState, number> = {
 };
 
 /**
- * Forced-state seam for live weather.
+ * Forced-state seam for live weather (Phase 4 — see weather.ts).
  *
- * TODO(phase-4): Open-Meteo. When a feature flag confirms real
- * precipitation at the site's home coordinates (Phoenix), call
- * forceState('break') to run the rain site-wide, subtly — the scroll
- * driver yields until forceState(null). No network code before Phase 4.
+ * When the live-weather flag confirms real precipitation at the site's
+ * home coordinates (Phoenix), weather.ts calls forceState('release') to
+ * settle the memoir into the storm — the scroll driver yields until
+ * forceState(null). Safe before initMonsoon() runs (the first update
+ * reads the forced state) and a silent no-op on pages without the
+ * memoir section. All monsoon:state events dispatch from the driver
+ * below; callers never fabricate their own.
  */
 export function forceState(next: MonsoonState | null): void {
   forced = next;
