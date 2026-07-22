@@ -17,16 +17,16 @@ const { spec } = Astro.props;
 
 <Section spec={spec}>
   <!--
-    TODO(owner): FACECARD IMAGE
-    Drop the base facecard image at public/assets/facecard.png
-    (painted saturation zones per spec §2.1). The <img> below is already
-    wired to that path; when the file is absent the figure collapses to a
-    glyph placeholder instead of a broken image.
+    The Black Swan symbol card ships at public/assets/facecard.webp,
+    generated with painted saturation zones per spec §2.1 (crimson-violet
+    focal zone on a desaturated field). TODO(owner): to use a personal
+    facecard instead, drop it at the same path — absence degrades to the
+    glyph placeholder, never a broken image.
   -->
   <figure class="facecard" data-egg-anchor="hero-swan">
     <img
-      src="/assets/facecard.png"
-      alt="Michael Wilhelm — facecard"
+      src="/assets/facecard.webp"
+      alt="The Black Swan — hero facecard"
       loading="eager"
       onerror="this.closest('.facecard').classList.add('facecard--absent')"
     />

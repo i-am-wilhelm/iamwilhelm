@@ -37,7 +37,7 @@ const INK_DIM = { from: '#9a958c', to: '#5f594e' } as const;
  * fade would put mid-grey text on a mid-grey ground at p≈0.5; a sharp
  * smoothstep crossover keeps the low-contrast zone as small as possible.
  */
-const INK_CROSS = { start: 0.42, end: 0.58 } as const;
+const INK_CROSS = { start: 0.5, end: 0.68 } as const;
 
 /** One beat at the site tempo (84 bpm) in seconds ≈ 0.714 s. */
 const BEAT = 60 / meter.bpm;

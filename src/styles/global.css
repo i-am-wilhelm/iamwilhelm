@@ -2,7 +2,7 @@
 
 :root {
   --bg-from: #050505;
-  --bg-to: #f5f2ec;
+  --bg-to: #bda898; /* the shade just before dawn — never full white */
   /* Driven 0→1 by scroll choreography (src/scripts/scroll.ts). */
   --scroll-progress: 0;
 

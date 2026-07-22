@@ -115,4 +115,55 @@ const { accent } = Astro.props;
   .prose .greek-quote cite em {
     font-style: italic;
   }
+
+  /*
+   * Poem movements — each is a full section-anatomy element
+   * (.section[data-section][data-smoke-side]) so the WebGL fumigation
+   * swings sides movement by movement as the reader scrolls. The global
+   * .section padding is built for full-bleed homepage sections; inside the
+   * prose column the movements keep the vertical breath and drop the
+   * horizontal inset.
+   */
+  .prose .poem-movement {
+    min-height: 86vh;
+    padding: 16vh 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .prose .poem-movement p {
+    line-height: 1.9;
+    margin-bottom: 1.8rem;
+  }
+
+  .prose .mvt {
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    color: var(--section-accent, var(--ink));
+    margin: 0 0 2rem;
+  }
+
+  .prose .poem-front {
+    text-align: center;
+    align-items: center;
+  }
+
+  .prose .poem-dedication {
+    font-style: italic;
+    color: var(--ink-dim);
+    margin-bottom: 0.8rem;
+  }
+
+  .prose .poem-title {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    letter-spacing: 0.28em;
+    margin: 0 0 1rem;
+  }
+
+  .prose .poem-sub {
+    color: var(--ink-dim);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
 </style>

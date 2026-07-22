@@ -62,10 +62,14 @@ export const meter = {
   bpm: 84,
 } as const;
 
-/** Global background fade: black at top of page → white at the bottom. */
+/**
+ * Global background fade: black at the top of the page, and at the bottom
+ * the shade just before dawn — a warm rose-taupe that stops well short of
+ * white (full white proved harsh on the eyes at the end of a long scroll).
+ */
 export const backgroundFade = {
   from: '#050505',
-  to: '#f5f2ec',
+  to: '#bda898',
 } as const;
 
 /** Greek glyph ramp for the dither field, dark→light coverage. */
