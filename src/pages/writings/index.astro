@@ -38,7 +38,7 @@ const fmt = (d: Date) =>
     style="--section-accent: var(--accent-writings)"
   >
     <div class="copy">
-      <h1>Writings</h1>
+      <h1><span data-egg-anchor="writings-pharmakon" class="greek sigil">φ</span>Writings</h1>
       <ol class="post-list" reversed>
         {
           posts.map((post) => (
@@ -73,6 +73,17 @@ const fmt = (d: Date) =>
     letter-spacing: 0.06em;
     color: var(--section-accent, var(--ink));
     margin-bottom: 2.4rem;
+  }
+
+  .sigil {
+    display: inline-block;
+    margin-right: 0.5rem;
+    opacity: 0.45;
+    transition: opacity 0.4s ease;
+  }
+
+  .sigil:hover {
+    opacity: 1;
   }
 
   .post-list {

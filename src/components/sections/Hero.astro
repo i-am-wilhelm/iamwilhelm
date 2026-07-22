@@ -35,6 +35,8 @@ const { spec } = Astro.props;
   </figure>
 
   <h1>Michael Wilhelm</h1>
+  <!-- Venus as Phosphoros: answers only in the dawn band (phosphoros-dawn egg). -->
+  <span class="phosphoros" data-egg-anchor="phosphoros-star" aria-hidden="true">⁘</span>
 
   <div class="todo-block">
     TODO(owner): hero bio — 2–3 short sentences, in your own voice.
@@ -101,5 +103,14 @@ const { spec } = Astro.props;
   .bio {
     max-width: 34rem;
     color: var(--ink);
+  }
+
+  .phosphoros {
+    position: absolute;
+    top: 8vh;
+    right: 6vw;
+    font-size: 1rem;
+    color: var(--ink-dim);
+    opacity: 0.4;
   }
 </style>

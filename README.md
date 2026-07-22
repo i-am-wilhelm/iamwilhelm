@@ -34,19 +34,43 @@ custom domain in the Cloudflare dashboard.
 
 ## Shader pipeline
 
-See `src/webgl/README.md` for the full pass-by-pass documentation
-(glyph-dither post pass, fumigation smoke, constellation base layer,
-stretch-and-resolve morph system, style presets, uniforms).
+One OGL renderer, two stages: four scene passes composite into a render
+target — **backdrop** (per-section accent aura, hosts splashes), 
+**constellation** (star maps seeded per section id, hairline geometry),
+**morph** (stretch-and-resolve: the glyph field smears along the motion path,
+then collapses into the resolved silhouette — `trismegistus`, `cross-cube`,
+`atlas-columbia`), **smoke** (domain-warped fbm fumigation, side from
+`data-smoke-side`, sheared by scroll velocity) — and the **glyph dither post
+pass** is the only thing that reaches the screen: brightness-bucketed Greek
+glyphs from a runtime atlas, per-channel RGB fringing, and a
+saturation-preserve path so painted focal zones resolve *more* saturated
+than their surroundings. Style presets: `default`, `dense`, `inverse`,
+`chaos` (the easter-egg engine swaps these live). Full pass-by-pass
+documentation, uniforms, and the morph registry: `src/webgl/README.md`.
 
-<!-- TODO(integration): summarize pipeline stages here once shader core lands -->
+All cross-subsystem input arrives as `iw:*` CustomEvents; handlers write
+targets and the frame loop damps toward them, so event bursts never pop.
 
 ## Easter-egg registry & hunt
 
-See `src/scripts/eggs/README.md` for the registry format, every registered
-egg and its trigger, the hunt state machine, and how to wire the final
-mail-in step (config addition only — `hunt.config.ts`).
+Eight eggs ship in `src/scripts/eggs/eggs.config.ts` (declarative registry;
+anchors are `data-egg-anchor` attributes in the section markup, bound lazily
+and tolerant of absence): `swan-preen`, `natal-ascent` (the reworked
+birthday-coded egg — Pleiades nodes clicked in a date-derived order),
+`maat-feather`, `orphic-lyre`, `monsoon-rainmaker`, `pharmakon-sigil`,
+`phosphoros-dawn` (dawn-gated grace note), and `psychopomp-door` (ships
+disabled; separate-domain discipline — the destination appears nowhere on
+this site). Effects replay on every interaction, flash-site style; discovery
+fires `iw:egg-found` once.
 
-<!-- TODO(integration): summarize egg registry here once egg engine lands -->
+The cross-page hunt (`hunt.ts`) runs `unbegun → in-progress → awaiting-seal
+→ sealed` with five ordered initiation steps persisted under one versioned
+localStorage key. The final mail-in step (password in an email subject line,
+PO box) is wired later by supplying the `finalStep` object in
+`hunt.config.ts` — a config addition, not a refactor. Natal-chart hooks
+(`natal.config.ts`) expose placement-derived CSS variables; real birth data
+is a `TODO(owner)` config edit. Full documentation:
+`src/scripts/eggs/README.md`.
 
 ## Orchestra pit
 
