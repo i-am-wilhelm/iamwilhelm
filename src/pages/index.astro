@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Section from '../components/Section.astro';
+import { sections } from '../design/tokens';
+
+const bySection = Object.fromEntries(sections.map((s) => [s.id, s]));
+---
+
+<Base title="I Am Wilhelm">
+  <Section spec={bySection.hero}>
+    <h1>Michael Wilhelm</h1>
+    <!-- TODO(owner): supply base facecard image with painted saturation zones (spec §2.1, §4.1) -->
+    <div class="todo-block">TODO: owner-supplied facecard image — hero/black-swan</div>
+    <p>Hero bio placeholder — kept minimal by design.</p>
+  </Section>
+
+  <Section spec={bySection.cluster}>
+    <h2>Constellation</h2>
+    <p>Dither-star cluster resolving into constellation symbols fading into depth.</p>
+  </Section>
+
+  <Section spec={bySection.philosophy}>
+    <h2>Philosophy</h2>
+    <p>Columbia and Pallas Athena placeholder copy.</p>
+  </Section>
+
+  <Section spec={bySection.underworld}>
+    <h2>Underworld</h2>
+    <p>Orpheus and Eurydice long-form placeholder.</p>
+  </Section>
+
+  <Section spec={bySection.monsoon}>
+    <h2>Monsoon</h2>
+    <p>Memoir placeholder — rains when it rains in Phoenix.</p>
+  </Section>
+</Base>
