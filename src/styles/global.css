@@ -1,0 +1,97 @@
+/* Global styles. Accent values mirror src/design/tokens.ts — keep in sync. */
+
+:root {
+  --bg-from: #050505;
+  --bg-to: #f5f2ec;
+  /* Driven 0→1 by scroll choreography (src/scripts/scroll.ts). */
+  --scroll-progress: 0;
+
+  --accent-hero: #0d0d10;
+  --accent-cluster: #8fa8c8;
+  --accent-philosophy: #b8923a;
+  --accent-underworld: #3d6b52;
+  --accent-monsoon: #2e5f6e;
+  --accent-writings: #6a3fa0;
+  --accent-babalon: #a01f1f;
+
+  --ink: #e8e4dc;
+  --ink-dim: #9a958c;
+
+  --font-body: 'Georgia', 'Times New Roman', serif;
+  --font-greek: 'GFS Neohellenic', 'New Athena Unicode', 'Georgia', serif;
+  --font-ui: ui-monospace, 'SFMono-Regular', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* GSAP owns scroll feel; native smooth fights it */
+}
+
+body {
+  /* The imperceptible black→white fade is applied to this background color
+     by scroll.ts; this is only the resting state before JS hydrates. */
+  background-color: var(--bg-from);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Full-viewport WebGL canvas behind all content. */
+#gl-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+.section {
+  position: relative;
+  min-height: 100vh;
+  padding: 12vh 8vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.section .copy {
+  max-width: 42rem;
+  position: relative;
+  z-index: 2;
+}
+
+.section h2 {
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--section-accent, var(--ink));
+  margin-bottom: 1.2rem;
+}
+
+.greek {
+  font-family: var(--font-greek);
+  font-feature-settings: 'liga' 1;
+}
+
+.todo-block {
+  border: 1px dashed var(--ink-dim);
+  padding: 1rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  margin: 2rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #gl-stage { display: none; }
+}

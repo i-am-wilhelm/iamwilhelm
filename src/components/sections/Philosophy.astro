@@ -1,0 +1,60 @@
+---
+/**
+ * PHILOSOPHY — Columbia and Pallas Athena (spec §4.3). The shader morphs
+ * Atlas-inspired forms into Columbia/Pallas behind this copy; the DOM layer
+ * frames the statement and holds space for the owner's actual philosophy.
+ */
+import Section from '../Section.astro';
+import type { SectionSpec } from '../../design/tokens';
+
+interface Props {
+  spec: SectionSpec;
+}
+
+const { spec } = Astro.props;
+---
+
+<Section spec={spec}>
+  <h2>Philosophy</h2>
+
+  <p class="epigraph greek" lang="grc">
+    γλαυκῶπις Ἀθήνη
+    <span class="translation">— grey-eyed Athena</span>
+  </p>
+
+  <p class="frame">
+    Atlas carries the sphere; Columbia carries the torch; Pallas carries the
+    aegis. The weight becomes the light becomes the shield.
+  </p>
+
+  <div class="todo-block">
+    TODO(owner): philosophy statement goes here — the real text, in your own
+    words. The paragraph below is scaffolding for length and tone only.
+  </div>
+  <p>
+    <!-- TODO(owner): replace this placeholder. -->
+    Wisdom in the old figures is armed and civic at once: the owl sees in the
+    dark, and the city is built in daylight on what the owl saw.
+  </p>
+</Section>
+
+<style>
+  .epigraph {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--section-accent, var(--ink));
+    margin-bottom: 1.6rem;
+  }
+
+  .epigraph .translation {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .frame {
+    color: var(--ink);
+    margin-bottom: 1.2rem;
+  }
+</style>

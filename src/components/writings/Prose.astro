@@ -1,0 +1,118 @@
+---
+/**
+ * Long-form prose wrapper for writings posts. Styles the rendered markdown
+ * (headings, paragraphs, blockquotes) consistently with the homepage body
+ * copy, and carries the polytonic-Greek rendering path:
+ *   - elements with lang="grc" take var(--font-greek) with wide serif
+ *     fallbacks so polytonic diacritics render cleanly (tofu-free)
+ *   - blockquote.greek-quote lays out Greek + translation pairs
+ * Styles are is:global because the markdown HTML arrives via <slot /> and
+ * scoped selectors would miss it; everything is namespaced under .prose.
+ */
+
+interface Props {
+  accent: string;
+}
+
+const { accent } = Astro.props;
+---
+
+<div class="prose copy" style={`--section-accent: var(--accent-${accent})`}>
+  <slot />
+</div>
+
+<style is:global>
+  .prose {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 0 8vw 16vh;
+    position: relative;
+    z-index: 2;
+    font-size: 1.05rem;
+  }
+
+  .prose p {
+    margin-bottom: 1.4rem;
+  }
+
+  .prose h2,
+  .prose h3 {
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--section-accent, var(--ink));
+    margin: 2.4rem 0 1.2rem;
+  }
+
+  .prose h2 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
+
+  .prose h3 {
+    font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+  }
+
+  .prose a {
+    color: var(--section-accent, var(--ink));
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .prose em,
+  .prose i {
+    font-style: italic;
+  }
+
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--ink-dim);
+    margin: 3rem auto;
+    max-width: 8rem;
+  }
+
+  /*
+   * Polytonic Greek. lang="grc" is the contract: mark every Greek run with
+   * it and the Greek stack applies. The stack ends in broad system serifs
+   * with full polytonic coverage, so missing webfonts degrade to a clean
+   * system serif with all diacritics intact.
+   */
+  .prose [lang='grc'],
+  .prose .greek {
+    font-family: var(--font-greek), 'Palatino Linotype', 'Cambria', 'Noto Serif', 'Times New Roman', serif;
+    font-feature-settings: 'liga' 1;
+    font-style: normal;
+    letter-spacing: 0.01em;
+  }
+
+  /* Greek quotation with translation pair. */
+  .prose blockquote.greek-quote {
+    margin: 2.4rem 0;
+    padding: 0.4rem 0 0.4rem 1.4rem;
+    border-left: 2px solid var(--section-accent, var(--ink-dim));
+  }
+
+  .prose .greek-quote [lang='grc'] {
+    font-size: 1.18em;
+    line-height: 1.85;
+    margin-bottom: 0.9rem;
+  }
+
+  .prose .greek-quote .translation {
+    color: var(--ink-dim);
+    font-style: italic;
+    margin-bottom: 0.6rem;
+  }
+
+  .prose .greek-quote cite {
+    display: block;
+    font-family: var(--font-ui);
+    font-style: normal;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+  }
+
+  .prose .greek-quote cite i,
+  .prose .greek-quote cite em {
+    font-style: italic;
+  }
+</style>

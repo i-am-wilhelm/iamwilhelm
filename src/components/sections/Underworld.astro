@@ -1,0 +1,171 @@
+---
+/**
+ * UNDERWORLD — the long-form anchor of the page (spec §4.4). Generous
+ * layout: multiple prose blocks, pull-quotes, and clearly marked TODO(owner)
+ * blocks where the personal essay lands. Themes, in order:
+ *   1. Orpheus and Eurydice — the personal anchor
+ *   2. Virgil as guide
+ *   3. The Furies
+ *   4. Soul-marks read after death — sins against kin and nature; greed
+ *      stains deepest
+ *   5. The Egyptian weighing of the heart against Ma'at's feather
+ * Scaffolding prose and classical quotation are provided; the essay itself
+ * is TODO(owner).
+ */
+import Section from '../Section.astro';
+import type { SectionSpec } from '../../design/tokens';
+
+interface Props {
+  spec: SectionSpec;
+}
+
+const { spec } = Astro.props;
+---
+
+<Section spec={spec}>
+  <h2>Underworld</h2>
+
+  <!-- ── 1. Orpheus and Eurydice — the personal anchor ─────────────── -->
+  <article class="block">
+    <h3><span data-egg-anchor="underworld-lyre">Orpheus</span>, Looking Back</h3>
+    <p class="scaffold">
+      The oldest song about song is a song about loss. Orpheus walks down
+      singing, wins her back with music alone, and loses her again at the
+      edge of the light — because he turns, because love turns.
+    </p>
+    <blockquote class="pull-quote">
+      <p class="greek" lang="la">
+        Eurydicen vox ipsa et frigida lingua,<br />
+        a miseram Eurydicen! anima fugiente vocabat:<br />
+        Eurydicen toto referebant flumine ripae.
+      </p>
+      <p class="translation">
+        "Eurydice" — the voice itself, the tongue already cold, called with
+        fleeing breath: "ah, poor Eurydice!" — and "Eurydice" the banks gave
+        back along the whole stream.
+      </p>
+      <cite>Virgil, Georgics IV.525–527</cite>
+    </blockquote>
+    <div class="todo-block">
+      TODO(owner): the personal Orpheus/Eurydice essay — this is the anchor
+      of the whole section. What was carried down, what was almost carried
+      back, where the look back happened.
+    </div>
+  </article>
+
+  <!-- ── 2. Virgil as guide ────────────────────────────────────────── -->
+  <article class="block">
+    <h3>The Guide</h3>
+    <p class="scaffold">
+      Every descent needs a guide who has mapped the dark and kept his
+      composure in it. Virgil walks ahead through his own poems first —
+      the bees of the Georgics fail, and the beekeeper is sent down after
+      the reason.
+    </p>
+    <div class="todo-block">
+      TODO(owner): what Virgil (the poet, the guide-figure) means here
+      personally — the essay text.
+    </div>
+  </article>
+
+  <!-- ── 3. The Furies ─────────────────────────────────────────────── -->
+  <article class="block">
+    <h3>The Kindly Ones</h3>
+    <p class="scaffold">
+      The Erinyes rise for blood-guilt inside the family: they answer wrongs
+      done to kin, and they are older than the Olympian order that tries to
+      civilize them. Athens renamed them Eumenides and gave them a home under
+      the hill — the debt itself remains payable.
+    </p>
+    <div class="todo-block">
+      TODO(owner): the Furies passage — what pursues, and what settlement
+      looks like.
+    </div>
+  </article>
+
+  <!-- ── 4. Soul-marks — sins against kin and nature ───────────────── -->
+  <article class="block">
+    <h3>Marks on the Soul</h3>
+    <p class="scaffold">
+      The judges of the dead read the soul the way a physician reads a body:
+      every act leaves its scar, and the scars are legible after death. Sins
+      against kin and against nature cut deepest, and greed stains deepest of
+      all — it dyes the whole fabric through.
+    </p>
+    <blockquote class="pull-quote">
+      <p class="greek" lang="la">quisque suos patimur Manis.</p>
+      <p class="translation">Each of us suffers his own shade.</p>
+      <cite>Virgil, Aeneid VI.743</cite>
+    </blockquote>
+    <div class="todo-block">
+      TODO(owner): the soul-marks essay — the reckoning of what stains and
+      how deep.
+    </div>
+  </article>
+
+  <!-- ── 5. The weighing of the heart ──────────────────────────────── -->
+  <article class="block">
+    <h3 data-egg-anchor="underworld-feather">The Feather</h3>
+    <p class="scaffold">
+      In the Egyptian hall of the Two Truths the heart is set on one pan of
+      the balance and the feather of Ma'at on the other. The heart that
+      weighs the same as truth passes; the heavy heart is given to the
+      devourer. The scale is exact, and the feather is the whole standard.
+    </p>
+    <div class="todo-block">
+      TODO(owner): the weighing-of-the-heart close — how the section resolves
+      and hands off to Monsoon.
+    </div>
+  </article>
+</Section>
+
+<style>
+  h3 {
+    font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 0.9rem;
+  }
+
+  .block {
+    margin-bottom: 4.5rem;
+  }
+
+  .block:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .scaffold {
+    color: var(--ink);
+    margin-bottom: 1.2rem;
+  }
+
+  .pull-quote {
+    border-left: 2px solid var(--section-accent, var(--ink-dim));
+    padding: 0.4rem 0 0.4rem 1.4rem;
+    margin: 1.8rem 0;
+  }
+
+  .pull-quote p {
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+
+  .pull-quote .translation {
+    font-size: 0.9rem;
+    font-style: normal;
+    color: var(--ink-dim);
+  }
+
+  .pull-quote cite {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-style: normal;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+/**
+ * Section-anatomy-style header for a writings post (spec §4.6). Mirrors the
+ * data-attribute shape of src/components/Section.astro so the shared WebGL
+ * pipeline picks the post's symbols and accent up straight from the DOM:
+ *   data-section    → accent/section id (drives splash + accent lookup)
+ *   data-symbols    → comma-joined symbol list from the post's frontmatter
+ *   data-smoke-side → fumigation vapor entry side
+ *   --section-accent CSS var → per-section accent color
+ * Symbols come from frontmatter — that is the per-post symbol assignment
+ * mechanism. Guardrails apply (src/design/tokens.ts): classical, alchemical,
+ * Greco-Egyptian register only.
+ */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'writings'>;
+}
+
+const { post } = Astro.props;
+const { title, date, symbols, accent } = post.data;
+
+const formatted = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<section
+  class="section post-header"
+  data-section={accent}
+  data-symbols={symbols.join(',')}
+  data-smoke-side="left"
+  style={`--section-accent: var(--accent-${accent})`}
+>
+  <div class="copy">
+    <p class="kicker"><a href="/writings/">Writings</a></p>
+    <h1>{title}</h1>
+    <p class="post-meta">
+      <time datetime={date.toISOString()}>{formatted}</time>
+      {symbols.map((s) => <span class="symbol">{s}</span>)}
+    </p>
+  </div>
+</section>
+
+<style>
+  .post-header {
+    /* A header, so it takes the section anatomy at reduced depth. */
+    min-height: 70vh;
+    justify-content: flex-end;
+    padding-bottom: 8vh;
+  }
+
+  .kicker {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+  }
+
+  .kicker a {
+    color: var(--ink-dim);
+    text-decoration: none;
+  }
+
+  .kicker a:hover {
+    color: var(--section-accent, var(--ink));
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--section-accent, var(--ink));
+    margin-bottom: 1.2rem;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+  }
+
+  .symbol {
+    border: 1px solid color-mix(in srgb, var(--section-accent, var(--ink-dim)) 55%, transparent);
+    color: var(--section-accent, var(--ink-dim));
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    letter-spacing: 0.08em;
+  }
+</style>

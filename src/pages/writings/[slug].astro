@@ -1,0 +1,48 @@
+---
+/**
+ * Writings blog — post page (spec §4.6). Static paths come from the
+ * `writings` content collection; drafts stay unpublished. Layout: a
+ * section-anatomy-style header (PostHeader mirrors Section.astro's
+ * data-attribute shape so the shared WebGL pipeline reads the post's symbols
+ * and accent from the DOM), an optional facecard figure keyed off the post's
+ * symbols (the Medea treatment ships first), then long-form prose with the
+ * polytonic-Greek rendering path (Prose).
+ */
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostHeader from '../../components/writings/PostHeader.astro';
+import Facecard from '../../components/writings/Facecard.astro';
+import Prose from '../../components/writings/Prose.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writings', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Base
+  title={`${post.data.title} — Writings — I Am Wilhelm`}
+  description={post.data.description}
+>
+  <PostHeader post={post} />
+  <article class="post-body">
+    {post.data.symbols.map((s) => <Facecard symbol={s} accent={post.data.accent} />)}
+    <Prose accent={post.data.accent}>
+      <Content />
+    </Prose>
+  </article>
+</Base>
+
+<style>
+  .post-body {
+    position: relative;
+    z-index: 1;
+    padding-top: 4vh;
+  }
+</style>

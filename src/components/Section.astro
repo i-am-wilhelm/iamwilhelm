@@ -1,0 +1,33 @@
+---
+/**
+ * Section anatomy (spec §2.3). Every homepage section is composed of:
+ *   1. constellation base layer (sparse star-map nodes + hairline geometry)
+ *   2. themed splash overlay (the section's symbol/facecard) resolving
+ *      through the dither
+ *   3. fumigation vapor entering from an alternating side, swung by
+ *      scroll velocity
+ * The WebGL pipeline reads the data-* attributes on .section to know what to
+ * render behind each section as it scrolls into view.
+ */
+import type { SectionSpec } from '../design/tokens';
+
+interface Props {
+  spec: SectionSpec;
+}
+
+const { spec } = Astro.props;
+---
+
+<section
+  class="section"
+  id={spec.id}
+  data-section={spec.id}
+  data-symbols={spec.symbols.join(',')}
+  data-smoke-side={spec.smokeSide}
+  data-drone={spec.drone}
+  style={`--section-accent: var(--accent-${spec.id})`}
+>
+  <div class="copy">
+    <slot />
+  </div>
+</section>

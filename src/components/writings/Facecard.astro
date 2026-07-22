@@ -1,0 +1,89 @@
+---
+/**
+ * Facecard figure slot for a writings post. A post earns a facecard when one
+ * of its frontmatter symbols has an entry in the registry below — the Medea
+ * card ships first, tied to the Pharmakon launch post. Images are
+ * owner-supplied and live in public/assets/; until they land, the figure
+ * carries a .todo-block placeholder alongside the wired-up <img>.
+ *
+ * Symbology guardrails (src/design/tokens.ts): classical, alchemical,
+ * Greco-Egyptian register only.
+ */
+
+interface Props {
+  symbol: string;
+  accent: string;
+}
+
+const { symbol, accent } = Astro.props;
+
+interface CardSpec {
+  src: string;
+  alt: string;
+}
+
+const cards: Record<string, CardSpec> = {
+  medea: {
+    src: '/assets/medea.png',
+    alt: 'Medea facecard — purple-stained pharmakis of Colchis.',
+  },
+};
+
+const card = cards[symbol];
+---
+
+{
+  card && (
+    <figure
+      class="facecard"
+      data-facecard={symbol}
+      style={`--section-accent: var(--accent-${accent})`}
+    >
+      {/*
+        TODO(owner): supply the Medea facecard image at public/assets/medea.png.
+        Brief for the artist — Medea treatment, purple accent (--accent-writings,
+        #6a3fa0): messy purple stains under the eyes and on the mouth,
+        purple-stained hair, poison arrows, high cheekbones — warm but subtly
+        terrifying. Classical register; render it as a painted facecard in the
+        same family as the homepage hero facecard.
+      */}
+      <img src={card.src} alt={card.alt} loading="lazy" />
+      <div class="todo-block">
+        TODO(owner): facecard image pending at {card.src} — see the artist brief
+        in src/components/writings/Facecard.astro.
+      </div>
+      <figcaption>{symbol}</figcaption>
+    </figure>
+  )
+}
+
+<style>
+  .facecard {
+    max-width: 42rem;
+    margin: 0 auto 3rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .facecard img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid color-mix(in srgb, var(--section-accent, var(--ink-dim)) 40%, transparent);
+    /* Hide the broken-image glyph until the owner-supplied asset lands. */
+  }
+
+  .facecard img:not([src]),
+  .facecard img[src='']  {
+    display: none;
+  }
+
+  .facecard figcaption {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--section-accent, var(--ink-dim));
+    margin-top: 0.6rem;
+  }
+</style>

@@ -1,0 +1,150 @@
+---
+/**
+ * Writings blog — post listing (spec §4.6). Reads the `writings` content
+ * collection (src/content.config.ts), drops drafts, and sorts by date
+ * descending. Each entry shows title, date, its symbols, and its accent
+ * color. The listing section mirrors the Section.astro data-attribute shape
+ * so the shared WebGL pipeline treats it like any homepage section; its
+ * symbol set is the union of the listed posts' symbols.
+ */
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writings', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const allSymbols = [...new Set(posts.flatMap((p) => p.data.symbols))];
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+---
+
+<Base
+  title="Writings — I Am Wilhelm"
+  description="Writings — poems and cross-examinations of ancient wordforms."
+>
+  <section
+    class="section writings-index"
+    id="writings"
+    data-section="writings"
+    data-symbols={allSymbols.join(',')}
+    data-smoke-side="left"
+    style="--section-accent: var(--accent-writings)"
+  >
+    <div class="copy">
+      <h1><span data-egg-anchor="writings-pharmakon" class="greek sigil">φ</span>Writings</h1>
+      <ol class="post-list" reversed>
+        {
+          posts.map((post) => (
+            <li
+              class="post-entry"
+              style={`--entry-accent: var(--accent-${post.data.accent})`}
+            >
+              <a class="entry-link" href={`/writings/${post.id}/`}>
+                <span class="entry-accent" aria-hidden="true" />
+                <span class="entry-title">{post.data.title}</span>
+              </a>
+              <time datetime={post.data.date.toISOString()}>
+                {fmt(post.data.date)}
+              </time>
+              <ul class="entry-symbols">
+                {post.data.symbols.map((s) => (
+                  <li>{s}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--section-accent, var(--ink));
+    margin-bottom: 2.4rem;
+  }
+
+  .sigil {
+    display: inline-block;
+    margin-right: 0.5rem;
+    opacity: 0.45;
+    transition: opacity 0.4s ease;
+  }
+
+  .sigil:hover {
+    opacity: 1;
+  }
+
+  .post-list {
+    list-style: none;
+  }
+
+  .post-entry {
+    padding: 1.4rem 0;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--ink-dim) 35%, transparent);
+  }
+
+  .entry-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .entry-link:hover .entry-title {
+    color: var(--entry-accent, var(--ink));
+  }
+
+  .entry-accent {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--entry-accent, var(--ink-dim));
+    flex: none;
+  }
+
+  .entry-title {
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    letter-spacing: 0.04em;
+  }
+
+  .post-entry time {
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+  }
+
+  .entry-symbols {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .entry-symbols li {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--entry-accent, var(--ink-dim));
+    border: 1px solid
+      color-mix(in srgb, var(--entry-accent, var(--ink-dim)) 55%, transparent);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+  }
+</style>

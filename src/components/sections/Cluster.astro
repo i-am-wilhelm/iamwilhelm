@@ -1,0 +1,78 @@
+---
+/**
+ * SCROLL CLUSTER — dither-star cluster resolving into constellation-like
+ * symbols fading into 3D (spec §4.2). The shader does the visual work; this
+ * layer stays almost silent — sparse, evocative copy only.
+ */
+import Section from '../Section.astro';
+import type { SectionSpec } from '../../design/tokens';
+
+interface Props {
+  spec: SectionSpec;
+}
+
+const { spec } = Astro.props;
+---
+
+<Section spec={spec}>
+  <p class="line">The stars were letters first.</p>
+  <p class="line line--dim greek">Πλειάδες — seven, and the eye finds six.</p>
+  <!-- The seven sisters: DOM nodes over the shader constellation. Each is an
+       egg anchor; the natal-ascent sequence reads data-egg-step tokens. -->
+  <div class="pleiades" aria-hidden="true">
+    {[
+      { step: 0, x: 12, y: 18 }, { step: 1, x: 30, y: 6 },
+      { step: 2, x: 46, y: 26 }, { step: 3, x: 58, y: 10 },
+      { step: 4, x: 71, y: 32 }, { step: 5, x: 84, y: 14 },
+      { step: 6, x: 93, y: 40 },
+    ].map((n) => (
+      <button
+        class="node"
+        type="button"
+        tabindex="-1"
+        data-egg-anchor="cluster-node"
+        data-egg-step={String(n.step)}
+        style={`left:${n.x}%; top:${n.y}%`}
+      ></button>
+    ))}
+  </div>
+</Section>
+
+<style>
+  .pleiades {
+    position: relative;
+    height: 9rem;
+    max-width: 28rem;
+    margin-top: 2.5rem;
+  }
+
+  .node {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--section-accent) 0%, transparent 70%);
+    opacity: 0.55;
+    cursor: default;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .node:hover {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+
+  .line {
+    font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+  }
+
+  .line--dim {
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    color: var(--ink-dim);
+  }
+</style>
