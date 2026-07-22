@@ -171,11 +171,16 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
 <style>
   .hero {
     min-height: 100vh;
-    padding-top: 14vh;
+    padding-top: 8vh;
   }
   .hero-portrait {
-    width: min(76vmin, 520px);
+    width: min(92vmin, 760px);
     margin: 0 auto var(--space-3);
+    /* feather the square edges into the void — no visible corners.
+       opaque through the face, dissolving to nothing before the edge
+       so the portrait bleeds into the black instead of ending on a line */
+    -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 40%, rgba(0, 0, 0, 0) 74%);
+    mask-image: radial-gradient(circle at 50% 45%, #000 40%, rgba(0, 0, 0, 0) 74%);
   }
   .hero-bio {
     text-align: center;
