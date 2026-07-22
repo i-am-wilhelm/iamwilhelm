@@ -1,0 +1,38 @@
+name: Deploy
+
+# Every push to main builds and deploys the site to the `iamwilhelm`
+# Cloudflare Worker (static assets). Manual runs are available from the
+# Actions tab.
+#
+# Required repository secrets:
+#   CLOUDFLARE_API_TOKEN   — API token with Workers Scripts:Edit
+#   CLOUDFLARE_ACCOUNT_ID  — the account id the worker lives in
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# A newer push supersedes an older queued/running deploy.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npx astro build
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

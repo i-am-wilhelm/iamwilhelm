@@ -24,7 +24,7 @@ interface CardSpec {
 
 const cards: Record<string, CardSpec> = {
   medea: {
-    src: '/assets/medea.png',
+    src: '/assets/medea.webp',
     alt: 'Medea facecard — purple-stained pharmakis of Colchis.',
   },
 };
@@ -40,12 +40,12 @@ const card = cards[symbol];
       style={`--section-accent: var(--accent-${accent})`}
     >
       {/*
-        TODO(owner): supply the Medea facecard image at public/assets/medea.png.
-        Brief for the artist — Medea treatment, purple accent (--accent-writings,
-        #6a3fa0): messy purple stains under the eyes and on the mouth,
-        purple-stained hair, poison arrows, high cheekbones — warm but subtly
-        terrifying. Classical register; render it as a painted facecard in the
-        same family as the homepage hero facecard.
+        A generated base card ships at public/assets/medea.webp, painted to
+        the spec brief: purple accent (--accent-writings, #6a3fa0), messy
+        purple stains under the eyes and on the mouth, purple-stained hair,
+        poison arrows, high cheekbones — warm but subtly terrifying.
+        TODO(owner): replace with commissioned art whenever ready — drop the
+        file at the same path.
       */}
       <img src={card.src} alt={card.alt} loading="lazy" />
       <div class="todo-block">
