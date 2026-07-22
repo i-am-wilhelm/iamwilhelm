@@ -10,7 +10,7 @@
  * visitor actually has installed.
  */
 
-import { glyphRamp } from '../design/tokens';
+import { glyphRamp, rareGlyphs } from '../design/tokens';
 
 export interface GlyphAtlas {
   /** Offscreen canvas holding the glyph grid — upload as a GL texture. */
@@ -18,8 +18,12 @@ export interface GlyphAtlas {
   /** Grid dimensions in cells. */
   cols: number;
   rows: number;
-  /** Number of glyphs, ordered lightest→heaviest coverage. */
+  /** Total glyphs in the atlas (ramp + rares). */
   count: number;
+  /** Ramp glyphs, ordered lightest→heaviest coverage (indices 0..rampCount-1). */
+  rampCount: number;
+  /** Rare glyphs (dead letters, outer-planet marks) at indices >= rampCount. */
+  rareCount: number;
   /** Pixel size of one atlas cell. */
   cell: number;
 }
@@ -29,7 +33,8 @@ const GREEK_FONT = "'GFS Neohellenic', 'New Athena Unicode', Georgia, serif";
 
 export function buildGlyphAtlas(cell = 64): GlyphAtlas {
   const glyphs = Array.from(glyphRamp);
-  const count = glyphs.length;
+  const rares = Array.from(rareGlyphs);
+  const count = glyphs.length + rares.length;
   const cols = Math.ceil(Math.sqrt(count));
   const rows = Math.ceil(count / cols);
 
@@ -65,11 +70,21 @@ export function buildGlyphAtlas(cell = 64): GlyphAtlas {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  ranked.forEach(({ g }, i) => {
+  // Rares sit after the ramp, unranked: the shader addresses them directly
+  // by index, never through the luminance mapping.
+  ranked.map(({ g }) => g).concat(rares).forEach((g, i) => {
     const cx = (i % cols) * cell + cell / 2;
     const cy = Math.floor(i / cols) * cell + cell / 2;
     ctx.fillText(g, cx, cy);
   });
 
-  return { canvas, cols, rows, count, cell };
+  return {
+    canvas,
+    cols,
+    rows,
+    count,
+    rampCount: glyphs.length,
+    rareCount: rares.length,
+    cell,
+  };
 }

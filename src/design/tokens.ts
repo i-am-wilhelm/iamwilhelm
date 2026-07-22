@@ -70,3 +70,14 @@ export const backgroundFade = {
 
 /** Greek glyph ramp for the dither field, dark→light coverage. */
 export const glyphRamp = 'ΨΦΘΞΩΔΛΠΣΓαβγδεζηθικλμνξοπρστυφχψω·';
+
+/**
+ * The dead letters — ϝ (digamma), ϟ (koppa), ϡ (sampi): letters that fell
+ * out of the living alphabet yet survived as numerals. They surface rarely
+ * out of the bright dither field, most often in deconstruction contexts
+ * (the Uranus–Neptune 9th-house register; see natal.config.ts).
+ */
+export const deadLetters = 'ϝϟϡ';
+
+/** Full rare-glyph pool: the dead letters plus the outer-planet marks. */
+export const rareGlyphs = deadLetters + '♅♆';

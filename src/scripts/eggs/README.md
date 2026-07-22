@@ -165,3 +165,20 @@ should become discoverable — via the egg only.
 
 Affirmative statements only, everywhere (toasts, step copy, sigil) — each
 line states what is, with no negative parallelism.
+
+## The dawn gate (`dawn.ts`)
+
+The site's closing movement, ported from the prototype: the descent ends at
+first light. When the hunt phase reaches `awaiting-seal` (or `sealed`), a
+door of ordered glyphs — pale rose, quiet — renders into the homepage
+`#dawn` coda. The door OPENS only during the hour before local sunrise:
+sunrise is computed locally with the NOAA/Almanac solar approximation (no
+network); position uses geolocation only when permission is already granted
+(never prompts), otherwise longitude comes from the timezone offset and
+latitude falls back to Phoenix (33.45). Opening is staged on 7/8 bars
+(wake → part → inscribe, ≈2.5 s each); reduced motion opens instantly.
+The inscription reads Ἠὼς ῥοδοδάκτυλος — rosy-fingered dawn.
+
+Testing / owner override: `localStorage['iw:dawn.force'] = '1'` forces the
+open-hour condition. The Phosphoros egg keeps its separate, simpler local
+clock band (`natal.config.ts`) — the gate alone earns the real sunrise.

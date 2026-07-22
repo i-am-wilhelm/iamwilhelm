@@ -63,6 +63,9 @@ export async function initPipeline(
 
   const state = createState();
   const monsoonIndex = state.sections.findIndex((s) => s.id === 'monsoon');
+  // Deconstruction context (9th-house register): the dead letters surface
+  // most often over the philosophy section.
+  const deconIndex = state.sections.findIndex((s) => s.id === 'philosophy');
 
   // ---- Scene target + passes -----------------------------------------
   const size = () => ({
@@ -203,6 +206,7 @@ export async function initPipeline(
 
     // Stage 2: resolve the scene through the glyph dither to the screen.
     const monsoonAct = monsoonIndex >= 0 ? activation(state, monsoonIndex) : 0;
+    const deconAct = deconIndex >= 0 ? activation(state, deconIndex) : 0;
     dither.update(
       state,
       time,
@@ -211,6 +215,7 @@ export async function initPipeline(
       gl.drawingBufferHeight,
       dpr,
       monsoonAct,
+      deconAct,
     );
     renderer.render({ scene: dither.mesh });
   }

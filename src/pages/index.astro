@@ -17,6 +17,12 @@ const bySection = Object.fromEntries(sections.map((s) => [s.id, s]));
   <Underworld spec={bySection.underworld} />
   <Monsoon spec={bySection.monsoon} />
 
+  <!-- The dawn coda: the descent-and-return closes at first light. Empty
+       until the hunt is held; the dawn gate (src/scripts/eggs/dawn.ts)
+       renders its door here, and the door opens only in the hour before
+       local sunrise. -->
+  <div id="dawn" aria-hidden="true"></div>
+
   <footer class="site-footer">
     <nav aria-label="Site">
       <a href="/writings/">Writings</a>

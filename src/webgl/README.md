@@ -136,3 +136,15 @@ marked `TODO(owner art)` in `passes/morphs.ts`):
 Classical / alchemical / Greco-Egyptian register only. **No kabbalah, no
 new-age, no modern secret-society symbols.** Audit every added glyph,
 silhouette, or texture against `src/design/tokens.ts` before merging.
+
+## Rare glyphs — the dead letters
+
+Ported from the Canvas-2D prototype. The atlas carries the glyph ramp plus a
+small unranked rare pool (`rareGlyphs` in `src/design/tokens.ts`): the dead
+letters ϝ ϟ ϡ — digamma, koppa, sampi, letters that fell out of the living
+alphabet yet survived as numerals — and the outer-planet marks ♅ ♆. Bright
+cells (`mapped > 0.35`) hash-roll against `uRareChance` (re-rolled every
+~8 s per cell so a rare lingers long enough to be read); winners draw from
+the rare pool instead of the ramp. Baseline chance is 0.004; philosophy
+section activation (the deconstruction / 9th-house context) multiplies it
+×5 via the `deconActivation` argument to `DitherPass.update`.

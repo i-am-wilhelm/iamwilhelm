@@ -18,6 +18,7 @@ import {
   recordFind,
 } from './hunt';
 import { completionSigil } from './hunt.config';
+import { initDawnGate } from './dawn';
 import { natalCssHooks } from './natal.config';
 import { addMark, injectStyle, showCompletionSigil, toast } from './ui';
 import type { EffectAction, EggDef, PageScope } from './types';
@@ -230,4 +231,5 @@ export async function initEggs() {
 
   scan();
   observe();
+  initDawnGate();
 }

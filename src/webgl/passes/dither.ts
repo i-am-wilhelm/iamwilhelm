@@ -58,6 +58,15 @@ export const DITHER_STYLE_NAMES = Object.keys(DITHER_STYLES);
 /** Base glyph cell size in CSS pixels (scaled by DPR in the shader). */
 const CELL_BASE_PX = 14;
 
+/**
+ * Rare-glyph surfacing odds (dead letters ϝ ϟ ϡ, outer-planet marks),
+ * ported from the prototype's per-palette rareChance. The baseline keeps
+ * a rare on screen somewhere most of the time; deconstruction contexts
+ * (the philosophy section — the 9th-house register) multiply it up.
+ */
+const RARE_BASE = 0.004;
+const RARE_DECON_BOOST = 4.0;
+
 const FRAG = /* glsl */ `
 precision highp float;
 
@@ -84,6 +93,12 @@ uniform float uGamma;
 uniform float uRain;         // 0..1 falling-glyph rain
 uniform float uDrought;      // 0..1 dry dusty state
 uniform float uLightning;    // flash strength, decays in JS
+
+/* Rare glyphs — the dead letters (ϝ ϟ ϡ) and outer-planet marks live at
+   atlas indices >= uRampCount, outside the luminance mapping. */
+uniform float uRampCount;
+uniform float uRareCount;
+uniform float uRareChance;   // probability a bright cell surfaces a rare
 
 ${NOISE_GLSL}
 ${COLOR_GLSL}
@@ -142,12 +157,25 @@ void main() {
   // ---- Brightness → glyph bucket -------------------------------------
   lum = pow(clamp(lum, 0.0, 1.0), uGamma);
   float mapped = mix(lum, 1.0 - lum, uInvert);
-  float idxF = clamp(mapped * uDensity, 0.0, 1.0) * (uGlyphCount - 1.0);
+  float idxF = clamp(mapped * uDensity, 0.0, 1.0) * (uRampCount - 1.0);
 
   // Chaos style: scramble glyph identity, re-rolled ~8×/s so it seethes.
   idxF += (hash21(cell + floor(uTime * 8.0) * 0.371) - 0.5)
         * uChaos * uGlyphCount * 0.5;
-  float idx = clamp(floor(idxF + 0.5), 0.0, uGlyphCount - 1.0);
+  // The ramp occupies indices 0..uRampCount-1; rares are addressed below.
+  float idx = clamp(floor(idxF + 0.5), 0.0, uRampCount - 1.0);
+
+  // Rare glyphs surface out of the bright field (dead letters, ♅ ♆) —
+  // ported from the Canvas-2D prototype. Re-rolled every ~8 s per cell so
+  // a rare lingers long enough to be read before it sinks back.
+  if (uRareChance > 0.0 && mapped > 0.35) {
+    float roll = hash21(cell * 1.618 + floor(uTime / 8.0) * 61.803);
+    if (roll < uRareChance) {
+      idx = uRampCount
+          + floor(hash21(cell + 17.0) * uRareCount) ;
+      idx = min(idx, uRampCount + uRareCount - 1.0);
+    }
+  }
   vec2 gcell = vec2(mod(idx, uAtlasGrid.x), floor(idx / uAtlasGrid.x));
 
   // ---- Chromatic fringing --------------------------------------------
@@ -226,6 +254,9 @@ export class DitherPass {
       uRain: { value: 0 },
       uDrought: { value: 0 },
       uLightning: { value: 0 },
+      uRampCount: { value: atlas.rampCount },
+      uRareCount: { value: atlas.rareCount },
+      uRareChance: { value: RARE_BASE },
     };
 
     const program = new Program(gl, {
@@ -256,6 +287,7 @@ export class DitherPass {
     height: number,
     dpr: number,
     monsoonActivation: number,
+    deconActivation = 0,
   ) {
     // Crossfade preset params.
     const c = this.current;
@@ -282,5 +314,8 @@ export class DitherPass {
     u.uRain.value = state.rainCurrent * monsoonActivation;
     u.uDrought.value = (1 - state.rainCurrent) * monsoonActivation;
     u.uLightning.value = state.lightning * monsoonActivation;
+
+    // Dead letters surface most often in deconstruction contexts.
+    u.uRareChance.value = RARE_BASE * (1 + RARE_DECON_BOOST * deconActivation);
   }
 }
