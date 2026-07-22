@@ -83,3 +83,15 @@ Both `TODO(owner)` markers sit in `tracks.config.ts` with worked examples.
 - `ui.ts` — the drawer (DOM + injected style, site CSS vars)
 - `grid.ts` — Tone-free shared sequencer constants
 - `tracks.config.ts` — typed track registry (owner recordings, licensed embeds)
+
+## The Seikilos epitaph (`seikilos.ts`)
+
+The dawn gate's opening tone, ported from the prototype: the oldest complete
+surviving piece of music (first century, Ephesus; public domain by twenty
+centuries), in a free monophonic rendering after Pöhlmann–West. A soft sine
+voice at −18 dB plays the phrase once — the Phrygian octave arched around
+A, closing home — at an unhurried pulse (0.24 s eighths) deliberately slower
+than the house 7/8; dawn keeps its own meter. Wired to the `iw:dawn-open`
+event from the egg engine's gate. When the AudioContext is still locked at
+open time, the piece arms itself on the visitor's next pointer or key
+gesture and plays then.

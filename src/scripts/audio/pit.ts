@@ -150,6 +150,13 @@ export async function initOrchestraPit(): Promise<void> {
     engine?.setDroneNote(spec.drone);
   });
 
+  // ---- The dawn gate's opening tone: the Seikilos epitaph ---------------
+  // Lazy module, loaded only if the gate ever opens; it handles its own
+  // gesture gating (arms on the next touch when the context is locked).
+  on('iw:dawn-open', () => {
+    void import('./seikilos').then((m) => m.playSeikilos());
+  });
+
   // ---- 7/8 tap detection ------------------------------------------------
   const detector = createTapDetector();
   const zones = document.querySelectorAll<HTMLElement>('[data-tap-zone]');

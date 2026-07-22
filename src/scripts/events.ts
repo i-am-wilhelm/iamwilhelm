@@ -28,6 +28,8 @@ export interface IWEvents {
   'iw:egg-found': { eggId: string };
   /** Orchestra pit opened via the 7/8 tap. */
   'iw:pit-open': Record<string, never>;
+  /** The dawn gate began opening (egg engine → audio: the Seikilos tone). */
+  'iw:dawn-open': Record<string, never>;
 }
 
 export function emit<K extends keyof IWEvents>(type: K, detail: IWEvents[K]) {

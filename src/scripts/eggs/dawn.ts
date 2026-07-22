@@ -28,7 +28,7 @@
  */
 
 import { glyphRamp, meter } from '../../design/tokens';
-import { on } from '../events';
+import { emit, on } from '../events';
 import { getState } from './hunt';
 
 const FORCE_KEY = 'iw:dawn.force';
@@ -250,6 +250,10 @@ function buildDoor(host: HTMLElement): HTMLElement {
 
 /** Staged opening: wake → part → inscribe, one 7/8 bar per stage. */
 function openGate(gate: HTMLElement) {
+  // The opening tone (the Seikilos epitaph) belongs to the audio layer;
+  // reduced motion opens instantly yet still announces — audio is not
+  // motion.
+  emit('iw:dawn-open', {});
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced) {
     gate.classList.add('is-waking', 'is-parting', 'is-open');
