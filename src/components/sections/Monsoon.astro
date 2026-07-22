@@ -1,0 +1,56 @@
+---
+/**
+ * MEMOIR / MONSOON (spec §4.5). The shader renders the drought-state dither
+ * breaking into falling glyph rain with lightning glitches, resolving to a
+ * PNW palette — driven live by the 'iw:weather' event this component wires
+ * up via src/scripts/weather.ts. The DOM layer is the memoir copy scaffold.
+ */
+import Section from '../Section.astro';
+import type { SectionSpec } from '../../design/tokens';
+
+interface Props {
+  spec: SectionSpec;
+}
+
+const { spec } = Astro.props;
+---
+
+<Section spec={spec}>
+  <h2 data-egg-anchor="monsoon-cloud">Monsoon</h2>
+
+  <p class="scaffold">
+    Phoenix teaches drought as the default sky. The monsoon arrives as an
+    event: the dust wall first, then lightning, then rain that the ground
+    swallows in minutes. Farther north the rain is a climate, and the green
+    there is permanent.
+  </p>
+
+  <p class="note">
+    This section listens to the sky over Phoenix. When it rains there, it
+    rains here.
+  </p>
+
+  <div class="todo-block">
+    TODO(owner): the memoir — desert years, the break in the weather, and
+    the move toward the rain. The scaffold above marks tone and length only.
+  </div>
+</Section>
+
+<script>
+  import { initWeather } from '../../scripts/weather';
+  initWeather();
+</script>
+
+<style>
+  .scaffold {
+    color: var(--ink);
+    margin-bottom: 1.4rem;
+  }
+
+  .note {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+  }
+</style>

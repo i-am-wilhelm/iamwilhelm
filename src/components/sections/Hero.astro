@@ -1,0 +1,105 @@
+---
+/**
+ * HERO — facecard + minimal bio (spec §4.1).
+ * The Black Swan is the hero symbol: brilliant and terrifying. The WebGL
+ * pipeline renders the swan splash + constellation base from the data-*
+ * attributes Section.astro emits; this component is the DOM/copy layer only.
+ */
+import Section from '../Section.astro';
+import type { SectionSpec } from '../../design/tokens';
+
+interface Props {
+  spec: SectionSpec;
+}
+
+const { spec } = Astro.props;
+---
+
+<Section spec={spec}>
+  <!--
+    TODO(owner): FACECARD IMAGE
+    Drop the base facecard image at public/assets/facecard.png
+    (painted saturation zones per spec §2.1). The <img> below is already
+    wired to that path; when the file is absent the figure collapses to a
+    glyph placeholder instead of a broken image.
+  -->
+  <figure class="facecard" data-egg-anchor="hero-swan">
+    <img
+      src="/assets/facecard.png"
+      alt="Michael Wilhelm — facecard"
+      loading="eager"
+      onerror="this.closest('.facecard').classList.add('facecard--absent')"
+    />
+    <span class="facecard-fallback greek" aria-hidden="true">Ψ</span>
+    <figcaption class="facecard-caption">Michael Wilhelm</figcaption>
+  </figure>
+
+  <h1>Michael Wilhelm</h1>
+
+  <div class="todo-block">
+    TODO(owner): hero bio — 2–3 short sentences, in your own voice.
+    Placeholder below holds the register.
+  </div>
+  <p class="bio">
+    <!-- TODO(owner): replace this placeholder bio. -->
+    Builder, writer, student of the old symbols. The swan on the black water
+    is the emblem here: brilliant and terrifying at once.
+  </p>
+</Section>
+
+<style>
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.6rem);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .facecard {
+    position: relative;
+    width: min(16rem, 50vw);
+    margin-bottom: 2.4rem;
+  }
+
+  .facecard img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--ink-dim);
+    filter: grayscale(0.2);
+  }
+
+  /* Graceful absence: hide the broken img, reveal the glyph placeholder. */
+  .facecard-fallback {
+    display: none;
+  }
+
+  .facecard--absent img {
+    display: none;
+  }
+
+  .facecard--absent .facecard-fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border: 1px dashed var(--ink-dim);
+    font-size: 4rem;
+    color: var(--section-accent, var(--ink-dim));
+  }
+
+  .facecard-caption {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-top: 0.6rem;
+  }
+
+  .bio {
+    max-width: 34rem;
+    color: var(--ink);
+  }
+</style>

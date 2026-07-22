@@ -1,36 +1,50 @@
 ---
 import Base from '../layouts/Base.astro';
-import Section from '../components/Section.astro';
+import Hero from '../components/sections/Hero.astro';
+import Cluster from '../components/sections/Cluster.astro';
+import Philosophy from '../components/sections/Philosophy.astro';
+import Underworld from '../components/sections/Underworld.astro';
+import Monsoon from '../components/sections/Monsoon.astro';
 import { sections } from '../design/tokens';
 
 const bySection = Object.fromEntries(sections.map((s) => [s.id, s]));
 ---
 
 <Base title="I Am Wilhelm">
-  <Section spec={bySection.hero}>
-    <h1>Michael Wilhelm</h1>
-    <!-- TODO(owner): supply base facecard image with painted saturation zones (spec §2.1, §4.1) -->
-    <div class="todo-block">TODO: owner-supplied facecard image — hero/black-swan</div>
-    <p>Hero bio placeholder — kept minimal by design.</p>
-  </Section>
+  <Hero spec={bySection.hero} />
+  <Cluster spec={bySection.cluster} />
+  <Philosophy spec={bySection.philosophy} />
+  <Underworld spec={bySection.underworld} />
+  <Monsoon spec={bySection.monsoon} />
 
-  <Section spec={bySection.cluster}>
-    <h2>Constellation</h2>
-    <p>Dither-star cluster resolving into constellation symbols fading into depth.</p>
-  </Section>
-
-  <Section spec={bySection.philosophy}>
-    <h2>Philosophy</h2>
-    <p>Columbia and Pallas Athena placeholder copy.</p>
-  </Section>
-
-  <Section spec={bySection.underworld}>
-    <h2>Underworld</h2>
-    <p>Orpheus and Eurydice long-form placeholder.</p>
-  </Section>
-
-  <Section spec={bySection.monsoon}>
-    <h2>Monsoon</h2>
-    <p>Memoir placeholder — rains when it rains in Phoenix.</p>
-  </Section>
+  <footer class="site-footer">
+    <nav aria-label="Site">
+      <a href="/writings/">Writings</a>
+    </nav>
+  </footer>
 </Base>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    padding: 4rem 8vw 3rem;
+  }
+
+  .site-footer a {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .site-footer a:hover,
+  .site-footer a:focus-visible {
+    color: var(--ink);
+    border-bottom-color: var(--ink-dim);
+  }
+</style>
