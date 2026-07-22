@@ -42,10 +42,10 @@ void main() {
   float grain = fbm(uv * vec2(uAspect, 1.0) * 3.0 + uTime * 0.03);
 
   // Aura envelope: wide soft glow, revealed as the section scrolls in.
-  float aura = smoothstep(0.85, 0.05, d) * (0.25 + 0.75 * uReveal);
+  float aura = (1.0 - smoothstep(0.05, 0.85, d)) * (0.25 + 0.75 * uReveal);
 
   // Saturated focal core — the painted "hot" zone.
-  float core = smoothstep(0.38, 0.0, d + (grain - 0.5) * 0.18);
+  float core = 1.0 - smoothstep(0.0, 0.38, d + (grain - 0.5) * 0.18);
 
   // Base wash at accent hue; core pushes chroma well above the accent's
   // resting saturation so the dither's saturation-preserve path engages.
@@ -55,7 +55,7 @@ void main() {
 
   // iw:splash — expanding recolor ring + brief overall flash.
   float ringDist = abs(d - (1.0 - uSplash) * 0.9) - 0.08;
-  float ring = smoothstep(0.06, -0.06, ringDist);
+  float ring = 1.0 - smoothstep(-0.06, 0.06, ringDist);
   col += uSplashColor * uSplash * (0.55 * ring + 0.25);
 
   // Page fade: dim slightly toward the bright page bottom so the global

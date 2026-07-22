@@ -52,7 +52,7 @@ void main() {
   // Shape the plume: strongest at the emitting edge and low in the frame,
   // thinning as it climbs and drifts inward.
   float edgeMask = exp(-fromEdge * 3.2);
-  float riseMask = smoothstep(1.05, 0.0, uv.y) * (0.35 + 0.65 * (1.0 - uv.y));
+  float riseMask = (1.0 - smoothstep(0.0, 1.05, uv.y)) * (0.35 + 0.65 * (1.0 - uv.y));
   float density = vapor * vapor * edgeMask * riseMask;
 
   // Fumigation tint: accent hue, slightly brightened and chroma-lifted so

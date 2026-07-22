@@ -95,6 +95,6 @@ float sdHexagon(vec2 p, float r) {
 
 /* Soft fill from a distance value (feather in scene units). */
 float fill(float d, float feather) {
-  return smoothstep(feather, -feather, d);
+  return 1.0 - smoothstep(-feather, feather, d);
 }
 `;

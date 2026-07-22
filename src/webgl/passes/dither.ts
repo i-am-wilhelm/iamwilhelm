@@ -128,7 +128,9 @@ void main() {
   if (uRain > 0.002) {
     float colSeed = hash21(vec2(cell.x, 91.7));
     float speed = mix(0.35, 1.1, colSeed);
-    float phase = fract(colSeed * 13.7 + uTime * speed - cell.y * 0.045);
+    // gl_FragCoord.y grows upward, so *adding* cell.y makes the bright
+    // head march downward over time — the glyphs fall.
+    float phase = fract(colSeed * 13.7 + uTime * speed + cell.y * 0.045);
     float drop = pow(phase, 7.0);
     lum = max(lum, drop * uRain);
     srcA = max(srcA, drop * uRain * 0.85);

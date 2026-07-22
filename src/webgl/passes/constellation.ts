@@ -49,7 +49,7 @@ varying float vTwinkle;
 void main() {
   // Round sprite with soft falloff.
   float d = length(gl_PointCoord - 0.5);
-  float star = smoothstep(0.5, 0.05, d);
+  float star = 1.0 - smoothstep(0.05, 0.5, d);
   gl_FragColor = vec4(uColor, star * vTwinkle * uAlpha);
 }
 `;

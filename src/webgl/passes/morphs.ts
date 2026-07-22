@@ -56,9 +56,10 @@ ${SDF_GLSL}
    Placeholder: staff + two counter-phased serpent sines + wing bars. */
 float caduceus(vec2 p) {
   float staff = sdSegment(p, vec2(0.0, -0.28), vec2(0.0, 0.30)) - 0.012;
-  float serpA = abs(p.x - sin((p.y + 0.28) * 12.0) * 0.06 * smoothstep(0.34, -0.2, p.y)) - 0.014;
+  float coil = 1.0 - smoothstep(-0.2, 0.34, p.y); // serpents widen low, meet high
+  float serpA = abs(p.x - sin((p.y + 0.28) * 12.0) * 0.06 * coil) - 0.014;
   serpA = max(serpA, sdBox(p - vec2(0.0, 0.0), vec2(0.09, 0.26)));
-  float serpB = abs(p.x + sin((p.y + 0.28) * 12.0) * 0.06 * smoothstep(0.34, -0.2, p.y)) - 0.014;
+  float serpB = abs(p.x + sin((p.y + 0.28) * 12.0) * 0.06 * coil) - 0.014;
   serpB = max(serpB, sdBox(p - vec2(0.0, 0.0), vec2(0.09, 0.26)));
   float wings = min(
     sdBox(p - vec2(-0.075, 0.24), vec2(0.05, 0.012)),
