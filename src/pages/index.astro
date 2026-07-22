@@ -21,39 +21,25 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
 
   <!-- ═══ Hero — the Black Swan ═══ -->
   <section class="section hero" id="hero" style="--accent: var(--smoke-swan);">
-    <div class="hero-art">
+    <div class="hero-portrait">
       <DitherCanvas
-        src="/img/placeholder-swan.svg"
+        src="/img/facecard.jpg"
         palette="greek"
         mode="resolve"
-        cell={11}
-        seed={7}
+        cell={9}
+        seed={3}
         accent="var(--smoke-swan)"
-        ratio="16 / 10"
-        label="The Black Swan — a form suggested more than shown, brilliant and terrifying"
+        ratio="1 / 1"
+        label="Michael Wilhelm — portrait resolving out of glyphs"
       />
     </div>
-    <div class="section-inner hero-card">
-      <div class="hero-face">
-        <DitherCanvas
-          src="/img/facecard.jpg"
-          palette="greek"
-          mode="resolve"
-          cell={7}
-          seed={3}
-          accent="var(--smoke-swan)"
-          ratio="1 / 1"
-          label="Michael Wilhelm — portrait resolving out of glyphs"
-        />
-      </div>
-      <div class="hero-bio">
-        <p class="term reveal">&gt; Michael Wilhelm</p>
-        <h1 class="hero-title reveal">Builder. Writer. Reader of symbols.</h1>
-        <p class="hero-lede reveal">
-          There is a world beneath the one you were handed. This is where I map it.
-        </p>
-        <Marginalia text="The Fumigation from Storax." />
-      </div>
+    <div class="section-inner hero-bio">
+      <p class="term reveal">&gt; Michael Wilhelm</p>
+      <h1 class="hero-title reveal">Builder. Writer. Reader of symbols.</h1>
+      <p class="hero-lede reveal">
+        There is a world beneath the one you were handed. This is where I map it.
+      </p>
+      <Marginalia text="The Fumigation from Storax." />
     </div>
   </section>
 
@@ -185,26 +171,14 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
 <style>
   .hero {
     min-height: 100vh;
-    padding-top: 20vh;
+    padding-top: 14vh;
   }
-  .hero-art {
-    width: min(100%, 780px);
-    margin-bottom: var(--space-3);
+  .hero-portrait {
+    width: min(76vmin, 520px);
+    margin: 0 auto var(--space-3);
   }
-  .hero-card {
-    display: grid;
-    grid-template-columns: minmax(160px, 240px) 1fr;
-    gap: var(--space-3);
-    align-items: center;
-    max-width: 56rem;
-  }
-  @media (max-width: 640px) {
-    .hero-card {
-      grid-template-columns: 1fr;
-    }
-    .hero-face {
-      max-width: 240px;
-    }
+  .hero-bio {
+    text-align: center;
   }
   .hero-title {
     font-size: var(--text-2xl);
@@ -214,6 +188,7 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
     font-size: var(--text-lg);
     color: var(--ink-dim);
     max-width: 38ch;
+    margin-inline: auto;
   }
 
   .sky-section {
