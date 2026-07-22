@@ -1,10 +1,19 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "iamwilhelm-site",
+  // Same worker name the previous prototype deployed to, so `npm run deploy`
+  // replaces it in place and the custom domains carry over.
+  "name": "iamwilhelm",
   "compatibility_date": "2026-07-01",
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
-  }
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    { "pattern": "iamwilhelm.com", "custom_domain": true },
+    { "pattern": "www.iamwilhelm.com", "custom_domain": true }
+  ]
 }
