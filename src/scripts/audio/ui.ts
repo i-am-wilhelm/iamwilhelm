@@ -5,7 +5,7 @@
  * any .section). All copy is affirmative.
  */
 
-import { STEPS, SEQ_ROW_NAMES, GROUP_STARTS } from './engine';
+import { STEPS, SEQ_ROW_NAMES, GROUP_STARTS } from './grid';
 import { tracks, type PitTrack } from './tracks.config';
 
 export interface PitUIDeps {

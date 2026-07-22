@@ -25,8 +25,11 @@
  *      (7 units for pattern A, 14 for pattern B).
  *   4. Accept when every IOI is within RATIO_TOLERANCE (default 25%) of
  *      its expected multiple of the unit, AND the implied tempo sits in a
- *      generous band around tokens.meter.bpm (half to double speed), AND
- *      IOIs are plausibly deliberate taps (unit between ~150ms and ~900ms).
+ *      generous band around tokens.meter.bpm (half to 2.5x speed), AND the
+ *      "long" (3-eighth) intervals show real contrast — each at least
+ *      LONG_CONTRAST_MIN (1.2x) the mean of the "short" (2-eighth)
+ *      intervals. The contrast gate rejects evenly spaced clicks (e.g. a
+ *      triple-click), which would otherwise sneak inside the ratio band.
  *
  * Ratios, not absolute times, decide the match — a user tapping the figure
  * anywhere near the site tempo (84 bpm ⇒ eighth ≈ 357ms, so pattern A spans
@@ -37,6 +40,9 @@ import { meter } from '../../design/tokens';
 
 /** Relative tolerance per IOI against its expected multiple of the unit. */
 const RATIO_TOLERANCE = 0.25;
+/** Each long (3) IOI must be at least this multiple of the mean short (2)
+ * IOI. The true figure has 1.5; isochronous tapping has 1.0. */
+const LONG_CONTRAST_MIN = 1.2;
 /** Implied eighth-note duration must fall inside this band (ms). Nominal at
  * 84 bpm is 60000 / 84 / 2 ≈ 357ms; the band spans half to double tempo. */
 const NOMINAL_EIGHTH_MS = 60000 / meter.bpm / 2;
@@ -58,10 +64,17 @@ function matchesPattern(iois: number[], expected: number[]): boolean {
   const total = iois.reduce((a, b) => a + b, 0);
   const unit = total / expectedUnits;
   if (unit < MIN_EIGHTH_MS || unit > MAX_EIGHTH_MS) return false;
-  return iois.every((ioi, i) => {
+  const ratiosOk = iois.every((ioi, i) => {
     const target = expected[i] * unit;
     return Math.abs(ioi - target) / target <= RATIO_TOLERANCE;
   });
+  if (!ratiosOk) return false;
+  // Contrast gate: the 3-eighth intervals must be audibly longer than the
+  // 2-eighth ones, so evenly spaced clicking never opens the pit.
+  const shorts = iois.filter((_, i) => expected[i] === 2);
+  const longs = iois.filter((_, i) => expected[i] === 3);
+  const shortMean = shorts.reduce((a, b) => a + b, 0) / shorts.length;
+  return longs.every((l) => l >= shortMean * LONG_CONTRAST_MIN);
 }
 
 export interface TapDetector {

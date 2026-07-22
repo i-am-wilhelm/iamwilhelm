@@ -27,11 +27,7 @@
 
 import * as Tone from 'tone';
 import { meter, sections } from '../../design/tokens';
-
-export const SEQ_ROW_NAMES = ['knock', 'tick', 'pluck', 'shimmer'] as const;
-export const STEPS = meter.beatsPerBar; // 7
-/** Step indices that begin a 2+2+3 group: beats 1, 3, 5. */
-export const GROUP_STARTS = [0, 2, 4] as const;
+import { SEQ_ROW_NAMES, STEPS } from './grid';
 
 type StepListener = (step: number) => void;
 
@@ -243,7 +239,7 @@ export class PitEngine {
       );
     if (this.pattern[1][step]) this.tick.triggerAttackRelease('32n', time, 0.7);
     if (this.pattern[2][step])
-      this.pluck.triggerAttack(root.transpose(24).toFrequency(), time, 0.8);
+      this.pluck.triggerAttack(root.transpose(24).toFrequency(), time);
     if (this.pattern[3][step])
       this.shimmer.triggerAttackRelease(
         root.transpose(36).toFrequency(),
