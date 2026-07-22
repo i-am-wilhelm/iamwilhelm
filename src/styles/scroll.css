@@ -1,0 +1,24 @@
+/*
+ * Scroll-choreography support rules. Imported by src/scripts/scroll.ts
+ * (Vite inlines CSS imports from TS), so these only apply once JS is live.
+ * Do NOT add transitions to properties scroll.ts drives per-frame
+ * (body background-color, --ink, --scroll-progress) — they would fight
+ * the frame-accurate interpolation.
+ */
+
+:root {
+  /*
+   * The accent of whichever section currently dominates the viewport.
+   * Tweened by scroll.ts through gsap; this is only the pre-hydration
+   * resting value. UI elements should consume var(--active-accent).
+   */
+  --active-accent: #0d0d10;
+}
+
+/*
+ * Reveal targets get will-change only while the intro tween can still run.
+ * scroll.ts removes the class after a section has revealed.
+ */
+.section[data-section] .copy.iw-revealing > * {
+  will-change: transform, opacity;
+}
