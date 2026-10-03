@@ -32,6 +32,13 @@ const { spec } = Astro.props;
   <p class="term">&gt; Michael Wilhelm</p>
   <h1>Builder. Writer. Musician.</h1>
   <p class="lede">Devoted to something, but nobody knows what.</p>
+  <blockquote class="epigraph">
+    <a href="/writings/pharmakon/">
+      I was born legible — and lonely for a reader.<br />
+      I have never wanted to be merely loved.<br />
+      I want to be studied.
+    </a>
+  </blockquote>
   <!-- Venus as Phosphoros: answers only in the dawn band (phosphoros-dawn egg). -->
   <span class="phosphoros" data-egg-anchor="phosphoros-star" aria-hidden="true">⁘</span>
 </Section>
@@ -104,6 +111,27 @@ const { spec } = Astro.props;
     color: var(--ink-dim);
     text-align: center;
     font-style: italic;
+  }
+
+  /* Pull-quote from the Pharmakon poem — small, unattributed, a door. */
+  .epigraph {
+    max-width: 30rem;
+    margin: 1.6rem auto 0;
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  .epigraph a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 0.4s ease, color 0.4s ease;
+  }
+
+  .epigraph a:hover {
+    opacity: 1;
+    color: var(--accent-writings);
   }
 
   .phosphoros {

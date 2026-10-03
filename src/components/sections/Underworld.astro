@@ -51,6 +51,15 @@ const { spec } = Astro.props;
       of the whole section. What was carried down, what was almost carried
       back, where the look back happened.
     </div>
+    <blockquote class="pull-quote poem-quote">
+      <p>
+        I am done turning around.<br />
+        Orpheus lost her checking for proof —<br />
+        but I have learned to walk the long stair up<br />
+        reading the dark itself.
+      </p>
+      <cite><a href="/writings/pharmakon/">Pharmakon, VI</a></cite>
+    </blockquote>
   </article>
 
   <!-- ── 2. Virgil as guide ────────────────────────────────────────── -->
@@ -87,20 +96,48 @@ const { spec } = Astro.props;
   <article class="block">
     <h3>Marks on the Soul</h3>
     <p class="scaffold">
-      The judges of the dead read the soul the way a physician reads a body:
-      every act leaves its scar, and the scars are legible after death. Sins
-      against kin and against nature cut deepest, and greed stains deepest of
-      all — it dyes the whole fabric through.
+      The judges read the soul the way a physician reads a body, because
+      every act leaves tissue. The scars are legible. And the old sources
+      agree on the grading: wrongs against kin and against nature cut
+      deepest, and greed stains deepest of all — it dyes the fabric through,
+      because greed is the one sin a man commits continuously.
     </p>
     <blockquote class="pull-quote">
       <p class="greek" lang="la">quisque suos patimur Manis.</p>
       <p class="translation">Each of us suffers his own shade.</p>
       <cite>Virgil, Aeneid VI.743</cite>
     </blockquote>
-    <div class="todo-block">
-      TODO(owner): the soul-marks essay — the reckoning of what stains and
-      how deep.
-    </div>
+    <blockquote class="pull-quote">
+      <p>"Your greed stains your soul with the stench of ruin."</p>
+      <cite>D. C. A. Hillman, after Aeschylus</cite>
+    </blockquote>
+    <p class="scaffold">
+      The Greek underneath is exact.
+      <span class="greek" lang="grc">Δυσωδία</span> — the stench.
+      <span class="greek" lang="grc">Ἀπώλεια</span> — the ruin. Pollution
+      has an odor in the old cosmology, and the Kindly Ones hunt by smell.
+      The stained man carries it into every room he enters, and the dogs of
+      the elder law can track it across any distance and any number of
+      years.
+    </p>
+    <blockquote class="pull-quote poem-quote">
+      <p>
+        …the little dying<br />
+        that drops the man I was<br />
+        like a snake drops the winter skin<br />
+        in the tall grass, and does not mourn it
+      </p>
+      <cite><a href="/writings/pharmakon/">Pharmakon, III</a></cite>
+    </blockquote>
+    <p class="scaffold">
+      I've learned to read marks on the living. Watch anyone long enough — a
+      politician, a preacher, a hero, a villain — and the costume slips, and
+      underneath it's just a dude, scarred the same ways as everybody. The
+      useful question shifts from <em>who is this person</em> to <em>what
+      marked them, and what are they still paying on.</em> Then turn the same
+      reading on yourself, while the marks can still be worked on. Do the
+      examination before the judges do.
+    </p>
   </article>
 
   <!-- ── 5. The weighing of the heart ──────────────────────────────── -->
@@ -116,6 +153,13 @@ const { spec } = Astro.props;
       TODO(owner): the weighing-of-the-heart close — how the section resolves
       and hands off to Monsoon.
     </div>
+    <blockquote class="pull-quote poem-quote">
+      <p>
+        I am building the hearth wide. Wide enough<br />
+        for two infinities to sit down without folding.
+      </p>
+      <cite><a href="/writings/pharmakon/">Pharmakon, VI</a></cite>
+    </blockquote>
   </article>
 </Section>
 
@@ -167,5 +211,21 @@ const { spec } = Astro.props;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-dim);
+  }
+
+  /* Lines borrowed from the Pharmakon poem carry the writings purple. */
+  .poem-quote {
+    border-left-color: var(--accent-writings);
+  }
+
+  .poem-quote cite a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--accent-writings) 55%, transparent);
+  }
+
+  .poem-quote cite a:hover {
+    color: var(--accent-writings);
   }
 </style>

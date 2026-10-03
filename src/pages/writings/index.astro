@@ -39,6 +39,9 @@ const fmt = (d: Date) =>
   >
     <div class="copy">
       <h1><span data-egg-anchor="writings-pharmakon" class="greek sigil">φ</span>Writings</h1>
+      <p class="epigraph">
+        the old Greek word that refuses to choose between the poison and the cure
+      </p>
       <ol class="post-list" reversed>
         {
           posts.map((post) => (
@@ -72,6 +75,12 @@ const fmt = (d: Date) =>
     font-weight: 400;
     letter-spacing: 0.06em;
     color: var(--section-accent, var(--ink));
+    margin-bottom: 1rem;
+  }
+
+  .epigraph {
+    font-style: italic;
+    color: var(--ink-dim);
     margin-bottom: 2.4rem;
   }
 
