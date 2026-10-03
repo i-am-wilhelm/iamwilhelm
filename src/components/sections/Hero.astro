@@ -1,9 +1,12 @@
 ---
 /**
- * HERO — facecard + minimal bio (spec §4.1).
- * The Black Swan is the hero symbol: brilliant and terrifying. The WebGL
- * pipeline renders the swan splash + constellation base from the data-*
- * attributes Section.astro emits; this component is the DOM/copy layer only.
+ * HERO — portrait facecard + tagline (spec §4.1, design merged from the
+ * `production` prototype line: centered portrait feathered into the void,
+ * "Builder. Writer. Musician." tagline).
+ * The Black Swan stays the hero *symbol*: the WebGL pipeline renders the
+ * swan splash + constellation base from the data-* attributes Section.astro
+ * emits; this component is the DOM/copy layer only. The swan symbol card
+ * remains at /assets/facecard.webp for the visual layer's use.
  */
 import Section from '../Section.astro';
 import type { SectionSpec } from '../../design/tokens';
@@ -16,60 +19,55 @@ const { spec } = Astro.props;
 ---
 
 <Section spec={spec}>
-  <!--
-    The Black Swan symbol card ships at public/assets/facecard.webp,
-    generated with painted saturation zones per spec §2.1 (crimson-violet
-    focal zone on a desaturated field). TODO(owner): to use a personal
-    facecard instead, drop it at the same path — absence degrades to the
-    glyph placeholder, never a broken image.
-  -->
   <figure class="facecard" data-egg-anchor="hero-swan">
     <img
-      src="/assets/facecard.webp"
-      alt="The Black Swan — hero facecard"
+      src="/assets/portrait.webp"
+      alt="Michael Wilhelm — portrait"
       loading="eager"
       onerror="this.closest('.facecard').classList.add('facecard--absent')"
     />
     <span class="facecard-fallback greek" aria-hidden="true">Ψ</span>
-    <figcaption class="facecard-caption">Michael Wilhelm</figcaption>
   </figure>
 
-  <h1>Michael Wilhelm</h1>
+  <p class="term">&gt; Michael Wilhelm</p>
+  <h1>Builder. Writer. Musician.</h1>
+  <p class="lede">Devoted to something, but nobody knows what.</p>
   <!-- Venus as Phosphoros: answers only in the dawn band (phosphoros-dawn egg). -->
   <span class="phosphoros" data-egg-anchor="phosphoros-star" aria-hidden="true">⁘</span>
-
-  <div class="todo-block">
-    TODO(owner): hero bio — 2–3 short sentences, in your own voice.
-    Placeholder below holds the register.
-  </div>
-  <p class="bio">
-    <!-- TODO(owner): replace this placeholder bio. -->
-    Builder, writer, student of the old symbols. The swan on the black water
-    is the emblem here: brilliant and terrifying at once.
-  </p>
 </Section>
 
 <style>
+  /* The portrait outgrows the standard 42rem copy column. */
+  :global(#hero .copy) {
+    max-width: min(92vmin, 760px);
+    margin: 0 auto;
+  }
+
   h1 {
     font-size: clamp(2rem, 6vw, 3.6rem);
     font-weight: 400;
     letter-spacing: 0.08em;
     color: var(--ink);
     margin-bottom: 1rem;
+    text-align: center;
   }
 
   .facecard {
     position: relative;
-    width: min(16rem, 50vw);
-    margin-bottom: 2.4rem;
+    width: min(92vmin, 760px);
+    margin: 0 auto 2.4rem;
+    /* feather the square edges into the void — no visible corners.
+       opaque through the face, dissolving to nothing before the edge
+       so the portrait bleeds into the black instead of ending on a line */
+    -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 40%, rgba(0, 0, 0, 0) 74%);
+    mask-image: radial-gradient(circle at 50% 45%, #000 40%, rgba(0, 0, 0, 0) 74%);
   }
 
   .facecard img {
     display: block;
     width: 100%;
-    height: auto;
-    border: 1px solid var(--ink-dim);
-    filter: grayscale(0.2);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
   }
 
   /* Graceful absence: hide the broken img, reveal the glyph placeholder. */
@@ -85,24 +83,27 @@ const { spec } = Astro.props;
     display: grid;
     place-items: center;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     border: 1px dashed var(--ink-dim);
     font-size: 4rem;
     color: var(--section-accent, var(--ink-dim));
   }
 
-  .facecard-caption {
+  .term {
     font-family: var(--font-ui);
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
     color: var(--ink-dim);
-    margin-top: 0.6rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
   }
 
-  .bio {
+  .lede {
     max-width: 34rem;
-    color: var(--ink);
+    margin: 0 auto;
+    color: var(--ink-dim);
+    text-align: center;
+    font-style: italic;
   }
 
   .phosphoros {
