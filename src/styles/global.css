@@ -5,6 +5,10 @@
   --bg-to: #bda898; /* the shade just before dawn — never full white */
   /* Driven 0→1 by scroll choreography (src/scripts/scroll.ts). */
   --scroll-progress: 0;
+  /* The live body colour, mirrored by scroll.ts every frame; the copy
+     scrim tints itself to this. Resting value until JS hydrates. */
+  --bg-current: var(--bg-from);
+  --scrim-opacity: 0.82;
 
   --accent-hero: #0d0d10;
   --accent-cluster: #8fa8c8;
@@ -68,6 +72,37 @@ main {
   max-width: 42rem;
   position: relative;
   z-index: 2;
+}
+
+/*
+ * Copy scrim. The glyph field renders in the same ink as the text, so
+ * mid-fade the two become one colour. A feathered pane of the live
+ * background colour sits between the canvas and the copy column: body text
+ * reads at every scroll position, the art stays visible in the margins and
+ * bleeds softly in at the edges. .copy owns a stacking context (z-index: 2),
+ * so z-index: -1 lands the pane under the text but above #gl-stage.
+ */
+.section .copy::before {
+  content: '';
+  position: absolute;
+  inset: -3rem -4rem;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--bg-current);
+  opacity: var(--scrim-opacity);
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 18%, #000 82%, transparent),
+    linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 18%, #000 82%, transparent),
+    linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  mask-composite: intersect;
+}
+
+/* The hero is art first: portrait on black, light ink. No scrim there. */
+#hero .copy::before {
+  display: none;
 }
 
 .section h2 {

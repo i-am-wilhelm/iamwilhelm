@@ -115,7 +115,11 @@ export async function initScroll(): Promise<void> {
   ScrollTrigger.addEventListener('refresh', remeasure);
 
   const applyFade = (p: number) => {
-    body.style.backgroundColor = bgLerp(p);
+    const bg = bgLerp(p);
+    body.style.backgroundColor = bg;
+    // Mirrored as a custom property so the copy scrim (global.css) can
+    // tint itself to the live background instead of a fixed colour.
+    root.style.setProperty('--bg-current', bg);
     root.style.setProperty('--scroll-progress', String(p));
     const inkT = smoothstep(INK_CROSS.start, INK_CROSS.end, p);
     root.style.setProperty('--ink', inkLerp(inkT));

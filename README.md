@@ -77,9 +77,18 @@ is a `TODO(owner)` config edit. Full documentation:
 See `src/scripts/audio/README.md` for the 7/8 tap pattern, score structure
 (the knock), circle-of-fifths section drones, and adding owner tracks.
 
-## Owner-supplied assets (pending)
+## Owner-supplied inputs (pending)
 
-Search the codebase for `TODO(owner)` — every pending image, copy block, and
-config value is marked. Key ones: hero facecard (`/assets/facecard.png`),
-Medea facecard (`/assets/medea.png`), underworld essay copy, Pharmakon poem
-text, natal-chart config values, hunt final-step config.
+Search the codebase for `TODO(owner)` — every pending copy block, config
+value, and art swap is marked. Shipped: hero portrait
+(`/assets/portrait.webp`), swan facecard (`/assets/facecard.webp`), generated
+Medea facecard (`/assets/medea.webp`), and the full Pharmakon poem. Still open:
+
+- Copy: Philosophy statement; Underworld essays (Orpheus, the Guide, the
+  Kindly Ones, the Feather close); Monsoon memoir.
+- Config: natal-chart values (`src/scripts/eggs/natal.config.ts`), hunt
+  final-step seal (`src/scripts/eggs/hunt.config.ts`), psychopomp-door
+  payload (`src/scripts/eggs/eggs.config.ts`), owner tracks
+  (`src/scripts/audio/tracks.config.ts`).
+- Art: the seven procedural silhouettes in `src/webgl/passes/morphs.ts`;
+  commissioned Medea card at the same path when ready.

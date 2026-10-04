@@ -3,8 +3,8 @@
  * Facecard figure slot for a writings post. A post earns a facecard when one
  * of its frontmatter symbols has an entry in the registry below — the Medea
  * card ships first, tied to the Pharmakon launch post. Images are
- * owner-supplied and live in public/assets/; until they land, the figure
- * carries a .todo-block placeholder alongside the wired-up <img>.
+ * owner-supplied and live in public/assets/; a commissioned card replaces
+ * the generated one by dropping a file at the same path.
  *
  * Symbology guardrails (src/design/tokens.ts): classical, alchemical,
  * Greco-Egyptian register only.
@@ -48,10 +48,6 @@ const card = cards[symbol];
         file at the same path.
       */}
       <img src={card.src} alt={card.alt} loading="lazy" />
-      <div class="todo-block">
-        TODO(owner): facecard image pending at {card.src} — see the artist brief
-        in src/components/writings/Facecard.astro.
-      </div>
       <figcaption>{symbol}</figcaption>
     </figure>
   )
