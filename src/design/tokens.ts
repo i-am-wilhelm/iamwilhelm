@@ -72,6 +72,29 @@ export const backgroundFade = {
   to: '#bda898',
 } as const;
 
+/**
+ * Natal engine palette — one colour per body, plus Venus's chromatic fringe
+ * triplet (rose / emerald / pale gold) for packets that have passed through
+ * the 12th-house glass. Classical planetary register only.
+ */
+export const natalPalette = {
+  sun: '#ffcf6e',
+  mercury: '#e6edf4',
+  moon: '#eef2fb',
+  venus: '#ff8fb0',
+  mars: '#ff5a4d',
+  jupiter: '#8fa8ff',
+  saturn: '#c9a05e',
+  uranus: '#6fe3ff',
+  neptune: '#9a8cff',
+  pluto: '#c04a63',
+  nn: '#d8c9a0',
+  vesta: '#ffb27a',
+  /** Lilith is a lens, never an orb — this tints her rings only. */
+  lilith: '#9b7bff',
+  venusFringe: ['#ff8fb0', '#86e6b8', '#ffe9c9'],
+} as const;
+
 /** Greek glyph ramp for the dither field, dark→light coverage. */
 export const glyphRamp = 'ΨΦΘΞΩΔΛΠΣΓαβγδεζηθικλμνξοπρστυφχψω·';
 
