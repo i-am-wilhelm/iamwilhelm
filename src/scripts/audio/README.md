@@ -42,6 +42,9 @@ score's knock plays exactly this figure, so listeners learn the key by ear.
 - **The knock**: a deep `MembraneSynth` an octave below the drone, on the
   2+2+3 group boundaries — steps 0, 2, 4 (beats 1, 3, 5), downbeat
   strongest. Mixed low but felt; it is the clue that teaches the tap.
+- **Transport sync**: every eighth, the engine emits `iw:transport-eighth
+  {step, inMs}`; the visual clock (`src/scripts/clock.ts`) phase-locks to
+  it, so the natal hero's breath lands on the audible knock.
 - **Sparse motifs**: a quiet triangle voice places one or two pentatonic
   notes inside the long group on ~30% of bars, echoed through a dotted-
   quarter feedback delay.

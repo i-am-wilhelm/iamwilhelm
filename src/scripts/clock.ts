@@ -14,13 +14,15 @@
  * Either path performs the accent detection, so `iw:knock` is emitted
  * exactly once per accented eighth no matter how many readers there are.
  *
- * Tempo: defaults to tokens.meter.eighthMs (300 ms — the tuned prototype
- * value). The Tone transport runs at meter.bpm (84, eighth ≈ 357 ms);
- * unifying the two is a documented follow-up. `setEighthMs` keeps the bar
- * phase continuous so a live tempo change never jumps.
+ * Tempo: tokens.meter.eighthMs, one eighth at the site's 84 bpm (≈357 ms),
+ * the same figure the Tone transport plays. Whenever the orchestra pit is
+ * running, the pit's engine emits `iw:transport-eighth` on every step and
+ * this clock phase-locks to it (`lockTo`), so the visual knock and the
+ * audible knock are one knock. `setEighthMs` keeps the bar phase continuous
+ * so a live tempo change never jumps; a running pit re-locks the tempo too.
  */
 import { meter } from '../design/tokens';
-import { emit } from './events';
+import { emit, on } from './events';
 
 export type AccentIndex = 0 | 2 | 4;
 
@@ -126,6 +128,37 @@ export function setEighthMs(ms: number) {
 
 export function getEighthMs(): number {
   return eighthMs;
+}
+
+/**
+ * Phase-lock: transport eighth `step` (0..6) sounds at absolute time `at`
+ * (performance.now ms). Re-anchors the origin so the nearest absolute eighth
+ * with that index lands exactly there; also pulls the tempo back to the
+ * transport's if a tinker dial detuned it. One accent may be skipped or
+ * doubled at the moment of locking; from then on the two knocks coincide.
+ */
+export function lockTo(step: number, at: number) {
+  const transportEighth = 60000 / meter.bpm / 2;
+  if (Math.abs(eighthMs - transportEighth) > 0.5) setEighthMs(transportEighth);
+  ensureOrigin(at);
+  const pos = (at - origin) / eighthMs;
+  const base = Math.round(pos);
+  let best = base;
+  let bestD = Infinity;
+  for (let k = base - 3; k <= base + 3; k++) {
+    if (((k % EIGHTHS_PER_BAR) + EIGHTHS_PER_BAR) % EIGHTHS_PER_BAR !== step) continue;
+    const d = Math.abs(k - pos);
+    if (d < bestD) {
+      bestD = d;
+      best = k;
+    }
+  }
+  origin = at - best * eighthMs;
+  lastAbsEighth = Math.floor((performance.now() - origin) / eighthMs);
+}
+
+if (typeof window !== 'undefined') {
+  on('iw:transport-eighth', ({ step, inMs }) => lockTo(step, performance.now() + inMs));
 }
 
 /* ------------------------------------------------------------------ */

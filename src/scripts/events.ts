@@ -36,6 +36,12 @@ export interface IWEvents {
   'iw:natal-phase': { progress: number; phase: 'face' | 'ascent' | 'dissolve' };
   /** Venus's heart → audio sibling, later. env = heartbeat envelope 0..1. */
   'iw:venus-beat': { env: number };
+  /**
+   * Orchestra pit → clock. Fires on every transport eighth once the pit is
+   * running; `inMs` is how far ahead of now the step will sound (Tone's
+   * lookahead). clock.ts phase-locks the visual knock to it.
+   */
+  'iw:transport-eighth': { step: number; inMs: number };
 }
 
 export function emit<K extends keyof IWEvents>(type: K, detail: IWEvents[K]) {

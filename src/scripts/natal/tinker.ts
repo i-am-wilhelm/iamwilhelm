@@ -87,7 +87,7 @@ export function mountTinker({ engine, portrait, getLoop }: TinkerDeps) {
     { key: 'density', label: 'density', min: 0.2, max: 1.6, step: 0.01, get: () => o.density, set: (v) => (o.density = v) },
     { key: 'flow', label: 'flow speed', min: 0.4, max: 2, step: 0.01, get: () => o.flowSpeed, set: (v) => (o.flowSpeed = v) },
     { key: 'venus', label: 'Venus bpm', min: 40, max: 84, step: 1, get: () => o.venusBpm, set: (v) => (o.venusBpm = v) },
-    { key: 'eighth', label: 'eighth ms', min: 230, max: 420, step: 1, get: () => clock.getEighthMs(), set: (v) => clock.setEighthMs(v) },
+    { key: 'eighth', label: 'eighth ms (pit re-locks)', min: 230, max: 420, step: 1, get: () => clock.getEighthMs(), set: (v) => clock.setEighthMs(v) },
     { key: 'sigRest', label: 'signal rest', min: 0, max: 0.6, step: 0.01, get: () => o.signalRest, set: (v) => (o.signalRest = v) },
     { key: 'sigSurge', label: 'signal surge', min: 0.2, max: 1, step: 0.01, get: () => o.signalSurge, set: (v) => (o.signalSurge = v) },
     { key: 'tide', label: 'tide period s', min: 10, max: 240, step: 1, get: () => o.tidePeriod, set: (v) => (o.tidePeriod = v) },

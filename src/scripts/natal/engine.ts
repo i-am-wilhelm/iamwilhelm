@@ -14,7 +14,9 @@
  * Zero runtime deps. Palette comes in through opts (tokens.natalPalette by
  * default) so the engine stays portable.
  */
-import { natalPalette } from '../../design/tokens';
+import { meter, natalPalette } from '../../design/tokens';
+
+const meterEighthFallback = meter.eighthMs;
 import { computeAspects, connectedBodies, type Aspect } from './aspects';
 import type { ChartData, PortraitLayer } from './types';
 import type { ClockState } from '../clock';
@@ -293,6 +295,7 @@ export class NatalEngine {
   private edgeGlow = [0, 0];
   private vertexHeat = 0;
   private vertexHold = 0;
+  private barS = (meterEighthFallback * 7) / 1000;
   private pointer: { x: number; y: number } | null = null;
   private spawnAcc = 0;
   private circuitAcc = 0;
@@ -384,6 +387,7 @@ export class NatalEngine {
     const knockOn = this.opts.layers.knock;
     this.knockGlow = knockOn ? clock.knockGlow : 0;
     this.sinceKnockMs = knockOn ? clock.sinceKnockMs : 1e9;
+    this.barS = (clock.eighthMs * 7) / 1000;
 
     // Accents crossed since last frame.
     if (clock.accentSerial !== this.lastAccentSerial) {
@@ -893,7 +897,7 @@ export class NatalEngine {
       let near = false;
       if (this.pointer) near = Math.hypot(this.pointer.x - this.vertexX, this.pointer.y - this.vertexY) < 58;
       if (this.vertexHold > 0) {
-        this.vertexHold -= dt / 2.1; // one bar at 300 ms eighths
+        this.vertexHold -= dt / this.barS; // one bar at the live tempo
         near = true;
       }
       this.vertexHeat = near ? Math.min(1, this.vertexHeat + dt * 1.6) : Math.max(0, this.vertexHeat - dt * 0.45);
