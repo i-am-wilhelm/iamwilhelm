@@ -16,7 +16,7 @@ on every page. Idempotent; safe on pages with zero anchors.
 | `registry.ts` | Engine: lazy anchor binding, trigger wiring, effect dispatch, hunt advancement, natal CSS hooks. Exports `initEggs()`. |
 | `types.ts` | `EggDef`, `Trigger`, `EffectAction`, `PageScope`, `DitherStyle`. |
 | `eggs.config.ts` | The declarative egg registry (list of `EggDef`). |
-| `natal.config.ts` | Natal placement hooks + birthday-derived sequence. All values are `TODO(owner)` placeholders. |
+| `natal.config.ts` | Natal placement hooks + birthday-derived sequence, derived from the real chart in `src/scripts/natal/chart.michael.ts`. |
 | `hunt.config.ts` | Initiation steps, completion sigil, and the `finalStep` config slot. |
 | `hunt.ts` | State machine + localStorage persistence. |
 | `ui.ts` | Injected-style DOM UI: toasts, sigil-mark rail, completion sigil. |
@@ -68,10 +68,11 @@ bind-order index). Effects replay on every successful interaction;
 
 ## Natal placement hooks
 
-`natal.config.ts` holds placeholder placements (every number marked
-`TODO(owner)`); swapping in the real birth data is a config edit only.
-Nothing in the UI explains any of this — it reads as arbitrary rotation and
-drift to anyone without the chart.
+`natal.config.ts` derives its placements (Uranus, Neptune, Venus — sign,
+house, degree) and `keyDate` from `CHART` in
+`src/scripts/natal/chart.michael.ts`, the same data file the hero renders.
+Houses come from the chart's cusps. Nothing in the UI explains any of this —
+it reads as arbitrary rotation and drift to anyone without the chart.
 
 - **Uranus–Neptune, 9th house**: `natalCssHooks()` derives the pair's
   midpoint longitude and orb; `initEggs()` writes them to the root as
@@ -86,7 +87,9 @@ drift to anyone without the chart.
 - **Birthday as coded egg**: `birthdaySequence()` folds `keyDate`
   (month, day, year-mod-100, then successive sums) modulo the node count into
   four distinct node indices — the click order for `natal-ascent`. Original
-  mechanism for this site; the date itself is rendered nowhere.
+  mechanism for this site; the date itself is rendered nowhere. `keyDate`
+  now comes from `CHART.birth`, so the sequence changed when the real date
+  replaced the placeholder — intended.
 
 ## Hunt state machine (`hunt.ts`)
 

@@ -68,9 +68,23 @@ The cross-page hunt (`hunt.ts`) runs `unbegun → in-progress → awaiting-seal
 localStorage key. The final mail-in step (password in an email subject line,
 PO box) is wired later by supplying the `finalStep` object in
 `hunt.config.ts` — a config addition, not a refactor. Natal-chart hooks
-(`natal.config.ts`) expose placement-derived CSS variables; real birth data
-is a `TODO(owner)` config edit. Full documentation:
+(`natal.config.ts`) expose placement-derived CSS variables, derived from the
+real chart in `src/scripts/natal/chart.michael.ts`. Full documentation:
 `src/scripts/eggs/README.md`.
+
+## The natal hero
+
+The homepage hero is a Canvas 2D natal chart (`src/scripts/natal/`): a
+chart-agnostic engine (`engine.ts`, `aspects.ts`, `types.ts`), Michael's
+chart as its first data file (`chart.michael.ts`), the two-layer Dioscuri
+portrait (`dioscuri.ts` — the photo plus a glyph-dither twin drawn from the
+site's Greek atlas), and the mount (`mount.ts`) that owns the single rAF,
+the scroll choreography (face → ascent → dissolve, emitting
+`iw:natal-phase`) and the `?tinker=1` overlay. The site-wide 7/8 clock it
+breathes to is `src/scripts/clock.ts` ("the knock", `iw:knock`); its
+300 ms eighth is deliberately not yet unified with the 84 bpm Tone
+transport — see `meter.eighthMs` in tokens.ts. Workbench route: `/lab/hero`
+(`?chart=test` renders a throwaway chart; `?tinker=1` opens the dials).
 
 ## Orchestra pit
 
@@ -86,7 +100,7 @@ Medea facecard (`/assets/medea.webp`), and the full Pharmakon poem. Still open:
 
 - Copy: Philosophy statement; Underworld essays (Orpheus, the Guide, the
   Kindly Ones, the Feather close); Monsoon memoir.
-- Config: natal-chart values (`src/scripts/eggs/natal.config.ts`), hunt
+- Config: hunt
   final-step seal (`src/scripts/eggs/hunt.config.ts`), psychopomp-door
   payload (`src/scripts/eggs/eggs.config.ts`), owner tracks
   (`src/scripts/audio/tracks.config.ts`).

@@ -70,7 +70,7 @@ export const DEFAULT_OPTS: EngineOpts = {
   signalRest: 0.15,
   signalSurge: 0.6,
   tidePeriod: 90,
-  lilithRadius: 0.28,
+  lilithRadius: 0.25,
   layers: Object.fromEntries(LAYER_NAMES.map((n) => [n, n !== 'glyphAudit'])) as Record<LayerName, boolean>,
   palette: natalPalette as unknown as Record<string, string>,
   venusFringe: natalPalette.venusFringe,
@@ -220,6 +220,8 @@ export interface EngineStats {
   seekers: number;
   frames: number;
   bends: number;
+  /** Smoothed engine time per tick, ms (simulation + draw calls issued). */
+  tickMs: number;
 }
 
 export type NatalPhase = 'face' | 'ascent' | 'dissolve';
@@ -233,7 +235,7 @@ export class NatalEngine {
   readonly chart: ChartData;
   readonly opts: EngineOpts;
   readonly aspects: Aspect[];
-  readonly stats: EngineStats = { particles: 0, seekers: 0, frames: 0, bends: 0 };
+  readonly stats: EngineStats = { particles: 0, seekers: 0, frames: 0, bends: 0, tickMs: 0 };
 
   private ctx: CanvasRenderingContext2D;
   private W = 1;
@@ -248,7 +250,6 @@ export class NatalEngine {
   private bodyList: Body[] = [];
   private connected: Body[] = [];
   private beams: Beam[] = [];
-  private spine: Beam | null = null;
   private circuitLegs: { beam: Beam; dir: 1 | -1 }[] = [];
   private venusBeams: { beam: Beam; dir: 1 | -1 }[] = [];
   private lilithX = 0;
@@ -384,9 +385,11 @@ export class NatalEngine {
       if (knockOn) this.onAccent(clock.lastAccent);
     }
 
+    const t0 = performance.now();
     this.update(d);
     this.render(false);
     this.stats.frames++;
+    this.stats.tickMs += (performance.now() - t0 - this.stats.tickMs) * 0.1;
   }
 
   dispose() {
@@ -460,6 +463,8 @@ export class NatalEngine {
    * choice (like the 0.965/1.035 stagger). At R no chord passes within her
    * 0.17R reach in most charts; at ~0.28R she sits where the spine and the
    * centre-born seekers actually travel — a lens where the light is.
+ * (At 0.25R the spine passes ≈0.14R from her; the bend is sub-pixel but
+ * real, and the rings answer to it.)
    */
   private layout() {
     const { W, H } = this;
@@ -590,7 +595,6 @@ export class NatalEngine {
       beams.push(beam);
     }
     this.beams = beams;
-    this.spine = beams.find((b) => b.aspect.role === 'spine') ?? null;
 
     // Circuit legs moon→vesta→nn→moon (one direction).
     const order = ['moon', 'vesta', 'nn'];
@@ -870,8 +874,8 @@ export class NatalEngine {
     this.lensAlpha = Math.max(0, this.lensAlpha - 0.012);
     this.lensArcRot += dt * 0.25;
     for (const r of this.ripples) {
-      r.r += dt * 120;
-      r.alpha *= 0.95;
+      r.r += dt * 60;
+      r.alpha *= 0.9;
     }
     this.ripples = this.ripples.filter((r) => r.alpha > 0.02);
     for (const s of this.sparkles) s.life -= dt * 3.2;
@@ -1024,27 +1028,28 @@ export class NatalEngine {
     ctx.beginPath();
     ctx.arc(cx, cy, 0.9 * R, 0, TAU);
     ctx.stroke();
-    // Sign ticks every 30°, 5° minors, ASC/MC axis.
-    for (let d = 0; d < 360; d += 5) {
-      const th = this.theta(d);
-      const major = d % 30 === 0;
-      const a = (major ? 0.16 : 0.05) * bright * fade;
-      const r0 = major ? 0.9 * R : 1.0 * R;
-      const r1 = 1.05 * R;
-      ctx.strokeStyle = `rgba(220,226,240,${a})`;
+    // Sign ticks every 30°, 5° minors, ASC/MC axis — one path per class.
+    const ticks = (step: number, skip: number, r0: number, r1: number, alpha: number) => {
+      ctx.strokeStyle = `rgba(220,226,240,${alpha * bright * fade})`;
       ctx.beginPath();
-      ctx.moveTo(cx + Math.cos(th) * r0, cy + Math.sin(th) * r0);
-      ctx.lineTo(cx + Math.cos(th) * r1, cy + Math.sin(th) * r1);
+      for (let d = 0; d < 360; d += step) {
+        if (skip && d % skip === 0) continue;
+        const th = this.theta(d);
+        ctx.moveTo(cx + Math.cos(th) * r0, cy + Math.sin(th) * r0);
+        ctx.lineTo(cx + Math.cos(th) * r1, cy + Math.sin(th) * r1);
+      }
       ctx.stroke();
-    }
+    };
+    ticks(30, 0, 0.9 * R, 1.05 * R, 0.16);
+    ticks(5, 30, 1.0 * R, 1.05 * R, 0.05);
+    ctx.strokeStyle = `rgba(220,226,240,${0.12 * bright * fade})`;
+    ctx.beginPath();
     for (const lon of [this.chart.asc, (this.chart.asc + 180) % 360, this.chart.mc, (this.chart.mc + 180) % 360]) {
       const th = this.theta(lon);
-      ctx.strokeStyle = `rgba(220,226,240,${0.12 * bright * fade})`;
-      ctx.beginPath();
       ctx.moveTo(cx + Math.cos(th) * 0.86 * R, cy + Math.sin(th) * 0.86 * R);
       ctx.lineTo(cx + Math.cos(th) * 1.09 * R, cy + Math.sin(th) * 1.09 * R);
-      ctx.stroke();
     }
+    ctx.stroke();
   }
 
   private windowPath() {
@@ -1221,7 +1226,7 @@ export class NatalEngine {
       let [x, y] = pt;
       if (lensOn) {
         const [bx, by, k] = this.bend(x, y);
-        if (k > 0.3) {
+        if (k > 0.12) {
           bends++;
           this.lensAlpha = Math.min(1, this.lensAlpha + 0.05);
         }
@@ -1263,7 +1268,7 @@ export class NatalEngine {
       let y = s.y;
       if (lensOn) {
         const [bx, by, k] = this.bend(x, y);
-        if (k > 0.3) this.lensAlpha = Math.min(1, this.lensAlpha + 0.05);
+        if (k > 0.12) this.lensAlpha = Math.min(1, this.lensAlpha + 0.05);
         x = bx;
         y = by;
       }

@@ -3,9 +3,12 @@
  * educated eye. Nothing here is explained in the UI; the values surface only
  * as animation offsets, constellation rotations, and one coded sequence.
  *
- * All degree/date values below are PLACEHOLDERS. The owner supplies the real
- * birth data; swapping the numbers in this file is the only change needed.
+ * Every value derives from the real chart in
+ * src/scripts/natal/chart.michael.ts — the same data file the hero renders.
+ * Change the chart there; nothing here needs editing.
  */
+import { CHART } from '../natal/chart.michael';
+import type { ChartData } from '../natal/types';
 
 // ---------------------------------------------------------------------------
 // Placements
@@ -31,31 +34,38 @@ export function eclipticDeg(p: NatalPlacement): number {
   return i * 30 + p.degreeInSign;
 }
 
+/** Which house (1–12) a longitude falls in, from the chart's cusps. */
+export function houseOf(lon: number, cusps: number[]): number {
+  const n = cusps.length;
+  for (let i = 0; i < n; i++) {
+    const a = cusps[i];
+    const b = cusps[(i + 1) % n];
+    const span = ((b - a) % 360 + 360) % 360;
+    const off = ((lon - a) % 360 + 360) % 360;
+    if (off < span) return i + 1;
+  }
+  return 1;
+}
+
+function placement(chart: ChartData, body: string): NatalPlacement {
+  const lon = ((chart.bodies[body]?.lon ?? 0) % 360 + 360) % 360;
+  return {
+    body,
+    sign: SIGNS[Math.floor(lon / 30) % 12],
+    house: houseOf(lon, chart.cusps),
+    degreeInSign: lon % 30,
+  };
+}
+
 export const natal = {
-  // TODO(owner): replace every placeholder below with the real natal values.
   // The Uranus–Neptune pair sits in the 9th house — its midpoint and orb
   // drive the constellation rotation and the drift on deconstruction-themed
   // content (elements marked data-natal-aspect="uranus-neptune").
-  uranus: {
-    body: 'uranus',
-    sign: 'capricorn',
-    house: 9,
-    degreeInSign: 15.0, // TODO(owner): placeholder degree
-  } as NatalPlacement,
-  neptune: {
-    body: 'neptune',
-    sign: 'capricorn',
-    house: 9,
-    degreeInSign: 17.0, // TODO(owner): placeholder degree
-  } as NatalPlacement,
+  uranus: placement(CHART, 'uranus'),
+  neptune: placement(CHART, 'neptune'),
   // Venus at dawn / 12th-house themes — phase value feeds the dawn-window
   // egg and a slow luminance offset the visual layer may read.
-  venus: {
-    body: 'venus',
-    sign: 'aries',      // TODO(owner): placeholder sign
-    house: 12,
-    degreeInSign: 3.0,  // TODO(owner): placeholder degree
-  } as NatalPlacement,
+  venus: placement(CHART, 'venus'),
 } as const;
 
 /**
@@ -63,7 +73,7 @@ export const natal = {
  * ships no geolocation; a fixed local-hour band keeps the gesture quiet.
  */
 export const dawnWindow = {
-  startHourLocal: 5,  // TODO(owner): tune to taste
+  startHourLocal: 5,
   endHourLocal: 8,
 } as const;
 
@@ -106,13 +116,13 @@ export function natalCssHooks(): NatalCssHooks {
 // ---------------------------------------------------------------------------
 
 /**
- * The date the sequence is derived from. Ships as a placeholder; the real
- * date is an owner-only config edit and is never rendered anywhere.
+ * The date the sequence is derived from — the chart's birth date. It is
+ * never rendered anywhere.
  */
 export const keyDate = {
-  month: 7,  // TODO(owner): placeholder month (1–12)
-  day: 11,   // TODO(owner): placeholder day (1–31)
-  year: 1990, // TODO(owner): placeholder year
+  month: CHART.birth?.month ?? 1,
+  day: CHART.birth?.day ?? 1,
+  year: CHART.birth?.year ?? 2000,
 } as const;
 
 /**

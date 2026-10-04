@@ -60,6 +60,15 @@ export const meter = {
   beatsPerBar: 7,
   /** Base tempo for the score and scroll-linked pulse work. */
   bpm: 84,
+  /**
+   * One eighth-note in ms for the visual clock (src/scripts/clock.ts — "the
+   * knock" the natal hero breathes to). NOTE the mismatch: 300 ms is the
+   * tuned prototype value (quarter = 100 bpm); the Tone transport and the
+   * copy-reveal staggers still run at `bpm` 84 (eighth ≈ 357 ms). Unifying
+   * the two tempos is a documented follow-up; the tinker dial on /lab/hero
+   * ranges 230–420 so both can be heard.
+   */
+  eighthMs: 300,
 } as const;
 
 /**

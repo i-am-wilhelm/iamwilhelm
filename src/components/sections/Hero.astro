@@ -1,14 +1,25 @@
 ---
 /**
- * HERO — portrait facecard + tagline (spec §4.1, design merged from the
- * `production` prototype line: centered portrait feathered into the void,
- * "Builder. Writer. Musician." tagline).
- * The Black Swan stays the hero *symbol*: the WebGL pipeline renders the
- * swan splash + constellation base from the data-* attributes Section.astro
- * emits; this component is the DOM/copy layer only. The swan symbol card
- * remains at /assets/facecard.webp for the visual layer's use.
+ * HERO — "The Natal Engine" + the Dioscuri facecard.
+ *
+ * A 200vh section with a sticky 100vh frame. The frame holds the natal
+ * canvas (src/scripts/natal/) and, in a bottom band, the copy block the
+ * scroll choreography reveals in 7/8. The canvas wrapper sits OUTSIDE
+ * `.copy` on purpose: scroll.ts sets autoAlpha:0 on every `.copy` child
+ * until the reveal, and the canvas must never vanish with them.
+ *
+ * The section shell mirrors Section.astro (same class, id and data-*
+ * attributes the pipeline and scroll choreography read) because the stage
+ * has to live beside `.copy`, not inside it.
+ *
+ * Reserve-the-space rule: the 200vh is CSS, so the canvas mounting causes
+ * no layout shift. Sticky, not a GSAP pin, for the same reason (a pin
+ * spacer would be JS-added height). Under reduced motion the section is a
+ * single viewport and the engine paints one static frame.
+ *
+ * Egg anchors: `hero-swan` is the portrait hit-area (tracks the disc on
+ * scroll; triple-tap → swan-preen); `phosphoros-star` stays in the copy.
  */
-import Section from '../Section.astro';
 import type { SectionSpec } from '../../design/tokens';
 
 interface Props {
@@ -18,82 +29,124 @@ interface Props {
 const { spec } = Astro.props;
 ---
 
-<Section spec={spec}>
-  <figure class="facecard" data-egg-anchor="hero-swan">
-    <img
-      src="/assets/portrait.webp"
-      alt="Michael Wilhelm — portrait"
-      loading="eager"
-      onerror="this.closest('.facecard').classList.add('facecard--absent')"
-    />
-    <span class="facecard-fallback greek" aria-hidden="true">Ψ</span>
-  </figure>
+<section
+  class="section section--hero"
+  id={spec.id}
+  data-section={spec.id}
+  data-symbols={spec.symbols.join(',')}
+  data-smoke-side={spec.smokeSide}
+  data-drone={spec.drone}
+  style={`--section-accent: var(--accent-${spec.id})`}
+>
+  <div class="hero-frame">
+    <div class="natal-stage" role="img" aria-label="Michael Wilhelm — portrait, set at the centre of his natal chart">
+      <canvas class="natal-canvas" aria-hidden="true"></canvas>
+      <!-- The face: a circular hit-area the mount keeps registered to the
+           portrait disc. The swan preens on a triple-tap here. -->
+      <div class="natal-face" data-egg-anchor="hero-swan" aria-hidden="true"></div>
+      <!-- Accessible name + eager fetch of the flesh layer; the engine
+           decodes the same URL from cache. -->
+      <img class="natal-src" src="/assets/portrait.webp" alt="" loading="eager" decoding="async" />
+    </div>
 
-  <p class="term">&gt; Michael Wilhelm</p>
-  <h1>Builder. Writer. Musician.</h1>
-  <p class="lede">Devoted to something, but nobody knows what.</p>
-  <blockquote class="epigraph">
-    <a href="/writings/pharmakon/">
-      I was born legible — and lonely for a reader.<br />
-      I have never wanted to be merely loved.<br />
-      I want to be studied.
-    </a>
-  </blockquote>
-  <!-- Venus as Phosphoros: answers only in the dawn band (phosphoros-dawn egg). -->
-  <span class="phosphoros" data-egg-anchor="phosphoros-star" aria-hidden="true">⁘</span>
-</Section>
+    <div class="copy">
+      <p class="term">&gt; Michael Wilhelm</p>
+      <h1>Builder. Writer. Musician.</h1>
+      <p class="lede">Devoted to something, but nobody knows what.</p>
+      <blockquote class="epigraph">
+        <a href="/writings/pharmakon/">
+          I was born legible — and lonely for a reader.<br />
+          I have never wanted to be merely loved.<br />
+          I want to be studied.
+        </a>
+      </blockquote>
+      <!-- Venus as Phosphoros: answers only in the dawn band (phosphoros-dawn egg). -->
+      <span class="phosphoros" data-egg-anchor="phosphoros-star" aria-hidden="true">⁘</span>
+    </div>
+  </div>
+</section>
 
 <style>
-  /* The portrait outgrows the standard 42rem copy column. */
-  :global(#hero .copy) {
-    max-width: min(92vmin, 760px);
-    margin: 0 auto;
+  /* Override the generic .section box: the hero is a 200vh scroll stage. */
+  .section--hero {
+    height: 200vh;
+    min-height: 0;
+    padding: 0;
+    display: block;
+    /* True black behind the hero (the canvas paints it too, and fades it
+       in the dissolve); feather the bottom edge into the live body colour. */
+    background: #000;
+  }
+
+  .section--hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 14vh;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), var(--bg-current));
+  }
+
+  .hero-frame {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .natal-stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .natal-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .natal-face {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    will-change: transform;
+  }
+
+  .natal-src {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Copy: a bottom band, centred, clear of the disc. */
+  .section--hero .copy {
+    position: absolute;
+    left: 50%;
+    bottom: 5vh;
+    transform: translateX(-50%);
+    width: min(92vw, 760px);
+    max-width: none;
+    text-align: center;
+    z-index: 2;
   }
 
   h1 {
-    font-size: clamp(2rem, 6vw, 3.6rem);
+    font-size: clamp(1.7rem, 5vw, 3rem);
     font-weight: 400;
     letter-spacing: 0.08em;
     color: var(--ink);
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-
-  .facecard {
-    position: relative;
-    width: min(92vmin, 760px);
-    margin: 0 auto 2.4rem;
-    /* feather the square edges into the void — no visible corners.
-       opaque through the face, dissolving to nothing before the edge
-       so the portrait bleeds into the black instead of ending on a line */
-    -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 40%, rgba(0, 0, 0, 0) 74%);
-    mask-image: radial-gradient(circle at 50% 45%, #000 40%, rgba(0, 0, 0, 0) 74%);
-  }
-
-  .facecard img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-  }
-
-  /* Graceful absence: hide the broken img, reveal the glyph placeholder. */
-  .facecard-fallback {
-    display: none;
-  }
-
-  .facecard--absent img {
-    display: none;
-  }
-
-  .facecard--absent .facecard-fallback {
-    display: grid;
-    place-items: center;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border: 1px dashed var(--ink-dim);
-    font-size: 4rem;
-    color: var(--section-accent, var(--ink-dim));
+    margin-bottom: 0.6rem;
+    text-shadow: 0 0 18px rgba(0, 0, 0, 0.9);
   }
 
   .term {
@@ -101,23 +154,21 @@ const { spec } = Astro.props;
     font-size: 0.8rem;
     letter-spacing: 0.14em;
     color: var(--ink-dim);
-    text-align: center;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.5rem;
   }
 
   .lede {
     max-width: 34rem;
     margin: 0 auto;
     color: var(--ink-dim);
-    text-align: center;
     font-style: italic;
+    text-shadow: 0 0 14px rgba(0, 0, 0, 0.9);
   }
 
   /* Pull-quote from the Pharmakon poem — small, unattributed, a door. */
   .epigraph {
     max-width: 30rem;
-    margin: 1.6rem auto 0;
-    text-align: center;
+    margin: 1.1rem auto 0;
     font-size: 0.85rem;
     line-height: 1.7;
   }
@@ -127,6 +178,7 @@ const { spec } = Astro.props;
     text-decoration: none;
     opacity: 0.75;
     transition: opacity 0.4s ease, color 0.4s ease;
+    text-shadow: 0 0 14px rgba(0, 0, 0, 0.9);
   }
 
   .epigraph a:hover {
@@ -136,10 +188,20 @@ const { spec } = Astro.props;
 
   .phosphoros {
     position: absolute;
-    top: 8vh;
-    right: 6vw;
+    top: -6vh;
+    right: 2vw;
     font-size: 1rem;
     color: var(--ink-dim);
     opacity: 0.4;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section--hero {
+      height: auto;
+      min-height: 100vh;
+    }
+    .hero-frame {
+      position: relative;
+    }
   }
 </style>

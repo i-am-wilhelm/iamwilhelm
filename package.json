@@ -17,6 +17,8 @@
     "tone": "^15.0.4"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3",
     "wrangler": "^4.14.0"
   }
 }

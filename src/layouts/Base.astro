@@ -4,9 +4,11 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  /** Lab/workbench routes stay out of the index. */
+  noindex?: boolean;
 }
 
-const { title, description = 'Michael Wilhelm. Builder. Writer. Musician.' } = Astro.props;
+const { title, description = 'Michael Wilhelm. Builder. Writer. Musician.', noindex = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -16,6 +18,7 @@ const { title, description = 'Michael Wilhelm. Builder. Writer. Musician.' } = A
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
   </head>
   <body>
     <!-- Shared WebGL stage: dither, smoke, and morph passes composite here. -->

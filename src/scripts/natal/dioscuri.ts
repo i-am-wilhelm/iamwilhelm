@@ -48,7 +48,6 @@ export class Dioscuri implements PortraitLayer {
   private steps: number;
   private img: HTMLImageElement | null = null;
   private D = 0; // device px across the disc
-  private r = 0;
   private dpr = 1;
   private inverse = false;
   private dirty = true;
@@ -119,7 +118,6 @@ export class Dioscuri implements PortraitLayer {
     if (!this.dirty && D === this.D && dpr === this.dpr) return;
     if (D < 8) return;
     this.D = D;
-    this.r = rCss;
     this.dpr = dpr;
     this.dirty = false;
     this.rebuild();
@@ -185,7 +183,7 @@ export class Dioscuri implements PortraitLayer {
     const rows = cols;
     this.cols = cols;
     this.rows = rows;
-    const [tiny, tctx] = mk(cols);
+    const [, tctx] = mk(cols);
     tctx.drawImage(flesh, 0, 0, cols, rows);
     const data = tctx.getImageData(0, 0, cols, rows).data;
     const lum = new Float32Array(cols * rows);
