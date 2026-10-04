@@ -41,6 +41,8 @@ export async function mountNatalHero(): Promise<void> {
       : (await import('./chart.michael')).CHART;
 
   const opts: Partial<EngineOpts> = {
+    // Phones get a larger face relative to the wheel; R is already small.
+    discRadius: isMobile ? 0.3 : 0.26,
     onVenusBeat: (env) => emit('iw:venus-beat', { env }),
   };
   const engine = new NatalEngine(canvas, chart, opts);

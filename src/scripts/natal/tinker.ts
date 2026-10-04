@@ -91,6 +91,8 @@ export function mountTinker({ engine, portrait, getLoop }: TinkerDeps) {
     { key: 'sigRest', label: 'signal rest', min: 0, max: 0.6, step: 0.01, get: () => o.signalRest, set: (v) => (o.signalRest = v) },
     { key: 'sigSurge', label: 'signal surge', min: 0.2, max: 1, step: 0.01, get: () => o.signalSurge, set: (v) => (o.signalSurge = v) },
     { key: 'tide', label: 'tide period s', min: 10, max: 240, step: 1, get: () => o.tidePeriod, set: (v) => (o.tidePeriod = v) },
+    { key: 'disc', label: 'face radius R', min: 0.12, max: 0.4, step: 0.005, get: () => o.discRadius, set: (v) => { o.discRadius = v; engine.setProgress(engine.getProgress() + 1e-6); } },
+    { key: 'reach', label: 'lens reach R', min: 0.1, max: 0.4, step: 0.005, get: () => o.lensReach, set: (v) => { o.lensReach = v; engine.setProgress(engine.getProgress() + 1e-6); } },
     { key: 'lilith', label: 'Lilith radius R', min: 0.2, max: 1.05, step: 0.005, get: () => o.lilithRadius, set: (v) => { o.lilithRadius = v; engine.setProgress(engine.getProgress() + 1e-6); } },
   ];
   const addDial = (d: Dial, into: HTMLElement) => {

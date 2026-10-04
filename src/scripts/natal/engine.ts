@@ -53,8 +53,12 @@ export interface EngineOpts {
   signalRest: number;      // portrait signal rest alpha
   signalSurge: number;     // portrait signal knock alpha
   tidePeriod: number;      // seconds
+  /** Portrait disc radius in the face phase, as a fraction of R. */
+  discRadius: number;
   /** Lilith's radius as a fraction of R. See note at `layout()`. */
   lilithRadius: number;
+  /** Reach of Lilith's lens as a fraction of R. */
+  lensReach: number;
   layers: Record<LayerName, boolean>;
   palette: Record<string, string>;
   venusFringe: readonly [string, string, string];
@@ -70,7 +74,9 @@ export const DEFAULT_OPTS: EngineOpts = {
   signalRest: 0.15,
   signalSurge: 0.6,
   tidePeriod: 90,
-  lilithRadius: 0.25,
+  discRadius: 0.26,
+  lilithRadius: 0.34,
+  lensReach: 0.24,
   layers: Object.fromEntries(LAYER_NAMES.map((n) => [n, n !== 'glyphAudit'])) as Record<LayerName, boolean>,
   palette: natalPalette as unknown as Record<string, string>,
   venusFringe: natalPalette.venusFringe,
@@ -461,10 +467,11 @@ export class NatalEngine {
    *
    * Lilith's radius: her longitude is exact, her radius is a rendering
    * choice (like the 0.965/1.035 stagger). At R no chord passes within her
-   * 0.17R reach in most charts; at ~0.28R she sits where the spine and the
-   * centre-born seekers actually travel — a lens where the light is.
- * (At 0.25R the spine passes ≈0.14R from her; the bend is sub-pixel but
- * real, and the rings answer to it.)
+   * reach in most charts; just outside the portrait disc she sits where the
+   * spine, the Jupiter–Saturn opposition and the disc-born seekers actually
+   * travel — a lens where the light is. With the disc at 0.26R she stands at
+   * 0.34R with a 0.24R reach (the spine passes ≈0.23R from her: a sub-pixel
+   * bend, but real, and the rings answer to it).
    */
   private layout() {
     const { W, H } = this;
@@ -492,7 +499,7 @@ export class NatalEngine {
     }
 
     // Lilith, Vertex.
-    this.lensR = 0.17 * R;
+    this.lensR = this.opts.lensReach * R;
     [this.lilithX, this.lilithY] = this.pos(this.chart.lilith, this.opts.lilithRadius * R);
     [this.vertexX, this.vertexY] = this.pos(this.chart.vertex, R);
 
@@ -508,7 +515,7 @@ export class NatalEngine {
 
     // Portrait disc: centre in the face phase; an eased curved path to the
     // Ascendant during the ascent; parked on the horizon after.
-    const faceR = 0.165 * R;
+    const faceR = this.opts.discRadius * R;
     const [ax, ay] = this.pos(this.chart.asc, R);
     const t = this.ascent;
     // Quadratic bezier: control point pushed perpendicular to the chord so
