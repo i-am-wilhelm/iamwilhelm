@@ -60,6 +60,15 @@ export const meter = {
   beatsPerBar: 7,
   /** Base tempo for the score and scroll-linked pulse work. */
   bpm: 84,
+  /**
+   * One eighth-note in ms for the visual clock (src/scripts/clock.ts — "the
+   * knock" the natal hero breathes to). NOTE the mismatch: 300 ms is the
+   * tuned prototype value (quarter = 100 bpm); the Tone transport and the
+   * copy-reveal staggers still run at `bpm` 84 (eighth ≈ 357 ms). Unifying
+   * the two tempos is a documented follow-up; the tinker dial on /lab/hero
+   * ranges 230–420 so both can be heard.
+   */
+  eighthMs: 300,
 } as const;
 
 /**
@@ -70,6 +79,29 @@ export const meter = {
 export const backgroundFade = {
   from: '#050505',
   to: '#bda898',
+} as const;
+
+/**
+ * Natal engine palette — one colour per body, plus Venus's chromatic fringe
+ * triplet (rose / emerald / pale gold) for packets that have passed through
+ * the 12th-house glass. Classical planetary register only.
+ */
+export const natalPalette = {
+  sun: '#ffcf6e',
+  mercury: '#e6edf4',
+  moon: '#eef2fb',
+  venus: '#ff8fb0',
+  mars: '#ff5a4d',
+  jupiter: '#8fa8ff',
+  saturn: '#c9a05e',
+  uranus: '#6fe3ff',
+  neptune: '#9a8cff',
+  pluto: '#c04a63',
+  nn: '#d8c9a0',
+  vesta: '#ffb27a',
+  /** Lilith is a lens, never an orb — this tints her rings only. */
+  lilith: '#9b7bff',
+  venusFringe: ['#ff8fb0', '#86e6b8', '#ffe9c9'],
 } as const;
 
 /** Greek glyph ramp for the dither field, dark→light coverage. */

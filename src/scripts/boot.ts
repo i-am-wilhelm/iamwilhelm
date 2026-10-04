@@ -19,5 +19,10 @@ export async function boot() {
   jobs.push(import('./eggs/registry').then((m) => m.initEggs()));
   jobs.push(import('./audio/pit').then((m) => m.initOrchestraPit()));
 
+  // The natal hero: only where its stage markup exists (homepage, /lab/hero).
+  if (document.querySelector('.natal-stage')) {
+    jobs.push(import('./natal/mount').then((m) => m.mountNatalHero()));
+  }
+
   await Promise.allSettled(jobs);
 }

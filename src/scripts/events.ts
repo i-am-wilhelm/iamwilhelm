@@ -30,6 +30,12 @@ export interface IWEvents {
   'iw:pit-open': Record<string, never>;
   /** The dawn gate began opening (egg engine → audio: the Seikilos tone). */
   'iw:dawn-open': Record<string, never>;
+  /** Clock → everyone. Fires on accented eighths; index 0 is the knock. */
+  'iw:knock': { index: 0 | 2 | 4; barPhase: number };
+  /** Hero → next section. Scroll phase of the natal hero. */
+  'iw:natal-phase': { progress: number; phase: 'face' | 'ascent' | 'dissolve' };
+  /** Venus's heart → audio sibling, later. env = heartbeat envelope 0..1. */
+  'iw:venus-beat': { env: number };
 }
 
 export function emit<K extends keyof IWEvents>(type: K, detail: IWEvents[K]) {
