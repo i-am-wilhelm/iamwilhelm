@@ -21,6 +21,7 @@ attribute vec2 position;   // base position, clip space
 attribute vec3 aRand;      // per-star: phase, speed, size
 uniform float uTime;
 uniform float uParallax;   // vertical slide from scroll
+uniform float uRise;       // handoff: 1 = still below the fold, 0 = in place
 uniform float uDpr;
 varying float vTwinkle;
 
@@ -33,6 +34,9 @@ void main() {
 
   vec2 pos = position + drift;
   pos.y += uParallax;
+  // Receiving the natal hero: each star rises from below at its own pace
+  // (the heavier ones later), converging as the handoff completes.
+  pos.y -= uRise * (0.9 + aRand.z * 0.8);
 
   vTwinkle = 0.6 + 0.4 * sin(uTime * (0.7 + aRand.y * 1.8) + aRand.x * 40.0);
   gl_PointSize = (1.5 + aRand.z * 3.5) * uDpr;
@@ -58,11 +62,13 @@ const LINE_VERT = /* glsl */ `
 attribute vec2 position;
 attribute float aFade;     // per-endpoint fade so lines taper
 uniform float uParallax;
+uniform float uRise;
 varying float vFade;
 
 void main() {
   vec2 pos = position;
   pos.y += uParallax;
+  pos.y -= uRise * 1.3;
   vFade = aFade;
   gl_Position = vec4(pos, 0.0, 1.0);
 }
@@ -151,12 +157,14 @@ export class ConstellationPass {
     const pointUniforms = {
       uTime: { value: 0 },
       uParallax: { value: 0 },
+      uRise: { value: 0 },
       uDpr: { value: 1 },
       uColor: { value: section.accent },
       uAlpha: { value: 0 },
     };
     const lineUniforms = {
       uParallax: { value: 0 },
+      uRise: { value: 0 },
       uColor: { value: section.accent },
       uAlpha: { value: 0 },
     };
@@ -196,11 +204,28 @@ export class ConstellationPass {
   }
 
   update(state: PipelineState, time: number, dpr: number) {
+    // The sky that receives the natal hero's scattered planets: the section
+    // right after the hero (the Cluster / Pleiades on the homepage).
+    const heroIdx = this.skies.find((s) => s.section.id === 'hero')?.section.index ?? -1;
+    const handoff = state.natalHandoff;
+
     for (const sky of this.skies) {
-      const a = activation(state, sky.section.index);
+      let a = activation(state, sky.section.index);
       // Parallax: the sky slides opposite the scroll direction through its
       // section, ±12% of the viewport.
       const parallax = (state.sectionFloat - sky.section.index) * -0.24;
+      let rise = 0;
+
+      if (handoff > 0 && heroIdx >= 0 && sky.section.index === heroIdx + 1) {
+        // Receiving sky: lit by the handoff before its own activation would
+        // reach it, rising into place as the chart dissolves.
+        const h = handoff * handoff * (3 - 2 * handoff);
+        a = Math.max(a, h * 0.9);
+        rise = 1 - h;
+      } else if (handoff > 0 && sky.section.index === heroIdx) {
+        // The hero's own sky steps back so the arrival reads.
+        a *= 1 - handoff * 0.6;
+      }
 
       const visible = a > 0.01;
       sky.points.visible = visible;
@@ -209,9 +234,11 @@ export class ConstellationPass {
 
       sky.pointUniforms.uTime.value = time;
       sky.pointUniforms.uParallax.value = parallax;
+      sky.pointUniforms.uRise.value = rise;
       sky.pointUniforms.uDpr.value = dpr;
       sky.pointUniforms.uAlpha.value = a;
       sky.lineUniforms.uParallax.value = parallax;
+      sky.lineUniforms.uRise.value = rise;
       sky.lineUniforms.uAlpha.value = a;
     }
   }

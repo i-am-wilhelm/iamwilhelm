@@ -73,20 +73,9 @@ const { spec } = Astro.props;
     min-height: 0;
     padding: 0;
     display: block;
-    /* True black behind the hero (the canvas paints it too, and fades it
-       in the dissolve); feather the bottom edge into the live body colour. */
-    background: #000;
-  }
-
-  .section--hero::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 14vh;
-    pointer-events: none;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), var(--bg-current));
+    /* No CSS background on purpose: the canvas paints the true black and
+       fades it out in the dissolve, so the WebGL sky beneath shows through
+       as the chart hands off to the Cluster. */
   }
 
   .hero-frame {

@@ -1305,9 +1305,11 @@ export class NatalEngine {
       let y = b.y;
       let scale = 1;
       if (dis > 0) {
+        // Outward into a point-field, then falling toward the section
+        // below — the Cluster sky rises to meet them.
         const k = dis * (0.5 + 0.5 * b.seed) * 0.55 * this.R;
         x += Math.cos(b.theta + (b.seed - 0.5) * 0.6) * k;
-        y += Math.sin(b.theta + (b.seed - 0.5) * 0.6) * k;
+        y += Math.sin(b.theta + (b.seed - 0.5) * 0.6) * k + dis * dis * this.H * (0.18 + 0.12 * b.seed);
         scale = 1 - 0.7 * dis;
       }
       const breath = still ? 1 : 0.86 + 0.14 * Math.sin((TAU * t) / b.breathPeriod + b.seed * TAU);

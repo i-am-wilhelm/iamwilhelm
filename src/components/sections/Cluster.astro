@@ -18,7 +18,9 @@ const { spec } = Astro.props;
   <p class="line">The stars were letters first.</p>
   <p class="line line--dim greek">Πλειάδες — seven, and the eye finds six.</p>
   <!-- The seven sisters: DOM nodes over the shader constellation. Each is an
-       egg anchor; the natal-ascent sequence reads data-egg-step tokens. -->
+       egg anchor; the natal-ascent sequence reads data-egg-step tokens.
+       src/scripts/cluster.ts lands them in 7/8 as the section scrolls in,
+       receiving the natal hero's scattered planets (--dx/--dy/--s/--o). -->
   <div class="pleiades" aria-hidden="true">
     {[
       { step: 0, x: 12, y: 18 }, { step: 1, x: 30, y: 6 },
@@ -54,14 +56,29 @@ const { spec } = Astro.props;
     border: 0;
     border-radius: 50%;
     background: radial-gradient(circle, var(--section-accent) 0%, transparent 70%);
-    opacity: 0.55;
+    /* Arrival state, written by cluster.ts: offset from the hero above,
+       scale and opacity ramping as each sister takes her station. */
+    --dx: 0px;
+    --dy: 0px;
+    --s: 1;
+    --o: 0.55;
+    --hover: 1;
+    opacity: var(--o);
+    transform: translate(var(--dx), var(--dy)) scale(calc(var(--s) * var(--hover)));
     cursor: default;
     transition: opacity 0.4s ease, transform 0.4s ease;
+    will-change: transform, opacity;
   }
 
   .node:hover {
+    --hover: 1.5;
     opacity: 1;
-    transform: scale(1.5);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .node {
+      transition: none;
+    }
   }
 
   .line {
