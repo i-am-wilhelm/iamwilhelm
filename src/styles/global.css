@@ -90,13 +90,15 @@ main {
   pointer-events: none;
   background: var(--bg-current);
   opacity: var(--scrim-opacity);
+  /* Feather in fixed lengths that fit inside the overhang, so the fade
+     never eats into the copy itself however tall the block runs. */
   -webkit-mask-image:
-    linear-gradient(to right, transparent, #000 18%, #000 82%, transparent),
-    linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+    linear-gradient(to right, transparent, #000 3.5rem, #000 calc(100% - 3.5rem), transparent),
+    linear-gradient(to bottom, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
   -webkit-mask-composite: source-in;
   mask-image:
-    linear-gradient(to right, transparent, #000 18%, #000 82%, transparent),
-    linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+    linear-gradient(to right, transparent, #000 3.5rem, #000 calc(100% - 3.5rem), transparent),
+    linear-gradient(to bottom, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
   mask-composite: intersect;
 }
 
