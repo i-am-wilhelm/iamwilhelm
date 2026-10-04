@@ -50,6 +50,12 @@ export interface PipelineState {
   splashColor: [number, number, number];
   splashStrength: number; // decays each frame
 
+  /**
+   * Natal hero → Cluster handoff: 0..1 across the hero's dissolve phase
+   * (iw:natal-phase). The Cluster sky rises into place as the chart scatters.
+   */
+  natalHandoff: number;
+
   // Weather (monsoon)
   raining: boolean;
   rainCurrent: number; // damped 0..1
@@ -102,6 +108,7 @@ export function createState(): PipelineState {
     morphProgress: 0,
     splashColor: [1, 1, 1],
     splashStrength: 0,
+    natalHandoff: 0,
     raining: false,
     rainCurrent: 0,
     lightning: 0,

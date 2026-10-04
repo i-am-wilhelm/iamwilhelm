@@ -24,5 +24,10 @@ export async function boot() {
     jobs.push(import('./natal/mount').then((m) => m.mountNatalHero()));
   }
 
+  // The Pleiades receive the hero's planets: only where the nodes exist.
+  if (document.querySelector('.pleiades')) {
+    jobs.push(import('./cluster').then((m) => m.initCluster()));
+  }
+
   await Promise.allSettled(jobs);
 }

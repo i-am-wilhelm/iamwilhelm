@@ -136,6 +136,11 @@ export async function initPipeline(
     on('iw:weather', ({ raining }) => {
       state.raining = raining;
     }),
+
+    // The natal hero hands its scattered planets to the next sky.
+    on('iw:natal-phase', ({ progress, phase }) => {
+      state.natalHandoff = phase === 'dissolve' ? clamp((progress - 0.75) / 0.25, 0, 1) : 0;
+    }),
   );
 
   // ---- Resize ----------------------------------------------------------
