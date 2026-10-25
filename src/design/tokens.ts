@@ -19,6 +19,7 @@ export const accents = {
   underworld: '#3d6b52',  // Orpheus — asphodel/laurel green over shade
   monsoon: '#2e5f6e',     // PNW rain — storm teal
   writings: '#6a3fa0',    // Pharmakon/Medea — fumigation purple (fixed by spec)
+  lineage: '#6a3fa0',     // Citations/Pan — the same fumigation purple
   babalon: '#a01f1f',     // Babalon — red (fixed by spec)
 } as const;
 
@@ -45,6 +46,7 @@ export const sections: SectionSpec[] = [
   { id: 'philosophy',  title: 'Philosophy',    symbols: ['atlas', 'columbia', 'pallas-athena'],      smokeSide: 'left',  drone: 'D2' },
   { id: 'underworld',  title: 'Underworld',    symbols: ['orpheus', 'eurydice', 'furies', 'maat'],   smokeSide: 'right', drone: 'A2' },
   { id: 'monsoon',     title: 'Monsoon',       symbols: ['saturn', 'sol-niger'],                     smokeSide: 'left',  drone: 'E2' },
+  { id: 'lineage',     title: 'Lineage',       symbols: ['pan'],                                     smokeSide: 'right', drone: 'B2' },
 ];
 
 /**

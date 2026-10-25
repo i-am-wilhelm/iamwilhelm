@@ -23,10 +23,13 @@ interface CardSpec {
 }
 
 const cards: Record<string, CardSpec> = {
-  medea: {
-    src: '/assets/medea.webp',
-    alt: 'Medea facecard: purple-stained pharmakis of Colchis.',
-  },
+  // TODO(owner): supply the Medea facecard at public/assets/medea.webp and
+  // restore this entry. Brief: purple accent (--accent-writings, #6a3fa0),
+  // messy purple stains under the eyes and on the mouth, purple-stained
+  // hair, poison arrows, high cheekbones, warm but subtly terrifying.
+  // Owner-supplied or commissioned art only; the site uses no generated
+  // imagery. Until the entry returns, posts render without a facecard.
+  // medea: { src: '/assets/medea.webp', alt: 'Medea facecard: purple-stained pharmakis of Colchis.' },
 };
 
 const card = cards[symbol];

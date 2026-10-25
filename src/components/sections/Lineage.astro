@@ -1,0 +1,154 @@
+---
+/**
+ * LINEAGE — the citation section. The scholarly debts behind the writings,
+ * under Pan's card: the horned reader of the wild margins. Purple
+ * fumigation (same vapor register as Pharmakon/Medea); the WebGL pipeline
+ * renders the smoke and constellation from the Section data-* attributes.
+ *
+ * Symbology guardrails hold: Pan is classical Arcadian, from the approved
+ * pool in src/design/tokens.ts.
+ */
+import Section from '../Section.astro';
+import type { SectionSpec } from '../../design/tokens';
+
+interface Props {
+  spec: SectionSpec;
+}
+
+const { spec } = Astro.props;
+---
+
+<Section spec={spec}>
+  <!--
+    TODO(owner): Pan card art, owner-supplied or commissioned only (the site
+    uses no generated imagery). The slot waits at /assets/pan.webp (4:5,
+    dark desaturated ground, saturation painted into purple fumigation focal
+    zones per spec §2.1). Until the file lands the figure degrades to the
+    Π glyph placeholder below.
+  -->
+  <figure class="pan-card" data-egg-anchor="lineage-pan">
+    <img
+      src="/assets/pan.webp"
+      alt="Pan facecard: the horned reader, wreathed in purple fumigation."
+      loading="lazy"
+      onerror="this.closest('.pan-card').classList.add('pan-card--absent')"
+    />
+    <span class="pan-fallback greek" aria-hidden="true">Π</span>
+  </figure>
+
+  <h2>Lineage</h2>
+  <p class="frame">
+    The readings here stand on the work of translators who render the
+    classical world as it is written, with the pharmacology intact.
+  </p>
+
+  <ol class="citations">
+    <li>
+      <span class="cite-name">Dr. Ammon Hillman</span>
+      <span class="cite-work">
+        classicist and translator; Ph.D. in classics on ancient Greek and
+        Roman pharmacy; author of <cite>The Chemical Muse: Drug Use and the
+        Roots of Western Civilization</cite> (2008). His program is the one
+        this site reads by: take the lexicons at their word, and let
+        <span lang="grc" class="greek">φάρμακον</span> mean everything it
+        means.
+      </span>
+    </li>
+    <li>
+      <span class="cite-name">The library</span>
+      <span class="cite-work">
+        the index of this tradition's translators is kept by peers at
+        <a href="https://www.hypatiagnostikoi.com/" rel="noopener">hypatiagnostikoi.com</a>.
+      </span>
+    </li>
+  </ol>
+
+  <div class="todo-block">
+    TODO(owner): personal lineage copy, in your own voice, on how this
+    library grounds the deconstruction work. Arriving soon per the owner;
+    the frame above holds the register until then.
+  </div>
+</Section>
+
+<style>
+  h2 {
+    text-align: center;
+  }
+
+  .pan-card {
+    position: relative;
+    width: min(18rem, 60vw);
+    margin: 0 auto 2.4rem;
+    /* Feather the card into the field, kin to the hero portrait. */
+    -webkit-mask-image: radial-gradient(ellipse at 50% 42%, #000 46%, rgba(0, 0, 0, 0) 78%);
+    mask-image: radial-gradient(ellipse at 50% 42%, #000 46%, rgba(0, 0, 0, 0) 78%);
+  }
+
+  .pan-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .pan-fallback {
+    display: none;
+  }
+
+  .pan-card--absent img {
+    display: none;
+  }
+
+  .pan-card--absent .pan-fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border: 1px dashed var(--ink-dim);
+    font-size: 4rem;
+    color: var(--section-accent, var(--ink-dim));
+  }
+
+  .frame {
+    text-align: center;
+    max-width: 36rem;
+    margin: 0 auto 2.4rem;
+    color: var(--ink);
+  }
+
+  .citations {
+    list-style: none;
+    max-width: 38rem;
+    margin: 0 auto;
+  }
+
+  .citations li {
+    padding: 1.2rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--section-accent) 40%, transparent);
+  }
+
+  .cite-name {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--section-accent, var(--ink));
+    margin-bottom: 0.4rem;
+  }
+
+  .cite-work {
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  .cite-work cite {
+    font-style: italic;
+  }
+
+  .cite-work a {
+    color: var(--section-accent, var(--ink));
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

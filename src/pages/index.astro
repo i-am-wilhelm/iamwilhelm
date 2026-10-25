@@ -5,6 +5,7 @@ import Cluster from '../components/sections/Cluster.astro';
 import Philosophy from '../components/sections/Philosophy.astro';
 import Underworld from '../components/sections/Underworld.astro';
 import Monsoon from '../components/sections/Monsoon.astro';
+import Lineage from '../components/sections/Lineage.astro';
 import { sections } from '../design/tokens';
 
 const bySection = Object.fromEntries(sections.map((s) => [s.id, s]));
@@ -16,6 +17,7 @@ const bySection = Object.fromEntries(sections.map((s) => [s.id, s]));
   <Philosophy spec={bySection.philosophy} />
   <Underworld spec={bySection.underworld} />
   <Monsoon spec={bySection.monsoon} />
+  <Lineage spec={bySection.lineage} />
 
   <!-- The dawn coda: the descent-and-return closes at first light. Empty
        until the hunt is held; the dawn gate (src/scripts/eggs/dawn.ts)
