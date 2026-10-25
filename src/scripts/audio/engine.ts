@@ -27,6 +27,7 @@
 
 import * as Tone from 'tone';
 import { meter, sections } from '../../design/tokens';
+import { emit } from '../events';
 import { SEQ_ROW_NAMES, STEPS } from './grid';
 
 type StepListener = (step: number) => void;
@@ -186,6 +187,9 @@ export class PitEngine {
   private onEighth(time: number): void {
     const step = this.step;
     this.step = (this.step + 1) % STEPS;
+
+    // The visual knock (src/scripts/clock.ts) locks to this grid.
+    emit('iw:transport-eighth', { step, inMs: Math.max(0, (time - Tone.now()) * 1000) });
 
     if (this.scoreOn) this.playScoreStep(step, time);
     if (this.seqOn) this.playSeqStep(step, time);

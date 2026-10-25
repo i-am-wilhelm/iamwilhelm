@@ -53,22 +53,24 @@ export const sections: SectionSpec[] = [
  * cross-to-cube, pan, thoth-hermes-trismegistus, columbia-pallas.
  */
 
+/** One site tempo: the score, the reveals, and the visual clock all read it. */
+const BPM = 84;
+
 /** Odd-meter timing constants shared by animation and audio. */
 export const meter = {
   /** The site's signature meter: 7/8, grouped 2+2+3. */
   septuple: [2, 2, 3],
   beatsPerBar: 7,
   /** Base tempo for the score and scroll-linked pulse work. */
-  bpm: 84,
+  bpm: BPM,
   /**
    * One eighth-note in ms for the visual clock (src/scripts/clock.ts — "the
-   * knock" the natal hero breathes to). NOTE the mismatch: 300 ms is the
-   * tuned prototype value (quarter = 100 bpm); the Tone transport and the
-   * copy-reveal staggers still run at `bpm` 84 (eighth ≈ 357 ms). Unifying
-   * the two tempos is a documented follow-up; the tinker dial on /lab/hero
-   * ranges 230–420 so both can be heard.
+   * knock" the natal hero breathes to): derived from the same bpm as the
+   * Tone transport (≈357 ms), and phase-locked to that transport whenever
+   * the orchestra pit is playing (iw:transport-eighth). The tinker dial on
+   * /lab/hero can detune it for comparison; the pit re-locks it.
    */
-  eighthMs: 300,
+  eighthMs: 60000 / BPM / 2,
 } as const;
 
 /**

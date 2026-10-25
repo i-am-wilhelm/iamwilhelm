@@ -81,9 +81,10 @@ portrait (`dioscuri.ts` — the photo plus a glyph-dither twin drawn from the
 site's Greek atlas), and the mount (`mount.ts`) that owns the single rAF,
 the scroll choreography (face → ascent → dissolve, emitting
 `iw:natal-phase`) and the `?tinker=1` overlay. The site-wide 7/8 clock it
-breathes to is `src/scripts/clock.ts` ("the knock", `iw:knock`); its
-300 ms eighth is deliberately not yet unified with the 84 bpm Tone
-transport — see `meter.eighthMs` in tokens.ts. Workbench route: `/lab/hero`
+breathes to is `src/scripts/clock.ts` ("the knock", `iw:knock`): one eighth
+at the site's 84 bpm (`meter.eighthMs`), phase-locked to the Tone transport
+whenever the orchestra pit is playing (`iw:transport-eighth`), so the
+visual knock and the audible knock are one knock. Workbench route: `/lab/hero`
 (`?chart=test` renders a throwaway chart; `?tinker=1` opens the dials).
 
 ## Orchestra pit
