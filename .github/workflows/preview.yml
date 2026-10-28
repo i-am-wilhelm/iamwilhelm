@@ -32,7 +32,8 @@ jobs:
       - name: Verify outbound links
         run: node scripts/verify-links.mjs
       - name: Keep the preview out of search engines
-        run: printf '/*\n  X-Robots-Tag: noindex, nofollow\n' >> dist/_headers
+        run: |
+          printf '/*\n  X-Robots-Tag: noindex, nofollow\n' >> dist/_headers
       - name: Deploy preview worker
         id: deploy
         uses: cloudflare/wrangler-action@v3
