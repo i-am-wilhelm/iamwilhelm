@@ -1,0 +1,144 @@
+---
+/**
+ * Layout for the public museum pages (/, /gallery, /writings, 404): full
+ * meta, Open Graph and Twitter cards, JSON-LD, self-hosted font preloads,
+ * the sticky nav, and the colophon footer. No WebGL stage, no dither, no
+ * audio: those belong to the archived homepage (/atelier) and the poem
+ * pages, which keep using Base.astro.
+ */
+import '../styles/museum.css';
+import Nav from '../components/museum/Nav.astro';
+import SiteFooter from '../components/museum/SiteFooter.astro';
+import {
+  ALM_URL,
+  BACKGOLD_URL,
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  MANIFESTO_URL,
+  SITE_NAME,
+  SITE_URL,
+} from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path of the share image, relative to the site root. */
+  image?: string;
+  imageAlt?: string;
+  home?: boolean;
+  current?: 'gallery' | 'writings';
+  noindex?: boolean;
+  /** Extra JSON-LD nodes for this page (merged into the @graph). */
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  image = '/og.png',
+  imageAlt = 'Devoted to something, but no one knows what. Michael Wilhelm, set on ivory beneath a gilt zodiac ring.',
+  home = false,
+  current,
+  noindex = false,
+  schema = [],
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+const imageUrl = new URL(image, SITE_URL).href;
+
+const person = {
+  '@type': 'Person',
+  '@id': `${SITE_URL}/#person`,
+  name: 'Michael Wilhelm',
+  url: `${SITE_URL}/`,
+  image: `${SITE_URL}/assets/portrait.webp`,
+  jobTitle: ['CEO & Cofounder, BackGold', 'Founder, Advancing Liberty Media', 'Writer'],
+  worksFor: [
+    { '@type': 'Organization', '@id': `${BACKGOLD_URL}/#organization`, name: 'BackGold', url: BACKGOLD_URL },
+    { '@type': 'Organization', '@id': `${ALM_URL}/#organization`, name: 'Advancing Liberty Media', url: ALM_URL },
+  ],
+  subjectOf: { '@type': 'CreativeWork', name: 'The Great Libertarian Data Loss', url: MANIFESTO_URL },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    person,
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: `${SITE_URL}/`,
+      name: SITE_NAME,
+      publisher: { '@id': `${SITE_URL}/#person` },
+      inLanguage: 'en',
+    },
+    ...schema,
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" id="top">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#f4eee2" />
+    <meta name="color-scheme" content="light" />
+    <meta name="author" content="Michael Wilhelm" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preload" href="/fonts/cormorant-garamond-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content={home ? 'profile' : 'website'} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:locale" content="en_US" />
+    {home && <meta property="profile:first_name" content="Michael" />}
+    {home && <meta property="profile:last_name" content="Wilhelm" />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>
+      // Reveal-on-scroll arms only with script and without reduced motion;
+      // if museum.ts never boots, everything shows after a short grace.
+      (function (d) {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('js-reveal');
+        setTimeout(function () {
+          if (!d.classList.contains('museum-ready')) d.classList.remove('js-reveal');
+        }, 3500);
+      })(document.documentElement);
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav home={home} current={current} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      import { initMuseum } from '../scripts/museum';
+      initMuseum();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,249 @@
+---
+/**
+ * The console: a 16-bit CRT that boots and shows the slotted project's hero,
+ * pixelated like a title screen, ported from advancing-liberty-media2
+ * (src/components/Console.astro). Cartridges with a live scene then play it
+ * on the live canvas over the still. The deck below holds the inserted
+ * cartridge. Behaviour lives in src/scripts/case/console.ts, imported only
+ * once the case comes within a screen of the viewport.
+ */
+import { spriteSvg } from "./sprites";
+interface Props {
+  /** Slug inserted on first view. */
+  boot?: string;
+}
+const { boot } = Astro.props;
+---
+
+<div class="console" data-console data-boot={boot}>
+  <div class="crt">
+    <div class="crt__screen" data-screen>
+      <canvas class="crt__canvas pixelated" data-screen-canvas width="640" height="400"></canvas>
+      <canvas class="crt__live" data-screen-live-canvas hidden></canvas>
+      <div class="crt__idle arcade" data-screen-idle><span class="blink">Insert cartridge</span></div>
+      <div class="crt__boot" data-screen-boot aria-hidden="true">
+        <span class="crt__boot-mark" set:html={spriteSvg("torch")} />
+        <span class="arcade crt__boot-logo">Advancing Liberty</span>
+        <span class="mono crt__boot-sub">Entertainment system · 16-bit</span>
+      </div>
+      <div class="crt__title" data-screen-title hidden>
+        <span class="crt__hud arcade"><span data-screen-kind></span><span data-screen-code></span></span>
+        <div class="crt__titlecard">
+          <span class="arcade crt__name" data-screen-name></span>
+          <span class="mono crt__tagline" data-screen-tagline></span>
+          <a class="arcade crt__start" data-screen-start href="#" rel="noopener" target="_blank">
+            <span><span class="blink">▶</span> Press start</span><span class="crt__start-domain mono" data-screen-domain></span>
+          </a>
+        </div>
+      </div>
+      <div class="crt__nosignal arcade" data-screen-nosignal hidden>No signal</div>
+      <div class="crt__scan" aria-hidden="true"></div>
+      <div class="crt__glass" aria-hidden="true"></div>
+    </div>
+    <div class="crt__chin">
+      <span class="label crt__brand">ALM-16</span>
+      <span class="crt__led" data-led aria-hidden="true"></span>
+      <span class="mono crt__chin-note">Now playing: <span data-screen-now>nothing</span></span>
+    </div>
+    <p class="sr-only" aria-live="polite" data-screen-live></p>
+  </div>
+
+  <div class="deck">
+    <div class="deck__slot" data-slot>
+      <span class="deck__slot-edge" aria-hidden="true"></span>
+      <div class="deck__bay" data-bay></div>
+      <p class="deck__mini mono" data-mini aria-hidden="true">Empty slot</p>
+    </div>
+    <div class="deck__controls">
+      <button type="button" class="deck__btn" data-eject aria-label="Eject the cartridge">
+        <span class="label">Eject</span>
+      </button>
+      <span class="deck__power label"><span class="deck__power-led" data-power></span>Power</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Lazy: the console script (and any live scene) loads only as the case
+  // approaches the viewport.
+  const el = document.querySelector<HTMLElement>("[data-console]");
+  if (el) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        import("../../../scripts/case/console").then((m) => m.initConsoles());
+      },
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(el);
+  }
+</script>
+
+<style>
+  .console { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; min-width: 0; }
+  .console [hidden] { display: none !important; }
+
+  /* ---- CRT ---- */
+  .crt {
+    position: relative;
+    padding: 18px 18px 12px;
+    background: linear-gradient(180deg, #2A2521, #17140F 70%, #100E0B);
+    border: 2px solid #0A0908;
+    border-radius: 18px 18px 10px 10px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 30px 60px rgba(0, 0, 0, 0.55);
+  }
+  .crt__screen {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: #050403;
+    border-radius: 12px / 14px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 2px #000, inset 0 0 40px rgba(0, 0, 0, 0.9);
+    isolation: isolate;
+  }
+  .crt__canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 240ms ease; }
+  .is-title .crt__canvas { opacity: 1; }
+  /* Live scene: fades in over the resolved still once its module has mounted. */
+  .crt__live { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 700ms ease; }
+  .crt__live.is-on { opacity: 1; }
+
+  .crt__idle, .crt__boot, .crt__nosignal {
+    position: absolute; inset: 0;
+    display: grid; place-content: center; justify-items: center; gap: 0.75rem;
+    text-align: center;
+    color: var(--bone-soft);
+  }
+  .crt__idle { font-size: 0.75rem; color: var(--gold); }
+  .crt__nosignal { color: var(--spark); background: repeating-linear-gradient(0deg, #101010 0 8px, #181818 8px 16px); }
+  .is-title .crt__idle, .is-booting .crt__idle, .is-off .crt__idle { display: none; }
+  .crt__boot { display: none; background: var(--carbon); }
+  .is-booting .crt__boot { display: grid; animation: boot-in 320ms steps(4, end) both; }
+  .crt__boot-mark :global(svg) { width: 56px; height: 56px; image-rendering: pixelated; animation: boot-flicker 120ms steps(2) 6; }
+  .crt__boot-logo { font-size: clamp(0.75rem, 0.5rem + 1.2vw, 1.125rem); color: var(--gold); }
+  .crt__boot-sub { color: var(--bone-muted); }
+  @keyframes boot-in { from { opacity: 0; transform: scaleY(0.02); } to { opacity: 1; transform: scaleY(1); } }
+  @keyframes boot-flicker { 50% { opacity: 0.2; } }
+
+  .crt__title { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr; }
+  .crt__hud {
+    display: flex; justify-content: space-between;
+    padding: 0.75rem 0.9rem;
+    font-size: 0.5625rem;
+    color: var(--gold-hot);
+    text-shadow: 2px 2px 0 var(--carbon);
+  }
+  .crt__titlecard {
+    align-self: end;
+    display: grid;
+    gap: 0.5rem;
+    padding: 2.5rem 1rem 1rem;
+    background: linear-gradient(0deg, rgba(5, 4, 3, 0.96) 0%, rgba(5, 4, 3, 0.75) 60%, transparent 100%);
+  }
+  .crt__name { font-size: clamp(0.6875rem, 0.45rem + 1.1vw, 1rem); color: var(--bone); text-shadow: 3px 3px 0 var(--ember-deep); line-height: 1.5; }
+  .crt__tagline { color: var(--bone-soft); max-width: 52ch; }
+  .crt__start {
+    display: inline-flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap;
+    margin-top: 0.4rem;
+    font-size: 0.6875rem;
+    color: var(--gold);
+    text-decoration: none;
+    text-shadow: 2px 2px 0 var(--carbon);
+  }
+  .crt__start:hover { color: var(--gold-hot); }
+  .crt__start-domain { color: var(--bone-muted); text-shadow: none; }
+
+  .crt__scan {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0 1px, transparent 1px 3px),
+      radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+    mix-blend-mode: multiply;
+  }
+  .is-booting .crt__scan { animation: scan-roll 0.9s linear infinite; }
+  @keyframes scan-roll { from { background-position: 0 0, 0 0; } to { background-position: 0 6px, 0 0; } }
+  .crt__glass {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.07) 0%, transparent 30%, transparent 70%, rgba(255, 255, 255, 0.03) 100%);
+  }
+  .crt__flash { animation: crt-flash 220ms ease-out; }
+  @keyframes crt-flash { 0% { filter: brightness(4) contrast(0.4); } 100% { filter: none; } }
+
+  .crt__chin {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 0.75rem 0.4rem 0.2rem;
+  }
+  .crt__brand { color: var(--bone-muted); font-weight: 700; }
+  .crt__led { width: 8px; height: 8px; background: #3A2A20; border-radius: 50%; transition: background 200ms, box-shadow 200ms; }
+  .crt__led.is-on { background: var(--ember); box-shadow: 0 0 8px var(--ember); }
+  .crt__chin-note { margin-left: auto; min-width: 0; color: var(--bone-muted); }
+  .crt__chin-note span { color: var(--bone-soft); }
+
+  /* ---- Deck ---- */
+  .deck {
+    position: relative;
+    margin-top: -4px;
+    padding: 22px 26px 18px;
+    background: linear-gradient(180deg, #1F1B17, #14110E);
+    border: 2px solid #0A0908;
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.25rem;
+    align-items: end;
+  }
+  .deck__slot { position: relative; min-height: 212px; }
+  .deck__slot-edge {
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 10px;
+    background: #0A0908;
+    border-radius: 3px;
+    box-shadow: inset 0 3px 0 #000, inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .deck__bay { position: relative; padding-top: 6px; max-width: 360px; }
+  .deck__bay .cart { pointer-events: none; }
+  .deck__bay .cart .cart__foot { display: none; }
+  .deck__bay .cart .cart__body { transform: none !important; opacity: 1 !important; filter: none !important; border-style: solid !important; }
+  .deck__bay .is-inserting { animation: cart-insert 480ms cubic-bezier(0.2, 0.9, 0.2, 1) both; }
+  .deck__bay .is-ejecting { animation: cart-eject 320ms cubic-bezier(0.4, 0, 0.8, 0.4) both; }
+  @keyframes cart-insert { from { transform: translateY(-70px); opacity: 0; } 70% { transform: translateY(4px); opacity: 1; } to { transform: translateY(0); } }
+  @keyframes cart-eject { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-80px); opacity: 0; } }
+  .deck__mini { display: none; color: var(--bone-soft); padding-top: 1rem; }
+  .deck__controls { display: grid; gap: 0.75rem; justify-items: end; }
+  .deck__btn {
+    background: #0F0D0A;
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding: 0.7rem 1rem 0.55rem;
+    box-shadow: 0 3px 0 #000, inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+  }
+  .deck__btn:active { transform: translateY(3px); box-shadow: 0 0 0 #000; }
+  .deck__btn .label { color: var(--bone-soft); }
+  .deck__power { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--bone-muted); }
+  .deck__power-led { width: 10px; height: 10px; background: #2A2420; border-radius: 50%; transition: background 200ms, box-shadow 200ms; }
+  .deck__power-led.is-on { background: var(--spark); box-shadow: 0 0 10px var(--spark); }
+
+  @media (max-width: 640px) {
+    /* Compact deck: the console stays sticky above the grid, so it has to be short. */
+    .crt { padding: 8px 8px 6px; border-radius: 12px 12px 6px 6px; }
+    .crt__chin { padding: 0.5rem 0.2rem 0; gap: 0.6rem; }
+    .crt__brand { display: none; }
+    .crt__chin-note { margin-left: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .deck { padding: 10px 12px 10px; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.75rem; }
+    .deck__bay { display: none; }
+    .deck__mini { display: block; padding-top: 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .deck__slot { min-height: 0; }
+    .deck__controls { grid-auto-flow: column; gap: 0.75rem; align-items: center; }
+    .deck__btn { padding: 0.5rem 0.7rem 0.4rem; }
+    .deck__power { font-size: 0.625rem; }
+    .crt__titlecard { padding: 1.25rem 0.6rem 0.6rem; gap: 0.35rem; }
+    .crt__tagline { display: none; }
+    .crt__hud { padding: 0.5rem 0.6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .is-booting .crt__boot, .crt__boot-mark :global(svg), .is-booting .crt__scan, .deck__bay .is-inserting, .deck__bay .is-ejecting, .crt__flash { animation: none !important; }
+  }
+</style>

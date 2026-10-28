@@ -1,0 +1,94 @@
+---
+/**
+ * The foyer's hairline zodiac ring, engraved in gilt: three concentric
+ * rings, a degree scale, twelve house divisions, and the twelve signs.
+ * Geometry is computed at build time into a handful of paths. museum.ts
+ * turns it slowly with scroll ([data-ring]); under reduced motion it holds
+ * still.
+ */
+import { GLYPHS, SIGNS } from './zodiac';
+
+const C = 400;
+const R_OUT = 392;
+const R_SCALE = 374;
+const R_GLYPH_OUT = 362;
+const R_GLYPH_IN = 300;
+const R_INNER = 232;
+
+const rad = (deg: number) => ((deg - 90) * Math.PI) / 180;
+const pt = (r: number, deg: number) =>
+  `${(C + r * Math.cos(rad(deg))).toFixed(2)} ${(C + r * Math.sin(rad(deg))).toFixed(2)}`;
+
+let ticks = '';
+for (let d = 0; d < 360; d++) {
+  const len = d % 10 === 0 ? 14 : d % 5 === 0 ? 10 : 5;
+  ticks += `M${pt(R_SCALE, d)}L${pt(R_SCALE + len, d)}`;
+}
+
+let divisions = '';
+for (let i = 0; i < 12; i++) {
+  divisions += `M${pt(R_GLYPH_IN, i * 30)}L${pt(R_SCALE, i * 30)}`;
+}
+
+// Fine hairline spokes from the inner ring toward the centre, one per sign.
+let spokes = '';
+for (let i = 0; i < 12; i++) {
+  spokes += `M${pt(R_INNER, i * 30)}L${pt(R_INNER - 26, i * 30)}`;
+}
+
+const GLYPH_SIZE = 30;
+const glyphs = SIGNS.map((sign, i) => {
+  const deg = i * 30 + 15;
+  const r = (R_GLYPH_OUT + R_GLYPH_IN) / 2;
+  const x = C + r * Math.cos(rad(deg));
+  const y = C + r * Math.sin(rad(deg));
+  const s = GLYPH_SIZE / 24;
+  return {
+    d: GLYPHS[sign],
+    transform: `translate(${(x - GLYPH_SIZE / 2).toFixed(2)} ${(y - GLYPH_SIZE / 2).toFixed(2)}) rotate(${deg} ${GLYPH_SIZE / 2} ${GLYPH_SIZE / 2}) scale(${s})`,
+  };
+});
+---
+
+<div class="ring" aria-hidden="true">
+  <svg class="ring__svg" viewBox="0 0 800 800" fill="none" stroke="currentColor" data-ring>
+    <g stroke-width="1" vector-effect="non-scaling-stroke">
+      <circle cx={C} cy={C} r={R_OUT} vector-effect="non-scaling-stroke" />
+      <circle cx={C} cy={C} r={R_SCALE} vector-effect="non-scaling-stroke" />
+      <circle cx={C} cy={C} r={R_GLYPH_IN} vector-effect="non-scaling-stroke" />
+      <circle cx={C} cy={C} r={R_INNER} vector-effect="non-scaling-stroke" stroke-dasharray="1 5" />
+      <circle cx={C} cy={C} r={R_INNER - 26} vector-effect="non-scaling-stroke" opacity="0.6" />
+      <path d={ticks} vector-effect="non-scaling-stroke" opacity="0.7" />
+      <path d={divisions} vector-effect="non-scaling-stroke" />
+      <path d={spokes} vector-effect="non-scaling-stroke" opacity="0.6" />
+    </g>
+    <g stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+      {glyphs.map((g) => <path d={g.d} transform={g.transform} vector-effect="non-scaling-stroke" />)}
+    </g>
+  </svg>
+</div>
+
+<style>
+  .ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(118vw, 54rem, 118svh);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    color: var(--gilt);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .ring__svg {
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+    transform: rotate(var(--ring-turn, 0deg));
+  }
+  @media (max-width: 640px) {
+    .ring {
+      opacity: 0.36;
+    }
+  }
+</style>

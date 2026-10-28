@@ -1,0 +1,99 @@
+---
+/**
+ * The writings index: title, date, and description for each published
+ * piece, newest first. Shared by Room V (latest few) and /writings (all).
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  limit?: number;
+  level?: 2 | 3;
+}
+const { limit, level = 3 } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+
+const all = (await getCollection('writings', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const posts = limit ? all.slice(0, limit) : all;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<ol class="writings" role="list">
+  {
+    posts.map((post, i) => (
+      <li class="entry" data-reveal>
+        <span class="entry__num mono">V.{String(i + 1).padStart(2, '0')}</span>
+        <div class="entry__body">
+          <H class="entry__title">
+            <a href={`/writings/${post.id}/`}>{post.data.title}</a>
+          </H>
+          <p class="entry__date">
+            <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+          </p>
+          {post.data.description && <p class="entry__desc">{post.data.description}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .writings {
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+  .entry {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: clamp(1.4rem, 1rem + 1.5vw, 2.2rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .entry__num {
+    padding-top: 0.6rem;
+    color: var(--gilt-ink);
+  }
+  .entry__body {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .entry__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.6rem);
+    line-height: 1.1;
+  }
+  .entry__title a {
+    text-decoration: none;
+    background-image: linear-gradient(var(--gilt), var(--gilt));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .entry__title a:hover,
+  .entry__title a:focus-visible {
+    background-size: 100% 1px;
+  }
+  .entry__date {
+    color: var(--ink-faint);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+  .entry__desc {
+    max-width: var(--measure);
+    color: var(--ink-soft);
+  }
+  @media (max-width: 480px) {
+    .entry {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.4rem;
+    }
+    .entry__num {
+      padding-top: 0;
+    }
+  }
+</style>

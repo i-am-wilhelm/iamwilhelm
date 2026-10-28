@@ -1,0 +1,176 @@
+---
+/**
+ * A game cartridge for one client site, ported from advancing-liberty-media2
+ * (src/components/Cartridge.astro) with its character intact. The label
+ * carries the pixel sprite; the button inserts it into the console
+ * (src/scripts/case/console.ts). Shown in the Room III display case.
+ */
+import type { Cart } from "../../../data/portfolio";
+import { spriteSvg } from "./sprites";
+interface Props {
+  item: Cart;
+  gold?: boolean;
+  size?: "grid" | "flagship";
+}
+const { item, gold = false, size = "grid" } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={["cart", gold && "cart--gold", `cart--${size}`]}
+  data-cart={item.slug}
+  data-name={item.name}
+  data-url={item.url}
+  data-domain={item.domain}
+  data-tagline={item.tagline}
+  data-kind={item.kind}
+  data-code={item.code}
+  data-shot={`/work/${item.slug}.webp`}
+  data-live={item.live}
+  aria-pressed="false"
+>
+  <span class="cart__body">
+    <span class="cart__notch" aria-hidden="true"></span>
+    <span class="cart__label">
+      <span class="cart__band" aria-hidden="true"><span class="label cart__code">{item.code}</span><span class="label cart__kindtag">{item.kind}</span></span>
+      <span class="cart__art" set:html={spriteSvg(item.sprite ?? item.slug)} />
+      <span class="cart__name">{item.name}</span>
+      <span class="cart__meta mono">{item.domain}</span>
+    </span>
+    <span class="cart__ridges" aria-hidden="true"></span>
+  </span>
+  <span class="cart__foot">
+    <span class="label cart__insert"><span class="cart__insert-on">Insert</span><span class="cart__insert-off">In console</span></span>
+    <span class="mono cart__year">{item.year}</span>
+  </span>
+</button>
+
+<style>
+  .cart {
+    min-width: 0;
+    --plastic: #24201C;
+    --plastic-dark: #16130F;
+    --plastic-edge: #3A332C;
+    --band: linear-gradient(90deg, var(--ember), var(--gold));
+    position: relative;
+    display: grid;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    color: var(--bone);
+    transition: transform 160ms ease;
+  }
+  .cart:hover { transform: translateY(-4px); }
+  .cart:active { transform: translateY(0); }
+  .cart:focus-visible { outline: 2px solid var(--spark); outline-offset: 4px; }
+  .cart__body {
+    position: relative;
+    display: block;
+    padding: 10px 10px 16px;
+    background: linear-gradient(180deg, var(--plastic-edge), var(--plastic) 12%, var(--plastic-dark));
+    border: 2px solid var(--plastic-dark);
+    border-radius: 6px 6px 3px 3px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 0 var(--plastic-dark), 0 14px 24px rgba(0, 0, 0, 0.45);
+    transition: box-shadow 160ms ease;
+  }
+  .cart:hover .cart__body { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 6px 0 var(--plastic-dark), 0 18px 30px rgba(255, 90, 31, 0.18); }
+  .cart__notch {
+    position: absolute;
+    top: -2px; left: 50%;
+    width: 38%; height: 8px;
+    transform: translateX(-50%);
+    background: var(--plastic-dark);
+    border-radius: 0 0 4px 4px;
+  }
+  .cart__label {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 0.85rem;
+    row-gap: 0.25rem;
+    padding: 0.8rem 0.85rem 0.85rem;
+    margin-top: 6px;
+    background: radial-gradient(120% 100% at 0% 0%, #1E1A16, var(--carbon) 70%);
+    border: 1px solid var(--soot);
+    overflow: hidden;
+  }
+  .cart__band {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 0.5rem 0.2rem;
+    margin: -0.8rem -0.85rem 0.5rem;
+    background: var(--band);
+    color: var(--carbon);
+  }
+  .cart__code, .cart__kindtag { color: var(--carbon); font-weight: 700; font-size: 0.625rem; }
+  .cart__art { grid-row: 2 / span 2; align-self: start; width: 56px; height: 56px; }
+  .cart__art :global(svg) { width: 100%; height: 100%; }
+  .cart__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--bone);
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .cart__meta { align-self: end; color: var(--bone-muted); overflow-wrap: anywhere; }
+  .cart__ridges {
+    position: absolute;
+    left: 14px; right: 14px; bottom: 4px;
+    height: 8px;
+    background: repeating-linear-gradient(90deg, var(--plastic-edge) 0 3px, transparent 3px 8px);
+    opacity: 0.6;
+  }
+  .cart__foot { display: flex; justify-content: space-between; align-items: baseline; padding-inline: 2px; }
+  .cart__insert { color: var(--gold); }
+  .cart__insert-off { display: none; color: var(--spark); }
+  .cart[aria-pressed="true"] .cart__insert-on { display: none; }
+  .cart[aria-pressed="true"] .cart__insert-off { display: inline; }
+  .cart__year { color: var(--bone-muted); }
+
+  /* Slotted: the cartridge leaves its bay; an outline stays behind. */
+  .cart[aria-pressed="true"] .cart__body { opacity: 0.28; filter: grayscale(0.7); transform: scale(0.96); box-shadow: none; border-style: dashed; border-color: var(--smoke); }
+  .cart[aria-pressed="true"] { cursor: default; }
+  .cart[aria-pressed="true"]:hover { transform: none; }
+
+  /* Gold cartridge: the flagship. */
+  .cart--gold {
+    --plastic: #C99A22;
+    --plastic-dark: #8A6410;
+    --plastic-edge: #F2C64D;
+    --band: linear-gradient(90deg, var(--carbon), #2A2420);
+  }
+  .cart--gold .cart__body {
+    background: linear-gradient(120deg, #F2C64D 0%, #C99A22 35%, #E6B83A 50%, #A97F16 75%, #F2C64D 100%);
+    background-size: 220% 100%;
+    animation: gold-shimmer 6s linear infinite;
+  }
+  .cart--gold .cart__label { background: radial-gradient(120% 100% at 0% 0%, #1E1A16, var(--carbon) 70%); border-color: var(--gold-deep); }
+  .cart--gold .cart__code, .cart--gold .cart__kindtag { color: var(--gold); }
+  .cart--gold .cart__ridges { background: repeating-linear-gradient(90deg, #8A6410 0 3px, transparent 3px 8px); }
+  .cart--gold .cart__insert { color: var(--gold-hot); }
+  @keyframes gold-shimmer { from { background-position: 0% 0; } to { background-position: 220% 0; } }
+
+  .cart--flagship { max-width: 420px; }
+  .cart--flagship .cart__art { width: 96px; height: 96px; }
+  .cart--flagship .cart__name { font-size: clamp(1.375rem, 1.1rem + 1.1vw, 1.875rem); }
+  .cart--flagship .cart__body { padding: 14px 14px 22px; }
+
+  @media (max-width: 480px) {
+    .cart--grid .cart__art { width: 44px; height: 44px; }
+    .cart--grid .cart__label { column-gap: 0.75rem; padding: 0.7rem 0.75rem 0.75rem; }
+    .cart--grid .cart__band { margin: -0.7rem -0.75rem 0.5rem; }
+    .cart--grid .cart__body { padding: 8px 8px 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cart--gold .cart__body { animation: none; } }
+</style>

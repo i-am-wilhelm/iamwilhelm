@@ -1,16 +1,36 @@
 ---
-import Base from '../layouts/Base.astro';
+/**
+ * 404 in the museum style: a closed door, and the way back to the foyer.
+ */
+import Museum from '../layouts/Museum.astro';
 ---
 
-<Base title="Lost · I Am Wilhelm">
-  <section class="section">
-    <div class="copy">
-      <h2 class="greek">οὐκ ἔστιν ὧδε</h2>
-      <p>This path leads nowhere. <a href="/" style="color: var(--ink)">Return to the surface.</a></p>
-      <!-- The psychopomp's door: bound only after the hunt reaches
-           awaiting-seal, and ships disabled (see eggs.config.ts). -->
-      <span data-egg-anchor="psychopomp-door" class="greek" aria-hidden="true"
-        style="position: absolute; bottom: -20vh; opacity: 0.18;">Δ</span>
-    </div>
+<Museum title="Not found · Michael Wilhelm" description="This room is closed." noindex>
+  <section class="lost wrap" aria-labelledby="lost-title">
+    <p class="lost__greek" lang="grc">οὐκ ἔστιν ὧδε</p>
+    <h1 class="lost__title display" id="lost-title">This room is closed.</h1>
+    <p class="lede">The page you asked for is elsewhere in the building, or was never hung.</p>
+    <a class="cta" href="/">Return to the foyer</a>
   </section>
-</Base>
+</Museum>
+
+<style>
+  .lost {
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+    min-height: 70vh;
+    align-content: center;
+    text-align: center;
+    padding-block: 4rem;
+  }
+  .lost__greek {
+    font-family: 'GFS Neohellenic', 'Palatino Linotype', 'Noto Serif', Georgia, serif;
+    color: var(--gilt-ink);
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+  }
+  .lost__title {
+    font-size: clamp(2.4rem, 1.6rem + 3.6vw, 4.6rem);
+  }
+</style>

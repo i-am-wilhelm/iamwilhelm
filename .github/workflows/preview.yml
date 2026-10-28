@@ -1,0 +1,46 @@
+name: Preview
+
+# Builds the branch, checks every outbound link, and deploys it to the
+# `iamwilhelm-preview` worker on workers.dev (wrangler.preview.jsonc). The
+# production worker and its custom domains are untouched; production still
+# deploys only from main (deploy.yml).
+#
+# Uses the same repository secrets as deploy.yml:
+#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
+on:
+  push:
+    branches: [museum-homepage]
+  workflow_dispatch:
+
+concurrency:
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npx astro build
+      - name: Verify outbound links
+        run: node scripts/verify-links.mjs
+      - name: Keep the preview out of search engines
+        run: printf '/*\n  X-Robots-Tag: noindex, nofollow\n' >> dist/_headers
+      - name: Deploy preview worker
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.preview.jsonc
+      - name: Preview URL
+        run: |
+          echo "Preview: ${{ steps.deploy.outputs.deployment-url }}"
+          echo "### Preview: ${{ steps.deploy.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"

@@ -8,9 +8,12 @@
     "build": "astro build",
     "preview": "wrangler dev",
     "deploy": "astro build && wrangler deploy",
-    "check": "astro check"
+    "check": "astro check",
+    "og": "astro build && node scripts/og-image.mjs",
+    "links": "node scripts/verify-links.mjs"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^5.7.0",
     "gsap": "^3.12.7",
     "ogl": "^1.0.11",

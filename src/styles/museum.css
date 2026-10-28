@@ -1,0 +1,356 @@
+/*
+ * The Museum: the public design system for iamwilhelm.com.
+ *
+ * Warm ivory gallery walls, deep charcoal ink, gilt as the one shared
+ * accent, and one muted hue per room (--room-accent). Paper grain is an SVG
+ * noise tile laid over the whole page (body::after); there is no dithering
+ * anywhere in this system. The archived homepage at /atelier keeps its own
+ * stylesheet (global.css) and never loads this one.
+ *
+ * Contrast: every text colour below clears WCAG AA (4.5:1) on both wall
+ * tones. --gilt and --rule are decorative only; gilt text uses --gilt-ink.
+ */
+
+/* ---- Fonts (self-hosted, latin subset, SIL OFL; see public/fonts) ---- */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-latin-300-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-latin-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/eb-garamond-latin-wght-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: italic;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/eb-garamond-latin-wght-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-var.woff2') format('woff2');
+}
+/* Metric-matched fallback so the swap does not shift the layout. */
+@font-face {
+  font-family: 'Garamond Fallback';
+  src: local('Georgia'), local('Times New Roman'), local('Times');
+  size-adjust: 92%;
+  ascent-override: 98%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
+:root {
+  --wall: #f4eee2;
+  --wall-deep: #ece4d4;
+  --wall-shade: #e3d9c6;
+  --ink: #1d1b18;
+  --ink-soft: #46403a;
+  --ink-faint: #625b50;
+  --gilt: #b08a43;
+  --gilt-bright: #c9a45c;
+  --gilt-ink: #7a5a1f;
+  --rule: rgba(29, 27, 24, 0.16);
+  --focus: #7a5a1f;
+
+  /* One muted hue per room. All clear 4.5:1 on both walls. */
+  --room-foyer: var(--gilt-ink);
+  --room-i: #7b4128;
+  --room-ii: #7c2c2c;
+  --room-iii: #34495b;
+  --room-iv: #5a3c63;
+  --room-v: #3d5a4b;
+  --room-accent: var(--gilt-ink);
+
+  --font-display: 'Cormorant Garamond', 'Garamond Fallback', Georgia, serif;
+  --font-text: 'EB Garamond', 'Garamond Fallback', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --measure: 36rem;
+  --page: 74rem;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+  --nav-h: 3.5rem;
+
+  /* Weighted ease: a slow start, a long settle. */
+  --ease-settle: cubic-bezier(0.16, 0.84, 0.24, 1);
+  /* One beat at the site tempo (84 bpm), shared with the poem pages. */
+  --beat: 714ms;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--wall);
+  /* Gallery light: a soft wash from above, falling off at the edges. */
+  background-image:
+    radial-gradient(120% 60% at 50% 0%, rgba(255, 252, 244, 0.7), transparent 70%),
+    radial-gradient(140% 100% at 50% 100%, rgba(120, 96, 60, 0.06), transparent 60%);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  line-height: 1.6;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  min-height: 100vh;
+}
+
+/*
+ * Paper grain: a fractal-noise tile laid over the wall. Fixed, so it
+ * reads as the surface of the room rather than something on the art. The
+ * tile is 220px and rasterizes once; no blend mode, so scrolling stays cheap.
+ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.27 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+::selection {
+  background: rgba(176, 138, 67, 0.3);
+  color: var(--ink);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100px;
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  background: var(--ink);
+  color: var(--wall);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* ---- Type ---------------------------------------------------------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.smallcaps {
+  font-variant-caps: all-small-caps;
+  font-feature-settings: 'c2sc', 'smcp';
+  letter-spacing: 0.14em;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.lede {
+  font-size: clamp(1.1875rem, 1.05rem + 0.6vw, 1.4375rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+.prose-museum p + p {
+  margin-top: 1.1em;
+}
+.prose-museum p {
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+/* ---- Layout -------------------------------------------------------- */
+
+.wrap {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---- Buttons and links --------------------------------------------- */
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 44px;
+  padding: 0.7rem 1.3rem 0.75rem;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: transparent;
+  font-family: var(--font-text);
+  font-size: 0.95rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.16em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 400ms var(--ease-settle),
+    color 400ms var(--ease-settle),
+    border-color 400ms var(--ease-settle);
+}
+.cta::after {
+  content: '';
+  width: 1.4rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 500ms var(--ease-settle);
+}
+.cta:hover,
+.cta:focus-visible {
+  background: var(--ink);
+  color: var(--wall);
+}
+.cta:hover::after,
+.cta:focus-visible::after {
+  width: 2.2rem;
+}
+.cta--gilt {
+  border-color: var(--gilt-ink);
+  color: var(--gilt-ink);
+}
+.cta--gilt:hover,
+.cta--gilt:focus-visible {
+  background: var(--gilt-ink);
+  border-color: var(--gilt-ink);
+  color: var(--wall);
+}
+
+.text-link {
+  color: var(--room-accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  transition: text-decoration-color 300ms ease;
+}
+.text-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---- Reveal: text settles into place, like the poem pages ----------- */
+/*
+ * Applied only once JS has marked the document (html.js-reveal), so the
+ * page is fully visible without script. Delays come from museum.ts, on the
+ * same 7/8 (2+2+3) meter the poem movements reveal to.
+ */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity calc(var(--beat) * 1.6) var(--ease-settle),
+    transform calc(var(--beat) * 2.2) var(--ease-settle);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js-reveal [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media print {
+  body::after,
+  .site-nav {
+    display: none;
+  }
+}

@@ -1,0 +1,35 @@
+---
+/**
+ * One zodiac sign as a hairline SVG mark (paths in ./zodiac.ts). Decorative
+ * by default; pass `label` when the glyph carries meaning on its own.
+ */
+import { GLYPHS, SIGN_NAMES, type Sign } from './zodiac';
+
+interface Props {
+  sign: Sign;
+  size?: number | string;
+  label?: boolean;
+  class?: string;
+}
+
+const { sign, size = 22, label = false, class: cls } = Astro.props;
+const dim = typeof size === 'number' ? `${size}px` : size;
+---
+
+<svg
+  class:list={['glyph', cls]}
+  viewBox="0 0 24 24"
+  width={dim}
+  height={dim}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.1"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={label ? 'img' : undefined}
+  aria-hidden={label ? undefined : 'true'}
+  aria-label={label ? SIGN_NAMES[sign] : undefined}
+  focusable="false"
+>
+  <path d={GLYPHS[sign]} />
+</svg>

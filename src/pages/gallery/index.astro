@@ -1,0 +1,80 @@
+---
+/**
+ * /gallery: the Gallery of Visualized Poetry on its own. Same framed tiles
+ * as the homepage's Room IV; new poems drop in from src/content/gallery.
+ */
+import Museum from '../../layouts/Museum.astro';
+import Placard from '../../components/museum/Placard.astro';
+import PoemGallery from '../../components/museum/PoemGallery.astro';
+import Meander from '../../components/museum/Meander.astro';
+import Colophon from '../../components/museum/Colophon.astro';
+import { SITE_URL } from '../../config/site';
+---
+
+<Museum
+  title="Gallery of Visualized Poetry · Michael Wilhelm"
+  description="Visualized poems by Michael Wilhelm, each framed and opening onto its own interactive page: PHARMAKON and The Keeper and the Flame."
+  current="gallery"
+  schema={[
+    {
+      '@type': 'CollectionPage',
+      '@id': `${SITE_URL}/gallery/#page`,
+      url: `${SITE_URL}/gallery/`,
+      name: 'Gallery of Visualized Poetry',
+      author: { '@id': `${SITE_URL}/#person` },
+    },
+  ]}
+>
+  <section class="page" aria-labelledby="gallery-page-title" style="--room-accent: var(--room-iv)">
+    <div class="page__inner wrap">
+      <div class="page__head">
+        <Placard
+          id="gallery-page-title"
+          level={1}
+          label="The Gallery"
+          title="Visualized Poetry"
+          medium="Poems written to be read slowly, each set on its own interactive page"
+          catalog="Cat. IV"
+        />
+        <div class="page__statement prose-museum" data-reveal>
+          <p class="lede">
+            Each poem here is staged as a page you walk through. Movements arrive one at a time and the text settles
+            into place as you read.
+          </p>
+          <p>Choose a frame to enter the poem. New work is hung here as it is finished.</p>
+        </div>
+      </div>
+      <PoemGallery level={2} />
+    </div>
+  </section>
+  <Meander />
+  <Colophon />
+</Museum>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem);
+  }
+  .page__inner {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+  .page__head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .page__statement {
+    padding-top: 0.5rem;
+    color: var(--ink-soft);
+  }
+  .page__statement .lede {
+    color: var(--ink);
+  }
+  @media (max-width: 820px) {
+    .page__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

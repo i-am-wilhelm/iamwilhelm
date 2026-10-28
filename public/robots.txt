@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /atelier
+Disallow: /lab/
+
+Sitemap: https://iamwilhelm.com/sitemap-index.xml

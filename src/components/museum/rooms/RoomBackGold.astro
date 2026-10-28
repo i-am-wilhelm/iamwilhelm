@@ -1,0 +1,274 @@
+---
+/**
+ * Room I: BackGold. CEO copy in a plain, general-market voice. Every fact
+ * here comes from the brief or the repos: the feature list, the email
+ * pricing (also in advancing-liberty-media2 src/content/site.ts), the
+ * organizations on the platform, and the DeFlock DFW quote.
+ */
+import Room from '../Room.astro';
+import Placard from '../Placard.astro';
+import { BACKGOLD_URL } from '../../../config/site';
+
+const capabilities = [
+  { title: 'Supporter CRM', body: 'Dynamic segments that update themselves as supporters act.' },
+  { title: 'Email and SMS', body: 'Outreach that reads from the same record it writes back to.' },
+  { title: 'Sites and petitions', body: 'A site and petition builder that files every signature into the CRM.' },
+  { title: 'Fundraising and store', body: 'Compliance-aware giving and merchandise on the same supporter record.' },
+  { title: 'Maps and turf', body: 'Geo maps and turf cutting for the field team.' },
+  { title: 'Events', body: 'Event pages and sign-ups that land with everything else.' },
+  { title: 'Volunteer marketplace', body: 'A place where the work meets the people ready to do it.' },
+  { title: 'Analytics and attribution', body: 'Source attribution that traces each result back to where it began.' },
+];
+
+const organizations = ['LPWA', 'LPO', 'DeFlock DFW', 'Unlabeled', 'Mobility Independence Foundation'];
+---
+
+<Room id="backgold" number={1} sign="taurus" accent="var(--room-i)" labelledby="backgold-title">
+  <div class="bg wrap">
+    <div class="bg__intro">
+      <Placard
+        id="backgold-title"
+        label="Room I · The Platform"
+        title="BackGold"
+        medium="Software platform for campaigns, causes, and organizations"
+        year="Ongoing"
+        catalog="Cat. I.01"
+      />
+      <div class="bg__statement">
+        <p class="bg__tagline display" data-reveal>Bring your movement forward.</p>
+        <p class="lede" data-reveal>
+          BackGold is one connected platform for campaigns, causes, and organizations. Supporters, gifts,
+          messages, events, and volunteers share a single record, so the people doing the work see the whole
+          movement in one place.
+        </p>
+        <p class="bg__body" data-reveal>
+          It serves any cause and any organization that depends on people showing up. The CRM, the outreach, the
+          fundraising, and the field operation draw from the same data, and every action a supporter takes makes
+          their record richer.
+        </p>
+      </div>
+    </div>
+
+    <h3 class="sr-only">What the platform holds</h3>
+    <ol class="bg__case" role="list">
+      {
+        capabilities.map((c, i) => (
+          <li class="bg__item" data-reveal>
+            <span class="bg__num mono">I.{String(i + 1).padStart(2, '0')}</span>
+            <h4 class="bg__item-title">{c.title}</h4>
+            <p class="bg__item-body">{c.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="bg__walls">
+      <div class="bg__wall" data-reveal>
+        <p class="bg__wall-label smallcaps">Memory</p>
+        <h3 class="bg__wall-title display">Data that compounds</h3>
+        <p>
+          Every campaign adds to the record. Supporter history, giving, and relationships compound year over year
+          and election over election, and the data stays with the organization through every handoff.
+        </p>
+      </div>
+      <div class="bg__wall" data-reveal>
+        <p class="bg__wall-label smallcaps">Pricing</p>
+        <h3 class="bg__wall-title display">Billed on what you send</h3>
+        <p>
+          Email is billed on send volume only, at <strong>$1.50 per 1,000 sent</strong>. Stored contacts carry no
+          charge, so a growing list stays a growing asset.
+        </p>
+      </div>
+    </div>
+
+    <figure class="bg__quote" data-reveal>
+      <blockquote>
+        <p>&ldquo;I&rsquo;ve seen basically all the nonprofit and issue-advocacy CRMs&hellip; it looks freaking amazing&rdquo;</p>
+      </blockquote>
+      <figcaption class="smallcaps">DeFlock DFW</figcaption>
+    </figure>
+
+    <div class="bg__foot" data-reveal>
+      <div class="bg__orgs">
+        <h3 class="bg__orgs-label smallcaps">On the platform</h3>
+        <ul class="bg__orgs-list" role="list">
+          {organizations.map((o) => <li>{o}</li>)}
+        </ul>
+      </div>
+      <a class="cta" href={BACKGOLD_URL} rel="noopener">Visit BackGold.com</a>
+    </div>
+  </div>
+</Room>
+
+<style>
+  .bg {
+    display: grid;
+    gap: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .bg__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .bg__statement {
+    display: grid;
+    gap: 1.4rem;
+    padding-top: 0.5rem;
+  }
+  .bg__tagline {
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 1.3rem + 3vw, 3.6rem);
+    color: var(--room-accent);
+  }
+  .bg__body {
+    max-width: var(--measure);
+    color: var(--ink-soft);
+  }
+
+  .bg__case {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+  .bg__item {
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    padding: 1.4rem 1.25rem 1.6rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--wall) 70%, white);
+  }
+  .bg__num {
+    color: var(--gilt-ink);
+  }
+  .bg__item-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.15;
+  }
+  .bg__item-body {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .bg__walls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+  }
+  .bg__wall {
+    display: grid;
+    gap: 0.6rem;
+    padding-left: 1.4rem;
+    border-left: 1px solid var(--gilt);
+  }
+  .bg__wall p:last-child {
+    max-width: var(--measure);
+    color: var(--ink-soft);
+  }
+  .bg__wall strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .bg__wall-label {
+    color: var(--room-accent);
+  }
+  .bg__wall-title {
+    font-size: clamp(1.8rem, 1.3rem + 1.8vw, 2.6rem);
+    font-weight: 400;
+  }
+
+  .bg__quote {
+    position: relative;
+    max-width: 48rem;
+    margin-inline: auto;
+    text-align: center;
+    padding-block: 1rem;
+  }
+  .bg__quote::before {
+    content: '';
+    display: block;
+    width: 3rem;
+    height: 1px;
+    margin: 0 auto 2rem;
+    background: var(--gilt);
+  }
+  .bg__quote blockquote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.6rem);
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  .bg__quote figcaption {
+    margin-top: 1.2rem;
+    color: var(--room-accent);
+    font-size: 1.05rem;
+  }
+
+  .bg__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+  }
+  .bg__orgs {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .bg__orgs-label {
+    color: var(--room-accent);
+    font-weight: 400;
+    font-size: 1rem;
+  }
+  .bg__orgs-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.6rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  }
+  /* A small gilt lozenge before each name, so wrapped rows never dangle. */
+  .bg__orgs-list li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .bg__orgs-list li::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--gilt);
+    transform: rotate(45deg);
+    flex: none;
+  }
+
+  @media (max-width: 1000px) {
+    .bg__case {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 820px) {
+    .bg__intro,
+    .bg__walls {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 480px) {
+    .bg__case {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

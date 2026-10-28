@@ -20,4 +20,46 @@ const writings = defineCollection({
   }),
 });
 
-export const collections = { writings };
+/**
+ * The Gallery of Visualized Poetry. One markdown file per framed poem in
+ * src/content/gallery; the homepage's Room IV and /gallery both render
+ * every entry, sorted by `order`. To hang a new poem, add a file: title,
+ * year, a one-line epigraph, and `href` pointing at its interactive page.
+ * Entries with `status: forthcoming` render as an empty frame with no link.
+ */
+const gallery = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
+  schema: z.object({
+    title: z.string(),
+    /** Display form of the title inside the frame (e.g. spaced caps). */
+    plateTitle: z.string().optional(),
+    year: z.coerce.string().optional(),
+    epigraph: z.string().optional(),
+    /** The poem's full interactive page. Required once the poem is on view. */
+    href: z.string().optional(),
+    medium: z.string().default('Visualized poem; interactive page'),
+    order: z.number().default(100),
+    status: z.enum(['on-view', 'forthcoming']).default('on-view'),
+    /** Zodiac sign for the frame's wayfinding mark (components/museum/zodiac.ts). */
+    sign: z
+      .enum([
+        'aries',
+        'taurus',
+        'gemini',
+        'cancer',
+        'leo',
+        'virgo',
+        'libra',
+        'scorpio',
+        'sagittarius',
+        'capricorn',
+        'aquarius',
+        'pisces',
+      ])
+      .default('pisces'),
+    /** Plate colour inside the frame; a muted, dark hue reads best. */
+    plate: z.string().default('#2b2230'),
+  }),
+});
+
+export const collections = { writings, gallery };

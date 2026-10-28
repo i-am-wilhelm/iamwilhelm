@@ -1,0 +1,156 @@
+---
+/**
+ * Room II: The Manifesto, a featured exhibit for
+ * libertariantoolsuite.com/the-manifesto. The wall-text excerpts are quoted
+ * verbatim from the approved copy (libertariantoolsuite MANIFESTO.md); keep
+ * them that way.
+ */
+import Room from '../Room.astro';
+import Placard from '../Placard.astro';
+import { MANIFESTO_URL } from '../../../config/site';
+---
+
+<Room id="manifesto" number={2} sign="aquarius" accent="var(--room-ii)" labelledby="manifesto-title" deep>
+  <div class="mf wrap">
+    <div class="mf__head">
+      <Placard
+        id="manifesto-title"
+        label="Room II · Featured exhibit"
+        title="The Manifesto"
+        subtitle="The Great Libertarian Data Loss"
+        medium="Interactive essay. Designed and written by Michael Wilhelm."
+        year="2026"
+        catalog="Cat. II.01"
+      />
+      <div class="mf__framing prose-museum" data-reveal>
+        <p class="lede">
+          Twenty-five years of starting from zero. The essay traces the liberty movement&rsquo;s exposure problems
+          to one root cause, data loss, and names the four ways it happens: the handoff, the tool trap, the backup
+          that never existed, and the subscription guillotine.
+        </p>
+        <p>
+          Michael designed and wrote it as interactive storytelling. The page degrades, then resolves as you turn
+          it, so the reader feels the loss the argument describes and watches it repaired.
+        </p>
+      </div>
+    </div>
+
+    <figure class="mf__frame" data-reveal>
+      <div class="mf__mat">
+        <img
+          src="/work/the-manifesto.webp"
+          width="960"
+          height="600"
+          loading="lazy"
+          decoding="async"
+          alt="The opening screen of The Great Libertarian Data Loss: the title set in a large serif on near-black, beside a ledger of section names and dates."
+        />
+      </div>
+      <figcaption class="mf__caption">
+        <span class="smallcaps">Opening screen</span>
+        <span class="mono">libertariantoolsuite.com/the-manifesto</span>
+      </figcaption>
+    </figure>
+
+    <div class="mf__walltext">
+      <blockquote class="mf__excerpt" data-reveal>
+        <p>
+          We lost our Library of Alexandria. Ours just burned quietly, one bad handoff and one canceled subscription
+          at a time.
+        </p>
+      </blockquote>
+      <blockquote class="mf__excerpt mf__excerpt--close" data-reveal>
+        <p>What already burned stays burned. Everything from here forward is ours to keep.</p>
+      </blockquote>
+      <p class="mf__attrib smallcaps" data-reveal>From The Great Libertarian Data Loss</p>
+    </div>
+
+    <div class="mf__cta" data-reveal>
+      <a class="cta" href={MANIFESTO_URL} rel="noopener">Read the manifesto</a>
+    </div>
+  </div>
+</Room>
+
+<style>
+  .mf {
+    display: grid;
+    gap: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .mf__head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .mf__framing {
+    padding-top: 0.5rem;
+    color: var(--ink-soft);
+  }
+  .mf__framing .lede {
+    color: var(--ink);
+  }
+
+  /* The exhibit, hung: a charcoal frame, an ivory mat, a gilt fillet. */
+  .mf__frame {
+    width: min(100%, 60rem);
+    margin-inline: auto;
+  }
+  .mf__mat {
+    padding: clamp(0.75rem, 0.4rem + 2vw, 2.25rem);
+    background: #fbf8f1;
+    border: clamp(8px, 0.4rem + 0.6vw, 16px) solid #24211d;
+    outline: 1px solid var(--gilt);
+    outline-offset: calc(-1 * clamp(4px, 0.2rem + 0.3vw, 8px));
+    box-shadow:
+      0 2px 0 rgba(255, 255, 255, 0.5),
+      0 30px 60px -30px rgba(40, 28, 12, 0.55),
+      0 12px 24px -12px rgba(40, 28, 12, 0.3);
+  }
+  .mf__mat img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+  .mf__caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.4rem 1rem;
+    margin-top: 1rem;
+    color: var(--ink-faint);
+  }
+
+  .mf__walltext {
+    display: grid;
+    gap: 2.5rem;
+    max-width: 52rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .mf__excerpt p {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 3.4rem);
+    line-height: 1.12;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  .mf__excerpt--close p {
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.3rem);
+    color: var(--room-accent);
+  }
+  .mf__attrib {
+    color: var(--ink-faint);
+  }
+  .mf__cta {
+    display: flex;
+    justify-content: center;
+  }
+  @media (max-width: 820px) {
+    .mf__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

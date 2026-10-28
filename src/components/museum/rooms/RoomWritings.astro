@@ -1,0 +1,54 @@
+---
+/**
+ * Room V: Writings. The latest pieces from the writings collection, with a
+ * way through to the full index at /writings.
+ */
+import Room from '../Room.astro';
+import Placard from '../Placard.astro';
+import WritingsList from '../WritingsList.astro';
+---
+
+<Room id="writings" number={5} sign="virgo" accent="var(--room-v)" labelledby="writings-title">
+  <div class="wr wrap">
+    <div class="wr__head">
+      <Placard
+        id="writings-title"
+        label="Room V · The Reading Room"
+        title="Writings"
+        medium="Poems and cross-examinations of ancient wordforms"
+        catalog="Cat. V"
+      />
+      <p class="lede wr__statement" data-reveal>
+        The latest from the desk, newest first. The writings belong to a longer project of cross-examining
+        wordforms shared between corpora that rarely meet on the same desk: the pharmacological treatises, the
+        lexicons, the epics, and the Septuagint.
+      </p>
+    </div>
+    <WritingsList limit={4} level={3} />
+    <div data-reveal>
+      <a class="cta" href="/writings/">All writings</a>
+    </div>
+  </div>
+</Room>
+
+<style>
+  .wr {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+  .wr__head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .wr__statement {
+    padding-top: 0.5rem;
+    color: var(--ink);
+  }
+  @media (max-width: 820px) {
+    .wr__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

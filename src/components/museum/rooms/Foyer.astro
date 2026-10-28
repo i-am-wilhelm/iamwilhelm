@@ -1,0 +1,123 @@
+---
+/**
+ * The foyer: the headline, the name, one line of roles, and the gilt zodiac
+ * ring turning slowly behind. The headline settles in with CSS alone (no
+ * script), so it paints at first render and stays the page's LCP.
+ */
+import ZodiacRing from '../ZodiacRing.astro';
+---
+
+<section class="foyer" aria-labelledby="foyer-title">
+  <ZodiacRing />
+  <div class="foyer__inner wrap">
+    <p class="foyer__kicker smallcaps">The Foyer</p>
+    <h1 class="foyer__title display" id="foyer-title">Devoted to something, but no one knows what.</h1>
+    <div class="foyer__byline">
+      <p class="foyer__name">Michael Wilhelm</p>
+      <p class="foyer__roles">
+        <span>CEO &amp; Cofounder, BackGold</span>
+        <span class="foyer__sep" aria-hidden="true">·</span>
+        <span>Founder, Advancing Liberty Media</span>
+        <span class="foyer__sep" aria-hidden="true">·</span>
+        <span>Writer</span>
+      </p>
+    </div>
+    <a class="foyer__enter" href="#backgold">
+      <span class="smallcaps">Begin the tour</span>
+      <span class="foyer__arrow" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .foyer {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: calc(100svh - var(--nav-h));
+    padding-block: clamp(4rem, 3rem + 6vw, 8rem);
+    overflow: clip;
+    text-align: center;
+  }
+  .foyer__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: clamp(1.25rem, 1rem + 1vw, 2rem);
+  }
+  .foyer__kicker {
+    color: var(--gilt-ink);
+    font-size: 1rem;
+    animation: settle calc(var(--beat) * 2.4) var(--ease-settle) both;
+  }
+  .foyer__title {
+    max-width: 16ch;
+    font-size: clamp(2.6rem, 1.4rem + 6.4vw, 6.4rem);
+    color: var(--ink);
+    animation: settle calc(var(--beat) * 3) var(--ease-settle) calc(var(--beat) * 0.5) both;
+  }
+  .foyer__byline {
+    display: grid;
+    gap: 0.5rem;
+    animation: settle calc(var(--beat) * 2.4) var(--ease-settle) calc(var(--beat) * 1.25) both;
+  }
+  .foyer__name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.35rem, 1.15rem + 0.8vw, 1.8rem);
+    letter-spacing: 0.18em;
+    font-variant-caps: all-small-caps;
+  }
+  .foyer__roles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.7rem;
+    row-gap: 0.15rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  }
+  .foyer__sep {
+    color: var(--gilt);
+    font-style: normal;
+  }
+  .foyer__enter {
+    display: inline-grid;
+    justify-items: center;
+    gap: 0.5rem;
+    margin-top: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    padding: 0.5rem 1rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    animation: settle calc(var(--beat) * 2.4) var(--ease-settle) calc(var(--beat) * 2) both;
+  }
+  .foyer__enter:hover {
+    color: var(--ink);
+  }
+  .foyer__arrow {
+    width: 1px;
+    height: 2.5rem;
+    background: linear-gradient(var(--gilt), transparent);
+  }
+  /* Opacity starts above zero so the headline is a paint candidate at once. */
+  @keyframes settle {
+    from {
+      opacity: 0.12;
+      transform: translate3d(0, 18px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (max-width: 520px) {
+    .foyer__sep {
+      display: none;
+    }
+    .foyer__roles {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>

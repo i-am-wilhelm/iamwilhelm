@@ -1,0 +1,63 @@
+---
+/**
+ * /atelier — the original esoteric homepage (tag archive/esoteric-v1),
+ * kept whole and working but retired from the public site: noindex, out of
+ * the sitemap, and linked from nowhere. The museum homepage replaced it at /.
+ */
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import Cluster from '../components/sections/Cluster.astro';
+import Philosophy from '../components/sections/Philosophy.astro';
+import Underworld from '../components/sections/Underworld.astro';
+import Monsoon from '../components/sections/Monsoon.astro';
+import Lineage from '../components/sections/Lineage.astro';
+import { sections } from '../design/tokens';
+
+const bySection = Object.fromEntries(sections.map((s) => [s.id, s]));
+---
+
+<Base title="Atelier · I Am Wilhelm" noindex>
+  <Hero spec={bySection.hero} />
+  <Cluster spec={bySection.cluster} />
+  <Philosophy spec={bySection.philosophy} />
+  <Underworld spec={bySection.underworld} />
+  <Monsoon spec={bySection.monsoon} />
+  <Lineage spec={bySection.lineage} />
+
+  <!-- The dawn coda: the descent-and-return closes at first light. Empty
+       until the hunt is held; the dawn gate (src/scripts/eggs/dawn.ts)
+       renders its door here, and the door opens only in the hour before
+       local sunrise. -->
+  <div id="dawn" aria-hidden="true"></div>
+
+  <footer class="site-footer">
+    <nav aria-label="Site">
+      <a href="/writings/">Writings</a>
+    </nav>
+  </footer>
+</Base>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    padding: 4rem 8vw 3rem;
+  }
+
+  .site-footer a {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .site-footer a:hover,
+  .site-footer a:focus-visible {
+    color: var(--ink);
+    border-bottom-color: var(--ink-dim);
+  }
+</style>

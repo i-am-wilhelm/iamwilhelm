@@ -19,6 +19,41 @@ Deploying requires a Cloudflare account: `npx wrangler login` once, then
 `npm run deploy`. Point the `iamwilhelm.com` zone at the worker with a
 custom domain in the Cloudflare dashboard.
 
+## The museum (public homepage)
+
+The homepage is a walk through a small museum: a foyer, five numbered rooms
+divided by Greek meander keylines, and a colophon. Warm ivory walls, charcoal
+ink, gilt as the one shared accent, paper grain from an SVG noise tile, and
+text that settles into place on scroll (same 7/8 meter as the poem pages).
+No WebGL, no dithering, no audio on these pages.
+
+- `src/layouts/Museum.astro`: meta, Open Graph and Twitter cards, JSON-LD
+  Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, and 404.
+- `src/components/museum/`: Placard, Room, Meander, ZodiacRing, Glyph (SVG
+  zodiac paths in `zodiac.ts`), PoemGallery, WritingsList, Colophon, and the
+  rooms in `rooms/`.
+- `src/components/museum/case/` and `src/scripts/case/`: the ALM console and
+  cartridges, ported from advancing-liberty-media2 and lazy-loaded.
+- `src/data/portfolio.ts`: client sites for Room III (mirrors ALM `work.ts`).
+- `src/content/gallery/`: one markdown file per framed poem. Drop a file in
+  to hang a new poem on `/gallery` and in Room IV.
+- `src/config/site.ts`: URLs, nav, and the owner placeholders (booking
+  scheduler link, BackGold newsletter embed).
+- `npm run og` re-renders `public/og.png` and the PNG icons;
+  `npm run links` checks every outbound link in the build.
+
+Branch previews: pushes to `museum-homepage` deploy to the
+`iamwilhelm-preview` worker on workers.dev (`.github/workflows/preview.yml`,
+`wrangler.preview.jsonc`). Production deploys only from `main`.
+
+### The archived homepage
+
+The original esoteric homepage is tagged `archive/esoteric-v1` and still
+builds at `/atelier` (noindex, out of the sitemap, linked from nowhere). Its
+components, the natal engine, the dither pipeline, the easter-egg hunt, and
+the music layer all remain in the codebase; everything below describes them.
+The poem pages under `/writings/<slug>` keep that immersive treatment.
+
 ## Architecture
 
 - `src/design/tokens.ts` — the shared contract: section registry, accent

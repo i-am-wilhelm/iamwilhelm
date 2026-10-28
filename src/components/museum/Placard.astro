@@ -1,0 +1,94 @@
+---
+/**
+ * A museum placard: small-caps label, title, medium, year, and a catalog
+ * number in mono. The title is the room's heading (h2 by default) so each
+ * room's landmark is labelled by its placard.
+ */
+interface Props {
+  id?: string;
+  label: string;
+  title: string;
+  subtitle?: string;
+  medium: string;
+  year?: string;
+  catalog?: string;
+  level?: 1 | 2 | 3;
+  class?: string;
+}
+
+const { id, label, title, subtitle, medium, year, catalog, level = 2, class: cls } = Astro.props;
+const H = `h${level}` as 'h1' | 'h2' | 'h3';
+---
+
+<div class:list={['placard', cls]} data-reveal>
+  <p class="placard__label smallcaps">{label}</p>
+  <H class="placard__title display" id={id}>{title}</H>
+  {subtitle && <p class="placard__subtitle">{subtitle}</p>}
+  <p class="placard__medium">{medium}</p>
+  {
+    (year || catalog) && (
+      <p class="placard__foot">
+        {year && <span class="placard__year">{year}</span>}
+        {catalog && <span class="placard__cat mono">{catalog}</span>}
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .placard {
+    position: relative;
+    max-width: 30rem;
+    padding: 1.4rem 1.5rem 1.2rem;
+    background: color-mix(in srgb, var(--wall) 82%, white);
+    border: 1px solid var(--rule);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 10px 24px -18px rgba(40, 30, 15, 0.45);
+  }
+  /* The gilt hairline along the top edge of every placard. */
+  .placard::before {
+    content: '';
+    position: absolute;
+    inset: -1px -1px auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gilt), var(--gilt-bright), var(--gilt));
+  }
+  .placard__label {
+    color: var(--room-accent);
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+  .placard__title {
+    margin-top: 0.35rem;
+    font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.6rem);
+    color: var(--ink);
+  }
+  .placard__subtitle {
+    margin-top: 0.4rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    line-height: 1.25;
+    color: var(--ink-soft);
+  }
+  .placard__medium {
+    margin-top: 0.8rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+  .placard__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 0.9rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+  }
+  .placard__year {
+    font-variant-numeric: oldstyle-nums;
+  }
+</style>

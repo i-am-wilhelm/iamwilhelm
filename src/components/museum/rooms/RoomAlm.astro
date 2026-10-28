@@ -1,0 +1,275 @@
+---
+/**
+ * Room III: Advancing Liberty Media / Websites by Wilhelm. The console and
+ * cartridges from advancing-liberty-media2 sit inside a vitrine, keeping
+ * their own 16-bit character, while the room around them follows the
+ * museum. Client data: src/data/portfolio.ts (mirrors ALM's work.ts).
+ * Copy facts come from ALM's src/content/home.ts and about.ts.
+ */
+import Room from '../Room.astro';
+import Placard from '../Placard.astro';
+import Console from '../case/Console.astro';
+import Cartridge from '../case/Cartridge.astro';
+import { portfolio } from '../../../data/portfolio';
+import { ALM_URL } from '../../../config/site';
+
+const BOOT = 'lpwa';
+const last = String(portfolio.length).padStart(2, '0');
+---
+
+<Room id="work" number={3} sign="gemini" accent="var(--room-iii)" labelledby="work-title">
+  <div class="alm wrap">
+    <div class="alm__head">
+      <Placard
+        id="work-title"
+        label="Room III · The Collection"
+        title="Advancing Liberty Media"
+        subtitle="Websites by Wilhelm"
+        medium="Campaign websites and digital infrastructure, built on BackGold"
+        year="2026"
+        catalog={`Cat. III.01–III.${last}`}
+      />
+      <div class="alm__statement prose-museum" data-reveal>
+        <p class="lede">
+          Advancing Liberty Media gives libertarian candidates, parties, and freedom organizations professional
+          campaign infrastructure, with strategy, training, and digital media in one place.
+        </p>
+        <p>
+          Websites by Wilhelm is its design studio. Every site in this case was designed and built by Michael and
+          ships on BackGold, with donations, supporters, email, and events configured from day one.
+        </p>
+        <p class="alm__howto">
+          Choose a cartridge to slot it into the console. Press start on the screen to visit the live site.
+        </p>
+      </div>
+    </div>
+
+    <div class="vitrine" data-reveal>
+      <div class="vitrine__glass" aria-hidden="true"></div>
+      <div class="vitrine__grid">
+        <div class="vitrine__console">
+          <Console boot={BOOT} />
+        </div>
+        <div class="vitrine__library">
+          <div class="library__head">
+            <h3 class="label label--bone label--bold">Cartridge library</h3>
+            <span class="mono">{portfolio.length} carts</span>
+          </div>
+          <ul class="library" role="list">
+            {
+              portfolio.map((w) => (
+                <li>
+                  <Cartridge item={w} gold={w.flagship} />
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="vitrine__label">
+      <span class="smallcaps">In the case</span>
+      <span>
+        The ALM-16 console and {portfolio.length} cartridges, one for each site. Pixel sprites and screenshots of the
+        live builds.
+      </span>
+    </p>
+
+    <div class="alm__cta" data-reveal>
+      <a class="cta" href={ALM_URL} rel="noopener">Visit Advancing Liberty Media</a>
+    </div>
+  </div>
+</Room>
+
+<style>
+  .alm {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+  .alm__head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .alm__statement {
+    padding-top: 0.5rem;
+    color: var(--ink-soft);
+  }
+  .alm__statement .lede {
+    color: var(--ink);
+  }
+  .alm__howto {
+    font-style: italic;
+  }
+
+  /*
+   * The vitrine: a charcoal case lined in felt, gilt at the seams, glass
+   * catching the gallery light. Inside it, the ported objects keep their
+   * own palette (the ALM tokens are scoped here, not site-wide).
+   */
+  .vitrine {
+    --carbon: #0a0908;
+    --char: #131110;
+    --ash: #1c1815;
+    --soot: #2a2420;
+    --smoke: #4a3f36;
+    --bone: #f3eadb;
+    --bone-soft: #cdbfaa;
+    --bone-muted: #a8998a;
+    --gold: #f2b72e;
+    --gold-hot: #ffd766;
+    --gold-deep: #b8830f;
+    --ember: #ff5a1f;
+    --ember-hot: #ff8a3d;
+    --ember-deep: #c8330e;
+    --spark: #22e3ff;
+    --border: 1px;
+    --font-pixel: 'Silkscreen', 'Press Start 2P', 'Courier New', monospace;
+    --font-arcade: 'Press Start 2P', 'Silkscreen', monospace;
+    --size-pixel: 0.75rem;
+    --size-mono: 0.75rem;
+
+    position: relative;
+    padding: clamp(1rem, 0.5rem + 2.5vw, 2.75rem);
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(255, 236, 200, 0.07), transparent 70%),
+      linear-gradient(180deg, #1f1c19, #141210);
+    border: 1px solid #0d0c0b;
+    outline: 1px solid var(--gilt);
+    outline-offset: 5px;
+    box-shadow:
+      0 40px 80px -40px rgba(30, 20, 8, 0.7),
+      0 18px 30px -18px rgba(30, 20, 8, 0.45);
+    color: var(--bone);
+  }
+  .vitrine__glass {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(112deg, rgba(255, 255, 255, 0.06) 0%, transparent 26%, transparent 70%, rgba(255, 255, 255, 0.03) 100%);
+    z-index: 1;
+  }
+  .vitrine__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+    align-items: start;
+  }
+  .vitrine__console {
+    min-width: 0;
+    position: sticky;
+    top: calc(var(--nav-h) + 1rem);
+    z-index: 2;
+  }
+
+  /* Ported helper classes from the ALM design system, scoped to the case. */
+  .vitrine :global(.label) {
+    font-family: var(--font-pixel);
+    font-size: var(--size-pixel);
+    font-weight: 400;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .vitrine :global(.label--bone) {
+    color: var(--bone);
+  }
+  .vitrine :global(.label--bold) {
+    font-weight: 700;
+  }
+  .vitrine :global(.mono) {
+    font-family: var(--font-mono);
+    font-size: var(--size-mono);
+    letter-spacing: -0.02em;
+    color: var(--bone-muted);
+  }
+  .vitrine :global(.arcade) {
+    font-family: var(--font-arcade);
+    font-size: 0.6875rem;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .vitrine :global(.pixelated) {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  .vitrine :global(.blink) {
+    animation: case-blink 1s steps(2, start) infinite;
+  }
+  @keyframes case-blink {
+    to {
+      visibility: hidden;
+    }
+  }
+  .vitrine :global(button) {
+    font: inherit;
+    color: inherit;
+  }
+  .vitrine :global(:focus-visible) {
+    outline-color: var(--spark);
+  }
+
+  .library__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 0.8rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--smoke);
+  }
+  .library {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1rem;
+  }
+  .library > li {
+    min-width: 0;
+  }
+
+  .vitrine__label {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    max-width: 44rem;
+    color: var(--ink-faint);
+    font-style: italic;
+    margin-top: calc(-1 * clamp(1rem, 0.5rem + 1.5vw, 2rem));
+  }
+  .vitrine__label .smallcaps {
+    font-style: normal;
+    color: var(--room-accent);
+  }
+  .alm__cta {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  @media (max-width: 1100px) {
+    .vitrine__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .vitrine__console {
+      top: calc(var(--nav-h) + 0.5rem);
+    }
+  }
+  @media (max-width: 820px) {
+    .alm__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 480px) {
+    .library {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vitrine :global(.blink) {
+      animation: none;
+    }
+  }
+</style>

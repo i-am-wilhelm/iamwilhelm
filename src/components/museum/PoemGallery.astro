@@ -1,0 +1,223 @@
+---
+/**
+ * The framed poem tiles, shared by Room IV and /gallery. Each poem on view
+ * is one link (title, year, epigraph) to its full interactive page, so the
+ * gallery is a plain list of links in tab order. Forthcoming entries hang
+ * as empty frames with no link.
+ */
+import { getCollection } from 'astro:content';
+import Glyph from './Glyph.astro';
+import { roman } from './zodiac';
+
+interface Props {
+  /** Heading level for tile titles (h3 inside a room, h2 on /gallery). */
+  level?: 2 | 3;
+}
+const { level = 3 } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+
+const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<ul class="poems" role="list">
+  {
+    poems.map((p, i) => {
+      const d = p.data;
+      const onView = d.status === 'on-view' && !!d.href;
+      const inner = (
+        <>
+          <div class="poem__frame" aria-hidden="true">
+            <div class="poem__mat">
+              <div class="poem__plate" style={`--plate: ${d.plate}`}>
+                <Glyph sign={d.sign} size={28} class="poem__glyph" />
+                <span class="poem__plate-title">{d.plateTitle ?? d.title}</span>
+                {d.epigraph && <span class="poem__plate-epigraph">{d.epigraph}</span>}
+                {!onView && <span class="poem__plate-epigraph">In preparation</span>}
+              </div>
+            </div>
+          </div>
+          <div class="poem__placard">
+            <p class="poem__cat mono">Cat. IV.{String(i + 1).padStart(2, '0')}</p>
+            <H class="poem__title">{d.title}</H>
+            <p class="poem__meta">
+              <span class="poem__medium">{d.medium}</span>
+              {d.year && <span class="poem__year">{d.year}</span>}
+            </p>
+            {d.epigraph && <p class="poem__epigraph">{d.epigraph}</p>}
+            {onView ? (
+              <span class="poem__open smallcaps">Enter the poem</span>
+            ) : (
+              <span class="poem__open poem__open--soon smallcaps">Forthcoming</span>
+            )}
+          </div>
+        </>
+      );
+      return (
+        <li class:list={['poem', !onView && 'poem--forthcoming']} data-reveal data-numeral={roman(i + 1)}>
+          {onView ? (
+            <a class="poem__link" href={d.href}>
+              {inner}
+            </a>
+          ) : (
+            <div class="poem__link">{inner}</div>
+          )}
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .poems {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+  .poem__link {
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    outline-offset: 8px;
+  }
+
+  /* Frame: charcoal moulding, ivory mat, gilt fillet, a dark plate. */
+  .poem__frame {
+    padding: 10px;
+    background: linear-gradient(135deg, #2a2622, #1a1815 60%, #2a2622);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.4),
+      0 24px 40px -26px rgba(40, 28, 12, 0.6);
+    transition:
+      transform calc(var(--beat) * 1.2) var(--ease-settle),
+      box-shadow calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .poem__mat {
+    padding: clamp(1rem, 0.7rem + 1.2vw, 1.6rem);
+    background: #fbf8f1;
+    outline: 1px solid var(--gilt);
+    outline-offset: -5px;
+  }
+  .poem__plate {
+    position: relative;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.9rem;
+    aspect-ratio: 4 / 5;
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+    color: #efe6d3;
+    background:
+      radial-gradient(90% 70% at 50% 35%, color-mix(in srgb, var(--plate) 70%, #fff 12%), transparent 75%),
+      var(--plate);
+    overflow: hidden;
+  }
+  .poem__plate::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .poem :global(.poem__glyph) {
+    color: var(--gilt-bright);
+    opacity: 0.9;
+  }
+  .poem__plate-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+    letter-spacing: 0.24em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    padding-left: 0.24em;
+    transition: letter-spacing calc(var(--beat) * 1.6) var(--ease-settle);
+  }
+  .poem__plate-epigraph {
+    max-width: 16rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.35;
+    color: rgba(239, 230, 211, 0.82);
+  }
+
+  .poem__placard {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+  }
+  .poem__cat {
+    color: var(--gilt-ink);
+  }
+  .poem__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.95rem);
+    line-height: 1.12;
+  }
+  .poem__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 1rem;
+  }
+  .poem__year {
+    font-style: normal;
+    font-variant-numeric: oldstyle-nums;
+  }
+  .poem__epigraph {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+  .poem__open {
+    margin-top: 0.4rem;
+    color: var(--room-accent, var(--gilt-ink));
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .poem__open::after {
+    content: '';
+    width: 1.4rem;
+    height: 1px;
+    background: currentColor;
+    transition: width 500ms var(--ease-settle);
+  }
+  .poem__open--soon::after {
+    display: none;
+  }
+  .poem__open--soon {
+    color: var(--ink-faint);
+  }
+
+  a.poem__link:hover .poem__frame,
+  a.poem__link:focus-visible .poem__frame {
+    transform: translateY(-4px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.4),
+      0 34px 50px -26px rgba(40, 28, 12, 0.7);
+  }
+  a.poem__link:hover .poem__plate-title,
+  a.poem__link:focus-visible .poem__plate-title {
+    letter-spacing: 0.3em;
+  }
+  a.poem__link:hover .poem__open::after,
+  a.poem__link:focus-visible .poem__open::after {
+    width: 2.4rem;
+  }
+  .poem--forthcoming .poem__plate {
+    filter: saturate(0.6);
+  }
+  .poem--forthcoming .poem__plate-title {
+    opacity: 0.75;
+  }
+</style>

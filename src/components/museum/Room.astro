@@ -1,0 +1,80 @@
+---
+/**
+ * One room of the museum: a labelled landmark (<section aria-labelledby>)
+ * carrying its Roman numeral, a zodiac wayfinding mark, and one muted accent
+ * hue (--room-accent). The room's placard supplies the heading; pass its id
+ * as `labelledby`.
+ */
+import Glyph from './Glyph.astro';
+import type { Sign } from './zodiac';
+import { roman } from './zodiac';
+
+interface Props {
+  id: string;
+  number: number;
+  sign: Sign;
+  /** CSS colour for the room's accent, usually a --room-* token. */
+  accent: string;
+  labelledby: string;
+  /** Alternate the wall tone so neighbouring rooms read as separate spaces. */
+  deep?: boolean;
+  class?: string;
+}
+
+const { id, number, sign, accent, labelledby, deep = false, class: cls } = Astro.props;
+const numeral = roman(number);
+---
+
+<section
+  id={id}
+  class:list={['room', deep && 'room--deep', cls]}
+  aria-labelledby={labelledby}
+  style={`--room-accent: ${accent}`}
+  data-room={numeral}
+>
+  <div class="room__wayfinding wrap" aria-hidden="true">
+    <span class="room__numeral">Room {numeral}</span>
+    <span class="room__rule"></span>
+    <Glyph sign={sign} size={26} class="room__glyph" />
+  </div>
+  <slot />
+</section>
+
+<style>
+  .room {
+    position: relative;
+    padding-block: clamp(4.5rem, 3rem + 7vw, 9.5rem);
+    /* Rooms below the fold skip style and layout until the visitor nears
+       them; the browser remembers each room's real height once seen. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1600px;
+  }
+  .room--deep {
+    background: linear-gradient(180deg, transparent, rgba(227, 217, 198, 0.55) 12%, rgba(227, 217, 198, 0.55) 88%, transparent);
+  }
+  .room__wayfinding {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    color: var(--room-accent);
+  }
+  .room__numeral {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.22em;
+    font-variant-caps: all-small-caps;
+    white-space: nowrap;
+  }
+  .room__rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gilt), transparent);
+    opacity: 0.7;
+  }
+  .room :global(.room__glyph) {
+    flex: none;
+    color: var(--gilt-ink);
+  }
+</style>

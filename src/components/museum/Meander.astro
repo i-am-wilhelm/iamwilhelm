@@ -1,0 +1,83 @@
+---
+/**
+ * Greek meander (key) keyline: the room divider. A single hairline band of
+ * the running key, drawn as an SVG pattern so it tiles to any width without
+ * a seam, with a small gilt medallion at the centre.
+ */
+interface Props {
+  /** Optional mark in the medallion: a Roman numeral or short label. */
+  mark?: string;
+}
+const { mark } = Astro.props;
+const id = `meander-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class="meander" aria-hidden="true">
+  <svg class="meander__band" height="18" preserveAspectRatio="none">
+    <defs>
+      <pattern id={id} width="24" height="18" patternUnits="userSpaceOnUse">
+        <path
+          d="M0 16.5H22.5V1.5H4.5V12.5H16.5V5.5H10.5V9.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="square"
+        />
+        <path d="M22.5 16.5H24" fill="none" stroke="currentColor" stroke-width="1" />
+      </pattern>
+    </defs>
+    <rect width="100%" height="18" fill={`url(#${id})`} />
+  </svg>
+  <span class="meander__medallion">
+    {mark ? <span class="meander__mark">{mark}</span> : <span class="meander__dot" />}
+  </span>
+  <svg class="meander__band meander__band--r" height="18" preserveAspectRatio="none">
+    <rect width="100%" height="18" fill={`url(#${id})`} />
+  </svg>
+</div>
+
+<style>
+  .meander {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: var(--page);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    color: var(--gilt);
+    opacity: 0.85;
+  }
+  .meander__band {
+    width: 100%;
+    height: 18px;
+  }
+  /* The right band reads as the mirror of the left. */
+  .meander__band--r {
+    transform: scaleX(-1);
+  }
+  .meander__medallion {
+    display: grid;
+    place-items: center;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding-inline: 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+  }
+  .meander__mark {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    color: var(--gilt-ink);
+    line-height: 1;
+  }
+  .meander__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+</style>
