@@ -1,0 +1,299 @@
+---
+/**
+ * Layout for a visualized poem in the Gallery (/gallery/<slug>/). Each poem
+ * is a night piece of its own: one fixed canvas behind a single column of
+ * loose lines that brighten and settle as they arrive. The museum wall
+ * (ivory, grain, nav) stays outside the frame; the only museum element on
+ * the page is the small exit back to the gallery.
+ *
+ * The page supplies its own palette, line styles, and canvas script. This
+ * layout carries the meta, the fonts, the shared line mechanics, and the
+ * static fallbacks (no script, reduced motion).
+ */
+import { SITE_NAME, SITE_URL } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  year: string;
+  /** Background colour of the night, also the theme colour. */
+  night: string;
+  /** Accent for the exit link and focus ring. */
+  accent: string;
+  /** Genre for the schema: a poem, or an essay staged the same way. */
+  genre?: string;
+  bodyClass?: string;
+}
+
+const { title, description, year, night, accent, genre = 'Poetry', bodyClass } = Astro.props;
+const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+const image = new URL('/og.png', SITE_URL).href;
+const fullTitle = `${title} · Gallery of Visualized Poetry · ${SITE_NAME}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': `${canonical}#poem`,
+  name: title,
+  genre,
+  url: canonical,
+  dateCreated: year,
+  author: { '@type': 'Person', '@id': `${SITE_URL}/#person`, name: 'Michael Wilhelm', url: `${SITE_URL}/` },
+  isPartOf: { '@type': 'CollectionPage', name: 'Gallery of Visualized Poetry', url: `${SITE_URL}/gallery/` },
+};
+---
+
+<!doctype html>
+<html lang="en" style={`--night:${night};--exit:${accent}`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content={night} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="author" content="Michael Wilhelm" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <noscript><style>.l { opacity: 1 !important; transform: none !important; }</style></noscript>
+  </head>
+  <body class={bodyClass}>
+    <a class="poem-exit" href="/gallery/"><span aria-hidden="true">&larr;</span> The Gallery</a>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-400-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-600-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-400-italic.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: italic;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-600-italic.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400 500;
+    font-display: swap;
+    src: url('/fonts/jetbrains-mono-var.woff2') format('woff2');
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  :root {
+    --display: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+    --log: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+    --line: clamp(1.35rem, 2.1vw + 1rem, 2.2rem);
+    color-scheme: dark;
+  }
+  html,
+  body {
+    margin: 0;
+  }
+  body {
+    background: var(--night);
+    color: var(--fg);
+    font-family: var(--display);
+    font-size: var(--line);
+    line-height: 1.3;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  p,
+  h1 {
+    margin: 0;
+  }
+  .stage {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 0;
+    touch-action: pan-y;
+  }
+  main {
+    position: relative;
+    z-index: 1;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 18vh;
+    max-width: 60rem;
+    margin: 0 auto;
+  }
+  section {
+    min-height: 72vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.35em;
+    padding-block: 12vh;
+  }
+  header.poem-head {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.2rem;
+    padding-block: 6vh 10vh;
+  }
+
+  /* The line: placed by its own margin, unseen below the fold, dim as it
+     enters the frame (.near), full once it arrives (.in). */
+  .l {
+    margin: 0;
+    margin-left: var(--ml, 0%);
+    max-width: min(30ch, calc(100% - var(--ml, 0%)));
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 1.4s ease,
+      transform 1.4s ease,
+      letter-spacing 2.5s ease,
+      word-spacing 2.5s ease,
+      color 1.2s ease,
+      filter 2s ease,
+      text-shadow 1.6s ease;
+    text-wrap: pretty;
+  }
+  .l.near {
+    opacity: 0.32;
+  }
+  .l.in {
+    opacity: 1;
+    transform: none;
+  }
+  .gap {
+    margin-top: 1.4em;
+  }
+  .ital {
+    font-style: italic;
+  }
+  .right {
+    margin-left: auto;
+    text-align: right;
+    max-width: 30ch;
+  }
+  .dim {
+    color: var(--dim);
+  }
+  .log {
+    font-family: var(--log);
+    font-size: 0.5em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .char {
+    font-family: var(--log);
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.8rem;
+  }
+  .char span {
+    white-space: nowrap;
+  }
+  .char b {
+    font-weight: 400;
+  }
+  .poem-foot {
+    font-family: var(--log);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-block: 4rem 0;
+  }
+  .poem-foot a {
+    color: inherit;
+    text-underline-offset: 0.3em;
+  }
+
+  /* The exit: a museum placard pinned to the corner of the night. */
+  .poem-exit {
+    position: fixed;
+    z-index: 5;
+    top: max(14px, env(safe-area-inset-top, 0px));
+    left: max(16px, env(safe-area-inset-left, 0px));
+    padding: 0.55rem 0.8rem;
+    font-family: var(--log);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--night) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--exit) 45%, transparent);
+    backdrop-filter: blur(6px);
+    transition: border-color 0.4s ease, color 0.4s ease;
+  }
+  .poem-exit:hover {
+    border-color: var(--exit);
+  }
+  :focus-visible {
+    outline: 2px solid var(--exit);
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .l {
+      opacity: 1;
+      transform: none;
+    }
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>

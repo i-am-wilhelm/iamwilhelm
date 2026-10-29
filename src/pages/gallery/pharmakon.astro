@@ -1,0 +1,725 @@
+---
+/**
+ * PHARMAKON, hung in the Gallery of Visualized Poetry. Sister page to The
+ * Keeper and the Flame: the same bones, Medea purple and antidote gold. One
+ * fixed canvas (nave, full moon, fumigation, pool, torches) behind a single
+ * column of loose lines. Punctuation follows the edited text in
+ * src/content/writings/pharmakon.md, where the essay and headnote also live.
+ */
+import Poem from '../../layouts/Poem.astro';
+---
+
+<Poem
+  title="PHARMAKON"
+  description="A visualized poem in six movements by Michael Wilhelm, on the old Greek word that refuses to choose between the poison and the cure."
+  year="2026"
+  night="#07050e"
+  accent="#e6b94f"
+>
+  <canvas id="nave" class="stage" aria-hidden="true"></canvas>
+
+  <main>
+    <header class="poem-head">
+      <p class="char"><span>Pharmacopoeia</span><span>Substance <b lang="grc">φάρμακον</b></span><span>Preparation <b>two vials, one heat</b></span><span>Under <b>Medea</b></span></p>
+      <h1>Pharmakon</h1>
+      <p class="sub">the old Greek word that refuses to choose between the poison and the cure</p>
+      <p class="log">scroll · the veil thins where you touch · tap the pool to tip a vial</p>
+    </header>
+
+    <section data-mode="born">
+      <p class="l num">I.</p>
+      <p class="l" style="--ml:0%">I was born under a full moon, which is to say</p>
+      <p class="l" style="--ml:14%">I was born legible, and lonely for a reader.</p>
+      <p class="l gap" style="--ml:0%">Split down the spine like a psalter,</p>
+      <div class="l facing"><span class="left">the Fish</span><span class="spine"></span><span>and the Maiden</span></div>
+      <p class="l" style="--ml:22%">facing each other across</p>
+      <p class="l dim" style="--ml:8%">the long candlelit nave of the sky.</p>
+      <p class="l gap" style="--ml:0%">I have never wanted to be merely loved.</p>
+      <p class="l" style="--ml:10%">I want to be <span class="studied">studied</span>: read slowly, at night,</p>
+      <p class="l" style="--ml:20%">by someone certain the meaning is deliberate,</p>
+      <p class="l right gap">someone who finds the margins of me</p>
+      <p class="l right">annotated by every <span class="fire">fire</span> I survived</p>
+      <p class="l dim ital" style="--ml:6%">and stays up past her own sleep, translating.</p>
+    </section>
+
+    <section data-mode="veil">
+      <p class="l num">II.</p>
+      <p class="l" style="--ml:0%">She is not a mirror. She is the <span class="veilw">veil</span>,</p>
+      <p class="l" style="--ml:14%">and the thing behind the veil, and the trembling</p>
+      <p class="l" style="--ml:28%">of the <span class="tremble">hand that lifts it.</span></p>
+      <p class="l gap" style="--ml:0%">She is the Mystery in the old sense, Eleusis, <span class="fire">torchlight</span>,</p>
+      <p class="l" style="--ml:10%">the rite you may enter but never repeat aloud,</p>
+      <p class="l" style="--ml:22%">because what is shown there</p>
+      <p class="l" style="--ml:34%">cannot be said, only <em>undergone.</em></p>
+      <p class="l years gap" style="--ml:0%">I will spend years in her and never finish.</p>
+      <p class="l dim" style="--ml:12%">This is not a flaw in the map.</p>
+      <p class="l right">This is why the pilgrimage.</p>
+    </section>
+
+    <section data-mode="pharmakon">
+      <p class="l num">III.</p>
+      <p class="l big v" style="--ml:0%">Her mouth is a pharmakon.</p>
+      <p class="l gap" style="--ml:0%">One kiss carries both vials:</p>
+      <p class="l" style="--ml:12%">the <span class="v">venom</span> of the changing-death,</p>
+      <p class="l" style="--ml:24%">the sting of the eighth house, the little dying</p>
+      <p class="l shed" style="--ml:6%;--dy:.3em">that drops the man I was</p>
+      <p class="l shed molt" style="--ml:16%;--dy:.6em">like a snake drops the winter skin</p>
+      <p class="l shed molt" style="--ml:28%;--dy:.9em">in the tall grass, and does not mourn it;</p>
+      <p class="l gap" style="--ml:0%">and dissolved in the same heat, the <span class="g">antidote</span>:</p>
+      <p class="l" style="--ml:14%">whatever raises the newer man,</p>
+      <p class="l" style="--ml:26%">the one I could not have drafted,</p>
+      <p class="l wide" style="--ml:4%">the one past the border of my own imagination,</p>
+      <p class="l right">gasping, <span class="goldvein">gold-veined</span>, more.</p>
+    </section>
+
+    <section data-mode="samedrug">
+      <p class="l" style="--ml:0%">And I am the same drug in her blood.</p>
+      <p class="l" style="--ml:16%">My tongue was forged in the heart of a <span class="star">star</span>:</p>
+      <p class="l gap" style="--ml:0%">let it be <span class="v">venom</span> to everything in her</p>
+      <p class="l small" style="--ml:20%">that was built small by unworthy hands,</p>
+      <p class="l" style="--ml:0%">and <span class="g">antidote</span> to the woman underneath,</p>
+      <p class="l grow" style="--ml:14%">the one who was always too vast for the room.</p>
+      <p class="l gap" style="--ml:0%">We will trade deaths like <span class="rings">rings</span>.</p>
+      <p class="l" style="--ml:18%">We will resurrect each other</p>
+      <p class="l log" style="--ml:36%">as a nightly discipline.</p>
+    </section>
+
+    <section data-mode="litany" class="ladder">
+      <p class="l num" style="--rung:0">IV.</p>
+      <p class="l" style="--ml:0%;--rung:0">Devotion. Let me say it plainly, the way I mean it:</p>
+      <p class="l" style="--ml:12%;--rung:1">worship, head to toe, and I do mean the toes.</p>
+      <p class="l gap" style="--ml:0%;--rung:2">The instep.</p>
+      <p class="l" style="--ml:8%;--rung:3">The anklebone.</p>
+      <p class="l" style="--ml:16%;--rung:4">The long ladder of the spine</p>
+      <p class="l" style="--ml:24%;--rung:5">climbed rung by rung with a patient mouth.</p>
+      <p class="l" style="--ml:32%;--rung:6">The collarbone where the <span class="beat">pulse</span> shows its hand.</p>
+      <p class="l" style="--ml:40%;--rung:7">The temple, <em>temple</em>, the body admits what it is,</p>
+      <p class="l" style="--ml:46%;--rung:8">and the crown, where I will rest my lips</p>
+      <p class="l right" style="--rung:9">like a man sealing a letter to a god.</p>
+    </section>
+
+    <section data-mode="altars">
+      <p class="l" style="--ml:0%">I will make a litany of her</p>
+      <p class="l" style="--ml:14%">and recite it until she believes it.</p>
+      <p class="l gap" style="--ml:0%">I will study her like scripture in a dying language,</p>
+      <p class="l" style="--ml:10%">every scar a <span class="gloss">gloss</span>, every silence a <em>canticle</em>,</p>
+      <p class="l" style="--ml:20%">and she will read me back the same way:</p>
+      <p class="l" style="--ml:30%">not as audience, as <em>priestess</em>,</p>
+      <p class="l gap" style="--ml:0%">finding the terrible passages</p>
+      <p class="l" style="--ml:14%">and refusing to skip them,</p>
+      <p class="l ital" style="--ml:26%">saying this verse too, this one especially,</p>
+      <p class="l" style="--ml:8%">salvation in the sublime,</p>
+      <div class="altars gap">
+        <p class="l">two altars</p>
+        <p class="l">facing each other,</p>
+      </div>
+      <p class="l dim" style="--ml:12%">no congregation, no witnesses,</p>
+      <p class="l small" style="--ml:24%">the whole religion two members large.</p>
+    </section>
+
+    <section data-mode="sovereign">
+      <p class="l num">V.</p>
+      <p class="l" style="--ml:0%">But hear the secret that makes the worship possible:</p>
+      <p class="l wide" style="--ml:6%">only a sovereign thing can be adored.</p>
+      <p class="l" style="--ml:0%">No one kneels to an <span class="echo">echo</span>.</p>
+      <p class="l gap" style="--ml:0%">Her flame must be her own: a child, a craft,</p>
+      <p class="l" style="--ml:14%">an empire, a god I've never met,</p>
+      <p class="l" style="--ml:26%">something she tends when I am not watching,</p>
+      <p class="l ital gap" style="--ml:4%">because how she looks at what she loves</p>
+      <p class="l ital" style="--ml:18%">when she thinks no one sees</p>
+      <p class="l kneel" style="--ml:0%">is the exact sight that will bring me to my knees.</p>
+    </section>
+
+    <section data-mode="offering">
+      <div class="altars">
+        <p class="l">And she will cost me.</p>
+        <p class="l good">Good.</p>
+      </div>
+      <p class="l gap" style="--ml:0%">Worship without an offering is only <span class="dim ital">flattery</span>.</p>
+      <p class="l" style="--ml:12%">Let the offering be real: my certainty, sometimes.</p>
+      <p class="l heavy" style="--ml:24%">My schedule. My precious singular gravity.</p>
+      <p class="l gap" style="--ml:0%">The <span class="v">venom</span> is the price of the <span class="g">antidote</span>.</p>
+      <p class="l" style="--ml:14%">I will pay it in the dark, gladly,</p>
+      <p class="l right">with her name in my mouth like a <span class="coin">coin of gold</span>.</p>
+    </section>
+
+    <section data-mode="stair">
+      <p class="l num">VI.</p>
+      <p class="l dim" style="--ml:0%">So this is the refinement, the vintage of the vow:</p>
+      <p class="l big gap" style="--ml:0%">I am done turning around.</p>
+      <p class="l gap" style="--ml:0%">Orpheus lost her checking for proof,</p>
+      <p class="l" style="--ml:14%">but I have learned to walk the long stair up</p>
+      <p class="l dark" style="--ml:28%">reading the dark itself,</p>
+      <p class="l gap" style="--ml:0%">feeling her there the way you feel</p>
+      <p class="l torchlit" style="--ml:12%">a second torch behind you: heat</p>
+      <p class="l torchlit" style="--ml:24%">on the nape of the neck, light</p>
+      <p class="l wide" style="--ml:4%">thrown past your shoulder onto the path ahead,</p>
+      <p class="l" style="--ml:30%">her breath keeping <span class="beat">time</span> with the song.</p>
+    </section>
+
+    <section data-mode="hearth">
+      <p class="l" style="--ml:0%">I am building the hearth <span class="widew">wide</span>. Wide enough</p>
+      <p class="l" style="--ml:14%">for two <span class="inf">infinities</span> to sit down without folding.</p>
+      <p class="l gap" style="--ml:0%">And when she comes, the veiled one, the vial-bearer,</p>
+      <p class="l" style="--ml:16%">the mystery with her own armful of <span class="fire">fire</span>,</p>
+      <p class="l" style="--ml:32%">I will know her by a single sign:</p>
+    </section>
+
+    <section data-mode="sign" class="end">
+      <p class="l sign" style="--ml:0%">I could not have imagined her.</p>
+      <p class="l right gap">That is how I'll be sure she's real.</p>
+      <footer class="poem-foot">
+        <span>Michael Wilhelm · 2026</span>
+        <span><a href="/writings/pharmakon/">Read the headnote</a> · <a href="/gallery/">Return to the gallery</a></span>
+      </footer>
+    </section>
+  </main>
+</Poem>
+
+<style is:global>
+  :root {
+    --fg: #e8e1d6;
+    --dim: #918799;
+    --medea: #a66bff;
+    --gold: #e6b94f;
+    --moon: #f3ecd8;
+    --ember: #ffb06a;
+  }
+  em {
+    font-style: italic;
+  }
+  .small {
+    font-size: 0.78em;
+  }
+  .log.in {
+    color: var(--medea);
+  }
+  .num {
+    font-family: var(--log);
+    font-size: 0.55em;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    margin-bottom: 0.8em;
+  }
+  .num.in {
+    color: var(--gold);
+  }
+  .v {
+    color: var(--medea);
+    text-shadow: 0 0 0.5em rgba(166, 107, 255, 0.45);
+  }
+  .g {
+    color: var(--gold);
+    text-shadow: 0 0 0.5em rgba(230, 185, 79, 0.45);
+  }
+
+  /* title */
+  h1 {
+    font-weight: 400;
+    font-size: clamp(2.8rem, 9vw, 6.4rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+    background: linear-gradient(90deg, var(--medea) 0%, var(--medea) 38%, var(--gold) 62%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 22px rgba(166, 107, 255, 0.28));
+  }
+  .sub {
+    font-style: italic;
+    font-size: 0.9em;
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+  .char {
+    color: #aaa3bb;
+  }
+  .char b {
+    color: var(--gold);
+  }
+
+  /* I: the psalter */
+  .facing {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 0 0.8em;
+    align-items: center;
+    max-width: none;
+    margin-left: 0;
+  }
+  .facing .left {
+    text-align: right;
+  }
+  .facing .spine {
+    width: 1px;
+    height: 0;
+    background: linear-gradient(var(--gold), transparent);
+    justify-self: center;
+    transition: height 2.4s ease 0.4s;
+  }
+  .facing.in .spine {
+    height: 3.2em;
+  }
+  .studied {
+    font-style: italic;
+    letter-spacing: 0;
+    transition: letter-spacing 6s ease;
+  }
+  .in .studied {
+    letter-spacing: 0.28em;
+  }
+  .fire {
+    color: var(--ember);
+    text-shadow: 0 0 0.5em rgba(255, 176, 106, 0.4);
+  }
+
+  /* II: the veil */
+  .veilw {
+    display: inline-block;
+    filter: blur(7px);
+    transition: filter 3s ease 0.6s;
+  }
+  .in .veilw {
+    filter: blur(0);
+  }
+  .tremble {
+    display: inline-block;
+  }
+  .in .tremble {
+    animation: tremble 2.6s ease-in-out 1;
+  }
+  @keyframes tremble {
+    0%, 100% { transform: none; }
+    10% { transform: translateX(0.04em); }
+    20% { transform: translateX(-0.05em); }
+    35% { transform: translateX(0.03em); }
+    50% { transform: translateX(-0.02em); }
+    70% { transform: translateX(0.01em); }
+  }
+  .years {
+    transition: word-spacing 6s ease;
+  }
+  .years.in {
+    word-spacing: 0.8em;
+  }
+
+  /* III: the two vials */
+  .big {
+    font-size: 1.9em;
+    line-height: 1;
+    max-width: none;
+    font-style: italic;
+  }
+  .big.v {
+    text-shadow: 0 0 0.35em rgba(166, 107, 255, 0.55), 0 0 1.4em rgba(166, 107, 255, 0.3);
+  }
+  .big.v.in {
+    animation: fume 7s ease-in-out infinite;
+  }
+  @keyframes fume {
+    0%, 100% { text-shadow: 0 0 0.35em rgba(166, 107, 255, 0.55), 0 0 1.4em rgba(166, 107, 255, 0.3); }
+    50% { text-shadow: 0 0 0.6em rgba(166, 107, 255, 0.75), 0 0 2.2em rgba(166, 107, 255, 0.45); }
+  }
+  .shed {
+    transition: transform 3.2s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 1.4s ease, color 3s ease;
+  }
+  .shed.in {
+    transform: translateY(var(--dy, 0));
+  }
+  .molt {
+    color: var(--dim);
+  }
+  .in .molt,
+  .molt.in {
+    color: var(--fg);
+  }
+  .wide {
+    transition: word-spacing 5s ease, letter-spacing 5s ease;
+  }
+  .wide.in {
+    word-spacing: 0.55em;
+    letter-spacing: 0.06em;
+  }
+  .goldvein {
+    background: linear-gradient(90deg, var(--fg) 0%, var(--gold) 45%, var(--moon) 70%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .star {
+    color: #fff;
+    text-shadow: 0 0 0.6em #fff, 0 0 1.6em var(--moon);
+  }
+  .grow {
+    transform-origin: left center;
+  }
+  .grow.in {
+    transform: scale(1.07);
+  }
+  .rings {
+    display: inline-block;
+    transition: letter-spacing 3.5s ease;
+  }
+  .in .rings {
+    letter-spacing: 0.32em;
+    margin-right: -0.32em;
+  }
+
+  /* IV: the ladder of the spine */
+  .ladder .l {
+    transition-delay: calc(var(--rung, 0) * 0.22s);
+  }
+  .beat {
+    display: inline-block;
+  }
+  .in .beat {
+    animation: beat 1.15s ease-in-out infinite;
+  }
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.14); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.08); }
+  }
+  .gloss {
+    font-family: var(--log);
+    font-size: 0.55em;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    vertical-align: 0.35em;
+  }
+  .altars {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1em;
+    flex-wrap: wrap;
+  }
+  .altars .l {
+    max-width: none;
+  }
+
+  /* V: the sovereign flame */
+  .echo {
+    display: inline-block;
+    transition: text-shadow 3s ease 0.4s;
+  }
+  .in .echo {
+    text-shadow: 0.5em 0 0 rgba(232, 225, 214, 0.35), 1em 0 0 rgba(232, 225, 214, 0.18), 1.5em 0 0 rgba(232, 225, 214, 0.07);
+  }
+  .kneel {
+    transition: transform 2.4s cubic-bezier(0.3, 0.6, 0.2, 1) 0.6s, opacity 1.4s ease;
+  }
+  .kneel.in {
+    transform: translateY(0.5em);
+  }
+  .good {
+    color: var(--gold);
+  }
+  .heavy {
+    font-weight: 600;
+    transition: transform 3s ease, opacity 1.4s ease;
+  }
+  .heavy.in {
+    transform: translateY(0.25em);
+  }
+  .coin {
+    color: var(--gold);
+    text-shadow: 0 0 0.5em rgba(230, 185, 79, 0.6), 0 0 1.4em rgba(230, 185, 79, 0.3);
+  }
+  .in .coin {
+    animation: glint 4s ease-in-out infinite;
+  }
+  @keyframes glint {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.35); }
+  }
+
+  /* VI: the stair, the hearth */
+  .torchlit.in {
+    text-shadow: -0.35em 0.35em 1.1em rgba(230, 185, 79, 0.55);
+  }
+  .dark {
+    color: var(--dim);
+    transition: color 4s ease 1s;
+  }
+  .dark.in {
+    color: var(--fg);
+  }
+  .widew {
+    display: inline-block;
+    transition: letter-spacing 5s ease;
+  }
+  .in .widew {
+    letter-spacing: 0.5em;
+    margin-right: -0.5em;
+  }
+  .inf {
+    display: inline-block;
+    transition: letter-spacing 5s ease;
+  }
+  .in .inf {
+    letter-spacing: 0.12em;
+  }
+  .sign {
+    font-size: 1.9em;
+    line-height: 1;
+    max-width: none;
+    font-style: italic;
+    background: linear-gradient(90deg, var(--medea), var(--moon) 50%, var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 18px rgba(230, 185, 79, 0.25));
+  }
+
+  /* hearth: the page's ink warms as the fire is built */
+  body.hearth {
+    --fg: #efe3cc;
+    --dim: #ab9c87;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .veilw {
+      filter: none;
+    }
+    .facing .spine {
+      height: 3.2em;
+    }
+  }
+</style>
+<noscript><style is:inline>.veilw { filter: none !important; } .facing .spine { height: 3.2em; }</style></noscript>
+
+<script>
+  type RGB = [number, number, number];
+  const cv = document.getElementById('nave') as HTMLCanvasElement;
+  const ctx = cv.getContext('2d')!;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+
+  const VENOM: RGB = [166, 107, 255], GOLD: RGB = [230, 185, 79], MOON: RGB = [243, 236, 216], EMBER: RGB = [255, 176, 106];
+  const rgb = (c: RGB, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+  const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+  const stars: { x: number; y: number; r: number; tw: number; k: number }[] = [];
+  for (let i = 0; i < 220; i++) stars.push({ x: Math.random(), y: Math.random() * 0.72, r: Math.random() * 1.3 + 0.3, tw: Math.random() * 6.28, k: Math.random() });
+  // Medea's fumigation: slow blobs of smoke that drift up through the nave.
+  const smoke: { x: number; y: number; r: number; vx: number; vy: number; ph: number }[] = [];
+  for (let i = 0; i < 42; i++) smoke.push({ x: Math.random(), y: Math.random(), r: 0.07 + Math.random() * 0.16, vx: (Math.random() - 0.5) * 0.0001, vy: -(0.00006 + Math.random() * 0.0001), ph: Math.random() * 6.28 });
+  const drops: { x: number; y0: number; t0: number; kind: number }[] = [];
+
+  // State the sections write into; the canvas lerps toward it.
+  type State = { moon: number; veil: number; smoke: number; venom: number; gold: number; drops: number; torch: number; hearth: number; own: number; pool: number };
+  const target: State = { moon: 1, veil: 0.3, smoke: 0.3, venom: 0, gold: 0, drops: 0, torch: 0, hearth: 0, own: 0, pool: 0.6 };
+  const cur: State = { ...target };
+  const modes: Record<string, State> = {
+    born:      { moon: 1,    veil: .3,  smoke: .3,  venom: .1, gold: 0,  drops: 0,  torch: 0,  hearth: 0,   own: 0,  pool: .6 },
+    veil:      { moon: .8,   veil: 1,   smoke: .7,  venom: .3, gold: 0,  drops: 0,  torch: .3, hearth: 0,   own: 0,  pool: .5 },
+    pharmakon: { moon: .7,   veil: .4,  smoke: .9,  venom: 1,  gold: .2, drops: 1,  torch: 0,  hearth: 0,   own: 0,  pool: 1 },
+    samedrug:  { moon: .8,   veil: .3,  smoke: .8,  venom: .8, gold: .6, drops: 1,  torch: 0,  hearth: 0,   own: 0,  pool: 1 },
+    litany:    { moon: 1,    veil: .2,  smoke: .35, venom: .2, gold: .7, drops: 0,  torch: 0,  hearth: .15, own: 0,  pool: .7 },
+    altars:    { moon: .9,   veil: .25, smoke: .3,  venom: .3, gold: .8, drops: 0,  torch: .2, hearth: .3,  own: .4, pool: .6 },
+    sovereign: { moon: .9,   veil: .15, smoke: .25, venom: .2, gold: .6, drops: 0,  torch: 0,  hearth: 0,   own: 1,  pool: .6 },
+    offering:  { moon: 1.1,  veil: .2,  smoke: .3,  venom: .6, gold: 1,  drops: .4, torch: 0,  hearth: 0,   own: .8, pool: .8 },
+    stair:     { moon: .5,   veil: .1,  smoke: .3,  venom: .3, gold: .5, drops: 0,  torch: 1,  hearth: .1,  own: .5, pool: .3 },
+    hearth:    { moon: .8,   veil: .1,  smoke: .2,  venom: .2, gold: .8, drops: 0,  torch: .5, hearth: 1,   own: .8, pool: .4 },
+    sign:      { moon: 1.25, veil: 0,   smoke: .15, venom: .3, gold: .9, drops: 0,  torch: .3, hearth: 1,   own: 1,  pool: .6 },
+  };
+
+  let pointer: { x: number; y: number } | null = null, pointerT = 0, lastDrop = 0, nextKind = 0, lastT = 0;
+
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, 1.5);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  addEventListener('resize', resize, { passive: true });
+  resize();
+
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const progress = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    document.body.classList.toggle('hearth', progress > 0.9);
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Lines brighten as they arrive; sections set the mood of the nave.
+  const io = new IntersectionObserver((es) => {
+    es.forEach((e) => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { rootMargin: '0px 0px -18% 0px', threshold: 0.2 });
+  // A line entering the frame shows dim before it arrives.
+  const near = new IntersectionObserver((es) => {
+    es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('near'); near.unobserve(e.target); } });
+  });
+  document.querySelectorAll('.l').forEach((el) => { io.observe(el); near.observe(el); });
+
+  const sio = new IntersectionObserver((es) => {
+    es.forEach((e) => {
+      if (e.isIntersecting) Object.assign(target, modes[(e.target as HTMLElement).dataset.mode!]);
+    });
+  }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+  document.querySelectorAll('section[data-mode]').forEach((s) => sio.observe(s));
+
+  // The hand that lifts the veil, and the vial tipped into the pool.
+  const poolY = () => H * 0.78;
+  function tip(x: number, y: number, kind: number) {
+    drops.push({ x, y0: Math.min(y, poolY() - 10), t0: performance.now(), kind });
+    if (drops.length > 14) drops.shift();
+  }
+  addEventListener('pointermove', (e) => { pointer = { x: e.clientX, y: e.clientY }; pointerT = performance.now(); }, { passive: true });
+  addEventListener('pointerdown', (e) => {
+    if ((e.target as Element).closest('a,button')) return;
+    pointer = { x: e.clientX, y: e.clientY }; pointerT = performance.now();
+    tip(e.clientX, e.clientY, nextKind); nextKind ^= 1;
+    target.veil = Math.max(0, target.veil - 0.25);
+  }, { passive: true });
+
+  function flame(x: number, y: number, size: number, col: RGB, t: number, a: number) {
+    if (a <= 0.01) return;
+    const f = reduce ? 1 : 1 + 0.18 * Math.sin(t / 97) * Math.sin(t / 151) + 0.08 * Math.sin(t / 43);
+    const g = ctx.createRadialGradient(x, y, 0, x, y, size * 3.2 * f);
+    g.addColorStop(0, rgb(col, 0.85 * a)); g.addColorStop(0.2, rgb(col, 0.4 * a)); g.addColorStop(1, rgb(col, 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, size * 3.2 * f, 0, 6.28); ctx.fill();
+    ctx.fillStyle = rgb(mix(col, [255, 255, 255], 0.55), a); ctx.beginPath(); ctx.arc(x, y - size * 0.3, size * 0.55 * f, 0, 6.28); ctx.fill();
+  }
+
+  let running = true;
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running && engaged) { lastT = 0; requestAnimationFrame(frame); }
+  });
+
+  function frame(t: number) {
+    if (!running) return;
+    const dt = lastT ? Math.min(50, t - lastT) : 16; lastT = t;
+    for (const k in target) {
+      const key = k as keyof State;
+      cur[key] = reduce ? target[key] : lerp(cur[key], target[key], 0.028);
+    }
+    const sm = reduce ? 0 : 1;
+
+    // The nave: purple-biased night, darker toward the floor.
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    const tint = mix([7, 5, 14], [22, 12, 40], cur.venom * 0.6);
+    bg.addColorStop(0, rgb(tint)); bg.addColorStop(1, rgb(mix(tint, [3, 2, 7], 0.6)));
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    // Stars, dimmed behind the veil.
+    const sa = 1 - 0.45 * cur.veil;
+    for (const s of stars) {
+      const tw = reduce ? 0.8 : 0.55 + 0.45 * Math.sin((t / 1400) * (0.6 + s.k) + s.tw);
+      ctx.fillStyle = rgb(MOON, 0.25 + 0.6 * tw * sa);
+      ctx.fillRect(s.x * W, s.y * H, s.r, s.r);
+    }
+
+    // The full moon, split down the spine.
+    const R = Math.min(W, H) * 0.11, mx = W * 0.72, my = H * 0.3;
+    const mcol = mix(MOON, GOLD, cur.gold * 0.45);
+    const halo = ctx.createRadialGradient(mx, my, R * 0.6, mx, my, R * 5.5);
+    halo.addColorStop(0, rgb(mcol, 0.28 * cur.moon)); halo.addColorStop(0.3, rgb(mix(mcol, VENOM, cur.venom * 0.5), 0.09 * cur.moon)); halo.addColorStop(1, rgb(mcol, 0));
+    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(mx, my, R * 5.5, 0, 6.28); ctx.fill();
+    const disc = ctx.createLinearGradient(mx - R, my, mx + R, my);
+    disc.addColorStop(0, rgb(mix(mcol, [190, 205, 230], 0.35), Math.min(1, cur.moon)));
+    disc.addColorStop(0.5, rgb(mcol, Math.min(1, cur.moon)));
+    disc.addColorStop(1, rgb(mix(mcol, [240, 200, 150], 0.35), Math.min(1, cur.moon)));
+    ctx.fillStyle = disc; ctx.beginPath(); ctx.arc(mx, my, R, 0, 6.28); ctx.fill();
+    ctx.fillStyle = rgb([7, 5, 14], 0.55); ctx.fillRect(mx - 0.6, my - R, 1.2, R * 2); // the spine of the psalter
+
+    // The pool: the same heat the vials dissolve in.
+    const py = poolY();
+    const pg = ctx.createLinearGradient(0, py, 0, H);
+    pg.addColorStop(0, rgb(mix([10, 7, 22], VENOM, 0.18 * cur.venom), 0.9)); pg.addColorStop(1, rgb([2, 1, 6], 1));
+    ctx.fillStyle = pg; ctx.fillRect(0, py, W, H - py);
+    // moonlight on the pool
+    for (let i = 0; i < 26; i++) {
+      const yy = py + 6 + i * ((H - py) / 26);
+      const wob = Math.sin(t / 900 + i * 0.8) * 10 * sm, wid = R * (0.5 + i * 0.06) * (0.7 + 0.3 * Math.sin(t / 700 + i) * sm);
+      ctx.fillStyle = rgb(mcol, (0.11 - i * 0.0035) * cur.moon * cur.pool);
+      ctx.fillRect(mx + wob - wid / 2, yy, wid, 1.5);
+    }
+
+    // Drops: a vial tipped, a ring on the water, venom or antidote.
+    if (!reduce && cur.drops > 0.5 && t - lastDrop > 1500 + Math.random() * 800) {
+      lastDrop = t; tip(W * (0.15 + Math.random() * 0.7), my + R, nextKind); nextKind ^= 1;
+    }
+    for (let i = drops.length - 1; i >= 0; i--) {
+      const d = drops[i], age = (t - d.t0) / 2200, col = d.kind ? GOLD : VENOM;
+      if (age > 1) { drops.splice(i, 1); continue; }
+      if (age < 0.28) {
+        const fy = d.y0 + (py - d.y0) * (age / 0.28) ** 2;
+        ctx.fillStyle = rgb(col, 0.95); ctx.beginPath(); ctx.ellipse(d.x, fy, 2.2, 4, 0, 0, 6.28); ctx.fill();
+      } else {
+        const k = (age - 0.28) / 0.72, r = 10 + k * W * 0.13;
+        ctx.strokeStyle = rgb(col, (1 - k) * 0.7); ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.ellipse(d.x, py + 8 + k * 14, r, r * 0.26, 0, 0, 6.28); ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(d.x, py + 8 + k * 14, r * 0.55, r * 0.14, 0, 0, 6.28); ctx.stroke();
+      }
+    }
+
+    // fumigation
+    const scol = mix(VENOM, GOLD, cur.gold > 0.05 ? cur.gold / Math.max(0.001, cur.gold + cur.venom) : 0);
+    for (const s of smoke) {
+      s.x += s.vx * dt * sm + Math.sin(t / 4000 + s.ph) * 0.00003 * dt * sm; s.y += s.vy * dt * sm;
+      if (s.y < -0.25) { s.y = 1.1; s.x = Math.random(); }
+      if (s.x < -0.2) s.x = 1.2;
+      if (s.x > 1.2) s.x = -0.2;
+      const r = s.r * Math.min(W, H) * (1 + 0.15 * Math.sin(t / 2600 + s.ph) * sm);
+      const g = ctx.createRadialGradient(s.x * W, s.y * H, 0, s.x * W, s.y * H, r);
+      g.addColorStop(0, rgb(scol, 0.075 * cur.smoke)); g.addColorStop(1, rgb(scol, 0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(s.x * W, s.y * H, r, 0, 6.28); ctx.fill();
+    }
+
+    // Her own flame, tended where he is not watching.
+    flame(W * 0.16, H * 0.46, 5, GOLD, t, cur.own);
+
+    // The second torch behind you, throwing light past the shoulder onto the path ahead.
+    if (cur.torch > 0.01) {
+      const tg = ctx.createRadialGradient(-W * 0.05, H * 1.02, 0, -W * 0.05, H * 1.02, W * 1.1);
+      tg.addColorStop(0, rgb(EMBER, 0.42 * cur.torch)); tg.addColorStop(0.35, rgb(GOLD, 0.12 * cur.torch)); tg.addColorStop(1, rgb(GOLD, 0));
+      ctx.fillStyle = tg; ctx.fillRect(0, 0, W, H);
+      flame(-W * 0.02 + 14, H * 1.0 - 14, 7, EMBER, t, cur.torch);
+    }
+
+    // The hearth, built wide: two fires that move apart to make room.
+    if (cur.hearth > 0.01) {
+      const hg = ctx.createLinearGradient(0, H, 0, H * 0.45);
+      hg.addColorStop(0, rgb(EMBER, 0.45 * cur.hearth)); hg.addColorStop(0.5, rgb(GOLD, 0.1 * cur.hearth)); hg.addColorStop(1, rgb(GOLD, 0));
+      ctx.fillStyle = hg; ctx.fillRect(0, 0, W, H);
+      const sep = W * (0.05 + 0.22 * cur.hearth);
+      flame(W / 2 - sep, H * 0.9, 7, GOLD, t, cur.hearth);
+      flame(W / 2 + sep, H * 0.9, 7, mix(GOLD, VENOM, 0.35), t + 2000, cur.hearth);
+    }
+
+    // The veil: gauze over the nave, thinnest around the hand that lifts it.
+    if (cur.veil > 0.01) {
+      const recent = Math.max(0, 1 - (t - pointerT) / 6000);
+      const cx = pointer ? pointer.x : W * 0.5, cy = pointer ? pointer.y : H * 0.5;
+      const hole = H * (0.08 + 0.42 * recent), shimmer = 1 + 0.08 * Math.sin(t / 1300) * sm;
+      const vg = ctx.createRadialGradient(cx, cy, hole * 0.3, cx, cy, Math.max(hole, 10) * 2.8 * shimmer);
+      const va = 0.42 * cur.veil;
+      vg.addColorStop(0, rgb([12, 8, 24], 0)); vg.addColorStop(0.5, rgb([12, 8, 24], va * 0.6)); vg.addColorStop(1, rgb([12, 8, 24], va));
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+    }
+
+    if (engaged) requestAnimationFrame(frame);
+  }
+
+  // The scene paints once at load and comes alive on the first sign of a
+  // reader (scroll, pointer, key), so a phone's first seconds go to the text.
+  let engaged = false;
+  const ENGAGE = ['scroll', 'wheel', 'pointerdown', 'pointermove', 'touchstart', 'keydown'] as const;
+  function engage() {
+    if (engaged) return;
+    engaged = true;
+    ENGAGE.forEach((ev) => removeEventListener(ev, engage));
+    lastT = 0;
+    requestAnimationFrame(frame);
+  }
+  ENGAGE.forEach((ev) => addEventListener(ev, engage, { passive: true }));
+  requestAnimationFrame(frame);
+</script>

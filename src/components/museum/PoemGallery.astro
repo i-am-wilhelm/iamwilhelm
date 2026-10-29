@@ -45,7 +45,7 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
             </p>
             {d.epigraph && <p class="poem__epigraph">{d.epigraph}</p>}
             {onView ? (
-              <span class="poem__open smallcaps">Enter the poem</span>
+              <span class="poem__open smallcaps">Enter the work</span>
             ) : (
               <span class="poem__open poem__open--soon smallcaps">Forthcoming</span>
             )}
@@ -73,6 +73,9 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
     gap: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+  .poem {
+    min-width: 0;
   }
   .poem__link {
     display: grid;
@@ -109,6 +112,7 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
     gap: 0.9rem;
     aspect-ratio: 4 / 5;
     padding: 1.5rem 1.25rem;
+    container-type: inline-size;
     text-align: center;
     color: #efe6d3;
     background:
@@ -130,7 +134,8 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
   .poem__plate-title {
     font-family: var(--font-display);
     font-weight: 300;
-    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+    /* Sized to the plate so one long word (PHARMAKON) never pushes the frame wider. */
+    font-size: min(2.1rem, 10.5cqi);
     letter-spacing: 0.24em;
     line-height: 1.15;
     text-transform: uppercase;

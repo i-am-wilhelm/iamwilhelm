@@ -1,0 +1,720 @@
+---
+/**
+ * The Only Sighted One, hung in the Gallery beside the poems: a visualized
+ * essay on Prometheus and the liver. One narrow column of essay, stepped by
+ * section, over a fixed scroll-driven sky that runs several nights and days
+ * of the punishment. Each section's data-p sets the sky (dawn, the lit organ,
+ * the eagle's approach); the script blends between them by scroll position.
+ */
+import Poem from '../../layouts/Poem.astro';
+---
+
+<Poem
+  title="The Only Sighted One"
+  description="A visualized essay by Michael Wilhelm: Prometheus, the liver, and a gift that landed before anyone could hold it."
+  year="2026"
+  night="#06070b"
+  accent="#e9b85e"
+  genre="Essay"
+  bodyClass="essay"
+>
+  <canvas id="sky" class="stage" aria-hidden="true"></canvas>
+
+  <aside id="rail" aria-hidden="true">
+    <span class="gk" lang="grc">ἧπαρ</span>
+    <span class="tube"><span class="fill" id="fill"></span></span>
+    <span class="state" id="state">restored</span>
+  </aside>
+
+  <main class="page">
+    <div class="wrap">
+      <header class="hero" data-p='{"dawn":0.07,"ember":0.95,"eagle":0.07,"bird":1,"veil":0.3}'>
+        <p class="log">
+          <span>Organ <b class="gk" lang="grc">ἧπαρ</b></span>
+          <span>Cycle <b>eaten by day, equal by night</b></span>
+          <span>Charge <b class="gk" lang="grc">φιλάνθρωπος τρόπος</b></span>
+        </p>
+        <h1>The Only<br />Sighted <em>One</em></h1>
+        <p class="deck">Prometheus, the liver, and a gift that landed before anyone could hold it.</p>
+        <p class="log sig"><span>an essay · Michael Wilhelm</span><span>in the original</span></p>
+      </header>
+
+      <hr />
+
+      <section data-p='{"dawn":0.55,"ember":0.5,"eagle":0.14,"bird":1,"veil":0.45}'>
+        <div class="body" style="--ml:0">
+          <p class="eyebrow"><span class="gk" lang="grc">ΜΗΚΩΝΗ</span><span class="tr">Mēkōnē</span><span class="gl">where the portions were divided</span></p>
+          <p class="t lede">Zeus's stated grievance is procedural. At Mecone the ox was carved and Prometheus rigged the choice: the bones dressed in bright fat, the good meat hidden inside the stomach. Then came the theft of fire.</p>
+          <p class="t">Hesiod tells all of it to explain one thing, which is why a human life runs on work and sickness. In the <em>Theogony</em> the woman follows the fire. In the <em>Works and Days</em> she arrives carrying the jar. The gift and the bill are in the same chapter, every time he tells it.</p>
+        </div>
+      </section>
+
+      <section data-p='{"dawn":0.82,"ember":0.17,"eagle":0.2,"bird":1,"veil":0.3}'>
+        <div class="body" style="--ml:7%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΠΟΛΙΤΙΚΗ ΣΟΦΙΑ</span><span class="tr">politikē sophia</span><span class="gl">the wisdom of living together</span></p>
+          <p class="t lede">Plato makes the shortfall explicit. In the <em>Protagoras</em>, Prometheus can reach the workshops of Hephaestus and Athena and carry off craft-wisdom along with fire. Political wisdom sits in Zeus's citadel behind fearsome guards, and he leaves without it.</p>
+          <p class="t">So we received the tools while the capacity to live alongside each other stayed behind. We built, we wronged each other, we scattered. Zeus had to send Hermes down afterward with shame and justice, handed to everyone instead of a trained few. A patch on a system already shipped.</p>
+          <p class="t">Fire arriving ahead of readiness is the oldest version of the story we have.</p>
+        </div>
+      </section>
+
+      <section data-p='{"dawn":0.24,"ember":0.72,"eagle":0.3,"bird":1,"veil":0.55}'>
+        <div class="body" style="--ml:2%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΗΠΑΡ</span><span class="tr">hēpar</span><span class="gl">liver: appetite, and the screen prophecy plays on</span></p>
+          <p class="t lede">Take the organ seriously and the sentence changes shape.</p>
+          <p class="t">To the Greeks the liver held the appetitive soul, the part of a person that wants. The <em>Timaeus</em> gives it a second office: the gods made it smooth and bright so the reasoning mind could throw images down onto it like a mirror. That is the Greek explanation for why prophecy arrives in sleep and in frenzy rather than in clear daylight thought.</p>
+          <p class="t">Aeschylus puts the bite of grief there too. Tityos has his torn out for lust. <span class="vein">The liver is where a Greek keeps feeling and foresight, together, in one organ.</span></p>
+        </div>
+      </section>
+
+      <section data-p='{"dawn":0.72,"ember":0.1,"eagle":0.5,"bird":1,"veil":0.25}'>
+        <div class="body" style="--ml:9%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΠΡΟΜΗΘΕΥΣ</span><span class="tr">Promētheus</span><span class="gl">forethought</span></p>
+          <p class="t lede">Which means the eagle takes exactly the two faculties that caused the theft.</p>
+          <p class="t">His feeling for mortals (<em>Prometheus Bound</em> names the crime in its opening scene as his too man-loving way) and his foresight, which is his name. Prometheus is forethought. His brother Epimetheus is afterthought, the one who accepted the woman and opened the house.</p>
+          <p class="t">The punishment is aimed at the motive.</p>
+        </div>
+      </section>
+
+      <section data-p='{"dawn":0.05,"ember":1,"eagle":0.6,"bird":1,"veil":0.4}'>
+        <div class="body" style="--ml:3%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΝΥΚΤΟΣ</span><span class="tr">nyktos</span><span class="gl">by night</span></p>
+          <p class="t lede">Hesiod is precise about the schedule. The bird eats through the day, and whatever it takes grows back equal in the night.</p>
+          <p class="t">Read the mechanism and the cruelty moves. Endless pain would be one kind of sentence. This is a nightly restored capacity to feel and to see, delivered fresh each morning to the one being who will use it on the whole picture.</p>
+        </div>
+      </section>
+
+      <section data-p='{"dawn":0.4,"ember":0.58,"eagle":0.56,"bird":1,"veil":0.5}'>
+        <div class="body" style="--ml:6%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΤΥΦΛΑΙ ΕΛΠΙΔΕΣ</span><span class="tr">typhlai elpides</span><span class="gl">blind hopes</span></p>
+          <p class="t lede">Here is the line that changes the story.</p>
+          <p class="t">In Aeschylus, before fire is mentioned at all, Prometheus lists an earlier benefaction. He stopped mortals from foreseeing their own deaths, and he settled blind hopes in them to live in the space where that sight used to be.</p>
+          <p class="t">Blindness first. Fire second. A creature able to see the full cost of the technology would leave it on the ground, so he took the seeing away before he handed the thing over. <span class="gold">Unreadiness was the precondition he installed.</span></p>
+        </div>
+      </section>
+
+      <section class="held" data-p='{"dawn":0.5,"ember":0.88,"eagle":0.56,"bird":1,"veil":0.2,"still":1}'>
+        <div class="body" style="--ml:0">
+          <p class="big">Which leaves one being holding the entire picture.</p>
+          <p class="t">Chained where he can watch it. In a world he blinded on purpose. With the organ of sight regrown every night, in time for the morning's view.</p>
+          <p class="t">The grief is as self-inflicted as it is Zeus-inflicted.</p>
+        </div>
+      </section>
+
+      <section data-p='{"dawn":0.8,"ember":0.2,"eagle":0.63,"bird":1,"veil":0.3}'>
+        <div class="body" style="--ml:8%">
+          <p class="eyebrow"><span class="gl">PEARLS BEFORE SWINE</span></p>
+          <p class="t">Matthew's verse already carries the full sequence. The pearls go under the feet, and then the one who scattered them is turned on. The myth sets that same order to an eternal clock, and seats the giver where the view is best.</p>
+        </div>
+      </section>
+
+      <section data-p='{"dawn":1,"ember":0.62,"eagle":0.66,"bird":0,"veil":0.15}'>
+        <div class="body" style="--ml:0">
+          <p class="eyebrow"><span class="gk" lang="grc">ΛΥΣΙΣ</span><span class="tr">lysis</span><span class="gl">a loosing</span></p>
+          <p class="t lede">The myth keeps two endings, and they cost different things.</p>
+          <div class="endings">
+            <div class="ending">
+              <h2>Hesiod</h2>
+              <p>Heracles, son of a mortal woman, climbs the Caucasus and kills the bird. Zeus allows it so his own son's glory grows, and the release still runs through a mortal-born hand. The fire-users eventually produce someone equal to an act worth the gift.</p>
+            </div>
+            <div class="ending">
+              <h2>Kafka</h2>
+              <p>Everyone wears out. The gods wear out, the eagle wears out, the wound closes from sheer weariness, and what is left is the rock, with nobody remaining who recalls why anything was fastened to it.</p>
+            </div>
+          </div>
+          <p class="t after">One ending is paid in generations. The other is paid in forgetting what the fire was for.</p>
+        </div>
+      </section>
+
+      <footer class="close-foot" data-p='{"dawn":0.9,"ember":0.5,"eagle":0.72,"bird":0,"veil":0.2}'>
+        <hr class="foot-rule" />
+        <p class="close">He is still up there, seeing it clearly, every morning.</p>
+        <p class="log">
+          <span>Organ <b class="gk" lang="grc">ἧπαρ</b></span>
+          <span>Cycle <b>eaten by day, equal by night</b></span>
+          <span>Station <b>the Caucasus</b></span>
+        </p>
+        <p class="log links"><span>Michael Wilhelm · 2026</span><span><a href="/gallery/">Return to the gallery</a></span></p>
+        <p class="apparatus">
+          <b>Sources.</b> Hesiod, <i>Theogony</i> 521–534 and <i>Works and Days</i> 42–105 · Plato, <i>Protagoras</i> 320c–322d and <i>Timaeus</i> 71a–72b · Aeschylus, <i>Prometheus Bound</i> 10–11, 28, 247–252, and <i>Agamemnon</i> 791–792 · Homer, <i>Odyssey</i> 11.576–581 · Kafka, &ldquo;Prometheus&rdquo; (1918) · Matthew 7:6
+        </p>
+      </footer>
+    </div>
+  </main>
+</Poem>
+
+<style is:global>
+  .essay {
+    --stone: #0f1219;
+    --bone: #e9e3d5;
+    --fg: #e9e3d5;
+    --dim: #9298a6;
+    --ember: #ff6a2a;
+    --gold: #e9b85e;
+    --vein: #d0545a;
+    font-size: clamp(1.28rem, 2.3vw, 1.72rem);
+    line-height: 1.46;
+  }
+  .essay main.page {
+    max-width: none;
+    padding: 0;
+  }
+  .essay .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .essay h1 {
+    font-weight: 400;
+    font-size: clamp(3rem, 10.5vw, 6.4rem);
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .essay h1 em {
+    font-style: italic;
+    color: var(--ember);
+  }
+  .essay .deck {
+    margin: 1.1rem 0 0;
+    max-width: 30ch;
+    font-size: clamp(1.15rem, 2.1vw, 1.5rem);
+    font-style: italic;
+    opacity: 0.86;
+  }
+  .essay .log {
+    font-family: var(--log);
+    font-size: 0.78rem;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: #b4b9c5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1.7rem;
+  }
+  .essay .log span {
+    white-space: nowrap;
+  }
+  .essay .log b {
+    font-weight: 500;
+    color: var(--gold);
+  }
+  .essay .gk {
+    font-feature-settings: 'liga' 0;
+  }
+  .essay .log .gk {
+    text-transform: none;
+    letter-spacing: 0.06em;
+  }
+  .essay .log a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(233, 184, 94, 0.38);
+  }
+  .essay .log a:hover {
+    border-bottom-color: var(--gold);
+  }
+
+  .essay .eyebrow {
+    font-family: var(--log);
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
+    color: var(--dim);
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.85rem;
+  }
+  .essay .eyebrow .gk {
+    color: var(--gold);
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+  }
+  .essay .eyebrow .tr {
+    font-style: italic;
+    font-family: var(--display);
+    font-size: 1rem;
+    color: #b9bdc8;
+  }
+  .essay .eyebrow .gl {
+    color: #bcc0cb;
+  }
+
+  .essay p.t {
+    margin: 0 0 0.95em;
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+  .essay p.t:last-child {
+    margin-bottom: 0;
+  }
+  .essay .lede {
+    font-size: 1.14em;
+  }
+  .essay .vein {
+    color: var(--vein);
+  }
+  .essay .gold {
+    color: var(--gold);
+  }
+
+  .essay .hero {
+    min-height: 0;
+    display: block;
+    padding-block: clamp(4.4rem, 13vh, 7rem) clamp(4rem, 14vh, 8rem);
+  }
+  .essay .hero .log {
+    margin-bottom: 2.2rem;
+  }
+  .essay .hero .sig {
+    margin-top: 2.6rem;
+    color: var(--dim);
+  }
+  .essay section {
+    min-height: 0;
+    display: block;
+    padding-block: clamp(3.6rem, 11vh, 7.5rem);
+  }
+  .essay section .body {
+    margin-left: var(--ml, 0);
+  }
+  @media (max-width: 760px) {
+    .essay section .body {
+      margin-left: 0;
+    }
+  }
+  .essay hr {
+    border: 0;
+    border-top: 1px solid #1c212b;
+    margin: 0;
+  }
+
+  /* the held beat */
+  .essay .held p.t {
+    font-size: 1.22em;
+    max-width: 26ch;
+  }
+  .essay .held .big {
+    font-size: clamp(1.9rem, 5.4vw, 3.1rem);
+    line-height: 1.12;
+    font-style: italic;
+    color: var(--ember);
+    max-width: 18ch;
+    margin: 0 0 0.5em;
+  }
+
+  /* the two endings */
+  .essay .endings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: clamp(1.6rem, 4vw, 3.2rem);
+    margin-top: 2.2rem;
+  }
+  .essay .ending {
+    min-width: 0;
+    border-top: 1px solid #272c38;
+    padding-top: 1.1rem;
+  }
+  .essay .ending h2 {
+    font-family: var(--log);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 0.9rem;
+  }
+  .essay .ending p {
+    margin: 0;
+    max-width: 38ch;
+    font-size: 0.94em;
+  }
+  .essay .after {
+    margin-top: 2rem;
+  }
+
+  /* rail */
+  #rail {
+    position: fixed;
+    z-index: 2;
+    left: max(18px, env(safe-area-inset-left, 0px));
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: var(--log);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  #rail .gk {
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--gold);
+  }
+  #rail .tube {
+    width: 3px;
+    height: min(34vh, 260px);
+    background: #191d26;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  #rail .fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    background: linear-gradient(180deg, var(--ember), var(--vein));
+  }
+  #rail .state {
+    writing-mode: vertical-rl;
+    letter-spacing: 0.22em;
+  }
+  @media (max-width: 1320px) {
+    #rail {
+      display: none;
+    }
+  }
+
+  /* close */
+  .essay .close-foot {
+    padding-block: clamp(3.5rem, 11vh, 7rem) clamp(4rem, 12vh, 7rem);
+  }
+  .essay .foot-rule {
+    margin-bottom: clamp(2.6rem, 7vh, 4.4rem);
+  }
+  .essay .close {
+    font-size: clamp(1.5rem, 3.6vw, 2.2rem);
+    max-width: 22ch;
+    margin: 0 0 1.8rem;
+  }
+  .essay .links {
+    margin-top: 1.6rem;
+  }
+  .essay .apparatus {
+    font-family: var(--log);
+    font-size: 0.68rem;
+    line-height: 2;
+    letter-spacing: 0.06em;
+    color: #8a909c;
+    margin: 2.6rem 0 0;
+    max-width: 64ch;
+  }
+  .essay .apparatus b {
+    font-weight: 400;
+    color: #a7adb9;
+  }
+
+  /* reveal */
+  .essay .rise {
+    transition:
+      opacity 0.85s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .essay.anim .rise.pre {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .essay.anim .rise.pre {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  type P = { dawn: number; ember: number; eagle: number; bird: number; veil: number; still: number };
+  type RGB = [number, number, number];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- scroll-driven parameters ----------
+  const DEF: P = { dawn: 0, ember: 0.5, eagle: 0.2, bird: 1, veil: 0.3, still: 0 };
+  const KEYS = Object.keys(DEF) as (keyof P)[];
+  function fill(p: Partial<P>): P {
+    const o = { ...DEF };
+    for (const k of KEYS) if (typeof p[k] === 'number') o[k] = p[k]!;
+    return o;
+  }
+  const marks = Array.from(document.querySelectorAll<HTMLElement>('[data-p]')).map((el) => {
+    let p: Partial<P> = {};
+    try { p = JSON.parse(el.dataset.p!); } catch { p = {}; }
+    return { el, p: fill(p) };
+  });
+
+  let centers: number[] = [];
+  function measure() {
+    const sy = scrollY;
+    centers = marks.map((m) => {
+      const r = m.el.getBoundingClientRect();
+      return sy + r.top + r.height / 2;
+    });
+  }
+
+  function params(): P {
+    if (!centers.length) return fill({});
+    const y = scrollY + innerHeight / 2;
+    if (y <= centers[0]) return marks[0].p;
+    if (y >= centers[centers.length - 1]) return marks[marks.length - 1].p;
+    let i = 0;
+    while (i < centers.length - 1 && centers[i + 1] < y) i++;
+    const span = centers[i + 1] - centers[i];
+    let t = span > 0 ? (y - centers[i]) / span : 0;
+    t = t * t * (3 - 2 * t);
+    const a = marks[i].p, b = marks[i + 1].p;
+    const o = { ...DEF };
+    for (const k of KEYS) o[k] = a[k] + (b[k] - a[k]) * t;
+    return o;
+  }
+
+  // ---------- canvas ----------
+  const cv = document.getElementById('sky') as HTMLCanvasElement;
+  const ctx = cv.getContext('2d')!;
+  let W = 0, H = 0, DPR = 1;
+  function resize() {
+    DPR = Math.min(devicePixelRatio || 1, 1.5);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    measure();
+  }
+
+  let seed = 20261027;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const stars: { x: number; y: number; r: number; a: number; k: number }[] = [];
+  for (let i = 0; i < 340; i++) stars.push({ x: rnd(), y: rnd() * 0.62, r: rnd() * 1.5 + 0.35, a: 0.35 + rnd() * 0.65, k: rnd() });
+
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  const mix = (c1: RGB, c2: RGB, t: number): RGB => [Math.round(lerp(c1[0], c2[0], t)), Math.round(lerp(c1[1], c2[1], t)), Math.round(lerp(c1[2], c2[2], t))];
+  const rgb = (c: RGB, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+  const ZEN_N: RGB = [6, 7, 11], ZEN_D: RGB = [40, 49, 70];
+  const MID_N: RGB = [10, 13, 22], MID_D: RGB = [108, 86, 96];
+  const HOR_N: RGB = [17, 19, 28], HOR_D: RGB = [226, 128, 58];
+  const ROCK_N: RGB = [4, 5, 9], ROCK_D: RGB = [22, 25, 33];
+
+  // the distant range
+  function ridgeY(x: number, layer: number) {
+    const base = H * (layer ? 0.862 : 0.808);
+    const amp = H * (layer ? 0.03 : 0.052);
+    const u = x / Math.max(W, 1);
+    return base - Math.sin(u * 3.4 + (layer ? 1.7 : 0.4)) * amp - Math.sin(u * 7.9 + (layer ? 3.9 : 2.2)) * amp * 0.46 - Math.sin(u * 15.1 + 1.1) * amp * 0.2;
+  }
+  function ridgePath(layer: number) {
+    ctx.beginPath(); ctx.moveTo(0, H);
+    for (let x = 0; x <= W; x += 3) ctx.lineTo(x, ridgeY(x, layer));
+    ctx.lineTo(W, H); ctx.closePath();
+  }
+
+  // the massif, right of frame: left profile climbing to the edge
+  const CLIFF = [[0.565, 1.0], [0.592, 0.845], [0.616, 0.862], [0.63, 0.598], [0.659, 0.642], [0.7, 0.432], [0.739, 0.489], [0.792, 0.282], [0.861, 0.329], [0.931, 0.196], [1.0, 0.232]];
+  function cliffPath() {
+    ctx.beginPath();
+    ctx.moveTo(CLIFF[0][0] * W, H);
+    for (const [x, y] of CLIFF) ctx.lineTo(x * W, y * H);
+    ctx.lineTo(W, H); ctx.closePath();
+  }
+
+  function eagle(cx: number, cy: number, s: number, rot: number, flap: number, alpha: number) {
+    ctx.save();
+    ctx.translate(cx, cy); ctx.rotate(rot); ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#04050a';
+    const f = Math.cos(flap), span = 0.8 + 0.2 * f;
+    ctx.beginPath(); ctx.ellipse(0, 0, s * 0.82, s * 0.24, 0, 0, 6.2832); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(s * 0.92, 0, s * 0.26, s * 0.19, 0, 0, 6.2832); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(s * 1.1, -s * 0.1); ctx.lineTo(s * 1.42, s * 0.02); ctx.lineTo(s * 1.08, s * 0.08); ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.62, -s * 0.16); ctx.lineTo(-s * 1.72, -s * 0.34); ctx.lineTo(-s * 1.66, s * 0.3); ctx.lineTo(-s * 0.62, s * 0.16);
+    ctx.closePath(); ctx.fill();
+    for (let g = -1; g <= 1; g += 2) {
+      const tip = g * s * 2.45 * span;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, g * s * 0.12);
+      ctx.quadraticCurveTo(s * 0.34, g * s * 1.05 * span, s * 0.02, tip);
+      ctx.quadraticCurveTo(-s * 0.46, g * s * 1.3 * span, -s * 0.52, g * s * 0.14);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function draw(P: P, time: number) {
+    if (!W || !H) return;
+    const d = Math.max(0, Math.min(1, P.dawn));
+    const dc = d * d; // the hot band arrives late
+    ctx.clearRect(0, 0, W, H);
+
+    const hor = H * 0.808;
+    const g = ctx.createLinearGradient(0, 0, 0, hor);
+    g.addColorStop(0, rgb(mix(ZEN_N, ZEN_D, d)));
+    g.addColorStop(0.58, rgb(mix(MID_N, MID_D, d * 0.8)));
+    g.addColorStop(1, rgb(mix(HOR_N, HOR_D, dc)));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, hor + 2);
+
+    const sa = Math.max(0, 1 - d * 1.35);
+    if (sa > 0.01) {
+      for (const st of stars) {
+        const tw = 0.72 + 0.28 * Math.sin(time * 0.0009 + st.k * 42);
+        ctx.fillStyle = `rgba(233,227,213,${(st.a * sa * tw * 0.8).toFixed(3)})`;
+        ctx.beginPath(); ctx.arc(st.x * W, st.y * hor, st.r, 0, 6.2832); ctx.fill();
+      }
+    }
+
+    const glow = ctx.createRadialGradient(W * 0.18, hor, 0, W * 0.18, hor, Math.max(W, H) * 0.55);
+    glow.addColorStop(0, `rgba(233,184,94,${(0.3 * dc).toFixed(3)})`);
+    glow.addColorStop(0.45, `rgba(226,128,58,${(0.1 * dc).toFixed(3)})`);
+    glow.addColorStop(1, 'rgba(226,128,58,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, hor + 2);
+
+    ctx.fillStyle = rgb(mix(ROCK_N, ROCK_D, d * 0.75), 0.9);
+    ridgePath(1); ctx.fill();
+
+    if (P.veil > 0.02) {
+      const vg = ctx.createLinearGradient(0, H * 0.66, 0, H * 0.9);
+      vg.addColorStop(0, 'rgba(142,152,178,0)');
+      vg.addColorStop(0.5, `rgba(142,152,178,${(0.12 * P.veil * (0.35 + d * 0.65)).toFixed(3)})`);
+      vg.addColorStop(1, 'rgba(142,152,178,0)');
+      ctx.fillStyle = vg; ctx.fillRect(0, H * 0.66, W, H * 0.26);
+    }
+
+    ctx.fillStyle = rgb(mix(ROCK_N, ROCK_D, d * 0.45));
+    ridgePath(0); ctx.fill();
+
+    // the massif
+    ctx.fillStyle = rgb(mix([3, 4, 8], [18, 20, 27], d * 0.5));
+    cliffPath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(CLIFF[0][0] * W, CLIFF[0][1] * H);
+    for (let c = 1; c < CLIFF.length; c++) ctx.lineTo(CLIFF[c][0] * W, CLIFF[c][1] * H);
+    ctx.strokeStyle = rgb(mix(HOR_N, HOR_D, dc), 0.18 + 0.42 * d);
+    ctx.lineWidth = 1.2; ctx.stroke();
+
+    // scrim: keeps the reading column clear of the sky
+    const sc = ctx.createLinearGradient(0, 0, 0, H);
+    sc.addColorStop(0, `rgba(6,7,11,${(0.3 + 0.17 * d).toFixed(3)})`);
+    sc.addColorStop(0.55, `rgba(6,7,11,${(0.17 + 0.24 * d).toFixed(3)})`);
+    sc.addColorStop(1, `rgba(6,7,11,${(0.32 + 0.26 * d).toFixed(3)})`);
+    ctx.fillStyle = sc; ctx.fillRect(0, 0, W, H);
+
+    // the bound figure, on the shoulder of the massif
+    const fx = CLIFF[3][0] * W, fy = CLIFF[3][1] * H;
+    const u = Math.max(11, Math.min(W, H) * 0.042);
+    const fig = rgb(mix([10, 11, 16], [40, 38, 42], d * 0.7));
+    ctx.save();
+    ctx.strokeStyle = fig; ctx.lineWidth = Math.max(1.7, u * 0.13); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(fx, fy - u * 0.95); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(fx - u * 0.55, fy - u * 0.72); ctx.lineTo(fx + u * 0.55, fy - u * 0.72); ctx.stroke();
+    ctx.lineWidth = Math.max(1, u * 0.06);
+    ctx.beginPath(); ctx.moveTo(fx - u * 0.55, fy - u * 0.72); ctx.lineTo(fx - u * 1.15, fy - u * 0.02); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(fx + u * 0.55, fy - u * 0.72); ctx.lineTo(fx + u * 1.3, fy + u * 0.16); ctx.stroke();
+    ctx.beginPath(); ctx.arc(fx, fy - u * 1.1, u * 0.16, 0, 6.2832); ctx.fillStyle = fig; ctx.fill();
+    ctx.restore();
+
+    // the organ, lit
+    const pulse = P.still > 0.5 || reduce ? 1 : 0.9 + 0.1 * Math.sin(time * 0.0011);
+    const e = Math.max(0, P.ember) * pulse;
+    if (e > 0.02) {
+      const ex = fx + u * 0.05, ey = fy - u * 0.52, er = u * (0.5 + 2.2 * e);
+      const eg = ctx.createRadialGradient(ex, ey, 0, ex, ey, er);
+      eg.addColorStop(0, `rgba(255,146,78,${(0.95 * Math.min(1, e)).toFixed(3)})`);
+      eg.addColorStop(0.22, `rgba(255,106,42,${(0.4 * e).toFixed(3)})`);
+      eg.addColorStop(0.62, `rgba(168,52,58,${(0.15 * e).toFixed(3)})`);
+      eg.addColorStop(1, 'rgba(168,52,58,0)');
+      ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(ex, ey, er, 0, 6.2832); ctx.fill();
+      ctx.fillStyle = `rgba(255,212,170,${(0.9 * Math.min(1, e)).toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(ex, ey, Math.max(1.1, u * 0.09), 0, 6.2832); ctx.fill();
+    }
+
+    // the bird: one long approach across the whole page
+    if (P.bird > 0.02) {
+      const t = Math.max(0, Math.min(1, P.eagle));
+      const at = (tt: number): [number, number] => {
+        if (tt < 0.5) { const k = tt / 0.5; return [lerp(W * 1.38, fx - W * 0.055, k), lerp(H * 0.055, fy - u * 1.75, k * k)]; }
+        const k2 = (tt - 0.5) / 0.5; return [lerp(fx - W * 0.055, -W * 0.34, k2), lerp(fy - u * 1.75, H * 0.075, k2 * k2)];
+      };
+      const a = at(t), b2 = at(Math.min(1, t + 0.004));
+      const dx = b2[0] - a[0], dy = b2[1] - a[1];
+      const near = 1 - Math.min(1, Math.abs(t - 0.5) * 2.4);
+      const bs = u * (0.4 + 0.95 * Math.max(0, near));
+      const beat = P.still > 0.5 || reduce ? 0.9 : time * 0.003;
+      ctx.save();
+      ctx.translate(a[0], a[1]); ctx.scale(-1, 1);
+      eagle(0, 0, bs, Math.atan2(dy, -dx) * 0.55, beat, P.bird * (0.5 + 0.5 * Math.max(0, near)));
+      ctx.restore();
+    }
+  }
+
+  // ---------- rail ----------
+  const fillEl = document.getElementById('fill')!, stateEl = document.getElementById('state')!;
+  let lastState = '';
+  function rail(P: P) {
+    fillEl.style.height = `${Math.max(4, Math.min(100, P.ember * 100)).toFixed(1)}%`;
+    const s = P.ember > 0.66 ? 'restored' : P.ember > 0.33 ? 'growing' : 'devoured';
+    if (s !== lastState) { stateEl.textContent = s; lastState = s; }
+  }
+
+  // ---------- loop ----------
+  // The scene paints once at load and comes alive on the first sign of a
+  // reader (scroll, pointer, key), so a phone's first seconds go to the text.
+  let engaged = false;
+  const ENGAGE = ['scroll', 'wheel', 'pointerdown', 'pointermove', 'touchstart', 'keydown'] as const;
+  function engage() {
+    if (engaged) return;
+    engaged = true;
+    ENGAGE.forEach((ev) => removeEventListener(ev, engage));
+    requestAnimationFrame(frame);
+  }
+  ENGAGE.forEach((ev) => addEventListener(ev, engage, { passive: true }));
+  let current: P | null = null;
+  let running = true;
+  function frame(ts: number) {
+    if (!running) return;
+    const p = params();
+    if (current === null) current = p;
+    else for (const k of KEYS) current[k] += (p[k] - current[k]) * 0.14;
+    draw(current, ts || 0);
+    rail(current);
+    if (!reduce && engaged) requestAnimationFrame(frame);
+  }
+  const still = () => { current = params(); draw(current, 0); rail(current); };
+
+  resize();
+  addEventListener('resize', () => { resize(); if (reduce) still(); });
+  if (reduce) {
+    still();
+    addEventListener('scroll', still, { passive: true });
+  } else {
+    document.addEventListener('visibilitychange', () => {
+      running = !document.hidden;
+      if (running && engaged) requestAnimationFrame(frame);
+    });
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- reveal, only below the first frame ----------
+  if ('IntersectionObserver' in window) {
+    const risers = Array.from(document.querySelectorAll<HTMLElement>('section .body, .close-foot .close, .close-foot .log, .close-foot .apparatus'));
+    risers.forEach((el) => el.classList.add('rise'));
+    document.body.classList.add('anim');
+    const vh = innerHeight;
+    const hidden = risers.filter((el) => el.getBoundingClientRect().top > vh * 0.88);
+    hidden.forEach((el) => el.classList.add('pre'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) { en.target.classList.remove('pre'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+    hidden.forEach((el) => io.observe(el));
+  }
+
+  addEventListener('load', measure);
+  document.fonts?.ready.then(measure);
+</script>

@@ -28,15 +28,20 @@ text that settles into place on scroll (same 7/8 meter as the poem pages).
 No WebGL, no dithering, no audio on these pages.
 
 - `src/layouts/Museum.astro`: meta, Open Graph and Twitter cards, JSON-LD
-  Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, and 404.
+  Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, `/writings/<slug>`, and 404.
 - `src/components/museum/`: Placard, Room, Meander, ZodiacRing, Glyph (SVG
   zodiac paths in `zodiac.ts`), PoemGallery, WritingsList, Colophon, and the
   rooms in `rooms/`.
 - `src/components/museum/case/` and `src/scripts/case/`: the ALM console and
   cartridges, ported from advancing-liberty-media2 and lazy-loaded.
 - `src/data/portfolio.ts`: client sites for Room III (mirrors ALM `work.ts`).
-- `src/content/gallery/`: one markdown file per framed poem. Drop a file in
-  to hang a new poem on `/gallery` and in Room IV.
+- `src/content/gallery/`: one markdown file per framed work. Drop a file in
+  to hang a new piece on `/gallery` and in Room IV; `href` points at its page.
+- `src/pages/gallery/<slug>.astro` + `src/layouts/Poem.astro`: the visualized
+  pieces themselves (The Keeper and the Flame, PHARMAKON, The Only Sighted
+  One), ported from the owner's Claude artifacts. Each is a night scene of its
+  own: a fixed canvas behind lines that brighten as they arrive. The canvas
+  paints once at load and animates from the reader's first scroll or touch.
 - `src/config/site.ts`: URLs, nav, and the owner placeholders (booking
   scheduler link, BackGold newsletter embed).
 - `npm run og` re-renders `public/og.png` and the PNG icons;
@@ -52,7 +57,8 @@ The original esoteric homepage is tagged `archive/esoteric-v1` and still
 builds at `/atelier` (noindex, out of the sitemap, linked from nowhere). Its
 components, the natal engine, the dither pipeline, the easter-egg hunt, and
 the music layer all remain in the codebase; everything below describes them.
-The poem pages under `/writings/<slug>` keep that immersive treatment.
+`/writings/<slug>` now renders in the museum layout; the old post
+components (`src/components/writings/`) stay for reference.
 
 ## Architecture
 

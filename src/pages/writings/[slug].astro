@@ -1,18 +1,20 @@
 ---
 /**
- * Writings blog — post page (spec §4.6). Static paths come from the
- * `writings` content collection; drafts stay unpublished. Layout: a
- * section-anatomy-style header (PostHeader mirrors Section.astro's
- * data-attribute shape so the shared WebGL pipeline reads the post's symbols
- * and accent from the DOM), an optional facecard figure keyed off the post's
- * symbols (the Medea treatment ships first), then long-form prose with the
- * polytonic-Greek rendering path (Prose).
+ * A writing, hung in the museum's reading room. Static paths come from the
+ * `writings` content collection; drafts stay unpublished. The post opens on
+ * a placard, then the long-form text set as wall text; poem movements
+ * embedded in the markdown (section.poem-movement) read as verse. When the
+ * piece also hangs in the Gallery (same id in the `gallery` collection), the
+ * placard links to its interactive page.
+ *
+ * The esoteric treatment of this page (WebGL stage, facecards, PostHeader,
+ * Prose) stays in src/components/writings for the archived /atelier side.
  */
-import { getCollection, render } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-import PostHeader from '../../components/writings/PostHeader.astro';
-import Facecard from '../../components/writings/Facecard.astro';
-import Prose from '../../components/writings/Prose.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+import Museum from '../../layouts/Museum.astro';
+import Placard from '../../components/museum/Placard.astro';
+import Meander from '../../components/museum/Meander.astro';
+import { SITE_URL } from '../../config/site';
 
 export async function getStaticPaths() {
   const posts = await getCollection('writings', ({ data }) => !data.draft);
@@ -24,25 +26,173 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const hung = await getEntry('gallery', post.id);
+const date = post.data.date;
+const dateLabel = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const url = `${SITE_URL}/writings/${post.id}/`;
 ---
 
-<Base
-  title={`${post.data.title} · Writings · I Am Wilhelm`}
+<Museum
+  title={`${post.data.title} · Writings · Michael Wilhelm`}
   description={post.data.description}
+  current="writings"
+  schema={[
+    {
+      '@type': 'Article',
+      '@id': `${url}#article`,
+      url,
+      headline: post.data.title,
+      description: post.data.description,
+      datePublished: date.toISOString(),
+      author: { '@id': `${SITE_URL}/#person` },
+    },
+  ]}
 >
-  <PostHeader post={post} />
-  <article class="post-body">
-    {post.data.symbols.map((s) => <Facecard symbol={s} accent={post.data.accent} />)}
-    <Prose accent={post.data.accent}>
-      <Content />
-    </Prose>
+  <article class="post" aria-labelledby="post-title" style="--room-accent: var(--room-v)">
+    <div class="post__head wrap">
+      <Placard
+        id="post-title"
+        level={1}
+        label="The Reading Room"
+        title={post.data.title}
+        medium={post.data.description ?? 'Writing'}
+        year={dateLabel}
+        catalog="Cat. V"
+      />
+      {
+        hung?.data.href && (
+          <p class="post__hung" data-reveal>
+            <span class="smallcaps">Also on view</span>
+            <a class="text-link" href={hung.data.href}>
+              See {hung.data.title} hung in the Gallery as an interactive page
+            </a>
+          </p>
+        )
+      }
+    </div>
+    <div class="post__body wrap">
+      <div class="post__text">
+        <Content />
+      </div>
+    </div>
+    <p class="post__back wrap">
+      <a class="text-link" href="/writings/">All writings</a>
+    </p>
   </article>
-</Base>
+  <Meander />
+</Museum>
 
 <style>
-  .post-body {
-    position: relative;
-    z-index: 1;
-    padding-top: 4vh;
+  .post {
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem);
+  }
+  .post__head {
+    display: grid;
+    gap: 1.75rem;
+    justify-items: start;
+  }
+  .post__head :global(.placard) {
+    max-width: 34rem;
+  }
+  .post__hung {
+    display: grid;
+    gap: 0.3rem;
+    color: var(--room-accent);
+  }
+  .post__body {
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+  .post__back {
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4rem);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 1.05rem;
+  }
+
+  /* The rendered markdown arrives through <Content />, so these reach in. */
+  .post__text {
+    max-width: 40rem;
+    margin-inline: auto;
+    color: var(--ink);
+  }
+  .post__text :global(p) {
+    text-wrap: pretty;
+  }
+  .post__text :global(p + p),
+  .post__text :global(blockquote + p),
+  .post__text :global(p + blockquote) {
+    margin-top: 1.1em;
+  }
+  .post__text :global([lang='grc']) {
+    font-family: 'GFS Didot', 'Gentium Plus', 'Palatino Linotype', Georgia, serif;
+  }
+  .post__text :global(hr) {
+    width: 4rem;
+    margin: clamp(2.5rem, 2rem + 3vw, 4rem) auto;
+    border: 0;
+    border-top: 1px solid var(--gilt);
+  }
+  .post__text :global(blockquote.greek-quote) {
+    margin: 2rem 0;
+    padding: 1.25rem 0 1.25rem 1.4rem;
+    border-left: 1px solid var(--gilt);
+  }
+  .post__text :global(.greek-quote p[lang='grc']) {
+    font-size: 1.15em;
+    line-height: 1.5;
+  }
+  .post__text :global(.greek-quote .translation) {
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .post__text :global(.greek-quote cite) {
+    display: block;
+    margin-top: 0.6rem;
+    color: var(--ink-faint);
+    font-style: normal;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+
+  /* Poem movements: verse on the wall, each movement its own panel. */
+  .post__text :global(section.poem-movement) {
+    margin-block: clamp(2.5rem, 2rem + 3vw, 4rem);
+    padding-left: 1.4rem;
+    border-left: 1px solid var(--rule);
+  }
+  .post__text :global(section.poem-front) {
+    padding: 0;
+    border: 0;
+    text-align: center;
+  }
+  .post__text :global(.poem-dedication) {
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .post__text :global(.poem-title) {
+    margin-top: 0.4rem;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(1.9rem, 1.1rem + 3.4vw, 3.6rem);
+    letter-spacing: 0.24em;
+    padding-left: 0.24em;
+    line-height: 1.1;
+  }
+  .post__text :global(.poem-sub) {
+    margin-top: 0.6rem;
+    color: var(--ink-soft);
+  }
+  .post__text :global(.mvt) {
+    margin-bottom: 0.9rem;
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    color: var(--gilt-ink);
+  }
+  .post__text :global(section.poem-movement p) {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem);
+    line-height: 1.5;
   }
 </style>

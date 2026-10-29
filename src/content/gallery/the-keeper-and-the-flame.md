@@ -1,13 +1,15 @@
 ---
 title: "The Keeper and the Flame"
+plateTitle: "The Keeper and the Flame"
+year: 2026
+epigraph: "The high place apart is where light serves."
+href: "/gallery/the-keeper-and-the-flame/"
+medium: "Visualized poem; interactive page"
 order: 1
-status: forthcoming
-sign: leo
-plate: "#33261c"
-# PLACEHOLDER(owner): this poem's interactive page is not in this repo or in
-# advancing-liberty-media2. When it is published, set:
-#   status: on-view
-#   href: "/path/to/the-keeper-and-the-flame/"
-#   year: <year>
-#   epigraph: "<one line from the poem>"
+status: on-view
+sign: aries
+plate: "#2a1a16"
 ---
+
+Ported from the owner's Claude artifact (claude.ai/artifact/WM6K9TyMLupDHKB6fhYzCR).
+The flame burns "Aries red", hence the Aries mark on the frame.
