@@ -17,14 +17,9 @@ export const MANIFESTO_URL = 'https://libertariantoolsuite.com/the-manifesto';
 /** Published in the manifesto's closing section (libertariantoolsuite MANIFESTO.md). */
 export const CONTACT_EMAIL = 'wilhelm@backgold.com';
 
-/**
- * PLACEHOLDER(owner): the BackGold scheduler link for booking a call.
- * Neither this repo nor advancing-liberty-media2 carries the final link
- * (ALM's SCHEDULER_URL is also a TODO pointing at the BackGold homepage),
- * so the booking CTA falls back to backgold.com until this is set.
- */
-export const SCHEDULER_URL = 'https://backgold.com';
-export const SCHEDULER_IS_PLACEHOLDER = true;
+/** The BackGold scheduler: a web design consultation with Michael. */
+export const SCHEDULER_URL = 'https://app.backgold.com/book/backgold/web-design-consultation';
+export const SCHEDULER_IS_PLACEHOLDER = false;
 
 /**
  * PLACEHOLDER(owner): the BackGold embeddable newsletter form.
