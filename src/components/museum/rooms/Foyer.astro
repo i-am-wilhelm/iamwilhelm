@@ -1,31 +1,51 @@
 ---
 /**
- * The foyer: the headline, the name, one line of roles, and the gilt zodiac
- * ring turning slowly behind. The headline settles in with CSS alone (no
- * script), so it paints at first render and stays the page's LCP.
+ * The foyer: the gilt zodiac chart with Michael's portrait set at its
+ * centre, then the headline, the name, and one line of roles. The ring
+ * turns slowly with scroll; the portrait holds still inside it. The
+ * headline settles in with CSS alone (no script), so it paints at first
+ * render. Wide screens hang the chart beside the text; narrow screens stack.
  */
 import ZodiacRing from '../ZodiacRing.astro';
 ---
 
 <section class="foyer" aria-labelledby="foyer-title">
-  <ZodiacRing />
   <div class="foyer__inner wrap">
-    <p class="foyer__kicker smallcaps">The Foyer</p>
-    <h1 class="foyer__title display" id="foyer-title">Devoted to something, but no one knows what.</h1>
-    <div class="foyer__byline">
-      <p class="foyer__name">Michael Wilhelm</p>
-      <p class="foyer__roles">
-        <span>CEO &amp; Cofounder, BackGold</span>
-        <span class="foyer__sep" aria-hidden="true">·</span>
-        <span>Founder, Advancing Liberty Media</span>
-        <span class="foyer__sep" aria-hidden="true">·</span>
-        <span>Writer</span>
-      </p>
+    <div class="foyer__chart">
+      <ZodiacRing contained />
+      <figure class="foyer__portrait">
+        <img
+          src="/assets/foyer-portrait-440.webp"
+          srcset="/assets/foyer-portrait-440.webp 440w, /assets/foyer-portrait-720.webp 720w"
+          sizes="(min-width: 1000px) 16rem, 44vw"
+          width="440"
+          height="440"
+          alt="Michael Wilhelm, smiling, long dark hair, in close portrait."
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
     </div>
-    <a class="foyer__enter" href="#backgold">
-      <span class="smallcaps">Begin the tour</span>
-      <span class="foyer__arrow" aria-hidden="true"></span>
-    </a>
+
+    <div class="foyer__text">
+      <p class="foyer__kicker smallcaps">The Foyer</p>
+      <h1 class="foyer__title display" id="foyer-title">Devoted to something, but no one knows what.</h1>
+      <div class="foyer__byline">
+        <p class="foyer__name">Michael Wilhelm</p>
+        <p class="foyer__roles">
+          <span>CEO &amp; Cofounder, BackGold</span>
+          <span class="foyer__sep" aria-hidden="true">·</span>
+          <span>Founder, Advancing Liberty Media</span>
+          <span class="foyer__sep" aria-hidden="true">·</span>
+          <span>Writer</span>
+        </p>
+      </div>
+      <a class="foyer__enter" href="#backgold">
+        <span class="smallcaps">Begin the tour</span>
+        <span class="foyer__arrow" aria-hidden="true"></span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -35,15 +55,48 @@ import ZodiacRing from '../ZodiacRing.astro';
     display: grid;
     place-items: center;
     min-height: calc(100svh - var(--nav-h));
-    padding-block: clamp(4rem, 3rem + 6vw, 8rem);
+    padding-block: clamp(2.5rem, 2rem + 4vw, 6rem);
     overflow: clip;
     text-align: center;
   }
   .foyer__inner {
-    position: relative;
     display: grid;
     justify-items: center;
-    gap: clamp(1.25rem, 1rem + 1vw, 2rem);
+    gap: clamp(2rem, 1.5rem + 2vw, 3rem);
+  }
+
+  /* The chart: the ring fills the box; the portrait sits inside its
+     innermost circle (r 206 of 400), so the engraving frames the face. */
+  .foyer__chart {
+    position: relative;
+    width: min(88vw, 30rem, 58svh);
+    aspect-ratio: 1;
+    animation: settle calc(var(--beat) * 3) var(--ease-settle) both;
+  }
+  .foyer__portrait {
+    position: absolute;
+    inset: 25.5%;
+    margin: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--wall-deep);
+    box-shadow:
+      0 0 0 1px var(--gilt),
+      0 0 0 6px color-mix(in srgb, var(--wall) 85%, transparent),
+      0 0 0 7px color-mix(in srgb, var(--gilt) 55%, transparent),
+      0 24px 40px -24px rgba(40, 28, 12, 0.55);
+  }
+  .foyer__portrait img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .foyer__text {
+    display: grid;
+    justify-items: center;
+    gap: clamp(1rem, 0.8rem + 0.8vw, 1.6rem);
   }
   .foyer__kicker {
     color: var(--gilt-ink);
@@ -52,7 +105,7 @@ import ZodiacRing from '../ZodiacRing.astro';
   }
   .foyer__title {
     max-width: 16ch;
-    font-size: clamp(2.6rem, 1.4rem + 6.4vw, 6.4rem);
+    font-size: clamp(2.4rem, 1.4rem + 4.6vw, 5.2rem);
     color: var(--ink);
     animation: settle calc(var(--beat) * 3) var(--ease-settle) calc(var(--beat) * 0.5) both;
   }
@@ -86,7 +139,7 @@ import ZodiacRing from '../ZodiacRing.astro';
     display: inline-grid;
     justify-items: center;
     gap: 0.5rem;
-    margin-top: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    margin-top: clamp(0.5rem, 0.25rem + 1vw, 1.5rem);
     padding: 0.5rem 1rem;
     color: var(--ink-soft);
     text-decoration: none;
@@ -100,6 +153,34 @@ import ZodiacRing from '../ZodiacRing.astro';
     height: 2.5rem;
     background: linear-gradient(var(--gilt), transparent);
   }
+
+  /* Wide rooms: the chart hangs to the left, the wall text beside it. */
+  @media (min-width: 1000px) {
+    .foyer__inner {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: clamp(3rem, 1rem + 4vw, 6rem);
+    }
+    .foyer__chart {
+      width: min(40vw, 34rem, 76svh);
+    }
+    .foyer__text {
+      justify-items: start;
+      text-align: left;
+    }
+    .foyer__roles {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .foyer__sep {
+      display: none;
+    }
+    .foyer__enter {
+      justify-items: start;
+      padding-inline: 0;
+    }
+  }
+
   /* Opacity starts above zero so the headline is a paint candidate at once. */
   @keyframes settle {
     from {
