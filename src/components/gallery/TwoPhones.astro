@@ -1,0 +1,173 @@
+---
+/**
+ * Equal Volume, two phones. Drop-in replacement for the page's "two phones"
+ * script block: same three functions the hold logic reads (paired, pairOk,
+ * setPresence), backed by the PoemRoom Durable Object at /api/room/:code
+ * (worker/poem-room.ts) instead of the prototype host's window.claude room.
+ *
+ * Classic inline script on purpose: the functions are top-level
+ * declarations, so the page's own inline hold logic finds them by name.
+ * The page never waits on the socket; if the room cannot be reached the
+ * functions report solo mode and the hold works for one reader.
+ *
+ * Markup it expects (already on the page): #pairTop, #pairBottom, #myCode,
+ * #joinIn, #joinBtn, #pairSt. Any other button inside #pairTop/#pairBottom
+ * opens a new room ("read this with one other person").
+ */
+---
+
+<script is:inline>
+/* ---- two phones -------------------------------------------------------- */
+var room = (function () {
+  var ALPHA = 'abcdefghjkmnpqrstuvwxyz23456789';
+  var CODE = /^[a-z0-9]{4}$/;
+  var HASH = /^#room-([a-z0-9]{4})$/;
+  var OPEN_TIMEOUT = 6000;
+  var BACKOFF = 1200;
+
+  var ws = null;
+  var code = null;
+  var me = null;
+  var peers = [];
+  var holding = false;
+  var retried = false;
+  var ended = false;
+
+  function $(id) { return document.getElementById(id); }
+  function status(text) { var el = $('pairSt'); if (el) el.textContent = text; }
+
+  function newCode() {
+    var b = new Uint8Array(4), out = '';
+    crypto.getRandomValues(b);
+    for (var i = 0; i < 4; i++) out += ALPHA[b[i] % ALPHA.length];
+    return out;
+  }
+
+  function others() {
+    return peers.filter(function (p) { return p.id !== me; });
+  }
+
+  function describe() {
+    var n = peers.length;
+    if (n <= 1) status('alone for now, send them the code');
+    else if (n === 2) status('two hands here');
+    else status(n + ' here');
+  }
+
+  function solo(text) {
+    ended = true;
+    peers = [];
+    me = null;
+    ws = null;
+    if (text) status(text);
+  }
+
+  function send(obj) {
+    if (ws && ws.readyState === 1) {
+      try { ws.send(JSON.stringify(obj)); } catch (e) { /* carry on solo */ }
+    }
+  }
+
+  function connect(c, isRetry) {
+    var sock, opened = false, timer;
+    try {
+      var proto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+      sock = new WebSocket(proto + location.host + '/api/room/' + c);
+    } catch (e) {
+      solo(isRetry ? 'the room closed' : 'could not open a room right now');
+      return;
+    }
+    ws = sock;
+    timer = setTimeout(function () { if (!opened) try { sock.close(); } catch (e) {} }, OPEN_TIMEOUT);
+
+    sock.onopen = function () {
+      opened = true;
+      clearTimeout(timer);
+      if (holding) send({ t: 'presence', holding: true });
+    };
+    sock.onmessage = function (ev) {
+      if (sock !== ws) return;
+      var m;
+      try { m = JSON.parse(ev.data); } catch (e) { return; }
+      if (!m || m.t !== 'peers' || !Array.isArray(m.peers)) return;
+      me = m.you;
+      peers = m.peers;
+      describe();
+    };
+    sock.onerror = function () { /* onclose follows */ };
+    sock.onclose = function (ev) {
+      clearTimeout(timer);
+      if (sock !== ws || ended) return;
+      peers = [];
+      me = null;
+      if (ev.code === 4001) { solo('this room is full'); return; }
+      if (!opened && !isRetry) { solo('could not open a room right now'); return; }
+      if (!retried) {
+        retried = true;
+        setTimeout(function () { if (!ended && ws === sock) connect(c, true); }, BACKOFF);
+        return;
+      }
+      solo('the room closed');
+    };
+  }
+
+  function start(c) {
+    if (!CODE.test(c)) { status('that code has four letters or numbers'); return; }
+    if (ws) { ended = true; try { ws.close(1000); } catch (e) {} }
+    code = c;
+    ended = false;
+    retried = false;
+    peers = [];
+    me = null;
+    var mc = $('myCode');
+    if (mc) mc.textContent = c;
+    status('opening the room');
+    try { history.replaceState(null, '', '#room-' + c); } catch (e) {}
+    connect(c, false);
+  }
+
+  function init() {
+    if (!('WebSocket' in window)) return;
+    ['pairTop', 'pairBottom'].forEach(function (id) {
+      var el = $(id);
+      if (!el) return;
+      el.hidden = false;
+      el.style.removeProperty('display');
+      el.querySelectorAll('button').forEach(function (b) {
+        if (b.id === 'joinBtn') return;
+        b.addEventListener('click', function () { start(newCode()); });
+      });
+    });
+    var jb = $('joinBtn'), ji = $('joinIn');
+    function join() { if (ji) start(ji.value.trim().toLowerCase()); }
+    if (jb) jb.addEventListener('click', join);
+    if (ji) ji.addEventListener('keydown', function (e) { if (e.key === 'Enter') join(); });
+
+    var h = location.hash.match(HASH);
+    if (h) start(h[1]);
+
+    addEventListener('pagehide', function () {
+      ended = true;
+      if (ws) try { ws.close(1000); } catch (e) {}
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+
+  return {
+    paired: function () { return !ended && others().length > 0; },
+    ok: function () {
+      if (ended) return true;
+      var o = others();
+      return o.length === 0 || o.every(function (p) { return p.holding === true; });
+    },
+    presence: function (h) { holding = !!h; send({ t: 'presence', holding: holding }); },
+    code: function () { return code; },
+  };
+})();
+
+function paired() { return room.paired(); }
+function pairOk() { return room.ok(); }
+function setPresence(h) { room.presence(h); }
+</script>

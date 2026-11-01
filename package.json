@@ -10,7 +10,8 @@
     "deploy": "astro build && wrangler deploy",
     "check": "astro check",
     "og": "astro build && node scripts/og-image.mjs",
-    "links": "node scripts/verify-links.mjs"
+    "links": "node scripts/verify-links.mjs",
+    "types": "wrangler types worker/worker-configuration.d.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
