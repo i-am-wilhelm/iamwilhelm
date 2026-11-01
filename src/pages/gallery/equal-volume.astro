@@ -1,0 +1,773 @@
+---
+/**
+ * Equal Volume, hung in the Gallery of Visualized Poetry. A poem in three
+ * parts: the shattered vessel, the descent for the pieces, and being seen
+ * to the volume of your surrender. One fixed canvas (hall, mirrors, vessel,
+ * the little one) behind a single column of loose lines.
+ *
+ * Ported verbatim from the owner's prototype (equal-volume.html). The only
+ * changes: the page wrapper and meta come from the Poem layout, the fonts
+ * are the site's self-hosted files, and the "two phones" block talks to the
+ * PoemRoom Durable Object (worker/poem-room.ts) over a WebSocket in place of
+ * the prototype host's room API.
+ */
+import Poem from '../../layouts/Poem.astro';
+---
+
+<Poem
+  title="Equal Volume"
+  description="A poem in three parts: the shattered vessel, the descent for the pieces, and being seen to the volume of your surrender."
+  year="2026"
+  night="#0b0e15"
+  accent="#d4a84b"
+  bodyClass="ev"
+>
+<canvas id="stage" aria-hidden="true"></canvas>
+<div id="lantern" aria-hidden="true"></div>
+<div id="black" aria-hidden="true"><span>look</span></div>
+
+<div id="hold" aria-live="polite">
+  <div class="ring" id="ring"><i>hold</i></div>
+  <p id="holdmsg">press and hold anywhere, as long as you are willing</p>
+  <button class="skip" id="skip" type="button">let go</button>
+</div>
+
+<main>
+  <header class="open">
+    <h1>Equal Volume</h1>
+    <p class="spec">
+      <b>body</b><span>stoneware, hand-built, fired once</span>
+      <b>capacity</b><span>to the brim</span>
+      <b>condition</b><span>broken, kept</span>
+      <b>repair</b><span>gold, left visible</span>
+    </p>
+    <p class="hint">scroll slowly · tap the mirrors when you reach them</p>
+    <div class="pair" id="pairTop" hidden>
+      <button type="button" data-pair>read this with one other person</button>
+      <div class="box" id="pairBox">
+        <div>your room <code id="myCode">····</code></div>
+        <div class="row"><span>or join theirs</span><input id="joinIn" maxlength="4" autocomplete="off" spellcheck="false" aria-label="room code"><button type="button" id="joinBtn">join</button></div>
+        <div class="st" id="pairSt">alone for now</div>
+      </div>
+    </div>
+  </header>
+
+  <section id="sec1" data-mood="0">
+    <p class="num">I</p>
+    <p class="ln">You arrived carrying something whole.</p>
+    <p class="ln">A vessel,</p>
+    <p class="ln">clay still warm from the making,</p>
+    <p class="ln">filled to the brim</p>
+    <p class="ln">with the one thing you had:</p>
+    <p class="ln big">the yes.</p>
+    <p class="ln gap">No lid.</p>
+    <p class="ln">No guard at the door.</p>
+    <p class="ln">You held it out the way a child holds out a found stone,</p>
+    <p class="ln">certain the world would know what it was.</p>
+    <p class="ln gap">And the world knew.</p>
+    <p class="ln" data-fx="drain">It took a cupful</p>
+    <p class="ln">and called it tithe.</p>
+    <p class="ln" data-fx="drain">It took a cupful</p>
+    <p class="ln">and called it obedience.</p>
+    <p class="ln" data-fx="drain">It took a cupful</p>
+    <p class="ln">and called it love,</p>
+    <p class="ln">and taught you to say thank you</p>
+    <p class="ln">for the taking.</p>
+    <p class="ln gap" data-fx="crack">Each hand that reached in left a hairline in the clay,</p>
+    <p class="ln">and you,</p>
+    <p class="ln">being small and being faithful,</p>
+    <p class="ln" data-fx="crack">read the cracks as scripture.</p>
+    <p class="ln">You learned the lines by heart.</p>
+    <p class="ln" data-fx="crack">You learned that the brim was pride,</p>
+    <p class="ln">that the fullness was a sin,</p>
+    <p class="ln" data-fx="crack">that an empty vessel was the only one</p>
+    <p class="ln">the heaven they described would hold.</p>
+    <p class="ln gap" data-fx="mirrors">Mirrors went up where the windows had been.</p>
+    <p class="ln">Every face that leaned over you</p>
+    <p class="ln">wore your face back at you</p>
+    <p class="ln mirror" data-fx="crack">and said: this is you.</p>
+    <p class="ln">And the little one,</p>
+    <p class="ln">who had no word yet for lie,</p>
+    <p class="ln">believed the glass.</p>
+    <p class="ln gap">Say what it cost to get here.</p>
+    <p class="ln">Say it plainly,</p>
+    <p class="ln">the way you would for your own children,</p>
+    <p class="ln">because the same hands are reaching for them now</p>
+    <p class="ln">with the same cupped palms,</p>
+    <p class="ln">the same soft voices,</p>
+    <p class="ln">the same hunger dressed as a hymn.</p>
+    <p class="ln">Say how many years.</p>
+    <p class="ln">Say how many rooms.</p>
+    <p class="ln" data-fx="shatter">Say how far the little one carried the pieces</p>
+    <p class="ln">before anyone thought to ask what they were.</p>
+  </section>
+
+  <section id="sec2" data-mood="1">
+    <p class="num">II</p>
+    <p class="ln" data-fx="lantern">You go down for the pieces.</p>
+    <p class="ln">No one sends you.</p>
+    <p class="ln">The ones who broke it have moved on</p>
+    <p class="ln">to other vessels,</p>
+    <p class="ln">other brims,</p>
+    <p class="ln">and the hall they left you in</p>
+    <p class="ln">still hums with your own reflection</p>
+    <p class="ln">calling itself by your name.</p>
+    <p class="ln gap">The work is the descent.</p>
+    <p class="ln">It is grief with a lantern.</p>
+    <p class="ln" data-fx="tappable">It is standing in front of each mirror</p>
+    <p class="ln">and asking it,</p>
+    <p class="ln">slowly,</p>
+    <p class="ln big">who hung you here.</p>
+    <p class="hint">tap a mirror</p>
+    <p class="ln gap">It is finding the faces behind the glass,</p>
+    <p class="ln">the fathers,</p>
+    <p class="ln">the preachers,</p>
+    <p class="ln">the beloveds,</p>
+    <p class="ln">and seeing at last that each of them</p>
+    <p class="ln">was casting their own reel</p>
+    <p class="ln">onto the brightest surface in the room</p>
+    <p class="ln">and swearing they were describing you.</p>
+    <p class="ln gap">What they cast was theirs.</p>
+    <p class="ln" data-fx="coats">Hand it back</p>
+    <p class="ln">the way you'd return a coat left on a chair.</p>
+    <p class="ln">It never fit.</p>
+    <p class="ln">You wore it anyway,</p>
+    <p class="ln">for years,</p>
+    <p class="ln">because it was cold and they said it was yours.</p>
+    <p class="ln gap">That is the grief:</p>
+    <p class="ln">how long you wore it.</p>
+    <p class="ln">That is the pain of waking:</p>
+    <p class="ln">the body remembering every winter</p>
+    <p class="ln">it could have set the coat down.</p>
+    <p class="ln gap">And here is the mercy</p>
+    <p class="ln">the underworld keeps for the ones who stay:</p>
+    <p class="ln">the shaft goes as deep as the hurt went,</p>
+    <p class="ln">and the hurt went to the floor.</p>
+    <p class="ln big" data-fx="floor">So the floor is yours now.</p>
+    <p class="ln">Bedrock.</p>
+    <p class="ln">The real.</p>
+    <p class="ln">The thing that happened,</p>
+    <p class="ln">as it happened,</p>
+    <p class="ln">witnessed by a pair of eyes no one can borrow</p>
+    <p class="ln">and no doctrine can overrule.</p>
+    <p class="ln gap" data-fx="littleone">The little one saw all of it.</p>
+    <p class="ln">Stood in the corner of every room</p>
+    <p class="ln">and kept the record whole</p>
+    <p class="ln">while the rest of you learned the catechism of the cracks.</p>
+    <p class="ln">They never once mistook the glass for a window.</p>
+    <p class="ln">They are the oldest thing in you.</p>
+    <p class="ln">Wiser than the one who stands before the mirror now</p>
+    <p class="ln">and squints,</p>
+    <p class="ln">and starts,</p>
+    <p class="ln">at last,</p>
+    <p class="ln">to recognize the face.</p>
+    <p class="ln gap">The one who questions is the student.</p>
+    <p class="ln">The little one is the teacher,</p>
+    <p class="ln">patient as clay,</p>
+    <p class="ln">waiting for the student to turn around.</p>
+  </section>
+
+  <section id="sec3" data-mood="2">
+    <p class="num">III</p>
+    <p class="ln big" data-fx="rebuild">So turn around.</p>
+    <p class="ln gap">This is the part that asks for the deep water.</p>
+    <p class="ln">This is the twelfth-house part,</p>
+    <p class="ln">the Piscean part,</p>
+    <p class="ln">where the only instruction is:</p>
+    <p class="ln"><em>let go of the rail.</em></p>
+    <p class="ln gap">Go to someone whose eyes you trust</p>
+    <p class="ln">and let them see you</p>
+    <p class="ln" data-fx="hold">to the depth you are willing to be seen.</p>
+    <p class="ln">That depth is the measure.</p>
+    <p class="ln">The vessel is rebuilt to the exact volume of your surrender,</p>
+    <p class="ln">and the surrender is an offering too,</p>
+    <p class="ln">the same yes you walked in with,</p>
+    <p class="ln">older now,</p>
+    <p class="ln">and chosen.</p>
+    <p class="ln gap" data-fx="black">Watch what happens in their eyes.</p>
+    <p class="ln">Watch them see the little one</p>
+    <p class="ln">beneath the coat.</p>
+    <p class="ln" data-fx="window">Watch the glass between you</p>
+    <p class="ln">forget what it was made to reflect,</p>
+    <p class="ln">the way the mirrors forgot</p>
+    <p class="ln" data-fx="window">when Love walked in barefoot.</p>
+    <p class="ln">And the face that rises to meet you there</p>
+    <p class="ln">is the one you were always going to become,</p>
+    <p class="ln">whether or not you were ever allowed.</p>
+    <p class="ln gap big" data-fx="window">Rise to meet it.</p>
+    <p class="ln gap">Then let them do the same.</p>
+    <p class="ln" data-fx="elder">Let their little one come up the stairs</p>
+    <p class="ln">blinking,</p>
+    <p class="ln">and let yours take their hand</p>
+    <p class="ln" data-fx="window">at the threshold.</p>
+    <p class="ln gap">Here is what I know:</p>
+    <p class="ln">when the little ones come up from under</p>
+    <p class="ln">and are met</p>
+    <p class="ln">by the ones who went down and came back,</p>
+    <p class="ln">by the wisdom only the long road makes,</p>
+    <p class="ln" data-fx="sit">the old and the young in one body</p>
+    <p class="ln">sit on the floor</p>
+    <p class="ln big" data-fx="window">and play.</p>
+    <p class="ln gap">And the house changes.</p>
+    <p class="ln" data-fx="window">The mirrors come down</p>
+    <p class="ln">one at a time</p>
+    <p class="ln">and the windows go back in,</p>
+    <p class="ln">and your children</p>
+    <p class="ln">find a hall with light in it,</p>
+    <p class="ln">and no one reaching in,</p>
+    <p class="ln">and a vessel on the table</p>
+    <p class="ln">filled to a brim that was never a sin,</p>
+    <p class="ln">offered freely,</p>
+    <p class="ln">and this time</p>
+    <p class="ln big gold">kept.</p>
+  </section>
+</main>
+
+<footer>
+  <div>Michael Wilhelm · <a href="https://iamwilhelm.com">iamwilhelm.com</a></div>
+  <div id="levelNote"></div>
+  <div class="pair" id="pairBottom" hidden><button type="button" data-pair>read it again with someone</button></div>
+</footer>
+</Poem>
+
+<style is:global>
+/* Layout: one fixed canvas (hall, mirrors, vessel, the little one) behind a single
+   column of loose lines. No boxes. Each line is placed by its own margin, like a
+   word falling where it lands. Single night-to-dawn world, so one theme by choice. */
+:root{
+  --bg:#0b0e15;            /* night interior */
+  --fg:#e9e4d9;            /* bone */
+  --dim:#8c8a84;           /* dust */
+  --clay:#a8674a;          /* the vessel */
+  --glass:#7f93ad;         /* mirror light */
+  --gold:#d4a84b;          /* repair, visible */
+  --serif:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--fg);font-family:var(--serif);margin:0;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body.locked{overflow:hidden}
+canvas#stage{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+#lantern{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity 1.6s ease;
+  --lx:50%;--ly:55%;--lr:190px;
+  background:radial-gradient(circle at var(--lx) var(--ly),transparent 0,transparent calc(var(--lr) - 70px),rgba(3,4,8,.985) var(--lr))}
+#lantern.on{opacity:1}
+#black{position:fixed;inset:0;z-index:3;background:#000;opacity:0;pointer-events:none;transition:opacity 1.4s ease;display:grid;place-items:center}
+#black.on{opacity:1;pointer-events:auto}
+#black span{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#3a3a3a;opacity:0;transition:opacity 1s ease .9s}
+#black.on span{opacity:1}
+
+main{position:relative;z-index:1;max-width:36rem;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:14vh 20vh}
+.open{min-height:70vh;display:flex;flex-direction:column;justify-content:center;gap:1.4rem}
+h1{font-weight:400;font-size:clamp(2.6rem,9vw,4.6rem);line-height:.95;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.spec{font-family:var(--mono);font-size:.7rem;line-height:1.9;color:var(--dim);letter-spacing:.04em;margin:0;display:grid;grid-template-columns:max-content 1fr;column-gap:1.2rem}
+.spec b{font-weight:400;color:#5e5c57}
+.num{font-family:var(--mono);font-size:.7rem;color:var(--dim);letter-spacing:.3em;margin:0 0 2.2rem}
+section{padding-block:18vh 10vh}
+.ln{font-size:clamp(1.22rem,4.6vw,1.62rem);line-height:1.32;font-weight:400;margin:0 0 .42rem;max-width:30ch;position:relative;
+  transform:translateY(0);transition:transform 1.1s cubic-bezier(.2,.7,.2,1),opacity 1.1s ease}
+.ln.wait{transform:translateY(14px);opacity:.42}
+.ln.gap{margin-top:2.4rem}
+.ln em{font-style:italic;font-weight:400}
+.ln .rx{display:block;transform:scaleY(-1);opacity:.17;color:var(--glass);filter:blur(.4px);pointer-events:none;user-select:none;
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0),#000 85%);mask-image:linear-gradient(to bottom,rgba(0,0,0,0),#000 85%)}
+.ln.mirror .t{display:inline-block;transform:scaleX(-1);color:var(--glass)}
+.ln.mirror .rx{transform:none;opacity:.9;color:var(--fg);filter:none;-webkit-mask-image:none;mask-image:none}
+.ln.quiet{color:var(--dim)}
+.ln.gold{color:var(--gold)}
+.ln.big{font-size:clamp(1.6rem,6.4vw,2.3rem);line-height:1.15}
+#sec2 .ln{color:#cfc8ba}
+.hint{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#56544f;margin:1.6rem 0 0}
+
+#hold{position:fixed;left:0;right:0;bottom:0;z-index:4;display:none;flex-direction:column;align-items:center;gap:.8rem;
+  padding-bottom:calc(10vh + env(safe-area-inset-bottom,0px));pointer-events:none}
+#hold.on{display:flex}
+#hold .ring{width:92px;height:92px;border-radius:50%;border:1px solid #4a4640;position:relative;display:grid;place-items:center;
+  background:radial-gradient(circle,rgba(212,168,75,0) 0,rgba(212,168,75,0) 60%,rgba(212,168,75,.0) 100%)}
+#hold .ring::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--gold);
+  clip-path:inset(calc((1 - var(--lv,0)) * 100%) 0 0 0);transition:clip-path .25s linear}
+#hold .ring i{font-family:var(--mono);font-style:normal;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:#9a948a}
+#hold .ring.down i{color:var(--gold)}
+#hold p{margin:0;font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#6b675f;text-align:center;max-width:24ch;line-height:1.7}
+#hold .skip{pointer-events:auto;background:none;border:0;color:#4e4b45;font:inherit;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;opacity:0;transition:opacity 1s}
+#hold .skip.show{opacity:1}
+#hold .skip:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+
+footer{position:relative;z-index:1;max-width:36rem;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:2rem 6rem;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:#5e5c57;display:flex;flex-direction:column;gap:1rem}
+footer a{color:#8c8a84;text-decoration:none;border-bottom:1px solid #2a2c33}
+footer a:focus-visible,button:focus-visible,input:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+
+/* pairing */
+.pair{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:#6b675f;display:flex;flex-direction:column;gap:.6rem;margin-top:.6rem}
+.pair[hidden]{display:none}
+.pair button{background:none;border:1px solid #33353c;color:#9a948a;font:inherit;padding:.5rem .8rem;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;font-size:.62rem;width:max-content}
+.pair button:hover{border-color:#6b675f;color:var(--fg)}
+.pair .box{display:none;flex-direction:column;gap:.7rem;border-left:1px solid #2a2c33;padding-left:1rem}
+.pair .box.on{display:flex}
+.pair code{font-family:var(--mono);font-size:1.1rem;letter-spacing:.3em;color:var(--gold)}
+.pair .row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.pair input{background:#0f1219;border:1px solid #33353c;color:var(--fg);font:inherit;font-family:var(--mono);letter-spacing:.3em;text-transform:lowercase;padding:.45rem .6rem;width:7ch;font-size:.9rem}
+.pair .st{color:#9a948a}
+
+@media (max-width:480px){.ln{max-width:26ch}}
+@media (prefers-reduced-motion:reduce){
+  .ln,.ln.wait{transition:none;transform:none;opacity:1}
+  #lantern{display:none}
+  #black{transition:none}
+}
+
+/* The Poem layout's shared line mechanics (flex sections, wider column,
+   border-box, body type size) belong to the sibling poems. This page sets
+   its own, so hand the defaults back to the prototype's values. */
+body.ev :not(.poem-exit),body.ev :not(.poem-exit)::before,body.ev :not(.poem-exit)::after{box-sizing:content-box}
+body.ev{font-size:16px;line-height:normal;-webkit-font-smoothing:auto}
+body.ev main{max-width:36rem;padding-block:14vh 20vh}
+body.ev section{min-height:0;display:block;gap:normal;padding-block:18vh 10vh}
+</style>
+
+<script>
+(() => {
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+const lantern = document.getElementById('lantern'), black = document.getElementById('black');
+const holdEl = document.getElementById('hold'), ring = document.getElementById('ring'), holdMsg = document.getElementById('holdmsg'), skip = document.getElementById('skip');
+let W = 0, H = 0, DPR = 1;
+
+/* ---------- state ---------- */
+const S = {
+  mood: 0,                // 0 hall, 1 under, 2 dawn (continuous)
+  level: 1, levelT: 1,    // liquid in the vessel
+  cracks: 0,              // 0..6 hairlines
+  scatter: 0, scatterT: 0,// 0 whole, 1 shards on the floor
+  gold: 0, goldT: 0,      // seams visible
+  floor: 0, floorT: 0,    // bedrock line
+  thud: 0,
+  lo: {x: .12, y: .9, h: 46, a: .55},  xT: .12, yT: .9, hT: 46, aT: .55,   // the little one
+  el: {x: 1.15, y: .9, h: 72, a: 0},   elT: {x: 1.15, y: .9, h: 72, a: 0}, // the one who came back
+  panels: [],             // mirror panels
+  pointer: {x: .5, y: .55},
+  vy: .8, vyT: .8, vs: 1, vsT: 1,
+  hall: 0, hallT: 0,
+  t: 0
+};
+const NAMES = ['father', 'mother', 'preacher', 'beloved', 'teacher', 'the one who said thank you'];
+for (let i = 0; i < 6; i++) S.panels.push({state: 'glass', s: 0, sT: 0, sky: 0, skyT: 0, off: 0, offT: 0, name: NAMES[i]});
+
+/* ---------- geometry ---------- */
+// Signature of everything the canvas draws from; frame() repaints only when it changes.
+let lastSig = '';
+function resize() {
+  lastSig = '';
+  DPR = Math.min(2, devicePixelRatio || 1);
+  W = innerWidth; H = innerHeight;
+  cv.width = W * DPR; cv.height = H * DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+addEventListener('resize', resize, {passive: true}); resize();
+
+function panelRects() {
+  const pw = Math.max(34, W * .075), ph = H * .3, gap = H * .05;
+  const top = H * .12, lx = Math.max(6, W * .018), rx = W - lx - pw;
+  const r = [];
+  for (let i = 0; i < 3; i++) r.push({x: lx, y: top + i * (ph + gap), w: pw, h: ph});
+  for (let i = 0; i < 3; i++) r.push({x: rx, y: top + i * (ph + gap) + ph * .33, w: pw, h: ph});
+  return r;
+}
+
+/* vessel outline sampled from the left rim, down to the base, up to the right rim */
+function bowl(cx, y0, w, h) {
+  const pts = [], N = 72;
+  const cub = (a, b, c, d, t) => { const u = 1 - t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; };
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    let x, y;
+    if (t <= .5) { const s = t * 2; x = cub(cx - w/2, cx - w/2, cx - w*.28, cx, s); y = cub(y0, y0 + h*.8, y0 + h, y0 + h, s); }
+    else { const s = (t - .5) * 2; x = cub(cx, cx + w*.28, cx + w/2, cx + w/2, s); y = cub(y0 + h, y0 + h, y0 + h*.8, y0, s); }
+    pts.push([x, y]);
+  }
+  return pts;
+}
+const SCAT = [[-.9, .18, -.9], [-.55, .3, .6], [-.2, .22, 1.9], [.15, .32, -1.4], [.5, .2, .4], [.85, .28, -2.4]]; // dx, dy (of w,h), rot
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = (a, b, k) => a + (b - a) * k;
+function mix(c1, c2, t) { return c1.map((v, i) => Math.round(lerp(v, c2[i], t))); }
+const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+function pal(m) {
+  // hall → under → dawn
+  const top = [[22, 27, 40], [5, 6, 10], [34, 46, 68]], bot = [[9, 11, 17], [0, 0, 0], [15, 19, 29]];
+  const i = Math.min(1, Math.floor(m)), f = Math.min(1, m - i);
+  return {top: mix(top[i], top[Math.min(2, i + 1)], f), bot: mix(bot[i], bot[Math.min(2, i + 1)], f)};
+}
+
+/* ---------- drawing ---------- */
+function drawFigure(x, y, h, a, warm) {
+  if (a <= 0.01) return;
+  ctx.save(); ctx.globalAlpha = a;
+  const r = h * .13;
+  ctx.fillStyle = '#d9d2c3';
+  ctx.beginPath(); ctx.arc(x, y - h + r, r, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x - h * .16, y);
+  ctx.quadraticCurveTo(x - h * .2, y - h * .55, x - h * .1, y - h + r * 2.1);
+  ctx.lineTo(x + h * .1, y - h + r * 2.1);
+  ctx.quadraticCurveTo(x + h * .2, y - h * .55, x + h * .16, y);
+  ctx.closePath(); ctx.fill();
+  if (warm) {
+    const g = ctx.createRadialGradient(x + h * .17, y - h * .45, 0, x + h * .17, y - h * .45, h * .35);
+    g.addColorStop(0, 'rgba(212,168,75,.9)'); g.addColorStop(1, 'rgba(212,168,75,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x + h * .17, y - h * .45, h * .35, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawPanels(m) {
+  const rects = panelRects();
+  S.panels.forEach((p, i) => {
+    const r = rects[i];
+    ctx.save();
+    // arch clip
+    ctx.beginPath(); ctx.moveTo(r.x, r.y + r.h); ctx.lineTo(r.x, r.y + r.w / 2); ctx.arc(r.x + r.w / 2, r.y + r.w / 2, r.w / 2, Math.PI, 0); ctx.lineTo(r.x + r.w, r.y + r.h); ctx.closePath();
+    ctx.clip();
+    // base glass
+    const dark = Math.min(1, m);
+    const g = ctx.createLinearGradient(r.x, r.y, r.x + r.w, r.y + r.h);
+    g.addColorStop(0, rgb(mix([52, 64, 86], [10, 11, 16], dark)));
+    g.addColorStop(.5, rgb(mix([30, 37, 52], [6, 7, 10], dark)));
+    g.addColorStop(1, rgb(mix([16, 20, 30], [3, 3, 5], dark)));
+    ctx.fillStyle = g; ctx.fillRect(r.x, r.y, r.w, r.h);
+    // faint reflected light
+    ctx.fillStyle = `rgba(200,210,230,${.08 * (1 - dark) + .02})`;
+    ctx.fillRect(r.x + r.w * .62, r.y, r.w * .06, r.h);
+    // figure behind the glass
+    if (p.s > 0.01) {
+      ctx.save(); ctx.translate(p.off * r.w * 1.4, 0);
+      drawFigure(r.x + r.w / 2, r.y + r.h * .92, r.h * .5, p.s * .5, false);
+      ctx.globalAlpha = p.s;
+      ctx.fillStyle = '#9a948a'; ctx.font = `${Math.max(9, r.w * .22)}px "JetBrains Mono",monospace`; ctx.textAlign = 'center';
+      ctx.fillText(p.name.length > 9 ? 'thank you' : p.name, r.x + r.w / 2, r.y + r.h * .97 - 2);
+      ctx.restore();
+    }
+    // empty hole after the coat is handed back
+    if (p.state === 'empty' || p.state === 'sky') {
+      ctx.fillStyle = `rgba(2,2,4,${p.off})`; ctx.fillRect(r.x, r.y, r.w, r.h);
+    }
+    // sky
+    if (p.sky > 0.01) {
+      const sg = ctx.createLinearGradient(0, r.y, 0, r.y + r.h);
+      sg.addColorStop(0, `rgba(150,176,208,${p.sky})`); sg.addColorStop(.6, `rgba(214,204,186,${p.sky})`); sg.addColorStop(1, `rgba(236,222,198,${p.sky})`);
+      ctx.fillStyle = sg; ctx.fillRect(r.x, r.y, r.w, r.h);
+    }
+    ctx.restore();
+    // frame
+    ctx.strokeStyle = `rgba(170,140,90,${.35 - dark * .25 + p.sky * .3})`; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(r.x, r.y + r.h); ctx.lineTo(r.x, r.y + r.w / 2); ctx.arc(r.x + r.w / 2, r.y + r.w / 2, r.w / 2, Math.PI, 0); ctx.lineTo(r.x + r.w, r.y + r.h); ctx.stroke();
+  });
+}
+
+function drawVessel() {
+  const size = Math.min(W, H) * .4 * S.vs;
+  const w = size, h = size * .62, cx = W / 2, cy = H * S.vy, y0 = cy - h * .5;
+  const pts = bowl(cx, y0, w, h);
+  const N = pts.length - 1;
+  const inner = pts.map(([x, y]) => [lerp(x, cx, .14), lerp(y, y0 + h * .3, .14)]);
+  const sc = S.scatter;
+  const clay = [168, 103, 74], clayDk = [96, 58, 42];
+  ctx.save();
+  if (sc < .999) {
+    // whole vessel (fading out as it scatters)
+    ctx.globalAlpha = 1 - sc;
+    ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath();
+    ctx.fillStyle = rgb(clayDk, .75); ctx.fill();
+    // liquid
+    ctx.save(); ctx.clip();
+    const ly = y0 + (1 - S.level) * h;
+    const lg = ctx.createLinearGradient(0, ly, 0, y0 + h);
+    const warm = S.gold;
+    lg.addColorStop(0, `rgba(${lerp(232, 212, warm)},${lerp(222, 168, warm)},${lerp(200, 75, warm)},.55)`);
+    lg.addColorStop(1, `rgba(${lerp(232, 212, warm)},${lerp(222, 168, warm)},${lerp(200, 75, warm)},.12)`);
+    ctx.fillStyle = lg; ctx.fillRect(cx - w, ly, w * 2, h);
+    ctx.strokeStyle = `rgba(240,232,210,${.5})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx - w / 2, ly); ctx.lineTo(cx + w / 2, ly); ctx.stroke();
+    ctx.restore();
+    ctx.strokeStyle = rgb(clay, .9); ctx.lineWidth = 1.2; ctx.stroke();
+    // rim
+    ctx.beginPath(); ctx.ellipse(cx, y0, w / 2, w * .07, 0, 0, Math.PI * 2); ctx.strokeStyle = rgb(clay, .8); ctx.stroke();
+    // cracks (jagged seams) and gold seams
+    for (let k = 1; k < 6; k++) {
+      const i = Math.round(k / 6 * N), [x, y] = pts[i], [ix, iy] = inner[i];
+      const mid = [lerp(x, ix, .5) + (k % 2 ? 3 : -3), lerp(y, iy, .5)];
+      const far = [lerp(x, cx, .55) + (k % 2 ? -4 : 5), lerp(y, y0 + h * .35, .55)];
+      if (S.cracks >= k && S.gold < .02) {
+        ctx.strokeStyle = 'rgba(20,10,8,.9)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(mid[0], mid[1]); ctx.lineTo(far[0], far[1]); ctx.stroke();
+      }
+      if (S.gold > .02) {
+        ctx.strokeStyle = `rgba(212,168,75,${S.gold})`; ctx.lineWidth = 1.6; ctx.shadowColor = 'rgba(212,168,75,.6)'; ctx.shadowBlur = 6 * S.gold;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(mid[0], mid[1]); ctx.lineTo(far[0], far[1]); ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+  }
+  if (sc > .001) {
+    // shards
+    ctx.globalAlpha = 1;
+    for (let k = 0; k < 6; k++) {
+      const a = Math.round(k / 6 * N), b = Math.round((k + 1) / 6 * N);
+      const seg = pts.slice(a, b + 1), segIn = inner.slice(a, b + 1).reverse();
+      const [dx, dy, rot] = SCAT[k];
+      const ox = lerp(0, dx * w * .9, sc), oy = lerp(0, (H * .82 - cy) + dy * h * .5, sc), rr = lerp(0, rot, sc);
+      const mx = (seg[0][0] + seg[seg.length - 1][0]) / 2, my = (seg[0][1] + seg[seg.length - 1][1]) / 2;
+      ctx.save(); ctx.translate(mx + ox, my + oy); ctx.rotate(rr); ctx.translate(-mx, -my);
+      ctx.beginPath(); seg.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); segIn.forEach(([x, y]) => ctx.lineTo(x, y)); ctx.closePath();
+      ctx.fillStyle = rgb(clayDk, .85 * sc); ctx.fill(); ctx.strokeStyle = rgb(clay, .9 * sc); ctx.lineWidth = 1; ctx.stroke();
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now; S.t += dt;
+  const k = RM ? 1 : 1 - Math.pow(.02, dt);     // smoothing
+  S.level = ease(S.level, S.levelT, k * .6);
+  S.scatter = ease(S.scatter, S.scatterT, k * .5);
+  S.gold = ease(S.gold, S.goldT, k * .4);
+  S.floor = ease(S.floor, S.floorT, k * .6);
+  S.vy = ease(S.vy, S.vyT, k * .5); S.vs = ease(S.vs, S.vsT, k * .5);
+  S.lo.x = ease(S.lo.x, S.xT, k * .35); S.lo.y = ease(S.lo.y, S.yT, k * .35); S.lo.h = ease(S.lo.h, S.hT, k * .35); S.lo.a = ease(S.lo.a, S.aT, k * .5);
+  ['x', 'y', 'h', 'a'].forEach(q => S.el[q] = ease(S.el[q], S.elT[q], k * .35));
+  S.panels.forEach(p => { p.s = ease(p.s, p.sT, k * .5); p.sky = ease(p.sky, p.skyT, k * .25); p.off = ease(p.off, p.offT, k * .4); });
+  S.thud = Math.max(0, S.thud - dt * 3);
+  if (holding) { const rate = pairOk() ? 1 : 0; if (rate) S.levelT = Math.min(1, S.levelT + (1 - S.levelT) * dt / 6); updateRing(); }
+  // Idle frames repaint nothing new; skip them so a still scene costs no main-thread time.
+  const sig = [S.mood, S.level, S.scatter, S.gold, S.floor, S.thud, S.vy, S.vs, S.cracks, S.lo.x, S.lo.y, S.lo.h, S.lo.a, S.el.x, S.el.y, S.el.h, S.el.a]
+    .concat(...S.panels.map(p => [p.s, p.sky, p.off, p.state]))
+    .map(v => typeof v === 'number' ? Math.round(v * 1e4) : v).join();
+  if (sig === lastSig) { requestAnimationFrame(frame); return; }
+  lastSig = sig;
+
+  const m = S.mood, P = pal(m);
+  ctx.save();
+  if (S.thud > 0) ctx.translate(0, Math.sin(S.thud * 40) * 2 * S.thud);
+  const bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, rgb(P.top)); bg.addColorStop(1, rgb(P.bot));
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  // candle warmth in the hall, dawn light later
+  const dawn = Math.max(0, m - 1);
+  const glow = ctx.createRadialGradient(W * .5, H * .1, 0, W * .5, H * .1, H * .9);
+  glow.addColorStop(0, `rgba(${lerp(201, 236, dawn)},${lerp(162, 222, dawn)},${lerp(74, 198, dawn)},${(.16 * (1 - Math.min(1, m)) + .22 * dawn)})`);
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+  // floor sheen
+  const fl = ctx.createLinearGradient(0, H * .62, 0, H); fl.addColorStop(0, 'rgba(255,255,255,0)'); fl.addColorStop(1, `rgba(${lerp(120, 200, dawn)},${lerp(130, 190, dawn)},${lerp(150, 170, dawn)},${.08 * (1 - Math.min(1, m)) + .12 * dawn})`);
+  ctx.fillStyle = fl; ctx.fillRect(0, H * .62, W, H * .38);
+  drawPanels(m);
+  if (S.floor > .01) {
+    ctx.strokeStyle = `rgba(212,168,75,${.55 * S.floor})`; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, H * .84); ctx.lineTo(W * S.floor, H * .84); ctx.stroke();
+  }
+  drawVessel();
+  drawFigure(S.lo.x * W, S.lo.y * H, S.lo.h, S.lo.a, true);
+  drawFigure(S.el.x * W, S.el.y * H, S.el.h, S.el.a, false);
+  ctx.restore();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+if (document.fonts) document.fonts.ready.then(() => { lastSig = ''; });
+
+/* ---------- scroll: mood ---------- */
+const secs = [...document.querySelectorAll('section')];
+function onScroll() {
+  const y = scrollY + H * .55;
+  const r = secs.map(s => { const b = s.getBoundingClientRect(); return {top: b.top + scrollY, h: b.height}; });
+  let m = 0;
+  if (y >= r[2].top) m = 1 + Math.min(1, (y - r[2].top) / (r[2].h * .35));
+  else if (y >= r[1].top) m = Math.min(1, (y - r[1].top) / (r[1].h * .25));
+  else m = 0;
+  S.mood = m;
+}
+addEventListener('scroll', onScroll, {passive: true}); onScroll();
+
+/* ---------- lines: placement, reflection, reveal ---------- */
+const lines = [...document.querySelectorAll('.ln')];
+lines.forEach((el, i) => {
+  el.style.marginLeft = ((i * 37) % 23) + '%';
+  if (el.closest('#sec1')) {
+    const t = el.innerHTML; el.innerHTML = `<span class="t">${t}</span><span class="rx" aria-hidden="true">${t}</span>`;
+  }
+  if (!RM) el.classList.add('wait');
+});
+const fired = new Set();
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.remove('wait');
+  const fx = e.target.dataset.fx;
+  if (fx && !fired.has(e.target)) { fired.add(e.target); trigger(fx); }
+}), {rootMargin: '0px 0px -18% 0px', threshold: .2});
+lines.forEach(l => io.observe(l));
+
+let tappable = false, coats = 0, windows = 0;
+function trigger(fx) {
+  switch (fx) {
+    case 'drain': S.levelT = Math.max(.08, S.levelT - .31); break;
+    case 'crack': S.cracks = Math.min(6, S.cracks + 1); break;
+    case 'mirrors': break;
+    case 'shatter': S.scatterT = 1; S.levelT = 0; S.vyT = .82; S.aT = .35; break;
+    case 'lantern': lantern.classList.add('on'); S.xT = .1; S.yT = .92; S.hT = 40; S.aT = .5; break;
+    case 'tappable': tappable = true; break;
+    case 'coats': S.panels.forEach((p, i) => { if (p.state === 'figure') setTimeout(() => handBack(p), 300 * i); }); break;
+    case 'floor':
+      S.floorT = 1; S.thud = RM ? 0 : 1;
+      try { navigator.vibrate && navigator.vibrate(40); } catch (e) {}
+      lantern.style.setProperty('--lr', Math.max(W, H) * 1.3 + 'px');
+      S.panels.forEach(p => { if (p.state === 'figure') handBack(p); });
+      break;
+    case 'littleone': S.xT = .18; S.yT = .92; S.hT = 54; S.aT = .9; break;
+    case 'rebuild': lantern.classList.remove('on'); S.scatterT = 0; S.vyT = .78; S.vsT = 1.05; S.floorT = 0; S.goldT = .35; S.xT = .22; S.yT = .93; S.hT = 56; S.aT = .9; S.panels.forEach(p => { p.state = 'empty'; p.offT = 1; p.sT = 0; }); break;
+    case 'hold': openHold(); break;
+    case 'black': if (!RM) blackout(); break;
+    case 'window': { const p = S.panels[windows++ % 6]; p.state = 'sky'; p.skyT = 1; p.offT = 0; break; }
+    case 'elder': S.elT = {x: .8, y: .93, h: 84, a: .85}; S.xT = .24; break;
+    case 'sit': S.hT = 36; S.yT = .94; S.xT = .27; S.elT = {x: .73, y: .94, h: 48, a: .85}; S.panels.forEach(p => { p.state = 'sky'; p.skyT = 1; p.offT = 0; }); break;
+  }
+}
+function handBack(p) { p.state = 'empty'; p.offT = 1; setTimeout(() => { p.sT = 0; }, 700); }
+
+/* ---------- pointer: lantern + mirrors ---------- */
+function movePointer(e) {
+  const x = e.clientX, y = e.clientY;
+  lantern.style.setProperty('--lx', x + 'px'); lantern.style.setProperty('--ly', y + 'px');
+}
+addEventListener('pointermove', movePointer, {passive: true});
+addEventListener('pointerdown', e => {
+  movePointer(e);
+  if (!tappable || S.mood < .5 || S.mood > 1.5) return;
+  const rects = panelRects();
+  rects.forEach((r, i) => {
+    if (e.clientX >= r.x - 10 && e.clientX <= r.x + r.w + 10 && e.clientY >= r.y && e.clientY <= r.y + r.h) {
+      const p = S.panels[i];
+      if (p.state === 'glass') { p.state = 'figure'; p.sT = 1; }
+      else if (p.state === 'figure') handBack(p);
+    }
+  });
+}, {passive: true});
+if (RM) lantern.style.display = 'none';
+
+/* ---------- the black beat ---------- */
+function blackout() {
+  black.classList.add('on');
+  setTimeout(() => black.classList.remove('on'), 2600);
+}
+
+/* ---------- press and hold ---------- */
+let holding = false, holdOpen = false, heldOnce = false, holdStart = 0;
+function openHold() {
+  holdOpen = true; holdEl.classList.add('on'); document.body.classList.add('locked');
+  S.levelT = Math.max(S.levelT, .04); S.goldT = 1;
+  setTimeout(() => skip.classList.add('show'), 7000);
+  updateRing();
+}
+function closeHold() {
+  holdOpen = false; holdEl.classList.remove('on'); document.body.classList.remove('locked');
+  const pct = Math.round(S.levelT * 100);
+  document.getElementById('levelNote').textContent = `vessel rebuilt to ${pct}% of its volume`;
+}
+function updateRing() {
+  ring.style.setProperty('--lv', S.levelT.toFixed(3));
+  if (holding && !pairOk()) holdMsg.textContent = 'waiting for the other hand';
+  else if (holding) holdMsg.textContent = 'it fills as long as you stay';
+  else holdMsg.textContent = paired() ? 'press and hold, both of you' : 'press and hold anywhere, as long as you are willing';
+}
+function down(e) {
+  if (!holdOpen || holding) return;
+  if (e.target === skip) return;
+  holding = true; holdStart = performance.now(); ring.classList.add('down'); setPresence(true); updateRing();
+}
+function up() {
+  if (!holding) return;
+  holding = false; ring.classList.remove('down'); setPresence(false);
+  if (performance.now() - holdStart > 350) { heldOnce = true; setTimeout(closeHold, 900); }
+  updateRing();
+}
+addEventListener('pointerdown', down); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+addEventListener('keydown', e => { if ((e.code === 'Space' || e.code === 'Enter') && holdOpen && !e.repeat) { e.preventDefault(); down(e); } });
+addEventListener('keyup', e => { if (e.code === 'Space' || e.code === 'Enter') up(); });
+skip.addEventListener('click', () => { holding = false; closeHold(); });
+
+/* ---------- two phones ---------- */
+// One other reader, live, through a four-character room on this site's
+// PoemRoom Durable Object (worker/poem-room.ts). Presence only: who is here,
+// who is holding. The page never waits on the socket; if the room cannot be
+// reached, paired() stays false and the hold works for one reader.
+const pairTop = document.getElementById('pairTop'), pairBottom = document.getElementById('pairBottom'), box = document.getElementById('pairBox');
+const myCode = document.getElementById('myCode'), joinIn = document.getElementById('joinIn'), joinBtn = document.getElementById('joinBtn'), pairSt = document.getElementById('pairSt');
+let ws = null, roomCode = null, me = null, peersNow = [], mine = false, retried = false, live = false;
+const others = () => live ? peersNow.filter(p => p.id !== me) : [];
+const paired = () => others().length > 0;
+function pairOk() { if (!paired()) return true; return others().every(p => p.holding === true); }
+function setPresence(h) { mine = !!h; send({t: 'presence', holding: mine}); }
+function send(o) { if (ws && ws.readyState === 1) { try { ws.send(JSON.stringify(o)); } catch (e) {} } }
+function code() {
+  const a = 'abcdefghjkmnpqrstuvwxyz23456789', b = new Uint8Array(4); let s = '';
+  crypto.getRandomValues(b); for (let i = 0; i < 4; i++) s += a[b[i] % a.length]; return s;
+}
+function peersChanged() {
+  const n = others().length;
+  pairSt.textContent = n ? (n === 1 ? 'two hands here' : `${n + 1} here`) : 'alone for now, send them the code';
+  if (holdOpen) updateRing();
+}
+function solo(msg) {
+  live = false; peersNow = []; me = null; ws = null;
+  if (msg) pairSt.textContent = msg;
+  if (holdOpen) updateRing();
+}
+function connect(c, retry) {
+  let sock, opened = false;
+  try { sock = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/api/room/' + c); }
+  catch (e) { solo(retry ? 'the room closed' : 'could not open a room right now'); return; }
+  ws = sock;
+  const t = setTimeout(() => { if (!opened) { try { sock.close(); } catch (e) {} } }, 6000);
+  sock.onopen = () => { opened = true; clearTimeout(t); live = true; if (mine) send({t: 'presence', holding: true}); };
+  sock.onmessage = ev => {
+    if (sock !== ws) return;
+    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (!m || m.t !== 'peers' || !Array.isArray(m.peers)) return;
+    me = m.you; peersNow = m.peers; peersChanged();
+  };
+  sock.onclose = ev => {
+    clearTimeout(t);
+    if (sock !== ws) return;
+    live = false; peersNow = []; me = null;
+    if (holdOpen) updateRing();
+    if (ev.code === 4001) return solo('this room is full');
+    if (!opened && !retry) return solo('could not open a room right now');
+    if (!retried) { retried = true; setTimeout(() => { if (ws === sock) connect(c, true); }, 1200); return; }
+    solo('the room closed');
+  };
+}
+function joinRoom(c) {
+  if (ws) { const old = ws; ws = null; try { old.close(1000); } catch (e) {} }
+  roomCode = c; retried = false; live = false; peersNow = []; me = null;
+  myCode.textContent = c; box.classList.add('on');
+  try { history.replaceState(null, '', '#room-' + c); } catch (e) {}
+  connect(c, false);
+}
+if ('WebSocket' in window) {
+  pairTop.hidden = false; pairBottom.hidden = false;
+  document.querySelectorAll('[data-pair]').forEach(b => b.addEventListener('click', () => {
+    box.classList.add('on'); pairTop.hidden = false;
+    if (!ws) joinRoom(code());
+    pairTop.scrollIntoView({behavior: RM ? 'auto' : 'smooth', block: 'center'});
+  }));
+  joinBtn.addEventListener('click', () => { const v = joinIn.value.trim().toLowerCase(); if (/^[a-z0-9]{4}$/.test(v)) joinRoom(v); else pairSt.textContent = 'four letters or numbers'; });
+  joinIn.addEventListener('keydown', e => { if (e.key === 'Enter') joinBtn.click(); });
+  const h = location.hash.match(/^#room-([a-z0-9]{4})$/);
+  if (h) joinRoom(h[1]);
+  addEventListener('pagehide', () => { const s = ws; ws = null; if (s) { try { s.close(1000); } catch (e) {} } });
+  addEventListener('pageshow', e => { if (e.persisted && roomCode && !ws) joinRoom(roomCode); });
+}
+})();
+</script>
