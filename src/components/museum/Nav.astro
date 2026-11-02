@@ -3,7 +3,8 @@
  * Sticky minimal nav. On the homepage every item is an in-page anchor to its
  * room (museum.ts marks the room in view with aria-current); elsewhere,
  * Gallery and Writings go to their own routes and the rest return to the
- * homepage rooms.
+ * homepage rooms. An item with `room: false` (Earl) has no room: it goes to
+ * its route from every page and stays out of the scroll-spy.
  */
 import { NAV } from '../../config/site';
 
@@ -15,8 +16,10 @@ interface Props {
 const { home = false, current } = Astro.props;
 
 const items = NAV.map((item) => {
-  const href = home ? `#${item.id}` : 'page' in item && item.page ? item.page : `/#${item.id}`;
-  return { ...item, href, isCurrent: current === item.id };
+  const page = 'page' in item ? item.page : undefined;
+  const hasRoom = !('room' in item && item.room === false);
+  const href = !hasRoom && page ? page : home ? `#${item.id}` : page ?? `/#${item.id}`;
+  return { ...item, href, hasRoom, isCurrent: current === item.id };
 });
 ---
 
@@ -32,7 +35,7 @@ const items = NAV.map((item) => {
           <li>
             <a
               href={item.href}
-              data-nav-link={home ? item.id : undefined}
+              data-nav-link={home && item.hasRoom ? item.id : undefined}
               aria-current={item.isCurrent ? 'page' : undefined}
             >
               {item.label}

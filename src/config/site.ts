@@ -30,12 +30,17 @@ export const SCHEDULER_IS_PLACEHOLDER = false;
  */
 export const NEWSLETTER_EMBED_HTML = '';
 
-/** Primary navigation. `id` is the homepage room; `page` the standalone route, if any. */
+/**
+ * Primary navigation. `id` is the homepage room; `page` the standalone route,
+ * if any. `room: false` marks a page with no room on the homepage: the link
+ * always goes to the route, and the homepage scroll-spy leaves it alone.
+ */
 export const NAV = [
   { label: 'Work', id: 'work' },
   { label: 'BackGold', id: 'backgold' },
   { label: 'Manifesto', id: 'manifesto' },
   { label: 'Gallery', id: 'gallery', page: '/gallery/' },
   { label: 'Writings', id: 'writings', page: '/writings/' },
+  { label: 'Earl', id: 'earl', page: '/earl/', room: false },
   { label: 'Contact', id: 'contact' },
 ] as const;
