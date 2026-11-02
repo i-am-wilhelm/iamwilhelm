@@ -18,14 +18,21 @@
  *
  * The page keeps its own crimson top bar rather than the museum nav; the way
  * back is the exit link at the left of the bar and a line in the footer.
+ *
+ * The share card (public/earl/og.jpg, 1200x630) is rendered from the poster,
+ * the headline, and the Mead Hall poll, with Sven's objection stamped on it.
  */
 import { SITE_NAME, SITE_URL } from '../config/site';
 
 const title = 'Wilhelm for Earl';
+/* The link preview, in the campaign's own voice. */
+const shareTitle = 'Wilhelm for Earl. He has a boat.';
 const description =
-  'A longship in every fjord. Raids limited to Tuesdays. One-winter term limits. The satirical campaign broadsheet of Wilhelm, candidate for Earl of the Western Fjords.';
+  'A longship in every fjord. Raids limited to Tuesdays. Term limits: one winter. Endorsed by three ravens (caw), a troll speaking from under a bridge, and Oslo, who did not endorse anyone and would like to be removed from this poster. Paid for by the Mead Hall.';
+const imageAlt =
+  'Campaign poster of Wilhelm in a crimson cloak with a raven on his shoulder, beside the headline He has a boat, and a Mead Hall poll showing Wilhelm at 61 percent, stamped Sven disputes these figures.';
 const canonical = new URL('/earl/', SITE_URL).href;
-const image = new URL('/og.png', SITE_URL).href;
+const image = new URL('/earl/og.jpg', SITE_URL).href;
 const fullTitle = `${title} · ${SITE_NAME}`;
 ---
 
@@ -49,16 +56,18 @@ const fullTitle = `${title} · ${SITE_NAME}`;
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={shareTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={image} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={shareTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content={imageAlt} />
   </head>
   <body>
 <div class="bar">
