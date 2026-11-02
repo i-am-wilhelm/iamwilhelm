@@ -1,0 +1,704 @@
+---
+/**
+ * Wilhelm for Earl: a satirical campaign broadsheet at /earl/. Night-fjord
+ * ground, parchment panels, one crimson ribbon per section, a pledge form
+ * that counts axes in localStorage, and the Mead Hall Band: a 7/8 piece
+ * (frame drum, bowed drone, chant, lyre, bone flute, lur) synthesized live
+ * with the Web Audio API. Party mode adds confetti and a SKÅL.
+ *
+ * Ported from the owner's Claude artifact (earl.html). Changes: the page
+ * wrapper and meta; the poster; the ribbons no longer carry `left: 50%` plus
+ * a translate on top of text-align: center, which pushed each one right of
+ * centre and off the phone viewport; and [hidden] now beats the panels'
+ * own display rule, so the "Axe pledged" box stays hidden until a pledge
+ * and the form goes away after one.
+ *
+ * TODO(owner): the artifact pointed at /earl/poster.jpg (Wilhelm in a crimson
+ * cloak, raven on the shoulder, longships at dawn). That file was not in the
+ * handoff, so a typographic placard ships at public/earl/poster.svg. Drop the
+ * real poster in at public/earl/poster.jpg and point the <img> below at it.
+ */
+import { SITE_NAME, SITE_URL } from '../config/site';
+
+const title = 'Wilhelm for Earl';
+const description =
+  'A longship in every fjord. Raids limited to Tuesdays. One-winter term limits. The satirical campaign broadsheet of Wilhelm, candidate for Earl of the Western Fjords.';
+const canonical = new URL('/earl/', SITE_URL).href;
+const image = new URL('/og.png', SITE_URL).href;
+const fullTitle = `${title} · ${SITE_NAME}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#10161d" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="author" content="Michael Wilhelm" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Metamorphous&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+SC:wght@400;700&display=swap" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+  </head>
+  <body>
+<div class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">WILHELM FOR EARL</a>
+    <nav>
+      <a href="#plan" class="hide-sm">The Plan</a>
+      <a href="#poll" class="hide-sm">The Numbers</a>
+      <a href="#endorsed" class="hide-sm">Endorsements</a>
+      <a href="#pledge" class="hide-sm">Pledge</a>
+      <span class="ctl">
+        <button class="pill" id="bandBtn" type="button" aria-pressed="false" title="Mead Hall Band">♪ Band</button>
+        <button class="pill party" id="partyBtn" type="button" aria-pressed="false" title="Party mode">Party</button>
+      </span>
+    </nav>
+  </div>
+</div>
+<div id="torch" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div id="skal" aria-hidden="true">SKÅL!</div>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="poster">
+      <span class="tack" aria-hidden="true"></span>
+      <img src="/earl/poster.svg" alt="Campaign placard: Wilhelm for Earl. A longship in every fjord. A raven over the fjord at dawn. iamwilhelm.com">
+    </div>
+    <div>
+      <p class="eyebrow">Candidate for Earl &middot; The Western Fjords</p>
+      <h1>He has a boat.</h1>
+      <p class="lede">Wilhelm did not ask for this. The raven landed, the cloak fit, and the <em>Mead Hall</em> voted while he was in the restroom. He accepts the nomination with the quiet dread of a man who knows what a fjord costs.</p>
+      <div class="cta-row">
+        <a class="btn" href="#pledge">Pledge Your Axe</a>
+        <a class="btn ghost" href="#plan">Read the Plan</a>
+        <button class="btn ghost" type="button" id="heroParty">Start the Party</button>
+      </div>
+      <p class="band-note">The hall's band plays in 7/8: drums, a bowed drone, a low chant, and the lur at the end of every phrase. Nobody knows what the chant is about. It is about Sven.</p>
+    </div>
+  </div>
+</header>
+
+<section id="plan">
+  <div class="wrap">
+    <div class="ribbon-wrap"><h2 class="ribbon">The Wilhelm Plan</h2></div>
+    <div class="panel">
+      <ul class="planks">
+        <li class="plank">
+          <div class="rune" aria-hidden="true">ᛒ</div>
+          <div><h3>A longship in every fjord</h3><p>Some fjords have two longships. Some have none. This is the kind of inequality that gets a village burned by Tuesday. We will <i>redistribute hulls</i>.</p></div>
+        </li>
+        <li class="plank">
+          <div class="rune" aria-hidden="true">ᛏ</div>
+          <div><h3>Raids limited to Tuesdays</h3><p>Families deserve predictability. Monks deserve a schedule. A Tuesday-only raid calendar lets everyone plan the week, including the monks.</p></div>
+        </li>
+        <li class="plank">
+          <div class="rune" aria-hidden="true">ᚹ</div>
+          <div><h3>Term limits for Earls: one winter</h3><p>If you need a second winter, you were bad at the first one. Wilhelm will serve his winter, hand back the cloak, and go home to his boat.</p></div>
+        </li>
+        <li class="plank">
+          <div class="rune" aria-hidden="true">ᛗ</div>
+          <div><h3>Mead tax relief</h3><p>The Mead Hall has run a surplus for nine years and spent it on a second, smaller Mead Hall. <i>Give it back.</i> Every horn, every household.</p></div>
+        </li>
+        <li class="plank">
+          <div class="rune" aria-hidden="true">ᚦ</div>
+          <div><h3>A firm, fair troll policy</h3><p>We will not negotiate with anything that lives under infrastructure. We will, however, inspect the bridges, which brings us to bridges.</p></div>
+        </li>
+        <li class="plank">
+          <div class="rune" aria-hidden="true">ᚱ</div>
+          <div><h3>Bridges</h3><p>See above.</p></div>
+        </li>
+        <li class="plank">
+          <div class="rune" aria-hidden="true">ᛟ</div>
+          <div><h3>Foreign policy: we will never bend the knee to Oslo</h3><p>We will nod politely. We will trade for their salt. We will not attend their brunches.</p></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="poll">
+  <div class="wrap">
+    <div class="ribbon-wrap"><h2 class="ribbon">The Numbers</h2></div>
+    <div class="panel">
+      <p style="margin:0 0 6px;font-family:var(--caps);letter-spacing:.12em;font-size:14px;color:#5a4a36">Mead Hall Internal Poll &middot; n = 41 &middot; Margin of error: one axe</p>
+      <div class="poll">
+        <div class="poll-row"><span class="name">Wilhelm</span><span class="pct">61%</span><div class="meter"><span style="width:61%"></span></div></div>
+        <div class="poll-row"><span class="name">Sven of the Low Marsh</span><span class="pct">34%</span><div class="meter gold"><span style="width:34%"></span></div></div>
+        <div class="poll-row"><span class="name">Undecided (still at sea)</span><span class="pct">5%</span><div class="meter grey"><span style="width:5%"></span></div></div>
+      </div>
+      <p class="fine">Sven's campaign disputes these figures and has released its own poll, carved into a rock, showing Sven at 400%.</p>
+    </div>
+  </div>
+</section>
+
+<section id="endorsed">
+  <div class="wrap">
+    <div class="ribbon-wrap"><h2 class="ribbon">Endorsements</h2></div>
+    <div class="panel">
+      <div class="quotes">
+        <div class="quote"><p>&ldquo;Caw.&rdquo;</p><cite>&mdash; Three Ravens, Unaffiliated</cite></div>
+        <div class="quote"><p>&ldquo;He paid in full. I have no notes.&rdquo;</p><cite>&mdash; The Man Who Sold Him the Cloak</cite></div>
+        <div class="quote"><p>&ldquo;I am mostly here for the chain. But yes, Wilhelm.&rdquo;</p><cite>&mdash; Thor&rsquo;s Hammer Pendant</cite></div>
+        <div class="quote"><p>&ldquo;He is the only candidate who has never tried to row me the wrong way.&rdquo;</p><cite>&mdash; A Longship, speaking anonymously</cite></div>
+        <div class="quote"><p>&ldquo;Finally, someone with a plan for bridges.&rdquo;</p><cite>&mdash; A Troll, speaking from under one</cite></div>
+        <div class="quote"><p>&ldquo;We did not endorse anyone. Please stop putting us on posters.&rdquo;</p><cite>&mdash; Oslo</cite></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pledge">
+  <div class="wrap">
+    <div class="ribbon-wrap"><h2 class="ribbon">Pledge Your Axe</h2></div>
+    <div class="panel">
+      <div class="pledge-grid">
+        <div>
+          <form id="pledgeForm" novalidate>
+            <label for="pname">Your name, as it will be sung<input type="text" id="pname" name="name" placeholder="Ragnar of the Parking Lot" autocomplete="name"></label>
+            <label for="pemail">Where the raven should land<input type="email" id="pemail" name="email" placeholder="you@longhouse.net" autocomplete="email"></label>
+            <label for="pweapon">What you bring to the muster
+              <select id="pweapon" name="weapon">
+                <option>An axe</option>
+                <option>Two axes</option>
+                <option>A boat (please specify fjord)</option>
+                <option>Moral support</option>
+                <option>A grievance against Sven</option>
+              </select>
+            </label>
+            <div class="cta-row">
+              <button class="btn" type="submit" id="pledgeBtn">Pledge</button>
+            </div>
+            <p class="fine" id="pledgeNote" style="margin-top:4px">The raven is decorative. For anything real, reach Wilhelm at <a href="https://iamwilhelm.com" style="color:var(--crimson)">iamwilhelm.com</a>.</p>
+          </form>
+          <div class="thanks" id="pledgeThanks" hidden>
+            <strong>Axe pledged.</strong>
+            <span id="thanksLine">A raven has been dispatched. Allow four to six winters.</span>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div class="counter" id="axeCount">1,247</div>
+          <div class="counter-label">Axes pledged</div>
+          <p style="font-size:60px;margin:18px 0 0;line-height:1"><span class="raven" aria-hidden="true">🐦‍⬛</span></p>
+          <p class="fine" style="text-align:center">One raven per household. Oslo need not apply.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fund">
+  <div class="wrap">
+    <div class="ribbon-wrap"><h2 class="ribbon">Fund the Longship</h2></div>
+    <div class="panel" style="text-align:center">
+      <p style="max-width:52ch;margin:0 auto 18px;font-size:20px">Every fjord needs a longship. Every longship needs oars. Every oar is, frankly, a conversation we need to have with the lumber guild.</p>
+      <a class="btn" href="https://iamwilhelm.com" target="_blank" rel="noopener">Visit the Treasury (iamwilhelm.com)</a>
+      <p class="fine" style="text-align:center">Contributions are not tax deductible, because there is no tax. That is the whole platform.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="rune-line" aria-hidden="true">ᚹᛁᛚᚺᛖᛚᛗ · ᚠᛟᚱ · ᛖᚨᚱᛚ</div>
+    <p>Paid for by the Mead Hall. Not authorized by any candidate, thane, or raven.</p>
+    <p>Wilhelm for Earl is a satirical campaign. No fjords were harmed. Sven of the Low Marsh is a fictional person and a real problem.</p>
+    <p><a href="https://iamwilhelm.com">iamwilhelm.com</a></p>
+  </div>
+</footer>
+
+<script is:inline>
+(function () {
+  var form = document.getElementById('pledgeForm');
+  var thanks = document.getElementById('pledgeThanks');
+  var count = document.getElementById('axeCount');
+  var line = document.getElementById('thanksLine');
+  var base = 1247;
+  var n = base;
+  try { var saved = localStorage.getItem('earl-axes'); if (saved) n = parseInt(saved, 10) || base; } catch (e) {}
+  count.textContent = n.toLocaleString();
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var name = (document.getElementById('pname').value || '').trim() || 'Unnamed Thane';
+    var weapon = document.getElementById('pweapon').value;
+    var add = weapon === 'Two axes' ? 2 : (weapon === 'Moral support' ? 0 : 1);
+    n += add;
+    count.textContent = n.toLocaleString();
+    try { localStorage.setItem('earl-axes', String(n)); } catch (e) {}
+    var msg;
+    if (weapon === 'Moral support') msg = name + ', your support has been noted and, respectfully, will not fell a tree.';
+    else if (weapon === 'A boat (please specify fjord)') msg = name + ', a boat is a serious pledge. A raven is on its way to inspect the hull.';
+    else if (weapon === 'A grievance against Sven') msg = name + ', your grievance has been added to the pile. The pile is now load-bearing.';
+    else msg = name + ', a raven has been dispatched. Allow four to six winters.';
+    line.textContent = msg;
+    form.hidden = true;
+    thanks.hidden = false;
+    if (document.body.classList.contains('party')) skal();
+  });
+
+  /* ================= THE MEAD HALL BAND v2 (7/8, slow, Nordic-folk register, all synthesized) ================= */
+  var AC = window.AudioContext || window.webkitAudioContext;
+  var ctx = null, master = null, dry = null, wet = null, noiseBuf = null, timer = null, nextTime = 0, step = 0, playing = false;
+  var EIGHTH = 0.36;             /* seconds per eighth; one 7/8 bar ≈ 2.5s */
+  var BAR = 7;                   /* felt as 2+2+3 */
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function midi(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+  function ensureCtx() {
+    if (ctx) return ctx;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = 0.5;
+    var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 3; comp.release.value = 0.4;
+    master.connect(comp); comp.connect(ctx.destination);
+    /* noise */
+    var len = ctx.sampleRate * 2; noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+    var d = noiseBuf.getChannelData(0); for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    /* hall reverb: 3.2s decaying noise impulse, darkened */
+    var rl = Math.floor(ctx.sampleRate * 5.8), ir = ctx.createBuffer(2, rl, ctx.sampleRate);
+    for (var c = 0; c < 2; c++) { var ch = ir.getChannelData(c), last = 0;
+      for (var j = 0; j < rl; j++) { var e = Math.pow(1 - j / rl, 2.2); last = last * 0.72 + (Math.random() * 2 - 1) * 0.28; ch[j] = last * e; } }
+    var conv = ctx.createConvolver(); conv.buffer = ir;
+    wet = ctx.createGain(); wet.gain.value = 0.75; dry = ctx.createGain(); dry.gain.value = 1;
+    var wlp = ctx.createBiquadFilter(); wlp.type = 'lowpass'; wlp.frequency.value = 2100;
+    wet.connect(conv); conv.connect(wlp); wlp.connect(master); dry.connect(master);
+    return ctx;
+  }
+  function out(node, wetAmt) { var g = ctx.createGain(); g.gain.value = wetAmt; node.connect(dry); node.connect(g); g.connect(wet); }
+
+  /* frame drum: deep skin hit, long body, dry-ish */
+  function frame(t, vel) {
+    /* three drums, slightly apart, so the hit has mass instead of a point */
+    for (var k = 0; k < 3; k++) {
+      var tt = t + k * 0.012, o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(80 - k * 6, tt); o.frequency.exponentialRampToValueAtTime(32, tt + 0.3);
+      g.gain.setValueAtTime(vel * (k === 0 ? 1 : 0.55), tt); g.gain.exponentialRampToValueAtTime(0.001, tt + 1.4);
+      o.connect(g); out(g, 0.5); o.start(tt); o.stop(tt + 1.45);
+    }
+    var n = ctx.createBufferSource(); n.buffer = noiseBuf;
+    var f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 500;
+    var ng = ctx.createGain(); ng.gain.setValueAtTime(vel * 0.35, t); ng.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+    n.connect(f); f.connect(ng); out(ng, 0.5); n.start(t); n.stop(t + 0.1);
+  }
+  /* hand tap on the rim: quiet, breathy */
+  function tap(t, vel) {
+    var n = ctx.createBufferSource(); n.buffer = noiseBuf;
+    var f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1800; f.Q.value = 1.2;
+    var g = ctx.createGain(); g.gain.setValueAtTime(vel, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+    n.connect(f); f.connect(g); out(g, 0.6); n.start(t); n.stop(t + 0.08);
+  }
+  /* breath percussion: a low "huh" on the big downbeat */
+  function breath(t) {
+    var n = ctx.createBufferSource(); n.buffer = noiseBuf;
+    var f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.setValueAtTime(260, t); f.frequency.exponentialRampToValueAtTime(140, t + 0.25); f.Q.value = 3;
+    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.55, t + 0.03); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    n.connect(f); f.connect(g); out(g, 0.7); n.start(t); n.stop(t + 0.32);
+  }
+  /* lyre pluck: short triangle/sine with a bright attack, lots of hall */
+  function lyre(t, m, vel) {
+    var f = midi(m);
+    var o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+    o.type = 'triangle'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 2.003;
+    lp.type = 'lowpass'; lp.frequency.setValueAtTime(3200, t); lp.frequency.exponentialRampToValueAtTime(700, t + 0.6);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vel, t + 0.006); g.gain.exponentialRampToValueAtTime(0.001, t + 1.4);
+    var g2 = ctx.createGain(); g2.gain.value = 0.25;
+    o.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g); out(g, 0.8);
+    o.start(t); o2.start(t); o.stop(t + 1.5); o2.stop(t + 1.5);
+  }
+  /* chant: a low voice, two formants, slow swell, held across bars */
+  function chant(t, m, dur, vowel) {
+    var f = midi(m);
+    var o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f;
+    var ob = ctx.createOscillator(); ob.type = 'sawtooth'; ob.frequency.value = f * 1.0045;
+    var vib = ctx.createOscillator(), vg = ctx.createGain(); vib.frequency.value = 4.2; vg.gain.value = f * 0.004; vib.connect(vg); vg.connect(o.frequency); vg.connect(ob.frequency);
+    var F = vowel === 'u' ? [330, 760] : vowel === 'o' ? [500, 900] : [640, 1150];
+    var f1 = ctx.createBiquadFilter(), f2 = ctx.createBiquadFilter(); f1.type = 'bandpass'; f2.type = 'bandpass';
+    f1.frequency.value = F[0]; f1.Q.value = 7; f2.frequency.value = F[1]; f2.Q.value = 9;
+    var g1 = ctx.createGain(), g2 = ctx.createGain(); g1.gain.value = 1; g2.gain.value = 0.45;
+    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.6, t + 1.3); g.gain.setValueAtTime(0.6, t + dur - 1.0); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(f1); o.connect(f2); ob.connect(f1); ob.connect(f2); f1.connect(g1); f2.connect(g2); g1.connect(g); g2.connect(g); out(g, 0.95);
+    o.start(t); ob.start(t); vib.start(t); o.stop(t + dur + 0.05); ob.stop(t + dur + 0.05); vib.stop(t + dur + 0.05);
+  }
+  /* bone flute: a sine with breath noise, used sparingly */
+  function flute(t, m, dur) {
+    var f = midi(m);
+    var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(f * 0.985, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.12);
+    var vib = ctx.createOscillator(), vg = ctx.createGain(); vib.frequency.value = 5; vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(f * 0.01, t + dur * 0.6); vib.connect(vg); vg.connect(o.frequency);
+    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.14, t + 0.25); g.gain.setValueAtTime(0.14, t + dur - 0.2); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    var n = ctx.createBufferSource(); n.buffer = noiseBuf; var bf = ctx.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = f * 2; bf.Q.value = 12;
+    var ng = ctx.createGain(); ng.gain.value = 0.05; n.connect(bf); bf.connect(ng); ng.connect(g);
+    o.connect(g); out(g, 0.9); o.start(t); vib.start(t); n.start(t); o.stop(t + dur + 0.05); vib.stop(t + dur + 0.05); n.stop(t + dur + 0.05);
+  }
+  /* bronze lur: long solemn swell, two horns a fifth apart */
+  function lur(t, m, dur) {
+    [[m, 1], [m + 7, 0.6]].forEach(function (v) {
+      var f = midi(v[0]);
+      var o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+      o.type = 'sine'; o2.type = 'sawtooth'; o.frequency.value = f; o2.frequency.value = f * 1.002;
+      var sg = ctx.createGain(); sg.gain.value = 0.18; o2.connect(sg);
+      lp.type = 'lowpass'; lp.frequency.setValueAtTime(300, t); lp.frequency.linearRampToValueAtTime(1100, t + dur * 0.6); lp.frequency.linearRampToValueAtTime(400, t + dur);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5 * v[1], t + 1.4); g.gain.setValueAtTime(0.5 * v[1], t + dur - 1.2); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(lp); sg.connect(lp); lp.connect(g); out(g, 0.95);
+      o.start(t); o2.start(t); o.stop(t + dur + 0.05); o2.stop(t + dur + 0.05);
+    });
+  }
+  /* bowed drone (taglharpa): two detuned saws + fifth, bow noise, slow filter breathing */
+  var droneNodes = null;
+  function droneOn() {
+    if (droneNodes) return;
+    var g = ctx.createGain(); g.gain.value = 0.0001;
+    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 260; lp.Q.value = 1.5;
+    var lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.09; lg.gain.value = 110; lfo.connect(lg); lg.connect(lp.frequency);
+    var os = [[midi(38), 'sawtooth', 1], [midi(38) * 1.004, 'sawtooth', 1], [midi(45), 'triangle', 0.5], [midi(26), 'sine', 0.9]].map(function (s) {
+      var o = ctx.createOscillator(), og = ctx.createGain(); o.type = s[1]; o.frequency.value = s[0]; og.gain.value = s[2]; o.connect(og); og.connect(lp); o.start(); return o;
+    });
+    var n = ctx.createBufferSource(); n.buffer = noiseBuf; n.loop = true;
+    var bf = ctx.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = 900; bf.Q.value = 0.8;
+    var ng = ctx.createGain(); ng.gain.value = 0.06; n.connect(bf); bf.connect(ng); ng.connect(lp); n.start();
+    var sh = ctx.createOscillator(), shg = ctx.createGain(); sh.type = 'sine'; sh.frequency.value = midi(69); shg.gain.value = 0.025; sh.connect(shg); shg.connect(g); sh.start();
+    lp.connect(g); out(g, 0.85); lfo.start();
+    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 3);
+    droneNodes = { g: g, os: os.concat([sh]), lfo: lfo, n: n };
+  }
+  function droneOff() {
+    if (!droneNodes) return;
+    var d = droneNodes, t = ctx.currentTime; droneNodes = null;
+    d.g.gain.cancelScheduledValues(t); d.g.gain.setValueAtTime(d.g.gain.value, t); d.g.gain.exponentialRampToValueAtTime(0.0001, t + 2.5);
+    setTimeout(function () { d.os.forEach(function (o) { o.stop(); }); d.lfo.stop(); d.n.stop(); }, 2700);
+  }
+
+  /* material: D minor-ish, low and sparse */
+  var D2 = 38, F2 = 41, G2 = 43, A2 = 45, C3 = 48, D3 = 50, F3 = 53, G3 = 55, A3 = 57, C4 = 60, D4 = 62;
+  var CHANT = [ /* [bar offset within 8-bar cycle, midi, bars held, vowel] */
+    [0, D2, 2, 'u'], [2, D2, 2, 'o'], [4, F2, 2, 'u'], [6, C3, 1, 'o'], [7, D2, 1, 'u']
+  ];
+  var CHANT_HI = [ [0, A2, 2, 'o'], [2, G2, 2, 'u'], [4, A2, 2, 'o'], [6, G2, 1, 'u'], [7, A2, 1, 'o'] ];
+  var LYRE = [ /* [step within 14 (2 bars), midi] */
+    [0, D3], [4, A3], [7, F3], [11, D3], [13, C4]
+  ];
+  var LYRE_B = [ [0, D3], [4, G3], [7, A3], [9, F3], [11, D3] ];
+  var FLUTE = [ /* [bar within 16-bar cycle, step, midi, eighths] */
+    [8, 0, D4, 4], [8, 4, C4, 3], [9, 0, A3, 7], [10, 0, F3, 4], [10, 4, G3, 3], [11, 0, A3, 7],
+    [12, 0, D4, 4], [12, 4, F3, 3], [13, 0, G3, 7], [14, 0, A3, 4], [14, 4, C4, 3], [15, 0, D3, 7]
+  ];
+
+  function schedule() {
+    while (nextTime < ctx.currentTime + 0.15) {
+      var s = step % BAR, bar = Math.floor(step / BAR), t = nextTime;
+      var cyc8 = bar % 8, cyc16 = bar % 16;
+      /* frame drum: weight on 1, answer on 5, ghost on 3; sparse rim taps on the long group */
+      if (s === 0) frame(t, 1.0);
+      if (s === 4) frame(t, 0.6);
+      if (s === 2 && bar % 2 === 1) frame(t, 0.3);
+      if (s === 5 && bar >= 8) tap(t, 0.035);
+      if (s === 0 && bar % 8 === 0 && bar >= 8) breath(t);
+      /* lur: swells over the last two bars of every 8-bar phrase, from bar 6 */
+      if (s === 0 && cyc8 === 6 && bar >= 6) lur(t, D2, 2 * BAR * EIGHTH);
+      /* chant from bar 4, held across bars; higher voice joins at bar 16 */
+      if (s === 0 && bar >= 4) {
+        for (var i = 0; i < CHANT.length; i++) if (CHANT[i][0] === cyc8) chant(t, CHANT[i][1], CHANT[i][2] * BAR * EIGHTH, CHANT[i][3]);
+        if (bar >= 16) for (var k = 0; k < CHANT_HI.length; k++) if (CHANT_HI[k][0] === cyc8) chant(t + 0.08, CHANT_HI[k][1], CHANT_HI[k][2] * BAR * EIGHTH, CHANT_HI[k][3]);
+      }
+      /* lyre from bar 8, alternating two figures across 2-bar phrases */
+      if (bar >= 12 && cyc8 < 4) { var p14 = step % 14, fig = (Math.floor(bar / 2) % 2 === 0) ? LYRE : LYRE_B;
+        for (var j = 0; j < fig.length; j++) if (fig[j][0] === p14) lyre(t, fig[j][1], 0.28); }
+      /* flute: bars 8–15 of every 16, then rests */
+      if (bar >= 32) for (var m = 0; m < FLUTE.length; m++) if (FLUTE[m][0] === cyc16 && FLUTE[m][1] === s) flute(t, FLUTE[m][2], FLUTE[m][3] * EIGHTH * 0.95);
+      if (s === 0 || s === 4) scheduleBeat(t);
+      nextTime += EIGHTH; step++;
+    }
+  }
+  function scheduleBeat(t) {
+    var ms = Math.max(0, (t - ctx.currentTime) * 1000);
+    setTimeout(function () { thump(); }, ms);
+  }
+  function bandStart() {
+    ensureCtx(); if (ctx.state === 'suspended') ctx.resume();
+    if (playing) return; playing = true;
+    nextTime = ctx.currentTime + 0.05; step = 0;
+    droneOn(); timer = setInterval(schedule, 30);
+    bandBtn.setAttribute('aria-pressed', 'true'); bandBtn.textContent = '♪ Band: on';
+  }
+  function bandStop() {
+    if (!playing) return; playing = false;
+    clearInterval(timer); droneOff();
+    bandBtn.setAttribute('aria-pressed', 'false'); bandBtn.textContent = '♪ Band';
+  }
+
+  /* ================= PARTY MODE ================= */
+  var bandBtn = document.getElementById('bandBtn'), partyBtn = document.getElementById('partyBtn'), heroParty = document.getElementById('heroParty');
+  var cv = document.getElementById('confetti'), cx = cv.getContext('2d'), parts = [], raf = null, party = false;
+  var GLYPHS = ['🪓','🍺','🐦‍⬛','⚔️','🛡️','🍖'];
+  function resize() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; cx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); }
+  addEventListener('resize', resize);
+  function burst(n, y) {
+    for (var i = 0; i < n; i++) parts.push({
+      x: Math.random() * innerWidth, y: y == null ? -40 - Math.random() * 120 : y,
+      vx: (Math.random() - 0.5) * 3, vy: 1 + Math.random() * 3.5, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.25,
+      s: 18 + Math.random() * 22, g: GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
+    });
+    if (parts.length > 260) parts.splice(0, parts.length - 260);
+  }
+  function draw() {
+    cx.clearRect(0, 0, innerWidth, innerHeight);
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.r += p.vr;
+      if (p.y > innerHeight + 60) { parts.splice(i, 1); continue; }
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.font = p.s + 'px serif'; cx.textAlign = 'center'; cx.fillText(p.g, 0, p.s * 0.35); cx.restore();
+    }
+    if (party && !reduced && parts.length < 90) burst(2);
+    if (party || parts.length) raf = requestAnimationFrame(draw); else raf = null;
+  }
+  function thump() {
+    if (!party) return;
+    document.body.classList.add('thump');
+    setTimeout(function () { document.body.classList.remove('thump'); }, 110);
+  }
+  var skalEl = document.getElementById('skal');
+  function skal() {
+    skalEl.classList.remove('show'); void skalEl.offsetWidth; skalEl.classList.add('show');
+    if (!reduced) burst(60, innerHeight * 0.4);
+  }
+  function partyOn() {
+    if (party) return; party = true;
+    document.body.classList.add('party'); resize();
+    partyBtn.setAttribute('aria-pressed', 'true'); partyBtn.textContent = 'Party: on';
+    heroParty.textContent = 'End the Party';
+    bandStart(); skal(); if (!raf) draw();
+  }
+  function partyOff() {
+    if (!party) return; party = false;
+    document.body.classList.remove('party', 'thump');
+    partyBtn.setAttribute('aria-pressed', 'false'); partyBtn.textContent = 'Party';
+    heroParty.textContent = 'Start the Party';
+  }
+  bandBtn.addEventListener('click', function () { playing ? bandStop() : bandStart(); });
+  partyBtn.addEventListener('click', function () { party ? partyOff() : partyOn(); });
+  heroParty.addEventListener('click', function () { party ? partyOff() : partyOn(); });
+  /* easter egg: tap the counter for a SKÅL */
+  count.addEventListener('click', function () { if (party) skal(); });
+  count.style.cursor = 'pointer';
+})();
+</script>
+  </body>
+</html>
+
+<style is:global>
+  /* Layout: a tall campaign broadsheet — night-fjord ground, parchment panels pinned on it, one crimson ribbon per section. Single committed look (poster world), no light theme. */
+  :root {
+    --fjord: #10161d;        /* night water */
+    --fjord-2: #1a2430;      /* pine shadow */
+    --parchment: #e8d9b5;    /* aged paper */
+    --parchment-2: #d9c494;  /* paper edge */
+    --ink: #2a1f14;          /* walnut ink */
+    --crimson: #8a1d1d;      /* cloak velvet */
+    --gold: #c9a24a;         /* weathered gold */
+    --gold-2: #f1d78a;       /* gold highlight */
+    --fog: #b7c2cc;          /* mist text on fjord */
+    --display: 'Metamorphous', 'Georgia', serif;
+    --body: 'Alegreya', 'Georgia', 'Times New Roman', serif;
+    --caps: 'Alegreya SC', 'Alegreya', 'Georgia', serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--fjord);
+    color: var(--fog);
+    font-family: var(--body);
+    font-size: 18px;
+    line-height: 1.55;
+    background-image:
+      radial-gradient(ellipse at 50% -10%, rgba(201,162,74,.18), transparent 55%),
+      linear-gradient(180deg, var(--fjord-2) 0%, var(--fjord) 40%, #0b0f14 100%);
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .raven, .ember { animation: none !important; } }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0;
+  }
+
+  /* ---------- top bar ---------- */
+  .bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+    background: rgba(16,22,29,.86); backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(201,162,74,.35);
+  }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(16,22,29,.86); }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
+  .brand { font-family: var(--display); color: var(--gold-2); text-decoration: none; letter-spacing: .04em; font-size: 15px; white-space: nowrap; }
+  .bar nav { display: flex; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+  .bar nav a { color: var(--fog); text-decoration: none; font-family: var(--caps); letter-spacing: .08em; font-size: 14px; }
+  .bar nav a:hover, .bar nav a:focus-visible { color: var(--gold-2); outline: none; text-decoration: underline; text-underline-offset: 4px; }
+  @media (max-width: 520px) { .bar nav a.hide-sm { display: none; } }
+
+  /* ---------- hero ---------- */
+  .hero .wrap {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px; align-items: center; padding-block: 40px 56px;
+  }
+  @media (max-width: 760px) { .hero .wrap { grid-template-columns: 1fr; padding-block: 24px 40px; } }
+  .poster { position: relative; max-width: 420px; margin: 0 auto; width: 100%; }
+  .poster img {
+    display: block; width: 100%; height: auto; max-width: 100%;
+    border: 2px solid var(--gold); box-shadow: 0 30px 60px rgba(0,0,0,.6), 0 0 0 8px rgba(42,31,20,.6);
+    transform: rotate(-1.2deg);
+  }
+  .poster .tack { position: absolute; top: -10px; left: 50%; width: 18px; height: 18px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--gold-2), #6b4f14); box-shadow: 0 3px 6px rgba(0,0,0,.6); transform: translateX(-50%); }
+  .eyebrow { font-family: var(--caps); letter-spacing: .18em; color: var(--gold); font-size: 14px; margin: 0 0 10px; }
+  h1 {
+    font-family: var(--display); font-weight: 400; color: var(--gold-2);
+    font-size: clamp(38px, 7vw, 64px); line-height: .98; margin: 0 0 18px; text-wrap: balance;
+    text-shadow: 0 2px 0 #5a3d0b, 0 6px 18px rgba(0,0,0,.6);
+  }
+  .lede { font-size: 20px; max-width: 34ch; margin: 0 0 24px; color: #d5dde4; }
+  .lede em { color: var(--gold-2); font-style: italic; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; font-family: var(--caps); letter-spacing: .12em; font-weight: 700; font-size: 16px;
+    padding: 12px 20px; text-decoration: none; cursor: pointer; border: 2px solid var(--gold);
+    color: var(--ink); background: linear-gradient(180deg, var(--gold-2), var(--gold)); border-radius: 3px;
+    box-shadow: 0 4px 0 #5a3d0b, 0 8px 18px rgba(0,0,0,.5); transition: transform .08s;
+  }
+  .btn:hover, .btn:focus-visible { transform: translateY(-1px); outline: none; box-shadow: 0 5px 0 #5a3d0b, 0 10px 20px rgba(0,0,0,.5); }
+  .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #5a3d0b; }
+  .btn.ghost { background: transparent; color: var(--gold-2); box-shadow: none; }
+  .btn.ghost:hover { background: rgba(201,162,74,.12); }
+
+  /* ---------- ribbons & sections ---------- */
+  section { padding-block: 48px; }
+  .ribbon {
+    display: inline-block; position: relative; font-family: var(--display); color: var(--gold-2);
+    background: var(--crimson); padding: 10px 28px; font-size: clamp(20px, 3.2vw, 28px); letter-spacing: .04em;
+    box-shadow: 0 6px 14px rgba(0,0,0,.5); margin: 0 0 26px;
+  }
+  .ribbon::before, .ribbon::after {
+    content: ""; position: absolute; top: 6px; width: 0; height: 0; border: 22px solid #5e1313; z-index: -1;
+  }
+  .ribbon::before { left: -22px; border-left-color: transparent; }
+  .ribbon::after { right: -22px; border-right-color: transparent; }
+  .ribbon-wrap { text-align: center; }
+
+  .panel {
+    background: var(--parchment); color: var(--ink);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.35), transparent 45%),
+      radial-gradient(ellipse at 90% 90%, rgba(120,80,20,.22), transparent 50%),
+      repeating-linear-gradient(0deg, rgba(90,61,11,.04) 0 2px, transparent 2px 5px);
+    border: 1px solid var(--parchment-2);
+    outline: 3px double rgba(201,162,74,.6); outline-offset: 6px;
+    padding: clamp(20px, 4vw, 40px);
+    box-shadow: 0 24px 50px rgba(0,0,0,.55);
+  }
+
+  /* planks */
+  .planks { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .plank { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 16px; padding-block: 18px; border-bottom: 1px dashed rgba(42,31,20,.35); }
+  .plank:last-child { border-bottom: 0; }
+  .plank .rune { font-family: var(--display); color: var(--crimson); font-size: 30px; line-height: 1; text-align: center; padding-top: 2px; }
+  .plank h3 { font-family: var(--display); font-weight: 400; font-size: 21px; margin: 0 0 4px; color: var(--ink); text-wrap: balance; }
+  .plank p { margin: 0; max-width: 60ch; }
+  .plank p i { color: var(--crimson); }
+
+  /* poll */
+  .poll { display: grid; gap: 14px; margin-top: 8px; }
+  .poll-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: baseline; }
+  .poll-row .name { font-family: var(--caps); letter-spacing: .06em; font-size: 17px; }
+  .poll-row .pct { font-family: var(--display); font-variant-numeric: tabular-nums; color: var(--crimson); font-size: 22px; }
+  .meter { grid-column: 1 / -1; height: 14px; background: rgba(42,31,20,.12); border: 1px solid rgba(42,31,20,.35); overflow: hidden; }
+  .meter > span { display: block; height: 100%; background: linear-gradient(90deg, var(--crimson), #b3302a); }
+  .meter.gold > span { background: linear-gradient(90deg, #7a6224, var(--gold)); }
+  .meter.grey > span { background: #8a8174; }
+  .fine { font-size: 14px; color: #5a4a36; margin: 14px 0 0; font-style: italic; }
+
+  /* endorsements */
+  .quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+  .quote { border-left: 3px solid var(--crimson); padding: 4px 0 4px 16px; min-width: 0; }
+  .quote p { margin: 0 0 8px; font-size: 19px; font-style: italic; }
+  .quote cite { font-style: normal; font-family: var(--caps); letter-spacing: .06em; font-size: 15px; color: #5a4a36; }
+
+  /* pledge form */
+  .pledge-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  @media (max-width: 700px) { .pledge-grid { grid-template-columns: 1fr; } }
+  form { display: grid; gap: 14px; }
+  label { display: grid; gap: 6px; font-family: var(--caps); letter-spacing: .08em; font-size: 15px; }
+  input[type=text], input[type=email], select {
+    font-family: var(--body); font-size: 17px; padding: 10px 12px; border: 1px solid rgba(42,31,20,.5);
+    background: rgba(255,250,235,.7); color: var(--ink); border-radius: 2px; width: 100%;
+  }
+  input:focus-visible, select:focus-visible { outline: 2px solid var(--crimson); outline-offset: 1px; }
+  .counter { font-family: var(--display); font-size: clamp(40px, 8vw, 64px); color: var(--crimson); line-height: 1; font-variant-numeric: tabular-nums; }
+  .counter-label { font-family: var(--caps); letter-spacing: .14em; font-size: 14px; color: #5a4a36; }
+  .thanks { display: grid; gap: 8px; padding: 18px; border: 1px solid var(--crimson); background: rgba(138,29,29,.08); }
+  .thanks strong { font-family: var(--display); font-weight: 400; color: var(--crimson); font-size: 22px; }
+
+  /* raven */
+  .raven { display: inline-block; animation: tilt 6s ease-in-out infinite; transform-origin: 50% 90%; }
+  @keyframes tilt { 0%, 80%, 100% { transform: rotate(0); } 85% { transform: rotate(-8deg); } 92% { transform: rotate(6deg); } }
+
+  /* ---------- band & party ---------- */
+  .ctl { display: flex; gap: 8px; align-items: center; }
+  .pill {
+    font-family: var(--caps); letter-spacing: .1em; font-size: 13px; font-weight: 700; cursor: pointer;
+    border: 1px solid var(--gold); color: var(--gold-2); background: transparent; padding: 6px 10px; border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pill:hover, .pill:focus-visible { background: rgba(201,162,74,.15); outline: none; }
+  .pill[aria-pressed="true"] { background: var(--gold); color: var(--ink); }
+  .pill.party[aria-pressed="true"] { background: var(--crimson); color: var(--gold-2); border-color: var(--crimson); }
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 15; display: none; }
+  body.party #confetti { display: block; }
+  #torch { position: fixed; inset: 0; pointer-events: none; z-index: 14; opacity: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(201,162,74,.55), rgba(138,29,29,.25) 45%, transparent 70%); transition: opacity .12s; }
+  body.party.thump #torch { opacity: 1; transition: none; }
+  body.party .poster img { transition: transform .12s; }
+  body.party.thump .poster img { transform: rotate(1.5deg) scale(1.03); }
+  body.party .ribbon { animation: wobble 2.52s ease-in-out infinite; }
+  @keyframes wobble { 0%,100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
+  body.party .raven { animation: hop .36s ease-in-out infinite alternate; }
+  @keyframes hop { from { transform: translateY(0) rotate(-6deg); } to { transform: translateY(-14px) rotate(6deg); } }
+  #skal { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%) scale(.6); z-index: 16; pointer-events: none;
+    font-family: var(--display); color: var(--gold-2); font-size: clamp(64px, 18vw, 180px); text-shadow: 0 4px 0 #5a3d0b, 0 10px 30px rgba(0,0,0,.8);
+    opacity: 0; }
+  #skal.show { animation: skal 1.4s ease-out forwards; }
+  @keyframes skal { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.6) rotate(-6deg); } 15% { opacity: 1; transform: translate(-50%,-50%) scale(1.1) rotate(2deg); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%,-60%) scale(1.2); } }
+  .band-note { font-size: 13px; color: #7f8b96; margin: 6px 0 0; }
+  @media (prefers-reduced-motion: reduce) {
+    body.party .ribbon, body.party .raven, #skal.show { animation: none !important; }
+    body.party.thump .poster img { transform: none; }
+  }
+
+  /* footer */
+  footer { padding-block: 40px 56px; text-align: center; color: #7f8b96; font-size: 14px; }
+  footer p { margin: 6px 0; }
+  footer a { color: var(--gold); }
+  .rune-line { font-family: var(--display); letter-spacing: .3em; color: rgba(201,162,74,.5); font-size: 13px; margin-bottom: 12px; }
+</style>
