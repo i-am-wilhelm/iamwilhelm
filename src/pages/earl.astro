@@ -13,10 +13,8 @@
  * own display rule, so the "Axe pledged" box stays hidden until a pledge
  * and the form goes away after one.
  *
- * TODO(owner): the artifact pointed at /earl/poster.jpg (Wilhelm in a crimson
- * cloak, raven on the shoulder, longships at dawn). That file was not in the
- * handoff, so a typographic placard ships at public/earl/poster.svg. Drop the
- * real poster in at public/earl/poster.jpg and point the <img> below at it.
+ * The poster (public/earl/poster.jpg) is the owner's own, resized to 1000px
+ * wide for the hero, which shows it at 420px at most.
  */
 import { SITE_NAME, SITE_URL } from '../config/site';
 
@@ -83,7 +81,7 @@ const fullTitle = `${title} · ${SITE_NAME}`;
   <div class="wrap">
     <div class="poster">
       <span class="tack" aria-hidden="true"></span>
-      <img src="/earl/poster.svg" alt="Campaign placard: Wilhelm for Earl. A longship in every fjord. A raven over the fjord at dawn. iamwilhelm.com">
+      <img src="/earl/poster.jpg" width="1000" height="1491" alt="Campaign poster: Wilhelm in a crimson cloak with ermine collar, a raven on his shoulder, longships in a fjord at dawn. Headline reads Wilhelm for Earl. A longship in every fjord. iamwilhelm.com">
     </div>
     <div>
       <p class="eyebrow">Candidate for Earl &middot; The Western Fjords</p>
