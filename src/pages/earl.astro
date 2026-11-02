@@ -15,14 +15,24 @@
  *
  * The poster (public/earl/poster.jpg) is the owner's own, resized to 1000px
  * wide for the hero, which shows it at 420px at most.
+ *
+ * The page keeps its own crimson top bar rather than the museum nav; the way
+ * back is the exit link at the left of the bar and a line in the footer.
+ *
+ * The share card (public/earl/og.jpg, 1200x630) is rendered from the poster,
+ * the headline, and the Mead Hall poll, with Sven's objection stamped on it.
  */
 import { SITE_NAME, SITE_URL } from '../config/site';
 
 const title = 'Wilhelm for Earl';
+/* The link preview, in the campaign's own voice. */
+const shareTitle = 'Wilhelm for Earl. He has a boat.';
 const description =
-  'A longship in every fjord. Raids limited to Tuesdays. One-winter term limits. The satirical campaign broadsheet of Wilhelm, candidate for Earl of the Western Fjords.';
+  'A longship in every fjord. Raids limited to Tuesdays. Term limits: one winter. Endorsed by three ravens (caw), a troll speaking from under a bridge, and Oslo, who did not endorse anyone and would like to be removed from this poster. Paid for by the Mead Hall.';
+const imageAlt =
+  'Campaign poster of Wilhelm in a crimson cloak with a raven on his shoulder, beside the headline He has a boat, and a Mead Hall poll showing Wilhelm at 61 percent, stamped Sven disputes these figures.';
 const canonical = new URL('/earl/', SITE_URL).href;
-const image = new URL('/og.png', SITE_URL).href;
+const image = new URL('/earl/og.jpg', SITE_URL).href;
 const fullTitle = `${title} · ${SITE_NAME}`;
 ---
 
@@ -46,21 +56,26 @@ const fullTitle = `${title} · ${SITE_NAME}`;
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={shareTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={image} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={shareTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content={imageAlt} />
   </head>
   <body>
 <div class="bar">
   <div class="wrap">
-    <a class="brand" href="#top">WILHELM FOR EARL</a>
+    <span class="ctl">
+      <a class="exit" href="/" title="Back to the museum"><span aria-hidden="true">&larr;</span> <span class="exit-word">The Museum</span></a>
+      <a class="brand" href="#top">WILHELM FOR EARL</a>
+    </span>
     <nav>
       <a href="#plan" class="hide-sm">The Plan</a>
       <a href="#poll" class="hide-sm">The Numbers</a>
@@ -221,7 +236,7 @@ const fullTitle = `${title} · ${SITE_NAME}`;
     <div class="rune-line" aria-hidden="true">ᚹᛁᛚᚺᛖᛚᛗ · ᚠᛟᚱ · ᛖᚨᚱᛚ</div>
     <p>Paid for by the Mead Hall. Not authorized by any candidate, thane, or raven.</p>
     <p>Wilhelm for Earl is a satirical campaign. No fjords were harmed. Sven of the Low Marsh is a fictional person and a real problem.</p>
-    <p><a href="https://iamwilhelm.com">iamwilhelm.com</a></p>
+    <p><a href="/">Return to the museum</a> &middot; <a href="https://iamwilhelm.com">iamwilhelm.com</a></p>
   </div>
 </footer>
 
@@ -555,7 +570,9 @@ const fullTitle = `${title} · ${SITE_NAME}`;
   .bar nav { display: flex; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
   .bar nav a { color: var(--fog); text-decoration: none; font-family: var(--caps); letter-spacing: .08em; font-size: 14px; }
   .bar nav a:hover, .bar nav a:focus-visible { color: var(--gold-2); outline: none; text-decoration: underline; text-underline-offset: 4px; }
-  @media (max-width: 520px) { .bar nav a.hide-sm { display: none; } }
+  .exit { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--fog); text-decoration: none; font-family: var(--caps); letter-spacing: .08em; font-size: 14px; white-space: nowrap; padding-right: 12px; border-right: 1px solid rgba(201,162,74,.35); }
+  .exit:hover, .exit:focus-visible { color: var(--gold-2); outline: none; text-decoration: underline; text-underline-offset: 4px; }
+  @media (max-width: 520px) { .bar nav a.hide-sm, .exit-word { display: none; } .exit { padding-right: 10px; min-width: 28px; justify-content: center; } }
 
   /* ---------- hero ---------- */
   .hero .wrap {
