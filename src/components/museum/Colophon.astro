@@ -10,11 +10,11 @@ import { CONTACT_EMAIL, SCHEDULER_URL, SCHEDULER_IS_PLACEHOLDER } from '../../co
 
 <section id="contact" class="colophon" aria-labelledby="contact-title">
   <div class="colophon__inner wrap">
-    <div class="colophon__mark" aria-hidden="true">
-      <span class="colophon__rule"></span>
+    <button type="button" class="colophon__mark" data-egg="balance" aria-label="The balance">
+      <span class="colophon__rule colophon__rule--l" aria-hidden="true"></span>
       <Glyph sign="libra" size={26} />
-      <span class="colophon__rule"></span>
-    </div>
+      <span class="colophon__rule colophon__rule--r" aria-hidden="true"></span>
+    </button>
     <p class="colophon__label smallcaps" data-reveal>Colophon</p>
     <h2 class="colophon__title display" id="contact-title" data-reveal>Thank you for walking through.</h2>
     <p class="lede colophon__lede" data-reveal>
@@ -35,6 +35,10 @@ import { CONTACT_EMAIL, SCHEDULER_URL, SCHEDULER_IS_PLACEHOLDER } from '../../co
         </a>
         <p class="colophon__mail">
           Or write to <a class="text-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        </p>
+        <!-- Only at night: the museum's other face. -->
+        <p class="colophon__door">
+          <a class="text-link" href="/atelier/">The atelier is open after hours.</a>
         </p>
       </div>
       <div data-reveal>
@@ -60,13 +64,68 @@ import { CONTACT_EMAIL, SCHEDULER_URL, SCHEDULER_IS_PLACEHOLDER } from '../../co
     align-items: center;
     gap: 1rem;
     width: min(100%, 22rem);
+    padding: 0.5rem 0;
     color: var(--gilt-ink);
+    background: none;
+    border: 0;
+    cursor: pointer;
     margin-bottom: 1rem;
   }
   .colophon__rule {
     flex: 1;
     height: 1px;
     background: var(--gilt);
+    transition: transform calc(var(--beat) * 1.5) var(--ease-settle);
+  }
+  .colophon__rule--l {
+    transform-origin: right center;
+  }
+  .colophon__rule--r {
+    transform-origin: left center;
+  }
+  /* Weighed: the beam tips one way, then the other, and settles level. */
+  .colophon__mark.is-weighing .colophon__rule--l {
+    animation: tip-l calc(var(--beat) * 6) var(--ease-settle) both;
+  }
+  .colophon__mark.is-weighing .colophon__rule--r {
+    animation: tip-r calc(var(--beat) * 6) var(--ease-settle) both;
+  }
+  @keyframes tip-l {
+    0% {
+      transform: rotate(0);
+    }
+    22% {
+      transform: rotate(-7deg);
+    }
+    58% {
+      transform: rotate(4deg);
+    }
+    100% {
+      transform: rotate(0);
+    }
+  }
+  @keyframes tip-r {
+    0% {
+      transform: rotate(0);
+    }
+    22% {
+      transform: rotate(-7deg);
+    }
+    58% {
+      transform: rotate(4deg);
+    }
+    100% {
+      transform: rotate(0);
+    }
+  }
+  .colophon__door {
+    display: none;
+    margin-top: 0.4rem;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  :global(html.is-night) .colophon__door {
+    display: block;
   }
   .colophon__label {
     color: var(--gilt-ink);

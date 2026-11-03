@@ -25,7 +25,7 @@ const items = NAV.map((item) => {
 
 <header class="site-nav" data-nav>
   <nav class="site-nav__inner wrap" aria-label="Primary">
-    <a class="site-nav__brand" href={home ? '#top' : '/'}>
+    <a class="site-nav__brand" href={home ? '#top' : '/'} data-egg="janus">
       <span class="site-nav__mono" aria-hidden="true">MW</span>
       <span class="site-nav__name">Michael Wilhelm</span>
     </a>
@@ -77,6 +77,7 @@ const items = NAV.map((item) => {
     min-height: 44px;
   }
   .site-nav__mono {
+    position: relative;
     display: grid;
     place-items: center;
     width: 2rem;
@@ -88,6 +89,31 @@ const items = NAV.map((item) => {
     font-size: 0.82rem;
     letter-spacing: 0.06em;
     color: var(--gilt-ink);
+  }
+  /* Held: a gilt ring fills around the monogram over one bar, then the
+     museum turns to night (museum-eggs.ts). */
+  .site-nav__mono::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(var(--gilt) var(--fill, 0%), transparent 0);
+    -webkit-mask: radial-gradient(circle, transparent calc(50% - 2px), #000 calc(50% - 1px));
+    mask: radial-gradient(circle, transparent calc(50% - 2px), #000 calc(50% - 1px));
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .site-nav__brand.is-holding .site-nav__mono::after {
+    opacity: 1;
+    animation: hold-fill var(--hold, 2500ms) linear forwards;
+  }
+  @keyframes hold-fill {
+    from {
+      --fill: 0%;
+    }
+    to {
+      --fill: 100%;
+    }
   }
   .site-nav__name {
     font-family: var(--font-display);

@@ -7,6 +7,7 @@
  * still.
  */
 import { GLYPHS, SIGNS } from './zodiac';
+import { CHART } from '../../scripts/natal/chart.michael';
 
 const C = 400;
 const R_OUT = 392;
@@ -35,6 +36,31 @@ let spokes = '';
 for (let i = 0; i < 12; i++) {
   spokes += `M${pt(R_INNER, i * 30)}L${pt(R_INNER - 26, i * 30)}`;
 }
+
+/*
+ * The chart, engraved at hairline weight on the degree scale: nothing is
+ * labelled. Saturn sits partile on the MC and wears the crown; the Sun
+ * (with Mercury cazimi inside it) faces the full Moon; Venus keeps the
+ * 12th house. Clicking the crown draws the Sun–Moon beam for one bar
+ * (src/scripts/museum-eggs.ts).
+ */
+const R_BODY = R_SCALE - 8;
+const body = (lon: number) => {
+  const [x, y] = pt(R_BODY, lon).split(' ');
+  return { x, y };
+};
+const natal = {
+  saturn: body(CHART.bodies.saturn.lon),
+  sun: body(CHART.bodies.sun.lon),
+  moon: body(CHART.bodies.moon.lon),
+  venus: body(CHART.bodies.venus.lon),
+  asc: `M${pt(R_OUT, CHART.asc)}L${pt(R_SCALE - 16, CHART.asc)}`,
+  mc: `M${pt(R_OUT, CHART.mc)}L${pt(R_SCALE - 16, CHART.mc)}`,
+  crown:
+    `M${pt(R_SCALE + 18, CHART.mc - 2.2)}L${pt(R_SCALE + 26, CHART.mc - 1.4)}L${pt(R_SCALE + 20, CHART.mc)}` +
+    `L${pt(R_SCALE + 30, CHART.mc)}L${pt(R_SCALE + 20, CHART.mc)}L${pt(R_SCALE + 26, CHART.mc + 1.4)}L${pt(R_SCALE + 18, CHART.mc + 2.2)}`,
+  beam: `M${pt(R_BODY, CHART.bodies.sun.lon)}L${pt(R_BODY, CHART.bodies.moon.lon)}`,
+};
 
 const GLYPH_SIZE = 30;
 const glyphs = SIGNS.map((sign, i) => {
@@ -65,6 +91,26 @@ const glyphs = SIGNS.map((sign, i) => {
     <g stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
       {glyphs.map((g) => <path d={g.d} transform={g.transform} vector-effect="non-scaling-stroke" />)}
     </g>
+    <g class="natal" data-natal stroke-width="1" vector-effect="non-scaling-stroke">
+      <path d={natal.asc} vector-effect="non-scaling-stroke" opacity="0.55" />
+      <path d={natal.mc} vector-effect="non-scaling-stroke" opacity="0.55" />
+      <path class="natal__beam" d={natal.beam} vector-effect="non-scaling-stroke" pathLength="1" />
+      <circle class="natal__sun" cx={natal.sun.x} cy={natal.sun.y} r="4" />
+      <circle cx={natal.sun.x} cy={natal.sun.y} r="1.2" fill="currentColor" stroke="none" />
+      <circle class="natal__moon" cx={natal.moon.x} cy={natal.moon.y} r="4" />
+      <circle class="natal__venus" cx={natal.venus.x} cy={natal.venus.y} r="3" />
+      <g
+        class="natal__crown"
+        data-egg="crown"
+        role="button"
+        tabindex="0"
+        aria-label="Saturn, on the Midheaven"
+      >
+        <circle cx={natal.saturn.x} cy={natal.saturn.y} r="4.5" />
+        <path d={natal.crown} vector-effect="non-scaling-stroke" stroke-linejoin="miter" />
+        <circle class="natal__hit" cx={natal.saturn.x} cy={natal.saturn.y} r="26" stroke="none" fill="transparent" />
+      </g>
+    </g>
   </svg>
 </div>
 
@@ -85,6 +131,74 @@ const glyphs = SIGNS.map((sign, i) => {
     height: 100%;
     will-change: transform;
     transform: rotate(var(--ring-turn, 0deg));
+  }
+  /* The chart. Bodies ride the degree scale as the ring turns; the crown
+     is the one thing on the ring that answers the pointer. */
+  .natal {
+    color: var(--gilt-ink);
+    opacity: 0.6;
+  }
+  .natal__beam {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  .natal__crown {
+    pointer-events: auto;
+    cursor: pointer;
+    outline: none;
+    transition: color calc(var(--beat) * 0.8) var(--ease-settle);
+  }
+  .natal__crown:hover,
+  .natal__crown:focus-visible {
+    color: var(--gilt-bright);
+  }
+  .natal__crown:focus-visible circle:first-child {
+    stroke-width: 2;
+  }
+  /* The crown is pressed: the beam draws Sun to Moon over one bar, Venus
+     beats to her own time, the crown goes bright and settles. */
+  .ring.is-crowned .natal__beam {
+    opacity: 1;
+    animation: beam-draw calc(var(--beat) * 3.5) var(--ease-settle) both, beam-fade calc(var(--beat) * 2) ease calc(var(--beat) * 5) both;
+  }
+  .ring.is-crowned .natal__venus {
+    animation: venus-beat 575ms ease-in-out 9;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .ring.is-crowned .natal__crown {
+    color: var(--gilt-bright);
+  }
+  .ring.is-crowned .natal__sun,
+  .ring.is-crowned .natal__moon {
+    animation: lumen calc(var(--beat) * 2) ease-in-out 3;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes beam-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes beam-fade {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes venus-beat {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1.9);
+    }
+  }
+  @keyframes lumen {
+    50% {
+      transform: scale(1.5);
+    }
   }
   @media (max-width: 640px) {
     .ring {

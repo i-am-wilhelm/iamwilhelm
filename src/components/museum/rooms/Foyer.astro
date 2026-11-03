@@ -44,6 +44,12 @@ import ZodiacRing from '../ZodiacRing.astro';
     display: grid;
     justify-items: center;
     gap: clamp(1.25rem, 1rem + 1vw, 2rem);
+    /* The ring beneath keeps one pressable point (Saturn's crown); the
+       headline lets the pointer through to it, the rest does not. */
+    pointer-events: none;
+  }
+  .foyer__inner > :not(.foyer__title) {
+    pointer-events: auto;
   }
   .foyer__kicker {
     color: var(--gilt-ink);

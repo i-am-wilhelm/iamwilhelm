@@ -101,6 +101,77 @@
   --beat: 714ms;
 }
 
+/*
+ * Night. The museum's other face (held from the monogram in the nav, see
+ * src/scripts/museum-eggs.ts): the walls go to vault black, the ink to
+ * bone, and gilt stays gilt. Room hues are lifted so they still clear
+ * 4.5:1 on the dark wall. Frames and mats keep their own colours; they
+ * are objects, not walls.
+ */
+html.is-night {
+  --wall: #0f0d12;
+  --wall-deep: #14111a;
+  --wall-shade: #1a1621;
+  --ink: #ede5d5;
+  --ink-soft: #c6bba7;
+  --ink-faint: #a0957f;
+  --gilt: #b8924b;
+  --gilt-bright: #d9b76a;
+  --gilt-ink: #d2ad5f;
+  --rule: rgba(237, 229, 213, 0.16);
+  --focus: #d9b76a;
+  --room-foyer: var(--gilt-ink);
+  --room-i: #d59a7c;
+  --room-ii: #d98a8a;
+  --room-iii: #9ab4cc;
+  --room-iv: #c3a2cf;
+  --room-v: #9cc3ae;
+  color-scheme: dark;
+}
+html.is-night body {
+  background-image:
+    radial-gradient(120% 60% at 50% 0%, rgba(60, 50, 40, 0.5), transparent 70%),
+    radial-gradient(140% 100% at 50% 100%, rgba(120, 96, 60, 0.08), transparent 60%);
+}
+html.is-night body::after {
+  opacity: 0.28;
+}
+/* Placards and wall labels are lit cards by day; by night they are
+   panels a shade up from the wall. */
+html.is-night .placard,
+html.is-night .wall-label {
+  background: color-mix(in srgb, var(--wall) 55%, #2a2432);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 10px 24px -18px rgba(0, 0, 0, 0.8);
+}
+html.is-night .newsletter__form input {
+  background: color-mix(in srgb, var(--wall) 55%, #2a2432);
+  color: var(--ink);
+}
+html.is-night .wall-label[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--wall) 25%, #2f2838);
+}
+html.is-night .room--deep {
+  background: linear-gradient(180deg, transparent, rgba(26, 22, 33, 0.8) 12%, rgba(26, 22, 33, 0.8) 88%, transparent);
+}
+/* The turn itself takes two beats; a page that loads at night skips it. */
+html:not(.is-night-instant) body,
+html:not(.is-night-instant) .site-nav,
+html:not(.is-night-instant) .placard,
+html:not(.is-night-instant) .wall-label {
+  transition-property: background-color, color, border-color;
+  transition-duration: calc(var(--beat) * 2);
+  transition-timing-function: var(--ease-settle);
+}
+
+/* Lets the monogram's hold ring animate (Nav.astro). */
+@property --fill {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
 *,
 *::before,
 *::after {

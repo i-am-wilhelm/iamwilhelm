@@ -13,6 +13,7 @@
  * everything), and the ring holds still.
  */
 import { meter } from '../design/tokens';
+import { initEggs } from './museum-eggs';
 
 const BEAT_MS = 60000 / meter.bpm;
 const SIXTEENTH_MS = BEAT_MS / 4;
@@ -112,4 +113,5 @@ export function initMuseum() {
   initReveals(root);
   initRing(reduced);
   initNav(root);
+  initEggs();
 }
