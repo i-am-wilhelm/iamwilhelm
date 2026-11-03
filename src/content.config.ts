@@ -17,6 +17,14 @@ const writings = defineCollection({
     accent: z.string().default('writings'),
     draft: z.boolean().default(false),
     description: z.string().optional(),
+    /** Series label shown on the index card (e.g. "in the original"). */
+    series: z.string().optional(),
+    /**
+     * The piece has its own page at src/pages/writings/<id>.astro (a
+     * visualized essay on the Poem layout); the reading-room template skips
+     * it and the index links straight to that page.
+     */
+    standalone: z.boolean().default(false),
   }),
 });
 

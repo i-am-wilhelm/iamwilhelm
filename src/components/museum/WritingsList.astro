@@ -31,6 +31,7 @@ const fmt = (d: Date) =>
             <a href={`/writings/${post.id}/`}>{post.data.title}</a>
           </H>
           <p class="entry__date">
+            {post.data.series && <span class="entry__series">{post.data.series}</span>}
             <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
           </p>
           {post.data.description && <p class="entry__desc">{post.data.description}</p>}
@@ -82,6 +83,13 @@ const fmt = (d: Date) =>
     color: var(--ink-faint);
     font-variant-caps: all-small-caps;
     letter-spacing: 0.1em;
+  }
+  .entry__series {
+    color: var(--gilt-ink);
+  }
+  .entry__series::after {
+    content: ' · ';
+    color: var(--ink-faint);
   }
   .entry__desc {
     max-width: var(--measure);

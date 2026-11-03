@@ -39,7 +39,10 @@ No WebGL, no dithering, no audio on these pages.
   to hang a new piece on `/gallery` and in Room IV; `href` points at its page.
 - `src/pages/gallery/<slug>.astro` + `src/layouts/Poem.astro`: the visualized
   pieces themselves (The Keeper and the Flame, PHARMAKON, The Only Sighted
-  One), ported from the owner's Claude artifacts. Each is a night scene of its
+  One, Equal Volume), ported from the owner's Claude artifacts. The essays
+  "in the original" that also hang in the gallery live under
+  `src/pages/writings/<slug>.astro` (The Dual Thing) and are listed in the
+  writings index by a `standalone` entry in `src/content/writings`. Each is a night scene of its
   own: a fixed canvas behind lines that brighten as they arrive. The canvas
   paints once at load and animates from the reader's first scroll or touch.
 - `src/config/site.ts`: URLs, nav, and the owner placeholders (booking

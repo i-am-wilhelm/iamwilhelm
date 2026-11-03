@@ -1,7 +1,8 @@
 ---
 /**
  * A writing, hung in the museum's reading room. Static paths come from the
- * `writings` content collection; drafts stay unpublished. The post opens on
+ * `writings` content collection; drafts stay unpublished, and a piece marked
+ * `standalone` has its own page under src/pages/writings. The post opens on
  * a placard, then the long-form text set as wall text; poem movements
  * embedded in the markdown (section.poem-movement) read as verse. When the
  * piece also hangs in the Gallery (same id in the `gallery` collection), the
@@ -17,7 +18,7 @@ import Meander from '../../components/museum/Meander.astro';
 import { SITE_URL } from '../../config/site';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('writings', ({ data }) => !data.draft);
+  const posts = await getCollection('writings', ({ data }) => !data.draft && !data.standalone);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
