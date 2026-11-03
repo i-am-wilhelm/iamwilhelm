@@ -1,14 +1,14 @@
 /**
  * Hunt state machine. Persisted in localStorage under ONE namespaced,
- * versioned key. Pure state + persistence — no DOM; the engine (registry.ts)
+ * versioned key. Pure state + persistence, no DOM; the engine (registry.ts)
  * renders marks/toasts from the transition reports returned here.
  *
  * Phases:
- *   'unbegun'       — no eggs found yet
- *   'in-progress'   — at least one egg found, steps completing in order
- *   'awaiting-seal' — every configured step complete; terminal until the
+ *   'unbegun'       - no eggs found yet
+ *   'in-progress'   - at least one egg found, steps completing in order
+ *   'awaiting-seal' - every configured step complete; terminal until the
  *                     final mail-in step (hunt.config.ts finalStep) is wired
- *   'sealed'        — finalStep is configured and recordSeal() has been
+ *   'sealed'        - finalStep is configured and recordSeal() has been
  *                     called by the (later-built) mail-in wiring
  */
 import { finalStep, huntSteps, type HuntStep } from './hunt.config';
@@ -77,7 +77,7 @@ function recompute(state: HuntState): HuntState {
   const completed: string[] = [];
   for (const step of huntSteps) {
     if (step.requires.every((id) => found.has(id))) completed.push(step.id);
-    else break; // steps unlock in order — a gap halts the cascade
+    else break; // steps unlock in order, a gap halts the cascade
   }
   state.completedSteps = completed;
   if (completed.length === huntSteps.length) {
@@ -123,7 +123,7 @@ export function recordFind(eggId: string): FindReport {
 
 /**
  * Called by the future mail-in wiring once finalStep is configured and the
- * seal is verified. Without a configured finalStep this is a no-op — the
+ * seal is verified. Without a configured finalStep this is a no-op, the
  * hunt rests at 'awaiting-seal'.
  */
 export function recordSeal(): HuntState {

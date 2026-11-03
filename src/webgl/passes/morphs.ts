@@ -1,10 +1,10 @@
 /**
- * STRETCH-AND-RESOLVE MORPH PASS — into the scene target, above the
+ * STRETCH-AND-RESOLVE MORPH PASS: into the scene target, above the
  * constellation, below the smoke.
  *
  * A morph is two silhouettes and a motion path. Mid-progress, the source
  * silhouette is *smeared* along the path (multi-tap accumulation), so the
- * luminance field — and therefore the glyph field the dither hangs on it —
+ * luminance field, and therefore the glyph field the dither hangs on it,
  * stretches like taffy; approaching progress 1 the smear collapses and
  * the target silhouette resolves. Driven by iw:morph {name, progress}.
  *
@@ -49,7 +49,7 @@ ${COLOR_GLSL}
 ${SDF_GLSL}
 
 /* ------------------------------------------------------------------ */
-/* Morph 0 — 'trismegistus'                                            */
+/* Morph 0: 'trismegistus'                                            */
 /* ------------------------------------------------------------------ */
 
 /* TODO(owner art): replace with the drawn caduceus silhouette.
@@ -107,7 +107,7 @@ float morphTrismegistus(vec2 p, float s) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Morph 1 — 'cross-cube'                                              */
+/* Morph 1: 'cross-cube'                                              */
 /* ------------------------------------------------------------------ */
 
 /* TODO(owner art): replace with the drawn unfolded-cube cross.
@@ -138,7 +138,7 @@ float morphCrossCube(vec2 p, float s) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Morph 2 — 'atlas-columbia'                                          */
+/* Morph 2: 'atlas-columbia'                                          */
 /* ------------------------------------------------------------------ */
 
 /* TODO(owner art): replace with the drawn Atlas silhouette.
@@ -253,7 +253,7 @@ export class MorphPass {
   /** True when there is anything worth drawing this frame. */
   update(state: PipelineState, dt: number, aspect: number): boolean {
     // Fade in whenever a morph is being driven; fade out when it parks at
-    // 0 (never started) — a morph parked at 1 stays resolved on screen.
+    // 0 (never started), a morph parked at 1 stays resolved on screen.
     const driving = state.morphIndex >= 0 && state.morphProgress > 0.001;
     const target = driving ? 1 : 0;
     this.fade += (target - this.fade) * (1 - Math.exp(-6 * dt));

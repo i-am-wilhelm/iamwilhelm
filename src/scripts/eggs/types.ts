@@ -1,5 +1,5 @@
 /**
- * Shared types for the easter-egg engine. Pure declarations — no DOM work
+ * Shared types for the easter-egg engine. Pure declarations, no DOM work
  * here. The engine (registry.ts) interprets these; the configs
  * (eggs.config.ts, natal.config.ts, hunt.config.ts) instantiate them.
  */
@@ -23,7 +23,7 @@ export interface TriggerClick {
 export interface TriggerNClicks {
   kind: 'n-clicks';
   count: number;
-  /** Rolling window in ms — clicks older than this age out. */
+  /** Rolling window in ms, clicks older than this age out. */
   withinMs: number;
 }
 
@@ -53,7 +53,7 @@ export type Trigger =
   | TriggerSequence;
 
 // ---------------------------------------------------------------------------
-// Effects — every effect is an event emitted through src/scripts/events.ts.
+// Effects, every effect is an event emitted through src/scripts/events.ts.
 // ---------------------------------------------------------------------------
 
 /** Swap the dither glyph treatment; optionally revert to 'default' later. */
@@ -67,7 +67,7 @@ export interface EffectDither {
 /** Recolor / flash a section splash in the pipeline. */
 export interface EffectSplash {
   kind: 'splash';
-  /** Splash id — by convention the section id ('hero', 'monsoon', …). */
+  /** Splash id, by convention the section id ('hero', 'monsoon', …). */
   id: string;
   color?: string;
 }
@@ -80,7 +80,7 @@ export type EffectAction = (EffectDither | EffectSplash) & { at?: number };
 // ---------------------------------------------------------------------------
 
 export interface EggDef {
-  /** Stable id — persisted in the hunt store and emitted in 'iw:egg-found'. */
+  /** Stable id, persisted in the hunt store and emitted in 'iw:egg-found'. */
   id: string;
   scope: PageScope;
   /**

@@ -1,5 +1,5 @@
 /**
- * Design tokens & section registry — the shared contract between the shader
+ * Design tokens & section registry, the shared contract between the shader
  * core, scroll choreography, sections, blog, easter-egg engine, and audio.
  *
  * Symbology guardrails (audit every addition against these):
@@ -13,14 +13,14 @@
 
 /** Accent colors, one per section, contrasting the primary dither. */
 export const accents = {
-  hero: '#0d0d10',        // Black Swan — near-black, iridescent in shader
-  cluster: '#8fa8c8',     // Pleiades — faint star-silver blue
-  philosophy: '#b8923a',  // Columbia/Pallas — aegis gold
-  underworld: '#3d6b52',  // Orpheus — asphodel/laurel green over shade
-  monsoon: '#2e5f6e',     // PNW rain — storm teal
-  writings: '#6a3fa0',    // Pharmakon/Medea — fumigation purple (fixed by spec)
-  lineage: '#6a3fa0',     // Citations/Pan — the same fumigation purple
-  babalon: '#a01f1f',     // Babalon — red (fixed by spec)
+  hero: '#0d0d10',        // Black Swan, near-black, iridescent in shader
+  cluster: '#8fa8c8',     // Pleiades, faint star-silver blue
+  philosophy: '#b8923a',  // Columbia/Pallas, aegis gold
+  underworld: '#3d6b52',  // Orpheus, asphodel/laurel green over shade
+  monsoon: '#2e5f6e',     // PNW rain, storm teal
+  writings: '#6a3fa0',    // Pharmakon/Medea, fumigation purple (fixed by spec)
+  lineage: '#6a3fa0',     // Citations/Pan, the same fumigation purple
+  babalon: '#a01f1f',     // Babalon, red (fixed by spec)
 } as const;
 
 export type SectionId = keyof typeof accents;
@@ -31,7 +31,7 @@ export interface SectionSpec {
   title: string;
   /** Symbols drawn from the approved pool (see guardrails above). */
   symbols: string[];
-  /** Which side the fumigation vapor enters from — alternates per section. */
+  /** Which side the fumigation vapor enters from, alternates per section. */
   smokeSide: 'left' | 'right';
   /**
    * Drone pitch class for the orchestra pit: descending the page walks the
@@ -66,7 +66,7 @@ export const meter = {
   /** Base tempo for the score and scroll-linked pulse work. */
   bpm: BPM,
   /**
-   * One eighth-note in ms for the visual clock (src/scripts/clock.ts — "the
+   * One eighth-note in ms for the visual clock (src/scripts/clock.ts, "the
    * knock" the natal hero breathes to): derived from the same bpm as the
    * Tone transport (≈357 ms), and phase-locked to that transport whenever
    * the orchestra pit is playing (iw:transport-eighth). The tinker dial on
@@ -77,7 +77,7 @@ export const meter = {
 
 /**
  * Global background fade: black at the top of the page, and at the bottom
- * the shade just before dawn — a warm rose-taupe that stops well short of
+ * the shade just before dawn, a warm rose-taupe that stops well short of
  * white (full white proved harsh on the eyes at the end of a long scroll).
  */
 export const backgroundFade = {
@@ -86,7 +86,7 @@ export const backgroundFade = {
 } as const;
 
 /**
- * Natal engine palette — one colour per body, plus Venus's chromatic fringe
+ * Natal engine palette, one colour per body, plus Venus's chromatic fringe
  * triplet (rose / emerald / pale gold) for packets that have passed through
  * the 12th-house glass. Classical planetary register only.
  */
@@ -103,7 +103,7 @@ export const natalPalette = {
   pluto: '#c04a63',
   nn: '#d8c9a0',
   vesta: '#ffb27a',
-  /** Lilith is a lens, never an orb — this tints her rings only. */
+  /** Lilith is a lens, never an orb, this tints her rings only. */
   lilith: '#9b7bff',
   venusFringe: ['#ff8fb0', '#86e6b8', '#ffe9c9'],
 } as const;
@@ -112,7 +112,7 @@ export const natalPalette = {
 export const glyphRamp = 'ΨΦΘΞΩΔΛΠΣΓαβγδεζηθικλμνξοπρστυφχψω·';
 
 /**
- * The dead letters — ϝ (digamma), ϟ (koppa), ϡ (sampi): letters that fell
+ * The dead letters, ϝ (digamma), ϟ (koppa), ϡ (sampi): letters that fell
  * out of the living alphabet yet survived as numerals. They surface rarely
  * out of the bright dither field, most often in deconstruction contexts
  * (the Uranus–Neptune 9th-house register; see natal.config.ts).

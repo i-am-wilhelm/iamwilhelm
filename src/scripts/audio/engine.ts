@@ -1,5 +1,5 @@
 /**
- * PIT ENGINE — all Tone.js lives here, behind a dynamic import so the main
+ * PIT ENGINE: all Tone.js lives here, behind a dynamic import so the main
  * bundle stays light and no AudioContext exists until a user gesture.
  *
  * SCORE STRUCTURE (site spec §6.3–6.4):
@@ -8,10 +8,10 @@
  *     everything; `step` counts 0..6 through the bar.
  *   - LOW DRONE: fat saw + sine sub through a dark lowpass. Its pitch is the
  *     current section's `drone` field (C2→G2→D2→A2→E2, the circle of fifths
- *     descending the page — music of the spheres). Section changes glide via
+ *     descending the page, music of the spheres). Section changes glide via
  *     frequency ramps, matching the site's animation-adjacent pacing.
  *   - THE KNOCK: a deep membrane thump an octave below the drone, sounding
- *     on the 2+2+3 group boundaries — steps 0, 2, 4 (beats 1, 3, 5) — with
+ *     on the 2+2+3 group boundaries, steps 0, 2, 4 (beats 1, 3, 5), with
  *     the bar downbeat slightly stronger. Mixed low but felt: it is the
  *     deliberate clue that teaches the 7/8 tap pattern.
  *   - SPARSE MOTIFS: a quiet triangle voice occasionally (per-bar chance)
@@ -145,7 +145,7 @@ export class PitEngine {
     }
   }
 
-  /** Music of the spheres — glide the drone to a section's pitch (e.g. on
+  /** Music of the spheres, glide the drone to a section's pitch (e.g. on
    * 'iw:section-enter'). Ramp is slow and animation-adjacent. */
   setDroneNote(note: string): void {
     this.droneNote = note;
@@ -202,7 +202,7 @@ export class PitEngine {
   }
 
   private playScoreStep(step: number, time: number): void {
-    // THE KNOCK: group boundaries of 2+2+3 — steps 0, 2, 4 (beats 1, 3, 5).
+    // THE KNOCK: group boundaries of 2+2+3, steps 0, 2, 4 (beats 1, 3, 5).
     // Downbeat strongest; low in the mix, felt more than heard.
     if (step === 0) this.triggerKnock(time, 0.9);
     else if (step === 2) this.triggerKnock(time, 0.55);
@@ -256,7 +256,7 @@ export class PitEngine {
 
 let engine: PitEngine | null = null;
 
-/** Singleton accessor — the engine (and its AudioContext use) is created at
+/** Singleton accessor, the engine (and its AudioContext use) is created at
  * most once per page. */
 export function getEngine(): PitEngine {
   if (!engine) engine = new PitEngine();

@@ -1,5 +1,5 @@
 /**
- * CONSTELLATION PASS — per-section star maps into the scene target.
+ * CONSTELLATION PASS: per-section star maps into the scene target.
  *
  * Each `.section[data-section]` gets a sparse field of point nodes joined
  * by hairline sketch geometry, seeded deterministically from the section
@@ -129,7 +129,7 @@ export class ConstellationPass {
     }
 
     // Hairline geometry: connect each node to its nearest neighbor, plus a
-    // few random chords — sparse enough to read as a sketched star chart,
+    // few random chords, sparse enough to read as a sketched star chart,
     // not a mesh.
     const linePts: number[] = [];
     const lineFade: number[] = [];

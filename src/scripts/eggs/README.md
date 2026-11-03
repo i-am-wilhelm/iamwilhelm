@@ -2,7 +2,7 @@
 
 Flash-site-spirited secrets (homestarrunner.com lineage): clicking hidden
 anchors swaps the dither style, shifts the pose of the visual layer, or fires
-a color splash — all by emitting events on the shared bus
+a color splash, all by emitting events on the shared bus
 (`src/scripts/events.ts`). A cross-page scavenger hunt ("little initiations")
 advances as eggs are found.
 
@@ -58,20 +58,20 @@ bind-order index). Effects replay on every successful interaction;
 | Egg id | Scope | Anchor selector | Trigger | Effect |
 | --- | --- | --- | --- | --- |
 | `swan-preen` | home | `[data-egg-anchor="hero-swan"]` | 3 clicks within 1.6s | dither `inverse` (revert 5.6s) + hero splash |
-| `natal-ascent` | home | `[data-egg-anchor="cluster-node"]` | sequence — click nodes in the order derived from `natal.config.ts` `keyDate` | dither `chaos` (revert 7s) + cluster splash |
+| `natal-ascent` | home | `[data-egg-anchor="cluster-node"]` | sequence: click nodes in the order derived from `natal.config.ts` `keyDate` | dither `chaos` (revert 7s) + cluster splash |
 | `maat-feather` | home | `[data-egg-anchor="underworld-feather"]` | hover-hold 2500ms (one 7/8 bar at 84bpm) | dither `dense` (revert 5s) + underworld splash |
 | `orphic-lyre` | home | `[data-egg-anchor="underworld-lyre"]` | 7 clicks within 4s | underworld splash + dither `inverse` (revert 3.5s) |
 | `monsoon-rainmaker` | home | `[data-egg-anchor="monsoon-cloud"]` | 3 clicks within 1.2s | dither `dense` (revert 6s) + monsoon splash |
 | `pharmakon-sigil` | writings | `[data-egg-anchor="writings-pharmakon"]` | click | writings splash + dither `inverse` (revert 4s) |
-| `phosphoros-dawn` | any | `[data-egg-anchor="phosphoros-star"]` | click, gated to the local dawn band (`natal.config.ts` `dawnWindow`) | dawn-gold splash. Grace note — outside the hunt path |
-| `psychopomp-door` | any | `[data-egg-anchor="psychopomp-door"]` | click | none yet — ships `enabled: false`, `payload: null`, `lateHunt: true`. TODO(owner): destination revealed via egg only |
+| `phosphoros-dawn` | any | `[data-egg-anchor="phosphoros-star"]` | click, gated to the local dawn band (`natal.config.ts` `dawnWindow`) | dawn-gold splash. Grace note, outside the hunt path |
+| `psychopomp-door` | any | `[data-egg-anchor="psychopomp-door"]` | click | none yet; ships `enabled: false`, `payload: null`, `lateHunt: true`. TODO(owner): destination revealed via egg only |
 
 ## Natal placement hooks
 
-`natal.config.ts` derives its placements (Uranus, Neptune, Venus — sign,
+`natal.config.ts` derives its placements (Uranus, Neptune, Venus, sign,
 house, degree) and `keyDate` from `CHART` in
 `src/scripts/natal/chart.michael.ts`, the same data file the hero renders.
-Houses come from the chart's cusps. Nothing in the UI explains any of this —
+Houses come from the chart's cusps. Nothing in the UI explains any of this,
 it reads as arbitrary rotation and drift to anyone without the chart.
 
 - **Uranus–Neptune, 9th house**: `natalCssHooks()` derives the pair's
@@ -86,10 +86,10 @@ it reads as arbitrary rotation and drift to anyone without the chart.
   `phosphoros-dawn` egg.
 - **Birthday as coded egg**: `birthdaySequence()` folds `keyDate`
   (month, day, year-mod-100, then successive sums) modulo the node count into
-  four distinct node indices — the click order for `natal-ascent`. Original
+  four distinct node indices, the click order for `natal-ascent`. Original
   mechanism for this site; the date itself is rendered nowhere. `keyDate`
   now comes from `CHART.birth`, so the sequence changed when the real date
-  replaced the placeholder — intended.
+  replaced the placeholder, intended.
 
 ## Hunt state machine (`hunt.ts`)
 
@@ -108,7 +108,7 @@ unbegun → in-progress → awaiting-seal → sealed
   `hunt.config.ts` order; a step completes only when every prior step is
   complete and all its `requires` eggs are found (eggs found early are held
   until their step's turn). Completed steps render small classical glyph
-  marks on their `markPages` — homepage discoveries surface marks on
+  marks on their `markPages`, homepage discoveries surface marks on
   `/writings/` and vice versa.
 - **awaiting-seal**: every configured step complete. Terminal until the
   mail-in step is wired. The completion sigil (⊙ + affirmative copy) appears.
@@ -142,7 +142,7 @@ export interface FinalStepConfig {
 export const finalStep: FinalStepConfig | null = null; // TODO(owner)
 ```
 
-Supplying that object is the **only change needed** — the state machine
+Supplying that object is the **only change needed**; the state machine
 already treats `finalStep !== null` as the gate, and `recordSeal()` in
 `hunt.ts` is the hook the mail-in wiring calls once the seal is verified,
 moving the phase from `awaiting-seal` to `sealed`. Until then finishers see
@@ -155,33 +155,33 @@ The controversial series lives on another domain. This engine ships **no**
 link, CTA, or mention of it anywhere. The single sanctioned pathway is the
 `psychopomp-door` egg: disabled, empty payload, late-hunt-only binding.
 TODO(owner): set its `payload` (and `enabled: true`) when the destination
-should become discoverable — via the egg only.
+should become discoverable, via the egg only.
 
 ## Events emitted
 
-- `iw:egg-found { eggId }` — once per discovery.
-- `iw:dither-style { style }` — effect scripts (plus their timed reverts).
-- `iw:splash { id, color }` — effect scripts; `id` is the section id by
+- `iw:egg-found { eggId }`: once per discovery.
+- `iw:dither-style { style }`: effect scripts (plus their timed reverts).
+- `iw:splash { id, color }`: effect scripts; `id` is the section id by
   convention.
 
 ## Copy rules
 
-Affirmative statements only, everywhere (toasts, step copy, sigil) — each
+Affirmative statements only, everywhere (toasts, step copy, sigil), each
 line states what is, with no negative parallelism.
 
 ## The dawn gate (`dawn.ts`)
 
 The site's closing movement, ported from the prototype: the descent ends at
 first light. When the hunt phase reaches `awaiting-seal` (or `sealed`), a
-door of ordered glyphs — pale rose, quiet — renders into the homepage
+door of ordered glyphs, pale rose, quiet, renders into the homepage
 `#dawn` coda. The door OPENS only during the hour before local sunrise:
 sunrise is computed locally with the NOAA/Almanac solar approximation (no
 network); position uses geolocation only when permission is already granted
 (never prompts), otherwise longitude comes from the timezone offset and
 latitude falls back to Phoenix (33.45). Opening is staged on 7/8 bars
 (wake → part → inscribe, ≈2.5 s each); reduced motion opens instantly.
-The inscription reads Ἠὼς ῥοδοδάκτυλος — rosy-fingered dawn.
+The inscription reads Ἠὼς ῥοδοδάκτυλος, rosy-fingered dawn.
 
 Testing / owner override: `localStorage['iw:dawn.force'] = '1'` forces the
 open-hour condition. The Phosphoros egg keeps its separate, simpler local
-clock band (`natal.config.ts`) — the gate alone earns the real sunrise.
+clock band (`natal.config.ts`), the gate alone earns the real sunrise.

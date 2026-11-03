@@ -1,7 +1,7 @@
 ---
 /**
  * Facecard figure slot for a writings post. A post earns a facecard when one
- * of its frontmatter symbols has an entry in the registry below — the Medea
+ * of its frontmatter symbols has an entry in the registry below, the Medea
  * card ships first, tied to the Pharmakon launch post. Images are
  * owner-supplied and live in public/assets/; a commissioned card replaces
  * the generated one by dropping a file at the same path.
@@ -46,8 +46,8 @@ const card = cards[symbol];
         A generated base card ships at public/assets/medea.webp, painted to
         the spec brief: purple accent (--accent-writings, #6a3fa0), messy
         purple stains under the eyes and on the mouth, purple-stained hair,
-        poison arrows, high cheekbones — warm but subtly terrifying.
-        TODO(owner): replace with commissioned art whenever ready — drop the
+        poison arrows, high cheekbones, warm but subtly terrifying.
+        TODO(owner): replace with commissioned art whenever ready, drop the
         file at the same path.
       */}
       <img src={card.src} alt={card.alt} loading="lazy" />

@@ -5,7 +5,7 @@
  * 'iw:splash' through the shared event bus, and advances the cross-page
  * hunt (hunt.ts / hunt.config.ts).
  *
- * Binding is lazy and tolerant: anchors may appear late (or never) — an
+ * Binding is lazy and tolerant: anchors may appear late (or never), an
  * initial scan plus a MutationObserver picks them up whenever they exist.
  */
 import { emit } from '../events';
@@ -115,7 +115,7 @@ function wire(egg: EggDef, el: Element) {
     el.addEventListener('pointercancel', cancel);
     return;
   }
-  // sequence — token from data-egg-step, else bind-order index.
+  // sequence, token from data-egg-step, else bind-order index.
   const explicit = el.getAttribute('data-egg-step');
   let token: string;
   if (explicit !== null) {
@@ -191,7 +191,7 @@ function observe() {
 }
 
 // ---------------------------------------------------------------------------
-// Natal placement hooks — degree values exposed as CSS custom properties the
+// Natal placement hooks, degree values exposed as CSS custom properties the
 // visual layer reads as animation offsets / constellation rotations. Quiet
 // by design; nothing in the UI names them.
 // ---------------------------------------------------------------------------

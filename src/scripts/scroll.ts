@@ -1,11 +1,11 @@
 /**
- * Scroll choreography (spec §2.2, §2.4) — the layout-and-scroll workstream.
+ * Scroll choreography (spec §2.2, §2.4), the layout-and-scroll workstream.
  *
  * Owns, for every page:
  *   1. the imperceptible global black→white background fade (+ ink crossfade
  *      and the --scroll-progress CSS var), tied to total document progress;
  *   2. the 'iw:scroll' event stream {progress, velocity} (velocity smoothed,
- *      px/s, signed — positive scrolling down);
+ *      px/s, signed, positive scrolling down);
  * and, on pages that have `.section[data-section]` markup (the homepage):
  *   3. per-section 'iw:section-enter' / 'iw:section-leave' /
  *      'iw:section-progress' events;
@@ -15,7 +15,7 @@
  *   6. the --active-accent CSS var tweened to the dominant section's accent.
  *
  * Communication with other subsystems happens ONLY via the events in
- * ./events — the shader core renders the morphs; we merely drive progress.
+ * ./events, the shader core renders the morphs; we merely drive progress.
  */
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -41,7 +41,7 @@ const INK_CROSS = { start: 0.5, end: 0.68 } as const;
 
 /** One beat at the site tempo (84 bpm) in seconds ≈ 0.714 s. */
 const BEAT = 60 / meter.bpm;
-/** Sixteenth-note at 84 bpm ≈ 0.179 s — base unit for reveal staggers. */
+/** Sixteenth-note at 84 bpm ≈ 0.179 s, base unit for reveal staggers. */
 const SIXTEENTH = BEAT / 4;
 
 /**
@@ -89,7 +89,7 @@ function meterOffset(index: number): number {
 let booted = false;
 
 export async function initScroll(): Promise<void> {
-  // The site is an MPA, so each navigation re-evaluates modules — but guard
+  // The site is an MPA, so each navigation re-evaluates modules, but guard
   // against double-boot anyway (astro:page-load replays, HMR, manual calls).
   if (booted || typeof window === 'undefined') return;
   booted = true;
@@ -111,7 +111,7 @@ export async function initScroll(): Promise<void> {
     maxScroll = Math.max(0, root.scrollHeight - window.innerHeight);
   };
   window.addEventListener('resize', remeasure);
-  // Fires after fonts/images/layout shifts too — keeps maxScroll honest.
+  // Fires after fonts/images/layout shifts too, keeps maxScroll honest.
   ScrollTrigger.addEventListener('refresh', remeasure);
 
   const applyFade = (p: number) => {
@@ -137,14 +137,14 @@ export async function initScroll(): Promise<void> {
 
     const instant = (y - lastY) / dt;
     lastY = y;
-    // Exponential moving average — settles in ~1/8 s, immune to frame jitter.
+    // Exponential moving average, settles in ~1/8 s, immune to frame jitter.
     velocity += (instant - velocity) * Math.min(1, dt * 8);
     if (Math.abs(velocity) < 0.5 && instant === 0) velocity = 0;
 
     const moved = progress !== lastProgress;
     if (moved) {
       lastProgress = progress;
-      // Reduced motion still gets the fade — it is position-derived, not
+      // Reduced motion still gets the fade, it is position-derived, not
       // animated, so it simply snaps to wherever the user has scrolled.
       applyFade(progress);
     }
@@ -176,7 +176,7 @@ export async function initScroll(): Promise<void> {
     } else {
       gsap.to(root, {
         '--active-accent': color,
-        duration: BEAT * 2, // two beats ≈ 1.43 s — unhurried, musical
+        duration: BEAT * 2, // two beats ≈ 1.43 s, unhurried, musical
         ease: 'sine.inOut',
         overwrite: 'auto',
       });
@@ -205,7 +205,7 @@ export async function initScroll(): Promise<void> {
       },
     });
 
-    // 6. Accent handoff — a section is "active" while it straddles the
+    // 6. Accent handoff, a section is "active" while it straddles the
     // viewport centerline.
     if (accents[id]) {
       ScrollTrigger.create({
@@ -232,7 +232,7 @@ export async function initScroll(): Promise<void> {
         tl.to(
           child,
           { autoAlpha: 1, y: 0, duration: BEAT, ease: 'power2.out' },
-          meterOffset(i), // gaps of 2, 2, 3 sixteenths — a bar of 7/8
+          meterOffset(i), // gaps of 2, 2, 3 sixteenths, a bar of 7/8
         );
       });
     }

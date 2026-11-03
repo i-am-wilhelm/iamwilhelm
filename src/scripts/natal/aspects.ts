@@ -1,9 +1,9 @@
 /**
- * Aspect computation — pure functions over ChartData. The engine renders
+ * Aspect computation, pure functions over ChartData. The engine renders
  * whatever this returns; nothing here is Michael-specific.
  *
  * Rules (handoff §4):
- *   - Mercury is excluded from the web — his aspects ride the Sun's (cazimi).
+ *   - Mercury is excluded from the web, his aspects ride the Sun's (cazimi).
  *   - Orbs: conj 8, sextile 5, square 7, trine 7, opposition 8. Sun–Moon pair
  *     +5; any other pair containing a luminary +2. Weight w = 1 − off/orb.
  *   - Sun–Moon opposition is the spine; render weight max(w, 0.75).

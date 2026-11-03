@@ -1,17 +1,17 @@
 /**
- * THE DAWN GATE — the site's closing movement, ported from the Canvas-2D
+ * THE DAWN GATE: the site's closing movement, ported from the Canvas-2D
  * prototype: the descent ends at first light.
  *
  * When the hunt is held (phase 'awaiting-seal' or 'sealed'), a door renders
  * in the homepage #dawn coda that did not previously exist: a tall
  * rectangle of ordered glyphs, pale rose, quiet. Whether it OPENS depends
- * on the hour — it opens only during the hour before local sunrise.
+ * on the hour, it opens only during the hour before local sunrise.
  *
- * Sunrise is computed locally with the NOAA/Almanac solar approximation —
+ * Sunrise is computed locally with the NOAA/Almanac solar approximation,
  * no network, no dependency. Position comes from geolocation ONLY if
  * permission is already granted (queried via navigator.permissions; this
  * module never prompts). Otherwise it approximates: longitude from the
- * timezone offset (UTC offset hours × 15°), latitude 33.45 — the Phoenix
+ * timezone offset (UTC offset hours × 15°), latitude 33.45, the Phoenix
  * default, since the site's author watches this dawn from the Sonoran
  * desert. A wrong hemisphere guess simply shifts the hour; the door
  * forgives nothing and explains nothing.
@@ -19,7 +19,7 @@
  * Testing / owner override: set localStorage 'iw:dawn.force' to '1' to
  * force the open-hour condition regardless of the clock.
  *
- * Opening is slow — one 7/8 bar per stage (2+2+3 at 84 bpm ≈ 2.5 s): the
+ * Opening is slow, one 7/8 bar per stage (2+2+3 at 84 bpm ≈ 2.5 s): the
  * glyphs wake, the leaves part, the inscription surfaces. Reduced motion
  * opens the door instantly.
  *
@@ -39,7 +39,7 @@ const BAR_MS = Math.round((7 * 60_000) / (meter.bpm * 2));
 const STYLE_ID = 'iw-dawn-style';
 
 /* ---------------------------------------------------------------- */
-/* Sunrise — NOAA/Almanac solar position approximation               */
+/* Sunrise, NOAA/Almanac solar position approximation               */
 /* ---------------------------------------------------------------- */
 
 const RAD = Math.PI / 180;
@@ -90,7 +90,7 @@ export function localSunrise(date: Date, lat: number, lon: number): Date | null 
 
 /**
  * Best available position. Geolocation is used only when permission is
- * ALREADY granted — this module never raises a prompt. The fallback
+ * ALREADY granted, this module never raises a prompt. The fallback
  * derives longitude from the timezone offset and assumes the Phoenix
  * latitude; see the module comment.
  */
@@ -119,7 +119,7 @@ async function isDawnHour(now = new Date()): Promise<boolean> {
   try {
     if (localStorage.getItem(FORCE_KEY) === '1') return true;
   } catch {
-    /* storage unavailable — the clock alone decides */
+    /* storage unavailable, the clock alone decides */
   }
   const { lat, lon } = await resolvePosition();
   for (const dayOffset of [0, 1]) {
@@ -215,7 +215,7 @@ function buildDoor(host: HTMLElement): HTMLElement {
   const door = document.createElement('div');
   door.className = 'iw-dawn-door';
 
-  // Two leaves of ordered glyphs — the ramp read in sequence, a text that
+  // Two leaves of ordered glyphs, the ramp read in sequence, a text that
   // was always there once you can see it.
   const glyphs = Array.from(glyphRamp);
   for (const side of ['l', 'r'] as const) {
@@ -251,7 +251,7 @@ function buildDoor(host: HTMLElement): HTMLElement {
 /** Staged opening: wake → part → inscribe, one 7/8 bar per stage. */
 function openGate(gate: HTMLElement) {
   // The opening tone (the Seikilos epitaph) belongs to the audio layer;
-  // reduced motion opens instantly yet still announces — audio is not
+  // reduced motion opens instantly yet still announces, audio is not
   // motion.
   emit('iw:dawn-open', {});
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

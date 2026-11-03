@@ -1,5 +1,5 @@
 /**
- * Natal hero mount — wires engine + portrait + scroll choreography + tinker
+ * Natal hero mount, wires engine + portrait + scroll choreography + tinker
  * overlay to the hero DOM. Called from boot.ts as one more independent job;
  * returns early on pages without a `.natal-stage`.
  *

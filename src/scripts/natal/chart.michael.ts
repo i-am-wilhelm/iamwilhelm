@@ -1,5 +1,5 @@
 /**
- * Michael's chart — the first data file the natal engine draws. Swiss
+ * Michael's chart, the first data file the natal engine draws. Swiss
  * Ephemeris, 1991-03-01 17:00 UT, Safford AZ (32.834 N, 109.707 W), Placidus.
  *
  * Nothing here is explained in the UI. The eggs' natal.config.ts derives its
@@ -18,19 +18,19 @@ export const CHART: ChartData = {
   ],
   bodies: {
     sun:     { lon: 340.6065, spd: 1.00328,  retro: false },
-    mercury: { lon: 340.2568, spd: 1.87525,  retro: false }, // cazimi — rides inside the Sun
+    mercury: { lon: 340.2568, spd: 1.87525,  retro: false }, // cazimi, rides inside the Sun
     moon:    { lon: 172.6298, spd: 13.63952, retro: false }, // full
     venus:   { lon: 9.0222,   spd: 1.22742,  retro: false }, // chart ruler, 12th house
     mars:    { lon: 74.0065,  spd: 0.45081,  retro: false },
     jupiter: { lon: 124.8545, spd: 0.08777,  retro: true },
-    saturn:  { lon: 302.5105, spd: 0.10194,  retro: false }, // partile on the MC — the crown
+    saturn:  { lon: 302.5105, spd: 0.10194,  retro: false }, // partile on the MC, the crown
     uranus:  { lon: 282.8672, spd: 0.03831,  retro: false },
     neptune: { lon: 286.1374, spd: 0.02503,  retro: false },
     pluto:   { lon: 230.3599, spd: 0.00454,  retro: true },
     nn:      { lon: 295.9728, spd: 0.05299,  retro: true },
     vesta:   { lon: 55.4756,  spd: 0.29743,  retro: false },
   },
-  lilith: 263.8747, // 23°52' Sag — a lens, never an orb
+  lilith: 263.8747, // 23°52' Sag, a lens, never an orb
   birth: { year: 1991, month: 3, day: 1, hourUT: 17, lat: 32.834, lon: -109.707 },
   portrait: {
     src: '/assets/portrait.webp',

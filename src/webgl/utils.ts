@@ -1,5 +1,5 @@
 /**
- * Small shared helpers for the shader core. No DOM, no GL — pure math.
+ * Small shared helpers for the shader core. No DOM, no GL, pure math.
  */
 
 /** Parse '#rrggbb' into normalized [r, g, b] (0..1). */

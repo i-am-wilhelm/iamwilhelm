@@ -5,8 +5,8 @@ name: Deploy
 # Actions tab.
 #
 # Required repository secrets:
-#   CLOUDFLARE_API_TOKEN   — API token with Workers Scripts:Edit
-#   CLOUDFLARE_ACCOUNT_ID  — the account id the worker lives in
+#   CLOUDFLARE_API_TOKEN   - API token with Workers Scripts:Edit
+#   CLOUDFLARE_ACCOUNT_ID  - the account id the worker lives in
 on:
   push:
     branches: [main]

@@ -1,5 +1,5 @@
 /**
- * Tinker overlay (?tinker=1) — plain DOM, --font-ui, no library. Layer
+ * Tinker overlay (?tinker=1), plain DOM, --font-ui, no library. Layer
  * toggles, tuning dials, loop/frame readouts and the eye-mask tuner. Edits
  * the live engine opts in place; nothing persists.
  */

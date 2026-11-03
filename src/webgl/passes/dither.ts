@@ -1,5 +1,5 @@
 /**
- * GLYPH DITHER POST PASS — the site's signature filter.
+ * GLYPH DITHER POST PASS: the site's signature filter.
  *
  * The composited scene target (backdrop + constellation + morph + smoke)
  * is resolved through a field of ancient Greek characters: the screen is
@@ -10,7 +10,7 @@
  *
  * SATURATION PRESERVATION (critical): base visuals are painted with
  * saturated focal zones. Instead of flattening chroma to a duotone, the
- * glyph color's chroma is *scaled up* where the source is saturated —
+ * glyph color's chroma is *scaled up* where the source is saturated,
  * hot zones resolve MORE saturated than their surroundings.
  *
  * Also owns the weather treatment for the monsoon section: falling glyph
@@ -32,11 +32,11 @@ import type { PipelineState } from '../state';
  * a cut.
  */
 export interface DitherStyle {
-  /** Multiplier on the base cell size — smaller = finer glyph grid. */
+  /** Multiplier on the base cell size, smaller = finer glyph grid. */
   cellScale: number;
   /** 1 = invert the luminance→glyph mapping (heavy ink in shadows). */
   invert: number;
-  /** 0..1 — glyph identity scramble + sample jitter. */
+  /** 0..1: glyph identity scramble + sample jitter. */
   chaos: number;
   /** Multiplier pushing the mapping into heavier-coverage glyphs. */
   density: number;
@@ -62,7 +62,7 @@ const CELL_BASE_PX = 14;
  * Rare-glyph surfacing odds (dead letters ϝ ϟ ϡ, outer-planet marks),
  * ported from the prototype's per-palette rareChance. The baseline keeps
  * a rare on screen somewhere most of the time; deconstruction contexts
- * (the philosophy section — the 9th-house register) multiply it up.
+ * (the philosophy section, the 9th-house register) multiply it up.
  */
 const RARE_BASE = 0.004;
 const RARE_DECON_BOOST = 4.0;
@@ -94,7 +94,7 @@ uniform float uRain;         // 0..1 falling-glyph rain
 uniform float uDrought;      // 0..1 dry dusty state
 uniform float uLightning;    // flash strength, decays in JS
 
-/* Rare glyphs — the dead letters (ϝ ϟ ϡ) and outer-planet marks live at
+/* Rare glyphs, the dead letters (ϝ ϟ ϡ) and outer-planet marks live at
    atlas indices >= uRampCount, outside the luminance mapping. */
 uniform float uRampCount;
 uniform float uRareCount;
@@ -144,14 +144,14 @@ void main() {
     float colSeed = hash21(vec2(cell.x, 91.7));
     float speed = mix(0.35, 1.1, colSeed);
     // gl_FragCoord.y grows upward, so *adding* cell.y makes the bright
-    // head march downward over time — the glyphs fall.
+    // head march downward over time, the glyphs fall.
     float phase = fract(colSeed * 13.7 + uTime * speed + cell.y * 0.045);
     float drop = pow(phase, 7.0);
     lum = max(lum, drop * uRain);
     srcA = max(srcA, drop * uRain * 0.85);
   }
 
-  // ---- Weather: drought (monsoon, dry) — thin, parched field ---------
+  // ---- Weather: drought (monsoon, dry): thin, parched field ---------
   lum *= 1.0 - 0.45 * uDrought;
 
   // ---- Brightness → glyph bucket -------------------------------------
@@ -165,7 +165,7 @@ void main() {
   // The ramp occupies indices 0..uRampCount-1; rares are addressed below.
   float idx = clamp(floor(idxF + 0.5), 0.0, uRampCount - 1.0);
 
-  // Rare glyphs surface out of the bright field (dead letters, ♅ ♆) —
+  // Rare glyphs surface out of the bright field (dead letters, ♅ ♆),
   // ported from the Canvas-2D prototype. Re-rolled every ~8 s per cell so
   // a rare lingers long enough to be read before it sinks back.
   if (uRareChance > 0.0 && mapped > 0.35) {
@@ -201,8 +201,8 @@ void main() {
   glyphCol = glyphCol * (0.55 + 0.8 * lum) + vec3(0.05) * (1.0 - s);
 
   // ---- Weather palettes ----------------------------------------------
-  // Raining: resolve toward a PNW register — evergreen shadow to wet-sky
-  // slate — instead of the desert accent underneath.
+  // Raining: resolve toward a PNW register, evergreen shadow to wet-sky
+  // slate, instead of the desert accent underneath.
   vec3 pnw = mix(vec3(0.04, 0.09, 0.10), vec3(0.55, 0.70, 0.66), lum);
   glyphCol = mix(glyphCol, pnw, uRain * 0.65);
   // Drought: dusty, sun-bleached warm gray.

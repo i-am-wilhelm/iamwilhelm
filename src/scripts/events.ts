@@ -1,7 +1,7 @@
 /**
  * Cross-subsystem event contract. All workstreams (shader pipeline, scroll
  * choreography, sections, easter eggs, orchestra pit) communicate ONLY
- * through these window-level CustomEvents — no direct imports across
+ * through these window-level CustomEvents, no direct imports across
  * subsystem boundaries. Keep this file authoritative; extend, never rename.
  */
 

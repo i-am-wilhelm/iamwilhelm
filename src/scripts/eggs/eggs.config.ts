@@ -1,5 +1,5 @@
 /**
- * Declarative egg registry — flash-site spirit (homestarrunner.com): small
+ * Declarative egg registry, flash-site spirit (homestarrunner.com): small
  * clickable secrets that swap the dither treatment, flash a splash of
  * section color, or shift the pose of the visual layer. Section agents place
  * the anchors (data-egg-anchor="…"); the engine binds lazily and tolerates
@@ -14,7 +14,7 @@ import type { EggDef } from './types';
 
 export const eggs: EggDef[] = [
   {
-    // The black swan preens — triple-tap shows her white under-feather
+    // The black swan preens, triple-tap shows her white under-feather
     // (inverse dither) for one long breath.
     id: 'swan-preen',
     scope: 'home',
@@ -40,7 +40,7 @@ export const eggs: EggDef[] = [
     toast: 'The seven rise in their appointed order.',
   },
   {
-    // Ma'at's feather — rest the pointer on it for one full 7/8 bar at 84bpm
+    // Ma'at's feather, rest the pointer on it for one full 7/8 bar at 84bpm
     // (7 eighth-notes ≈ 2500ms) and the scale settles level.
     id: 'maat-feather',
     scope: 'home',
@@ -53,7 +53,7 @@ export const eggs: EggDef[] = [
     toast: 'The heart weighs even with the feather.',
   },
   {
-    // The orphic lyre — seven strings, seven quick plucks.
+    // The orphic lyre, seven strings, seven quick plucks.
     id: 'orphic-lyre',
     scope: 'home',
     binding: '[data-egg-anchor="underworld-lyre"]',
@@ -77,7 +77,7 @@ export const eggs: EggDef[] = [
     toast: 'The cloud opens over the valley.',
   },
   {
-    // Pharmakon sigil on the writings index — one deliberate click.
+    // Pharmakon sigil on the writings index, one deliberate click.
     id: 'pharmakon-sigil',
     scope: 'writings',
     binding: '[data-egg-anchor="writings-pharmakon"]',
@@ -89,7 +89,7 @@ export const eggs: EggDef[] = [
     toast: 'The remedy and the dose are one art.',
   },
   {
-    // Venus as Phosphoros — the morning star answers only in the dawn band
+    // Venus as Phosphoros, the morning star answers only in the dawn band
     // (natal.config dawnWindow; Venus 12th-house theme). A grace note
     // outside the hunt's required path.
     id: 'phosphoros-dawn',
@@ -106,7 +106,7 @@ export const eggs: EggDef[] = [
     // Late-hunt threshold egg. The controversial series lives on a separate
     // domain; discipline: the destination appears nowhere on this site.
     // Ships disabled with an empty payload.
-    // TODO(owner): destination revealed via egg only — set payload to the
+    // TODO(owner): destination revealed via egg only, set payload to the
     // destination and flip enabled to true when ready. The egg binds only
     // after the hunt reaches 'awaiting-seal'.
     id: 'psychopomp-door',
