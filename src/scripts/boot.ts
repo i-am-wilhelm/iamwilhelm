@@ -29,5 +29,10 @@ export async function boot() {
     jobs.push(import('./cluster').then((m) => m.initCluster()));
   }
 
+  // The Unseen One: the seed-gated descent, only where its gates exist.
+  if (document.querySelector('.seed-gate')) {
+    jobs.push(import('./unseen/mount').then((m) => m.mountUnseen()));
+  }
+
   await Promise.allSettled(jobs);
 }

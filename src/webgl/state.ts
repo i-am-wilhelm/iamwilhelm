@@ -4,7 +4,7 @@
  * its own inertia (smoke swings late, accents crossfade, rain soaks in).
  */
 
-import { accents, type SectionId } from '../design/tokens';
+import { accentFor } from '../design/tokens';
 import { fnv1a, hexToRgb, mulberry32 } from './utils';
 
 export interface SectionInfo {
@@ -61,7 +61,25 @@ export interface PipelineState {
   rainCurrent: number; // damped 0..1
   lightning: number; // decays each frame
   nextLightningAt: number; // seconds timestamp
+
+  /**
+   * Page fade mode from <html data-fade>: 1 when the page runs dark-first
+   * (descent), 0 for the dawn fade. The backdrop stops dimming toward a
+   * bright page bottom that never comes.
+   */
+  darkPage: number;
+
+  /**
+   * Dither escape hatch: screen rects (uv space, y up) of elements marked
+   * data-dither="off". The glyph field goes quiet inside them so hairline
+   * artwork (the hall of asphodel, the seat-mirror) is never dithered over.
+   * Re-measured every frame by the pipeline; at most MAX_DITHER_MASKS.
+   */
+  ditherMasks: number[]; // plain array: OGL flattens arrays, not typed arrays
+  ditherMaskCount: number;
 }
+
+export const MAX_DITHER_MASKS = 4;
 
 const FALLBACK_ACCENT: [number, number, number] = [0.55, 0.52, 0.47];
 
@@ -76,7 +94,7 @@ export function readSections(): SectionInfo[] {
   );
   return els.map((el, index) => {
     const id = el.dataset.section || `section-${index}`;
-    const accentHex = (accents as Record<string, string>)[id as SectionId];
+    const accentHex = accentFor(id);
     const rand = mulberry32(fnv1a(id));
     return {
       id,
@@ -113,7 +131,34 @@ export function createState(): PipelineState {
     rainCurrent: 0,
     lightning: 0,
     nextLightningAt: 0,
+    darkPage: document.documentElement.dataset.fade === 'descent' ? 1 : 0,
+    ditherMasks: new Array<number>(MAX_DITHER_MASKS * 4).fill(0),
+    ditherMaskCount: 0,
   };
+}
+
+/**
+ * Measure every [data-dither="off"] element into uv-space rects (x0, y0,
+ * x1, y1; y up, matching gl_FragCoord). Off-screen elements are skipped.
+ */
+export function readDitherMasks(state: PipelineState): void {
+  const els = document.querySelectorAll<HTMLElement>('[data-dither="off"]');
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  let n = 0;
+  for (const el of Array.from(els)) {
+    if (n >= MAX_DITHER_MASKS) break;
+    if (el.hidden || el.closest('[hidden]')) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.bottom < 0 || r.top > H || r.right < 0 || r.left > W) continue;
+    const o = n * 4;
+    state.ditherMasks[o] = r.left / W;
+    state.ditherMasks[o + 1] = 1 - r.bottom / H;
+    state.ditherMasks[o + 2] = r.right / W;
+    state.ditherMasks[o + 3] = 1 - r.top / H;
+    n++;
+  }
+  state.ditherMaskCount = n;
 }
 
 /** Triangle activation: 1 at section i, fading to 0 one section away. */

@@ -19,7 +19,7 @@
  */
 
 import { emit, on } from '../events';
-import { sections } from '../../design/tokens';
+import { droneFor, sections } from '../../design/tokens';
 import { createTapDetector } from './tap';
 import { GROUP_STARTS, emptyPattern } from './grid';
 
@@ -143,11 +143,20 @@ export async function initOrchestraPit(): Promise<void> {
   }
 
   // ---- Music of the spheres: retune on section entry --------------------
+  // Homepage sections carry their drone in the registry; descent pages
+  // (The Unseen One) continue the circle of fifths through droneFor().
   on('iw:section-enter', ({ id }) => {
-    const spec = sections.find((s) => s.id === id);
-    if (!spec) return;
-    currentDrone = spec.drone;
-    engine?.setDroneNote(spec.drone);
+    const drone = droneFor(id);
+    if (!drone) return;
+    currentDrone = drone;
+    engine?.setDroneNote(drone);
+  });
+
+  // ---- An actual rest: the sixth seed's hold silences the pit -----------
+  // Only an engine that exists can rest; with no audio running there is
+  // nothing to silence, and nothing loads for it.
+  on('iw:pit-rest', ({ resting }) => {
+    engine?.setRest(resting);
   });
 
   // ---- The dawn gate's opening tone: the Seikilos epitaph ---------------

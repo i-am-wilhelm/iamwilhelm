@@ -1,24 +1,37 @@
 ---
 import '../styles/global.css';
 
+import type { FadeMode } from '../design/tokens';
+
 interface Props {
   title: string;
   description?: string;
   /** Lab/workbench routes stay out of the index. */
   noindex?: boolean;
+  /**
+   * Background fade mode (tokens.fadeModes). Written to <html data-fade>,
+   * where scroll.ts and the backdrop pass read it. Default: the dawn fade.
+   */
+  fade?: FadeMode;
 }
 
-const { title, description = 'Michael Wilhelm. Builder. Writer. Musician.', noindex = false } = Astro.props;
+const {
+  title,
+  description = 'Michael Wilhelm. Builder. Writer. Musician.',
+  noindex = false,
+  fade = 'dawn',
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-fade={fade}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <slot name="head" />
   </head>
   <body>
     <!-- Shared WebGL stage: dither, smoke, and morph passes composite here. -->

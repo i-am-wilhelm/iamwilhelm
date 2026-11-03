@@ -28,6 +28,7 @@ uniform float uReveal;      // active section local progress 0..1
 uniform float uScroll;      // full-page progress 0..1
 uniform vec3  uSplashColor; // iw:splash flash color
 uniform float uSplash;      // flash strength, decays in JS
+uniform float uDarkPage;    // 1 = descent fade: the page never brightens
 
 ${NOISE_GLSL}
 ${COLOR_GLSL}
@@ -59,8 +60,11 @@ void main() {
   col += uSplashColor * uSplash * (0.55 * ring + 0.25);
 
   // Page fade: dim slightly toward the bright page bottom so the global
-  // black→white body fade stays legible through the glyph field.
-  float alpha = aura * mix(1.0, 0.55, uScroll);
+  // black→white body fade stays legible through the glyph field. A descent
+  // page stays dark the whole way, so it holds a steady, much quieter aura:
+  // light at the top is the body colour's job there, not the splash's.
+  float dawnAlpha = mix(1.0, 0.55, uScroll);
+  float alpha = aura * mix(dawnAlpha, 0.4, uDarkPage);
   alpha += uSplash * 0.3;
 
   gl_FragColor = vec4(col, clamp(alpha, 0.0, 1.0));
@@ -81,6 +85,7 @@ export class BackdropPass {
       uScroll: { value: 0 },
       uSplashColor: { value: [1, 1, 1] },
       uSplash: { value: 0 },
+      uDarkPage: { value: 0 },
     };
     const program = new Program(gl, {
       vertex: FULLSCREEN_VERT,
@@ -104,5 +109,6 @@ export class BackdropPass {
     u.uScroll.value = state.scrollProgress;
     u.uSplashColor.value = state.splashColor;
     u.uSplash.value = state.splashStrength;
+    u.uDarkPage.value = state.darkPage;
   }
 }

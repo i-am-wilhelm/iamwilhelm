@@ -1,0 +1,668 @@
+---
+/**
+ * The descent treatment for a writing (treatment: descent in frontmatter).
+ * The same /writings/[slug] route, rendered through Base.astro instead of
+ * the museum wall, so the piece gets the WebGL stage (constellation, smoke,
+ * glyph dither), the scroll choreography, and the orchestra pit, with its
+ * movements marked up as `.section[data-section]` in the markdown.
+ *
+ * This component carries the chrome around the content: the exit back to
+ * the reading room, the title block with the "read it straight through"
+ * un-gate (shown only once the island is live), and the styles for the
+ * headnote, the poem movements, the seed gates, the metamorphosis, the hall
+ * of asphodel, the seat-mirror, and the return. The island itself lives in
+ * src/scripts/unseen/ and is mounted by boot.ts.
+ *
+ * One red thing on the whole page: the seeds.
+ */
+interface Props {
+  title: string;
+  dateLabel: string;
+  eyebrow?: string;
+}
+
+const { title, dateLabel, eyebrow = 'The Reading Room' } = Astro.props;
+---
+
+<a class="descent-exit" href="/writings/"><span aria-hidden="true">&larr;</span> Writings</a>
+
+<article class="descent" aria-labelledby="descent-title">
+  <header class="descent__head">
+    <p class="eyebrow">{eyebrow} &middot; <time>{dateLabel}</time></p>
+    <h1 id="descent-title" class="descent__title">{title}</h1>
+    <button class="straight" id="unseen-straight" type="button" hidden>Read it straight through</button>
+  </header>
+  <div class="descent__text">
+    <slot />
+  </div>
+  <p class="descent__back">
+    <a href="/writings/">All writings</a>
+  </p>
+</article>
+
+<style is:global>
+  /* Fonts: the display and mono faces the gallery pages self-host. */
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-400-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-600-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-400-italic.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400 500;
+    font-display: swap;
+    src: url('/fonts/jetbrains-mono-var.woff2') format('woff2');
+  }
+
+  :root {
+    --descent-display: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+    --descent-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    --descent-fg: #d9d2c7;
+    --descent-dim: #8a8278;
+    --descent-faint: #4a4440;
+    --seed: #c0243a;
+    --seed-deep: #6e0f1c;
+    --seed-light: #ee5a6c;
+    --glass: #07060a;
+    --descent-measure: 36rem;
+  }
+
+  html[data-fade='descent'] {
+    color-scheme: dark;
+  }
+  html[data-fade='descent'] body {
+    background-color: #17141a;
+    color: var(--descent-fg);
+    font-family: var(--descent-display);
+    font-size: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .descent {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 8rem;
+  }
+  .descent .eyebrow {
+    font-family: var(--descent-mono);
+    font-weight: 400;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--descent-dim);
+  }
+  .descent .eyebrow--faint {
+    color: var(--descent-faint);
+    margin-top: 0.4rem;
+  }
+
+  /* ---- Exit and head ------------------------------------------------- */
+  .descent-exit {
+    position: fixed;
+    z-index: 5;
+    top: max(14px, env(safe-area-inset-top, 0px));
+    left: max(16px, env(safe-area-inset-left, 0px));
+    padding: 0.55rem 0.8rem;
+    font-family: var(--descent-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--descent-fg);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--bg-current, #17141a) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent-underworld) 55%, transparent);
+    backdrop-filter: blur(6px);
+    transition: border-color 0.4s ease;
+  }
+  .descent-exit:hover,
+  .descent-exit:focus-visible {
+    border-color: var(--accent-underworld);
+    outline: none;
+  }
+  .descent__head {
+    max-width: var(--descent-measure);
+    margin: 0 auto;
+    padding: 18vh max(16px, 8vw) 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  @media (min-width: 900px) {
+    .descent__head {
+      padding-inline: 0;
+    }
+  }
+  .descent__title {
+    font-weight: 500;
+    font-size: clamp(1.9rem, 1.4rem + 2.4vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    color: var(--descent-fg);
+  }
+  .straight {
+    font-family: var(--descent-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--descent-dim);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+    text-decoration-color: var(--descent-faint);
+    align-self: flex-start;
+  }
+  .straight:hover,
+  .straight:focus-visible {
+    color: var(--descent-fg);
+    outline: none;
+  }
+
+  /* ---- Headnote: the prose before the first movement ------------------ */
+  .descent__text > p,
+  .descent__text > blockquote {
+    max-width: var(--descent-measure);
+    margin: 1.2em auto 0;
+    padding-inline: max(16px, 8vw);
+    color: var(--descent-fg);
+    text-wrap: pretty;
+  }
+  @media (min-width: 900px) {
+    .descent__text > p,
+    .descent__text > blockquote {
+      padding-inline: 0;
+    }
+  }
+  .descent__text > p:first-child {
+    margin-top: 3rem;
+  }
+  /* Once the island wraps the headnote it becomes one measured column with
+     the same feathered scrim the movements get from global.css. */
+  .descent__headnote {
+    position: relative;
+    z-index: 2;
+    max-width: var(--descent-measure);
+    margin: 0 auto;
+    padding-inline: max(16px, 8vw);
+  }
+  .descent__headnote > .descent__head {
+    padding-inline: 0;
+    margin-bottom: 3rem;
+  }
+  @media (min-width: 900px) {
+    .descent__headnote {
+      padding-inline: 0;
+    }
+  }
+  .descent__headnote > p,
+  .descent__headnote > blockquote {
+    max-width: none;
+    margin: 1.2em 0 0;
+    padding: 0;
+  }
+  .descent__headnote > p:first-child {
+    margin-top: 0;
+  }
+  .descent__headnote > hr {
+    width: 3rem;
+    margin: 4rem auto 0;
+    border: 0;
+    border-top: 1px solid var(--descent-faint);
+    padding: 0;
+  }
+  .descent__headnote::before {
+    content: '';
+    position: absolute;
+    inset: -3rem -4rem;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--bg-current);
+    opacity: var(--scrim-opacity);
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 3.5rem, #000 calc(100% - 3.5rem), transparent),
+      linear-gradient(to bottom, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent, #000 3.5rem, #000 calc(100% - 3.5rem), transparent),
+      linear-gradient(to bottom, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
+    mask-composite: intersect;
+  }
+  .descent__text [lang='grc'] {
+    font-family: 'GFS Didot', 'Gentium Plus', 'Palatino Linotype', Georgia, serif;
+  }
+  .descent__text > hr {
+    width: 3rem;
+    margin: 4rem auto 0;
+    border: 0;
+    border-top: 1px solid var(--descent-faint);
+  }
+
+  /* ---- Movements ------------------------------------------------------ */
+  .descent .section {
+    align-items: center;
+    padding-block: 10vh;
+  }
+  .descent .section .copy {
+    width: 100%;
+    max-width: var(--descent-measure);
+  }
+  .descent .poem-front {
+    min-height: 70vh;
+  }
+  .descent .poem-front .copy {
+    text-align: center;
+  }
+  .descent .poem-dedication {
+    color: var(--descent-dim);
+    font-style: italic;
+  }
+  .descent .poem-title {
+    margin: 0.4rem 0 0;
+    font-weight: 400;
+    font-size: clamp(1.7rem, 1rem + 3vw, 3.2rem);
+    letter-spacing: 0.2em;
+    padding-left: 0.2em;
+    line-height: 1.15;
+    color: var(--descent-fg);
+    text-wrap: balance;
+  }
+  .descent .poem-sub {
+    margin-top: 0.6rem;
+    color: var(--descent-dim);
+  }
+  .descent .narcissus {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    margin: 1.4rem 0 0.2rem;
+  }
+  .descent .mvt {
+    margin-bottom: 1.2rem;
+    font-family: var(--descent-mono);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    color: var(--descent-dim);
+  }
+  .descent .section .copy p {
+    margin: 0;
+  }
+  .descent .couplet {
+    margin-top: 1.35rem;
+  }
+  .descent .couplet:first-of-type {
+    margin-top: 0;
+  }
+  .descent .colophon {
+    margin-top: 5rem;
+    font-family: var(--descent-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--descent-faint);
+    line-height: 2;
+  }
+  .descent__back {
+    max-width: var(--descent-measure);
+    margin: 4rem auto 0;
+    padding-inline: max(16px, 8vw);
+    font-family: var(--descent-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .descent__back a {
+    color: var(--descent-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--descent-faint);
+  }
+  .descent__back a:hover {
+    color: var(--descent-fg);
+  }
+
+  /* ---- The litany ----------------------------------------------------- */
+  .descent .poem-litany .copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+  }
+  .descent .poem-litany .mvt {
+    margin-bottom: 0;
+  }
+  .descent .litany-part {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .descent .litany-part p {
+    font-size: 0.95em;
+  }
+  .descent .litany-part .her {
+    font-style: italic;
+    color: var(--descent-fg);
+  }
+  .descent .litany-part .cmd {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .descent .litany-part .quiet {
+    color: var(--descent-dim);
+    font-size: 0.85em;
+  }
+  .descent .litany-part .big {
+    font-size: 1.5em;
+    line-height: 1.15;
+    font-weight: 500;
+  }
+  .descent .litany-part .hush {
+    letter-spacing: 0.06em;
+    font-family: var(--descent-mono);
+    font-size: 0.7em;
+    text-transform: uppercase;
+    color: var(--descent-dim);
+  }
+  .descent .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 900ms ease,
+      transform 900ms ease;
+  }
+  .descent .reveal.on {
+    opacity: 1;
+    transform: none;
+  }
+  .descent .speaking {
+    text-decoration: underline;
+    text-decoration-color: var(--descent-faint);
+    text-underline-offset: 0.3em;
+  }
+
+  /* Voice toggle (present only when cue files exist). */
+  .descent .voicebar {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .descent .voice {
+    font-family: var(--descent-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--descent-fg);
+    background: none;
+    border: 1px solid var(--descent-faint);
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    transition:
+      border-color 300ms,
+      color 300ms;
+  }
+  .descent .voice:hover,
+  .descent .voice:focus-visible {
+    border-color: var(--descent-dim);
+    outline: none;
+  }
+  .descent .voice[aria-pressed='true'] {
+    border-color: var(--seed);
+    color: var(--seed-light);
+  }
+  .descent .vnote {
+    font-family: var(--descent-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    color: var(--descent-dim);
+  }
+
+  /* ---- Seed gates ----------------------------------------------------- */
+  .descent .gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.4rem 0 0.4rem;
+  }
+  .descent .seed {
+    width: 68px;
+    height: 68px;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 50%;
+    position: relative;
+    transition:
+      transform 300ms ease,
+      filter 300ms ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .descent .seed:focus-visible {
+    outline: 1px solid var(--seed-light);
+    outline-offset: 6px;
+  }
+  .descent .seed svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .descent .seed:hover {
+    transform: scale(1.06);
+  }
+  .descent .seed .ring {
+    fill: none;
+    stroke: var(--seed-light);
+    stroke-width: 1.5;
+    opacity: 0;
+    transform-origin: 50% 50%;
+    transform: scale(0.72);
+  }
+  .descent .seed.hold {
+    transition: none;
+  }
+  .descent .seed.taken {
+    pointer-events: none;
+    cursor: default;
+    transform: scale(0.6);
+  }
+  .descent .seed.taken .aril {
+    fill: var(--seed-deep);
+  }
+  .descent .seed.taken .shine {
+    opacity: 0;
+  }
+  .descent .gate .lbl {
+    font-family: var(--descent-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--descent-dim);
+    transition: color 300ms;
+  }
+  .descent .gate.done .lbl {
+    color: var(--descent-faint);
+  }
+  .descent .gate.done {
+    padding-bottom: 0;
+  }
+
+  /* ---- Metamorphosis -------------------------------------------------- */
+  .descent .meta-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .descent .meta-lines p {
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 700ms ease,
+      transform 700ms ease;
+  }
+  .descent .meta-lines p.on {
+    opacity: 1;
+    transform: none;
+  }
+  .descent .meta-lines .split {
+    letter-spacing: 0.14em;
+  }
+  .descent .meta-lines .word {
+    font-size: 2.6em;
+    line-height: 1;
+    font-weight: 500;
+    font-style: normal;
+    margin-block: 0.6rem 0.2rem;
+  }
+  .descent .meta-lines .ital {
+    font-style: italic;
+  }
+  .descent .meta-lines .gap {
+    height: 1.4rem;
+  }
+  .descent .meta-lines .small {
+    font-size: 0.8em;
+    color: var(--descent-dim);
+  }
+  .descent .meta-lines .rise {
+    font-size: 3.2em;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-top: 1.2rem;
+  }
+
+  /* ---- Elysium ------------------------------------------------------- */
+  .descent .poem-elysium .copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+  .descent .poem-elysium .eyebrow {
+    text-align: center;
+  }
+  .descent .hall-of-asphodel {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 2px;
+    background: #000;
+    overflow: hidden;
+  }
+  @media (min-width: 600px) {
+    .descent .hall-of-asphodel {
+      aspect-ratio: 4 / 5;
+    }
+  }
+  .descent .hall-of-asphodel canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .descent .caption {
+    font-family: var(--descent-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--descent-dim);
+    text-align: center;
+  }
+  .descent .look {
+    font-size: 2.2em;
+    font-weight: 500;
+    text-align: center;
+    margin: 1.2rem 0 0.4rem;
+  }
+  .descent .seat-mirror {
+    position: relative;
+    width: min(100%, 22rem);
+    margin: 0 auto;
+    aspect-ratio: 3 / 4;
+    background: var(--glass);
+    border: 1px solid #1b1a20;
+    box-shadow:
+      inset 0 0 60px rgba(0, 0, 0, 0.9),
+      0 30px 60px -30px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    cursor: crosshair;
+    max-width: 100%;
+    display: grid;
+    place-items: center;
+  }
+  .descent .seat-mirror .sheen {
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(
+      circle at var(--mx, 50%) var(--my, 30%),
+      rgba(217, 210, 199, 0.07),
+      rgba(217, 210, 199, 0.02) 25%,
+      transparent 55%
+    );
+    pointer-events: none;
+  }
+  .descent .seat-mirror__word {
+    position: relative;
+    z-index: 1;
+    font-size: 2.4em;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: rgba(217, 210, 199, 0);
+    transform: scaleX(-1);
+    transition:
+      color 2.4s ease 1.2s,
+      transform 2.4s ease 3.4s;
+    pointer-events: none;
+  }
+  .descent .seat-mirror.on .seat-mirror__word {
+    color: rgba(217, 210, 199, 0.55);
+    transform: scaleX(1);
+  }
+  .descent .seat-mirror .edge {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.6));
+    pointer-events: none;
+  }
+
+  /* No script: everything is on the page, nothing is gated. */
+  html.no-js .descent .reveal,
+  html.no-js .descent .meta-lines p {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .descent .reveal,
+    .descent .meta-lines p,
+    .descent .seat-mirror__word {
+      transition: none !important;
+    }
+  }
+</style>

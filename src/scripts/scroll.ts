@@ -19,8 +19,15 @@
  */
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { accents, backgroundFade, meter, type SectionId } from '../design/tokens';
-import { emit } from './events';
+import {
+  accentFor,
+  accents,
+  fadeModes,
+  meter,
+  type FadeMode,
+  type SectionId,
+} from '../design/tokens';
+import { emit, on } from './events';
 import '../styles/scroll.css';
 
 /* ------------------------------------------------------------------ */
@@ -100,7 +107,14 @@ export async function initScroll(): Promise<void> {
   const body = document.body;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const bgLerp = gsap.utils.interpolate(backgroundFade.from, backgroundFade.to);
+  // Per-page fade mode (tokens.fadeModes), from <html data-fade>. The dawn
+  // fade is the site default; a descent page runs dark-first and keeps its
+  // ink light the whole way down.
+  const fadeMode: FadeMode = root.dataset.fade === 'descent' ? 'descent' : 'dawn';
+  const bgLerp = gsap.utils.interpolate(fadeModes.dawn.from, fadeModes.dawn.to);
+  const descent = fadeModes.descent;
+  const toFloor = gsap.utils.interpolate(descent.from, descent.floor);
+  const toBack = gsap.utils.interpolate(descent.floor, descent.back);
   const inkLerp = gsap.utils.interpolate(INK.from, INK.to);
   const inkDimLerp = gsap.utils.interpolate(INK_DIM.from, INK_DIM.to);
 
@@ -114,19 +128,50 @@ export async function initScroll(): Promise<void> {
   // Fires after fonts/images/layout shifts too, keeps maxScroll honest.
   ScrollTrigger.addEventListener('refresh', remeasure);
 
+  /**
+   * Descent fade: the viewport centreline walks from the page top to the
+   * top of [data-fade-floor] (from → floor), holds at the floor until it
+   * passes the top of [data-fade-lift], then lifts to `back` over a
+   * viewport and a half. Without markers, the floor is the page bottom.
+   */
+  const descentColor = (): string => {
+    const y = window.scrollY + window.innerHeight * 0.5;
+    // A marker still gated shut (hidden) has no geometry; until it shows,
+    // the floor is the page bottom, as in the prototype before Elysium.
+    const shown = (sel: string) => {
+      const el = document.querySelector<HTMLElement>(sel);
+      return el && !el.hidden && el.getClientRects().length > 0 ? el : null;
+    };
+    const floorEl = shown('[data-fade-floor]');
+    const liftEl = shown('[data-fade-lift]');
+    const top = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY;
+    if (!floorEl) {
+      const p = maxScroll > 0 ? clamp01(window.scrollY / maxScroll) : 0;
+      return toFloor(clamp01(p * 1.1));
+    }
+    const floorAt = Math.max(1, top(floorEl));
+    if (y < floorAt) return toFloor(clamp01(y / floorAt));
+    if (!liftEl) return descent.floor;
+    const liftAt = top(liftEl);
+    if (y < liftAt) return descent.floor;
+    return toBack(clamp01((y - liftAt) / (window.innerHeight * 1.5)));
+  };
+
   const applyFade = (p: number) => {
-    const bg = bgLerp(p);
+    const bg = fadeMode === 'descent' ? descentColor() : bgLerp(p);
     body.style.backgroundColor = bg;
     // Mirrored as a custom property so the copy scrim (global.css) can
     // tint itself to the live background instead of a fixed colour.
     root.style.setProperty('--bg-current', bg);
     root.style.setProperty('--scroll-progress', String(p));
-    const inkT = smoothstep(INK_CROSS.start, INK_CROSS.end, p);
+    // Ink crossover only on the dawn fade: a descent page never brightens.
+    const inkT = fadeMode === 'descent' ? 0 : smoothstep(INK_CROSS.start, INK_CROSS.end, p);
     root.style.setProperty('--ink', inkLerp(inkT));
     root.style.setProperty('--ink-dim', inkDimLerp(inkT));
   };
 
   let lastY = window.scrollY;
+  let lastFadeY = -1;
   let lastProgress = -1;
   let velocity = 0; // smoothed, px/s, +down
 
@@ -141,7 +186,10 @@ export async function initScroll(): Promise<void> {
     velocity += (instant - velocity) * Math.min(1, dt * 8);
     if (Math.abs(velocity) < 0.5 && instant === 0) velocity = 0;
 
-    const moved = progress !== lastProgress;
+    // The descent fade is position-derived from live layout, not from page
+    // progress alone, so it repaints whenever the page has moved at all.
+    const moved = progress !== lastProgress || (fadeMode === 'descent' && y !== lastFadeY);
+    lastFadeY = y;
     if (moved) {
       lastProgress = progress;
       // Reduced motion still gets the fade, it is position-derived, not
@@ -165,10 +213,17 @@ export async function initScroll(): Promise<void> {
   );
   const byId = new Map(sectionEls.map((el) => [el.dataset.section as SectionId, el]));
 
+  // Gated reveals: a page that shows sections under script (The Unseen One)
+  // reports the height change, and every trigger re-measures.
+  on('iw:layout', () => {
+    remeasure();
+    ScrollTrigger.refresh();
+  });
+
   // Seed --active-accent with a concrete color so gsap has an interpolation
   // origin (the stylesheet default is fine for pre-hydration paint only).
-  const firstId = sectionEls[0]?.dataset.section as SectionId | undefined;
-  gsap.set(root, { '--active-accent': accents[firstId ?? 'hero'] ?? accents.hero });
+  const firstId = sectionEls[0]?.dataset.section;
+  gsap.set(root, { '--active-accent': (firstId && accentFor(firstId)) || accents.hero });
 
   const setAccent = (color: string) => {
     if (reduced) {
@@ -206,22 +261,25 @@ export async function initScroll(): Promise<void> {
     });
 
     // 6. Accent handoff, a section is "active" while it straddles the
-    // viewport centerline.
-    if (accents[id]) {
+    // viewport centerline. Aliased ids (unseen-*, pharmakon-*) resolve too.
+    const accent = accentFor(id);
+    if (accent) {
       ScrollTrigger.create({
         trigger: el,
         start: 'top 50%',
         end: 'bottom 50%',
         onToggle: (self) => {
-          if (self.isActive) setAccent(accents[id]);
+          if (self.isActive) setAccent(accent);
         },
       });
     }
 
-    // 5. Copy reveal staggered to the 7/8 meter.
+    // 5. Copy reveal staggered to the 7/8 meter. A section whose island
+    // reveals its own copy (data-copy-reveal="manual") is left alone.
     const copy = el.querySelector<HTMLElement>('.copy');
     const children = copy ? (Array.from(copy.children) as HTMLElement[]) : [];
-    if (copy && children.length && !reduced) {
+    const manual = el.dataset.copyReveal === 'manual';
+    if (copy && children.length && !reduced && !manual) {
       copy.classList.add('iw-revealing');
       gsap.set(children, { autoAlpha: 0, y: 28 });
       const tl = gsap.timeline({

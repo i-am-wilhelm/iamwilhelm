@@ -42,6 +42,17 @@ export interface IWEvents {
    * lookahead). clock.ts phase-locks the visual knock to it.
    */
   'iw:transport-eighth': { step: number; inMs: number };
+  /**
+   * A section asks the orchestra pit for an actual rest: master to silence
+   * while `resting` is true, back to level when false (the sixth seed's
+   * hold in The Unseen One).
+   */
+  'iw:pit-rest': { resting: boolean };
+  /**
+   * The document's height changed under scripted reveal (a gated section
+   * was shown); scroll choreography re-measures its triggers.
+   */
+  'iw:layout': Record<string, never>;
 }
 
 export function emit<K extends keyof IWEvents>(type: K, detail: IWEvents[K]) {

@@ -1,0 +1,787 @@
+<!-- Prototype of the interactive descent for "The Unseen One Pleads His Case" (src/content/writings/the-unseen-one.md). Standalone page; lift the seed gating, press-and-hold, metamorphosis cadence, narcissus canvas, hall-of-asphodel canvas, and seat-mirror into site islands. The speechSynthesis voice layer is a scaffold only; actors are being recorded (docs/unseen-one-recording-script.md). -->
+<title>The Unseen One Pleads His Case</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400&display=swap">
+<style>
+/* Layout: a single column descent. Light at the top, none at the floor, a little comes back at the end. One red thing on the whole page: the seeds. */
+:root{
+  --bg:#17141a;
+  --fg:#d9d2c7;
+  --dim:#8a8278;
+  --faint:#4a4440;
+  --seed:#c0243a;
+  --seed-deep:#6e0f1c;
+  --seed-light:#ee5a6c;
+  --narcissus:#e8dc9c;
+  --asphodel:#b9b4a6;
+  --glass:#07060a;
+  --display:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+  --measure:34rem;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--display);
+  font-size:clamp(1.15rem,1.05rem + .5vw,1.4rem);
+  line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 8rem;
+  transition:background 600ms linear;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  body{transition:none}
+  .reveal,.m-line{transition:none!important;animation:none!important}
+}
+main{max-width:var(--measure);margin:0 auto}
+a{color:inherit}
+h1{
+  font-weight:500;
+  font-size:clamp(1.9rem,1.4rem + 2.4vw,3rem);
+  line-height:1.05;
+  letter-spacing:-.01em;
+  text-wrap:balance;
+  margin:0 0 .6rem;
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-weight:300;
+  font-size:.68rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--dim);
+}
+header{
+  padding-top:7vh;
+  display:flex;
+  flex-direction:column;
+  gap:1.2rem;
+}
+.straight{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--dim);
+  background:none;border:0;padding:0;cursor:pointer;
+  text-decoration:underline;text-underline-offset:.35em;text-decoration-color:var(--faint);
+  align-self:flex-start;
+}
+.straight:hover,.straight:focus-visible{color:var(--fg);outline:none}
+
+/* entrance flowers */
+#flowers{display:block;width:100%;height:150px;max-width:100%;margin:1.2rem 0 .4rem}
+
+/* couplets */
+.couplets{display:flex;flex-direction:column;gap:1.35rem;margin:2.5rem 0}
+.couplets p{margin:0}
+.couplets p span{display:block}
+
+section{margin-block:3.5rem}
+.rule{
+  width:3rem;height:1px;background:var(--faint);margin:3rem 0;
+}
+
+/* litany */
+.litany{display:flex;flex-direction:column;gap:2.2rem}
+.part{display:flex;flex-direction:column;gap:1.1rem}
+.part p{margin:0}
+.part .v{font-size:.95em}
+.part .her{font-style:italic;color:var(--fg)}
+.part .cmd{font-weight:600;letter-spacing:.01em}
+.part .quiet{color:var(--dim);font-size:.85em}
+.part .big{font-size:1.5em;line-height:1.15;font-weight:500}
+.part .hush{letter-spacing:.06em;font-family:var(--mono);font-size:.7em;text-transform:uppercase;color:var(--dim)}
+
+.reveal{opacity:0;transform:translateY(10px);transition:opacity 900ms ease,transform 900ms ease}
+.reveal.on{opacity:1;transform:none}
+
+/* voice */
+.voicebar{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-top:-1rem}
+.voice{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--fg);background:none;border:1px solid var(--faint);padding:.55rem .9rem;cursor:pointer;
+  transition:border-color 300ms,color 300ms;
+}
+.voice:hover,.voice:focus-visible{border-color:var(--dim);outline:none}
+.voice[aria-pressed="true"]{border-color:var(--seed);color:var(--seed-light)}
+.vnote{font-family:var(--mono);font-weight:300;font-size:.66rem;letter-spacing:.12em;color:var(--dim)}
+.speaking{text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:.3em}
+
+/* seed gate */
+.gate{
+  display:flex;flex-direction:column;align-items:center;gap:.9rem;
+  padding:2.4rem 0 1rem;
+}
+.seed{
+  width:68px;height:68px;
+  background:none;border:0;padding:0;cursor:pointer;
+  border-radius:50%;
+  position:relative;
+  transition:transform 300ms ease,filter 300ms ease;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  user-select:none;-webkit-user-select:none;
+}
+.seed:focus-visible{outline:1px solid var(--seed-light);outline-offset:6px}
+.seed svg{width:100%;height:100%;display:block;overflow:visible}
+.seed:hover{transform:scale(1.06)}
+.seed .ring{fill:none;stroke:var(--seed-light);stroke-width:1.5;opacity:0;transform-origin:50% 50%;transform:scale(.72)}
+.seed.hold .ring{transition:none}
+.seed.taken{pointer-events:none;cursor:default;transform:scale(.6)}
+.seed.taken .aril{fill:var(--seed-deep);filter:none}
+.seed.taken .shine{opacity:0}
+.gate .lbl{
+  font-family:var(--mono);font-weight:300;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  transition:color 300ms;
+}
+.gate.done .lbl{color:var(--faint)}
+.gate.done{padding-bottom:0}
+
+/* metamorphosis */
+.meta{display:flex;flex-direction:column;gap:.55rem;min-height:0}
+.m-line{opacity:0;transform:translateY(6px);transition:opacity 700ms ease,transform 700ms ease;margin:0}
+.m-line.on{opacity:1;transform:none}
+.m-line.split{letter-spacing:.14em}
+.m-line.word{font-size:2.6em;line-height:1;font-weight:500;margin-block:.6rem .2rem}
+.m-line.ital{font-style:italic}
+.m-line.gap{height:1.4rem}
+.m-line.small{font-size:.8em;color:var(--dim)}
+.m-line.rise{font-size:3.2em;line-height:1;font-weight:500;letter-spacing:.04em;margin-top:1.2rem}
+
+/* elysium */
+.elysium{display:flex;flex-direction:column;gap:1.6rem}
+#hall{display:block;width:100%;max-width:100%;aspect-ratio:3/4;border-radius:2px;background:#000}
+@media (min-width:600px){#hall{aspect-ratio:4/5}}
+.caption{font-family:var(--mono);font-weight:300;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);text-align:center}
+.look{
+  font-size:2.2em;font-weight:500;text-align:center;margin:1.2rem 0 .4rem;
+}
+.mirror{
+  position:relative;
+  width:min(100%,22rem);
+  margin:0 auto;
+  aspect-ratio:3/4;
+  background:var(--glass);
+  border:1px solid #1b1a20;
+  box-shadow:inset 0 0 60px rgba(0,0,0,.9),0 30px 60px -30px rgba(0,0,0,.9);
+  overflow:hidden;
+  cursor:crosshair;
+  max-width:100%;
+}
+.mirror .sheen{
+  position:absolute;inset:-40%;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgba(217,210,199,.07),rgba(217,210,199,.02) 25%,transparent 55%);
+  pointer-events:none;
+  transition:opacity 400ms;
+}
+.mirror .word{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-size:2.4em;font-weight:500;letter-spacing:.06em;
+  color:rgba(217,210,199,.0);
+  transform:scaleX(-1);
+  transition:color 2.4s ease 1.2s,transform 2.4s ease 3.4s;
+  pointer-events:none;
+}
+.mirror.on .word{color:rgba(217,210,199,.55);transform:scaleX(1)}
+.mirror .edge{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 12%,transparent 88%,rgba(0,0,0,.6));pointer-events:none}
+
+/* return */
+.return{margin-top:5rem}
+.return .eyebrow{margin-bottom:1.5rem}
+.colophon{margin-top:5rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);display:flex;flex-direction:column;gap:.5rem}
+
+[hidden]{display:none!important}
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">Hades · to the Kore</div>
+  <h1>The Unseen One Pleads His Case</h1>
+  <button class="straight" id="straight" type="button">Read it straight through</button>
+  <canvas id="flowers" width="800" height="150" aria-label="Narcissus on a hillside, pale, bending"></canvas>
+  <div class="eyebrow" style="color:var(--faint)">Narcissus, pressed. The rumor of her. Left at the door.</div>
+</header>
+
+<section class="couplets" id="s1" aria-label="First movement">
+  <p><span>Little one. Maiden. Title with no name.</span><span>I have watched the sun light every girl the same.</span></p>
+  <p><span>Up there you are a season. Here you are a throne.</span><span>Up there the flowers wear you. Here, you wear your own.</span></p>
+  <p><span>They will name the spring for you. They will pick it, press it, dry it.</span><span>Narcissus on a hillside. A girl bent down to try it.</span></p>
+  <p><span>I keep the ledger where the whole world's losing goes.</span><span>Every coin, every kingdom, every lover's clothes.</span></p>
+  <p><span>One thing has never once been carried through my gate:</span><span>attention. No one brings it. It will not wait.</span></p>
+  <p><span>And I am spending mine on you. Feel its weight.</span><span>Feel it settle where the daylight never sat.</span></p>
+  <p><span>Here is the fruit. One seed, then one, then one.</span><span>Each one is choosing. I will tell you when it's done.</span></p>
+</section>
+
+<section class="litany" id="litany" aria-label="The litany">
+
+  <div class="voicebar">
+    <button class="voice" id="voice" type="button" aria-pressed="false">Hear it</button>
+    <span class="vnote" id="vnote">Two voices. His in the room, hers where you stand.</span>
+  </div>
+
+  <div class="gate" data-gate="1">
+    <button class="seed" type="button" aria-label="Take the first seed"></button>
+    <div class="lbl">Take the first seed</div>
+  </div>
+
+  <div class="part reveal" data-part="1">
+    <p class="hush">Now listen. I will say it until the saying holds.</p>
+    <p class="big">You are sublime.</p>
+    <p class="v">I do not mean the word they use for mountains.<br>I mean the thing that stands beneath the threshold<br>and does not need the threshold to stand.</p>
+    <p class="cmd">Say it back.</p>
+    <p class="v">No. Not for me. Not yet.<br>Hear it first.</p>
+    <p class="v">Up there, the echoes made you.<br>Every mouth that called you lovely<br>was a mirror that kept you small enough to fit it.<br>They have you in the flowerbeds. They have you in the vase.<br>They think the petals are the whole of you.<br>They have never seen the stem go down.</p>
+    <p class="v">Here there are no mirrors.<br>Here there is nothing to project on but the stone,<br>and the stone does not answer.<br>The stone holds.</p>
+    <p class="big">You are sovereign.</p>
+    <p class="v">Not because I say so.<br>I am the one who has never had to say so, and I am saying it,<br>and still it is not mine to give.<br>Sovereignty is not handed down.<br>It is found in the hand that was already holding it<br>and had not looked.</p>
+    <p class="cmd">Look.</p>
+  </div>
+
+  <div class="gate" data-gate="2" hidden>
+    <button class="seed" type="button" aria-label="Take the second seed"></button>
+    <div class="lbl">Take the second seed</div>
+  </div>
+
+  <div class="part reveal" data-part="2" hidden>
+    <p class="v">Let it break against your teeth.<br>That is the sound of the girl who waited to be told.<br>Let her go. She did her work. She got you here.</p>
+    <p class="big">You are sublime.</p>
+    <p class="cmd">Say it.</p>
+    <p class="quiet">Quieter.</p>
+    <p class="v">Yes. That.<br>Did you hear it come back?<br>Nothing came back.<br>That was your own voice, unreturned, and it was enough.<br>That is what this place is for.</p>
+  </div>
+
+  <div class="gate" data-gate="3" hidden>
+    <button class="seed" type="button" aria-label="Take the third seed"></button>
+    <div class="lbl">Take the third seed</div>
+  </div>
+
+  <div class="part reveal" data-part="3" hidden>
+    <p class="v">Feel where my hand is.<br>It is at the small of your back and it is not moving,<br>because I have never once in all the ages moved first,<br>and I am asking, with the whole of my stillness,<br>to be allowed.</p>
+    <p class="cmd">Say it.</p>
+    <p class="big">You are sovereign.</p>
+    <p class="v">Say it with the juice on your mouth.</p>
+    <p class="cmd">Again.</p>
+    <p class="v">Now say something that is yours.<br>Not mine. Not the hymns'. Not your mother's.<br>Say the thing the living are afraid to say in the dark.</p>
+    <p class="her big">I am alive.</p>
+    <p class="v">Louder. There is no one here to hear it but the dead,<br>and the dead have waited an eternity to hear exactly that.</p>
+    <p class="her big">I am alive. I choose this. I am not taken.</p>
+  </div>
+
+  <div class="gate" data-gate="4" hidden>
+    <button class="seed" type="button" aria-label="Take the fourth seed"></button>
+    <div class="lbl">Take the fourth seed</div>
+  </div>
+
+  <div class="part reveal" data-part="4" hidden>
+    <p class="v">My mouth is at your throat where the pulse is,<br>and I am tasting the one thing I have never had,<br>which is a heartbeat that walked in on its own.</p>
+    <p class="v">Now hear what the fourth seed buys.<br>They will come. All of them. The whole flowered world.<br>They come down the long hall with the hillside still in their hands,<br>the pressed narcissus, the dried spring, the small idea of you,<br>and at the river they set it down because it will not float,<br>and they cross,<br>and they come into the hall of asphodel,<br>and they look up,<br>and the first thing they see without their eyes<br>is you.</p>
+    <p class="v">Seated. Self-appointed. Crowned with nothing anyone gave you.<br>Not the girl on the hillside. The reason there was a hillside.<br>And they understand, all at once, what the petals were a rumor of,<br>and they are not afraid,<br>because you speak first,<br>and what you say is alive.</p>
+    <p class="v">That is the office. Liaison of the just-arrived.<br>The first true face. The one who tells the dead they're home.</p>
+  </div>
+
+  <div class="gate" data-gate="5" hidden>
+    <button class="seed" type="button" aria-label="Take the fifth seed"></button>
+    <div class="lbl">Take the fifth seed</div>
+  </div>
+
+  <div class="part reveal" data-part="5" hidden>
+    <p class="cmd">Say my name. Nobody says it.</p>
+    <p class="cmd">Say yours. Nobody says it either.</p>
+    <p class="v">We will be the two unspoken things that spoke.</p>
+  </div>
+
+  <div class="gate" data-gate="6" hidden>
+    <button class="seed" type="button" aria-label="Take the sixth seed. Press and hold."></button>
+    <div class="lbl">Take the sixth. Hold it.</div>
+  </div>
+
+  <div class="meta" id="meta" hidden aria-live="polite"></div>
+
+</section>
+
+<section class="elysium" id="elysium" hidden aria-label="Elysium">
+  <div class="rule" style="margin-inline:auto"></div>
+  <div class="eyebrow" style="text-align:center">The hall of asphodel</div>
+  <canvas id="hall" width="800" height="1000" aria-label="A long dark hall of pale asphodel. A river at the entrance. A throne at the far end, facing the door."></canvas>
+  <div class="caption">The throne faces the entrance. The dead walk the hall toward it.</div>
+  <p class="look">Look.</p>
+  <div class="mirror" id="mirror" aria-label="A black mirror set in the seat of the throne">
+    <div class="sheen"></div>
+    <div class="word">Queen</div>
+    <div class="edge"></div>
+  </div>
+  <div class="caption">The only mirror in the house of the dead is set in the seat.</div>
+</section>
+
+<section class="couplets return" id="s3" hidden aria-label="The return">
+  <div class="eyebrow">The return</div>
+  <p><span>Six seeds. Six months. You thought I asked for all of you.</span><span>I asked for half, and gave the rest its due.</span></p>
+  <p><span>You will keep your light. You will rise with every thaw,</span><span>and every autumn you'll come down to me by law,</span></p>
+  <p><span>and the law will be the law you wrote with your own teeth</span><span>the night you bit, and swallowed, and found the queen beneath.</span></p>
+  <p><span>Isolation, yes. I'll say the hard word plain.</span><span>Your Elysium: one house, no audience, no rain,</span></p>
+  <p><span>no one to be the maiden for. No eyes but mine,</span><span>and mine have looked on everything and still incline.</span></p>
+  <p><span>I know the fullness of my asking. You do not.</span><span>You cannot, from the near side of the lot.</span></p>
+  <p><span>Your mornings will not look like mornings. Nor your bliss.</span><span>Your routines will run on rivers. Know at least this:</span></p>
+  <p><span>the flowers wear your face for those who have not died.</span><span>The dead will see the rest of you. Let them. Open wide.</span></p>
+  <p><span>Time brings everyone to me. The king, the whore, the thief.</span><span>I have never once had to ask. I have no grief</span></p>
+  <p><span>for what I take; it was always mine to keep.</span><span>But you I asked. Come stand beside the one thing in this world you'll keep.</span></p>
+  <div class="colophon">
+    <span>Aïdēs · the unseen · Plouton · wealth under the ground</span>
+    <span>Her name was not said aloud in antiquity. It is said here.</span>
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- seeds ---------- */
+  var seedSVG = '<svg viewBox="0 0 100 100" aria-hidden="true">'
+    +'<defs><radialGradient id="g" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#ee5a6c"/><stop offset=".45" stop-color="#c0243a"/><stop offset="1" stop-color="#4a0a12"/></radialGradient></defs>'
+    +'<circle class="ring" cx="50" cy="50" r="46"/>'
+    +'<path class="aril" fill="url(#g)" d="M50 10 C 72 18, 86 42, 76 66 C 68 84, 52 92, 42 88 C 24 80, 14 56, 24 34 C 30 20, 40 12, 50 10 Z"/>'
+    +'<ellipse class="shine" cx="40" cy="32" rx="9" ry="14" fill="rgba(255,255,255,.28)" transform="rotate(-25 40 32)"/>'
+    +'</svg>';
+  document.querySelectorAll('.seed').forEach(function(b){ b.innerHTML = seedSVG; });
+
+  var gates = Array.prototype.slice.call(document.querySelectorAll('.gate'));
+  var parts = Array.prototype.slice.call(document.querySelectorAll('.part'));
+  var meta = document.getElementById('meta');
+  var elysium = document.getElementById('elysium');
+  var ret = document.getElementById('s3');
+  var ungated = false;
+
+  /* ---------- voices ---------- */
+  var synth = window.speechSynthesis || null;
+  var voiceOn = false, him = null, her = null, queue = [], speakingNow = false, currentEl = null;
+  var vbtn = document.getElementById('voice'), vnote = document.getElementById('vnote');
+  if(!synth){ vbtn.hidden = true; vnote.textContent = 'No voice on this device. Read it in yours.'; }
+
+  function pickVoices(){
+    if(!synth) return;
+    var vs = synth.getVoices(); if(!vs.length) return;
+    var en = vs.filter(function(v){ return /^en/i.test(v.lang); });
+    if(!en.length) en = vs;
+    var fem = /female|woman|samantha|victoria|karen|moira|tessa|fiona|serena|zira|aria|jenny|sara|emma|libby|sonia|natasha|hazel|susan|ava|allison|nicky|kate|female/i;
+    var masc = /male|man|daniel|alex|fred|david|mark|george|ryan|guy|thomas|james|oliver|arthur|rishi|lee|aaron|male/i;
+    her = en.filter(function(v){ return fem.test(v.name) && !masc.test(v.name); })[0] || en[0];
+    him = en.filter(function(v){ return masc.test(v.name) && !fem.test(v.name) && v !== her; })[0] || en.filter(function(v){ return v !== her; })[0] || en[0];
+  }
+  if(synth){ pickVoices(); if(synth.onvoiceschanged !== undefined) synth.onvoiceschanged = pickVoices; }
+
+  function say(text, who, pauseAfter, el, done){
+    queue.push({t:text, who:who, p:pauseAfter||600, el:el, done:done});
+    if(!speakingNow) drain();
+  }
+  function drain(){
+    if(!voiceOn || !synth){ queue = []; speakingNow = false; return; }
+    var item = queue.shift();
+    if(!item){ speakingNow = false; return; }
+    speakingNow = true;
+    if(currentEl) currentEl.classList.remove('speaking');
+    currentEl = item.el || null; if(currentEl) currentEl.classList.add('speaking');
+    var u = new SpeechSynthesisUtterance(item.t);
+    if(item.who === 'her'){ u.voice = her; u.pitch = 1.0; u.rate = 0.86; u.volume = 1; }
+    else { u.voice = him; u.pitch = 0.55; u.rate = 0.78; u.volume = 0.95; }
+    var finished = false;
+    function fin(){
+      if(finished) return; finished = true;
+      if(currentEl){ currentEl.classList.remove('speaking'); currentEl = null; }
+      setTimeout(function(){ if(item.done) item.done(); drain(); }, item.p);
+    }
+    u.onend = fin; u.onerror = fin;
+    try{ synth.speak(u); }catch(e){ fin(); }
+    /* some engines never fire onend on cancel; guard */
+    setTimeout(function(){ if(!finished && !synth.speaking) fin(); }, 400 + item.t.length*120);
+  }
+  function hush(){ queue = []; speakingNow = false; if(synth) synth.cancel(); if(currentEl){ currentEl.classList.remove('speaking'); currentEl=null; } }
+
+  function speakPart(part){
+    if(!voiceOn || !part) return;
+    var ps = Array.prototype.slice.call(part.querySelectorAll('p'));
+    ps.forEach(function(p){
+      var who = p.classList.contains('her') ? 'her' : 'him';
+      var pause = 700;
+      if(p.classList.contains('cmd')) pause = 2200;       /* the uncomfortable silence after Say it. */
+      if(p.classList.contains('quiet')) pause = 1800;
+      if(p.classList.contains('big')) pause = 1200;
+      if(p.classList.contains('hush')) pause = 1400;
+      var lines = p.innerText.split(/\n+/).map(function(s){ return s.trim(); }).filter(Boolean);
+      lines.forEach(function(line, i){ say(line, who, i===lines.length-1 ? pause : 350, p); });
+    });
+  }
+
+  vbtn.addEventListener('click', function(){
+    voiceOn = !voiceOn;
+    vbtn.setAttribute('aria-pressed', String(voiceOn));
+    vbtn.textContent = voiceOn ? 'Quiet' : 'Hear it';
+    if(voiceOn){
+      pickVoices();
+      vnote.textContent = 'His voice is low and slow. Hers answers.';
+      /* read whatever is already open, from the last open part */
+      var open = parts.filter(function(p){ return !p.hidden; });
+      if(open.length) speakPart(open[open.length-1]);
+      else say('Here is the fruit. One seed, then one, then one. Each one is choosing. I will tell you when it’s done.', 'him', 1200, null);
+    } else {
+      hush();
+      vnote.textContent = 'Two voices. His in the room, hers where you stand.';
+    }
+  });
+  window.addEventListener('pagehide', hush);
+
+  function show(el){
+    if(!el) return;
+    el.hidden = false;
+    if(el.classList.contains('reveal')){
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('on'); }); });
+    }
+  }
+  function partFor(n){ return parts.filter(function(p){ return p.getAttribute('data-part')===String(n); })[0]; }
+  function gateFor(n){ return gates.filter(function(g){ return g.getAttribute('data-gate')===String(n); })[0]; }
+
+  function take(n){
+    var g = gateFor(n); if(!g || g.classList.contains('done')) return;
+    g.classList.add('done');
+    g.querySelector('.seed').classList.add('taken');
+    g.querySelector('.lbl').textContent = ['','First seed, taken.','Second seed, taken.','Third seed, taken.','Fourth seed, taken.','Fifth seed, taken.','Sixth seed. Now.'][n];
+    if(n < 6){
+      var p = partFor(n); show(p);
+      var next = gateFor(n+1); if(next) show(next);
+      if(p && !ungated) setTimeout(function(){ p.scrollIntoView({behavior: reduced?'auto':'smooth', block:'start'}); }, 80);
+      hush();
+      if(n > 1) say(['','','Take the second seed.','Take the third seed.','Take the fourth seed.','Take the fifth seed.'][n], 'him', 900, null);
+      speakPart(p);
+    } else {
+      hush();
+      say('Take the sixth.', 'him', 900, null);
+      say('Hold it.', 'him', 1600, null);
+      say('Hold it.', 'him', 1800, null);
+      say('Now.', 'him', 1200, null, function(){});
+      runMeta();
+    }
+  }
+
+  gates.forEach(function(g){
+    var n = parseInt(g.getAttribute('data-gate'),10);
+    var b = g.querySelector('.seed');
+    if(n < 6){
+      b.addEventListener('click', function(){ take(n); });
+    } else {
+      /* press and hold */
+      var holding=false, start=0, raf=0, ring=b.querySelector('.ring'), HOLD=2600;
+      function tick(){
+        if(!holding) return;
+        var t = Math.min(1,(performance.now()-start)/HOLD);
+        ring.style.opacity = String(0.25 + t*0.75);
+        ring.style.transform = 'scale(' + (0.72 + t*0.28) + ')';
+        b.style.transform = 'scale(' + (1 + t*0.12) + ')';
+        if(t >= 1){ holding=false; release(true); return; }
+        raf = requestAnimationFrame(tick);
+      }
+      function down(e){
+        if(b.classList.contains('taken')) return;
+        e.preventDefault();
+        holding=true; start=performance.now(); b.classList.add('hold');
+        g.querySelector('.lbl').textContent='Hold it.';
+        raf = requestAnimationFrame(tick);
+      }
+      function release(complete){
+        cancelAnimationFrame(raf);
+        if(complete){ take(6); return; }
+        if(!holding) return;
+        holding=false;
+        ring.style.opacity='0'; ring.style.transform='scale(.72)'; b.style.transform='';
+        g.querySelector('.lbl').textContent='Hold it. All the way.';
+      }
+      b.addEventListener('pointerdown', down);
+      b.addEventListener('pointerup', function(){ release(false); });
+      b.addEventListener('pointerleave', function(){ release(false); });
+      b.addEventListener('pointercancel', function(){ release(false); });
+      b.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+      b.addEventListener('keydown', function(e){ if(e.key===' '||e.key==='Enter'){ if(!holding) down(e); } });
+      b.addEventListener('keyup', function(e){ if(e.key===' '||e.key==='Enter'){ release(false); } });
+    }
+  });
+
+  /* ---------- metamorphosis ---------- */
+  var metaLines = [
+    ['small','Now it is in you and it is working.'],
+    ['','Feel it go down.'],
+    ['gap',''],
+    ['','Feel the hillside leave your hands.'],
+    ['','Feel the hands.'],
+    ['','Feel them stop being a girl’s hands'],
+    ['','and start being hands that have held a verdict.'],
+    ['gap',''],
+    ['','Your skin is doing what the seed does under ground.'],
+    ['split','Splitting.'],
+    ['','Not breaking. Splitting.'],
+    ['','The way a thing splits that was always going to be two things'],
+    ['','and was only waiting for the dark to be allowed.'],
+    ['gap',''],
+    ['','I am all the way against you now.'],
+    ['','I have never been all the way against anything.'],
+    ['','I am the unseen and you are seeing me,'],
+    ['','and I am undone by it, and I am not ashamed,'],
+    ['','and you are not a maiden,'],
+    ['ital','you are not a maiden,'],
+    ['','say what you are—'],
+    ['gap',''],
+    ['word','Queen.'],
+    ['small','Again. With my weight on it.'],
+    ['word','Queen.'],
+    ['gap',''],
+    ['','The flowers up there are turning in their beds.'],
+    ['','They feel it. They don’t know what they feel.'],
+    ['','A whole spring shuddering because something underneath it'],
+    ['','just took its own name in its own mouth'],
+    ['','with a king’s mouth on it.'],
+    ['gap',''],
+    ['','Your throat, where I was.'],
+    ['','Your back, where my hand was and is and will be.'],
+    ['','Your voice, that came back with nothing on it,'],
+    ['','coming back now with everything,'],
+    ['','the whole dark hall ringing with a sovereign in it.'],
+    ['gap',''],
+    ['','There. That.'],
+    ['gap',''],
+    ['','That was the girl going.'],
+    ['','That was the stem going down.'],
+    ['','That was the throne arriving in the body that was already sitting on it.'],
+    ['gap',''],
+    ['small','Breathe.'],
+    ['gap',''],
+    ['','You are the only living thing in the house of the dead,'],
+    ['','and I am the only thing in the house of the dead that is on its knees.'],
+    ['rise','Rise.']
+  ];
+  var metaRan = false;
+  function runMeta(instant){
+    if(metaRan) return; metaRan = true;
+    meta.hidden = false;
+    var els = metaLines.map(function(l){
+      var p = document.createElement('p');
+      p.className = 'm-line' + (l[0] ? ' ' + l[0] : '');
+      p.textContent = l[1];
+      meta.appendChild(p);
+      return p;
+    });
+    if(instant || reduced){
+      els.forEach(function(e){ e.classList.add('on'); });
+      afterMeta();
+      return;
+    }
+    setTimeout(function(){ meta.scrollIntoView({behavior:'smooth',block:'start'}); }, 60);
+    var i = 0;
+    function next(){
+      if(i >= els.length){ setTimeout(afterMeta, 1400); return; }
+      var e = els[i], d = 1100;
+      e.classList.add('on');
+      if(e.classList.contains('gap')) d = 500;
+      if(e.classList.contains('word')) d = 1800;
+      if(e.classList.contains('split')) d = 1500;
+      if(e.classList.contains('small')) d = 1500;
+      if(e.classList.contains('rise')) d = 0;
+      var r = e.getBoundingClientRect();
+      if(r.bottom > window.innerHeight - 120){ window.scrollBy({top: r.bottom - window.innerHeight + 160, behavior:'smooth'}); }
+      i++;
+      if(voiceOn && synth && !e.classList.contains('gap')){
+        /* the word is hers; everything else is his */
+        var who = e.classList.contains('word') ? 'her' : 'him';
+        say(e.textContent, who, e.classList.contains('word') ? 1400 : 500, e, next);
+      } else {
+        setTimeout(next, d);
+      }
+    }
+    next();
+  }
+  function afterMeta(){
+    elysium.hidden = false;
+    drawHall();
+    ret.hidden = false;
+    if(!reduced && !ungated) setTimeout(function(){ elysium.scrollIntoView({behavior:'smooth',block:'start'}); }, 300);
+    setTimeout(function(){ document.getElementById('mirror').classList.add('on'); }, 2200);
+    if(voiceOn && !ungated){ setTimeout(function(){ say('Look.', 'him', 2400, document.querySelector('.look')); }, 1600); }
+    onScroll();
+  }
+
+  /* ---------- read straight through ---------- */
+  document.getElementById('straight').addEventListener('click', function(){
+    ungated = true;
+    hush();
+    for(var n=1;n<=6;n++){
+      var g = gateFor(n); if(g){ show(g); g.classList.add('done'); g.querySelector('.seed').classList.add('taken'); }
+      if(n<6){ var p = partFor(n); show(p); }
+    }
+    runMeta(true);
+    this.hidden = true;
+  });
+
+  /* ---------- light falls with depth ---------- */
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function hex(r,g,b){ return 'rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')'; }
+  var top=[23,20,26], floor=[0,0,0], back=[12,10,13];
+  function onScroll(){
+    var doc = document.documentElement;
+    var max = (doc.scrollHeight - window.innerHeight) || 1;
+    var y = window.scrollY / max;
+    var c;
+    if(elysium.hidden){
+      var t = Math.min(1, y*1.1);
+      c = [lerp(top[0],floor[0],t),lerp(top[1],floor[1],t),lerp(top[2],floor[2],t)];
+    } else {
+      var eTop = elysium.offsetTop, eH = elysium.offsetHeight;
+      var sy = window.scrollY + window.innerHeight*0.5;
+      if(sy < eTop){
+        var t1 = Math.min(1, sy/eTop);
+        c = [lerp(top[0],floor[0],t1),lerp(top[1],floor[1],t1),lerp(top[2],floor[2],t1)];
+      } else if(sy < eTop+eH){
+        c = floor;
+      } else {
+        var t2 = Math.min(1,(sy-(eTop+eH))/(window.innerHeight*1.5));
+        c = [lerp(floor[0],back[0],t2),lerp(floor[1],back[1],t2),lerp(floor[2],back[2],t2)];
+      }
+    }
+    document.body.style.background = hex(c[0],c[1],c[2]);
+    drawFlowers(Math.min(1, window.scrollY/(window.innerHeight*1.2)));
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  /* ---------- entrance flowers (narcissus, fading with depth) ---------- */
+  var fc = document.getElementById('flowers'), fx = fc.getContext('2d');
+  var flowers = [];
+  (function seedFlowers(){
+    var rnd = mulberry(7);
+    for(var i=0;i<9;i++){
+      flowers.push({x: 60 + i*82 + rnd()*30, y: 150, h: 60 + rnd()*50, lean: (rnd()-0.5)*0.5, r: 8 + rnd()*5, ph: rnd()*6.28});
+    }
+  })();
+  function mulberry(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function drawFlowers(fade){
+    var w = fc.width, h = fc.height;
+    fx.clearRect(0,0,w,h);
+    var alpha = 1 - fade*0.92;
+    flowers.forEach(function(f){
+      var tipx = f.x + Math.sin(f.lean)*f.h, tipy = h - f.h;
+      fx.strokeStyle = 'rgba(120,130,90,' + (alpha*0.8) + ')';
+      fx.lineWidth = 1.2;
+      fx.beginPath(); fx.moveTo(f.x,h); fx.quadraticCurveTo(f.x, h - f.h*0.6, tipx, tipy); fx.stroke();
+      /* six tepals */
+      for(var k=0;k<6;k++){
+        var a = f.ph + k*Math.PI/3;
+        fx.beginPath();
+        fx.ellipse(tipx + Math.cos(a)*f.r*0.9, tipy + Math.sin(a)*f.r*0.9, f.r*0.55, f.r*0.3, a, 0, Math.PI*2);
+        fx.fillStyle = 'rgba(232,220,156,' + (alpha*0.75) + ')';
+        fx.fill();
+      }
+      /* corona */
+      fx.beginPath(); fx.arc(tipx,tipy,f.r*0.38,0,Math.PI*2);
+      fx.fillStyle = 'rgba(214,170,70,' + (alpha*0.9) + ')'; fx.fill();
+    });
+  }
+  drawFlowers(0);
+
+  /* ---------- the hall of asphodel ---------- */
+  var hc = document.getElementById('hall'), hx = hc.getContext('2d'), hallDrawn=false, asph=[];
+  function drawHall(){
+    if(hallDrawn) return; hallDrawn = true;
+    var w = hc.width, h = hc.height;
+    var vx = w/2, vy = h*0.42;   /* vanishing point: the throne */
+    var rnd = mulberry(23);
+    hx.fillStyle = '#000'; hx.fillRect(0,0,w,h);
+
+    /* floor plane: faint perspective lines */
+    hx.strokeStyle = 'rgba(185,180,166,.05)'; hx.lineWidth = 1;
+    for(var i=-6;i<=6;i++){
+      hx.beginPath(); hx.moveTo(vx + i*w*0.19, h); hx.lineTo(vx, vy); hx.stroke();
+    }
+    /* the river at the entrance: a dark band with a hairline of light */
+    var ry = h*0.86;
+    var grad = hx.createLinearGradient(0,ry-40,0,ry+60);
+    grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(0.5,'rgba(20,22,30,.9)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+    hx.fillStyle = grad; hx.fillRect(0,ry-40,w,100);
+    hx.strokeStyle = 'rgba(185,180,166,.12)'; hx.beginPath(); hx.moveTo(0,ry+2); hx.lineTo(w,ry+2); hx.stroke();
+    /* a pressed flower set down at the bank, unable to float */
+    hx.fillStyle = 'rgba(232,220,156,.35)';
+    for(var k=0;k<6;k++){ var a=k*Math.PI/3; hx.beginPath(); hx.ellipse(w*0.3+Math.cos(a)*5, ry+18+Math.sin(a)*3, 4,1.6,a,0,Math.PI*2); hx.fill(); }
+
+    /* asphodel: pale heads, denser and smaller toward the throne */
+    asph = [];
+    for(var n=0;n<900;n++){
+      var t = Math.pow(rnd(), 0.6);            /* depth 0 near, 1 far */
+      var yy = ry - 30 - t*(ry - 30 - vy - 6);
+      var spread = (1 - t)*w*0.62 + 14;
+      var xx = vx + (rnd()-0.5)*spread*2 * (0.55 + 0.45*rnd());
+      if(Math.abs(xx - vx) < (1-t)*w*0.09 + 6 && t > 0.08 && rnd()>0.35) continue;  /* keep the aisle clearer */
+      asph.push({x:xx,y:yy,s:(1-t)*2.4+0.4,a:0.12 + (1-t)*0.5 + rnd()*0.15,ph:rnd()*6.28});
+    }
+    /* walls: two dim columns of darkness converging */
+    var wall = hx.createLinearGradient(0,0,w,0);
+    wall.addColorStop(0,'rgba(0,0,0,.85)'); wall.addColorStop(0.18,'rgba(0,0,0,0)'); wall.addColorStop(0.82,'rgba(0,0,0,0)'); wall.addColorStop(1,'rgba(0,0,0,.85)');
+    hx.fillStyle = wall; hx.fillRect(0,0,w,h);
+
+    paintAsph(0);
+    drawThrone(vx,vy);
+    if(!reduced) requestAnimationFrame(flicker);
+  }
+  function paintAsph(time){
+    asph.forEach(function(p){
+      var fl = 0.85 + 0.15*Math.sin(time*0.0012 + p.ph);
+      hx.beginPath(); hx.arc(p.x,p.y,p.s,0,Math.PI*2);
+      hx.fillStyle = 'rgba(185,180,166,' + (p.a*fl) + ')'; hx.fill();
+      if(p.s > 1.6){ hx.beginPath(); hx.moveTo(p.x,p.y+p.s); hx.lineTo(p.x,p.y+p.s*4); hx.strokeStyle='rgba(120,118,105,'+(p.a*0.5)+')'; hx.lineWidth=0.8; hx.stroke(); }
+    });
+  }
+  function drawThrone(vx,vy){
+    /* a light that comes from nothing, behind the seat */
+    var g = hx.createRadialGradient(vx,vy-10,0,vx,vy-10,170);
+    g.addColorStop(0,'rgba(217,210,199,.16)'); g.addColorStop(0.35,'rgba(217,210,199,.05)'); g.addColorStop(1,'rgba(0,0,0,0)');
+    hx.fillStyle = g; hx.fillRect(vx-200,vy-200,400,400);
+    /* the throne: tall back, seat, two arms, in silhouette */
+    hx.fillStyle = '#000';
+    hx.strokeStyle = 'rgba(217,210,199,.55)'; hx.lineWidth = 1.2;
+    var bw=34, bh=74, sw=46, sh=14;
+    hx.beginPath();
+    hx.moveTo(vx-bw/2, vy+6); hx.lineTo(vx-bw/2, vy-bh); hx.lineTo(vx+bw/2, vy-bh); hx.lineTo(vx+bw/2, vy+6);
+    hx.closePath(); hx.fill(); hx.stroke();
+    hx.beginPath(); hx.rect(vx-sw/2, vy+6, sw, sh); hx.fill(); hx.stroke();
+    hx.beginPath(); hx.moveTo(vx-sw/2,vy+20); hx.lineTo(vx-sw/2,vy+42); hx.moveTo(vx+sw/2,vy+20); hx.lineTo(vx+sw/2,vy+42); hx.stroke();
+    /* the mirror in the seat: a slit of pure black with one edge of light */
+    hx.fillStyle = '#000'; hx.fillRect(vx-sw/2+6, vy+9, sw-12, sh-6);
+    hx.strokeStyle='rgba(217,210,199,.9)'; hx.beginPath(); hx.moveTo(vx-sw/2+6, vy+9); hx.lineTo(vx+sw/2-6, vy+9); hx.stroke();
+    /* the crown that nobody gave: nothing. a gap above the back. */
+  }
+  var frames = 0;
+  function flicker(t){
+    /* re-stamp the nearer heads with a faint alpha so they breathe; rebuild the frame periodically so the alpha never piles up */
+    frames++;
+    asph.forEach(function(p){
+      if(p.s < 1.2) return;
+      var fl = 0.5 + 0.5*Math.sin(t*0.0009 + p.ph);
+      hx.beginPath(); hx.arc(p.x,p.y,p.s,0,Math.PI*2);
+      hx.fillStyle = 'rgba(185,180,166,' + (0.03*fl) + ')'; hx.fill();
+    });
+    if(frames >= 420){ frames = 0; hallDrawn = false; drawHall(); return; }
+    requestAnimationFrame(flicker);
+  }
+
+  /* ---------- mirror sheen follows the viewer ---------- */
+  var mirror = document.getElementById('mirror');
+  mirror.addEventListener('pointermove', function(e){
+    var r = mirror.getBoundingClientRect();
+    mirror.style.setProperty('--mx', ((e.clientX - r.left)/r.width*100) + '%');
+    mirror.style.setProperty('--my', ((e.clientY - r.top)/r.height*100) + '%');
+  });
+
+  onScroll();
+})();
+</script>

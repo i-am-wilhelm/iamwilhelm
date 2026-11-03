@@ -17,6 +17,15 @@ const writings = defineCollection({
     accent: z.string().default('writings'),
     draft: z.boolean().default(false),
     description: z.string().optional(),
+    /**
+     * How /writings/[slug] stages the piece. `museum` is wall text in the
+     * reading room. `descent` renders the same route through Base.astro,
+     * with the WebGL stage, scroll choreography, and the orchestra pit, for
+     * pieces whose movements are marked up as `.section[data-section]`.
+     */
+    treatment: z.enum(['museum', 'descent']).default('museum'),
+    /** Fade mode for the descent treatment (src/design/tokens.ts fadeModes). */
+    fade: z.enum(['dawn', 'descent']).default('dawn'),
   }),
 });
 

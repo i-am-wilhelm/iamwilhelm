@@ -43,9 +43,12 @@ export class PitEngine {
   private stepListeners = new Set<StepListener>();
   private droneNote: string = sections[0].drone; // 'C2'
 
-  // Master chain
+  // Master chain. `rest` sits after the master so a rest is an actual
+  // silence of everything in the pit, drone, knock, motifs and toy alike.
   private limiter = new Tone.Limiter(-6).toDestination();
-  private master = new Tone.Gain(0.4).connect(this.limiter);
+  private rest = new Tone.Gain(1).connect(this.limiter);
+  private master = new Tone.Gain(0.4).connect(this.rest);
+  private resting = false;
 
   // Score voices
   private droneFilter = new Tone.Filter(180, 'lowpass').connect(
@@ -143,6 +146,18 @@ export class PitEngine {
         }
       }, 1800);
     }
+  }
+
+  /**
+   * An actual rest (iw:pit-rest): the whole pit to silence in a short,
+   * unhurried fall, then back to level on release. The transport keeps
+   * counting underneath so the bar phase is intact when sound returns.
+   */
+  setRest(resting: boolean): void {
+    if (this.resting === resting) return;
+    this.resting = resting;
+    this.rest.gain.cancelScheduledValues(Tone.now());
+    this.rest.gain.rampTo(resting ? 0 : 1, resting ? 0.35 : 0.9);
   }
 
   /** Music of the spheres, glide the drone to a section's pitch (e.g. on

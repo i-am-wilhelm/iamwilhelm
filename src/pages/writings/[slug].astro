@@ -7,14 +7,22 @@
  * piece also hangs in the Gallery (same id in the `gallery` collection), the
  * placard links to its interactive page.
  *
+ * A piece with `treatment: descent` in its frontmatter takes the other
+ * branch below: the same route rendered through Base.astro, with the WebGL
+ * stage, the scroll choreography and the orchestra pit live, its movements
+ * read from the markdown as `.section[data-section]`. The Unseen One is the
+ * first of these.
+ *
  * The esoteric treatment of this page (WebGL stage, facecards, PostHeader,
  * Prose) stays in src/components/writings for the archived /atelier side.
  */
 import { getCollection, render } from 'astro:content';
 import Museum from '../../layouts/Museum.astro';
+import Base from '../../layouts/Base.astro';
 import Placard from '../../components/museum/Placard.astro';
 import Meander from '../../components/museum/Meander.astro';
-import { SITE_URL } from '../../config/site';
+import Descent from '../../components/writings/Descent.astro';
+import { SITE_NAME, SITE_URL } from '../../config/site';
 
 export async function getStaticPaths() {
   const posts = await getCollection('writings', ({ data }) => !data.draft);
@@ -30,7 +38,52 @@ const hung = (await getCollection('gallery')).find((g) => g.id === post.id);
 const date = post.data.date;
 const dateLabel = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const url = `${SITE_URL}/writings/${post.id}/`;
+const descent = post.data.treatment === 'descent';
+const fullTitle = `${post.data.title} · Writings · ${SITE_NAME}`;
+const image = new URL('/og.png', SITE_URL).href;
+const article = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${url}#article`,
+  url,
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: date.toISOString(),
+  author: { '@type': 'Person', '@id': `${SITE_URL}/#person`, name: 'Michael Wilhelm', url: `${SITE_URL}/` },
+};
 ---
+
+{
+  descent ? (
+    <Base title={fullTitle} description={post.data.description} fade={post.data.fade}>
+      <Fragment slot="head">
+        <link rel="canonical" href={url} />
+        <meta name="theme-color" content="#17141a" />
+        <meta name="color-scheme" content="dark" />
+        <meta name="author" content="Michael Wilhelm" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="preload" href="/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content={SITE_NAME} />
+        <meta property="og:title" content={fullTitle} />
+        <meta property="og:description" content={post.data.description} />
+        <meta property="og:url" content={url} />
+        <meta property="og:image" content={image} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={fullTitle} />
+        <meta name="twitter:description" content={post.data.description} />
+        <meta name="twitter:image" content={image} />
+        <script type="application/ld+json" set:html={JSON.stringify(article)} />
+      </Fragment>
+      <Descent title={post.data.title} dateLabel={dateLabel}>
+        <Content />
+      </Descent>
+    </Base>
+  ) : (
 
 <Museum
   title={`${post.data.title} · Writings · Michael Wilhelm`}
@@ -81,6 +134,8 @@ const url = `${SITE_URL}/writings/${post.id}/`;
   </article>
   <Meander />
 </Museum>
+  )
+}
 
 <style>
   .post {
