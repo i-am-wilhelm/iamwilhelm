@@ -1,159 +1,95 @@
 /**
- * Client sites for Room III (Advancing Liberty Media / Websites by Wilhelm).
+ * The works on the wall in Room III (Advancing Liberty Media / Websites by
+ * Wilhelm). Four pieces, chosen for what they show rather than how many
+ * there are: the manifesto, the rain, the product site, and the poems.
  *
- * Source of truth: advancing-liberty-media2, src/content/work.ts. Entries
- * are copied verbatim (featured, public cartridges, in cartridge order) and
- * the console screenshots come from that repo's public/work/<slug>.webp. When
- * the ALM portfolio changes, mirror it here.
+ * Pictures live in public/work/<slug>.webp at 960x600 (the ALM captures
+ * come from advancing-liberty-media2's scripts/capture.mjs; the poem still
+ * is a capture of this site's own gallery page).
  *
- * Every URL is checked by scripts/verify-links.mjs (run in the preview
- * deploy workflow). An entry whose link stops resolving gets `hidden: true`
- * until it is fixed; hidden entries are never rendered.
+ * Every outbound URL is checked by scripts/verify-links.mjs in the preview
+ * deploy. An entry whose link stops resolving gets `hidden: true` until it
+ * is fixed; hidden entries are never rendered.
  */
 export interface PortfolioItem {
   slug: string;
-  name: string;
-  /** Race, office, or one-line description. */
-  detail: string;
-  /** Short label printed on the cartridge band. */
-  kind: string;
-  service: string;
-  url: string;
+  title: string;
+  /** Shown in the wall label under the title. */
+  medium: string;
+  /** One or two sentences for the caption beneath the frame. */
+  caption: string;
+  /** Where "Visit the work" goes. Absolute for client sites, a path here. */
+  href: string;
+  /** Printed under the caption. */
   domain: string;
-  tagline: string;
   year: string;
-  /** The gold cartridge. */
-  flagship?: boolean;
-  /** Live scene module in src/scripts/case/live/. */
+  /** Alt text for the picture. */
+  alt: string;
+  /** Live scene module in src/scripts/case/live/, played over the still. */
   live?: 'rain';
+  /** The flagship hangs first and boots on the wall. */
+  flagship?: boolean;
   /** Withheld from the page (see verify-links). */
   hidden?: boolean;
-  /** Sprite name in components/museum/case/sprites.ts; defaults to the slug. */
-  sprite?: string;
 }
 
 const work: PortfolioItem[] = [
   {
     slug: 'the-manifesto',
-    name: 'The Great Libertarian Data Loss',
-    detail: 'An interactive essay on libertariantoolsuite.com',
-    kind: 'Interactive essay',
-    service: 'Interactive design in storytelling',
-    url: 'https://libertariantoolsuite.com/the-manifesto',
+    title: 'The Great Libertarian Data Loss',
+    medium: 'Interactive essay; scroll page with a page that degrades and resolves',
+    caption:
+      'A manifesto that reads like a game. The margins forget as you scroll, the page decays, and a press-and-hold turn resolves it. Written to be lifted: every section quotes cleanly into a post.',
+    href: 'https://libertariantoolsuite.com/the-manifesto',
     domain: 'libertariantoolsuite.com/the-manifesto',
+    year: '2026',
+    alt: 'The opening of The Great Libertarian Data Loss, an interactive essay on libertariantoolsuite.com.',
     flagship: true,
-    sprite: 'torch',
-    tagline: 'A manifesto that reads like a game: the page degrades, then resolves as you turn it.',
-    year: '2026',
-  },
-  {
-    slug: 'lpwa',
-    name: 'Libertarian Party of Washington',
-    detail: 'Washington State',
-    kind: 'State party',
-    service: 'Website by Wilhelm',
-    url: 'https://lpwa.org',
-    domain: 'lpwa.org',
-    tagline: 'A state party site with candidates, county affiliates, and a store.',
-    year: '2026',
   },
   {
     slug: 'greasyporcupines',
-    name: 'Greasy Porcupines',
-    detail: "Mobile mechanics in Arizona's White Mountains",
-    kind: 'Local business',
-    service: 'Website by Wilhelm',
-    url: 'https://greasyporcupines.com',
+    title: 'Greasy Porcupines',
+    medium: 'Website for a mobile mechanic crew in the White Mountains; dispatch form, parts fund',
+    caption:
+      "Headlights in the rain on a two-lane mountain road. A wrench crew's site with a dispatch form, a parts fund, and a door to join. The picture on the wall plays: cars pass, the ridge lights up.",
+    href: 'https://greasyporcupines.com',
     domain: 'greasyporcupines.com',
+    year: '2026',
+    alt: 'The greasyporcupines.com homepage: a night road in the rain.',
     live: 'rain',
-    tagline: 'Headlights in the rain: a wrench crew with a dispatch form, a parts fund, and a door to join.',
-    year: '2026',
-  },
-  {
-    slug: 'electpattiegray',
-    name: 'Pattie Gray',
-    detail: 'Pacific County Commissioner, Position 3',
-    kind: 'Candidate',
-    service: 'Website by Wilhelm',
-    url: 'https://electpattiegray.com',
-    domain: 'electpattiegray.com',
-    tagline: 'A county campaign with donations, events, and volunteers in one place.',
-    year: '2026',
   },
   {
     slug: 'libertariantoolsuite',
-    name: 'Libertarian Tool Suite',
-    detail: 'BackGold for liberty candidates and organizations',
-    kind: 'Product site',
-    service: 'Website by Wilhelm',
-    url: 'https://libertariantoolsuite.com',
+    title: 'Libertarian Tool Suite',
+    medium: 'Product site for BackGold; long-scroll argument, built for search',
+    caption:
+      'One long-scroll argument for one login, sold to one reader: the candidate who has lost a list before. Order from chaos, told through a gentle dither, and the front door to the manifesto.',
+    href: 'https://libertariantoolsuite.com',
     domain: 'libertariantoolsuite.com',
-    tagline: 'One long-scroll argument for one login, sold to one reader.',
     year: '2026',
+    alt: 'The libertariantoolsuite.com homepage.',
   },
   {
-    slug: 'ryanforwyoming',
-    name: 'Ryan Shollenberger',
-    detail: 'Wyoming House District 11',
-    kind: 'Candidate',
-    service: 'Website by Wilhelm',
-    url: 'https://ryanforwyoming.com',
-    domain: 'ryanforwyoming.com',
-    tagline: 'Big sky, short ballot: a district campaign with a clear ask.',
+    slug: 'the-keeper-and-the-flame',
+    title: 'The Visualized Poems',
+    medium: 'Four interactive pages: The Keeper and the Flame, PHARMAKON, The Only Sighted One, Equal Volume',
+    caption:
+      'Poems and essays set on pages you walk through. Lines fall loose on the screen, a beam turns on a seven-second sweep, a vessel fills while you hold it. The newest line of work, and the one growing fastest.',
+    href: '/gallery/',
+    domain: 'iamwilhelm.com/gallery',
     year: '2026',
-  },
-  {
-    slug: 'libertarianleadership',
-    name: 'Libertarian Leadership Academy',
-    detail: 'Training for candidates, campaign staff, and organizers',
-    kind: 'Organization',
-    service: 'Website by Wilhelm',
-    url: 'https://libertarianleadership.org',
-    domain: 'libertarianleadership.org',
-    tagline: "The academy that trains the movement's next candidates.",
-    year: '2026',
-  },
-  {
-    slug: 'justinperoli',
-    name: 'Justin Peroli',
-    detail: 'Ohio House District 66',
-    kind: 'Candidate',
-    service: 'Website by Wilhelm',
-    url: 'https://justinperoli.com',
-    domain: 'justinperoli.com',
-    tagline: 'A statehouse campaign site built to raise from day one.',
-    year: '2026',
-  },
-  {
-    slug: 'donmyers',
-    name: 'Don Myers',
-    detail: 'Washington State House District 13',
-    kind: 'Candidate',
-    service: 'Website by Wilhelm',
-    url: 'https://donmyers4wastaterep13.com',
-    domain: 'donmyers4wastaterep13.com',
-    tagline: 'A legislative campaign with the platform, the plan, and the donate button.',
-    year: '2026',
-  },
-  {
-    slug: 'terpac',
-    name: 'The Existentialist Republic PAC',
-    detail: 'Political action committee',
-    kind: 'PAC',
-    service: 'Website by Wilhelm',
-    url: 'https://terpac.org',
-    domain: 'terpac.org',
-    tagline: 'A PAC site with an argument, a ledger, and a way to give.',
-    year: '2026',
+    alt: 'The Keeper and the Flame: a lighthouse beam over black water, the title set in the night.',
   },
 ];
 
-/** Cartridges, in order, with their two-digit codes. */
+/** The works, in hanging order, with their catalogue numbers. */
 export const portfolio = work
   .filter((w) => !w.hidden)
-  .map((w, i) => ({ ...w, code: String(i + 1).padStart(2, '0'), sprite: w.sprite ?? w.slug }));
+  .map((w, i) => ({ ...w, code: `III.${String(i + 1).padStart(2, '0')}` }));
 
-export type Cart = (typeof portfolio)[number];
+export type Work = (typeof portfolio)[number];
 
 /** Every outbound link the museum depends on, for scripts/verify-links.mjs. */
-export const allPortfolioUrls = work.map((w) => ({ slug: w.slug, url: w.url, hidden: !!w.hidden }));
+export const allPortfolioUrls = work
+  .filter((w) => w.href.startsWith('http'))
+  .map((w) => ({ slug: w.slug, url: w.href, hidden: !!w.hidden }));

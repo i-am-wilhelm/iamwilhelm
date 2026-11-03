@@ -1,275 +1,479 @@
 ---
 /**
- * Room III: Advancing Liberty Media / Websites by Wilhelm. The console and
- * cartridges from advancing-liberty-media2 sit inside a vitrine, keeping
- * their own 16-bit character, while the room around them follows the
- * museum. Client data: src/data/portfolio.ts (mirrors ALM's work.ts).
- * Copy facts come from ALM's src/content/home.ts and about.ts.
+ * Room III: Advancing Liberty Media / Websites by Wilhelm, hung as a studio
+ * wall. One framed picture under a brass picture light, a caption beneath
+ * it, and a column of wall labels that choose which of the four works
+ * hangs there. The works: src/data/portfolio.ts. Behaviour: wall.ts.
  */
 import Room from '../Room.astro';
 import Placard from '../Placard.astro';
-import Console from '../case/Console.astro';
-import Cartridge from '../case/Cartridge.astro';
 import { portfolio } from '../../../data/portfolio';
 import { ALM_URL } from '../../../config/site';
 
-const BOOT = 'lpwa';
-const last = String(portfolio.length).padStart(2, '0');
+const first = portfolio.find((w) => w.flagship) ?? portfolio[0];
+const external = (href: string) => href.startsWith('http');
+const last = portfolio[portfolio.length - 1].code;
 ---
 
 <Room id="work" number={3} sign="gemini" accent="var(--room-iii)" labelledby="work-title">
-  <div class="alm wrap">
-    <div class="alm__head">
+  <div class="studio wrap">
+    <div class="studio__head">
       <Placard
         id="work-title"
-        label="Room III · The Collection"
+        label="Room III · The Studio"
         title="Advancing Liberty Media"
         subtitle="Websites by Wilhelm"
-        medium="Campaign websites and digital infrastructure, built on BackGold"
+        medium="Campaign websites, product sites, and interactive pages, built on BackGold"
         year="2026"
-        catalog={`Cat. III.01–III.${last}`}
+        catalog={`Cat. ${portfolio[0].code}–${last}`}
       />
-      <div class="alm__statement prose-museum" data-reveal>
+      <div class="studio__statement prose-museum" data-reveal>
         <p class="lede">
-          Advancing Liberty Media gives libertarian candidates, parties, and freedom organizations professional
-          campaign infrastructure, with strategy, training, and digital media in one place.
+          Advancing Liberty Media gives candidates, parties, and freedom organizations professional campaign
+          infrastructure: strategy, training, and digital media in one place.
         </p>
         <p>
-          Websites by Wilhelm is its design studio. Every site in this case was designed and built by Michael and
-          ships on BackGold, with donations, supporters, email, and events configured from day one.
+          Websites by Wilhelm is its design studio. Four works hang in this room, chosen for what they show. Each was
+          designed and built by Michael and ships on BackGold, with donations, supporters, email, and events configured
+          from day one.
         </p>
-        <p class="alm__howto">
-          Choose a cartridge to slot it into the console. Press start on the screen to visit the live site.
-        </p>
+        <p class="studio__howto">Choose a label to hang a work. The caption beneath the frame leads to the live page.</p>
       </div>
     </div>
 
-    <div class="vitrine" data-reveal>
-      <div class="vitrine__glass" aria-hidden="true"></div>
-      <div class="vitrine__grid">
-        <div class="vitrine__console">
-          <Console boot={BOOT} />
+    <div class="wall" data-wall data-boot={first.slug}>
+      <div class="easel" data-reveal>
+        <div class="picture-light" aria-hidden="true">
+          <span class="picture-light__arm"></span>
+          <span class="picture-light__bar"></span>
         </div>
-        <div class="vitrine__library">
-          <div class="library__head">
-            <h3 class="label label--bone label--bold">Cartridge library</h3>
-            <span class="mono">{portfolio.length} carts</span>
+        <div class="frame" data-frame>
+          <div class="frame__mat">
+            <div class="frame__glass">
+              <img
+                class="frame__pic is-front"
+                data-pic-a
+                src={`/work/${first.slug}.webp`}
+                alt={first.alt}
+                width="960"
+                height="600"
+                loading="lazy"
+                decoding="async"
+              />
+              <img class="frame__pic" data-pic-b src="" alt="" width="960" height="600" aria-hidden="true" />
+              <canvas class="frame__live" data-live-canvas hidden></canvas>
+              <span class="frame__wash"></span>
+            </div>
           </div>
-          <ul class="library" role="list">
-            {
-              portfolio.map((w) => (
-                <li>
-                  <Cartridge item={w} gold={w.flagship} />
-                </li>
-              ))
-            }
-          </ul>
         </div>
       </div>
-    </div>
-    <p class="vitrine__label">
-      <span class="smallcaps">In the case</span>
-      <span>
-        The ALM-16 console and {portfolio.length} cartridges, one for each site. Pixel sprites and screenshots of the
-        live builds.
-      </span>
-    </p>
 
-    <div class="alm__cta" data-reveal>
+      <div class="caption" data-caption data-reveal>
+        <p class="caption__code mono" data-cap-code>Cat. {first.code}</p>
+        <h3 class="caption__title display" data-cap-title>{first.title}</h3>
+        <p class="caption__medium" data-cap-medium>{first.medium}</p>
+        <p class="caption__text" data-cap-text>{first.caption}</p>
+        <p class="caption__foot">
+          <a
+            class="cta cta--gilt"
+            data-cap-link
+            href={first.href}
+            target={external(first.href) ? '_blank' : undefined}
+            rel={external(first.href) ? 'noopener' : undefined}>Visit the work</a
+          >
+          <span class="mono caption__domain" data-cap-domain>{first.domain}</span>
+        </p>
+        <p class="sr-only" role="status" aria-live="polite" data-wall-status></p>
+      </div>
+
+      <div class="labels" data-reveal>
+        <p class="labels__head">
+          <span class="smallcaps">Works in this room</span>
+          <span class="mono">{portfolio.length} on the wall</span>
+        </p>
+        <ol class="labels__list" role="list">
+          {
+            portfolio.map((w) => (
+              <li>
+                <button
+                  type="button"
+                  class="wall-label"
+                  data-work={w.slug}
+                  data-src={`/work/${w.slug}.webp`}
+                  data-alt={w.alt}
+                  data-title={w.title}
+                  data-medium={w.medium}
+                  data-caption={w.caption}
+                  data-href={w.href}
+                  data-domain={w.domain}
+                  data-code={w.code}
+                  data-live={w.live}
+                  aria-pressed={w.slug === first.slug ? 'true' : 'false'}
+                >
+                  <span class="wall-label__pin" aria-hidden="true" />
+                  <span class="wall-label__code mono">Cat. {w.code}</span>
+                  <span class="wall-label__title">{w.title}</span>
+                  <span class="wall-label__medium">{w.medium}</span>
+                  <span class="wall-label__foot">
+                    <span class="wall-label__year">{w.year}</span>
+                    <span class="wall-label__state smallcaps">
+                      <span class="wall-label__state-on">On the wall</span>
+                      <span class="wall-label__state-off">Hang this</span>
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <div class="studio__cta" data-reveal>
       <a class="cta" href={ALM_URL} rel="noopener">Visit Advancing Liberty Media</a>
     </div>
   </div>
 </Room>
 
+<script>
+  import '../../../scripts/case/wall.ts';
+</script>
+
 <style>
-  .alm {
+  .studio {
     display: grid;
     gap: clamp(2.5rem, 2rem + 3vw, 4.5rem);
   }
-  .alm__head {
+  .studio__head {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: clamp(2rem, 1rem + 4vw, 5rem);
     align-items: start;
   }
-  .alm__statement {
+  .studio__statement {
     padding-top: 0.5rem;
     color: var(--ink-soft);
   }
-  .alm__statement .lede {
+  .studio__statement .lede {
     color: var(--ink);
   }
-  .alm__howto {
+  .studio__howto {
     font-style: italic;
+  }
+
+  /* ---- The wall: frame and caption on the left, labels on the right ---- */
+  .wall {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas:
+      'easel labels'
+      'caption labels';
+    column-gap: clamp(2rem, 1rem + 4vw, 5rem);
+    row-gap: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+    align-items: start;
+  }
+  .easel {
+    grid-area: easel;
+    position: relative;
+    padding-top: 2.6rem; /* room for the picture light */
+  }
+  .caption {
+    grid-area: caption;
+  }
+  .labels {
+    grid-area: labels;
+    align-self: stretch;
   }
 
   /*
-   * The vitrine: a charcoal case lined in felt, gilt at the seams, glass
-   * catching the gallery light. Inside it, the ported objects keep their
-   * own palette (the ALM tokens are scoped here, not site-wide).
+   * The picture light: a slender brass bar on a short arm, centred over
+   * the frame. Its wash falls down the glass (.frame__wash) and dims while
+   * a work is being changed.
    */
-  .vitrine {
-    --carbon: #0a0908;
-    --char: #131110;
-    --ash: #1c1815;
-    --soot: #2a2420;
-    --smoke: #4a3f36;
-    --bone: #f3eadb;
-    --bone-soft: #cdbfaa;
-    --bone-muted: #a8998a;
-    --gold: #f2b72e;
-    --gold-hot: #ffd766;
-    --gold-deep: #b8830f;
-    --ember: #ff5a1f;
-    --ember-hot: #ff8a3d;
-    --ember-deep: #c8330e;
-    --spark: #22e3ff;
-    --border: 1px;
-    --font-pixel: 'Silkscreen', 'Press Start 2P', 'Courier New', monospace;
-    --font-arcade: 'Press Start 2P', 'Silkscreen', monospace;
-    --size-pixel: 0.75rem;
-    --size-mono: 0.75rem;
-
-    position: relative;
-    padding: clamp(1rem, 0.5rem + 2.5vw, 2.75rem);
-    background:
-      radial-gradient(80% 60% at 50% 0%, rgba(255, 236, 200, 0.07), transparent 70%),
-      linear-gradient(180deg, #1f1c19, #141210);
-    border: 1px solid #0d0c0b;
-    outline: 1px solid var(--gilt);
-    outline-offset: 5px;
-    box-shadow:
-      0 40px 80px -40px rgba(30, 20, 8, 0.7),
-      0 18px 30px -18px rgba(30, 20, 8, 0.45);
-    color: var(--bone);
+  .picture-light {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    justify-items: center;
+    width: 46%;
+    pointer-events: none;
+    z-index: 3;
   }
-  .vitrine__glass {
+  .picture-light__arm {
+    width: 2px;
+    height: 1.5rem;
+    background: linear-gradient(180deg, var(--gilt-ink), var(--gilt-bright));
+  }
+  .picture-light__bar {
+    width: 100%;
+    height: 9px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #e2c47c, var(--gilt) 55%, var(--gilt-ink));
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.55) inset,
+      0 6px 14px -6px rgba(60, 40, 10, 0.6);
+  }
+
+  /* The frame: charcoal moulding, ivory mat, gilt fillet, then the glass. */
+  .frame {
+    padding: clamp(8px, 0.4rem + 0.5vw, 14px);
+    background: linear-gradient(135deg, #2e2a25, #1a1815 55%, #2b2723);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.45),
+      0 2px 0 rgba(0, 0, 0, 0.25) inset,
+      0 36px 60px -34px rgba(40, 28, 12, 0.7),
+      0 14px 24px -16px rgba(40, 28, 12, 0.45);
+  }
+  .frame__mat {
+    padding: clamp(0.9rem, 0.6rem + 1.4vw, 1.9rem);
+    background: #fbf8f1;
+    outline: 1px solid var(--gilt);
+    outline-offset: -6px;
+  }
+  .frame__glass {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #14120f;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
+  }
+  .frame__pic,
+  .frame__live {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    opacity: 0;
+    transition:
+      opacity calc(var(--beat) * 2) var(--ease-settle),
+      filter calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .frame__pic.is-front {
+    opacity: 1;
+  }
+  .frame__live.is-on {
+    opacity: 1;
+    transition-duration: calc(var(--beat) * 2.4);
+  }
+  .frame__live[hidden] {
+    display: none;
+  }
+  /* The light's wash down the glass, and the glazing's faint reflection. */
+  .frame__wash {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(112deg, rgba(255, 255, 255, 0.06) 0%, transparent 26%, transparent 70%, rgba(255, 255, 255, 0.03) 100%);
-    z-index: 1;
+    background:
+      radial-gradient(70% 55% at 50% -8%, rgba(255, 234, 184, 0.34), transparent 70%),
+      linear-gradient(112deg, rgba(255, 255, 255, 0.07) 0%, transparent 28%, transparent 72%, rgba(255, 255, 255, 0.035) 100%);
+    transition: opacity calc(var(--beat) * 1.2) var(--ease-settle);
   }
-  .vitrine__grid {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
-    align-items: start;
+  .frame.is-changing .frame__wash {
+    opacity: 0.25;
   }
-  .vitrine__console {
-    min-width: 0;
-    position: sticky;
-    top: calc(var(--nav-h) + 1rem);
-    z-index: 2;
+  .frame.is-changing .frame__pic,
+  .frame.is-changing .frame__live {
+    filter: brightness(0.55);
   }
 
-  /* Ported helper classes from the ALM design system, scoped to the case. */
-  .vitrine :global(.label) {
-    font-family: var(--font-pixel);
-    font-size: var(--size-pixel);
-    font-weight: 400;
-    line-height: 1.4;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+  /* ---- The caption beneath the frame ---- */
+  .caption {
+    max-width: 38rem;
+    transition: opacity calc(var(--beat) * 0.9) var(--ease-settle);
   }
-  .vitrine :global(.label--bone) {
-    color: var(--bone);
+  .caption.is-changing {
+    opacity: 0;
   }
-  .vitrine :global(.label--bold) {
-    font-weight: 700;
+  .caption__code {
+    color: var(--room-accent);
   }
-  .vitrine :global(.mono) {
-    font-family: var(--font-mono);
-    font-size: var(--size-mono);
-    letter-spacing: -0.02em;
-    color: var(--bone-muted);
+  .caption__title {
+    margin-top: 0.3rem;
+    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
+    color: var(--ink);
   }
-  .vitrine :global(.arcade) {
-    font-family: var(--font-arcade);
-    font-size: 0.6875rem;
-    line-height: 1.6;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+  .caption__medium {
+    margin-top: 0.35rem;
+    font-style: italic;
+    color: var(--ink-soft);
   }
-  .vitrine :global(.pixelated) {
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
+  .caption__text {
+    margin-top: 0.9rem;
+    color: var(--ink-soft);
+    text-wrap: pretty;
   }
-  .vitrine :global(.blink) {
-    animation: case-blink 1s steps(2, start) infinite;
+  .caption__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.25rem;
   }
-  @keyframes case-blink {
-    to {
-      visibility: hidden;
-    }
-  }
-  .vitrine :global(button) {
-    font: inherit;
-    color: inherit;
-  }
-  .vitrine :global(:focus-visible) {
-    outline-color: var(--spark);
+  .caption__domain {
+    color: var(--ink-faint);
   }
 
-  .library__head {
+  /* ---- The wall labels ---- */
+  .labels__head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding-bottom: 0.8rem;
-    margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--smoke);
-  }
-  .library {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem 1rem;
-  }
-  .library > li {
-    min-width: 0;
-  }
-
-  .vitrine__label {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1rem;
-    max-width: 44rem;
-    color: var(--ink-faint);
-    font-style: italic;
-    margin-top: calc(-1 * clamp(1rem, 0.5rem + 1.5vw, 2rem));
-  }
-  .vitrine__label .smallcaps {
-    font-style: normal;
+    gap: 1rem;
+    padding-bottom: 0.7rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
     color: var(--room-accent);
   }
-  .alm__cta {
+  .labels__head .mono {
+    color: var(--ink-faint);
+  }
+  .labels__list {
+    list-style: none;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .wall-label {
+    position: relative;
+    display: grid;
+    gap: 0.3rem;
+    width: 100%;
+    padding: 1.05rem 1.2rem 0.95rem 1.4rem;
+    text-align: left;
+    font: inherit;
+    line-height: inherit;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--wall) 70%, white);
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 10px 24px -20px rgba(40, 30, 15, 0.5);
+    transition:
+      background-color calc(var(--beat) * 0.7) var(--ease-settle),
+      border-color calc(var(--beat) * 0.7) var(--ease-settle),
+      transform calc(var(--beat) * 0.9) var(--ease-settle),
+      box-shadow calc(var(--beat) * 0.9) var(--ease-settle);
+  }
+  .wall-label:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 18px 30px -22px rgba(40, 30, 15, 0.6);
+  }
+  /* The pin: a gilt hairline down the left edge that lights with the work. */
+  .wall-label__pin {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    bottom: -1px;
+    width: 3px;
+    background: linear-gradient(180deg, var(--gilt-bright), var(--gilt), var(--gilt-ink));
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .wall-label[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--wall) 40%, white);
+    border-color: color-mix(in srgb, var(--gilt) 55%, var(--rule));
+    cursor: default;
+  }
+  .wall-label[aria-pressed='true']:hover {
+    transform: none;
+  }
+  .wall-label[aria-pressed='true'] .wall-label__pin {
+    transform: scaleY(1);
+  }
+  .wall-label__code {
+    color: var(--room-accent);
+  }
+  .wall-label__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+  .wall-label__medium {
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+  .wall-label__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 0.35rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-size: 0.95rem;
+  }
+  .wall-label__year {
+    font-variant-numeric: oldstyle-nums;
+  }
+  .wall-label__state {
+    color: var(--gilt-ink);
+    letter-spacing: 0.12em;
+  }
+  .wall-label__state-on {
+    display: none;
+  }
+  .wall-label[aria-pressed='true'] .wall-label__state-on {
+    display: inline;
+  }
+  .wall-label[aria-pressed='true'] .wall-label__state-off {
+    display: none;
+  }
+
+  .studio__cta {
     display: flex;
     justify-content: flex-start;
   }
 
-  @media (max-width: 1100px) {
-    .vitrine__grid {
+  @media (max-width: 960px) {
+    .wall {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'easel'
+        'caption'
+        'labels';
     }
-    .vitrine__console {
-      top: calc(var(--nav-h) + 0.5rem);
+    .labels__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .caption {
+      max-width: var(--measure);
     }
   }
   @media (max-width: 820px) {
-    .alm__head {
+    .studio__head {
       grid-template-columns: minmax(0, 1fr);
     }
   }
-  @media (max-width: 480px) {
-    .library {
+  @media (max-width: 560px) {
+    .labels__list {
       grid-template-columns: minmax(0, 1fr);
-      gap: 1rem;
+    }
+    .picture-light {
+      width: 58%;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .vitrine :global(.blink) {
-      animation: none;
+    .frame__pic,
+    .frame__live,
+    .frame__wash,
+    .caption,
+    .wall-label,
+    .wall-label__pin {
+      transition: none;
     }
   }
 </style>
