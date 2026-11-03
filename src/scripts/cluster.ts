@@ -1,5 +1,5 @@
 /**
- * THE PLEIADES RECEIVE — the Cluster section's half of the natal handoff.
+ * THE PLEIADES RECEIVE: the Cluster section's half of the natal handoff.
  *
  * The hero scatters its planets into a point-field and falls silent
  * (iw:natal-phase → dissolve); the WebGL constellation pass lifts the
@@ -52,7 +52,7 @@ export function initCluster(): void {
   const nodes = Array.from(field.querySelectorAll<HTMLElement>('.node'));
   if (!nodes.length) return;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced) return; // the stations are the CSS defaults — nothing to animate
+  if (reduced) return; // the stations are the CSS defaults, nothing to animate
 
   // Window of section progress over which the sisters arrive: the section's
   // top is at the viewport bottom at 0 and at the top at 0.5; the copy
@@ -61,7 +61,7 @@ export function initCluster(): void {
   const END = 0.42;
   const stagger = meterStagger(nodes.length);
   const seeds = nodes.map((_, i) => ({
-    // Fall from above and a little aside — from the hero's sky.
+    // Fall from above and a little aside, from the hero's sky.
     dx: (hash01(i, 11) - 0.5) * 110,
     dy: -(70 + hash01(i, 23) * 110),
   }));

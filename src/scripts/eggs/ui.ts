@@ -1,6 +1,6 @@
 /**
  * Minimal UI for the egg engine: quiet toasts, the sigil-mark rail, and the
- * completion sigil. All DOM is created here with one injected <style> — the
+ * completion sigil. All DOM is created here with one injected <style>, the
  * engine owns no markup in any .astro file.
  */
 

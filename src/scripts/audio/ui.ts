@@ -1,5 +1,5 @@
 /**
- * THE ORCHESTRA PIT — overlay drawer UI. Pure DOM creation plus one injected
+ * THE ORCHESTRA PIT: overlay drawer UI. Pure DOM creation plus one injected
  * <style>; colors ride the site's CSS vars (--ink, --ink-dim, and
  * --section-accent with an --ink fallback, since the drawer floats outside
  * any .section). All copy is affirmative.

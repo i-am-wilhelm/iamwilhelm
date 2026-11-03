@@ -1,5 +1,5 @@
 /**
- * THE KNOCK — site-wide 7/8 clock, the visual sibling of the orchestra pit's
+ * THE KNOCK: site-wide 7/8 clock, the visual sibling of the orchestra pit's
  * MembraneSynth knock (src/scripts/audio/engine.ts).
  *
  * One bar is seven eighths grouped 2+2+3. Accents fall on eighth indices
@@ -7,9 +7,9 @@
  * future sections and the hidden music layer all read this one clock.
  *
  * Two ways to listen:
- *   - `now()` — pure read of the current state; the caller owns its own rAF
+ *   - `now()`, pure read of the current state; the caller owns its own rAF
  *     (the natal hero does this: one loop, no second ticker).
- *   - `subscribe(cb)` — for subsystems without a loop; a lightweight internal
+ *   - `subscribe(cb)`, for subsystems without a loop; a lightweight internal
  *     rAF runs only while subscribers exist and the tab is visible.
  * Either path performs the accent detection, so `iw:knock` is emitted
  * exactly once per accented eighth no matter how many readers there are.
@@ -39,7 +39,7 @@ export interface ClockState {
   accentGlow: number;
   /** Which accent fired last. */
   lastAccent: AccentIndex;
-  /** Increments on every accent — compare across reads to catch beats. */
+  /** Increments on every accent, compare across reads to catch beats. */
   accentSerial: number;
   /** Milliseconds since the last knock. */
   sinceKnockMs: number;

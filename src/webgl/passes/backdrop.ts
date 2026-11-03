@@ -1,9 +1,9 @@
 /**
- * BACKDROP PASS — first into the scene target.
+ * BACKDROP PASS: first into the scene target.
  *
  * Paints each section's "splash": an accent-tinted aura with a *saturated
  * focal zone*. This is the luminance/chroma field the dither pass reads,
- * so the focal zone is deliberately painted at boosted chroma — the
+ * so the focal zone is deliberately painted at boosted chroma, the
  * dither preserves (and further boosts) saturation there, which is how
  * hero visuals resolve more saturated at their heart than at their edges.
  *
@@ -44,7 +44,7 @@ void main() {
   // Aura envelope: wide soft glow, revealed as the section scrolls in.
   float aura = (1.0 - smoothstep(0.05, 0.85, d)) * (0.25 + 0.75 * uReveal);
 
-  // Saturated focal core — the painted "hot" zone.
+  // Saturated focal core, the painted "hot" zone.
   float core = 1.0 - smoothstep(0.0, 0.38, d + (grain - 0.5) * 0.18);
 
   // Base wash at accent hue; core pushes chroma well above the accent's
@@ -53,7 +53,7 @@ void main() {
   vec3 hot  = chromaScale(uAccent, 2.2) * (0.9 + 0.4 * grain);
   vec3 col  = mix(wash, hot, core);
 
-  // iw:splash — expanding recolor ring + brief overall flash.
+  // iw:splash, expanding recolor ring + brief overall flash.
   float ringDist = abs(d - (1.0 - uSplash) * 0.9) - 0.08;
   float ring = 1.0 - smoothstep(-0.06, 0.06, ringDist);
   col += uSplashColor * uSplash * (0.55 * ring + 0.25);

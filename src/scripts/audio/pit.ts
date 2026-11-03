@@ -1,19 +1,19 @@
 /**
- * ORCHESTRA PIT — hidden audio layer entry point (site spec §6).
+ * ORCHESTRA PIT: hidden audio layer entry point (site spec §6).
  *
  * Flow:
  *   - Always listening (cheaply, no Tone.js loaded): pointer taps on
  *     [data-tap-zone] elements (falling back to the document body) feed the
- *     7/8 onset matcher in tap.ts. Tapping the site's 2+2+3 figure —
- *     "short short long", the same accents the score's knock plays — opens
+ *     7/8 onset matcher in tap.ts. Tapping the site's 2+2+3 figure,
+ *     "short short long", the same accents the score's knock plays, opens
  *     the pit and emits 'iw:pit-open'.
  *   - Audio is strictly gesture-gated: Tone.js is dynamically imported and
  *     Tone.start() called only inside a qualifying user interaction (the
- *     completed tap figure, a toggle click, or — when a previous choice is
- *     being restored from sessionStorage — the first pointer/key gesture of
+ *     completed tap figure, a toggle click, or, when a previous choice is
+ *     being restored from sessionStorage, the first pointer/key gesture of
  *     the new page view). Nothing sounds on load, ever.
  *   - 'iw:section-enter' retunes the drone to that section's `drone` pitch
- *     (C2→G2→D2→A2→E2 — the circle of fifths, music of the spheres).
+ *     (C2→G2→D2→A2→E2, the circle of fifths, music of the spheres).
  *   - Drawer state, score choice, and the sequencer pattern persist in
  *     sessionStorage.
  */
@@ -126,7 +126,7 @@ export async function initOrchestraPit(): Promise<void> {
     sessionStorage.setItem(SS_OPEN, '1');
     if (opts.fromTap) {
       emit('iw:pit-open', {});
-      // The completed 7/8 figure is a deliberate performance — treat it as
+      // The completed 7/8 figure is a deliberate performance, treat it as
       // opting into sound and let the orchestra tune up.
       await setScore(true);
     }

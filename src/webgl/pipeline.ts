@@ -1,5 +1,5 @@
 /**
- * SHADER CORE — WebGL pipeline for the fixed #gl-stage canvas.
+ * SHADER CORE: WebGL pipeline for the fixed #gl-stage canvas.
  *
  * One OGL renderer, two stages:
  *
@@ -16,7 +16,7 @@
  * constellations all automatically "wear" the Greek glyph field.
  *
  * All cross-subsystem input arrives via window CustomEvents (see
- * ../scripts/events.ts) — no imports from other subsystems.
+ * ../scripts/events.ts), no imports from other subsystems.
  */
 
 import { Renderer, RenderTarget } from 'ogl';
@@ -41,7 +41,7 @@ const MAX_DPR = 2;
 /**
  * Boot the pipeline on the given canvas. Resolves to a handle, or null
  * when WebGL is unavailable (the page then simply runs without the
- * shader layer — never throws).
+ * shader layer, never throws).
  */
 export async function initPipeline(
   canvas: HTMLCanvasElement,
@@ -246,7 +246,7 @@ function updateState(state: PipelineState, dt: number, time: number) {
   const targetFloat = state.activeIndex + (state.sectionProgress - 0.5);
   state.sectionFloat = damp(state.sectionFloat, targetFloat, 5, dt);
 
-  // Scroll velocity smoothing — the smoke swing rides this.
+  // Scroll velocity smoothing, the smoke swing rides this.
   state.smoothVelocity = damp(state.smoothVelocity, state.scrollVelocity, 4, dt);
   state.scrollVelocity *= Math.exp(-2 * dt); // decay between scroll events
 

@@ -84,7 +84,7 @@ float sdSegment(vec2 p, vec2 a, vec2 b) {
   return length(pa - ba * h);
 }
 
-/* Regular hexagon — the silhouette of an isometric cube. */
+/* Regular hexagon, the silhouette of an isometric cube. */
 float sdHexagon(vec2 p, float r) {
   const vec3 k = vec3(-0.866025404, 0.5, 0.577350269);
   p = abs(p);

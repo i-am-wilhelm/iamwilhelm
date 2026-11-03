@@ -62,26 +62,26 @@ components (`src/components/writings/`) stay for reference.
 
 ## Architecture
 
-- `src/design/tokens.ts` — the shared contract: section registry, accent
+- `src/design/tokens.ts`: the shared contract: section registry, accent
   colors, symbol assignments, meter constants, glyph ramp. Every subsystem
   reads from here; symbology guardrails are documented at the top of the file.
-- `src/scripts/events.ts` — the event bus. Subsystems communicate only
+- `src/scripts/events.ts`: the event bus. Subsystems communicate only
   through these window CustomEvents; no cross-subsystem imports.
-- `src/scripts/boot.ts` — per-page bootstrap; each subsystem initializes
+- `src/scripts/boot.ts`: per-page bootstrap; each subsystem initializes
   independently and tolerates the others being absent.
 - Content is local markdown collections (`src/content/`); a Ghost backend can
-  be wired in later by swapping the loader in `src/content.config.ts` — the
+  be wired in later by swapping the loader in `src/content.config.ts`, the
   schema is the stable interface.
 
 ## Shader pipeline
 
 One OGL renderer, two stages: four scene passes composite into a render
-target — **backdrop** (per-section accent aura, hosts splashes), 
+target: **backdrop** (per-section accent aura, hosts splashes),
 **constellation** (star maps seeded per section id, hairline geometry),
 **morph** (stretch-and-resolve: the glyph field smears along the motion path,
-then collapses into the resolved silhouette — `trismegistus`, `cross-cube`,
+then collapses into the resolved silhouette: `trismegistus`, `cross-cube`,
 `atlas-columbia`), **smoke** (domain-warped fbm fumigation, side from
-`data-smoke-side`, sheared by scroll velocity) — and the **glyph dither post
+`data-smoke-side`, sheared by scroll velocity), and the **glyph dither post
 pass** is the only thing that reaches the screen: brightness-bucketed Greek
 glyphs from a runtime atlas, per-channel RGB fringing, and a
 saturation-preserve path so painted focal zones resolve *more* saturated
@@ -97,10 +97,10 @@ targets and the frame loop damps toward them, so event bursts never pop.
 Eight eggs ship in `src/scripts/eggs/eggs.config.ts` (declarative registry;
 anchors are `data-egg-anchor` attributes in the section markup, bound lazily
 and tolerant of absence): `swan-preen`, `natal-ascent` (the reworked
-birthday-coded egg — Pleiades nodes clicked in a date-derived order),
+birthday-coded egg, Pleiades nodes clicked in a date-derived order),
 `maat-feather`, `orphic-lyre`, `monsoon-rainmaker`, `pharmakon-sigil`,
 `phosphoros-dawn` (dawn-gated grace note), and `psychopomp-door` (ships
-disabled; separate-domain discipline — the destination appears nowhere on
+disabled; separate-domain discipline, the destination appears nowhere on
 this site). Effects replay on every interaction, flash-site style; discovery
 fires `iw:egg-found` once.
 
@@ -108,7 +108,7 @@ The cross-page hunt (`hunt.ts`) runs `unbegun → in-progress → awaiting-seal
 → sealed` with five ordered initiation steps persisted under one versioned
 localStorage key. The final mail-in step (password in an email subject line,
 PO box) is wired later by supplying the `finalStep` object in
-`hunt.config.ts` — a config addition, not a refactor. Natal-chart hooks
+`hunt.config.ts`, a config addition, not a refactor. Natal-chart hooks
 (`natal.config.ts`) expose placement-derived CSS variables, derived from the
 real chart in `src/scripts/natal/chart.michael.ts`. Full documentation:
 `src/scripts/eggs/README.md`.
@@ -118,7 +118,7 @@ real chart in `src/scripts/natal/chart.michael.ts`. Full documentation:
 The homepage hero is a Canvas 2D natal chart (`src/scripts/natal/`): a
 chart-agnostic engine (`engine.ts`, `aspects.ts`, `types.ts`), Michael's
 chart as its first data file (`chart.michael.ts`), the two-layer Dioscuri
-portrait (`dioscuri.ts` — the photo plus a glyph-dither twin drawn from the
+portrait (`dioscuri.ts`, the photo plus a glyph-dither twin drawn from the
 site's Greek atlas), and the mount (`mount.ts`) that owns the single rAF,
 the scroll choreography (face → ascent → dissolve, emitting
 `iw:natal-phase`) and the `?tinker=1` overlay. The site-wide 7/8 clock it
@@ -135,7 +135,7 @@ See `src/scripts/audio/README.md` for the 7/8 tap pattern, score structure
 
 ## Owner-supplied inputs (pending)
 
-Search the codebase for `TODO(owner)` — every pending copy block, config
+Search the codebase for `TODO(owner)`: every pending copy block, config
 value, and art swap is marked. Shipped: hero portrait
 (`/assets/portrait.webp`), swan facecard (`/assets/facecard.webp`), generated
 Medea facecard (`/assets/medea.webp`), and the full Pharmakon poem. Still open:

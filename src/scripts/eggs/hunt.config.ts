@@ -1,5 +1,5 @@
 /**
- * Cross-page scavenger hunt — "little initiations". Steps unlock strictly in
+ * Cross-page scavenger hunt, "little initiations". Steps unlock strictly in
  * order as their required eggs are found; marks (small classical glyphs)
  * accrue on the configured pages. The hunt wraps immediately before the
  * final mail-in step, which is wired later via `finalStep` below.
@@ -71,7 +71,7 @@ export const completionSigil = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Final mail-in step — config slot. The hunt's terminal pre-final state is
+// Final mail-in step: config slot. The hunt's terminal pre-final state is
 // 'awaiting-seal'; supplying the object below is the ONLY change needed to
 // wire the last step (password in an email subject line + a PO box).
 // ---------------------------------------------------------------------------

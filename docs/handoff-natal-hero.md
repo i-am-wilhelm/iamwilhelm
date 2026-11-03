@@ -1,4 +1,4 @@
-# IAMWILHELM.COM — HERO: "The Natal Engine" + the Dioscuri Facecard
+# IAMWILHELM.COM HERO: "The Natal Engine" + the Dioscuri Facecard
 
 Handoff for a Claude Code session working in `C:\Users\mamaz\Claude Code\iamwilhelm.com`.
 Read this whole file before touching code. Where this document and the current
@@ -7,7 +7,7 @@ conventions already in the repo.
 
 ---
 
-## 0. Repo reality (read first — the site exists and is live)
+## 0. Repo reality (read first: the site exists and is live)
 
 This is NOT a scaffold job. iamwilhelm.com is live on Cloudflare Workers
 (static assets, worker `iamwilhelm`), repo `i-am-wilhelm/iamwilhelm`, and
@@ -15,7 +15,7 @@ This is NOT a scaffold job. iamwilhelm.com is live on Cloudflare Workers
 
 - Stack: Astro 5 (`output: 'static'`), vanilla TS client islands, GSAP +
   ScrollTrigger, OGL WebGL pipeline, Tone.js (lazy). No `@astrojs/cloudflare`
-  adapter — `wrangler.jsonc` serves `./dist` as assets. Do not add one.
+  adapter, `wrangler.jsonc` serves `./dist` as assets. Do not add one.
 - Run `npm ci` first (gsap/ogl/tone). Dev server: the `iamwilhelm` entry in
   `../.claude/launch.json` (port 4323, host 127.0.0.1). Use `preview_start`
   with that name; never run the dev server through Bash.
@@ -50,33 +50,33 @@ This is NOT a scaffold job. iamwilhelm.com is live on Cloudflare Workers
 
 ## 1. Architecture (paths follow the repo: `src/scripts/`, not `src/lib/`)
 
-- `src/scripts/natal/engine.ts` — framework-agnostic Canvas 2D renderer.
+- `src/scripts/natal/engine.ts`: framework-agnostic Canvas 2D renderer.
   `new NatalEngine(canvas, chart: ChartData, opts)`. Knows nothing about whose
   chart it draws. Exports the `ChartData` types (this engine later powers a
   public chart tool and a music-engine sibling). Zero runtime deps.
-- `src/scripts/natal/chart.michael.ts` — the data in §2, typed as `ChartData`.
-- `src/scripts/natal/aspects.ts` — aspect computation (§4), pure functions.
-- `src/scripts/clock.ts` — site-wide 7/8 meter singleton ("the knock"). Bar of
+- `src/scripts/natal/chart.michael.ts`: the data in §2, typed as `ChartData`.
+- `src/scripts/natal/aspects.ts`: aspect computation (§4), pure functions.
+- `src/scripts/clock.ts`: site-wide 7/8 meter singleton ("the knock"). Bar of
   7 eighths, accents at eighth indices 0/2/4, index 0 is the knock. Exports
   `subscribe(cb)`, `now()` (bar phase 0..1, eighth index, knockGlow envelope),
   `setEighthMs()`. Emits `iw:knock {index, accent}` on every accented eighth so
   non-importing subsystems can listen. The hero, future sections and the
   hidden music layer all listen to this one clock.
-- `src/scripts/natal/dioscuri.ts` — the portrait stack (flesh + signal, §7).
-- `src/scripts/natal/mount.ts` — wires engine + portrait + scroll choreography
+- `src/scripts/natal/dioscuri.ts`: the portrait stack (flesh + signal, §7).
+- `src/scripts/natal/mount.ts`: wires engine + portrait + scroll choreography
   + tinker overlay to the hero DOM; called from `boot.ts`.
-- `src/components/sections/Hero.astro` — rewritten: sticky canvas wrapper
+- `src/components/sections/Hero.astro`: rewritten: sticky canvas wrapper
   OUTSIDE `.copy` (the GSAP copy reveal sets `autoAlpha:0` on every `.copy`
   child, so a canvas inside it would vanish), the existing copy block kept, the
   egg anchors kept (`hero-swan` moves onto the portrait hit-area element;
   `phosphoros-star` stays).
-- `src/pages/lab/hero.astro` — dev route: the hero alone, with `?tinker=1`
+- `src/pages/lab/hero.astro`: dev route: the hero alone, with `?tinker=1`
   honored. Build and review here first, then wire into `index.astro`. Keep the
   route in the repo; it is a permanent workbench.
-- `src/scripts/eggs/natal.config.ts` — refactor to import `CHART` and derive
+- `src/scripts/eggs/natal.config.ts`: refactor to import `CHART` and derive
   `natal.uranus/neptune/venus` and `keyDate` from it. Delete the `TODO(owner)`
   markers there. (`birthdaySequence()` will change because the real date
-  replaces the placeholder — that is intended; update
+  replaces the placeholder, that is intended; update
   `src/scripts/eggs/README.md` if it documents the old order.)
 
 Events to add to `IWEvents` (extend, never rename):
@@ -107,31 +107,31 @@ export const CHART = {
           228.3416,255.9414,278.8494,302.0342,329.6519,5.748],
   bodies: {
     sun:     {lon:340.6065, spd:1.00328,  retro:false},
-    mercury: {lon:340.2568, spd:1.87525,  retro:false}, // cazimi — rides inside the Sun
+    mercury: {lon:340.2568, spd:1.87525,  retro:false}, // cazimi, rides inside the Sun
     moon:    {lon:172.6298, spd:13.63952, retro:false}, // full
     venus:   {lon:9.0222,   spd:1.22742,  retro:false}, // chart ruler, 12th house
     mars:    {lon:74.0065,  spd:0.45081,  retro:false},
     jupiter: {lon:124.8545, spd:0.08777,  retro:true},
-    saturn:  {lon:302.5105, spd:0.10194,  retro:false}, // partile on the MC — the crown
+    saturn:  {lon:302.5105, spd:0.10194,  retro:false}, // partile on the MC, the crown
     uranus:  {lon:282.8672, spd:0.03831,  retro:false},
     neptune: {lon:286.1374, spd:0.02503,  retro:false},
     pluto:   {lon:230.3599, spd:0.00454,  retro:true},
     nn:      {lon:295.9728, spd:0.05299,  retro:true},
     vesta:   {lon:55.4756,  spd:0.29743,  retro:false}
   },
-  lilith: 263.8747 // 23°52' Sag — a lens, never an orb
+  lilith: 263.8747 // 23°52' Sag, a lens, never an orb
 };
 ```
 
 Derived values `natal.config.ts` should now compute instead of hard-coding:
 Uranus 12°52′ Capricorn and Neptune 16°08′ Capricorn, both 9th house (cusp 9 =
 278.85, cusp 10 = 302.03); Venus 9°01′ Aries, 12th house; `keyDate` =
-1991-03-01. The existing placeholder signs/houses already match — only the
+1991-03-01. The existing placeholder signs/houses already match; only the
 degrees and date were fake.
 
 ---
 
-## 3. The clock — tempo decision
+## 3. The clock: tempo decision
 
 The spec's prototype was tuned at a **300 ms eighth** (quarter = 100 bpm). The
 site's existing meter token is **84 bpm** (eighth ≈ 357 ms), used by the copy
@@ -158,10 +158,10 @@ lets Michael hear both; 357 is the value to try if he wants one site tempo.
 
 Aspects (computed at runtime from `ChartData`, in `aspects.ts`):
 
-- Mercury is excluded from the web — his aspects ride the Sun's (cazimi).
+- Mercury is excluded from the web, his aspects ride the Sun's (cazimi).
 - Orbs: conj 8, sextile 5, square 7, trine 7, opposition 8. Sun–Moon pair +5;
   any other pair containing a luminary +2. Weight `w = 1 − off/orb`.
-- Sun–Moon opposition is the spine; render weight `max(w, 0.75)` — the 12° orb
+- Sun–Moon opposition is the spine; render weight `max(w, 0.75)`, the 12° orb
   is birth timing, never faintness.
 - moon/vesta/nn trines render as the circuit, excluded from generic beams.
 - Beam alpha base `(0.10 + 0.26w) · brilliance`; spine ×1.5 and ×(1+0.8·knock).
@@ -197,13 +197,13 @@ body colour; do not change `backgroundFade`.
 
 ---
 
-## 6. Set pieces (tuned — keep these numbers)
+## 6. Set pieces (tuned; keep these numbers)
 
 - **Cazimi**: silver Mercury core orbiting inside the Sun's corona, orbit 9.5px,
   ~0.9 rad/s, trailing arc.
 - **Saturn's Crown**: heaviest halo (52), slowest breath, tilted ring
   (rotate −0.42, scaleY 0.36, r 15.5) at the zenith.
-- **Orb breath**: period `lerp(9s, 1.4s, lognorm(spd))` — the Moon races, Saturn
+- **Orb breath**: period `lerp(9s, 1.4s, lognorm(spd))`, the Moon races, Saturn
   barely stirs. Retrograde bodies run their highlight arc backward.
 - **Spine splits**: spine particles within `0.88 × discR` of center flare and
   spawn ≤2 seekers toward random aspect-connected planets (arrival = brief tint).
@@ -212,13 +212,13 @@ body colour; do not change `backgroundFade`.
   rgba(205,218,245,.03), slow sheen sweep, striae arcs at 0.5/0.68/0.86R, edge
   lines rgba(210,222,245,.14) that glow on crossings.
 - **Venus's heart**: her own clock, default 52 bpm, lub at phase .02 (σ .085),
-  dub 0.62× at .30 — a polyrhythm against the 7/8; her orb scale 1+0.26·env.
+  dub 0.62× at .30, a polyrhythm against the 7/8; her orb scale 1+0.26·env.
   Each heartbeat emits one packet per Venus aspect from her end, and emits
   `iw:venus-beat`. Crossing point is sampled against the pane edges on the
   beam's actual (curved) path. Before the glass: soft, alpha .4. At the glass:
   edge glow + expanding ripple ring. After: chromatic triplet, perpendicular
   offsets ±2.6px. Arrival: target orb blushes rose (decay ×.94) and the whole
-  scene lifts — fillRect rgba(255,205,220, .045·lift), decay ×.9.
+  scene lifts, fillRect rgba(255,205,220, .045·lift), decay ×.9.
 - **Lilith lens**: pull toward her point `(1−d/0.17R)² · 0.035R` applied to beam
   polylines and particle draw positions; violet rings (0.05R breathing + 0.085R
   partial arc) whose alpha rises only when light actually bends (+.05/event,
@@ -238,7 +238,7 @@ per the current CSS mask). Load once, decode once, share the bitmap.
 - **Flesh**: the photo. Base alpha 1.0.
 - **Signal**: runtime glyph-dither of the same photo. Offscreen pass: cell 8px
   (6px mobile), ~12-step luminance ramp drawn from `buildGlyphAtlas()` (the
-  existing coverage-ranked Greek ramp — dark→bright `·` through `Ψ Φ`), with
+  existing coverage-ranked Greek ramp, dark→bright `·` through `Ψ Φ`), with
   ±1px R/B chromatic fringing. Composite `lighter`. Rest alpha 0.15. Re-dither
   only when the disc radius changes, not per frame; per-frame work is
   compositing and the excitation buffer.
@@ -246,7 +246,7 @@ per the current CSS mask). Load once, decode once, share the bitmap.
   both decaying back across the bar. RGB tick: channels separate ±2px on the
   knock and snap back within ~180ms.
 - **The tide**: a 90s sine slowly seesaws the rest values (flesh 1.0↔0.35,
-  signal 0.15↔0.75) — over minutes the ghost twin takes the face, then gives it
+  signal 0.15↔0.75), over minutes the ghost twin takes the face, then gives it
   back.
 - **Light through the head**: draw order is beams → portrait stack. The photo
   occludes; the glyph layer transmits. At each knock the spine and splits shine
@@ -254,7 +254,7 @@ per the current CSS mask). Load once, decode once, share the bitmap.
 - **Receiving surface**: portrait-space excitation buffer (decay ×.94). Spine
   splits stamp a streak along the beam's direction; Venus arrivals stamp a rose
   radial. The buffer locally brightens glyphs and tints them toward the event
-  color — the face lights only where the sky touches it.
+  color, the face lights only where the sky touches it.
 - **Eyes hold out longest**: config array of normalized ellipse masks (defaults
   (0.38,0.42) and (0.62,0.42), rx .07 ry .045, tunable in tinker) where flesh
   alpha floors at 0.9 regardless of breath or tide. Verify the defaults against
@@ -264,7 +264,7 @@ per the current CSS mask). Load once, decode once, share the bitmap.
   tracks the disc (center and radius updated on scroll) so `swan-preen` still
   fires on a triple-tap of the face. When `iw:dither-style {style:'inverse'}`
   fires, invert the signal layer's luminance mapping for the same duration the
-  WebGL dither inverts — the twin shows its white under-feather too.
+  WebGL dither inverts, the twin shows its white under-feather too.
 
 ---
 
@@ -274,16 +274,16 @@ Hero section ~200vh; the canvas wrapper is pinned with one GSAP ScrollTrigger
 (`pin: true`, scrub) and progress `p` comes from that trigger. Emit
 `iw:natal-phase` on every change.
 
-- `p < 0.25` — `phase: 'face'`: full composition, face centered. The copy block
+- `p < 0.25`, `phase: 'face'`: full composition, face centered. The copy block
   (term, h1, lede, epigraph) sits in a bottom band below the wheel, revealed by
   the existing 7/8 stagger; it must not cover the disc.
-- `0.25–0.75` — `phase: 'ascent'`: the portrait shrinks to a medallion
-  (~0.10R) and travels an eased curved path to its own rising degree — the ASC
+- `0.25–0.75`, `phase: 'ascent'`: the portrait shrinks to a medallion
+  (~0.10R) and travels an eased curved path to its own rising degree, the ASC
   point, 18°20′ Taurus on the ring. The mask takes its station on the horizon.
   Signal share ramps to 1.0 by `p = 0.7` (fully the glyph twin on arrival; keep
-  a faint knock-breath). The center opens and the prism splits play naked —
+  a faint knock-breath). The center opens and the prism splits play naked,
   flares fully visible. The copy block stays put; the wheel drifts up behind it.
-- `0.75–1.0` — `phase: 'dissolve'`: the chart dissolves outward — planets
+- `0.75–1.0`, `phase: 'dissolve'`: the chart dissolves outward. Planets
   scatter into a constellation point-field and fade, handing off to the next
   section (Cluster / Pleiades). The receiving section is a later build; this
   build only emits the event and fades the canvas to transparent so the WebGL
@@ -291,7 +291,7 @@ Hero section ~200vh; the canvas wrapper is pinned with one GSAP ScrollTrigger
 - `prefers-reduced-motion`: no pin, no scrub. Render one static lit frame of
   the `face` state (no particles, no breath) and let the page scroll normally.
   (`boot.ts` already skips the WebGL pipeline under reduced motion; follow that
-  pattern — mount the engine, call `renderStatic()`, never start the rAF loop.)
+  pattern, mount the engine, call `renderStatic()`, never start the rAF loop.)
 
 ---
 
@@ -302,7 +302,7 @@ its own loop); DPR capped at 2 (match `MAX_DPR` in `pipeline.ts`); sprite and
 dither bitmaps cached; particle caps as above; idle the loop entirely when the
 hero is off-screen (IntersectionObserver on the section) and on
 `document.hidden`. Canvas has `aria-hidden="true"`; the portrait keeps an
-accessible name via a visually hidden `<img alt="Michael Wilhelm — portrait">`
+accessible name via a visually hidden `<img alt="Michael Wilhelm, portrait">`
 or `role="img"` + `aria-label` on the wrapper. Target 60fps on mid-tier mobile;
 measure with the Performance panel on the dev route and report the frame
 budget in the PR notes. No layout shift when the canvas mounts (reserve the

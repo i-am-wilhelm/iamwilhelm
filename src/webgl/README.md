@@ -6,10 +6,10 @@ one offscreen scene target, one post pass:
 ```
 scene target (render-to-texture)              screen
 ┌────────────────────────────────┐            ┌──────────────────────┐
-│ 1. backdrop   — section splash │            │                      │
-│ 2. constellation — star maps   │ ─texture─▶ │  glyph dither post   │
-│ 3. morph      — stretch/resolve│            │  (the signature look)│
-│ 4. smoke      — fumigation     │            │                      │
+│ 1. backdrop   - section splash │            │                      │
+│ 2. constellation - star maps   │ ─texture─▶ │  glyph dither post   │
+│ 3. morph      - stretch/resolve│            │  (the signature look)│
+│ 4. smoke      - fumigation     │            │                      │
 └────────────────────────────────┘            └──────────────────────┘
 ```
 
@@ -39,23 +39,23 @@ throwing (the page simply runs unshaded).
 | --- | --- |
 | `iw:scroll` | Page progress + velocity. Velocity (damped) swings the smoke column and decays between events. |
 | `iw:section-enter` | Sets the active section: accent color, smoke side, backdrop focal point, constellation crossfade target. |
-| `iw:section-progress` | Local 0..1 progress — drives splash reveal, constellation parallax, section crossfade midpoints. |
-| `iw:morph` | `{name, progress}` — drives the stretch-and-resolve morph pass. |
+| `iw:section-progress` | Local 0..1 progress, drives splash reveal, constellation parallax, section crossfade midpoints. |
+| `iw:morph` | `{name, progress}`, drives the stretch-and-resolve morph pass. |
 | `iw:dither-style` | Swaps the glyph treatment preset (crossfaded, ~⅓ s). |
 | `iw:splash` | Flash/recolor pulse on the backdrop (explicit color, else the section accent). |
-| `iw:weather` | `{raining}` — monsoon-section rain/drought treatment in the dither. |
+| `iw:weather` | `{raining}`, monsoon-section rain/drought treatment in the dither. |
 
 Handlers only write *targets*; the frame loop damps displayed values
 toward them, so event bursts can never pop the imagery.
 
 ## Files
 
-- `pipeline.ts` — orchestrator: renderer, RTT, event wiring, frame loop.
-- `state.ts` — shared mutable state + DOM section reading (`.section[data-section]`, `data-symbols`, `data-smoke-side`).
-- `glyph-atlas.ts` — runtime atlas: draws the token `glyphRamp` (ancient Greek) to an offscreen canvas, measures real ink coverage per glyph, orders lightest→heaviest.
-- `glsl.ts` — shared GLSL chunks (fbm noise, color helpers, 2D SDFs).
-- `utils.ts` — hashing, seeded PRNG, damping math.
-- `passes/backdrop.ts`, `passes/constellation.ts`, `passes/morphs.ts`, `passes/smoke.ts`, `passes/dither.ts` — the passes, below.
+- `pipeline.ts`: orchestrator: renderer, RTT, event wiring, frame loop.
+- `state.ts`: shared mutable state + DOM section reading (`.section[data-section]`, `data-symbols`, `data-smoke-side`).
+- `glyph-atlas.ts`: runtime atlas: draws the token `glyphRamp` (ancient Greek) to an offscreen canvas, measures real ink coverage per glyph, orders lightest→heaviest.
+- `glsl.ts`: shared GLSL chunks (fbm noise, color helpers, 2D SDFs).
+- `utils.ts`: hashing, seeded PRNG, damping math.
+- `passes/backdrop.ts`, `passes/constellation.ts`, `passes/morphs.ts`, `passes/smoke.ts`, `passes/dither.ts`: the passes, below.
 
 ## Pass notes
 
@@ -82,7 +82,7 @@ Key uniforms: `uScene`, `uAtlas`, `uAtlasGrid`, `uGlyphCount`,
 | --- | --- |
 | `default` | 14 px cells, upright mapping, subtle fringe |
 | `dense` | ~half-size cells, heavier glyph bias, tighter fringe |
-| `inverse` | luminance mapping flipped — heavy ink lives in the shadows |
+| `inverse` | luminance mapping flipped, heavy ink lives in the shadows |
 | `chaos` | scrambled glyph identity (re-rolled ~8×/s), sample jitter, wide fringe |
 
 **Weather** (gated by monsoon-section activation): raining → per-column
@@ -95,7 +95,7 @@ sun-bleached palette.
 ### Backdrop (scene)
 
 Per-section splash: accent-tinted fbm aura with a deterministic focal
-point per section id and a chroma-boosted core — the painted saturated
+point per section id and a chroma-boosted core, the painted saturated
 zone the dither preserves. Hosts the `iw:splash` expanding-ring flash.
 
 ### Constellation (scene)
@@ -115,10 +115,10 @@ plume drags across the floor as sections alternate left/right. Scroll
 velocity shears the column (tip lags base). Tinted with the active
 accent, chroma-lifted to survive luminance bucketing.
 
-### Morph (scene) — stretch-and-resolve
+### Morph (scene): stretch-and-resolve
 
 Driven by `iw:morph {name, progress}`. Mid-path the source silhouette is
-smeared along its motion direction (7-tap max-accumulation — the glyph
+smeared along its motion direction (7-tap max-accumulation, the glyph
 field visibly stretches like taffy); near progress 1 the smear collapses
 and the target silhouette resolves. A morph parked at 1 stays resolved.
 
@@ -137,12 +137,12 @@ Classical / alchemical / Greco-Egyptian register only. **No kabbalah, no
 new-age, no modern secret-society symbols.** Audit every added glyph,
 silhouette, or texture against `src/design/tokens.ts` before merging.
 
-## Rare glyphs — the dead letters
+## Rare glyphs: the dead letters
 
 Ported from the Canvas-2D prototype. The atlas carries the glyph ramp plus a
 small unranked rare pool (`rareGlyphs` in `src/design/tokens.ts`): the dead
-letters ϝ ϟ ϡ — digamma, koppa, sampi, letters that fell out of the living
-alphabet yet survived as numerals — and the outer-planet marks ♅ ♆. Bright
+letters ϝ ϟ ϡ (digamma, koppa, sampi), letters that fell out of the living
+alphabet yet survived as numerals, and the outer-planet marks ♅ ♆. Bright
 cells (`mapped > 0.35`) hash-roll against `uRareChance` (re-rolled every
 ~8 s per cell so a rare lingers long enough to be read); winners draw from
 the rare pool instead of the ramp. Baseline chance is 0.004; philosophy

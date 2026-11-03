@@ -1,8 +1,8 @@
 /**
  * Runtime glyph atlas for the dither pass.
  *
- * Draws the Greek glyph ramp (design tokens) onto an offscreen canvas —
- * white ink on transparent — measures each glyph's actual ink coverage,
+ * Draws the Greek glyph ramp (design tokens) onto an offscreen canvas,
+ * white ink on transparent, measures each glyph's actual ink coverage,
  * and orders the atlas by coverage so the shader can map luminance
  * monotonically: dark scene → sparse glyph ('·'), bright scene → heavy
  * glyph ('Ψ', 'Φ'). Measuring instead of trusting the ramp's declared
@@ -13,7 +13,7 @@
 import { glyphRamp, rareGlyphs } from '../design/tokens';
 
 export interface GlyphAtlas {
-  /** Offscreen canvas holding the glyph grid — upload as a GL texture. */
+  /** Offscreen canvas holding the glyph grid, upload as a GL texture. */
   canvas: HTMLCanvasElement;
   /** Grid dimensions in cells. */
   cols: number;

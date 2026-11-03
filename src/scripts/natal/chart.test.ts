@@ -1,5 +1,5 @@
 /**
- * Throwaway test chart for /lab/hero?chart=test — proves the engine renders
+ * Throwaway test chart for /lab/hero?chart=test, proves the engine renders
  * from any ChartData without code changes. Values are invented: a loose
  * grand cross plus a stellium so every beam type appears. No portrait, so
  * the disc stays empty and the centre splits play naked from the start.

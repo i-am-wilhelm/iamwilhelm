@@ -1,5 +1,5 @@
 /**
- * Live scene: greasyporcupines.com — cars in the rain.
+ * Live scene: greasyporcupines.com (cars in the rain).
  *
  * A mountain two-lane at night in the White Mountains: headlights come
  * through the rain, taillights smear on the wet asphalt, spray kicks off the

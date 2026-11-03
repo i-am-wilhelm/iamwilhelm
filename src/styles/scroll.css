@@ -2,7 +2,7 @@
  * Scroll-choreography support rules. Imported by src/scripts/scroll.ts
  * (Vite inlines CSS imports from TS), so these only apply once JS is live.
  * Do NOT add transitions to properties scroll.ts drives per-frame
- * (body background-color, --ink, --scroll-progress) — they would fight
+ * (body background-color, --ink, --scroll-progress), they would fight
  * the frame-accurate interpolation.
  */
 

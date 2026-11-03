@@ -6,7 +6,7 @@ through the window events in `src/scripts/events.ts`.
 
 ## The tap pattern (how the pit opens)
 
-Tap the site's 7/8 figure — 2+2+3 at roughly the site tempo (84 bpm) — on any
+Tap the site's 7/8 figure, 2+2+3 at roughly the site tempo (84 bpm), on any
 `[data-tap-zone]` element, or anywhere on the page when no zones exist.
 
 Two figures are accepted (`tap.ts`):
@@ -22,11 +22,11 @@ and a wide tempo band (roughly half to 2.5x the nominal 357 ms eighth).
 A contrast gate additionally requires each "long" (3) interval to be at
 least 1.2x the mean "short" (2) interval, so evenly spaced clicking keeps
 the pit closed.
-At 84 bpm figure A spans about 2.5 seconds: tap — (2) — tap — (2) — tap —
-(3) — tap.
+At 84 bpm figure A spans about 2.5 seconds: tap (2) tap (2) tap
+(3) tap.
 
-On a match the pit emits `iw:pit-open`, opens the drawer, and — since the
-completed figure is a deliberate performance — starts the site score. The
+On a match the pit emits `iw:pit-open`, opens the drawer, and since the
+completed figure is a deliberate performance it starts the site score. The
 score's knock plays exactly this figure, so listeners learn the key by ear.
 
 ## Score structure (`engine.ts`)
@@ -40,7 +40,7 @@ score's knock plays exactly this figure, so listeners learn the key by ear.
   (C2 → G2 → D2 → A2 → E2, the circle of fifths as you descend); on
   `iw:section-enter` the frequency glides over ~5 s.
 - **The knock**: a deep `MembraneSynth` an octave below the drone, on the
-  2+2+3 group boundaries — steps 0, 2, 4 (beats 1, 3, 5), downbeat
+  2+2+3 group boundaries, steps 0, 2, 4 (beats 1, 3, 5), downbeat
   strongest. Mixed low but felt; it is the clue that teaches the tap.
 - **Transport sync**: every eighth, the engine emits `iw:transport-eighth
   {step, inMs}`; the visual clock (`src/scripts/clock.ts`) phase-locks to
@@ -66,7 +66,7 @@ drawer state (`iw-pit:open`) and the score choice (`iw-pit:score`).
 
 ## Adding owner tracks
 
-Edit `tracks.config.ts` — the drawer renders the `tracks` array with zero UI
+Edit `tracks.config.ts`: the drawer renders the `tracks` array with zero UI
 changes:
 
 - **Owner recording**: `kind: 'owner-recording'`, put the file under
@@ -80,20 +80,20 @@ Both `TODO(owner)` markers sit in `tracks.config.ts` with worked examples.
 
 ## Files
 
-- `pit.ts` — entry point (`initOrchestraPit`), wiring, persistence, lazy loads
-- `tap.ts` — tempo-invariant 7/8 onset matcher
-- `engine.ts` — all Tone.js: score, knock, spheres drone, sequencer voices
-- `ui.ts` — the drawer (DOM + injected style, site CSS vars)
-- `grid.ts` — Tone-free shared sequencer constants
-- `tracks.config.ts` — typed track registry (owner recordings, licensed embeds)
+- `pit.ts`: entry point (`initOrchestraPit`), wiring, persistence, lazy loads
+- `tap.ts`: tempo-invariant 7/8 onset matcher
+- `engine.ts`: all Tone.js: score, knock, spheres drone, sequencer voices
+- `ui.ts`: the drawer (DOM + injected style, site CSS vars)
+- `grid.ts`: Tone-free shared sequencer constants
+- `tracks.config.ts`: typed track registry (owner recordings, licensed embeds)
 
 ## The Seikilos epitaph (`seikilos.ts`)
 
 The dawn gate's opening tone, ported from the prototype: the oldest complete
 surviving piece of music (first century, Ephesus; public domain by twenty
 centuries), in a free monophonic rendering after Pöhlmann–West. A soft sine
-voice at −18 dB plays the phrase once — the Phrygian octave arched around
-A, closing home — at an unhurried pulse (0.24 s eighths) deliberately slower
+voice at −18 dB plays the phrase once (the Phrygian octave arched around
+A, closing home) at an unhurried pulse (0.24 s eighths) deliberately slower
 than the house 7/8; dawn keeps its own meter. Wired to the `iw:dawn-open`
 event from the egg engine's gate. When the AudioContext is still locked at
 open time, the piece arms itself on the visitor's next pointer or key

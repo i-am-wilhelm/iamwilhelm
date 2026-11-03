@@ -2,9 +2,9 @@
  * Orchestra-pit track registry. The pit UI renders this list verbatim; add
  * entries here and they appear in the drawer with zero UI changes.
  *
- * TODO(owner): add your own recordings — kind: 'owner-recording', src
+ * TODO(owner): add your own recordings: kind: 'owner-recording', src
  *   pointing at a file under /public/audio/ (e.g. '/audio/septuple-demo.mp3').
- * TODO(owner): add licensed embeds — kind: 'licensed-embed', embedUrl set to
+ * TODO(owner): add licensed embeds: kind: 'licensed-embed', embedUrl set to
  *   the provider's iframe URL (Bandcamp/SoundCloud/etc.), license noted.
  */
 

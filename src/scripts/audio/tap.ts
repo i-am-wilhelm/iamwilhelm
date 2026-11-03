@@ -1,10 +1,10 @@
 /**
- * 7/8 TAP DETECTION — tempo-invariant onset matcher.
+ * 7/8 TAP DETECTION: tempo-invariant onset matcher.
  *
  * ACCEPTED PATTERNS (the site's signature meter, 7/8 grouped 2+2+3 at
  * ~meter.bpm from src/design/tokens.ts):
  *
- *   A. GROUP-ACCENT PATTERN — 4 taps, one on each group boundary plus the
+ *   A. GROUP-ACCENT PATTERN: 4 taps, one on each group boundary plus the
  *      next downbeat. Inter-onset intervals (IOIs) in eighth-note units:
  *
  *          tap:   1     2     3        4
@@ -13,7 +13,7 @@
  *
  *      i.e. three IOIs in the ratio 2 : 2 : 3 ("short short long").
  *
- *   B. TWO-BAR ACCENT PATTERN — 7 taps, the group boundaries of two
+ *   B. TWO-BAR ACCENT PATTERN: 7 taps, the group boundaries of two
  *      consecutive bars plus the following downbeat:
  *
  *          IOIs: 2 : 2 : 3 : 2 : 2 : 3
@@ -26,12 +26,12 @@
  *   4. Accept when every IOI is within RATIO_TOLERANCE (default 25%) of
  *      its expected multiple of the unit, AND the implied tempo sits in a
  *      generous band around tokens.meter.bpm (half to 2.5x speed), AND the
- *      "long" (3-eighth) intervals show real contrast — each at least
+ *      "long" (3-eighth) intervals show real contrast, each at least
  *      LONG_CONTRAST_MIN (1.2x) the mean of the "short" (2-eighth)
  *      intervals. The contrast gate rejects evenly spaced clicks (e.g. a
  *      triple-click), which would otherwise sneak inside the ratio band.
  *
- * Ratios, not absolute times, decide the match — a user tapping the figure
+ * Ratios, not absolute times, decide the match: a user tapping the figure
  * anywhere near the site tempo (84 bpm ⇒ eighth ≈ 357ms, so pattern A spans
  * about 2.5s) opens the pit.
  */
@@ -48,8 +48,8 @@ const LONG_CONTRAST_MIN = 1.2;
 const NOMINAL_EIGHTH_MS = 60000 / meter.bpm / 2;
 const MIN_EIGHTH_MS = NOMINAL_EIGHTH_MS / 2;
 const MAX_EIGHTH_MS = NOMINAL_EIGHTH_MS * 2.5;
-/** Taps further apart than this reset nothing — the suffix scan simply
- * fails — but we cap the buffer so memory stays bounded. */
+/** Taps further apart than this reset nothing, the suffix scan simply
+ * fails, but we cap the buffer so memory stays bounded. */
 const BUFFER_SIZE = 12;
 
 /** The accent figure of one 2+2+3 bar, in eighth-note units. */

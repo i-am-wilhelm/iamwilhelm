@@ -1,9 +1,9 @@
 /**
- * THE DIOSCURI FACECARD — two portrait layers in a circular crop, perfectly
+ * THE DIOSCURI FACECARD: two portrait layers in a circular crop, perfectly
  * registered (handoff §7).
  *
- *   Flesh  — the photo. Occludes.
- *   Signal — a runtime glyph-dither of the same photo drawn from the site's
+ *   Flesh:  the photo. Occludes.
+ *   Signal: a runtime glyph-dither of the same photo drawn from the site's
  *            coverage-ranked Greek atlas (src/webgl/glyph-atlas.ts), with
  *            ±1 px R/B chromatic fringing, composited `lighter`. Transmits.
  *
@@ -15,7 +15,7 @@
  * The receiving surface: `exc` is a disc-sized canvas that beams stamp
  * colour into (streaks along the spine's direction, rose radials on Venus's
  * arrivals) and that decays ×0.94 each tick. At draw time the glyph layer is
- * masked by it, so the face lights — in the event's colour — only where the
+ * masked by it, so the face lights, in the event's colour, only where the
  * sky actually touched it.
  */
 import type { GlyphAtlas } from '../../webgl/glyph-atlas';
@@ -359,7 +359,7 @@ export class Dioscuri implements PortraitLayer {
     }
 
     // Eyes hold out longest: floor at 0.9 regardless of breath or tide (the
-    // scroll share still releases them — the twin takes the whole face).
+    // scroll share still releases them, the twin takes the whole face).
     const floor = 0.9 * (1 - share);
     if (flesh < floor && flesh < 0.999) {
       const b = (floor - flesh) / (1 - flesh);

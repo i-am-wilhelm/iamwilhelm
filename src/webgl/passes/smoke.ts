@@ -1,10 +1,10 @@
 /**
- * SMOKE / FUMIGATION PASS — additive vapor into the scene target.
+ * SMOKE / FUMIGATION PASS: additive vapor into the scene target.
  *
  * Domain-warped fbm vapor rises from one side of the viewport. The side
  * comes from the active section's data-smoke-side (sections alternate, so
  * the vapor swings left↔right as the visitor descends the page); the
- * swing itself is weighted by scroll velocity — hard scrolling bends the
+ * swing itself is weighted by scroll velocity, hard scrolling bends the
  * column like a draught through a censer. Tinted with the active
  * section's accent.
  */
@@ -38,7 +38,7 @@ void main() {
   float fromEdge = abs(uv.x - edgeX);
 
   // Scroll-velocity swing: shear the sample column sideways, more with
-  // height — the plume tip lags the base like real vapor in moving air.
+  // height, the plume tip lags the base like real vapor in moving air.
   vec2 p = uv;
   p.x -= uSwing * p.y * p.y * 0.6;
 

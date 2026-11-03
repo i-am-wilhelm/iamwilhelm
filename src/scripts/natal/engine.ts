@@ -1,10 +1,10 @@
 /**
- * THE NATAL ENGINE — framework-agnostic Canvas 2D renderer for a natal chart.
+ * THE NATAL ENGINE: framework-agnostic Canvas 2D renderer for a natal chart.
  *
  * `new NatalEngine(canvas, chart, opts)`; the host owns the rAF and calls
  * `tick(dt, clock)` each frame (or `renderStatic()` once under reduced
  * motion). The engine knows nothing about whose chart it draws, nothing
- * about scroll, DOM or events — it exposes numbers and callbacks.
+ * about scroll, DOM or events, it exposes numbers and callbacks.
  *
  * Geometry (handoff §4): MC fixed at the zenith, zodiac counterclockwise:
  *   theta = (−90 − (lon − mc)) · π/180
@@ -354,7 +354,7 @@ export class NatalEngine {
     return this.progress;
   }
 
-  /** Portrait disc in CSS px — the egg hit-area tracks this. */
+  /** Portrait disc in CSS px, the egg hit-area tracks this. */
   get disc(): { x: number; y: number; r: number } {
     return { x: this.discX, y: this.discY, r: this.discR };
   }
@@ -372,7 +372,7 @@ export class NatalEngine {
     }
   }
 
-  /** One lit frame of the face state — no particles, no breath. */
+  /** One lit frame of the face state, no particles, no breath. */
   renderStatic() {
     this.time = 0;
     this.knockGlow = 0;
@@ -446,7 +446,7 @@ export class NatalEngine {
         hit: 0,
       });
     }
-    // Radial stagger for crowded neighbours (within 5°), Mercury excepted —
+    // Radial stagger for crowded neighbours (within 5°), Mercury excepted,
     // he rides inside the Sun.
     const ring = list.filter((b) => b.id !== 'mercury').sort((a, b) => a.lon - b.lon);
     for (let i = 0; i < ring.length; i++) {
@@ -473,7 +473,7 @@ export class NatalEngine {
    * choice (like the 0.965/1.035 stagger). At R no chord passes within her
    * reach in most charts; just outside the portrait disc she sits where the
    * spine, the Jupiter–Saturn opposition and the disc-born seekers actually
-   * travel — a lens where the light is. With the disc at 0.26R she stands at
+   * travel, a lens where the light is. With the disc at 0.26R she stands at
    * 0.34R with a 0.24R reach (the spine passes ≈0.23R from her: a sub-pixel
    * bend, but real, and the rings answer to it).
    */
@@ -715,7 +715,7 @@ export class NatalEngine {
     const density = this.opts.density;
     const quiet = this.dissolve > 0.2;
 
-    // Venus's heart — her own clock, a polyrhythm against the 7/8.
+    // Venus's heart, her own clock, a polyrhythm against the 7/8.
     if (L.venus) {
       const prev = this.venusPhase;
       this.venusPhase = (this.venusPhase + (dt * this.opts.venusBpm) / 60) % 1;
@@ -976,7 +976,7 @@ export class NatalEngine {
       this.drawSeekers(bril);
     }
 
-    // Portrait stack — beams → portrait. The photo occludes; the glyph layer
+    // Portrait stack, beams → portrait. The photo occludes; the glyph layer
     // transmits.
     if (L.portrait && this.portrait && this.discR > 0) {
       ctx.globalCompositeOperation = 'source-over';
@@ -1039,7 +1039,7 @@ export class NatalEngine {
     ctx.beginPath();
     ctx.arc(cx, cy, 0.9 * R, 0, TAU);
     ctx.stroke();
-    // Sign ticks every 30°, 5° minors, ASC/MC axis — one path per class.
+    // Sign ticks every 30°, 5° minors, ASC/MC axis, one path per class.
     const ticks = (step: number, skip: number, r0: number, r1: number, alpha: number) => {
       ctx.strokeStyle = `rgba(220,226,240,${alpha * bright * fade})`;
       ctx.beginPath();
@@ -1310,7 +1310,7 @@ export class NatalEngine {
       let scale = 1;
       if (dis > 0) {
         // Outward into a point-field, then falling toward the section
-        // below — the Cluster sky rises to meet them.
+        // below, the Cluster sky rises to meet them.
         const k = dis * (0.5 + 0.5 * b.seed) * 0.55 * this.R;
         x += Math.cos(b.theta + (b.seed - 0.5) * 0.6) * k;
         y += Math.sin(b.theta + (b.seed - 0.5) * 0.6) * k + dis * dis * this.H * (0.18 + 0.12 * b.seed);
@@ -1333,7 +1333,7 @@ export class NatalEngine {
       ctx.arc(x, y, b.core * 0.65 * venusScale * scale, 0, TAU);
       ctx.fill();
 
-      // Highlight arc — retrograde bodies run it backward.
+      // Highlight arc, retrograde bodies run it backward.
       if (!still) {
         const dir = b.retro ? -1 : 1;
         const ang = dir * ((TAU * t) / b.breathPeriod) + b.seed * TAU;

@@ -1,10 +1,10 @@
 /**
- * Natal-chart placement hooks — config-driven, subtle, for a perceptive
+ * Natal-chart placement hooks, config-driven, subtle, for a perceptive
  * educated eye. Nothing here is explained in the UI; the values surface only
  * as animation offsets, constellation rotations, and one coded sequence.
  *
  * Every value derives from the real chart in
- * src/scripts/natal/chart.michael.ts — the same data file the hero renders.
+ * src/scripts/natal/chart.michael.ts, the same data file the hero renders.
  * Change the chart there; nothing here needs editing.
  */
 import { CHART } from '../natal/chart.michael';
@@ -58,12 +58,12 @@ function placement(chart: ChartData, body: string): NatalPlacement {
 }
 
 export const natal = {
-  // The Uranus–Neptune pair sits in the 9th house — its midpoint and orb
+  // The Uranus–Neptune pair sits in the 9th house, its midpoint and orb
   // drive the constellation rotation and the drift on deconstruction-themed
   // content (elements marked data-natal-aspect="uranus-neptune").
   uranus: placement(CHART, 'uranus'),
   neptune: placement(CHART, 'neptune'),
-  // Venus at dawn / 12th-house themes — phase value feeds the dawn-window
+  // Venus at dawn / 12th-house themes, phase value feeds the dawn-window
   // egg and a slow luminance offset the visual layer may read.
   venus: placement(CHART, 'venus'),
 } as const;
@@ -84,7 +84,7 @@ export function isDawn(now: Date = new Date()): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Derived hooks — consumed as CSS custom properties by the visual layer.
+// Derived hooks, consumed as CSS custom properties by the visual layer.
 // ---------------------------------------------------------------------------
 
 export interface NatalCssHooks {
@@ -112,11 +112,11 @@ export function natalCssHooks(): NatalCssHooks {
 }
 
 // ---------------------------------------------------------------------------
-// Birthday as coded easter egg — original mechanism.
+// Birthday as coded easter egg, original mechanism.
 // ---------------------------------------------------------------------------
 
 /**
- * The date the sequence is derived from — the chart's birth date. It is
+ * The date the sequence is derived from, the chart's birth date. It is
  * never rendered anywhere.
  */
 export const keyDate = {

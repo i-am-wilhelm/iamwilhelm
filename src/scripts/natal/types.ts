@@ -1,6 +1,6 @@
 /**
  * Natal engine data contract. The engine (engine.ts) knows nothing about
- * whose chart it draws — any object satisfying ChartData renders. These
+ * whose chart it draws, any object satisfying ChartData renders. These
  * types are re-exported from engine.ts and are the stable interface for the
  * later public chart tool and the music-engine sibling.
  *
@@ -23,7 +23,7 @@ export interface EyeMask {
 }
 
 export interface PortraitConfig {
-  /** Image URL — square source expected. */
+  /** Image URL, square source expected. */
   src: string;
   /**
    * Square crop of the source that fills the disc: centre and half-size in
@@ -42,7 +42,7 @@ export interface ChartData {
   /** Twelve house cusps, index 0 = cusp of house 1 (the Ascendant). */
   cusps: number[];
   bodies: Record<string, ChartBody>;
-  /** Black Moon Lilith — rendered as a lens, never an orb. */
+  /** Black Moon Lilith, rendered as a lens, never an orb. */
   lilith: number;
   /** Optional birth metadata (derived config like keyDate reads this). */
   birth?: { year: number; month: number; day: number; hourUT: number; lat: number; lon: number };
@@ -68,7 +68,7 @@ export interface PortraitDrawInput {
   signalSurge: number;
   /** Tide period in seconds. */
   tidePeriod: number;
-  /** When true: no breath, no tide, no tick — one lit frame. */
+  /** When true: no breath, no tide, no tick, one lit frame. */
   still: boolean;
 }
 

@@ -25,7 +25,7 @@ export interface PipelineState {
   /** Local 0..1 progress within the active section. */
   sectionProgress: number;
   /**
-   * Continuous "which section are we on" float — activeIndex plus centered
+   * Continuous "which section are we on" float, activeIndex plus centered
    * local progress. Drives constellation crossfade and parallax.
    */
   sectionFloat: number;
@@ -66,8 +66,8 @@ export interface PipelineState {
 const FALLBACK_ACCENT: [number, number, number] = [0.55, 0.52, 0.47];
 
 /**
- * Read `.section[data-section]` elements from the DOM. The DOM — not the
- * token registry — is authoritative, so blog pages or reordered sections
+ * Read `.section[data-section]` elements from the DOM. The DOM, not the
+ * token registry, is authoritative, so blog pages or reordered sections
  * still work; tokens only supply the accent hex for known ids.
  */
 export function readSections(): SectionInfo[] {

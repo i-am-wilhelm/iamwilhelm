@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 
 /**
  * Local markdown collections. A Ghost backend can be wired in later by
- * swapping this glob loader for a Ghost Content API loader — the schema is
+ * swapping this glob loader for a Ghost Content API loader, the schema is
  * the stable interface the pages depend on.
  */
 const writings = defineCollection({

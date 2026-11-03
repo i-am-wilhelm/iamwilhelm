@@ -11,7 +11,7 @@ export const SEQ_ROW_NAMES = ['knock', 'tick', 'pluck', 'shimmer'] as const;
 /** Steps per bar: 7 (one per eighth in 7/8). */
 export const STEPS = meter.beatsPerBar;
 
-/** Step indices that begin a 2+2+3 group — beats 1, 3, 5. */
+/** Step indices that begin a 2+2+3 group, beats 1, 3, 5. */
 export const GROUP_STARTS = [0, 2, 4] as const;
 
 export function emptyPattern(): boolean[][] {
