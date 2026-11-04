@@ -22,7 +22,7 @@ const writings = defineCollection({
 
 /**
  * The Gallery of Visualized Poetry. One markdown file per framed poem in
- * src/content/gallery; the homepage's Room IV and /gallery both render
+ * src/content/gallery; the homepage's Room II and /gallery both render
  * every entry, sorted by `order`. To hang a new poem, add a file: title,
  * year, a one-line epigraph, and `href` pointing at its interactive page.
  * Entries with `status: forthcoming` render as an empty frame with no link.

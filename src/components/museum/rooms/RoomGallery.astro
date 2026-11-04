@@ -1,6 +1,6 @@
 ---
 /**
- * Room IV: the Gallery of Visualized Poetry. The same framed tiles as
+ * Room II: the Gallery of Visualized Poetry. The same framed tiles as
  * /gallery, fed by the `gallery` content collection.
  */
 import Room from '../Room.astro';
@@ -8,15 +8,15 @@ import Placard from '../Placard.astro';
 import PoemGallery from '../PoemGallery.astro';
 ---
 
-<Room id="gallery" number={4} sign="pisces" accent="var(--room-iv)" labelledby="gallery-title" deep>
+<Room id="gallery" number={2} sign="pisces" accent="var(--room-iv)" labelledby="gallery-title" deep>
   <div class="gal wrap">
     <div class="gal__head">
       <Placard
         id="gallery-title"
-        label="Room IV · Poetry"
+        label="Room II · Poetry"
         title="Gallery of Visualized Poetry"
         medium="Poems and essays written to be read slowly, each set on its own interactive page"
-        catalog="Cat. IV"
+        catalog="Cat. II"
       />
       <div class="gal__statement prose-museum" data-reveal>
         <p class="lede">

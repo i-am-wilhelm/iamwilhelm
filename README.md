@@ -21,8 +21,9 @@ custom domain in the Cloudflare dashboard.
 
 ## The museum (public homepage)
 
-The homepage is a walk through a small museum: a foyer, five numbered rooms
-divided by Greek meander keylines, and a colophon. Warm ivory walls, charcoal
+The homepage is a walk through a small museum: a foyer, three numbered rooms
+(BackGold, the Gallery, Writings) divided by Greek meander keylines, and a
+colophon. Warm ivory walls, charcoal
 ink, gilt as the one shared accent, paper grain from an SVG noise tile, and
 text that settles into place on scroll (same 7/8 meter as the poem pages).
 No WebGL, no dithering, no audio on these pages.
@@ -32,11 +33,15 @@ No WebGL, no dithering, no audio on these pages.
 - `src/components/museum/`: Placard, Room, Meander, ZodiacRing, Glyph (SVG
   zodiac paths in `zodiac.ts`), PoemGallery, WritingsList, Colophon, and the
   rooms in `rooms/`.
-- `src/components/museum/case/` and `src/scripts/case/`: the ALM console and
-  cartridges, ported from advancing-liberty-media2 and lazy-loaded.
-- `src/data/portfolio.ts`: client sites for Room III (mirrors ALM `work.ts`).
+- Unmounted rooms, kept in the repo and referenced from nowhere on the
+  public site: `rooms/RoomManifesto.astro` (the libertariantoolsuite
+  manifesto exhibit) and `rooms/RoomAlm.astro` (Advancing Liberty Media /
+  Websites by Wilhelm) with its case (`src/components/museum/case/`,
+  `src/scripts/case/`), its client data (`src/data/portfolio.ts`, mirrors
+  ALM `work.ts`), and the screenshots in `public/work/`. Re-import a room in
+  `src/pages/index.astro` and restore its `NAV` entry to hang it again.
 - `src/content/gallery/`: one markdown file per framed work. Drop a file in
-  to hang a new piece on `/gallery` and in Room IV; `href` points at its page.
+  to hang a new piece on `/gallery` and in Room II; `href` points at its page.
 - `src/pages/gallery/<slug>.astro` + `src/layouts/Poem.astro`: the visualized
   pieces themselves (The Keeper and the Flame, PHARMAKON, The Only Sighted
   One), ported from the owner's Claude artifacts. Each is a night scene of its

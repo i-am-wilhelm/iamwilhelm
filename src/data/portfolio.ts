@@ -1,5 +1,8 @@
 /**
- * Client sites for Room III (Advancing Liberty Media / Websites by Wilhelm).
+ * Client sites for the Advancing Liberty Media / Websites by Wilhelm room
+ * (components/museum/rooms/RoomAlm.astro), which is currently unmounted from
+ * the homepage. Nothing on the public site reads this file until it is hung
+ * again.
  *
  * Source of truth: advancing-liberty-media2, src/content/work.ts. Entries
  * are copied verbatim (featured, public cartridges, in cartridge order) and

@@ -36,9 +36,7 @@ export const NEWSLETTER_EMBED_HTML = '';
  * always goes to the route, and the homepage scroll-spy leaves it alone.
  */
 export const NAV = [
-  { label: 'Work', id: 'work' },
   { label: 'BackGold', id: 'backgold' },
-  { label: 'Manifesto', id: 'manifesto' },
   { label: 'Gallery', id: 'gallery', page: '/gallery/' },
   { label: 'Writings', id: 'writings', page: '/writings/' },
   { label: 'Earl', id: 'earl', page: '/earl/', room: false },
