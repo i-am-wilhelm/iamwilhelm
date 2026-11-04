@@ -1,6 +1,6 @@
 ---
 /**
- * The framed poem tiles, shared by Room IV and /gallery. Each poem on view
+ * The framed poem tiles, shared by Room II and /gallery. Each poem on view
  * is one link (title, year, epigraph) to its full interactive page, so the
  * gallery is a plain list of links in tab order. Forthcoming entries hang
  * as empty frames with no link.
@@ -37,7 +37,7 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
             </div>
           </div>
           <div class="poem__placard">
-            <p class="poem__cat mono">Cat. IV.{String(i + 1).padStart(2, '0')}</p>
+            <p class="poem__cat mono">Cat. II.{String(i + 1).padStart(2, '0')}</p>
             <H class="poem__title">{d.title}</H>
             <p class="poem__meta">
               <span class="poem__medium">{d.medium}</span>

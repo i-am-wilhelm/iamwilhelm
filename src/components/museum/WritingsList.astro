@@ -1,7 +1,7 @@
 ---
 /**
  * The writings index: title, date, and description for each published
- * piece, newest first. Shared by Room V (latest few) and /writings (all).
+ * piece, newest first. Shared by Room III (latest few) and /writings (all).
  */
 import { getCollection } from 'astro:content';
 
@@ -25,7 +25,7 @@ const fmt = (d: Date) =>
   {
     posts.map((post, i) => (
       <li class="entry" data-reveal>
-        <span class="entry__num mono">V.{String(i + 1).padStart(2, '0')}</span>
+        <span class="entry__num mono">III.{String(i + 1).padStart(2, '0')}</span>
         <div class="entry__body">
           <H class="entry__title">
             <a href={`/writings/${post.id}/`}>{post.data.title}</a>

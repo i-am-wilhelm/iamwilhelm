@@ -77,7 +77,10 @@
   --rule: rgba(29, 27, 24, 0.16);
   --focus: #7a5a1f;
 
-  /* One muted hue per room. All clear 4.5:1 on both walls. */
+  /* One muted hue per room. All clear 4.5:1 on both walls. The slot names
+     are the original hanging order: i BackGold, ii the Manifesto and iii
+     ALM (both unmounted, components kept), iv the Gallery (now Room II),
+     v Writings (now Room III). */
   --room-foyer: var(--gilt-ink);
   --room-i: #7b4128;
   --room-ii: #7c2c2c;
