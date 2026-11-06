@@ -1,0 +1,1042 @@
+---
+/**
+ * The Dual Thing, hung in the Gallery beside the poems: the second
+ * "in the original" essay, on Orphic genesis and incarnation. One narrow
+ * column stepped by section over a fixed particle sky that runs the whole
+ * sequence on scroll: the egg, the swallowing, the mirror, the lightning,
+ * the ash, the breath, the two springs, and the wheel one soul flies out of.
+ * The two springs are real buttons (Lethe blurs every line but the Greek,
+ * Memory brings the page back) and the gold leaf unfolds its translation.
+ * Ported from the owner's artifact; the essay text and its look are the
+ * design of record.
+ */
+import Poem from '../../layouts/Poem.astro';
+---
+
+<Poem
+  title="The Dual Thing"
+  description="A visualized essay by Michael Wilhelm: Orphic genesis, the Titan ash, and how a soul comes to wear a body."
+  year="2026"
+  night="#07070d"
+  accent="#e3b85a"
+  genre="Essay"
+  bodyClass="essay dual"
+>
+  <canvas id="sky" class="stage" aria-hidden="true"></canvas>
+
+  <aside id="rail" aria-hidden="true">
+    <span class="gk" lang="grc">κύκλος</span>
+    <svg viewBox="0 0 54 54">
+      <circle class="ring" cx="27" cy="27" r="22"></circle>
+      <path class="arc" id="arc" d=""></path>
+      <circle class="dot" id="dot" cx="27" cy="5" r="2.6"></circle>
+    </svg>
+    <span class="state" id="state">unborn</span>
+  </aside>
+
+  <main class="page">
+    <div class="wrap">
+      <header class="hero" data-s="unborn" data-p='{"egg":1,"scale":1,"crack":0.12,"gold":0.85,"veil":0.25}'>
+        <p class="log">
+          <span>Word <b class="gk" lang="grc">γένεσις</b></span>
+          <span>Wheel <b class="gk" lang="grc">κύκλος γενέσεως</b></span>
+          <span>Charge <b class="gk" lang="grc">Τιτανικὴ φύσις</b></span>
+        </p>
+        <h1>The Dual<br /><em>Thing</em></h1>
+        <p class="deck">Orphic genesis, the Titan ash, and how a soul comes to wear a body.</p>
+        <blockquote class="epi">
+          <p>Before we had our becoming here, we existed There, men other than now; we were pure souls. Intelligence inbound with the entire of reality, not fenced off, integral to that All. [&hellip;] Then it was as if One voice sounded. One word was uttered and from every side an ear attended and received and there was an effective hearing; now we are become a dual thing, no longer that which we were at first, dormant, and in a sense no longer present.</p>
+          <cite>Plotinus, Enneads VI.4.14</cite>
+        </blockquote>
+        <p class="log sig"><span>an essay · Michael Wilhelm</span><span>in the original</span></p>
+      </header>
+
+      <hr />
+
+      <section data-s="unborn" data-p='{"egg":1,"scale":1,"crack":0.75,"gold":0.95,"veil":0.3}'>
+        <div class="body" style="--ml:0">
+          <p class="eyebrow"><span class="gk" lang="grc">ΝΥΞ</span><span class="tr">Nyx</span><span class="gl">Night, before the egg</span></p>
+          <p class="t lede rise pre">Aristotle files the Orphics under the theologians who generate everything from Night. Before anything had an edge there was Night, and Time with her, and out of them an egg. Nothing in the egg had a name yet. The egg held every distinction that would ever be made, with none of them made.</p>
+          <p class="t rise pre">Then it cracked. The one who came out is called Phanes, the Shower, and Protogonos, the Firstborn. The hymns call him <span class="gk" lang="grc">διφυής</span>, two-natured: male and female, light and the thing light falls on. The first event in the cosmos is the appearance of a difference.</p>
+        </div>
+      </section>
+
+      <section data-s="spoken" data-p='{"egg":0.8,"scale":0.42,"crack":0,"gold":0.7,"veil":0.4}'>
+        <div class="body" style="--ml:7%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΖΕΥΣ ΚΕΦΑΛΗ</span><span class="tr">Zeus kephalē</span><span class="gl">the swallowing</span></p>
+          <p class="t lede rise pre">The Rhapsodies then do something strange. Zeus, generations down the line, swallows Phanes whole. Everything that had been made goes back inside one body. The Derveni papyrus, the oldest Orphic text we have, keeps the hymn that follows: <span class="gk" lang="grc">Ζεὺς κεφαλή, Ζεὺς μέσσα, Διὸς δ&rsquo; ἐκ πάντα τέτυκται</span>. Zeus the head, Zeus the middle, out of Zeus all things are fashioned. He speaks the world out again from inside himself.</p>
+          <p class="t rise pre">Hold that next to the epigraph. Plotinus says we existed There as pure souls, integral to the All, until one voice sounded and from every side an ear attended. The Orphic cosmos turns on the same hinge. Everything gathered into one, then uttered. <span class="gold">Hearing begins the moment there is something outside you to hear.</span></p>
+        </div>
+      </section>
+
+      <section data-s="mirrored" data-p='{"egg":0,"mirror":1,"gold":0.5,"veil":0.3}'>
+        <div class="body" style="--ml:2%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΖΑΓΡΕΥΣ</span><span class="tr">Zagreus</span><span class="gl">the child at the mirror</span></p>
+          <p class="t lede rise pre">The human part of the story arrives through a child. Zeus seats the infant Dionysus on the throne, and the Titans, faces whitened with gypsum, come at him with toys. Clement lists them: a top, a bull-roarer, jointed dolls, apples, a tuft of wool, and a mirror. The child looks into the mirror. While he is studying himself divided in the glass, they take him apart, boil him, roast him, and eat him.</p>
+          <p class="t rise pre">The Platonists read the mirror as the whole mechanism of descent. Plotinus says souls catch sight of themselves <span class="gk" lang="grc">ἐν τῷ Διονύσου κατόπτρῳ</span>, in the mirror of Dionysus, and go down toward the image. Proclus says that when the god looked into the mirror Hephaestus made him, he proceeded into the entire division of the universe. <span class="gold">A soul becomes a body by watching itself become one.</span></p>
+        </div>
+      </section>
+
+      <section data-s="torn" data-p='{"flash":1,"ash":1,"gold":0.08,"veil":0.2}'>
+        <div class="body" style="--ml:9%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΑΙΘΑΛΗ</span><span class="tr">aithalē</span><span class="gl">soot</span></p>
+          <p class="t lede rise pre">Zeus burns the Titans with lightning. Olympiodorus finishes the account: from the soot of their smoke humankind arose. So we are made of the thing that ate the god, with the god still in us, undigested. Both at once. Plato in the <em>Laws</em> calls the first part <span class="gk" lang="grc">ἡ παλαιὰ Τιτανικὴ φύσις</span>, the old Titanic nature. Olympiodorus calls the second part our Dionysiac share.</p>
+          <p class="t rise pre">Pindar knew the bill. Persephone, he says, accepts from certain souls the requital for an ancient grief, <span class="gk" lang="grc">ποινὰν παλαιοῦ πένθεος</span>, and in the ninth year sends those souls back up as kings and sages and athletes. The grief is hers. The crime happened before you were born. You pay it anyway, because <span class="ash">you are what the crime was done with</span>.</p>
+          <p class="note rise pre"><b>On the record</b>The complete telling survives only in Olympiodorus, a Platonist writing in the sixth century of our era, and some scholars doubt the ancient pieces were ever one story. Against that stand the pieces themselves: Pindar in the fifth century BCE; the bone tablets scratched at Olbia in that same century with <span class="gk" lang="grc">βίος θάνατος βίος ἀλήθεια Διό(νυσος) Ὀρφικοί</span>, life death life truth Dionysus Orphics; Plato&rsquo;s Titanic nature; Xenocrates glossing the Phaedo&rsquo;s guard post as the Titans&rsquo;. The tiles are old even where the mosaic is late.</p>
+        </div>
+      </section>
+
+      <section data-s="kept" data-p='{"ash":0.72,"gold":0.25,"veil":0.35}'>
+        <div class="body" style="--ml:3%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΣΩΜΑ ΣΗΜΑ</span><span class="tr">sōma sēma</span><span class="gl">the body, a tomb and a sign</span></p>
+          <p class="t lede rise pre">In the <em>Cratylus</em>, Socrates turns the word for body over in his hands. Some say <span class="gk" lang="grc">σῶμα</span> is <span class="gk" lang="grc">σῆμα</span>, the tomb, because the soul is buried in it for the present. He credits the circle of Orpheus with the sharper reading. The soul is paying a penalty, and the body is an enclosure that keeps it, <span class="gk" lang="grc">ἵνα σῴζηται</span>, the way a prison keeps a prisoner. The word for body comes out of the word for keeping safe.</p>
+          <p class="t rise pre"><span class="gk" lang="grc">Σῆμα</span> also means sign. The same syllables say grave and say marker. The body is where the sentence is served, and the body is the inscription that says what was buried there. In the <em>Phaedo</em> the secret doctrine calls it a <span class="gk" lang="grc">φρουρά</span>, a guard post, and a page later Socrates quotes the Orphic line: <span class="gk" lang="grc">ναρθηκοφόροι μὲν πολλοί, βάκχοι δέ τε παῦροι</span>. Many carry the wand. Few are the bacchoi.</p>
+        </div>
+      </section>
+
+      <section data-s="breathed" data-p='{"ash":0.35,"breath":0.7,"gold":0.45,"veil":0.3}'>
+        <div class="body" style="--ml:6%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΓΕΝΕΣΙΣ</span><span class="tr">genesis</span><span class="gl">the shared word</span></p>
+          <p class="t lede rise pre">The wheel the Orphics wanted off is the <span class="gk" lang="grc">κύκλος γενέσεως</span>, the circle of becoming. When the Alexandrian translators put the Hebrew <em>Bereshit</em> into Greek, the title they gave it was that word. Genesis. Then, at the hinge of the second chapter: <span class="gk" lang="grc">Αὕτη ἡ βίβλος γενέσεως οὐρανοῦ καὶ γῆς</span>. This is the book of the genesis of heaven and earth. The problem and the book carry one name.</p>
+          <p class="t rise pre">Read the next verses in the Septuagint with Orphic eyes and the anatomy matches. God forms the human <span class="gk" lang="grc">χοῦν ἀπὸ τῆς γῆς</span>, dust from the earth, breathes into his face <span class="gk" lang="grc">πνοὴν ζωῆς</span>, a breath of life, and the man <span class="gk" lang="grc">ἐγένετο</span>, became, a living soul. Dust first. Breath second, and from outside. An earth part and a heaven part, in that order, joined by the verb of becoming.</p>
+          <p class="t rise pre">The gold tablets buried with initiates in Italy and Crete give the soul one sentence to say at the gate: <span class="gk" lang="grc">Γῆς παῖς εἰμι καὶ Οὐρανοῦ ἀστερόεντος, αὐτὰρ ἐμοὶ γένος οὐράνιον</span>. I am a child of Earth and starry Heaven, but my race is of Heaven. Dust from the earth and a breath from somewhere else. Two books, two tongues, one anatomy. I make no claim about who read whom. I point out that when a Greek reader of either book reached the word for a human being, the word underneath it was the same.</p>
+        </div>
+      </section>
+
+      <section data-s="clothed" data-p='{"ash":0.5,"breath":0.3,"gold":0.3,"veil":0.55}'>
+        <div class="body" style="--ml:0">
+          <p class="eyebrow"><span class="gk" lang="grc">ΧΙΤΩΝ</span><span class="tr">chitōn</span><span class="gl">the tunic</span></p>
+          <p class="t lede rise pre">After the fruit and before the exile, the Septuagint has the Lord make the pair <span class="gk" lang="grc">χιτῶνας δερματίνους</span>, tunics of skin, and dress them in it. Philo, Origen, and Gregory of Nyssa each read the tunic as the body itself, put on after the fall. They had a Greek precedent. Empedocles, two centuries before Plato, describes the power that wraps the fallen daimon <span class="gk" lang="grc">σαρκῶν ἀλλογνῶτι χιτῶνι</span>, in an alien tunic of flesh.</p>
+          <p class="t rise pre">His daimons are exiles: thirty thousand seasons away from the blessed, born through every shape of mortal life, for bloodshed and a broken oath. Then the line he wrote for himself: <span class="gk" lang="grc">τῶν καὶ ἐγὼ νῦν εἰμι, φυγὰς θεόθεν καὶ ἀλήτης</span>. Of these I too am now one, a fugitive from god and a wanderer. <span class="gold">In both books, incarnation is dressed. The skin is a garment and the garment is the sentence.</span></p>
+        </div>
+      </section>
+
+      <section class="held" data-s="dual" data-p='{"ash":0.3,"breath":0.55,"gold":0.65,"veil":0.2,"still":1}'>
+        <div class="body" style="--ml:0">
+          <p class="big rise pre">Now we are become a dual thing.</p>
+          <p class="t rise pre">That is Plotinus, and it is the whole Orphic account of a person. Ash and god. Dust and breath. Tomb and sign. The tunic and what it was wrapped around.</p>
+          <p class="t rise pre">One of the two parts remembers the other. That is why the condition hurts.</p>
+        </div>
+      </section>
+
+      <section data-s="forgetting" data-p='{"springs":1,"gold":0.4,"veil":0.3}' id="springs">
+        <div class="body" style="--ml:8%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΛΗΘΗ · ΜΝΗΜΟΣΥΝΗ</span><span class="tr">lēthē, mnēmosynē</span><span class="gl">the two springs</span></p>
+          <p class="t lede rise pre">The tablets are a map for what to do with that memory. In the house of Hades, on the left, beside a white cypress, there is a spring. Do not go near it. The dead crowd around it, because it is Forgetting, and forgetting is how a soul gets sent back around.</p>
+          <p class="t rise pre">On the right is the lake of Memory, cold water flowing out of it, guards standing in front. You tell the guards: <span class="gk" lang="grc">δίψᾳ δ&rsquo; εἰμ&rsquo; αὖος καὶ ἀπόλλυμαι</span>. I am parched with thirst and perishing. Give me, quickly, the cold water flowing from the lake of Memory. Then you say what you are. The whole machine of rebirth runs on a drink. <span class="gold">Incarnation is a forgetting, release is a remembering, and the password is the anatomy.</span></p>
+          <div class="springs rise pre">
+            <button class="spring left" id="lethe" type="button" aria-pressed="false">
+              <h3><span class="gk" lang="grc">Λήθη</span><span>the spring on the left</span></h3>
+              <p>Beside the white cypress. Drink here and the page goes the way the dead go.</p>
+            </button>
+            <button class="spring right" id="mnemo" type="button" aria-pressed="false">
+              <h3><span class="gk" lang="grc">Μνημοσύνη</span><span>the lake on the right</span></h3>
+              <p>Cold water, guarded. Say the sentence and the page comes back.</p>
+            </button>
+          </div>
+          <p class="drank" id="drank" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section data-s="released" data-p='{"wheel":1,"exit":0.65,"gold":0.9,"veil":0.2}'>
+        <div class="body" style="--ml:0">
+          <p class="eyebrow"><span class="gk" lang="grc">ΛΥΣΙΣ</span><span class="tr">lysis</span><span class="gl">a loosing</span></p>
+          <p class="t lede rise pre">The tradition keeps two exits, and they cost different things.</p>
+          <div class="endings rise pre">
+            <div class="ending">
+              <h3>Thurii and Pelinna</h3>
+              <p>The soul reports in: <span class="gk" lang="grc">κύκλου δ&rsquo; ἐξέπταν βαρυπενθέος ἀργαλέοιο</span>. I have flown out of the heavy, grievous circle. I have stepped with quick feet onto the longed-for crown. I have sunk beneath the lap of the Mistress, the queen under the earth. The answer comes back: happy and blessed one, you shall be a god instead of a mortal.</p>
+              <p>At Pelinna the tablet is shaped like an ivy leaf and says it plainer: <span class="gk" lang="grc">νῦν ἔθανες καὶ νῦν ἐγένου</span>. Now you died and now you came to be, thrice blessed, on this day. Tell Persephone that Bacchios himself released you. A kid, I fell into milk. Death is filed under the same verb as birth.</p>
+            </div>
+            <div class="ending">
+              <h3>Plotinus</h3>
+              <p>No gate, no guard, no drink. The dual thing stops attending to the voice outside and turns toward the part of itself that never left. The integral soul, he insists, was never cut away; we only stopped looking at it. The ascent is an act of attention, and the last line of the <em>Enneads</em> names its destination: <span class="gk" lang="grc">φυγὴ μόνου πρὸς μόνον</span>. The flight of the alone to the Alone.</p>
+            </div>
+          </div>
+          <p class="t rise pre" style="margin-top:2rem">One exit is paid in initiations. The other is paid in attention. Both are paid in memory.</p>
+          <div class="tablet rise pre" id="tablet">
+            <span class="gk" lang="grc">Γῆς παῖς εἰμι καὶ Οὐρανοῦ ἀστερόεντος,<br />αὐτὰρ ἐμοὶ γένος οὐράνιον.</span>
+            <span class="en" id="tablet-en" hidden>I am a child of Earth and starry Heaven, but my race is of Heaven. The sentence at the gate, from the gold leaf found at Petelia, folded into an amulet and buried with its reader.</span>
+            <button type="button" id="tablet-btn" aria-expanded="false">read the leaf</button>
+          </div>
+        </div>
+      </section>
+
+      <footer data-s="released" data-p='{"wheel":0.5,"exit":1,"gold":1,"veil":0.2}'>
+        <hr style="margin-bottom:clamp(2.6rem,7vh,4.4rem)" />
+        <p class="close">Dust from the earth, breath from elsewhere, and a leaf of gold buried with the body so the body can be read.</p>
+        <p class="log">
+          <span>Word <b class="gk" lang="grc">γένεσις</b></span>
+          <span>Password <b class="gk" lang="grc">Γῆς παῖς εἰμι</b></span>
+          <span>Station <b>the lake on the right</b></span>
+        </p>
+        <p class="log" style="margin-top:1.6rem"><span><a href="/gallery/">The Gallery</a></span><span><a href="/writings/">Writings</a></span></p>
+        <p class="apparatus">
+          <b>Sources.</b> Aristotle, <i>Metaphysics</i> Λ 1071b27 · Derveni papyrus col. XVII · Orphic fragments 54–60, 167, 240–241 (Kern), 303–315 (Bernabé) · Clement, <i>Protrepticus</i> 2.17–18 · Olympiodorus, <i>In Phaedonem</i> 1.3 · Plato, <i>Cratylus</i> 400b–c, <i>Phaedo</i> 62b and 69c, <i>Laws</i> 701c, <i>Meno</i> 81b · Pindar fr. 133 · Olbia bone tablets (SEG 28.659–661) · Empedocles B115 and B126 · Plotinus, <i>Enneads</i> IV.3.12, VI.4.14, VI.9.11 · Proclus, <i>In Timaeum</i> on 33b · Gold leaves: Petelia (OF 476), Hipponion (OF 474), Thurii (OF 487–490), Pelinna (OF 485–486) · Septuagint, Genesis 2:4, 2:7, 3:21 · Philo, <i>Quaestiones in Genesim</i> 1.53 · Origen, <i>Contra Celsum</i> 4.40 · Gregory of Nyssa, <i>De anima et resurrectione</i>
+        </p>
+      </footer>
+    </div>
+  </main>
+</Poem>
+
+<style is:global>
+  .dual {
+    --stone: #12131b;
+    --bone: #e9e3d5;
+    --fg: #e9e3d5;
+    --dim: #8f94a3;
+    --gold: #e3b85a;
+    --ash: #9aa0ad;
+    --wine: #9b3a5a;
+    --cypress: #b9c7d8;
+    font-size: clamp(1.28rem, 2.3vw, 1.72rem);
+    line-height: 1.46;
+  }
+  .dual main.page {
+    max-width: none;
+    padding: 0;
+  }
+  .dual .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .dual section,
+  .dual header.hero,
+  .dual footer {
+    min-height: 0;
+    display: block;
+  }
+
+  /* ---- type ---- */
+  .dual h1 {
+    font-weight: 400;
+    font-size: clamp(3rem, 10.5vw, 6.4rem);
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .dual h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .dual .deck {
+    margin: 1.1rem 0 0;
+    max-width: 30ch;
+    color: var(--bone);
+    font-size: clamp(1.15rem, 2.1vw, 1.5rem);
+    font-style: italic;
+    opacity: 0.86;
+  }
+  .dual .log {
+    font-family: var(--log);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: #b4b9c5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1.7rem;
+  }
+  .dual .log span {
+    white-space: nowrap;
+  }
+  .dual .log b {
+    font-weight: 500;
+    color: var(--gold);
+  }
+  .dual .log .gk {
+    text-transform: none;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .dual .log a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(227, 184, 90, 0.38);
+  }
+  .dual .log a:hover {
+    border-bottom-color: var(--gold);
+  }
+  .dual .eyebrow {
+    font-family: var(--log);
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
+    color: var(--dim);
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.85rem;
+  }
+  .dual .eyebrow .gk {
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+  }
+  .dual .eyebrow .tr {
+    font-style: italic;
+    font-family: var(--display);
+    font-size: 1rem;
+    color: #b9bdc8;
+  }
+  .dual .eyebrow .gl {
+    color: #bcc0cb;
+  }
+  .dual p.t {
+    margin: 0 0 0.95em;
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+  .dual p.t:last-child {
+    margin-bottom: 0;
+  }
+  .dual .lede {
+    font-size: 1.14em;
+  }
+  .dual .gold {
+    color: var(--gold);
+  }
+  .dual .ash {
+    color: var(--ash);
+  }
+  .dual .wine {
+    color: #c9637f;
+  }
+  .dual .gk {
+    font-family: var(--greek);
+    font-feature-settings: 'liga' 0;
+  }
+  .dual p.t .gk {
+    color: var(--gold);
+  }
+  .dual .q {
+    font-style: italic;
+  }
+
+  /* epigraph */
+  .dual .epi {
+    margin: 2.6rem 0 0;
+    max-width: 40ch;
+    border-left: 1px solid #2a2c3a;
+    padding-left: 1.2rem;
+  }
+  .dual .epi p {
+    margin: 0;
+    font-size: 0.98em;
+    font-style: italic;
+    color: #cfc9bb;
+    text-wrap: pretty;
+  }
+  .dual .epi cite {
+    display: block;
+    margin-top: 0.8rem;
+    font-style: normal;
+    font-family: var(--log);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* ---- rhythm ---- */
+  .dual .hero {
+    padding-block: clamp(3.4rem, 13vh, 7rem) clamp(4rem, 14vh, 8rem);
+  }
+  .dual .hero .log {
+    margin-bottom: 2.2rem;
+  }
+  .dual .hero .sig {
+    margin-top: 2.6rem;
+    color: var(--dim);
+  }
+  .dual section {
+    padding-block: clamp(3.6rem, 11vh, 7.5rem);
+  }
+  .dual section .body {
+    margin-left: var(--ml, 0);
+  }
+  @media (max-width: 760px) {
+    .dual section .body {
+      margin-left: 0;
+    }
+  }
+
+  /* the record, set smaller */
+  .dual .note {
+    margin-top: 1.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid #23263a;
+    max-width: 46ch;
+    font-size: 0.86em;
+    color: #c3bdb0;
+  }
+  .dual .note b {
+    font-family: var(--log);
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--dim);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  /* the held beat */
+  .dual .held p.t {
+    font-size: 1.22em;
+    max-width: 26ch;
+  }
+  .dual .held .big {
+    font-size: clamp(1.9rem, 5.4vw, 3.1rem);
+    line-height: 1.12;
+    font-style: italic;
+    color: var(--gold);
+    max-width: 18ch;
+    margin: 0 0 0.5em;
+  }
+
+  /* the two springs */
+  .dual .springs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: clamp(1.2rem, 3vw, 2.6rem);
+    margin: 2rem 0 0;
+  }
+  .dual .spring {
+    min-width: 0;
+    text-align: left;
+    cursor: pointer;
+    background: transparent;
+    color: var(--bone);
+    font: inherit;
+    border: 1px solid #262a3a;
+    border-radius: 0;
+    padding: 1.1rem 1.2rem 1.2rem;
+    transition: border-color 0.5s, background 0.5s;
+  }
+  .dual .spring h3 {
+    font-family: var(--log);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin: 0 0 0.7rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+  }
+  .dual .spring h3 .gk {
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+  .dual .spring p {
+    margin: 0;
+    font-size: 0.92em;
+    max-width: 34ch;
+    color: #d6d0c3;
+  }
+  .dual .spring.left h3 {
+    color: var(--cypress);
+  }
+  .dual .spring.right h3 {
+    color: var(--gold);
+  }
+  .dual .spring[aria-pressed='true'].left {
+    border-color: var(--cypress);
+    background: rgba(185, 199, 216, 0.06);
+  }
+  .dual .spring[aria-pressed='true'].right {
+    border-color: var(--gold);
+    background: rgba(227, 184, 90, 0.07);
+  }
+  .dual .spring:hover {
+    border-color: #3a3f55;
+  }
+  .dual .drank {
+    font-family: var(--log);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--dim);
+    margin: 1.4rem 0 0;
+    min-height: 1.4em;
+    transition: color 0.6s;
+  }
+  .dual .drank.on {
+    color: var(--gold);
+  }
+
+  /* Lethe: the drink that blurs everything except the Greek */
+  .dual .page p.t,
+  .dual .page .big,
+  .dual .page .deck,
+  .dual .page .epi p,
+  .dual .page .note,
+  .dual .page .ending p,
+  .dual .page .close {
+    transition: color 1.3s ease, text-shadow 1.3s ease;
+  }
+  .dual.lethe .page p.t,
+  .dual.lethe .page .big,
+  .dual.lethe .page .deck,
+  .dual.lethe .page .epi p,
+  .dual.lethe .page .note,
+  .dual.lethe .page .ending p,
+  .dual.lethe .page .close {
+    color: transparent;
+    text-shadow: 0 0 9px rgba(233, 227, 213, 0.42);
+  }
+  .dual.lethe .page .big {
+    text-shadow: 0 0 14px rgba(227, 184, 90, 0.5);
+  }
+  .dual.lethe .page .t .gk,
+  .dual.lethe .page .note .gk {
+    color: var(--gold);
+    text-shadow: none;
+  }
+  .dual.lethe .page .t .gold {
+    color: transparent;
+  }
+
+  /* the two exits */
+  .dual .endings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: clamp(1.6rem, 4vw, 3.2rem);
+    margin-top: 2.2rem;
+  }
+  .dual .ending {
+    min-width: 0;
+    border-top: 1px solid #272c38;
+    padding-top: 1.1rem;
+  }
+  .dual .ending h3 {
+    font-family: var(--log);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 0.9rem;
+  }
+  .dual .ending p {
+    margin: 0;
+    max-width: 38ch;
+    font-size: 0.94em;
+  }
+  .dual .ending p + p {
+    margin-top: 0.7em;
+  }
+
+  /* the tablet */
+  .dual .tablet {
+    margin: 2.4rem 0 0;
+    max-width: 40ch;
+    border: 1px solid rgba(227, 184, 90, 0.35);
+    background: linear-gradient(135deg, rgba(227, 184, 90, 0.1), rgba(227, 184, 90, 0.02) 55%, rgba(227, 184, 90, 0.08));
+    padding: 1.3rem 1.4rem 1.2rem;
+    position: relative;
+  }
+  .dual .tablet::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(227, 184, 90, 0.14);
+    pointer-events: none;
+  }
+  .dual .tablet .gk {
+    display: block;
+    color: var(--gold);
+    font-size: 1.02em;
+    line-height: 1.5;
+    text-shadow: 0 0 1px rgba(227, 184, 90, 0.6), 0 0 18px rgba(227, 184, 90, 0.18);
+  }
+  .dual .tablet .en {
+    display: block;
+    margin-top: 0.9rem;
+    font-size: 0.9em;
+    font-style: italic;
+    color: #d2ccbf;
+    max-width: 36ch;
+  }
+  .dual .tablet .en[hidden] {
+    display: none;
+  }
+  .dual .tablet button {
+    margin-top: 1rem;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--log);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dim);
+    border-bottom: 1px solid rgba(143, 148, 163, 0.4);
+  }
+  .dual .tablet button:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* ---- rail: the wheel ---- */
+  .dual #rail {
+    position: fixed;
+    z-index: 2;
+    left: max(18px, env(safe-area-inset-left, 0px));
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    font-family: var(--log);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .dual #rail .gk {
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--gold);
+  }
+  .dual #rail svg {
+    width: 54px;
+    height: 54px;
+    overflow: visible;
+  }
+  .dual #rail .ring {
+    fill: none;
+    stroke: #242838;
+    stroke-width: 1.2;
+  }
+  .dual #rail .arc {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+  }
+  .dual #rail .dot {
+    fill: var(--gold);
+  }
+  .dual #rail .state {
+    writing-mode: vertical-rl;
+    letter-spacing: 0.22em;
+  }
+  @media (max-width: 1320px) {
+    .dual #rail {
+      display: none;
+    }
+  }
+
+  /* ---- close ---- */
+  .dual footer {
+    padding-block: clamp(3.5rem, 11vh, 7rem) clamp(4rem, 12vh, 7rem);
+  }
+  .dual footer .close {
+    font-size: clamp(1.5rem, 3.6vw, 2.2rem);
+    max-width: 24ch;
+    margin: 0 0 1.8rem;
+  }
+  .dual .apparatus {
+    font-family: var(--log);
+    font-size: 0.68rem;
+    line-height: 2;
+    letter-spacing: 0.06em;
+    color: #767c89;
+    margin: 2.6rem 0 0;
+    max-width: 66ch;
+  }
+  .dual .apparatus b {
+    font-weight: 400;
+    color: #9aa0ad;
+  }
+  .dual hr {
+    border: 0;
+    border-top: 1px solid #1c212b;
+    margin: 0;
+  }
+
+  /* ---- reveal ---- */
+  .dual .rise {
+    transition: opacity 0.85s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .dual.anim .rise.pre {
+    opacity: 0.22;
+    transform: translateY(16px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dual .rise {
+      transition: none;
+    }
+    .dual.anim .rise.pre {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- scroll-driven parameters ---------- */
+  type P = Record<string, number>;
+  const DEF: P = { egg: 0, scale: 1, crack: 0, mirror: 0, flash: 0, ash: 0, breath: 0, springs: 0, wheel: 0, exit: 0, gold: 0.5, veil: 0.3, still: 0 };
+  const KEYS = Object.keys(DEF);
+  function fill(p: P): P {
+    const o: P = {};
+    KEYS.forEach((k) => { o[k] = typeof p[k] === 'number' ? p[k] : DEF[k]; });
+    return o;
+  }
+  const marks = Array.from(document.querySelectorAll<HTMLElement>('[data-p]')).map((el) => {
+    let p: P = {};
+    try { p = JSON.parse(el.getAttribute('data-p') || '{}'); } catch { p = {}; }
+    return { el, p: fill(p), s: el.getAttribute('data-s') || '' };
+  });
+
+  let centers: number[] = [];
+  function measure() {
+    const sy = window.pageYOffset;
+    centers = marks.map((m) => {
+      const r = m.el.getBoundingClientRect();
+      return sy + r.top + r.height / 2;
+    });
+  }
+  function smooth(t: number) { return t * t * (3 - 2 * t); }
+  let stateIdx = 0;
+  function params(): P {
+    if (!centers.length) return marks[0].p;
+    const y = window.pageYOffset + window.innerHeight / 2;
+    if (y <= centers[0]) { stateIdx = 0; return marks[0].p; }
+    if (y >= centers[centers.length - 1]) { stateIdx = marks.length - 1; return marks[marks.length - 1].p; }
+    let i = 0;
+    while (i < centers.length - 1 && y > centers[i + 1]) i++;
+    const a = marks[i].p, b = marks[i + 1].p;
+    const t = smooth((y - centers[i]) / (centers[i + 1] - centers[i]));
+    stateIdx = t < 0.5 ? i : i + 1;
+    const o: P = {};
+    KEYS.forEach((k) => { o[k] = a[k] + (b[k] - a[k]) * t; });
+    return o;
+  }
+
+  /* ---------- canvas ---------- */
+  const cv = document.getElementById('sky') as HTMLCanvasElement;
+  const cx2 = cv.getContext('2d')!;
+  let W = 0, H = 0, DPR = 1;
+  const isSmall = window.innerWidth < 760;
+  const N = isSmall ? 520 : 1000;
+  type Part = { th: number; ph: number; sx: number; sy: number; sz: number; ax: number; ay: number; ad: number; bx: number; by: number; bs: number; wa: number; ws: number; r: number; a: number; tw: number; twv: number; x: number; y: number };
+  let parts: Part[] = [];
+  function rnd() { return Math.random(); }
+  function gauss() { return (rnd() + rnd() + rnd() - 1.5) / 1.5; }
+
+  function seed() {
+    parts = [];
+    for (let i = 0; i < N; i++) {
+      const u = rnd(), v = rnd();
+      parts.push({
+        th: Math.acos(1 - 2 * u), ph: Math.PI * 2 * v,
+        sx: rnd(), sy: rnd(), sz: rnd(),
+        ax: rnd(), ay: Math.pow(rnd(), 2.2), ad: rnd(),
+        bx: gauss(), by: rnd(), bs: 0.4 + rnd() * 0.8,
+        wa: Math.PI * 2 * rnd(), ws: 0.7 + rnd() * 0.6,
+        r: 0.6 + rnd() * 1.4, a: 0.35 + rnd() * 0.65, tw: rnd() * Math.PI * 2, twv: 0.6 + rnd() * 1.6,
+        x: 0, y: 0,
+      });
+    }
+  }
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.floor(W * DPR); cv.height = Math.floor(H * DPR);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    cx2.setTransform(DPR, 0, 0, DPR, 0, 0);
+    measure();
+  }
+  seed(); resize();
+  window.addEventListener('resize', () => { resize(); }, { passive: true });
+  window.addEventListener('load', measure);
+  setTimeout(measure, 600);
+  document.fonts?.ready.then(measure);
+
+  /* pointer: the mirror remembers where you looked */
+  let px = -1e4, py = -1e4, pact = 0;
+  function onMove(e: MouseEvent | TouchEvent) {
+    const t = 'touches' in e ? e.touches[0] : e;
+    if (!t) return;
+    px = t.clientX; py = t.clientY; pact = 1;
+  }
+  window.addEventListener('mousemove', onMove, { passive: true });
+  window.addEventListener('touchmove', onMove, { passive: true });
+  window.addEventListener('touchstart', onMove, { passive: true });
+  window.addEventListener('mouseleave', () => { pact = 0; });
+  window.addEventListener('touchend', () => { pact = 0; });
+
+  /* lightning */
+  let flashAt = -1e9, flashArmed = false, nextStrike = 0;
+  let bolt: number[][] = [];
+  function makeBolt() {
+    bolt = [];
+    const x = W * (0.5 + (rnd() - 0.5) * 0.5), y = -10;
+    const ty = H * 0.55;
+    const n = 14;
+    for (let i = 0; i <= n; i++) {
+      bolt.push([x + gauss() * 38 * (i > 0 ? 1 : 0), y + (ty - y) * (i / n)]);
+    }
+  }
+
+  let goldPulse = 0; /* set by drinking from the right */
+  let letheBias = 0; /* set by drinking from the left */
+
+  let last = performance.now(), T = 0;
+  function mix(a: number, b: number, t: number) { return a + (b - a) * t; }
+
+  function frame(now: number) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (!reduce) T += dt;
+    const P = params();
+
+    /* lightning scheduling */
+    if (!reduce) {
+      if (P.flash > 0.5 && !flashArmed) { flashArmed = true; flashAt = now; makeBolt(); nextStrike = now + 5000 + rnd() * 4000; }
+      if (P.flash <= 0.5) flashArmed = false;
+      if (flashArmed && now > nextStrike) { flashAt = now; makeBolt(); nextStrike = now + 6000 + rnd() * 5000; }
+    }
+    const fl = Math.exp(-(now - flashAt) / 420) * P.flash;
+    goldPulse *= Math.pow(0.35, dt);
+    letheBias *= Math.pow(0.5, dt);
+
+    /* sky ground */
+    const g = cx2.createLinearGradient(0, 0, 0, H);
+    const gold = P.gold;
+    g.addColorStop(0, 'rgb(' + Math.round(mix(7, 14, gold * 0.4)) + ',' + Math.round(mix(7, 10, gold * 0.3)) + ',' + Math.round(mix(13, 12, gold)) + ')');
+    g.addColorStop(1, 'rgb(' + Math.round(mix(9, 22, gold * 0.6 + goldPulse)) + ',' + Math.round(mix(9, 17, gold * 0.5 + goldPulse)) + ',' + Math.round(mix(16, 10, gold)) + ')');
+    cx2.fillStyle = g; cx2.fillRect(0, 0, W, H);
+
+    /* the egg's glow and the crack */
+    const ecx = W * 0.5, ecy = H * 0.5, R = Math.min(W, H) * 0.26 * P.scale;
+    if (P.egg > 0.02) {
+      const rg = cx2.createRadialGradient(ecx, ecy, R * 0.2, ecx, ecy, R * 2.2);
+      rg.addColorStop(0, 'rgba(227,184,90,' + 0.16 * P.egg + ')');
+      rg.addColorStop(0.5, 'rgba(227,184,90,' + 0.04 * P.egg + ')');
+      rg.addColorStop(1, 'rgba(227,184,90,0)');
+      cx2.fillStyle = rg; cx2.fillRect(0, 0, W, H);
+    }
+    if (P.crack > 0.02 && P.egg > 0.02) {
+      const ch = R * 1.25 * P.crack, cw = 1 + 26 * P.crack * P.crack;
+      const cg = cx2.createLinearGradient(ecx - cw * 2, 0, ecx + cw * 2, 0);
+      cg.addColorStop(0, 'rgba(255,240,200,0)');
+      cg.addColorStop(0.5, 'rgba(255,240,200,' + 0.55 * P.crack * P.egg + ')');
+      cg.addColorStop(1, 'rgba(255,240,200,0)');
+      cx2.save();
+      cx2.filter = 'blur(' + (2 + 8 * P.crack) + 'px)';
+      cx2.fillStyle = cg;
+      cx2.fillRect(ecx - cw * 2, ecy - ch, cw * 4, ch * 2);
+      cx2.restore();
+      cx2.fillStyle = 'rgba(255,246,214,' + 0.9 * P.crack * P.egg + ')';
+      cx2.fillRect(ecx - 0.5, ecy - ch, 1, ch * 2);
+    }
+
+    /* the two springs */
+    if (P.springs > 0.02) {
+      const ly = H * 0.86, lx = W * 0.16, rx = W * 0.84;
+      const lg = cx2.createRadialGradient(lx, ly, 0, lx, ly, Math.min(W, H) * 0.32);
+      const la = (0.10 + 0.22 * letheBias) * P.springs;
+      lg.addColorStop(0, 'rgba(185,199,216,' + la + ')'); lg.addColorStop(1, 'rgba(185,199,216,0)');
+      cx2.fillStyle = lg; cx2.fillRect(0, 0, W, H);
+      const rgg = cx2.createRadialGradient(rx, ly, 0, rx, ly, Math.min(W, H) * 0.32);
+      const ra = (0.10 + 0.26 * goldPulse) * P.springs;
+      rgg.addColorStop(0, 'rgba(227,184,90,' + ra + ')'); rgg.addColorStop(1, 'rgba(227,184,90,0)');
+      cx2.fillStyle = rgg; cx2.fillRect(0, 0, W, H);
+    }
+
+    /* the wheel */
+    const wcx = W * 0.5, wcy = H * 0.52, WR = Math.min(W, H) * 0.3;
+    if (P.wheel > 0.02) {
+      cx2.save();
+      cx2.strokeStyle = 'rgba(227,184,90,' + 0.18 * P.wheel + ')';
+      cx2.lineWidth = 1;
+      cx2.beginPath();
+      cx2.ellipse(wcx, wcy, WR, WR * 0.36, 0, 0, Math.PI * 2);
+      cx2.stroke();
+      cx2.restore();
+    }
+
+    /* weights */
+    let wE = P.egg, wA = P.ash, wB = P.breath, wW = P.wheel;
+    const sum = wE + wA + wB + wW;
+    const wS = Math.max(0, 1 - sum);
+    if (sum > 1) { wE /= sum; wA /= sum; wB /= sum; wW /= sum; }
+    const rot = T * 0.11;
+    const horizon = H * 0.62;
+    const prad = 110, pstr = pact ? 14 : 0;
+
+    for (let i = 0; i < N; i++) {
+      const p = parts[i];
+      /* egg */
+      const st = Math.sin(p.th), ct = Math.cos(p.th);
+      const ex = ecx + R * 0.78 * st * Math.cos(p.ph + rot);
+      const ey = ecy + R * ct * 1.02;
+      const ez = st * Math.sin(p.ph + rot); /* -1..1 depth */
+      /* stars (slow drift) */
+      const sx = ((p.sx * W + T * 2 * p.sz) % (W + 40)) - 20;
+      const sy = p.sy * H;
+      /* ash: settled low */
+      const ay2 = H - p.ay * H * 0.42;
+      const ax = p.ax * W + Math.sin(T * 0.3 + p.ad * 9) * 8;
+      /* breath: a column rising */
+      const brise = reduce ? p.by : (p.by + T * 0.06 * p.bs) % 1;
+      const bx = W * 0.5 + p.bx * W * 0.075 * (0.4 + brise);
+      const by = H * (0.95 - brise * 0.85);
+      /* wheel: orbiting a tilted ring */
+      const wa = p.wa + T * 0.28 * p.ws;
+      const wx = wcx + WR * Math.cos(wa);
+      const wy = wcy + WR * 0.36 * Math.sin(wa);
+      const wz = Math.sin(wa);
+
+      let x = wE * ex + wS * sx + wA * ax + wB * bx + wW * wx;
+      let y = wE * ey + wS * sy + wA * ay2 + wB * by + wW * wy;
+
+      /* the exit: particle 0 leaves the ring */
+      const isExit = i === 0 && P.exit > 0.02 && P.wheel > 0.02;
+      if (isExit) {
+        const e = P.exit;
+        x = wcx + WR * Math.cos(0.2) + e * W * 0.12;
+        y = wcy + WR * 0.36 * Math.sin(0.2) - e * H * 0.62;
+      }
+
+      /* pointer: a breath across the mirror */
+      if (pstr) {
+        const dx = x - px, dy = y - py, d2 = dx * dx + dy * dy;
+        if (d2 < prad * prad && d2 > 1) {
+          const d = Math.sqrt(d2), k = (1 - d / prad) * pstr;
+          x += (dx / d) * k; y += (dy / d) * k;
+        }
+      }
+
+      /* colour and alpha */
+      const tw = reduce ? 1 : 0.72 + 0.28 * Math.sin(T * p.twv + p.tw);
+      const depth = wE * (0.55 + 0.45 * ez) + wW * (0.55 + 0.45 * wz) + (1 - wE - wW);
+      let a = p.a * tw * depth * (1 - P.veil * 0.35);
+      if (wA > 0.01) a *= 1 - wA * 0.45;
+      let cr = Math.round(wE * 236 + wS * 205 + wA * 120 + wB * 233 + wW * 236);
+      let cg = Math.round(wE * 196 + wS * 212 + wA * 124 + wB * 227 + wW * 196);
+      let cb = Math.round(wE * 112 + wS * 232 + wA * 134 + wB * 213 + wW * 112);
+      if (gold > 0 && wS > 0) { cr = Math.round(mix(cr, 236, gold * wS * 0.5)); cg = Math.round(mix(cg, 196, gold * wS * 0.5)); cb = Math.round(mix(cb, 112, gold * wS * 0.5)); }
+      const rad = p.r * (1 + wE * ez * 0.5 + wW * wz * 0.4) * (isExit ? 2.4 : 1);
+      if (fl > 0.01) { cr = Math.round(mix(cr, 255, fl)); cg = Math.round(mix(cg, 255, fl)); cb = Math.round(mix(cb, 255, fl)); a = Math.min(1, a + fl * 0.6); }
+      cx2.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + Math.max(0, Math.min(1, a)).toFixed(3) + ')';
+      cx2.beginPath(); cx2.arc(x, y, rad, 0, Math.PI * 2); cx2.fill();
+      if (isExit) {
+        cx2.strokeStyle = 'rgba(236,196,112,' + 0.35 * P.exit + ')'; cx2.lineWidth = 1;
+        cx2.beginPath(); cx2.moveTo(x, y); cx2.lineTo(x - P.exit * W * 0.05, y + P.exit * H * 0.22); cx2.stroke();
+      }
+      /* the mirror of Dionysus */
+      if (P.mirror > 0.02 && y < horizon) {
+        const my = horizon + (horizon - y) * 0.55;
+        if (my < H) {
+          cx2.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (a * 0.42 * P.mirror).toFixed(3) + ')';
+          cx2.beginPath(); cx2.arc(x + Math.sin(T * 1.3 + p.tw) * 1.5, my, rad * 0.9, 0, Math.PI * 2); cx2.fill();
+        }
+      }
+      p.x = x; p.y = y;
+    }
+
+    /* mirror horizon */
+    if (P.mirror > 0.02) {
+      const hg = cx2.createLinearGradient(0, horizon - 1, 0, H);
+      hg.addColorStop(0, 'rgba(185,199,216,' + 0.14 * P.mirror + ')');
+      hg.addColorStop(0.08, 'rgba(185,199,216,' + 0.02 * P.mirror + ')');
+      hg.addColorStop(1, 'rgba(7,7,13,0)');
+      cx2.fillStyle = hg; cx2.fillRect(0, horizon - 1, W, H - horizon + 1);
+    }
+
+    /* the bolt and the sheet */
+    if (fl > 0.02 && bolt.length) {
+      cx2.save();
+      cx2.strokeStyle = 'rgba(255,250,235,' + 0.9 * fl + ')';
+      cx2.lineWidth = 1.4; cx2.shadowColor = 'rgba(255,240,200,' + fl + ')'; cx2.shadowBlur = 18;
+      cx2.beginPath(); cx2.moveTo(bolt[0][0], bolt[0][1]);
+      for (let b = 1; b < bolt.length; b++) cx2.lineTo(bolt[b][0], bolt[b][1]);
+      cx2.stroke();
+      cx2.restore();
+      cx2.fillStyle = 'rgba(255,246,222,' + 0.22 * fl + ')'; cx2.fillRect(0, 0, W, H);
+    }
+
+    /* veil toward the column */
+    if (P.veil > 0.02) {
+      cx2.fillStyle = 'rgba(7,7,13,' + P.veil * 0.5 + ')'; cx2.fillRect(0, 0, W, H);
+    }
+
+    updateRail(P);
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- rail ---------- */
+  const arc = document.getElementById('arc'), dot = document.getElementById('dot'), stateEl = document.getElementById('state');
+  let lastState = '';
+  function updateRail(P: P) {
+    if (!arc || !dot || !stateEl) return;
+    const prog = stateIdx / Math.max(1, marks.length - 1);
+    const ang = -Math.PI / 2 + prog * Math.PI * 2;
+    const cx = 27, cy = 27, r = 22;
+    const x = cx + r * Math.cos(ang), y = cy + r * Math.sin(ang);
+    const large = prog > 0.5 ? 1 : 0;
+    arc.setAttribute('d', 'M ' + cx + ' ' + (cy - r) + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x.toFixed(2) + ' ' + y.toFixed(2));
+    const out = P.exit;
+    dot.setAttribute('cx', (x + out * 10 * Math.cos(ang)).toFixed(2));
+    dot.setAttribute('cy', (y + out * 10 * Math.sin(ang)).toFixed(2));
+    let s = marks[stateIdx].s;
+    if (document.body.classList.contains('lethe')) s = 'forgetting';
+    if (s !== lastState) { stateEl.textContent = s; lastState = s; }
+  }
+
+  /* ---------- reveal ---------- */
+  const risers = Array.from(document.querySelectorAll<HTMLElement>('.rise'));
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.body.classList.add('anim');
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) e.target.classList.remove('pre'); });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+    risers.forEach((el) => io.observe(el));
+  } else {
+    risers.forEach((el) => el.classList.remove('pre'));
+  }
+
+  /* ---------- the drink ---------- */
+  const lethe = document.getElementById('lethe')!, mnemo = document.getElementById('mnemo')!, drank = document.getElementById('drank')!;
+  lethe.addEventListener('click', () => {
+    document.body.classList.add('lethe');
+    lethe.setAttribute('aria-pressed', 'true'); mnemo.setAttribute('aria-pressed', 'false');
+    letheBias = 1;
+    drank.textContent = 'You drank on the left. Only the Greek still reads. Find the lake.';
+    drank.classList.remove('on');
+  });
+  mnemo.addEventListener('click', () => {
+    const was = document.body.classList.contains('lethe');
+    document.body.classList.remove('lethe');
+    mnemo.setAttribute('aria-pressed', 'true'); lethe.setAttribute('aria-pressed', 'false');
+    goldPulse = 1;
+    drank.textContent = was ? 'Γῆς παῖς εἰμι καὶ Οὐρανοῦ ἀστερόεντος. The page remembers.' : 'You went straight to the lake. The guards let you through.';
+    drank.classList.add('on');
+  });
+
+  /* ---------- the leaf ---------- */
+  const tb = document.getElementById('tablet-btn')!, ten = document.getElementById('tablet-en')!;
+  tb.addEventListener('click', () => {
+    const open = ten.hidden;
+    ten.hidden = !open;
+    tb.setAttribute('aria-expanded', open ? 'true' : 'false');
+    tb.textContent = open ? 'fold it back' : 'read the leaf';
+    measure();
+  });
+
+  requestAnimationFrame(frame);
+</script>

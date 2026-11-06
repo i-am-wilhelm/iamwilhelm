@@ -109,6 +109,25 @@ const jsonLd = {
     font-display: swap;
     src: url('/fonts/cormorant-garamond-latin-600-italic.woff2') format('woff2');
   }
+  /* EB Garamond, Greek subsets only: the in-the-original essays set their
+     Greek in it, so ἧπαρ and ΚΑΛΥΚΩΠΙΣ render with real accents instead of
+     falling through to a system serif. */
+  @font-face {
+    font-family: 'EB Garamond Greek';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('/fonts/eb-garamond-greek-wght-normal.woff2') format('woff2');
+    unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+  }
+  @font-face {
+    font-family: 'EB Garamond Greek';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('/fonts/eb-garamond-greek-ext-wght-normal.woff2') format('woff2');
+    unicode-range: U+1F00-1FFF;
+  }
   @font-face {
     font-family: 'JetBrains Mono';
     font-style: normal;
@@ -125,6 +144,7 @@ const jsonLd = {
   :root {
     --display: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
     --log: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+    --greek: 'EB Garamond Greek', 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
     --line: clamp(1.35rem, 2.1vw + 1rem, 2.2rem);
     color-scheme: dark;
   }
