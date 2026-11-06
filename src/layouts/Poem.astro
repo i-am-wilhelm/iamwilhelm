@@ -9,6 +9,11 @@
  * The page supplies its own palette, line styles, and canvas script. This
  * layout carries the meta, the fonts, the shared line mechanics, and the
  * static fallbacks (no script, reduced motion).
+ *
+ * The same system carries a scrolly that lives outside the Gallery (a
+ * writing in a series, on a light page with its own top bar): `scheme`,
+ * `exit`, `partOf`, `published` and `preload` cover it, and their defaults
+ * leave every night piece exactly as it was.
  */
 import { SITE_NAME, SITE_URL } from '../config/site';
 import { ogImage } from '../config/og';
@@ -24,16 +29,39 @@ interface Props {
   /** Genre for the schema: a poem, or an essay staged the same way. */
   genre?: string;
   bodyClass?: string;
+  /** Colour scheme: the night pieces are dark; a paper piece is light. */
+  scheme?: 'dark' | 'light';
+  /** The fixed corner exit to the Gallery. False when the page carries its own way back. */
+  exit?: boolean;
+  /** What the piece belongs to, for the title suffix and the schema. Default: the Gallery. */
+  partOf?: { name: string; url: string; type?: string };
+  /** Publication date, for datePublished and article:published_time. */
+  published?: Date;
+  /** Font files to preload (site-root paths). Default: the Cormorant the night pieces set. */
+  preload?: string[];
 }
 
-const { title, description, year, night, accent, genre = 'Poetry', bodyClass } = Astro.props;
+const {
+  title,
+  description,
+  year,
+  night,
+  accent,
+  genre = 'Poetry',
+  bodyClass,
+  scheme = 'dark',
+  exit = true,
+  partOf = { name: 'Gallery of Visualized Poetry', url: `${SITE_URL}/gallery/`, type: 'CollectionPage' },
+  published,
+  preload = ['/fonts/cormorant-garamond-latin-400-normal.woff2'],
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE_URL).href;
 /* Share image: the piece's own opening frame, rendered by `npm run og:scrollies`
    into public/og/<slug>.jpg and versioned by content hash; the museum card
    stands in until it exists. */
 const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop();
 const image = ogImage(`/og/${slug}.jpg`);
-const fullTitle = `${title} · Gallery of Visualized Poetry · ${SITE_NAME}`;
+const fullTitle = `${title} · ${partOf.name} · ${SITE_NAME}`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -43,13 +71,16 @@ const jsonLd = {
   genre,
   url: canonical,
   dateCreated: year,
+  ...(published && { datePublished: published.toISOString() }),
   author: { '@type': 'Person', '@id': `${SITE_URL}/#person`, name: 'Michael Wilhelm', url: `${SITE_URL}/` },
-  isPartOf: { '@type': 'CollectionPage', name: 'Gallery of Visualized Poetry', url: `${SITE_URL}/gallery/` },
+  isPartOf: { '@type': partOf.type ?? 'CollectionPage', name: partOf.name, url: partOf.url },
 };
+/* A light page also sets color-scheme on <html>, over the dark default below. */
+const htmlStyle = `--night:${night};--exit:${accent}${scheme === 'light' ? ';color-scheme:light' : ''}`;
 ---
 
 <!doctype html>
-<html lang="en" style={`--night:${night};--exit:${accent}`}>
+<html lang="en" style={htmlStyle}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -57,12 +88,12 @@ const jsonLd = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content={night} />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content={scheme} />
     <meta name="author" content="Michael Wilhelm" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="preload" href="/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    {preload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content={SITE_NAME} />
@@ -72,6 +103,7 @@ const jsonLd = {
     <meta property="og:image" content={image} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
@@ -80,7 +112,7 @@ const jsonLd = {
     <noscript><style>.l { opacity: 1 !important; transform: none !important; }</style></noscript>
   </head>
   <body class={bodyClass}>
-    <a class="poem-exit" href="/gallery/"><span aria-hidden="true">&larr;</span> The Gallery</a>
+    {exit && <a class="poem-exit" href="/gallery/"><span aria-hidden="true">&larr;</span> The Gallery</a>}
     <slot />
   </body>
 </html>

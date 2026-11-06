@@ -13,6 +13,10 @@
  * read from the markdown as `.section[data-section]`. The Unseen One is the
  * first of these.
  *
+ * A piece with `treatment: scrolly` is not rendered here at all: it is its
+ * own page on Poem.astro at src/pages/writings/<id>.astro (Everyone,
+ * Searchable is the first), clear of the stage, the fade and the pit.
+ *
  * The esoteric treatment of this page (WebGL stage, facecards, PostHeader,
  * Prose) stays in src/components/writings for the archived /atelier side.
  */
@@ -26,7 +30,8 @@ import { SITE_NAME, SITE_URL } from '../../config/site';
 import { ogImage } from '../../config/og';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('writings', ({ data }) => !data.draft);
+  /* Scrolly pieces are their own page at src/pages/writings/<id>.astro. */
+  const posts = await getCollection('writings', ({ data }) => !data.draft && data.treatment !== 'scrolly');
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
