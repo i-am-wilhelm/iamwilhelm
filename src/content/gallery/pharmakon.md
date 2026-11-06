@@ -5,7 +5,7 @@ year: 2026
 epigraph: "the old Greek word that refuses to choose between the poison and the cure"
 href: "/gallery/pharmakon/"
 medium: "Visualized poem in six movements; interactive page"
-order: 5
+order: 6
 status: on-view
 sign: pisces
 plate: "#2e2236"

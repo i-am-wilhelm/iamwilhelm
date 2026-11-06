@@ -1,0 +1,872 @@
+---
+/**
+ * True Amazons, hung in the Gallery as the companion to PHARMAKON: the
+ * Amazons read as a venom culture through one Greek word, ios (arrow,
+ * venom, rust), after Ammon Hillman. A sticky Scythian point oxidises from
+ * bronze to verdigris over nine steps; each step has one thing to touch
+ * (the three kills, the burial guess, the arrow-poison brew and the
+ * interlinear Odyssey line, the bow of Heracles, Demeter's hearth, the two
+ * Gorgon vials, the hair slider, the thesis builder), and a filterable
+ * source ledger closes it. Every claim is tagged text, reading, or
+ * disputed (Hillman's own philology).
+ *
+ * Ported from the owner's Claude artifact
+ * (claude.ai/artifact/Szw5Fd6dWfZXf4g9JR5dGt); the essay text and its look
+ * are the design of record. Its stylesheet is scoped under body.amazons so
+ * Poem.astro's line and section globals cannot reach it.
+ */
+import Poem from '../../layouts/Poem.astro';
+---
+
+<Poem
+  title="True Amazons"
+  description="A visualized essay by Michael Wilhelm, after Ammon Hillman: the Amazons as a venom culture, read through one Greek word, ios. Arrow, venom, rust."
+  year="2026"
+  night="#0b0c0a"
+  accent="#4ea88a"
+  genre="Essay"
+  bodyClass="amazons"
+>
+<canvas id="motes" aria-hidden="true"></canvas>
+<div id="progress" aria-hidden="true"></div>
+<nav class="nav" aria-label="Steps">
+  <a href="#s1">I</a><a href="#s2">II</a><a href="#s3">III</a><a href="#s4">IV</a><a href="#s5">V</a><a href="#s6">VI</a><a href="#s7">VII</a><a href="#s8">VIII</a><a href="#s9">IX</a>
+</nav>
+
+<main class="ta">
+<header class="hero">
+  <div class="eyebrow">A scrolly in nine steps &middot; after Ammon Hillman &middot; companion to <a href="/gallery/pharmakon/">Pharmakon</a></div>
+  <h1>True <em>Amazons</em></h1>
+  <p class="dek">The women of the Thermodon and the Maeotian marsh were a venom culture before they were a war culture. One Greek word carries the whole argument. It means <strong>arrow</strong>. It means <strong>venom</strong>. It means <strong>rust</strong>. Press each one.</p>
+  <div class="triad" role="group" aria-label="The three meanings of ios">
+    <button class="on" data-state="arrow" data-line="<b>Iliad 1.48</b>: Apollo kneels and looses an ἰός into the Greek camp. The plague begins with an arrow."><div class="k">ἰός</div><div class="v">arrow</div><div class="src">Iliad 1.48 &middot; 8.514</div></button>
+    <button data-state="venom" data-line="<b>Ion 1015</b>: the second drop of Gorgon blood kills, &ldquo;for it is ἰός from the Gorgon&rsquo;s serpents.&rdquo;"><div class="k">ἰός</div><div class="v">venom of serpents</div><div class="src">Aesch. Eum. 478 &middot; Eur. Ion 1015</div></button>
+    <button data-state="rust" data-line="<b>Republic 609a</b>: every thing has its own evil, says Socrates; for bronze and iron it is ἰός, the rust."><div class="k">ἰός</div><div class="v">rust, verdigris</div><div class="src">Plato Rep. 609a</div></button>
+  </div>
+  <div class="triadline" id="triadline"><b>Iliad 1.48</b>: Apollo kneels and looses an ἰός into the Greek camp. The plague begins with an arrow.</div>
+  <p class="how"><b>How to read this page.</b> Every claim wears a tag. <span class="tag text" tabindex="0" data-tip="An ancient source says it. Cited in the ledger.">text</span> means an ancient source says it, cited. <span class="tag read" tabindex="0" data-tip="The inference laid on top of the text: Hillman's, or ours.">reading</span> means the inference, Hillman's or ours, laid on top of the text. <span class="tag disp" tabindex="0" data-tip="Hillman's own philology, reading past the standard lexicon.">disputed</span> marks Hillman's own philology, where he reads past the standard lexicon and the consensus has yet to follow. Green is the ground; bronze and purple are the climb. Each step has one thing to touch.</p>
+</header>
+
+<section class="scrolly">
+  <aside class="sticky" aria-live="polite">
+    <div class="num" id="stNum">I / IX</div>
+    <svg class="blade" id="blade" data-state="arrow" viewBox="0 0 300 390" aria-hidden="true">
+      <defs>
+        <linearGradient id="bronzeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a455"/><stop offset=".55" stop-color="#9c6a2a"/><stop offset="1" stop-color="#5a3a14"/></linearGradient>
+        <linearGradient id="stainG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#4ea88a"/><stop offset=".6" stop-color="#2f7a66"/><stop offset="1" stop-color="#4ea88a" stop-opacity="0"/></linearGradient>
+        <linearGradient id="glintG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff5d6" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <clipPath id="bladeClip"><path d="M150 10 C 170 70, 215 150, 222 240 L 185 262 L 165 250 L 165 330 L 135 330 L 135 250 L 115 262 L 78 240 C 85 150, 130 70, 150 10 Z"/></clipPath>
+        <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .18"/></feComponentTransfer></filter>
+      </defs>
+      <path d="M150 10 C 170 70, 215 150, 222 240 L 185 262 L 165 250 L 165 330 L 135 330 L 135 250 L 115 262 L 78 240 C 85 150, 130 70, 150 10 Z" fill="url(#bronzeG)" stroke="#e4ddc8" stroke-opacity=".25" stroke-width="1"/>
+      <path d="M150 10 L150 250" stroke="#2a1a08" stroke-width="2" opacity=".6"/>
+      <path d="M150 10 C 165 90, 190 170, 196 236" stroke="#f0cf8a" stroke-opacity=".35" stroke-width="1" fill="none"/>
+      <g clip-path="url(#bladeClip)">
+        <rect class="venomtint" width="300" height="390" fill="#6b1f4a"/>
+        <rect id="stainRect" x="0" y="390" width="300" height="390" fill="url(#stainG)" opacity=".92"/>
+        <rect class="glint" x="0" y="0" width="300" height="60" fill="url(#glintG)"/>
+        <rect width="300" height="390" filter="url(#grain)"/>
+      </g>
+      <circle class="drip" cx="150" cy="14" r="5" fill="#6b1f4a"/>
+      <rect x="140" y="330" width="20" height="60" fill="#3b2a12"/>
+      <path d="M140 338 l10 6 l10 -6 M140 352 l10 6 l10 -6 M140 366 l10 6 l10 -6" stroke="#b7843a" stroke-width="2" fill="none"/>
+    </svg>
+    <div class="word" id="stWord">ἰός</div>
+    <div class="gloss" id="stGloss">arrow &middot; venom &middot; rust. One sound, three deaths.</div>
+  </aside>
+
+  <div class="steps">
+
+    <article class="step" id="s1" data-word="ἰός" data-gloss="arrow · venom · rust. One sound, three deaths." data-n="I / IX" data-blade="arrow">
+      <div class="wm">I</div>
+      <h2><span>I.</span> The word is the weapon</h2>
+      <p class="lede">The lexicon lists <span class="grc">ἰός</span> three times, as three words that happen to sound the same. Arrow, in Homer. The venom of serpents, in the tragedians. Rust on iron and verdigris on bronze, in Plato. Hillman's whole project rests on refusing that "happen to."</p>
+      <p><span class="tag text" data-tip="LSJ; Beekes, Etymological Dictionary of Greek">text</span> The arrow sense is Indo-European and old: Sanskrit <span class="grc">íṣu</span>, Avestan <span class="grc">išu</span>. The venom sense is older in a different way: Beekes calls it an ancient word for poison that most languages replaced with euphemisms (<span class="grc">φάρμακον</span>, <em>venenum</em>, <em>gift</em>) and that survived only on the margins. The rust sense shows up in Theognis and the Hippocratic corpus.</p>
+      <p><span class="tag read" data-tip="Our inference">reading</span> A steppe archer did not need etymology. Her arrow was smeared with venom and her bronze point oxidised green in the quiver. Arrow, venom, rust were one object in her hand. Watch the blade on the left: it goes through all three states before you reach the bottom of this page.</p>
+      <p><span class="tag disp" data-tip="Hillman's reading of ios beside ion">disputed</span> Hillman goes one step further and hears <span class="grc">ἴον</span>, violet, inside <span class="grc">ἰός</span>, and from there gets "purple venom." The standard lexicon files them as separate words; Hillman reads them as a pair the Greek ear would have heard together. Hold that thought; it comes back at step VIII, with a slider.</p>
+    </article>
+
+    <article class="step" id="s2" data-word="Οἰόρπατα" data-gloss="oior-pata · man-killers. The Scythian name for them." data-n="II / IX" data-blade="arrow">
+      <div class="wm">II</div>
+      <h2><span>II.</span> Three men before one</h2>
+      <p class="lede">Herodotus, Book Four. Greeks beat the Amazons at the Thermodon, load the prisoners onto three ships, and the prisoners kill the crews at sea. They drift to the Maeotian marsh, steal horses, and meet a band of young Scythians who decide these women are worth marrying. The children are the Sauromatae.</p>
+      <blockquote class="quote">
+        <span class="grc">The Scythians call the Amazons Oiorpata, which in Greek means man-killers.</span>
+        No maiden marries until she has killed a man of the enemy; some grow old and die unmarried because they cannot fulfil the law.
+        <cite><span class="tag text" data-tip="Herodotus 4.110–117">text</span> Herodotus, Histories 4.110–117 (paraphrased)</cite>
+      </blockquote>
+      <p>The Hippocratic <em>Airs, Waters, Places</em> raises the price. <span class="tag text" data-tip="[Hippocrates] AWP 17">text</span> The Sauromatian women ride, shoot, and throw the javelin from horseback and fight <em>as long as they are virgins</em>. They do not put off virginity until they have killed three enemies, and do not live with a man before performing the lawful rites. Once married, a woman stops riding unless a general levy compels her. And the right breast is cauterised in infancy with a heated bronze instrument so that all its strength goes to the right shoulder and arm.</p>
+
+      <div class="play" data-label="The law · Hippocrates 17" id="killplay">
+        <svg class="field" viewBox="0 0 600 190" aria-label="Three enemies on the steppe. Click each to loose an arrow.">
+          <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14160f"/><stop offset="1" stop-color="#0b0c0a"/></linearGradient></defs>
+          <rect width="600" height="190" fill="url(#sky)"/>
+          <path d="M0 150 Q 150 135 300 150 T 600 148 L600 190 L0 190Z" fill="#1c1f16"/>
+          <!-- archer -->
+          <g transform="translate(50,88)"><circle cx="0" cy="-30" r="9" fill="#e4ddc8"/><path d="M0 -20 L0 30 M0 -10 L-14 8 M0 -10 L18 -4 M0 30 L-12 60 M0 30 L12 60" stroke="#e4ddc8" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M18 -34 Q 40 -4 18 26" stroke="#b7843a" stroke-width="3" fill="none"/><path d="M18 -34 L18 26" stroke="#9a9480" stroke-width="1"/></g>
+          <!-- arrow in flight -->
+          <g class="arrowfly" id="arrowfly"><line x1="0" y1="0" x2="46" y2="0" stroke="#e2b76a" stroke-width="3"/><path d="M46 0 l-10 -5 l0 10 z" fill="#4ea88a"/></g>
+          <!-- enemies -->
+          <g class="enemy" data-i="0" transform="translate(260,150)" tabindex="0" role="button" aria-label="Enemy one"><circle cx="0" cy="-58" r="9" class="body" fill="#9a9480"/><path d="M0 -48 L0 -10 M0 -38 L-16 -20 M0 -38 L16 -20 M0 -10 L-12 20 M0 -10 L12 20" stroke="#9a9480" stroke-width="4" stroke-linecap="round" fill="none" class="body"/><rect x="-22" y="-44" width="6" height="30" fill="#6b1f4a"/></g>
+          <g class="enemy" data-i="1" transform="translate(400,150)" tabindex="0" role="button" aria-label="Enemy two"><circle cx="0" cy="-58" r="9" class="body" fill="#9a9480"/><path d="M0 -48 L0 -10 M0 -38 L-16 -20 M0 -38 L16 -20 M0 -10 L-12 20 M0 -10 L12 20" stroke="#9a9480" stroke-width="4" stroke-linecap="round" fill="none" class="body"/><rect x="-22" y="-44" width="6" height="30" fill="#6b1f4a"/></g>
+          <g class="enemy" data-i="2" transform="translate(540,150)" tabindex="0" role="button" aria-label="Enemy three"><circle cx="0" cy="-58" r="9" class="body" fill="#9a9480"/><path d="M0 -48 L0 -10 M0 -38 L-16 -20 M0 -38 L16 -20 M0 -10 L-12 20 M0 -10 L12 20" stroke="#9a9480" stroke-width="4" stroke-linecap="round" fill="none" class="body"/><rect x="-22" y="-44" width="6" height="30" fill="#6b1f4a"/></g>
+        </svg>
+        <div class="row"><div class="tally" id="tally" aria-hidden="true"><i></i><i></i><i></i></div><div class="out" id="killout"><b>0 / 3</b> &middot; <span class="grc">παρθένος</span>. She rides and shoots. Click an enemy.</div></div>
+        <div class="row"><button class="btn ghost" id="killreset">Reset the law</button></div>
+      </div>
+
+      <p><span class="tag read" data-tip="Hillman's lens applied to AWP 17">reading</span> Read as a venom culture rather than a war culture, the law is a dosing schedule. Virginity is the period of exposure. Three kills with the bow are three successful envenomings. Marriage ends riding because marriage begins the next stage of the work, the one in step VI. The bronze on the breast is the first burn.</p>
+      <p>Mimnermus preserves the other side of the bargain. <span class="tag text" data-tip="Mimnermus fr. 21, paroemiographers">text</span> The Amazons crippled their male infants, a leg or a hand; when the Scythians offered marriage on condition the women take only whole men, the queen Antianeira answered with a proverb: the lame man is the best lover.</p>
+    </article>
+
+    <article class="step" id="s3" data-word="κουργάν" data-gloss="kurgan · the mound. Three hundred women with bows in them." data-n="III / IX" data-blade="arrow">
+      <div class="wm">III</div>
+      <h2><span>III.</span> The mounds agree</h2>
+      <p class="lede">For a century the Amazons were filed under propaganda: monstrous women invented to be killed by heroes. Then the kurgans were sexed properly, by bone instead of by grave goods.</p>
+
+      <div class="play" data-label="Sex the cemetery · Mayor 2014" id="guessplay">
+        <div class="gauge">
+          <label for="guess" class="out">Of the armed burials in the richest steppe cemeteries, what share are women? Your guess: <b id="guessval">10%</b></label>
+          <input type="range" id="guess" min="0" max="100" value="10" step="1">
+        </div>
+        <div class="row"><button class="btn green" id="guessbtn">Open the mounds</button></div>
+        <div class="bars" id="bars" hidden>
+          <div class="bar you"><span>Your guess</span><div class="t"><div class="f" data-w="10"></div></div><span class="n" id="youn">10%</span></div>
+          <div class="bar"><span>Some steppe cemeteries</span><div class="t"><div class="f" data-w="37"></div></div><span class="n">37%</span></div>
+          <div class="bar"><span>East of the Don, 5th–4th c.</span><div class="t"><div class="f" data-w="20"></div></div><span class="n">20%</span></div>
+          <div class="bar"><span>Sargat kurgans, female graves with bows</span><div class="t"><div class="f" data-w="20"></div></div><span class="n">20%</span></div>
+        </div>
+        <div class="out" id="guessout"></div>
+      </div>
+
+      <p><span class="tag text" data-tip="Mayor, The Amazons (2014); NPR and Live Science interviews, 2020">text</span> The numbers are Adrienne Mayor's. More than 300 armed women have been excavated so far. Arrowheads embedded in bone settle the question of whether the weapons were ceremonial. The 2019 Devitsa grave, four armed women aged 12 to 50 buried together, one in the horseman's position, settles whether mothers fought.</p>
+      <p><span class="tag read" data-tip="Our inference from Mayor's two bodies of work">reading</span> Mayor is careful to stop at "warrior women." She does not argue a venom cult. But she is the same scholar who documents Scythian shamans milking vipers for antidotes, and who records that the Agari healers stopped Mithradates' haemorrhage with a drop of viper venom. The pharmacology and the warrior graves are the same people. The only question is whether the women held the bow and the vial at once.</p>
+    </article>
+
+    <article class="step" id="s4" data-word="σκυθικόν" data-gloss="skythikon · the Scythian poison. Viper, blood, dung, time." data-n="IV / IX" data-blade="venom">
+      <div class="wm">IV</div>
+      <h2><span>IV.</span> The recipe</h2>
+      <p class="lede">The Peripatetic collection <em>On Marvellous Things Heard</em> is nearly the only surviving account of how the arrow poison was made. It reads like a recipe because it is one. Make it.</p>
+
+      <div class="play" data-label="Σκυθικόν · Mir. Ausc. 141" id="brewplay">
+        <div class="row" style="align-items:flex-start">
+          <svg class="pot" viewBox="0 0 160 150" style="width:150px;flex:none" aria-hidden="true">
+            <path d="M30 40 Q 20 120 80 125 Q 140 120 130 40 Z" fill="#1c1f16" stroke="#b7843a" stroke-width="2"/>
+            <clipPath id="potClip"><path d="M30 40 Q 20 120 80 125 Q 140 120 130 40 Z"/></clipPath>
+            <g clip-path="url(#potClip)"><rect class="liquid" id="liquid" x="0" y="125" width="160" height="0" fill="#6b1f4a"/></g>
+            <ellipse cx="80" cy="40" rx="50" ry="10" fill="#0b0c0a" stroke="#b7843a" stroke-width="2"/>
+            <path d="M20 40 L140 40" stroke="#b7843a" stroke-width="2"/>
+          </svg>
+          <div style="flex:1;min-width:220px;display:grid;gap:10px">
+            <div class="ingr" id="ingr">
+              <button data-k="viper" class="next">I &middot; vipers, just whelped</button>
+              <button data-k="blood">II &middot; human blood, in a pot</button>
+              <button data-k="dung">III &middot; bury it in dung</button>
+            </div>
+            <div class="row"><button class="btn" id="bury" disabled>Wait for it to rot</button><div class="days" id="days">day 0</div></div>
+            <div class="out" id="brewout">Add the ingredients in the order the text gives them.</div>
+          </div>
+        </div>
+      </div>
+
+      <p><span class="tag text" data-tip="[Aristotle] Mir. Ausc. 141 (845a); Aelian; Ovid Tristia 3.10">text</span> Pseudo-Aristotle, <em>Mir. Ausc.</em> 141. Aelian confirms the human serum. Ovid, exiled on the Black Sea coast, saw the arrows himself and wrote that the barbs carried a double death. The shafts were painted in the zigzag and diamond patterns of the vipers whose venom they carried, so the archer knew which poison she was drawing. The Greeks had a word for this class of drug: <span class="grc">τοξικὸν φάρμακον</span>, the bow-drug. Every "toxic" thing in English descends from the arrow.</p>
+      <p>And Homer already knew where a hero went for it. Athena, in <em>Odyssey</em> 1, remembers Odysseus at Ephyra. Hover the words.</p>
+
+      <div class="play" data-label="Odyssey 1.261–262 · interlinear">
+        <div class="inter" id="inter">
+          <span class="w" data-g="φάρμακον · pharmakon: drug, poison, remedy. One word for all three.">φάρμακον</span>
+          <span class="w" data-g="ἀνδροφόνον · andro-phonon: man-killing. Same root as Oiorpata's -pata? No; but the same idea.">ἀνδροφόνον</span>
+          <span class="w" data-g="διζήμενος · seeking, hunting for. He went looking.">διζήμενος,</span>
+          <span class="w" data-g="ὄφρα · so that, in order that.">ὄφρα</span>
+          <span class="w" data-g="οἱ · for him, for himself.">οἱ</span>
+          <span class="w" data-g="εἴη · there might be. Optative: a wish, a plan.">εἴη</span><br>
+          <span class="w hot" data-g="ἰούς · ious: ARROWS. The word of this page, in its oldest sense.">ἰοὺς</span>
+          <span class="w hot" data-g="χρίεσθαι · chriesthai: to smear, to anoint. The root of christos, 'the anointed'. Here it anoints an arrow with poison.">χρίεσθαι</span>
+          <span class="w" data-g="χαλκήρεας · chalk-ereas: fitted with bronze. The point that rusts green.">χαλκήρεας·</span>
+        </div>
+        <div class="glossline" id="glossline">Hover or tap a word.</div>
+      </div>
+
+      <p><span class="tag text" data-tip="Homer, Odyssey 1.259–264">text</span> Odysseus sailed to Ephyra in search of a <span class="grc">φάρμακον ἀνδροφόνον</span>, a man-killing drug, so that he might <span class="grc">ἰοὺς χρίεσθαι</span>, smear his bronze-shod arrows. Ilus refused him out of fear of the gods. Athena's own father gave it instead.</p>
+      <p><span class="tag read" data-tip="The lexical fact is solid; what Hillman builds on it is his">reading</span> Two words sit together in one Homeric line: <span class="grc">ἰούς</span>, arrows, and <span class="grc">χρίεσθαι</span>, to smear or anoint. Hillman builds a great deal on <span class="grc">χρίω</span>. The anointed one in Greek is the <span class="grc">χριστός</span>, the smeared one. He follows that thread a long way, and it starts here, on solid ground: the first anointing in Greek literature is a poisoned arrowhead.</p>
+    </article>
+
+    <article class="step" id="s5" data-word="Ἔχιδνα" data-gloss="Echidna · she-viper. Half nymph, half speckled snake, never ages." data-n="V / IX" data-blade="venom">
+      <div class="wm">V</div>
+      <h2><span>V.</span> The mother is a viper</h2>
+      <p class="lede">Hesiod gives the Amazons' country an ancestress long before Herodotus does. She lives in a cave, she is half a nymph with glancing eyes and fair cheeks, half a huge speckled snake, she eats raw flesh, and she dies not nor grows old all her days.</p>
+      <p><span class="tag text" data-tip="Hesiod, Theogony 295–305; Herodotus 4.8–10">text</span> <em>Theogony</em> 295–305. The Pontic Greeks told Herodotus a local version. Heracles, driving Geryon's cattle, naps in what will become Scythia; his mares vanish; he finds in a cave a creature woman above the buttocks and serpent below, who will return the horses only if he sleeps with her. Three sons. Heracles leaves a bow and a belt: the boy who can string the bow and wear the belt stays and rules. Only Scythes can. <em>Histories</em> 4.8–10.</p>
+
+      <div class="play" data-label="The test · Herodotus 4.10" id="bowplay">
+        <svg class="bowsvg" viewBox="0 0 600 120" aria-hidden="true">
+          <path d="M60 60 Q 300 -40 540 60" stroke="#b7843a" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path id="bowstring" d="M60 60 L300 60 L540 60" stroke="#e4ddc8" stroke-width="1.5" fill="none"/>
+          <g id="bowarrow"><line x1="300" y1="60" x2="520" y2="60" stroke="#e2b76a" stroke-width="3"/><path d="M520 60 l-12 -6 l0 12 z" fill="#4ea88a"/></g>
+        </svg>
+        <div class="meter" aria-hidden="true"><div class="band" id="band"></div><div class="fill" id="bowfill"></div></div>
+        <div class="row">
+          <button class="btn hold" id="draw">Hold to draw &middot; release in the green</button>
+          <div class="sons" id="sons"><span data-s="0">Agathyrsus</span><span data-s="1">Gelonus</span><span data-s="2">Scythes</span></div>
+        </div>
+        <div class="out" id="bowout">Three sons. One bow. Each gets one pull.</div>
+      </div>
+
+      <p>Scythian gold shows her everywhere: the snake-legged goddess, the foremother, daughter of a river or of the earth, in a cave.</p>
+      <p><span class="tag read" data-tip="Hillman's archetype; our framing">reading</span> The lineage test is the bow. The lineage source is a viper. A culture that tells this story about itself is telling you what it thinks its blood is made of. Hillman reads Echidna as the archetype of the venom priestess, the woman whose body is the vessel the poison is prepared in. That is his thesis, not Hesiod's. But Hesiod did write that the snake-woman does not age, and the Hippocratic author did write that the women stop fighting once they marry. The two texts invite the question of what the married women did instead.</p>
+      <p><span class="tag disp" data-tip="Hillman, Toxicology in Antiquity">disputed</span> Hillman goes further on mechanism: the venom administered through the body's mucosa, the priestess's body as the vessel that prepares it. He builds this from his own readings of Apollonius, Horace and Scribonius Largus, which render those passages differently from the standard translations. The archetype stands on Hesiod; the mechanism is Hillman's reconstruction.</p>
+    </article>
+
+    <article class="step" id="s6" data-word="ἀμβροσία" data-gloss="a-mbrotos · not-mortal. Anoint by day, bury in fire by night." data-n="VI / IX" data-blade="venom">
+      <div class="wm">VI</div>
+      <h2><span>VI.</span> Pharmakon in the womb, fire in the hearth</h2>
+      <p class="lede">The claim that a child could be born already tolerant to venom is not Hillman's invention. Pliny says it about the Psylli.</p>
+      <p><span class="tag text" data-tip="Pliny NH 7.14; Cassius Dio 51.14; Celsus 5.27">text</span> The Psylli of Libya were immune to snakebite; their saliva cured it; they put newborns to the fiercest snakes as a test of legitimacy, since the snakes would not flee a child of adulterous blood (<em>Natural History</em> 7.14). Pliny gives the Italian Marsi the same gift and traces it to Circe. Octavian sent for Psylli to suck the venom out of Cleopatra. Celsus, the sceptic, said their skill was boldness confirmed by experience and that anyone with no sores in the mouth could do it.</p>
+      <p>Now the Eleusinian text. <span class="tag text" data-tip="Homeric Hymn to Demeter 231–262">text</span> Demeter, nursing the infant Demophoon, feeds him neither grain nor breast; she anoints him with ambrosia by day and at night hides him in the fire like a brand, to burn the mortal part out of him. The mother walks in, screams, and the goddess drops the child and curses her ignorance. Thetis does the same to Achilles. The word ambrosia is <span class="grc">ἀ-μβροτος</span>: not-mortal. You are the goddess. The mother is in the next room.</p>
+
+      <div class="play" data-label="The rite · Hymn to Demeter 235–249" id="fireplay">
+        <svg class="hearth day" id="hearth" viewBox="0 0 600 170" aria-hidden="true">
+          <rect width="600" height="170" fill="#0b0c0a"/>
+          <rect x="200" y="120" width="200" height="40" fill="#1c1f16" stroke="#b7843a" stroke-width="1"/>
+          <g class="flame"><path d="M300 125 C 250 90, 270 60, 300 30 C 330 60, 350 90, 300 125 Z" fill="#b7843a" opacity=".8"/><path d="M300 125 C 275 100, 285 80, 300 60 C 315 80, 325 100, 300 125 Z" fill="#e2b76a"/></g>
+          <ellipse class="glow" cx="300" cy="95" rx="70" ry="40" fill="#4ea88a" opacity=".12"/>
+          <g id="child"><ellipse cx="300" cy="104" rx="30" ry="16" fill="#e4ddc8"/><circle cx="268" cy="100" r="10" fill="#e4ddc8"/></g>
+        </svg>
+        <div class="out">Mortality remaining</div>
+        <div class="mort" aria-hidden="true"><i id="mort" style="width:100%"></i></div>
+        <div class="row">
+          <button class="btn green" id="dayb">Day &middot; anoint with ambrosia</button>
+          <button class="btn" id="nightb" disabled>Night &middot; into the fire</button>
+          <button class="btn purple" id="lookb">Let the mother look in</button>
+          <button class="btn ghost" id="firereset">Start over</button>
+        </div>
+        <div class="out" id="fireout">Night one has not come yet.</div>
+      </div>
+
+      <p><span class="tag read" data-tip="Hillman's synthesis of Psylli, Demophoon and the Sauromatian law">reading</span> Put the three together and you have the Amazon rite as Hillman tells it: a woman chronically exposed to viper toxin, pregnant, passes tolerance to the child in utero and at the breast; the "fire" that burns off mortality is the burn of the venom itself, dosed nightly, balanced against the antidote, and the parent who cannot bear to watch is the one who breaks the rite. <em>Burning off mortality</em> is Demeter's phrase. What is modern is calling it chemistry.</p>
+      <p class="note"><b>Where the pharmacology lands.</b> Viper venom is destroyed in the stomach, so the ancient routes (bite, wound, suction, mucosa) are the only ones that would do anything; this is why Hillman insists on non-oral administration, and why the Psylli sucking wounds is a practice, not a legend. Steppe-viper venom (<em>Vipera ursinii</em>) is a coagulant in micro-doses, which is the Mithradates story, and crystallised forms of it are still exported to hospitals. Mithridatism, graded dosing toward tolerance, is real for some toxins and not for others; venoms are protein, and immune tolerance to them is exactly what antivenom serum relies on. None of this proves the rite. It makes the rite physically possible.</p>
+    </article>
+
+    <article class="step" id="s7" data-word="Μέδουσα" data-gloss="Medousa · the ruler. Mortal sister. Left vein kills, right vein raises." data-n="VII / IX" data-blade="rust">
+      <div class="wm">VII</div>
+      <h2><span>VII.</span> Stone death, and the two bloods</h2>
+      <p class="lede">Of the three Gorgons only Medusa could die, which is why Perseus went for her head. Pindar calls the head "stony death." Her blood dropped on Libya and became its snakes. Athena drained the rest into two vials and handed them to a physician.</p>
+
+      <div class="play" data-label="Asclepius' choice · Apollodorus 3.10.3" id="vialplay">
+        <div class="vials">
+          <button class="vial lv" id="vialL"><div class="h">left vein · ἰός</div><svg viewBox="0 0 60 90" style="width:48px" aria-hidden="true"><rect x="22" y="4" width="16" height="12" fill="#9a9480"/><path d="M18 16 L42 16 L50 80 Q 30 92 10 80 Z" fill="#6b1f4a" stroke="#c98aa8" stroke-width="1.5"/></svg><div class="out">bane</div></button>
+          <div class="mid"><svg viewBox="0 0 120 150" style="width:110px" aria-hidden="true"><g class="patient" id="patient"><circle cx="60" cy="30" r="16" fill="#e4ddc8"/><path d="M60 46 L60 100 M60 60 L36 84 M60 60 L84 84 M60 100 L44 140 M60 100 L76 140" stroke="#e4ddc8" stroke-width="6" stroke-linecap="round" fill="none"/><g class="cracks"><path d="M52 22 l6 10 l-4 8 M66 34 l5 9 M58 70 l4 12 l-6 8" stroke="#0b0c0a" stroke-width="1.5" fill="none"/></g></g></svg></div>
+          <button class="vial r" id="vialR"><div class="h">right vein · ἀντίδοτος</div><svg viewBox="0 0 60 90" style="width:48px" aria-hidden="true"><rect x="22" y="4" width="16" height="12" fill="#9a9480"/><path d="M18 16 L42 16 L50 80 Q 30 92 10 80 Z" fill="#2f7a66" stroke="#7fd3b4" stroke-width="1.5"/></svg><div class="out">salvation</div></button>
+        </div>
+        <div class="out" id="vialout">A patient on the table. Which side of the Gorgon do you give?</div>
+        <div class="row"><button class="btn ghost" id="vialreset">Another patient</button></div>
+      </div>
+
+      <p><span class="tag text" data-tip="Apollodorus 3.10.3; Euripides Ion 1003–1015">text</span> Apollodorus, <em>Library</em> 3.10.3: blood from the veins on her left side was a bane to mankind, blood from the right side was salvation, and with it Asclepius raised the dead. Euripides has the same pharmacy in a smaller vial: Athena gives Erichthonius two drops from the Gorgon, one that wards off disease and nourishes life, one that kills, "as it is poison from the Gorgon serpents" (<em>Ion</em> 1003–1015). The Greek word for that second drop is <span class="grc">ἰός</span>. Zeus killed Asclepius with a thunderbolt for using the right side too well.</p>
+      <p><span class="tag read" data-tip="Hillman's death-and-resurrection reading, applied to the Gorgon">reading</span> A single body yielding venom and antidote from opposite sides is the whole Amazon pharmacy in one image. "Stone death" is the stasis Hillman describes: the envenomed initiate held at the threshold, not breathing enough to be alive, not cold enough to be dead, mind between worlds, until the right-side blood is given. Men who looked at her face froze. Men who received her blood from the correct side came back. The myth says both. Which side you got was the priestess's choice.</p>
+      <p>Circe is the same figure in a kinder story. <span class="tag text" data-tip="Odyssey 10; Plutarch, Greek Questions 56">text</span> She mixes <span class="grc">φάρμακα</span> into the men's food and they become swine; Hermes hands Odysseus the root called moly, hard for mortals to dig, and he is the one man who keeps his shape. <span class="tag read" data-tip="Our reading of Circe and the Dionysus–Amazon war">reading</span> The men who take the drug without the antidote become animals. The men in Dionysus' train who take it and survive it become satyrs, and the god who leads them went to war with the Amazons, chased them from Ephesus and slaughtered them on Samos (Plutarch, <em>Greek Questions</em> 56). Two venom cults, one male and one female, competing for the same coast.</p>
+    </article>
+
+    <article class="step" id="s8" data-word="ἴον" data-gloss="ion · violet. The purple that may or may not be there." data-n="VIII / IX" data-blade="rust">
+      <div class="wm">VIII</div>
+      <h2><span>VIII.</span> The purple question</h2>
+      <p class="lede">You wanted the hair. Here is exactly what the record will and will not give you, on a slider. The tick marks where the texts stop.</p>
+
+      <div class="play" data-label="Stain her hair · the evidence slider" id="hairplay">
+        <div class="hairwrap">
+          <svg viewBox="0 0 140 160" style="width:140px" aria-hidden="true">
+            <defs><linearGradient id="hairG" x1="0" y1="0" x2="0" y2="1"><stop id="hs1" offset="0" stop-color="#1c1f16"/><stop id="hs2" offset="1" stop-color="#2f7a66"/></linearGradient></defs>
+            <path id="hair" d="M70 10 C 20 10, 10 60, 18 120 C 22 140, 30 150, 36 152 C 30 120, 34 80, 44 60 C 50 90, 48 130, 52 152 L 88 152 C 92 130, 90 90, 96 60 C 106 80, 110 120, 104 152 C 110 150, 118 140, 122 120 C 130 60, 120 10, 70 10 Z" fill="url(#hairG)"/>
+            <ellipse cx="70" cy="62" rx="28" ry="36" fill="#e4ddc8"/>
+            <path d="M58 58 q4 -4 8 0 M74 58 q4 -4 8 0" stroke="#0b0c0a" stroke-width="2" fill="none"/>
+            <path d="M62 80 q8 6 16 0" stroke="#0b0c0a" stroke-width="1.5" fill="none"/>
+            <g id="serp" opacity="0"><path d="M30 40 q-14 10 -6 24 q6 10 -4 18" stroke="#4ea88a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M110 40 q14 10 6 24 q-6 10 4 18" stroke="#4ea88a" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+          </svg>
+          <div style="display:grid;gap:8px">
+            <input type="range" id="hair" min="0" max="100" value="20" step="1" aria-label="How purple is her hair">
+            <div class="ticks"><span style="left:4%">serpents</span><span style="left:36%">the texts stop here</span><span style="left:68%">ἰός / ἴον</span><span style="left:96%">Hillman</span></div>
+            <div class="out" id="hairout"></div>
+          </div>
+        </div>
+      </div>
+
+      <p><span class="tag text" data-tip="Apollodorus 2.4.2; Hesiod Theogony 299; Mir. Ausc. 141">text</span> Medusa's hair is serpents, in Apollodorus and on every gorgoneion. Echidna's skin is speckled, <span class="grc">αἰολόχρως</span>, of shifting colour. The Scythian arrow shafts were painted in viper patterns. That is the complete inventory of colour attached to these women in the primary texts. No surviving source stains an Amazon's hair purple.</p>
+      <p><span class="tag disp" data-tip="Hillman's ios / ion bridge">disputed</span> The purple is Hillman's bridge: <span class="grc">ἰός</span> (venom) beside <span class="grc">ἴον</span> (the violet), the "burning purple polypharmakon," the purple-dog imagery of his Lady Babylon material. The lexicon keeps the two words apart; Hillman hears them as one sound carrying one colour, and the purple lives in that hearing.</p>
+      <p><span class="tag read" data-tip="Our recommendation for the imagery">reading</span> So carry the purple as imagery. The honest version of the image is this: a woman who has handled putrefying viper and human blood serum for years, whose arrows are painted like adders, whose foremother is speckled, whose goddess sits snake-legged in a cave. If you paint her hair with the stain of the work she does, it is iodine-dark, bruise-purple, rust-green at the ends. The page gave you the colour at the top. It is the third meaning of the word.</p>
+    </article>
+
+    <article class="step" id="s9" data-word="ἀντίδοτος" data-gloss="anti-dotos · the thing given against. Her side of the vein." data-n="IX / IX" data-blade="rust">
+      <div class="wm">IX</div>
+      <h2><span>IX.</span> The choice</h2>
+      <p class="lede"><span class="grc">Ἀντίδοτος</span> is a participle before it is a noun: the thing given against. Against the arrow, against the venom, against the rust. Every figure on this page holds both sides of the vein, and every story turns on which one she hands over.</p>
+      <p>The Sauromatian maiden chooses the enemy three times with the bow before she chooses one man with her body. Echidna chooses to return the mares for a son who can draw the bow. Demeter chooses the fire and is stopped. Medusa's two bloods are literally separated by Athena and handed to a physician. Circe hands out the swine-drug and then, to one man, the moly.</p>
+
+      <div class="play" data-label="Build the thesis you can defend" id="thesisplay">
+        <div class="tiers">
+          <label><input type="checkbox" id="t1" checked> text</label>
+          <label><input type="checkbox" id="t2" checked> reading</label>
+          <label><input type="checkbox" id="t3"> disputed</label>
+        </div>
+        <div class="thesis" id="thesis">
+          <span class="t">The women the Greeks called Amazons rode, shot and killed before they married; their arrows were steeped in putrefied viper and human serum; their ancestress was a snake-woman who did not age; their Gorgon's blood both killed and raised the dead; and the Greeks feared them enough to carve the war onto the Parthenon.</span>
+          <span class="r"> Read through one word, ἰός, that is a venom culture: the kill count is the qualification, the marriage is the dose, and the woman's authority is the antidote she earns by surviving the venom and gives only to the man she has chosen.</span>
+          <span class="d"> Her hair is stained purple with it, ἰός shading into ἴον, the violet, and her body is the vessel the poison was prepared in.</span>
+        </div>
+        <div class="row"><button class="btn" id="copythesis">Copy this thesis</button><div class="out" id="thesisout"><span class="g">Two tiers on.</span> This version a classicist can argue with but cannot laugh at.</div></div>
+      </div>
+
+      <p><span class="tag read" data-tip="The thesis as this page gives it">reading</span> That is the true Amazon as this reading gives her: a woman whose authority is the antidote, who earns it by surviving the venom, who gives the ios freely to enemies and the antidotos only to the man she has chosen. Monogamy as pharmacology. The kill count is the qualification. The marriage is the dose.</p>
+      <p class="note"><b>Use.</b> Green tags are safe to assert. Bronze tags are the reading and should be voiced as a reading. Purple tags are Hillman's frontier: credit them to him by name and let them carry the imagery.</p>
+
+      <a class="companion" href="/gallery/pharmakon/">
+        <div class="eyebrow">Companion scrolly</div>
+        <div class="ct">Pharmakon</div>
+        <p>The poem this page argues for. Medea's fumigation, the two vials landing in the pool, the hearth built wide at the end. Read it after the ledger, with the vials of step VII still in mind.</p>
+        <div class="mono">Open Pharmakon &rarr;</div>
+      </a>
+    </article>
+
+  </div>
+</section>
+
+<section class="ledger" id="ledger">
+  <h2>Source ledger</h2>
+  <p class="sub">What each step rests on, by tag. Primary texts first, then the modern scholarship, then the interpretive and contested layer. Filter by tier.</p>
+  <div class="filter" role="group" aria-label="Filter ledger">
+    <button class="btn ghost on" data-f="all">All</button><button class="btn green" data-f="text">text</button><button class="btn" data-f="read">reading</button><button class="btn purple" data-f="disp">disputed</button>
+  </div>
+  <div class="tablewrap">
+  <table class="ltable" id="ltable">
+    <thead><tr><th>Step</th><th>Source</th><th>What it actually says</th><th>Tag</th></tr></thead>
+    <tbody>
+      <tr data-t="text"><td>I</td><td class="c">LSJ s.v. ἰός (A), (B), (C); Beekes EDG 571, 595</td><td>Three homonyms: arrow (Il. 1.48), venom of serpents (Aesch. Eum. 478, Soph. Tr. 771, Eur. Ion 1015), rust/verdigris (Thgn., Hp., Pl. Rep. 609a).</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>II</td><td class="c">Herodotus 4.110–117</td><td>Amazons captured at Thermodon, kill crews, land at Maeotis, marry Scythian youths; Sauromatae; "Oiorpata" = man-killers; no maiden weds until she kills an enemy.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>II</td><td class="c">[Hippocrates] Airs, Waters, Places 17</td><td>Sauromatian women fight while virgins; three enemy kills before losing virginity; lawful rites before cohabiting; stop riding once married; right breast cauterised with heated bronze.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>II</td><td class="c">Mimnermus fr. 21 (paroemiographers)</td><td>Amazons maimed male infants; Antianeira: "the lame man is the best lover."</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>III</td><td class="c">Mayor, The Amazons (Princeton 2014); NPR / Live Science interviews 2020</td><td>300+ armed female burials; up to 37% of armed burials female in some cemeteries; ~20% east of the Don; 20% of Sargat female graves with bows; Devitsa 2019, four women aged 12–13 to 45–50.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>IV</td><td class="c">[Aristotle] Mir. Ausc. 141 (845a); Aelian NA 9.15; Ovid Tristia 3.10</td><td>Scythian arrow poison from putrefied post-partum vipers and the serum of putrefied human blood; Ovid on envenomed barbs, "double death."</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>IV</td><td class="c">Homer, Odyssey 1.259–264</td><td>Odysseus sought a man-killing pharmakon at Ephyra to smear (χρίεσθαι) his arrows (ἰούς); Ilus refused for fear of the gods.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>V</td><td class="c">Hesiod, Theogony 295–305; Herodotus 4.8–10</td><td>Echidna half nymph, half speckled snake, raw-flesh-eating, ageless, in a cave. Pontic story: Heracles and the snake-woman; bow and belt; Scythes.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>VI</td><td class="c">Pliny NH 7.14; Cassius Dio 51.14; Celsus 5.27</td><td>Psylli immune to snakebite, test infants with snakes, saliva as cure; Octavian's Psylli for Cleopatra; Celsus: skill is experience, not nature.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>VI</td><td class="c">Homeric Hymn to Demeter 231–262</td><td>Demophoon anointed with ambrosia by day, hidden in fire by night to be made deathless; Metaneira interrupts.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>VII</td><td class="c">Apollodorus 3.10.3; Euripides Ion 1003–1015; Pindar Pyth. 10</td><td>Gorgon blood: left side kills, right side raises the dead (Asclepius); two drops to Erichthonius, one heals, one is ἰός of the Gorgon serpents; "stony death."</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="text"><td>VII</td><td class="c">Odyssey 10; Plutarch, Greek Questions 56</td><td>Circe's pharmaka and the moly; Dionysus drives the Amazons from Ephesus and kills them on Samos.</td><td><span class="tag text">text</span></td></tr>
+      <tr data-t="read"><td>I–IX</td><td class="c">Hillman, The Chemical Muse (2008); "Ancient Mystery Initiation: Toxic Priestesses and Vaginal Communion," in Toxicology in Antiquity; Lady Babylon (YouTube)</td><td>The ios rite; priestess as venom vessel; death-and-resurrection stasis; purple venom via ἰός/ἴον; Echidnaic-Ios rites originating with a venom specialist in ancient Georgia.</td><td><span class="tag read">reading</span></td></tr>
+      <tr data-t="read"><td>III, VI</td><td class="c">Mayor, Greek Fire, Poison Arrows &amp; Scorpion Bombs (2009); The Poison King (2009)</td><td>Agari shamans, venom antidotes, Mithradates' wound staunched with viper venom; Psylli practice; modern venomics on Vipera ursinii.</td><td><span class="tag read">reading</span></td></tr>
+      <tr data-t="disp"><td>I, V, VIII</td><td class="c">Hillman on Apollonius 4.1135ff, Horace Epod. 17.35, Scribonius Largus; ἰός / ἴον</td><td>Hillman's own readings beyond the standard translations: purple venom; the priestess's body as vessel; mucosal administration of the rite.</td><td><span class="tag disp">disputed</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="foot"><b>A note on Hillman.</b> He holds a Classics PhD from Wisconsin with a specialty in ancient pharmacy and bacteriology, and <em>The Chemical Muse</em> was published by St. Martin's. He reads the Greek as pharmacology first, with no theology between the reader and the text, and that lens opened this page. The Amazon sources turn out to be unusually hospitable to it.</p>
+  <div class="srcs">
+    <p><a href="https://classics.mit.edu/Hippocrates/airwatpl.17.17.html">Hippocrates, Airs, Waters, Places 17 (Adams trans.)</a></p>
+    <p><a href="https://sententiaeantiquae.com/tag/amazons/">Sententiae Antiquae: Sauromatae and Mimnermus fr. 21, with Greek</a></p>
+    <p><a href="https://linguistics.osu.edu/herodotos/ethnonym/thracian-scythians/sarmatians">OSU Herodotos Project: Sauromatae commentary and burial statistics</a></p>
+    <p><a href="https://www.thecollector.com/poison-in-ancient-history-5-illustrative-examples-of-its-toxic-use">Pseudo-Aristotle Mir. Ausc. 141, Scythian poison (quoted)</a></p>
+    <p><a href="https://www.goodreads.com/author_blog_posts/1728377-the-uses-of-snake-venom-in-antiquity">Mayor, "The Uses of Snake Venom in Antiquity" (Agari, Mithradates)</a></p>
+    <p><a href="https://www.goodreads.com/author_blog_posts/2817034-treating-snake-bite-in-antiquity">Mayor, "Treating Snake Bite in Antiquity" (Psylli, Celsus)</a></p>
+    <p><a href="https://livescience.com/who-were-amazon-warriors.html">Live Science: Mayor on 300+ warrior-women burials</a></p>
+    <p><a href="https://www.npr.org/transcripts/795661047">NPR: Mayor on the Devitsa burial, 2020</a></p>
+    <p><a href="https://theculturetrip.com/articles/the-amazons-untangling-fact-from-fiction">Mayor, The Amazons (extract): 37%, Don, Sargat figures</a></p>
+    <p><a href="https://www.seba.health/lexicon/passage/tlg0012-tlg002-1-253-1-305">Odyssey 1.253–305 (Murray trans.)</a></p>
+    <p><a href="https://en.wikipedia.org/wiki/Demophon_(son_of_Celeus)">Homeric Hymn to Demeter, Demophoon episode</a></p>
+    <p><a href="https://www.wikiwand.com/en/articles/Gorgon">Gorgon blood: Apollodorus and Euripides Ion</a></p>
+    <p><a href="https://mythopedia.com/topics/echidna/">Echidna: Hesiod and the Scythian version</a></p>
+    <p><a href="https://en.wikipedia.org/wiki/Psylli">Psylli: Pliny, Dio, Lucan</a></p>
+    <p><a href="https://atlas.perseus.tufts.edu/dictionaries/entry/urn:cite2:scaife-viewer:dictionaries.v1:lsj-n50605">LSJ ἰός (arrow) via Perseus Scaife</a></p>
+    <p><a href="https://archive.gloucesterwriters.org/event/ammon-hillman/">Hillman's own summary of the Echidnaic-Ios thesis (Gloucester Writers Center)</a></p>
+    <p><a href="https://en.wikipedia.org/wiki/Ammon_Hillman">Ammon Hillman (background)</a></p>
+  </div>
+
+  <footer class="ta-foot">
+    <span>an essay &middot; Michael Wilhelm &middot; 2026</span>
+    <span><a href="/gallery/pharmakon/">Read PHARMAKON</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
+  </footer>
+</section>
+</main>
+</Poem>
+
+<style is:global>
+
+  /* True Amazons faces, self-hosted (public/fonts, SIL OFL). Bodoni Moda is
+     the display, Literata the text; display Greek falls through to the
+     site's EB Garamond Greek, declared in Poem.astro. */
+  @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-italic.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-italic.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-normal.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-italic.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+
+
+/* Plan: a bronze Scythian point oxidising to verdigris as the reader scrolls. ios = arrow, venom, rust; the page is the third meaning.
+   Sticky left panel holds the blade and the current Greek word; nine steps scroll on the right, each with one thing to touch.
+   Single dark theme by choice: bronze-black ground, bone text, verdigris accent, one tyrian purple reserved for the disputed layer. */
+:root{
+  --ink:#0b0c0a;
+  --ink-2:#14160f;
+  --ink-3:#1c1f16;
+  --bone:#e4ddc8;
+  --bone-dim:#9a9480;
+  --bronze:#b7843a;
+  --bronze-hi:#e2b76a;
+  --verdigris:#4ea88a;
+  --verdigris-hi:#7fd3b4;
+  --tyrian:#6b1f4a;
+  --tyrian-hi:#c98aa8;
+  --font-display:"Bodoni Moda","EB Garamond Greek","Didot",Georgia,serif;
+  --font-body:"Literata","EB Garamond Greek","Iowan Old Style",Georgia,serif;
+  --font-mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--font-body);font-size:18px;line-height:1.6;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.amazons a{color:var(--verdigris);text-decoration-thickness:1px;text-underline-offset:3px}
+.amazons a:focus-visible,.amazons button:focus-visible,.amazons input:focus-visible,.amazons [tabindex]:focus-visible{outline:2px solid var(--verdigris);outline-offset:3px}
+.amazons h1,.amazons h2,.amazons h3{font-family:var(--font-display);font-weight:400;line-height:1.05;text-wrap:balance;margin:0}
+.amazons p{margin:0 0 1.2em}
+.amazons .grc{font-style:italic}
+.amazons button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.amazons .btn{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--bronze);color:var(--bronze-hi);background:var(--ink-2);border-radius:2px;transition:background .2s,color .2s,border-color .2s,transform .1s}
+.amazons .btn:hover{background:var(--bronze);color:var(--ink)}
+.amazons .btn:active{transform:translateY(1px)}
+.amazons .btn.ghost{border-color:rgba(183,132,58,.4);color:var(--bone-dim)}
+.amazons .btn.ghost:hover{background:var(--ink-3);color:var(--bone)}
+.amazons .btn[disabled]{opacity:.4;cursor:default}
+.amazons .btn[disabled]:hover{background:var(--ink-2);color:var(--bronze-hi)}
+.amazons .btn.green{border-color:var(--verdigris);color:var(--verdigris-hi)}
+.amazons .btn.green:hover{background:var(--verdigris);color:var(--ink)}
+.amazons .btn.purple{border-color:var(--tyrian);color:var(--tyrian-hi)}
+.amazons .btn.purple:hover{background:var(--tyrian);color:var(--bone)}
+
+.amazons #motes{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55}
+.amazons #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--bronze),var(--verdigris));z-index:50}
+
+/* chapter nav */
+.amazons .nav{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40}
+.amazons .nav a{display:block;width:28px;height:18px;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.06em;color:var(--bone-dim);text-decoration:none;text-align:right;opacity:.6;transition:color .2s,opacity .2s}
+.amazons .nav a:hover{opacity:1;color:var(--bone)}
+.amazons .nav a.on{color:var(--verdigris);opacity:1}
+@media (max-width:1180px){.amazons .nav{display:none}}
+
+/* hero */
+.amazons .hero{position:relative;z-index:1;padding:clamp(48px,9vh,110px) 16px 56px;max-width:1120px;margin:0 auto;display:grid;gap:28px}
+.amazons .eyebrow{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--bronze)}
+.amazons .hero h1{font-size:clamp(56px,11.5vw,160px);letter-spacing:-.025em;color:var(--bone);animation:rise 1.1s cubic-bezier(.2,.7,.2,1) both}
+.amazons .hero h1 em{font-style:italic;color:var(--verdigris);position:relative}
+.amazons .hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.08em;height:.06em;background:linear-gradient(90deg,var(--verdigris),transparent);opacity:.6}
+@keyframes rise{from{opacity:.35;transform:translateY(14px)}to{opacity:1;transform:none}}
+.amazons .hero .dek{max-width:60ch;font-size:clamp(19px,2.1vw,24px);font-weight:300}
+.amazons .hero .dek strong{font-weight:600;color:var(--bronze-hi)}
+.amazons .triad{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border:1px solid var(--bronze);max-width:760px;position:relative}
+.amazons .triad button{text-align:left;padding:16px 18px;background:var(--ink-2);transition:background .25s;position:relative;overflow:hidden}
+.amazons .triad button::before{content:"";position:absolute;inset:0;background:var(--bronze);opacity:0;transition:opacity .25s}
+.amazons .triad button.on::before{opacity:.12}
+.amazons .triad button:hover{background:var(--ink-3)}
+.amazons .triad .k{font-family:var(--font-display);font-size:2.2rem;color:var(--bone);line-height:1;position:relative}
+.amazons .triad .v{font-family:var(--font-mono);font-size:.74rem;color:var(--bone-dim);margin-top:8px;letter-spacing:.06em;text-transform:uppercase;position:relative}
+.amazons .triad .src{font-family:var(--font-mono);font-size:.68rem;color:var(--bronze);margin-top:6px;position:relative}
+.amazons .triad button.on .v{color:var(--verdigris-hi)}
+.amazons .triadline{font-family:var(--font-mono);font-size:.78rem;color:var(--bone-dim);min-height:1.4em}
+.amazons .triadline b{color:var(--bone);font-weight:600}
+.amazons .how{font-size:.95rem;color:var(--bone-dim);max-width:70ch;border-left:2px solid var(--bronze);padding-left:14px}
+.amazons .how b{color:var(--bone)}
+.amazons .tag{display:inline-block;font-family:var(--font-mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px;vertical-align:middle;margin-right:6px;position:relative;cursor:help}
+.amazons .tag.text{color:var(--verdigris);border-color:var(--verdigris)}
+.amazons .tag.read{color:var(--bronze);border-color:var(--bronze)}
+.amazons .tag.disp{color:var(--tyrian-hi);border-color:var(--tyrian);background:rgba(107,31,74,.25)}
+.amazons .tag::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 6px);background:var(--ink-3);color:var(--bone);font-size:.68rem;letter-spacing:.02em;text-transform:none;padding:6px 9px;border:1px solid rgba(183,132,58,.4);border-radius:2px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:3}
+.amazons .tag:hover::after,.amazons .tag:focus-visible::after{opacity:1}
+
+/* scrolly frame */
+.amazons .scrolly{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,72px);align-items:start}
+.amazons .sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:24px 0}
+.amazons .sticky .num{font-family:var(--font-mono);font-size:.74rem;color:var(--bronze);letter-spacing:.2em}
+.amazons .sticky .word{font-family:var(--font-display);font-size:clamp(44px,6vw,86px);line-height:.95;color:var(--bone);transition:color .5s}
+.amazons .sticky .gloss{font-family:var(--font-mono);font-size:.8rem;color:var(--bone-dim);letter-spacing:.04em;max-width:34ch}
+.amazons .blade{width:min(100%,340px);aspect-ratio:1/1.3;filter:drop-shadow(0 20px 40px rgba(0,0,0,.6))}
+.amazons .glint{opacity:0}
+.amazons .blade[data-state="arrow"] .glint{opacity:1;animation:glint 2.4s ease-in-out infinite}
+@keyframes glint{0%{transform:translateY(-120px)}60%,100%{transform:translateY(380px)}}
+.amazons .drip{opacity:0}
+.amazons .blade[data-state="venom"] .drip{opacity:1;animation:drip 1.8s ease-in infinite}
+.amazons .blade[data-state="venom"] .venomtint{opacity:.55}
+.amazons .venomtint{opacity:0;transition:opacity .5s}
+@keyframes drip{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(70px);opacity:0}}
+.amazons #stainRect{transition:y .9s cubic-bezier(.2,.7,.2,1)}
+.amazons .steps{padding:16px 0 20vh}
+.amazons .step{position:relative;min-height:70vh;padding:12vh 0 6vh;max-width:64ch;transition:opacity .5s,transform .6s}
+.amazons .step.pre{opacity:.3;transform:translateY(10px)}
+.amazons .step.on{opacity:1;transform:none}
+.amazons .step .wm{position:absolute;right:-10px;top:6vh;font-family:var(--font-display);font-size:clamp(90px,14vw,200px);line-height:1;color:var(--bronze);opacity:.07;pointer-events:none;user-select:none}
+.amazons .step h2{font-size:clamp(34px,4.4vw,60px);color:var(--bone);margin:0 0 .5em;position:relative}
+.amazons .step h2 span{color:var(--bronze)}
+.amazons .step .lede{font-size:1.15em;font-weight:300}
+.amazons .quote{margin:1.4em 0;padding:18px 22px;background:var(--ink-2);border-left:2px solid var(--verdigris);font-weight:300}
+.amazons .quote .grc{display:block;color:var(--bone-dim);font-size:.95em;margin-bottom:8px;font-style:normal}
+.amazons .quote cite{display:block;font-family:var(--font-mono);font-style:normal;font-size:.72rem;color:var(--bronze);margin-top:10px;letter-spacing:.04em}
+.amazons .note{font-size:.92rem;color:var(--bone-dim);margin:1.2em 0;padding-top:10px;border-top:1px dashed rgba(183,132,58,.4)}
+.amazons .note b{color:var(--bone)}
+
+/* interactive frames */
+.amazons .play{margin:1.6em 0;border:1px solid rgba(183,132,58,.55);background:linear-gradient(180deg,var(--ink-2),var(--ink));padding:18px;display:grid;gap:14px;position:relative}
+.amazons .play::before{content:attr(data-label);position:absolute;top:-9px;left:14px;background:var(--ink);padding:0 8px;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--verdigris)}
+.amazons .play .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.amazons .play .out{font-family:var(--font-mono);font-size:.8rem;color:var(--bone-dim);min-height:1.4em;letter-spacing:.02em}
+.amazons .play .out b{color:var(--bone);font-weight:600}
+.amazons .play .out .g{color:var(--verdigris-hi)}
+.amazons .play .out .p{color:var(--tyrian-hi)}
+.amazons .play svg{width:100%;height:auto;display:block}
+
+/* II kills */
+.amazons .field{background:var(--ink);border:1px solid rgba(183,132,58,.25);position:relative}
+.amazons .enemy{cursor:pointer;transition:transform .5s cubic-bezier(.3,.7,.3,1),opacity .6s;transform-origin:50% 100%}
+.amazons .enemy:hover .body{fill:var(--bronze-hi)}
+.amazons .enemy.down{transform:rotate(78deg) translate(10px,6px);opacity:.35;pointer-events:none}
+.amazons .arrowfly{transition:transform .35s cubic-bezier(.2,.9,.3,1),opacity .2s;opacity:0}
+.amazons .tally{display:flex;gap:8px}
+.amazons .tally i{width:30px;height:6px;background:var(--ink-3);border:1px solid rgba(183,132,58,.4);transition:background .3s}
+.amazons .tally i.k{background:var(--verdigris)}
+
+/* III guess */
+.amazons .gauge{display:grid;gap:8px}
+.amazons .gauge input[type=range]{width:100%;accent-color:var(--verdigris)}
+.amazons .bars{display:grid;gap:8px;margin-top:6px}
+.amazons .bar{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;font-family:var(--font-mono);font-size:.72rem;color:var(--bone-dim)}
+.amazons .bar .t{height:14px;background:var(--ink-3);border:1px solid rgba(183,132,58,.3);overflow:hidden}
+.amazons .bar .f{height:100%;width:0;background:var(--bronze);transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.amazons .bar.you .f{background:var(--verdigris)}
+.amazons .bar .n{text-align:right;color:var(--bone);font-variant-numeric:tabular-nums}
+
+/* IV recipe */
+.amazons .ingr{display:flex;flex-wrap:wrap;gap:8px}
+.amazons .ingr button{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;padding:8px 12px;border:1px solid rgba(183,132,58,.5);color:var(--bone);background:var(--ink-2);border-radius:2px;transition:all .2s}
+.amazons .ingr button:hover{border-color:var(--bronze-hi)}
+.amazons .ingr button.used{opacity:.35;text-decoration:line-through;pointer-events:none}
+.amazons .ingr button.next{border-color:var(--verdigris);box-shadow:0 0 0 1px var(--verdigris) inset}
+.amazons .pot .liquid{transition:height .6s,fill .6s}
+.amazons .days{font-family:var(--font-display);font-size:2.4rem;color:var(--bone);line-height:1;font-variant-numeric:tabular-nums}
+.amazons .inter{font-family:var(--font-body);font-size:1.25rem;line-height:1.9;letter-spacing:.01em}
+.amazons .inter .w{cursor:pointer;padding:0 2px;border-bottom:1px dotted rgba(183,132,58,.6);transition:color .15s,border-color .15s}
+.amazons .inter .w:hover,.amazons .inter .w.on{color:var(--verdigris-hi);border-bottom-color:var(--verdigris)}
+.amazons .inter .w.hot{color:var(--bronze-hi)}
+.amazons .glossline{font-family:var(--font-mono);font-size:.8rem;color:var(--bone-dim);min-height:1.6em}
+.amazons .glossline b{color:var(--bone)}
+
+/* V bow */
+.amazons .meter{position:relative;height:18px;background:var(--ink-3);border:1px solid rgba(183,132,58,.4);overflow:hidden}
+.amazons .meter .band{position:absolute;top:0;bottom:0;background:rgba(78,168,138,.25);border-left:1px solid var(--verdigris);border-right:1px solid var(--verdigris)}
+.amazons .meter .fill{position:absolute;top:0;bottom:0;left:0;width:0;background:linear-gradient(90deg,var(--bronze),var(--bronze-hi))}
+.amazons .hold{user-select:none;-webkit-user-select:none;touch-action:none}
+.amazons .sons{display:flex;gap:6px;flex-wrap:wrap}
+.amazons .sons span{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;padding:4px 8px;border:1px solid rgba(183,132,58,.35);color:var(--bone-dim)}
+.amazons .sons span.gone{opacity:.4;text-decoration:line-through}
+.amazons .sons span.king{color:var(--verdigris-hi);border-color:var(--verdigris)}
+.amazons .bowsvg .string{transition:d .15s}
+
+/* VI fire */
+.amazons .hearth{background:var(--ink)}
+.amazons .flame{transform-origin:50% 100%;opacity:0;transition:opacity .4s}
+.amazons .hearth.night .flame{opacity:1;animation:flick .5s ease-in-out infinite alternate}
+@keyframes flick{from{transform:scaleY(.9) scaleX(1.02)}to{transform:scaleY(1.08) scaleX(.96)}}
+.amazons .hearth .glow{opacity:0;transition:opacity .5s}
+.amazons .hearth.day .glow{opacity:1}
+.amazons .mort{height:10px;background:var(--ink-3);border:1px solid rgba(183,132,58,.4)}
+.amazons .mort i{display:block;height:100%;background:linear-gradient(90deg,var(--tyrian),var(--bronze));transition:width .8s}
+
+/* VII vials */
+.amazons .vials{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:end}
+.amazons .vial{display:grid;gap:8px;justify-items:center;padding:12px;border:1px solid rgba(183,132,58,.3);background:var(--ink-2);transition:border-color .2s,transform .15s}
+.amazons .vial:hover{border-color:var(--bronze-hi);transform:translateY(-2px)}
+.amazons .vial .h{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}
+.amazons .vial.lv .h{color:var(--tyrian-hi)}.amazons .vial.r .h{color:var(--verdigris-hi)}
+.amazons .patient{transition:filter .9s,transform .9s,opacity .9s}
+.amazons .patient.stone{filter:grayscale(1) contrast(1.3) brightness(.7)}
+.amazons .patient.risen{filter:drop-shadow(0 0 14px rgba(78,168,138,.8))}
+.amazons .cracks{opacity:0;transition:opacity .9s}
+.amazons .patient.stone .cracks{opacity:1}
+
+/* VIII hair */
+.amazons .hairwrap{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center}
+.amazons .hairwrap input[type=range]{width:100%;accent-color:var(--tyrian-hi)}
+.amazons .ticks{position:relative;height:18px;font-family:var(--font-mono);font-size:.62rem;color:var(--bone-dim);letter-spacing:.08em}
+.amazons .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.amazons .ticks span::before{content:"";position:absolute;left:50%;top:-8px;height:6px;border-left:1px solid var(--bronze)}
+
+/* IX thesis */
+.amazons .tiers{display:flex;flex-wrap:wrap;gap:10px}
+.amazons .tiers label{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;border:1px solid rgba(183,132,58,.4);cursor:pointer;user-select:none}
+.amazons .tiers input{accent-color:var(--verdigris)}
+.amazons .thesis{font-family:var(--font-body);font-size:1.1rem;font-weight:300;line-height:1.7;padding:16px 18px;background:var(--ink);border:1px solid rgba(183,132,58,.3);min-height:4em}
+.amazons .thesis span{transition:opacity .3s}
+.amazons .thesis span.off{display:none}
+.amazons .thesis .r{color:var(--bronze-hi)}
+.amazons .thesis .d{color:var(--tyrian-hi)}
+
+/* companion */
+.amazons .companion{display:block;margin:2.2em 0 0;padding:22px 24px;border:1px solid var(--bronze);background:linear-gradient(135deg,var(--ink-2),var(--ink));color:var(--bone);text-decoration:none;position:relative;overflow:hidden;transition:border-color .25s,transform .2s}
+.amazons .companion::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(78,168,138,.25),transparent 70%);transition:transform .4s}
+.amazons .companion:hover{border-color:var(--verdigris);transform:translateY(-2px)}
+.amazons .companion:hover::after{transform:scale(1.4)}
+.amazons .companion .ct{font-family:var(--font-display);font-size:2.4rem;line-height:1;margin:6px 0 10px;color:var(--bone)}
+.amazons .companion p{font-size:.95rem;color:var(--bone-dim);margin:0 0 12px;max-width:52ch}
+.amazons .companion .mono{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--verdigris)}
+.amazons .eyebrow a{color:var(--verdigris)}
+
+/* ledger */
+.amazons .ledger{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:60px 16px 100px;border-top:1px solid var(--bronze)}
+.amazons .ledger h2{font-size:clamp(34px,4vw,56px);margin-bottom:.3em}
+.amazons .ledger .sub{color:var(--bone-dim);max-width:70ch;margin-bottom:28px}
+.amazons .ltable{width:100%;border-collapse:collapse;font-size:.92rem}
+.amazons .ltable th{text-align:left;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);padding:10px 8px;border-bottom:1px solid var(--bronze)}
+.amazons .ltable td{padding:12px 8px;border-bottom:1px solid rgba(183,132,58,.25);vertical-align:top}
+.amazons .ltable td:first-child{white-space:nowrap}
+.amazons .ltable .c{font-family:var(--font-mono);font-size:.76rem;color:var(--bone-dim)}
+.amazons .tablewrap{overflow-x:auto}
+.amazons .ledger .foot{margin-top:36px;color:var(--bone-dim);font-size:.9rem;max-width:72ch}
+.amazons .ledger .foot b{color:var(--bone)}
+.amazons .srcs{columns:2;column-gap:32px;font-size:.86rem;margin-top:22px}
+.amazons .srcs p{break-inside:avoid;margin:0 0 .6em}
+.amazons .filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.amazons .ltable tr.hide{display:none}
+
+@media (max-width:860px){
+  .amazons .scrolly{grid-template-columns:1fr}
+  .amazons .sticky{position:sticky;top:0;height:auto;flex-direction:row;align-items:center;gap:14px;padding:10px 0;background:linear-gradient(var(--ink) 80%,transparent);z-index:5}
+  .amazons .sticky .blade{width:60px;aspect-ratio:1/1.3;filter:none}
+  .amazons .sticky .word{font-size:28px}
+  .amazons .sticky .gloss,.amazons .sticky .num{display:none}
+  .amazons .step{min-height:0;padding:6vh 0}
+  .amazons .step .wm{font-size:90px;top:2vh}
+  .amazons .triad{grid-template-columns:1fr}
+  .amazons .srcs{columns:1}
+  .amazons .bar{grid-template-columns:110px 1fr 46px}
+  .amazons .hairwrap{grid-template-columns:1fr}
+  .amazons .vials{grid-template-columns:1fr 1fr}
+  .amazons .vials .mid{grid-column:1/-1;order:-1}
+}
+
+/* Mounted in Poem.astro: neutralise its column and section rules for this page. */
+.amazons main.ta{max-width:none;margin:0;padding:0;position:relative;z-index:1}
+.amazons section.ledger{display:block;min-height:0}
+.amazons .ta-foot{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:48px;padding-top:18px;border-top:1px solid rgba(183,132,58,.35);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-dim)}
+.amazons .ta-foot a{color:inherit;text-underline-offset:.3em}
+.amazons .ta-foot a:hover{color:var(--bone)}
+/* The gallery exit sits top-left; on phones the sticky bar shares its line,
+   blade and word set to the right of the placard. */
+@media (max-width:860px){
+  .amazons .sticky{justify-content:flex-end;padding:max(8px, env(safe-area-inset-top, 0px)) 0 10px 150px;gap:12px}
+  .amazons .sticky .blade{width:52px}
+  .amazons .sticky .word{font-size:clamp(20px,6vw,28px);white-space:nowrap}
+}
+@media (max-width:340px){.amazons .sticky .word{display:none}}
+
+</style>
+
+<script>
+(function(){
+  var $=function(s,c){return (c||document).querySelector(s)};
+  var $$=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- motes ---------- */
+  (function(){
+    var c=$('#motes'),ctx=c.getContext('2d'),w,h,pts=[];
+    function size(){w=c.width=innerWidth;h=c.height=innerHeight;}
+    size();addEventListener('resize',size);
+    for(var i=0;i<70;i++)pts.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.6+.4,v:Math.random()*.25+.08,a:Math.random()*Math.PI*2,g:Math.random()<.5});
+    function tick(){
+      ctx.clearRect(0,0,w,h);
+      for(var i=0;i<pts.length;i++){var p=pts[i];
+        if(!reduce){p.y-=p.v;p.x+=Math.sin(p.a+=.01)*.15;if(p.y<-5){p.y=h+5;p.x=Math.random()*w;}}
+        var x=p.x%w,y=p.y%h;
+        ctx.beginPath();ctx.arc(x,y,p.r,0,Math.PI*2);ctx.fillStyle=p.g?'rgba(78,168,138,.5)':'rgba(183,132,58,.45)';ctx.fill();
+      }
+      if(!reduce)requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  /* ---------- sticky / scroll ---------- */
+  var steps=$$('.step'),word=$('#stWord'),gloss=$('#stGloss'),num=$('#stNum'),blade=$('#blade'),stain=$('#stainRect'),prog=$('#progress'),navs=$$('.nav a');
+  if(!reduce)steps.forEach(function(s){s.classList.add('pre')});
+  var manualBlade=null;
+  function setBlade(st){blade.setAttribute('data-state',st);}
+  function setActive(i){
+    steps.forEach(function(s,j){s.classList.toggle('on',j===i);if(!reduce)s.classList.toggle('pre',j!==i);});
+    navs.forEach(function(a,j){a.classList.toggle('on',j===i)});
+    var s=steps[i];
+    word.textContent=s.dataset.word;gloss.textContent=s.dataset.gloss;num.textContent=s.dataset.n;
+    word.style.color=(i===7)?'var(--tyrian-hi)':(i>=6?'var(--verdigris)':'var(--bone)');
+    stain.setAttribute('y',390-Math.round((i/(steps.length-1))*390));
+    setBlade(s.dataset.blade);
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)setActive(steps.indexOf(e.target));});},{rootMargin:'-45% 0px -45% 0px',threshold:0});
+    steps.forEach(function(s){io.observe(s)});
+  }
+  setActive(0);
+  function onScroll(){var h=document.documentElement,max=h.scrollHeight-h.clientHeight;prog.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';}
+  addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  /* ---------- hero triad ---------- */
+  var tl=$('#triadline');
+  $$('.triad button').forEach(function(b){b.addEventListener('click',function(){
+    $$('.triad button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    tl.innerHTML=b.dataset.line;setBlade(b.dataset.state);
+    if(b.dataset.state==='rust')stain.setAttribute('y',0);else if(b.dataset.state==='venom')stain.setAttribute('y',260);else stain.setAttribute('y',390);
+  })});
+
+  /* ---------- II kills ---------- */
+  (function(){
+    var kills=0,enemies=$$('.enemy'),fly=$('#arrowfly'),out=$('#killout'),tally=$$('#tally i');
+    var lines=['<b>1 / 3</b> · one man of the enemy. Herodotus would let her marry now. Hippocrates would not.','<b>2 / 3</b> · the second. Some grow old and die unmarried, Herodotus says, because they cannot fulfil the law.','<b>3 / 3</b> · <span class="g">τὰ ἱερὰ θύσει</span>. She may perform the lawful rites, take a husband, and set down the bow. She will not ride again unless the whole people is called up.'];
+    function loose(e){
+      if(e.classList.contains('down'))return;
+      var tx=parseFloat(e.getAttribute('transform').match(/translate\(([\d.]+)/)[1]);
+      fly.style.opacity=1;fly.style.transition='none';fly.style.transform='translate(70px,58px)';
+      requestAnimationFrame(function(){requestAnimationFrame(function(){fly.style.transition='';fly.style.transform='translate('+(tx-40)+'px,100px)';});});
+      setTimeout(function(){fly.style.opacity=0;e.classList.add('down');kills++;tally[kills-1].classList.add('k');out.innerHTML=lines[kills-1];},reduce?0:330);
+    }
+    enemies.forEach(function(e){e.addEventListener('click',function(){loose(e)});e.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();loose(e)}})});
+    $('#killreset').addEventListener('click',function(){kills=0;enemies.forEach(function(e){e.classList.remove('down')});tally.forEach(function(t){t.classList.remove('k')});out.innerHTML='<b>0 / 3</b> · <span class="grc">παρθένος</span>. She rides and shoots. Click an enemy.';});
+  })();
+
+  /* ---------- III guess ---------- */
+  (function(){
+    var r=$('#guess'),v=$('#guessval'),btn=$('#guessbtn'),bars=$('#bars'),out=$('#guessout'),youn=$('#youn');
+    r.addEventListener('input',function(){v.textContent=r.value+'%';});
+    btn.addEventListener('click',function(){
+      var g=+r.value;bars.hidden=false;youn.textContent=g+'%';$('.bar.you .f').dataset.w=g;
+      requestAnimationFrame(function(){$$('#bars .f').forEach(function(f){f.style.width=f.dataset.w+'%'})});
+      var msg;
+      if(g<10)msg='You guessed the way the first excavators did: every grave with a sword was a man until the bones said otherwise.';
+      else if(g<25)msg='Close to the eastern figure. Herodotus put the Sauromatae exactly there, east of the Don.';
+      else if(g<=45)msg='In range. Mayor\'s highest cemeteries run to 37%, and arrowheads in the bone say the weapons were used.';
+      else msg='Higher than any cemetery yet dug. The Greek myth of a women-only nation is the one part the mounds do not support; these were mixed tribes where some women fought.';
+      out.innerHTML='<b>'+msg+'</b>';
+    });
+  })();
+
+  /* ---------- IV brew ---------- */
+  (function(){
+    var order=['viper','blood','dung'],idx=0,btns=$$('#ingr button'),liq=$('#liquid'),bury=$('#bury'),days=$('#days'),out=$('#brewout');
+    var says={viper:'Vipers that have just given birth, taken alive. The text is specific about the whelping.',blood:'Human blood, in a small pot. Aelian says the serum of it.',dung:'Buried in dung to putrefy. Now there is nothing to do but wait.'};
+    var cols={viper:'#2f7a66',blood:'#6b1f4a',dung:'#3b2a12'};
+    btns.forEach(function(b){b.addEventListener('click',function(){
+      var k=b.dataset.k;
+      if(k!==order[idx]){out.innerHTML='<span class="p">Wrong order.</span> The text starts with the snakes.';return;}
+      b.classList.add('used');b.classList.remove('next');idx++;
+      liq.setAttribute('y',125-idx*25);liq.setAttribute('height',idx*25);liq.setAttribute('fill',cols[k]);
+      out.textContent=says[k];
+      if(btns[idx])btns[idx].classList.add('next');
+      if(idx===3){bury.disabled=false;}
+    })});
+    bury.addEventListener('click',function(){
+      bury.disabled=true;var d=0;
+      var t=setInterval(function(){d++;days.textContent='day '+d;
+        if(d===3)out.textContent='The watery part rises on the blood.';
+        if(d>=7){clearInterval(t);liq.setAttribute('fill','#4ea88a');out.innerHTML='<span class="g">σκυθικόν.</span> Draw off the serum, mix it with the juice of the snake, smear the arrows. Ovid: a double death on every barb.';setBlade('venom');}
+      },reduce?10:380);
+    });
+    /* interlinear */
+    var gl=$('#glossline');
+    $$('#inter .w').forEach(function(w){
+      function on(){$$('#inter .w').forEach(function(x){x.classList.remove('on')});w.classList.add('on');gl.innerHTML='<b>'+w.dataset.g.split(' · ')[0]+'</b> · '+w.dataset.g.split(' · ').slice(1).join(' · ');}
+      w.addEventListener('mouseenter',on);w.addEventListener('click',on);w.setAttribute('tabindex','0');w.addEventListener('focus',on);
+    });
+  })();
+
+  /* ---------- V bow ---------- */
+  (function(){
+    var btn=$('#draw'),fill=$('#bowfill'),band=$('#band'),str=$('#bowstring'),arr=$('#bowarrow'),out=$('#bowout'),sons=$$('#sons span');
+    var lo=68,hi=84,son=0,hold=false,val=0,raf;
+    band.style.left=lo+'%';band.style.width=(hi-lo)+'%';
+    function render(){fill.style.width=val+'%';var pull=300-val*2.1;str.setAttribute('d','M60 60 L'+pull+' 60 L540 60');arr.setAttribute('transform','translate('+(-(300-pull))+',0)');}
+    function loop(){if(!hold)return;val=Math.min(100,val+1.1);render();if(val>=100){release();return;}raf=requestAnimationFrame(loop);}
+    function start(e){if(son>2)return;e.preventDefault();hold=true;val=0;loop();}
+    function release(){
+      if(!hold)return;hold=false;cancelAnimationFrame(raf);
+      var ok=val>=lo&&val<=hi,name=sons[son].textContent;
+      if(ok){sons[son].classList.add('king');out.innerHTML='<span class="g">'+name+' strings the bow and buckles the belt.</span> He stays, and the Scythians descend from him.'+(son<2?' The myth gives it to the youngest; you gave it to '+name+'.':'');
+        sons.forEach(function(s,i){if(i!==son)s.classList.add('gone')});son=3;}
+      else{sons[son].classList.add('gone');out.innerHTML=name+(val<lo?' could not bend it far enough.':' snapped the string.')+' His mother sends him out of the country.';son++;
+        if(son===3){out.innerHTML+=' <span class="p">No king. In Herodotus, Scythes manages it.</span>';}}
+      setTimeout(function(){val=0;render();},reduce?0:600);
+      if(son>2){btn.textContent='The test is over · reset';btn.classList.add('ghost');}
+    }
+    btn.addEventListener('pointerdown',function(e){if(son>2){son=0;sons.forEach(function(s){s.className=''});out.textContent='Three sons. One bow. Each gets one pull.';btn.textContent='Hold to draw · release in the green';btn.classList.remove('ghost');return;}start(e)});
+    addEventListener('pointerup',release);addEventListener('pointercancel',release);
+    btn.addEventListener('keydown',function(e){if((e.key===' '||e.key==='Enter')&&!hold){e.preventDefault();start(e)}});
+    btn.addEventListener('keyup',function(e){if(e.key===' '||e.key==='Enter')release()});
+    render();
+  })();
+
+  /* ---------- VI fire ---------- */
+  (function(){
+    var hearth=$('#hearth'),mort=$('#mort'),day=$('#dayb'),night=$('#nightb'),look=$('#lookb'),reset=$('#firereset'),out=$('#fireout');
+    var m=100,nights=0,done=false;
+    var nl=['First night. She hides him in the heart of the fire like a brand. He does not cry.','Second night. He grows like a daimon, eating no grain, taking no breast.','Third night. His parents marvel at how he thrives and do not ask why.','Fourth night. The mortal part is nearly gone. One more.','Fifth night. No mortal in the surviving sources ever got this far.'];
+    function setM(x){m=Math.max(0,x);mort.style.width=m+'%';}
+    day.addEventListener('click',function(){if(done)return;hearth.classList.add('day');hearth.classList.remove('night');night.disabled=false;day.disabled=true;out.textContent='Anointed with ambrosia, as though born of the goddess. Breathe on him. Wait for dark.';});
+    night.addEventListener('click',function(){if(done)return;hearth.classList.add('night');hearth.classList.remove('day');nights++;setM(m-20);night.disabled=true;day.disabled=false;out.textContent=nl[nights-1];
+      if(m<=0){done=true;out.innerHTML='<span class="g">ἄμβροτος.</span> Mortality burned off entirely. The hymn never lets this happen; Metaneira always looks. You kept her out of the room.';day.disabled=true;night.disabled=true;}});
+    look.addEventListener('click',function(){if(done)return;done=true;hearth.classList.remove('night');hearth.classList.remove('day');day.disabled=true;night.disabled=true;
+      out.innerHTML='<span class="p">She screams.</span> Demeter sets the child on the floor and turns on her: "Witless mortals, who cannot tell good fortune from bad." Demophoon keeps <b>'+m+'%</b> of his mortality and dies an ordinary death. Eleusis gets its Mysteries as the consolation prize.';});
+    reset.addEventListener('click',function(){m=100;nights=0;done=false;setM(100);hearth.setAttribute('class','hearth day');day.disabled=false;night.disabled=true;out.textContent='Night one has not come yet.';});
+  })();
+
+  /* ---------- VII vials ---------- */
+  (function(){
+    var p=$('#patient'),out=$('#vialout'),L=$('#vialL'),R=$('#vialR'),used=false;
+    L.addEventListener('click',function(){if(used)return;used=true;p.classList.add('stone');out.innerHTML='<span class="p">Stone.</span> Left vein: the bane of mankind. He stiffens where he lies. In Hillman\'s reading this is the stasis, the held threshold; in Apollodorus it is simply death.';});
+    R.addEventListener('click',function(){if(used)return;used=true;p.classList.add('risen');out.innerHTML='<span class="g">He rises.</span> Right vein: salvation. Asclepius raised Hippolytus, Glaucus, Tyndareus this way, and Zeus killed him for it. The physician was punished for the antidote, never for the poison.';});
+    $('#vialreset').addEventListener('click',function(){used=false;p.classList.remove('stone','risen');out.textContent='A patient on the table. Which side of the Gorgon do you give?';});
+  })();
+
+  /* ---------- VIII hair ---------- */
+  (function(){
+    var r=$('#hair'),s1=$('#hs1'),s2=$('#hs2'),serp=$('#serp'),out=$('#hairout');
+    function mix(a,b,t){var pa=a.match(/\w\w/g).map(function(x){return parseInt(x,16)}),pb=b.match(/\w\w/g).map(function(x){return parseInt(x,16)});return 'rgb('+pa.map(function(v,i){return Math.round(v+(pb[i]-v)*t)}).join(',')+')';}
+    function upd(){
+      var v=+r.value,t=v/100;
+      s1.setAttribute('stop-color',mix('1c1f16','6b1f4a',t));s2.setAttribute('stop-color',mix('2f7a66','c98aa8',t*.8));
+      serp.setAttribute('opacity',v<36?1:Math.max(0,1-(v-36)/20));
+      if(v<36)out.innerHTML='<span class="g">text.</span> Serpents for hair (Apollodorus), speckled skin (Hesiod), shafts painted like adders. Everything here has a citation.';
+      else if(v<68)out.innerHTML='<span style="color:var(--bronze-hi)">reading.</span> The stain of the work: putrefied viper, blood serum, bronze oxide. No text says it; no text forbids it. Imagery, voiced as imagery.';
+      else out.innerHTML='<span class="p">disputed.</span> ἰός heard as ἴον, the violet. Hillman\'s bridge: one sound, one colour, the burning purple pharmakon. Voice it as his reading.';
+    }
+    r.addEventListener('input',upd);upd();
+  })();
+
+  /* ---------- IX thesis ---------- */
+  (function(){
+    var t1=$('#t1'),t2=$('#t2'),t3=$('#t3'),th=$('#thesis'),out=$('#thesisout'),copy=$('#copythesis');
+    function upd(){
+      $('.thesis .t').classList.toggle('off',!t1.checked);$('.thesis .r').classList.toggle('off',!t2.checked);$('.thesis .d').classList.toggle('off',!t3.checked);
+      var n=[t1,t2,t3].filter(function(x){return x.checked}).length;
+      if(!t1.checked&&n)out.innerHTML='<span class="p">No ground.</span> Switch the texts back on. Hillman\'s readings stand strongest on their sources.';
+      else if(n===0)out.innerHTML='Nothing to assert. Switch a tier on.';
+      else if(n===1)out.innerHTML='<span class="g">Text only.</span> Unassailable, and a little dull. This is the version for the hostile reviewer.';
+      else if(n===2&&!t3.checked)out.innerHTML='<span class="g">Two tiers on.</span> This version a classicist can argue with but cannot laugh at.';
+      else out.innerHTML='<span class="p">All three.</span> The full Lady Babylon. Credit the purple to Hillman by name and let it ride.';
+    }
+    [t1,t2,t3].forEach(function(x){x.addEventListener('change',upd)});upd();
+    copy.addEventListener('click',function(){
+      var txt=$$('.thesis span').filter(function(s){return !s.classList.contains('off')}).map(function(s){return s.textContent.trim()}).join(' ');
+      try{navigator.clipboard.writeText(txt).then(function(){copy.textContent='Copied';setTimeout(function(){copy.textContent='Copy this thesis'},1500)},function(){copy.textContent='Select and copy by hand'});}catch(e){copy.textContent='Select and copy by hand';}
+    });
+  })();
+
+  /* ---------- ledger filter ---------- */
+  $$('.filter button').forEach(function(b){b.addEventListener('click',function(){
+    $$('.filter button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    var f=b.dataset.f;$$('#ltable tbody tr').forEach(function(tr){tr.classList.toggle('hide',f!=='all'&&tr.dataset.t!==f)});
+  })});
+})();
+</script>

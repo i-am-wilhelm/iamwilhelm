@@ -5,7 +5,7 @@ year: 2026
 epigraph: "The high place apart is where light serves."
 href: "/gallery/the-keeper-and-the-flame/"
 medium: "Visualized poem; interactive page"
-order: 4
+order: 5
 status: on-view
 sign: aries
 plate: "#2a1a16"
