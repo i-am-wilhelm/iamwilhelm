@@ -25,6 +25,27 @@ export const accents = {
 
 export type SectionId = keyof typeof accents;
 
+/**
+ * Section ids that borrow another section's accent. Writings pages mark
+ * their movements with their own ids (pharmakon-0..6, unseen-0..5) so the
+ * constellation pass seeds a distinct sky per movement, while the backdrop,
+ * smoke, and the --active-accent tween read the colour registered here.
+ * Resolve through accentFor(); never index `accents` with a raw DOM id.
+ */
+export const accentAliases: Record<string, SectionId> = {
+  'pharmakon-0': 'writings', 'pharmakon-1': 'writings', 'pharmakon-2': 'writings',
+  'pharmakon-3': 'writings', 'pharmakon-4': 'writings', 'pharmakon-5': 'writings',
+  'pharmakon-6': 'writings',
+  'unseen-0': 'underworld', 'unseen-1': 'underworld', 'unseen-2': 'underworld',
+  'unseen-3': 'underworld', 'unseen-4': 'underworld', 'unseen-5': 'underworld',
+};
+
+/** Accent hex for any section id the DOM can carry, or undefined. */
+export function accentFor(id: string): string | undefined {
+  const key = (id in accents ? id : accentAliases[id]) as SectionId | undefined;
+  return key ? accents[key] : undefined;
+}
+
 /** Homepage section registry, in scroll order. */
 export interface SectionSpec {
   id: SectionId;
@@ -53,7 +74,30 @@ export const sections: SectionSpec[] = [
  * Wider homepage symbol pool (may grow): black-swan, janus, orpheus, babalon,
  * prometheus, hermes, medea, ouroboros, sol-niger, saturn, pleiades,
  * cross-to-cube, pan, thoth-hermes-trismegistus, columbia-pallas.
+ * The Unseen One adds hades, persephone, pomegranate, asphodel, narcissus:
+ * Homeric Hymn to Demeter material, inside the register.
  */
+
+/**
+ * Drones for sections that are not in the homepage registry. The Unseen One
+ * continues the circle of fifths flatward from where the page lands (F, Bb,
+ * Eb) and sits on the lowest drone on the site through the metamorphosis
+ * and Elysium (Eb1, about 39 Hz), lifting a fifth for the return.
+ * Resolve through droneFor().
+ */
+export const descentDrones: Record<string, string> = {
+  'unseen-0': 'F1',
+  'unseen-1': 'Bb1',
+  'unseen-2': 'Eb1',
+  'unseen-3': 'Eb1',
+  'unseen-4': 'Eb1',
+  'unseen-5': 'Ab1',
+};
+
+/** Drone pitch for any section id, or undefined when the section has none. */
+export function droneFor(id: string): string | undefined {
+  return sections.find((s) => s.id === id)?.drone ?? descentDrones[id];
+}
 
 /** One site tempo: the score, the reveals, and the visual clock all read it. */
 const BPM = 84;
@@ -84,6 +128,25 @@ export const backgroundFade = {
   from: '#050505',
   to: '#bda898',
 } as const;
+
+/**
+ * Per-page fade modes, chosen with `data-fade` on <html> (Base.astro's
+ * `fade` prop). scroll.ts drives the body colour and the backdrop pass
+ * reads the mode too, so a page can run dark without overriding the
+ * site-wide dawn fade.
+ *
+ *   dawn     the default: black at the top, the shade before dawn below.
+ *   descent  dark-first: a bruised near-black at the top, true black by the
+ *            section marked [data-fade-floor], held black through the
+ *            section marked [data-fade-lift], then lifting slightly for
+ *            the return. The ink stays light the whole way.
+ */
+export const fadeModes = {
+  dawn: { from: backgroundFade.from, to: backgroundFade.to },
+  descent: { from: '#17141a', floor: '#000000', back: '#0c0a0d' },
+} as const;
+
+export type FadeMode = keyof typeof fadeModes;
 
 /**
  * Natal engine palette, one colour per body, plus Venus's chromatic fringe

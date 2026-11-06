@@ -21,7 +21,7 @@
 
 import { Renderer, RenderTarget } from 'ogl';
 import { on } from '../scripts/events';
-import { createState, activation, type PipelineState } from './state';
+import { createState, activation, readDitherMasks, type PipelineState } from './state';
 import { clamp, damp, damp3, hexToRgb } from './utils';
 import { BackdropPass } from './passes/backdrop';
 import { ConstellationPass } from './passes/constellation';
@@ -185,6 +185,7 @@ export async function initPipeline(
 
   function tick(dt: number, time: number) {
     updateState(state, dt, time);
+    readDitherMasks(state);
 
     const aspect = w / Math.max(1, h);
     const dpr = renderer.dpr;

@@ -23,7 +23,7 @@ import type { OGLRenderingContext } from 'ogl';
 import { NOISE_GLSL, COLOR_GLSL, FULLSCREEN_VERT } from '../glsl';
 import { buildGlyphAtlas } from '../glyph-atlas';
 import { damp } from '../utils';
-import type { PipelineState } from '../state';
+import { MAX_DITHER_MASKS, type PipelineState } from '../state';
 
 /**
  * Glyph treatment presets, swappable at runtime via iw:dither-style (the
@@ -99,6 +99,11 @@ uniform float uLightning;    // flash strength, decays in JS
 uniform float uRampCount;
 uniform float uRareCount;
 uniform float uRareChance;   // probability a bright cell surfaces a rare
+
+/* Escape hatch: uv rects (x0, y0, x1, y1) where the field goes quiet, from
+   elements marked data-dither="off" (see state.readDitherMasks). */
+uniform vec4  uMasks[${MAX_DITHER_MASKS}];
+uniform int   uMaskCount;
 
 ${NOISE_GLSL}
 ${COLOR_GLSL}
@@ -216,6 +221,17 @@ void main() {
   float alpha = coverage * clamp(srcA * 1.4, 0.0, 1.0);
   alpha = max(alpha, uLightning * 0.25); // flash reaches empty cells too
 
+  // Masked regions: no glyphs over hairline artwork. Feathered by one cell
+  // so the edge of the quiet zone never reads as a hard rectangle.
+  vec2 uvPx = vUv * uResolution;
+  for (int i = 0; i < ${MAX_DITHER_MASKS}; i++) {
+    if (i >= uMaskCount) break;
+    vec4 m = uMasks[i] * vec4(uResolution, uResolution);
+    vec2 inner = min(uvPx - m.xy, m.zw - uvPx);
+    float inside = smoothstep(-cellPx, cellPx * 0.5, min(inner.x, inner.y));
+    alpha *= 1.0 - inside;
+  }
+
   gl_FragColor = vec4(glyphCol * ink / max(coverage, 1e-3), alpha);
 }
 `;
@@ -257,6 +273,8 @@ export class DitherPass {
       uRampCount: { value: atlas.rampCount },
       uRareCount: { value: atlas.rareCount },
       uRareChance: { value: RARE_BASE },
+      uMasks: { value: new Array<number>(MAX_DITHER_MASKS * 4).fill(0) },
+      uMaskCount: { value: 0 },
     };
 
     const program = new Program(gl, {
@@ -317,5 +335,9 @@ export class DitherPass {
 
     // Dead letters surface most often in deconstruction contexts.
     u.uRareChance.value = RARE_BASE * (1 + RARE_DECON_BOOST * deconActivation);
+
+    // Quiet zones over hairline artwork (data-dither="off").
+    u.uMasks.value = state.ditherMasks;
+    u.uMaskCount.value = state.ditherMaskCount;
   }
 }
