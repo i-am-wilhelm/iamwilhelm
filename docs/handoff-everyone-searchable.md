@@ -38,7 +38,7 @@ as-is.
 | --- | --- |
 | Position | Hero frame of the homepage wall; first card on `/gallery/` (`order: 0`) |
 | Label | Futurist · No. 1 |
-| Medium | Visualized essay in nine chapters; interactive page *(chosen)* |
+| Medium | Visualized essay; interactive page (as The Dual Thing and The Pretty Toy) |
 | Epigraph on the frame | The meta description |
 | Sign | Aquarius *(chosen: the essay ends on the age of Aquarius, the water-bearer's vessel tipping)* |
 | Plate | `#0b2730`, the coda's water taken down to a dark plate *(chosen)* |
@@ -72,3 +72,73 @@ Then the coda ("Get known before you get searched.") and the sources.
 - **Fonts.** Self-hosted from `public/fonts` under the same family names the
   prototype loads from Google Fonts: Big Shoulders Stencil Display (display),
   Newsreader (text, with optical sizes), Courier Prime (typed labels).
+
+## Adding the next futurist essay
+
+The series plumbing is one entry: a `writings` entry that names the series.
+The essay's own page is still its own file, as every scrolly is, and hanging
+it on the Gallery wall is a separate, optional choice.
+
+1. **The page.** Build it at `src/pages/writings/<slug>.astro` on
+   `Poem.astro`, starting from `src/pages/writings/everyone-searchable.astro`:
+   keep its frontmatter (it reads title, description, date and series from
+   the entry with `getEntry('writings', '<slug>')`, and passes `scheme`,
+   `exit={false}`, `partOf` and `preload` to the layout). Port the prototype
+   the same way: markup and script verbatim (the script `is:inline` at the end
+   of the slot), the CSS scoped under a body class of its own, and the three
+   resets for `Poem.astro`'s `main`, `section` and `.stage` rules if the
+   prototype uses those names. Self-host its fonts in `public/fonts` under the
+   names it loads them by, and note them in `public/fonts/README.md`. Mark any
+   site chrome you add (a way back) with `data-og-hide`.
+2. **The one entry.** Add `src/content/writings/<slug>.md`:
+
+   ```yaml
+   ---
+   title: "…"
+   date: 2026-12-01
+   accent: futurist
+   draft: false
+   description: "…"          # the page's meta description
+   treatment: scrolly
+   series: futurist
+   seriesNumber: 2
+   ---
+   ```
+
+   That entry alone:
+   - lists it in the reading room (`/writings/` and the homepage's Room III),
+     newest first, under the label "Futurist · No. 2" in the futurist accent,
+     linking to the series;
+   - lists it at `/writings/futurist/` as No. 2;
+   - gives the page its title, description, date and series in the meta and
+     schema;
+   - keeps `/writings/[slug]` off the route (`treatment: scrolly`): no glyph
+     dither, no backdrop fade, no smoke, the audio layer dormant;
+   - puts it on `npm run og:scrollies`' list.
+
+   The schema refuses `series` without `seriesNumber`, and the reverse.
+3. **The share image.** `npm run og:scrollies -- <slug>` renders only that
+   card (`public/og/<slug>.jpg`, its opening frame at 1200×630) and leaves the
+   other cards' bytes and cache-busting hashes alone. Commit the JPEG.
+4. **Optional: hang it in the Gallery.** Add `src/content/gallery/<slug>.md`
+   (title, plateTitle, year, epigraph, href `/writings/<slug>/`, medium,
+   order, sign, plate). The card picks up "Futurist · No. 2" from the writings
+   entry by id, so the label is not repeated here. The lowest `order` takes the
+   homepage hero frame: give the new piece an order below the current hero's
+   (`order` takes negatives, so `-1` works) or renumber the wall.
+
+### A new series
+
+Add a key to `series` in `src/config/series.ts` (name, title, href, accent,
+statement), an accent token in `src/design/tokens.ts` (and its mirror in
+`src/styles/global.css`), and its index page,
+`src/pages/writings/<id>/index.astro`, which is two lines:
+`import SeriesIndex …` and `<SeriesIndex id="<id>" />`. A series id must not
+be a writing's slug, since both live under `/writings/`.
+
+### What to fill in
+
+- The series statement in `src/config/series.ts` is a `PLACEHOLDER(owner)`
+  line ("Essays on what comes next, each staged as its own scrolling page.").
+- The date on `src/content/writings/everyone-searchable.md` is the day the
+  page was built; set the publication day when it ships.

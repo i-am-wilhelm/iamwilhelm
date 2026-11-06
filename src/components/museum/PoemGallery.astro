@@ -4,19 +4,30 @@
  * is one link (title, year, epigraph) to its full interactive page, so the
  * gallery is a plain list of links in tab order. Forthcoming entries hang
  * as empty frames with no link.
+ *
+ * A piece in a writing series (a `writings` entry with the same id and a
+ * `series`) carries its label, "Futurist · No. 1", in the series accent. With
+ * `hero`, the homepage wall hangs its first piece as the hero frame: the
+ * full width of the wall, frame and placard side by side.
  */
 import { getCollection } from 'astro:content';
 import Glyph from './Glyph.astro';
 import { roman } from './zodiac';
+import { seriesAccent, seriesLabel } from '../../config/series';
 
 interface Props {
   /** Heading level for tile titles (h3 inside a room, h2 on /gallery). */
   level?: 2 | 3;
+  /** Hang the first piece as the hero frame (the homepage wall). */
+  hero?: boolean;
 }
-const { level = 3 } = Astro.props;
+const { level = 3, hero = false } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 
 const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+const inSeries = new Map(
+  (await getCollection('writings', ({ data }) => !data.draft && !!data.series)).map((w) => [w.id, w.data]),
+);
 ---
 
 <ul class="poems" role="list">
@@ -24,6 +35,9 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
     poems.map((p, i) => {
       const d = p.data;
       const onView = d.status === 'on-view' && !!d.href;
+      const isHero = hero && i === 0 && onView;
+      const w = inSeries.get(p.id);
+      const label = w?.series && w.seriesNumber ? seriesLabel(w.series, w.seriesNumber) : undefined;
       const inner = (
         <>
           <div class="poem__frame" aria-hidden="true">
@@ -37,7 +51,14 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
             </div>
           </div>
           <div class="poem__placard">
-            <p class="poem__cat mono">Cat. II.{String(i + 1).padStart(2, '0')}</p>
+            <p class="poem__cat mono">
+              <span>Cat. II.{String(i + 1).padStart(2, '0')}</span>
+              {label && w?.series && (
+                <span class="poem__series" style={`--series-accent: ${seriesAccent(w.series)}`}>
+                  {label}
+                </span>
+              )}
+            </p>
             <H class="poem__title">{d.title}</H>
             <p class="poem__meta">
               <span class="poem__medium">{d.medium}</span>
@@ -53,7 +74,11 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
         </>
       );
       return (
-        <li class:list={['poem', !onView && 'poem--forthcoming']} data-reveal data-numeral={roman(i + 1)}>
+        <li
+          class:list={['poem', !onView && 'poem--forthcoming', isHero && 'poem--hero']}
+          data-reveal
+          data-numeral={roman(i + 1)}
+        >
           {onView ? (
             <a class="poem__link" href={d.href}>
               {inner}
@@ -157,7 +182,15 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
     align-content: start;
   }
   .poem__cat {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
     color: var(--gilt-ink);
+  }
+  .poem__series {
+    color: var(--series-accent);
+    letter-spacing: 0.06em;
   }
   .poem__title {
     font-family: var(--font-display);
@@ -219,6 +252,52 @@ const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
   a.poem__link:focus-visible .poem__open::after {
     width: 2.4rem;
   }
+  /* The hero frame: the wall's first piece across the whole wall, a wide
+     plate beside its placard. Stacked on narrow screens, where the plate
+     squares up instead of the tiles' 4:5. */
+  .poem--hero {
+    grid-column: 1 / -1;
+  }
+  .poem--hero .poem__link {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: center;
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+  }
+  .poem--hero .poem__frame {
+    padding: 14px;
+  }
+  .poem--hero .poem__plate {
+    aspect-ratio: 16 / 10;
+    gap: 1.2rem;
+    padding: 2rem;
+  }
+  .poem--hero .poem__plate-title {
+    font-size: min(3.2rem, 7.5cqi);
+  }
+  .poem--hero .poem__plate-epigraph {
+    max-width: 28rem;
+    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+  }
+  .poem--hero .poem__placard {
+    gap: 0.5rem;
+  }
+  .poem--hero .poem__title {
+    font-size: clamp(2.1rem, 1.5rem + 2vw, 3.2rem);
+  }
+  .poem--hero .poem__epigraph {
+    max-width: 30rem;
+    font-size: 1.1rem;
+  }
+  @media (max-width: 820px) {
+    .poem--hero .poem__link {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .poem--hero .poem__plate {
+      aspect-ratio: 1 / 1;
+      padding: 1.5rem 1.25rem;
+    }
+  }
+
   .poem--forthcoming .poem__plate {
     filter: saturate(0.6);
   }

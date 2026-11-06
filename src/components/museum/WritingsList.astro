@@ -1,20 +1,25 @@
 ---
 /**
  * The writings index: title, date, and description for each published
- * piece, newest first. Shared by Room III (latest few) and /writings (all).
+ * piece, newest first. Shared by Room III (latest few), /writings (all) and
+ * the series indexes (`series`: that series only, numbered in it). A piece
+ * in a series carries its label, "Futurist · No. 1", in the series accent.
  */
 import { getCollection } from 'astro:content';
+import { series as seriesSpec, seriesAccent, seriesLabel, type SeriesId } from '../../config/series';
 
 interface Props {
   limit?: number;
   level?: 2 | 3;
+  /** Only this series, numbered by its place in it ("No. 1"). */
+  series?: SeriesId;
 }
-const { limit, level = 3 } = Astro.props;
+const { limit, level = 3, series } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 
-const all = (await getCollection('writings', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const all = (
+  await getCollection('writings', ({ data }) => !data.draft && (!series || data.series === series))
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const posts = limit ? all.slice(0, limit) : all;
 
 const fmt = (d: Date) =>
@@ -25,8 +30,15 @@ const fmt = (d: Date) =>
   {
     posts.map((post, i) => (
       <li class="entry" data-reveal>
-        <span class="entry__num mono">III.{String(i + 1).padStart(2, '0')}</span>
+        <span class="entry__num mono">
+          {series ? `No. ${post.data.seriesNumber}` : `III.${String(i + 1).padStart(2, '0')}`}
+        </span>
         <div class="entry__body">
+          {!series && post.data.series && post.data.seriesNumber && (
+            <p class="entry__series mono" style={`--series-accent: ${seriesAccent(post.data.series)}`}>
+              <a href={seriesSpec[post.data.series].href}>{seriesLabel(post.data.series, post.data.seriesNumber)}</a>
+            </p>
+          )}
           <H class="entry__title">
             <a href={`/writings/${post.id}/`}>{post.data.title}</a>
           </H>
@@ -77,6 +89,18 @@ const fmt = (d: Date) =>
   .entry__title a:hover,
   .entry__title a:focus-visible {
     background-size: 100% 1px;
+  }
+  .entry__series {
+    letter-spacing: 0.06em;
+  }
+  .entry__series a {
+    color: var(--series-accent);
+    text-decoration: none;
+    text-underline-offset: 0.3em;
+  }
+  .entry__series a:hover,
+  .entry__series a:focus-visible {
+    text-decoration: underline;
   }
   .entry__date {
     color: var(--ink-faint);

@@ -1,7 +1,8 @@
 ---
 /**
  * Room II: the Gallery of Visualized Poetry. The same framed tiles as
- * /gallery, fed by the `gallery` content collection.
+ * /gallery, fed by the `gallery` content collection; here the first piece
+ * by `order` hangs as the hero frame.
  */
 import Room from '../Room.astro';
 import Placard from '../Placard.astro';
@@ -26,7 +27,7 @@ import PoemGallery from '../PoemGallery.astro';
         <p>Choose a frame to enter.</p>
       </div>
     </div>
-    <PoemGallery level={3} />
+    <PoemGallery level={3} hero />
     <p class="gal__more" data-reveal>
       <a class="text-link" href="/gallery/">Visit the gallery on its own</a>
     </p>
