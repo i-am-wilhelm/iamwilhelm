@@ -387,19 +387,28 @@ import Poem from '../../layouts/Poem.astro';
 
 <style is:global>
 
-  /* True Amazons faces, self-hosted (public/fonts, SIL OFL). Bodoni Moda is
-     the display, Literata the text; display Greek falls through to the
-     site's EB Garamond Greek, declared in Poem.astro. */
+  /* True Amazons faces, self-hosted (public/fonts, SIL OFL): the same
+     families and subsets Google Fonts served the artifact, so the page
+     renders as it did there. Bodoni Moda display (latin, latin-ext, math,
+     whose Greek letters carry the display Greek), Literata text with greek
+     and greek-ext, JetBrains Mono with greek as 'Amazons Mono'. */
+  @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-math-opsz-normal.woff2') format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF}
+  @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
   @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-math-opsz-italic.woff2') format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF}
+  @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-ext-opsz-italic.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
   @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-italic.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
-  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-italic.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
   @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-normal.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
   @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-italic.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-italic.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-italic.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Amazons Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url('/fonts/jetbrains-mono-greek-wght-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Amazons Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url('/fonts/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Amazons Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url('/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 
 
 /* Plan: a bronze Scythian point oxidising to verdigris as the reader scrolls. ios = arrow, venom, rust; the page is the third meaning.
@@ -417,9 +426,9 @@ import Poem from '../../layouts/Poem.astro';
   --verdigris-hi:#7fd3b4;
   --tyrian:#6b1f4a;
   --tyrian-hi:#c98aa8;
-  --font-display:"Bodoni Moda","EB Garamond Greek","Didot",Georgia,serif;
-  --font-body:"Literata","EB Garamond Greek","Iowan Old Style",Georgia,serif;
-  --font-mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  --font-display:"Bodoni Moda","Didot",Georgia,serif;
+  --font-body:"Literata","Iowan Old Style",Georgia,serif;
+  --font-mono:"Amazons Mono","JetBrains Mono","SFMono-Regular",Consolas,monospace;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -500,10 +509,10 @@ body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--
 @keyframes drip{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(70px);opacity:0}}
 .amazons #stainRect{transition:y .9s cubic-bezier(.2,.7,.2,1)}
 .amazons .steps{padding:16px 0 20vh}
-.amazons .step{position:relative;min-height:70vh;padding:12vh 0 6vh;max-width:64ch;transition:opacity .5s,transform .6s}
-.amazons .step.pre{opacity:.3;transform:translateY(10px)}
-.amazons .step.on{opacity:1;transform:none}
-.amazons .step .wm{position:absolute;right:-10px;top:6vh;font-family:var(--font-display);font-size:clamp(90px,14vw,200px);line-height:1;color:var(--bronze);opacity:.07;pointer-events:none;user-select:none}
+.amazons .step{position:relative;min-height:70vh;padding:12vh 0 6vh;max-width:64ch}
+/* Every step stays at full strength; the active one only brightens its numeral. */
+.amazons .step.on .wm{opacity:.15}
+.amazons .step .wm{position:absolute;right:-10px;top:6vh;font-family:var(--font-display);font-size:clamp(90px,14vw,200px);line-height:1;color:var(--bronze);opacity:.07;transition:opacity .6s;pointer-events:none;user-select:none}
 .amazons .step h2{font-size:clamp(34px,4.4vw,60px);color:var(--bone);margin:0 0 .5em;position:relative}
 .amazons .step h2 span{color:var(--bronze)}
 .amazons .step .lede{font-size:1.15em;font-weight:300}
@@ -694,11 +703,10 @@ body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--
 
   /* ---------- sticky / scroll ---------- */
   var steps=$$('.step'),word=$('#stWord'),gloss=$('#stGloss'),num=$('#stNum'),blade=$('#blade'),stain=$('#stainRect'),prog=$('#progress'),navs=$$('.nav a');
-  if(!reduce)steps.forEach(function(s){s.classList.add('pre')});
   var manualBlade=null;
   function setBlade(st){blade.setAttribute('data-state',st);}
   function setActive(i){
-    steps.forEach(function(s,j){s.classList.toggle('on',j===i);if(!reduce)s.classList.toggle('pre',j!==i);});
+    steps.forEach(function(s,j){s.classList.toggle('on',j===i);});
     navs.forEach(function(a,j){a.classList.toggle('on',j===i)});
     var s=steps[i];
     word.textContent=s.dataset.word;gloss.textContent=s.dataset.gloss;num.textContent=s.dataset.n;
