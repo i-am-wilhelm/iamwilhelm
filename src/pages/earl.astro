@@ -23,6 +23,7 @@
  * the headline, and the Mead Hall poll, with Sven's objection stamped on it.
  */
 import { SITE_NAME, SITE_URL } from '../config/site';
+import { ogImage } from '../config/og';
 
 const title = 'Wilhelm for Earl';
 /* The link preview, in the campaign's own voice. */
@@ -32,7 +33,9 @@ const description =
 const imageAlt =
   'Campaign poster of Wilhelm in a crimson cloak with a raven on his shoulder, beside the headline He has a boat, and a Mead Hall poll showing Wilhelm at 61 percent, stamped Sven disputes these figures.';
 const canonical = new URL('/earl/', SITE_URL).href;
-const image = new URL('/earl/og.jpg', SITE_URL).href;
+/* Versioned by content hash like the scrolly cards, so a re-rendered card
+   gets a fresh address and platforms stop serving the cached one. */
+const image = ogImage('/earl/og.jpg');
 const fullTitle = `${title} · ${SITE_NAME}`;
 ---
 
