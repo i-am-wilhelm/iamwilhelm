@@ -9,6 +9,9 @@
  *
  * Run after a build, and again whenever a new scrolly is hung:
  *   npm run og:scrollies
+ * Name slugs to render only those, leaving every other card's bytes (and its
+ * cache-busting hash) as they are:
+ *   npm run og:scrollies -- everyone-searchable
  *
  * Needs a local Chromium (Playwright's, or set CHROMIUM_PATH).
  */
@@ -28,11 +31,13 @@ const out = resolve(root, 'public/og');
 mkdirSync(out, { recursive: true });
 
 /* Which routes get a rendered card: every Gallery page, plus every writing
-   staged with the descent treatment. Gallery pages shoot their hero at the
-   full 1200x630. Descent pieces are a narrow column on a wide wall, so they
-   shoot at 800x420 scaled up (the column fills the card), centred on the
-   poem's title movement; `target` is the selector to centre on. */
-const routes = [];
+   staged with the descent or scrolly treatment. Gallery pages and scrollies
+   (src/pages/writings/<slug>.astro) shoot their hero at the full 1200x630.
+   Descent pieces are a narrow column on a wide wall, so they shoot at
+   800x420 scaled up (the column fills the card), centred on the poem's title
+   movement; `target` is the selector to centre on. */
+const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
+let routes = [];
 for (const f of readdirSync(resolve(root, 'src/pages/gallery'))) {
   if (f === 'index.astro' || !f.endsWith('.astro')) continue;
   const slug = f.replace(/\.astro$/, '');
@@ -41,10 +46,18 @@ for (const f of readdirSync(resolve(root, 'src/pages/gallery'))) {
 for (const f of readdirSync(resolve(root, 'src/content/writings'))) {
   if (!f.endsWith('.md')) continue;
   const fm = readFileSync(resolve(root, 'src/content/writings', f), 'utf8').split('---')[1] || '';
-  if (/^treatment:\s*descent/m.test(fm) && !/^draft:\s*true/m.test(fm)) {
-    const slug = f.replace(/\.md$/, '');
+  if (/^draft:\s*true/m.test(fm)) continue;
+  const slug = f.replace(/\.md$/, '');
+  if (/^treatment:\s*descent/m.test(fm)) {
     routes.push({ slug, route: `/writings/${slug}/`, width: 800, settle: 2200, target: '.poem-front, .poem-movement' });
+  } else if (/^treatment:\s*scrolly/m.test(fm)) {
+    routes.push({ slug, route: `/writings/${slug}/`, width: 1200, settle: 1600 });
   }
+}
+if (only.length) {
+  const unknown = only.filter((s) => !routes.some((r) => r.slug === s));
+  if (unknown.length) throw new Error(`No scroll page for: ${unknown.join(', ')}`);
+  routes = routes.filter((r) => only.includes(r.slug));
 }
 
 /* A tiny static server over dist/, so fonts and scripts load as they do live. */
@@ -68,8 +81,9 @@ for (const { slug, route, width, settle, target } of routes) {
   await page.evaluate(() => document.fonts.ready);
   if (target) await page.evaluate((t) => document.querySelector(t)?.scrollIntoView({ block: 'center' }), target);
   await page.waitForTimeout(settle);
-  /* Hide the fixed exits and rails so the card is the work alone. */
-  await page.addStyleTag({ content: '.poem-exit, .descent-exit, #rail, .orchestra-pit, .pit-toggle { display: none !important }' });
+  /* Hide the fixed exits and rails so the card is the work alone; a page
+     marks any other site chrome (a top bar's way back) with data-og-hide. */
+  await page.addStyleTag({ content: '.poem-exit, .descent-exit, #rail, .orchestra-pit, .pit-toggle, [data-og-hide] { display: none !important }' });
   await page.waitForTimeout(80);
   writeFileSync(resolve(out, `${slug}.jpg`), await page.screenshot({ type: 'jpeg', quality: 88 }));
   console.log(`wrote public/og/${slug}.jpg  (${route}, ${width}x${height} @${(1200 / width).toFixed(2)}x)`);
