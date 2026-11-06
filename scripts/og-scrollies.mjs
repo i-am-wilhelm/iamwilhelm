@@ -2,8 +2,10 @@
  * Renders a share image for every scroll page (the Gallery pieces and the
  * descent-treatment writings) from the page itself: the built route is
  * served from dist/, opened at 1200x630 with the canvas running, and the
- * opening frame is screenshotted to public/og/<slug>.png. Poem.astro and
- * writings/[slug].astro pick these up by slug and fall back to /og.png.
+ * opening frame is screenshotted to public/og/<slug>.jpg (JPEG keeps every
+ * card well under the ~300 KB some messaging apps allow for previews). Poem.astro and
+ * writings/[slug].astro pick these up by slug, add a content-hash ?v= so
+ * a re-render busts share caches, and fall back to /og.png.
  *
  * Run after a build, and again whenever a new scrolly is hung:
  *   npm run og:scrollies
@@ -69,8 +71,8 @@ for (const { slug, route, width, settle, target } of routes) {
   /* Hide the fixed exits and rails so the card is the work alone. */
   await page.addStyleTag({ content: '.poem-exit, .descent-exit, #rail, .orchestra-pit, .pit-toggle { display: none !important }' });
   await page.waitForTimeout(80);
-  writeFileSync(resolve(out, `${slug}.png`), await page.screenshot({ type: 'png' }));
-  console.log(`wrote public/og/${slug}.png  (${route}, ${width}x${height} @${(1200 / width).toFixed(2)}x)`);
+  writeFileSync(resolve(out, `${slug}.jpg`), await page.screenshot({ type: 'jpeg', quality: 88 }));
+  console.log(`wrote public/og/${slug}.jpg  (${route}, ${width}x${height} @${(1200 / width).toFixed(2)}x)`);
   await page.close();
 }
 await browser.close();

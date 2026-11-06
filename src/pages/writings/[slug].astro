@@ -16,7 +16,6 @@
  * The esoteric treatment of this page (WebGL stage, facecards, PostHeader,
  * Prose) stays in src/components/writings for the archived /atelier side.
  */
-import { existsSync } from 'node:fs';
 import { getCollection, render } from 'astro:content';
 import Museum from '../../layouts/Museum.astro';
 import Base from '../../layouts/Base.astro';
@@ -24,6 +23,7 @@ import Placard from '../../components/museum/Placard.astro';
 import Meander from '../../components/museum/Meander.astro';
 import Descent from '../../components/writings/Descent.astro';
 import { SITE_NAME, SITE_URL } from '../../config/site';
+import { ogImage } from '../../config/og';
 
 export async function getStaticPaths() {
   const posts = await getCollection('writings', ({ data }) => !data.draft);
@@ -41,10 +41,10 @@ const dateLabel = date.toLocaleDateString('en-US', { year: 'numeric', month: 'lo
 const url = `${SITE_URL}/writings/${post.id}/`;
 const descent = post.data.treatment === 'descent';
 const fullTitle = `${post.data.title} · Writings · ${SITE_NAME}`;
-/* Descent pieces share their own opening frame (public/og/<slug>.png, from
-   `npm run og:scrollies`); the reading room keeps the museum card. */
-const ogPath = descent && existsSync(new URL(`../../../public/og/${post.id}.png`, import.meta.url)) ? `/og/${post.id}.png` : '/og.png';
-const image = new URL(ogPath, SITE_URL).href;
+/* Descent pieces share their own opening frame (public/og/<slug>.jpg, from
+   `npm run og:scrollies`); the reading room keeps the museum card. Both are
+   versioned by content hash. */
+const image = ogImage(descent ? `/og/${post.id}.jpg` : undefined);
 const article = {
   '@context': 'https://schema.org',
   '@type': 'Article',

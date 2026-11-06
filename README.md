@@ -51,9 +51,10 @@ No WebGL, no dithering, no audio on these pages.
   scheduler link, BackGold newsletter embed).
 - `npm run og` re-renders `public/og.png` and the PNG icons;
   `npm run og:scrollies` renders each scroll page's own opening frame
-  into `public/og/<slug>.png` (the Gallery pages and the descent-treatment
-  writings), which those routes use as their share image. Run it whenever
-  a new scrolly is hung and commit the PNGs;
+  into `public/og/<slug>.jpg` (the Gallery pages and the descent-treatment
+  writings), which those routes use as their share image, versioned with a
+  content-hash `?v=` so platforms refetch a changed card. Run it whenever a
+  new scrolly is hung or restyled and commit the JPEGs;
   `npm run links` checks every outbound link in the build.
 
 Branch previews: pushes to `museum-homepage` deploy to the
