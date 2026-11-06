@@ -1,0 +1,527 @@
+---
+/**
+ * The Pretty Toy, hung in the Gallery beside the poems: the third
+ * "in the original" essay, on the narcissus as one character in two myths,
+ * Persephone's snare and Narcissus's pool. One narrow column drifting left
+ * over a fixed canvas pool: a single flower and its reflection, ripples
+ * from the point it touches the water, and a veil that deepens as the
+ * essay sinks. Each section's data-p sets depth, ripple and bloom; the
+ * νάρκισσος rail reads surface, reaching, stunned, below.
+ */
+import Poem from '../../layouts/Poem.astro';
+---
+
+<Poem
+  title="The Pretty Toy"
+  description="A visualized essay by Michael Wilhelm: Persephone's flower, Narcissus's pool, and one gesture told twice."
+  year="2026"
+  night="#0a0f15"
+  accent="#e39a3c"
+  genre="Essay"
+  bodyClass="essay toy"
+>
+  <canvas id="water" class="stage" aria-hidden="true"></canvas>
+
+  <aside id="rail" aria-hidden="true">
+    <span class="gk" lang="grc">νάρκισσος</span>
+    <span class="tube"><span class="fill" id="fill"></span></span>
+    <span class="state" id="state">surface</span>
+  </aside>
+
+  <main class="page">
+    <div class="wrap">
+      <header class="hero" data-p='{"depth":0.04,"ripple":0.15,"bloom":1}'>
+        <p class="log">
+          <span>Flower <b class="gk" lang="grc">νάρκισσος</b></span>
+          <span>Gesture <b>both hands, reaching</b></span>
+          <span>Verdict <b><i>si se non noverit</i></b></span>
+        </p>
+        <h1>The Pretty<br /><em>Toy</em></h1>
+        <p class="deck">Persephone's flower, Narcissus's pool, and one gesture told twice.</p>
+        <p class="log sig"><span>an essay · Michael Wilhelm</span><span>in the original</span></p>
+      </header>
+
+      <hr />
+
+      <section data-p='{"depth":0.12,"ripple":0.2,"bloom":1}'>
+        <div class="body rise pre" style="--ml:0">
+          <p class="eyebrow"><span class="gk" lang="grc">ΚΑΛΥΚΩΠΙΣ</span><span class="tr">kalykōpis</span><span class="gl">bud-faced, flower-faced</span></p>
+          <p class="t lede">The oldest Narcissus story we have is about a girl, and the poet tells you so in one word.</p>
+          <p class="t">In the <em>Homeric Hymn to Demeter</em>, Earth grows the narcissus as a snare, a <span class="gr" lang="grc">δόλος</span>, for the <span class="gr" lang="grc">καλυκώπιδι κούρῃ</span>: the bud-faced maiden. Persephone has a flower for a face. She sees a flower of impossible beauty and reaches for it with both hands. The poem has already told us what she is reaching for. It is her own likeness, planted in the meadow.</p>
+          <p class="t">Then the ground opens. <span class="vein">A beautiful adolescent on the edge of marriage reaches toward an image of her own beauty, and the underworld opens beneath the gesture.</span> That is the whole of Narcissus, a century and more before anyone wrote his name down, told with a blossom where the mirror will later be.</p>
+        </div>
+      </section>
+
+      <section data-p='{"depth":0.2,"ripple":0.3,"bloom":0.95}'>
+        <div class="body rise pre" style="--ml:6%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΑΘΥΡΜΑ</span><span class="tr">athyrma</span><span class="gl">a toy, a plaything</span></p>
+          <p class="t lede">The hymn is blunt about who built the device.</p>
+          <p class="t">Earth grows it by the will of Zeus, as a favor to the Host of Many. It is a thing of awe to gods and mortals, a hundred heads from one root, and its scent makes the wide sky laugh, and the earth, and the salt swell of the sea. The cosmos laughs at a trap. Persephone, in her own account of it afterward, calls the flower a <span class="gr" lang="grc">καλὸν ἄθυρμα</span>: a pretty toy.</p>
+          <p class="t"><em>Athyrma</em> is the same word the Orphic tellers use for the toys the Titans set out to lure the child Dionysus away, and a mirror is among those toys. So the earliest layer already holds the shape you are feeling for. The narcissus presents as feminine. It wears the girl's face, it is pretty, it is a plaything. And it is the instrument of three male hands: Zeus who wills it, Hades who receives it, and the earth that, however we gender her, grows it on commission.</p>
+        </div>
+      </section>
+
+      <section data-p='{"depth":0.32,"ripple":0.45,"bloom":0.9}'>
+        <div class="body rise pre" style="--ml:1%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΘΕΣΠΙΑΙ</span><span class="tr">Thespiai</span><span class="gl">the town that honored Eros</span></p>
+          <p class="t lede">Now the boy, and the version older and harder than Ovid's.</p>
+          <p class="t">The first Narcissus text to survive is a scrap of Parthenius on papyrus, first century before Christ, and in it he kills himself and the flower comes up from his blood. Conon, a generation later, ties the story to the cult of Eros at Thespiae. Narcissus hands a spurned lover, Ameinias, a sword. Ameinias dies on it at the boy's door, praying to Eros. Narcissus goes to the spring, sees himself, understands, and opens his own veins. From then on the Thespians honor Eros. The story exists to explain a cult, and the lesson is simple: refuse Eros and Eros will find a way in.</p>
+          <p class="t">Ovid's wasting-away and the Echo subplot are the Augustan softening. But Ovid keeps the right ending. Dead, received into the house below, Narcissus goes on staring at himself in the water of the Styx. <span class="vein">Read the two stories side by side and they are mirror images. The girl is seized by eros against her will; the boy refuses eros and is seized by his own image. Both are taken through a flower. And the boy ends in the girl's house, wearing her flower.</span></p>
+        </div>
+      </section>
+
+      <section data-p='{"depth":0.44,"ripple":0.5,"bloom":0.85}'>
+        <div class="body rise pre" style="--ml:8%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΔΙΔΥΜΗ</span><span class="tr">didymē</span><span class="gl">a twin sister</span></p>
+          <p class="t lede">Pausanias hands you the anima five centuries before anyone had the word.</p>
+          <p class="t">He visits the spring at Thespiae and calls the mirror story foolish: a boy old enough to love knows a reflection from a person. Then he reports the version the locals told less often. Narcissus had a twin sister, identical in face, in hair, in dress. They hunted together. He loved her. She died. He went to the spring knowing full well it was his own reflection, and consoled himself that he was looking at her.</p>
+          <p class="t">So the image in the water wears the sister's face. Ovid is already working this register when he says the sixteen-year-old could pass for boy or man, and that youths and girls alike wanted him. The flower-youth of Greek myth is always built this way: Hyacinthus, Adonis, Attis, androgynous, and always the consort of a goddess. Adonis is literally divided between Aphrodite and Persephone by Zeus's arbitration. <span class="vein">Narcissus is the flower-youth who refuses every goddess, so the image itself becomes his goddess, and the only one who finally keeps him is Persephone.</span></p>
+        </div>
+      </section>
+
+      <div class="still rise pre" data-p='{"depth":0.56,"ripple":0.35,"bloom":0.6}'>
+        <p>The kore reaching for a flower and the kouros reaching for a reflection are one gesture.</p>
+      </div>
+
+      <section data-p='{"depth":0.68,"ripple":0.6,"bloom":0.55}'>
+        <div class="body rise pre" style="--ml:3%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΝΑΡΚΗ</span><span class="tr">narkē</span><span class="gl">numbness, torpor</span></p>
+          <p class="t lede">The plant itself belongs to the dead, and every ancient botanist says so.</p>
+          <p class="t">Sophocles sets the narcissus blooming in the grove of the Eumenides at Colonus as the ancient garland of the Great Goddesses, the Two, Demeter and the Maiden; the scholiast adds that the Erinyes wear it. Plutarch explains the garland: the flower dulls the nerves and brings on a heavy torpor, which is why it is given to the goddesses below, and its name comes from <em>narkē</em>. Pliny makes the same derivation and rejects the boy as the source outright. Dioscorides lists the bulb as an emetic. Artemidorus says a dream of narcissus garlands is bad for everyone and worst for anyone about to travel by water. Theophrastus notes a narcissus that flowers after the rising of Arcturus, around the autumn equinox, which is the season of the Maiden's descent, the Thesmophoria, and the first rains.</p>
+          <p class="t">And it is a bulb. A body that lives underground and sends up one bright surface for a few weeks a year. <span class="vein">The flower is a reflection the underworld puts up to the light.</span> Ovid saw the torpor too: at the pool his boy is <em>stupet</em>, stunned, like a statue cut from Parian marble. The gaze is a narcotic, and the Greeks heard the pun whether or not the etymology is sound. It probably is not. The double sigma in <em>nárkissos</em>, as in <em>hyákinthos</em>, Knossos, Parnassos, is pre-Greek, which means the flower's name and most likely the whole pattern of the dying flower-boy are Aegean substrate, older than the people who told these stories.</p>
+        </div>
+      </section>
+
+      <section data-p='{"depth":0.8,"ripple":0.7,"bloom":0.45}'>
+        <div class="body rise pre" style="--ml:0">
+          <p class="eyebrow"><span class="gk" lang="grc">ΕΙΔΩΛΟΝ</span><span class="tr">eidōlon</span><span class="gl">image, phantom, reflection</span></p>
+          <p class="t lede">Antiquity had its own depth psychologists, and they located the problem in the cosmos rather than in the patient.</p>
+          <p class="t">Plotinus uses Narcissus straight. Whoever runs after beautiful bodies as though they were the real thing will sink, like the boy into the stream, and dwell in Hades among shadows. The Neoplatonists then read the Orphic mirror the same way: Dionysus sees his image, pursues it, and is torn into multiplicity, and that is the soul's descent into matter and division. Set that beside the hymn's hundred heads from one root and the mirror and the narcissus become the same object. Beauty seen as other, reached for, and the reaching is the fall.</p>
+          <p class="t">This is the ancient reading of what Jung would later file as the <em>puer</em> and the projected anima, except the Greeks refused to make it a diagnosis. <span class="vein">The problem of the image is the problem of incarnation.</span> Everyone who takes a body has reached for the pretty toy.</p>
+        </div>
+      </section>
+
+      <section data-p='{"depth":0.92,"ripple":0.8,"bloom":0.35}'>
+        <div class="body rise pre" style="--ml:5%">
+          <p class="eyebrow"><span class="gk" lang="grc">ΓΝΩΘΙ ΣΑΥΤΟΝ</span><span class="tr">gnōthi sauton</span><span class="gl">know yourself</span></p>
+          <p class="t lede">Which leaves the narcissus as a single character who appears in two myths.</p>
+          <p class="t">In Persephone's story it is the trap that wears her face. In Narcissus's story it is what he becomes once the trap has closed. The maiden gathering flowers and the youth gazing into water are one liminal rite, marriage as death, seen from the two sides of the mirror. The juvenile masculine and the sublime feminine are the same adolescent, told by different towns.</p>
+          <p class="t">Ovid gives Tiresias the last word on the boy, and it inverts the inscription at Delphi on purpose. He will live to old age, says the seer, <em>si se non noverit</em>: if he does not come to know himself. For the flower-child, self-knowledge arrives through the image, and the earth has been waiting under it the whole time.</p>
+        </div>
+      </section>
+
+      <hr />
+
+      <footer class="colophon rise pre" data-p='{"depth":1,"ripple":0.5,"bloom":0.25}'>
+        <h2>Sources, in the original</h2>
+        <ul>
+          <li><i>Homeric Hymn to Demeter</i> 8–16 (δόλον καλυκώπιδι κούρῃ; the hundred heads; the laughing sky and sea), 425–432 (καλὸν ἄθυρμα)</li>
+          <li>Parthenius, P.Oxy. 4711 (the blood and the flower)</li>
+          <li>Conon, <i>Narrations</i> 24, in Photius, <i>Bibliotheca</i> 186 (Ameinias, the sword, the Thespian cult of Eros)</li>
+          <li>Ovid, <i>Metamorphoses</i> 3.339–510: 3.348 (<i>si se non noverit</i>), 3.351–355 (boy or man; youths and girls), 3.418–419 (<i>stupet</i>, Parian marble), 3.504–505 (the Stygian water)</li>
+          <li>Pausanias 9.31.7–9 (the twin sister at Thespiae)</li>
+          <li>Sophocles, <i>Oedipus at Colonus</i> 681–685, with scholia (garland of the Great Goddesses; the Erinyes)</li>
+          <li>Plutarch, <i>Table Talk</i> 3.1, 647B (νάρκη, torpor, the goddesses below)</li>
+          <li>Pliny, <i>Natural History</i> 21.128; Dioscorides 4.158 (the bulb)</li>
+          <li>Artemidorus, <i>Oneirocritica</i> 1.77 (garlands, travel by water)</li>
+          <li>Theophrastus, <i>Enquiry into Plants</i> 6.6.9 (flowering after Arcturus)</li>
+          <li>Apollodorus, <i>Library</i> 3.14.4 (Adonis divided between Aphrodite and Persephone)</li>
+          <li>Orphic fragments 34 and 209 Kern (the toys, the mirror of Dionysus); Proclus, <i>On the Timaeus</i>, on the mirror</li>
+          <li>Plotinus, <i>Enneads</i> I.6.8 (Narcissus and the shadows in Hades)</li>
+          <li>Beekes, <i>Etymological Dictionary of Greek</i>, s.v. νάρκισσος, ὑάκινθος (pre-Greek -σσ-)</li>
+        </ul>
+        <p class="log sig"><span><a href="/gallery/">The Gallery</a></span><span>in the original · III</span></p>
+      </footer>
+    </div>
+  </main>
+</Poem>
+
+<style is:global>
+  /* Layout: one narrow reading column drifting left over a still pool; a depth rail at the right edge; canvas water behind everything. */
+  .toy {
+    --fg: #e9e3d4;
+    --petal: #f1e8c2;
+    --cup: #e39a3c;
+    --mute: #9aa3ad;
+    --rule: #1b2430;
+    font-size: clamp(19px, 1.9vw, 23px);
+    line-height: 1.5;
+  }
+  .toy main.page {
+    max-width: none;
+    padding: 0;
+  }
+  .toy .wrap {
+    max-width: 74ch;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 8vh 12vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .toy section,
+  .toy header.hero,
+  .toy footer {
+    min-height: 0;
+  }
+
+  /* hero */
+  .toy .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    padding-block: 6vh 9vh;
+  }
+  .toy .log {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 2.2rem;
+    font-family: var(--log);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin: 0;
+  }
+  .toy .log b {
+    font-weight: 500;
+    color: var(--fg);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 0.72rem;
+  }
+  .toy .log b.gk {
+    font-family: var(--greek);
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    color: var(--petal);
+  }
+  .toy .log a {
+    color: var(--petal);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(241, 232, 194, 0.35);
+  }
+  .toy .log a:hover {
+    border-bottom-color: var(--petal);
+  }
+  .toy h1 {
+    font-weight: 400;
+    font-size: clamp(3.4rem, 10vw, 7.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .toy h1 em {
+    font-style: italic;
+    color: var(--cup);
+  }
+  .toy .deck {
+    font-style: italic;
+    font-size: 1.25em;
+    line-height: 1.3;
+    max-width: 24em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .toy .sig {
+    justify-content: space-between;
+  }
+  .toy hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 0;
+  }
+
+  /* sections */
+  .toy section {
+    display: block;
+    padding-block: 9vh;
+  }
+  .toy .body {
+    max-width: 62ch;
+    margin-left: var(--ml, 0);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .toy .eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 1rem;
+    margin: 0 0 0.6rem;
+    font-family: var(--log);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .toy .eyebrow .gk {
+    font-family: var(--greek);
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+    color: var(--petal);
+    text-transform: none;
+  }
+  .toy .eyebrow .tr {
+    font-style: italic;
+    font-family: var(--display);
+    font-size: 0.95rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--fg);
+  }
+  .toy .eyebrow .gl {
+    text-transform: none;
+    letter-spacing: 0.03em;
+    font-size: 0.7rem;
+  }
+  .toy .t {
+    margin: 0;
+  }
+  .toy .lede {
+    font-size: 1.22em;
+    line-height: 1.32;
+    text-wrap: pretty;
+  }
+  .toy .vein {
+    color: var(--petal);
+    font-style: italic;
+  }
+  .toy .gr,
+  .toy .gk {
+    font-family: var(--greek);
+    color: var(--petal);
+  }
+
+  /* interstitial */
+  .toy .still {
+    padding-block: 14vh;
+    text-align: center;
+  }
+  .toy .still p {
+    font-style: italic;
+    font-size: 1.55em;
+    line-height: 1.25;
+    margin: 0 auto;
+    max-width: 22em;
+    text-wrap: balance;
+  }
+
+  /* colophon */
+  .toy .colophon {
+    padding-block: 7vh 0;
+    font-family: var(--log);
+    font-size: 0.68rem;
+    line-height: 1.7;
+    color: var(--mute);
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .toy .colophon h2 {
+    font-family: var(--log);
+    font-weight: 500;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0;
+  }
+  .toy .colophon ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+    gap: 0.3rem 2rem;
+  }
+  .toy .colophon li {
+    min-width: 0;
+  }
+  .toy .colophon i {
+    font-style: italic;
+    color: var(--fg);
+  }
+  .toy .colophon .sig {
+    margin-top: 1rem;
+  }
+
+  /* rail */
+  .toy #rail {
+    position: fixed;
+    right: max(18px, env(safe-area-inset-right, 0px));
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--log);
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .toy #rail .gk {
+    font-family: var(--greek);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    color: var(--petal);
+    writing-mode: vertical-rl;
+  }
+  .toy #rail .tube {
+    width: 3px;
+    height: 9rem;
+    border-radius: 2px;
+    background: var(--rule);
+    overflow: hidden;
+    position: relative;
+  }
+  .toy #rail .fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4%;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--petal), var(--cup) 60%, #5a3a1c);
+  }
+  .toy #rail .state {
+    writing-mode: vertical-rl;
+  }
+  @media (max-width: 820px) {
+    .toy #rail {
+      display: none;
+    }
+    .toy .body {
+      margin-left: 0;
+    }
+  }
+
+  /* reveal */
+  .toy .rise {
+    transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .toy.anim .rise.pre {
+    opacity: 0.16;
+    transform: translateY(14px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .toy .rise {
+      transition: none;
+    }
+    .toy.anim .rise.pre {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  type P = { depth: number; ripple: number; bloom: number };
+  const cv = document.getElementById('water') as HTMLCanvasElement;
+  const cx = cv.getContext('2d')!;
+  let W = 0, H = 0, DPR = 1;
+  const t0 = performance.now();
+  const P: P = { depth: 0.04, ripple: 0.15, bloom: 1 };
+  let target: P = { depth: 0.04, ripple: 0.15, bloom: 1 };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fill = document.getElementById('fill')!, state = document.getElementById('state')!;
+
+  function size() {
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  addEventListener('resize', size); size();
+
+  // flower head: six tepals and a cup, drawn once as a function
+  function flower(x: number, y: number, r: number, alpha: number, rot: number) {
+    cx.save(); cx.translate(x, y); cx.rotate(rot || 0); cx.globalAlpha = alpha;
+    for (let i = 0; i < 6; i++) {
+      cx.save(); cx.rotate((i * Math.PI) / 3);
+      cx.beginPath(); cx.moveTo(0, 0);
+      cx.bezierCurveTo(r * 0.42, -r * 0.18, r * 0.95, -r * 0.22, r, 0);
+      cx.bezierCurveTo(r * 0.95, r * 0.22, r * 0.42, r * 0.18, 0, 0);
+      cx.fillStyle = '#efe5bf'; cx.fill(); cx.restore();
+    }
+    cx.beginPath(); cx.arc(0, 0, r * 0.26, 0, Math.PI * 2); cx.fillStyle = '#e39a3c'; cx.fill();
+    cx.beginPath(); cx.arc(0, 0, r * 0.14, 0, Math.PI * 2); cx.fillStyle = '#8c4e14'; cx.fill();
+    cx.restore();
+  }
+
+  function draw(now: number) {
+    const t = (now - t0) / 1000;
+    const k = reduce ? 1 : 0.06;
+    P.depth += (target.depth - P.depth) * k; P.ripple += (target.ripple - P.ripple) * k; P.bloom += (target.bloom - P.bloom) * k;
+
+    // water
+    const g = cx.createLinearGradient(0, 0, 0, H);
+    const topL = 22 - P.depth * 12;
+    g.addColorStop(0, 'rgb(' + ((12 + topL * 0.6) | 0) + ',' + ((18 + topL) | 0) + ',' + ((26 + topL * 1.3) | 0) + ')');
+    g.addColorStop(1, '#07090d');
+    cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+
+    // a faint rim of light where the pool meets the meadow
+    const horizon = H * (0.3 + P.depth * 0.25);
+    const hg = cx.createLinearGradient(0, horizon - 40, 0, horizon + 40);
+    hg.addColorStop(0, 'rgba(241,232,194,0)'); hg.addColorStop(0.5, 'rgba(241,232,194,' + 0.09 * (1 - P.depth) + ')'); hg.addColorStop(1, 'rgba(241,232,194,0)');
+    cx.fillStyle = hg; cx.fillRect(0, horizon - 40, W, 80);
+
+    // ripples from the point the flower touches the surface
+    const fx = W * 0.62, fy = horizon + H * 0.16;
+    const n = 7;
+    for (let i = 0; i < n; i++) {
+      const ph = ((reduce ? 0.5 : t * 0.11) + i / n) % 1;
+      const r = ph * Math.min(W, H) * 0.42 * (0.6 + P.ripple);
+      cx.beginPath(); cx.ellipse(fx, fy, r, r * 0.34, 0, 0, Math.PI * 2);
+      cx.strokeStyle = 'rgba(233,227,212,' + (1 - ph) * 0.11 * (0.3 + P.ripple) + ')'; cx.lineWidth = 1; cx.stroke();
+    }
+
+    // the flower, and its reflection below it
+    const R = Math.min(W, H) * 0.045;
+    const bob = reduce ? 0 : Math.sin(t * 0.6) * 2;
+    flower(fx, fy - R * 1.5 + bob, R, 0.9 * P.bloom, 0);
+    cx.save();
+    cx.translate(fx, fy + R * 1.5 - bob); cx.scale(1, -0.85);
+    flower(0, 0, R * (1 + P.ripple * 0.15), 0.32 * P.bloom * (1 - P.depth * 0.5), reduce ? 0 : Math.sin(t * 0.4) * 0.08);
+    cx.restore();
+    // stem into the water
+    cx.beginPath(); cx.moveTo(fx, fy - R * 1.5 + bob + R * 0.3); cx.lineTo(fx + R * 0.2, fy + H * 0.05);
+    cx.strokeStyle = 'rgba(120,150,110,' + 0.4 * P.bloom + ')'; cx.lineWidth = 1.5; cx.stroke();
+
+    // veil deepens with depth
+    cx.fillStyle = 'rgba(7,9,13,' + P.depth * 0.55 + ')'; cx.fillRect(0, 0, W, H);
+
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  // scroll → nearest section's parameters, plus the rail
+  const blocks = Array.from(document.querySelectorAll<HTMLElement>('[data-p]'));
+  const risers = Array.from(document.querySelectorAll<HTMLElement>('.rise'));
+  document.body.classList.add('anim');
+  function onScroll() {
+    const mid = innerHeight * 0.5;
+    let best: HTMLElement | null = null, bd = 1e9;
+    blocks.forEach((b) => { const r = b.getBoundingClientRect(); const c = r.top + r.height / 2; const d = Math.abs(c - mid); if (d < bd) { bd = d; best = b; } });
+    if (best) { try { target = JSON.parse((best as HTMLElement).getAttribute('data-p') || '{}'); } catch { /* keep the last target */ } }
+    risers.forEach((el) => { const r = el.getBoundingClientRect(); if (r.top < innerHeight * 0.86) el.classList.remove('pre'); });
+    const total = document.documentElement.scrollHeight - innerHeight;
+    const pr = total > 0 ? Math.min(1, Math.max(0, scrollY / total)) : 0;
+    fill.style.height = 4 + pr * 96 + '%';
+    state.textContent = pr < 0.3 ? 'surface' : pr < 0.62 ? 'reaching' : pr < 0.86 ? 'stunned' : 'below';
+    if (reduce) draw(performance.now());
+  }
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  if (reduce) { risers.forEach((el) => el.classList.remove('pre')); }
+</script>
