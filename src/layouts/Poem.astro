@@ -10,6 +10,7 @@
  * layout carries the meta, the fonts, the shared line mechanics, and the
  * static fallbacks (no script, reduced motion).
  */
+import { existsSync } from 'node:fs';
 import { SITE_NAME, SITE_URL } from '../config/site';
 
 interface Props {
@@ -27,7 +28,11 @@ interface Props {
 
 const { title, description, year, night, accent, genre = 'Poetry', bodyClass } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE_URL).href;
-const image = new URL('/og.png', SITE_URL).href;
+/* Share image: the piece's own opening frame, rendered by `npm run og:scrollies`
+   into public/og/<slug>.png; the museum card stands in until it exists. */
+const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop();
+const ogPath = existsSync(new URL(`../../public/og/${slug}.png`, import.meta.url)) ? `/og/${slug}.png` : '/og.png';
+const image = new URL(ogPath, SITE_URL).href;
 const fullTitle = `${title} · Gallery of Visualized Poetry · ${SITE_NAME}`;
 
 const jsonLd = {

@@ -50,6 +50,10 @@ No WebGL, no dithering, no audio on these pages.
 - `src/config/site.ts`: URLs, nav, and the owner placeholders (booking
   scheduler link, BackGold newsletter embed).
 - `npm run og` re-renders `public/og.png` and the PNG icons;
+  `npm run og:scrollies` renders each scroll page's own opening frame
+  into `public/og/<slug>.png` (the Gallery pages and the descent-treatment
+  writings), which those routes use as their share image. Run it whenever
+  a new scrolly is hung and commit the PNGs;
   `npm run links` checks every outbound link in the build.
 
 Branch previews: pushes to `museum-homepage` deploy to the
