@@ -1,7 +1,8 @@
 ---
 /**
- * The homepage: a walk through a small museum. A foyer, three numbered
- * rooms divided by Greek meander keylines, and a colophon. The previous
+ * The homepage: a walk through a small museum. A foyer, the featured work
+ * now on view (FeatureMimics: Mimics & Mythmakers), three numbered rooms
+ * divided by Greek meander keylines, and a colophon. The previous
  * homepage lives on, unlinked and noindexed, at /atelier.
  *
  * Unmounted, kept in the repo: RoomManifesto (the libertariantoolsuite
@@ -12,6 +13,7 @@
 import Museum from '../layouts/Museum.astro';
 import Meander from '../components/museum/Meander.astro';
 import Foyer from '../components/museum/rooms/Foyer.astro';
+import FeatureMimics from '../components/museum/rooms/FeatureMimics.astro';
 import RoomBackGold from '../components/museum/rooms/RoomBackGold.astro';
 import RoomGallery from '../components/museum/rooms/RoomGallery.astro';
 import RoomWritings from '../components/museum/rooms/RoomWritings.astro';
@@ -20,6 +22,7 @@ import Colophon from '../components/museum/Colophon.astro';
 
 <Museum home>
   <Foyer />
+  <FeatureMimics />
   <Meander mark="I" />
   <RoomBackGold />
   <Meander mark="II" />

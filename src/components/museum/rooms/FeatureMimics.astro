@@ -1,0 +1,467 @@
+---
+/**
+ * Now on view: the featured exhibition, hung between the Foyer and Room I.
+ * It features Mimics & Mythmakers (Cat. II.06 on the Gallery wall) in the
+ * museum's own frame and placard. The plate is a window onto the essay's
+ * opening: the surface glare with the title and its reflection, the
+ * waterline with "So go in." split across it, and the water below with a
+ * few points of bioluminescence. CSS only, no script. The title is set in
+ * the essay's own Bodoni Moda (self-hosted in public/fonts); the instrument
+ * text uses the site's mono.
+ *
+ * To feature another piece, swap this component in src/pages/index.astro.
+ */
+import Placard from '../Placard.astro';
+import Glyph from '../Glyph.astro';
+
+const HREF = '/gallery/mimics-and-mythmakers/';
+/* Points of light in the water, as % of the water's box. */
+const sparks = [
+  { x: 12, y: 34, s: 5, d: 0 },
+  { x: 27, y: 66, s: 3, d: -1.1 },
+  { x: 41, y: 48, s: 4, d: -2.3 },
+  { x: 58, y: 78, s: 6, d: -0.6 },
+  { x: 71, y: 40, s: 3, d: -1.8 },
+  { x: 86, y: 70, s: 4, d: -2.9 },
+  { x: 19, y: 86, s: 4, d: -3.4 },
+  { x: 92, y: 30, s: 2, d: -1.4 },
+];
+---
+
+<section id="now-on-view" class="feat" aria-labelledby="feat-title">
+  <div class="feat__wayfinding wrap" aria-hidden="true">
+    <span class="feat__label">Now on view</span>
+    <span class="feat__rule"></span>
+    <Glyph sign="gemini" size={26} class="feat__glyph" />
+  </div>
+
+  <div class="feat__body wrap">
+    <a class="feat__frame" href={HREF} tabindex="-1" aria-hidden="true" data-reveal>
+      <span class="feat__mat">
+        <span class="feat__plate">
+          <span class="feat__ro">0 m · The surface</span>
+          <span class="feat__tile feat__tile--a" style="--g1:#ff9a8b;--g2:#ffc3a0"><b>♥ 48.2K</b></span>
+          <span class="feat__tile feat__tile--b" style="--g1:#a1c4fd;--g2:#c2e9fb"><b>♥ 1.1M</b></span>
+          <span class="feat__words">
+            <span class="feat__kicker">An essay in six depths and one ascent</span>
+            <span class="feat__title"><span>Mimics</span><em>&amp; Mythmakers</em></span>
+            <span class="feat__reflect"><em>&amp; Mythmakers</em></span>
+          </span>
+          <span class="feat__water">
+            <svg class="feat__wave" viewBox="0 0 1200 40" preserveAspectRatio="none">
+              <path d="M0 20 Q75 6 150 20 T300 20 T450 20 T600 20 T750 20 T900 20 T1050 20 T1200 20 V40 H0 Z" fill="#1d6d84"></path>
+            </svg>
+            {sparks.map((p) => <i class="feat__spark" style={`--x:${p.x}%;--y:${p.y}%;--s:${p.s}px;--d:${p.d}s`}></i>)}
+          </span>
+          <span class="feat__go"><span class="feat__go-a">So go in.</span><span class="feat__go-b">So go in.</span></span>
+        </span>
+      </span>
+    </a>
+
+    <div class="feat__text">
+      <Placard
+        id="feat-title"
+        label="Now on view"
+        title="Mimics & Mythmakers"
+        medium="Visualized essay in six depths and one ascent; interactive page"
+        year="2026"
+        catalog="Cat. II.06"
+      />
+      <div class="feat__statement prose-museum" data-reveal>
+        <p class="feat__deck">Every man is a mirror. Most of them are pointed at a screen.</p>
+        <p>
+          A dive from the surface of the feed through the five zones of the open sea, each named in Greek, down to the
+          deepest water on Earth and back up to dawn. Mimics, destiny swappers, blood memory, and the storyteller who
+          goes deepest and comes back up with a higher story.
+        </p>
+        <a class="feat__cta smallcaps" href={HREF}>Go under<span class="sr-only">: read Mimics &amp; Mythmakers</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The essay's display face, Latin only, for the plate. */
+  @font-face {
+    font-family: 'Bodoni Moda';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('/fonts/bodoni-moda-latin-opsz-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Bodoni Moda';
+    font-style: italic;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('/fonts/bodoni-moda-latin-opsz-italic.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+  .feat {
+    /* Sea teal for the label and the way in; clears 4.5:1 on both walls. */
+    --room-accent: #1d5f74;
+    --bodoni: 'Bodoni Moda', 'Bodoni 72', Didot, Georgia, serif;
+    position: relative;
+    padding-block: clamp(3.5rem, 2.5rem + 5vw, 7.5rem);
+  }
+  .feat__wayfinding {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    color: var(--room-accent);
+  }
+  .feat__label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.22em;
+    font-variant-caps: all-small-caps;
+    white-space: nowrap;
+  }
+  .feat__rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gilt), transparent);
+    opacity: 0.7;
+  }
+  .feat :global(.feat__glyph) {
+    flex: none;
+    color: var(--gilt-ink);
+  }
+
+  .feat__body {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+    align-items: center;
+  }
+
+  /* Frame: the Gallery's charcoal moulding, ivory mat and gilt fillet. */
+  .feat__frame {
+    display: block;
+    padding: 14px;
+    color: inherit;
+    text-decoration: none;
+    background: linear-gradient(135deg, #2a2622, #1a1815 60%, #2a2622);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.4),
+      0 24px 40px -26px rgba(40, 28, 12, 0.6);
+    transition:
+      transform calc(var(--beat) * 1.2) var(--ease-settle),
+      box-shadow calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .feat__frame:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.4),
+      0 34px 50px -26px rgba(40, 28, 12, 0.7);
+  }
+  .feat__mat {
+    display: block;
+    padding: clamp(1rem, 0.7rem + 1.2vw, 1.6rem);
+    background: #fbf8f1;
+    outline: 1px solid var(--gilt);
+    outline-offset: -5px;
+  }
+
+  /* The plate: the essay's surface above the waterline, its water below. */
+  .feat__plate {
+    --line: 66%;
+    --title: 8cqi;
+    --go: 6.5cqi;
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    container-type: inline-size;
+    background: linear-gradient(180deg, #eef4f5 0%, #dde9ec 45%, #bcd6dc 66%);
+    color: #0d1a20;
+  }
+  .feat__ro {
+    position: absolute;
+    top: 5%;
+    right: 4%;
+    padding: 0.35em 0.6em;
+    border-radius: 0.5em;
+    background: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-mono);
+    font-size: max(0.5rem, 1.5cqi);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  /* The feed, floating on the surface. */
+  .feat__tile {
+    --w: 16cqi;
+    position: absolute;
+    display: block;
+    width: var(--w);
+    padding: calc(var(--w) * 0.06);
+    border-radius: calc(var(--w) * 0.11);
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 20px rgba(13, 26, 32, 0.08);
+    opacity: 0.72;
+    transform: rotate(var(--r));
+    animation: feat-bob 7s ease-in-out var(--dl, 0s) infinite alternate;
+  }
+  .feat__tile::before {
+    content: '';
+    display: block;
+    aspect-ratio: 5 / 3;
+    border-radius: calc(var(--w) * 0.07);
+    background: linear-gradient(135deg, var(--g1), var(--g2));
+  }
+  .feat__tile b {
+    display: block;
+    margin-top: calc(var(--w) * 0.05);
+    font-family: var(--font-mono);
+    font-size: max(0.45rem, calc(var(--w) * 0.075));
+    font-weight: 500;
+    color: rgba(13, 26, 32, 0.55);
+  }
+  .feat__tile--a {
+    --r: -6deg;
+    right: 6%;
+    top: 24%;
+  }
+  .feat__tile--b {
+    --r: 5deg;
+    --dl: -3s;
+    --w: 12cqi;
+    right: 24%;
+    top: 40%;
+  }
+  .feat__words {
+    position: absolute;
+    top: 9%;
+    left: 7%;
+    right: 7%;
+    display: grid;
+    justify-items: start;
+    gap: 1.6cqi;
+  }
+  .feat__kicker {
+    font-family: var(--font-mono);
+    font-size: max(0.5rem, 1.45cqi);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(13, 26, 32, 0.74);
+  }
+  .feat__title,
+  .feat__reflect {
+    display: block;
+    font-family: var(--bodoni);
+    font-weight: 500;
+    font-size: var(--title);
+    line-height: 0.96;
+    letter-spacing: -0.012em;
+  }
+  .feat__title span,
+  .feat__title em,
+  .feat__reflect em {
+    display: block;
+  }
+  .feat__title em,
+  .feat__reflect em {
+    font-style: italic;
+    font-weight: 400;
+  }
+  /* The mirror: the near line, flipped, fading, cut by ripple lines. */
+  .feat__reflect {
+    position: relative;
+    margin-top: calc(var(--title) * -0.18);
+    opacity: 0.25;
+    transform: scaleY(-1);
+    filter: blur(0.4px);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 85%);
+    mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 85%);
+    animation: feat-ripple 6s ease-in-out infinite alternate;
+  }
+  .feat__reflect::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(180deg, transparent 0 4px, rgba(226, 237, 239, 0.9) 4px 6px);
+    animation: feat-drift 2.8s linear infinite;
+  }
+
+  .feat__water {
+    position: absolute;
+    top: var(--line);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, #1d6d84, #0a2a39);
+  }
+  .feat__wave {
+    position: absolute;
+    left: 0;
+    top: -12px;
+    width: 200%;
+    height: 24px;
+    animation: feat-wave 9s linear infinite;
+  }
+  .feat__spark {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: #7fd0ff;
+    box-shadow: 0 0 10px 2px rgba(127, 208, 255, 0.65);
+    animation: feat-pulse 3.4s ease-in-out var(--d) infinite;
+  }
+  /* "So go in." sits on the waterline: dark ink above it, pale ink below. */
+  .feat__go {
+    position: absolute;
+    top: var(--line);
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: block;
+    transform: translateY(-50%);
+    text-align: center;
+    font-family: var(--bodoni);
+    font-style: italic;
+    font-weight: 450;
+    font-size: var(--go);
+    line-height: 1;
+  }
+  .feat__go span {
+    display: block;
+    padding: 0.06em 0;
+  }
+  .feat__go-a {
+    color: #0d1a20;
+    clip-path: inset(0 0 50% 0);
+  }
+  .feat__go-b {
+    position: absolute;
+    inset: 0;
+    color: #e8eff1;
+    clip-path: inset(50% 0 0 0);
+  }
+
+  .feat__text {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    align-content: center;
+  }
+  .feat__statement {
+    color: var(--ink-soft);
+  }
+  .feat__deck {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.4rem, 1.15rem + 1vw, 1.8rem);
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .feat__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    font-size: 1.15rem;
+    color: var(--room-accent);
+    text-decoration: none;
+  }
+  .feat__cta::after {
+    content: '';
+    width: 1.4rem;
+    height: 1px;
+    background: currentColor;
+    transition: width 500ms var(--ease-settle);
+  }
+  .feat__cta:hover::after,
+  .feat__cta:focus-visible::after,
+  .feat__frame:hover ~ .feat__text .feat__cta::after {
+    width: 2.4rem;
+  }
+
+  @keyframes feat-bob {
+    from {
+      transform: translateY(-3px) rotate(var(--r));
+    }
+    to {
+      transform: translateY(3px) rotate(calc(var(--r) * -1));
+    }
+  }
+  @keyframes feat-wave {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes feat-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+  @keyframes feat-ripple {
+    0% {
+      transform: scaleY(-1) skewX(0deg);
+    }
+    50% {
+      transform: scaleY(-1.03) skewX(1.4deg) translateX(-2px);
+    }
+    100% {
+      transform: scaleY(-0.98) skewX(-1.1deg) translateX(2px);
+    }
+  }
+  @keyframes feat-drift {
+    to {
+      background-position: 0 12px;
+    }
+  }
+
+  /* Stacked on narrow screens, where the plate stands taller. */
+  @media (max-width: 820px) {
+    .feat__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .feat__plate {
+      --line: 60%;
+      --title: 11cqi;
+      --go: 9cqi;
+      aspect-ratio: 4 / 5;
+    }
+    .feat__words {
+      top: 14%;
+      gap: 2.2cqi;
+    }
+    /* Floating just above the waterline, below the reflection, either side
+       of "So go in." */
+    .feat__tile--a {
+      --w: 16cqi;
+      top: auto;
+      right: 6%;
+      bottom: calc(100% - var(--line) + 2.5%);
+    }
+    .feat__tile--b {
+      --w: 12cqi;
+      top: auto;
+      right: auto;
+      left: 9%;
+      bottom: calc(100% - var(--line) + 2.5%);
+    }
+    .feat__tile--b b {
+      display: none;
+    }
+    .feat__kicker {
+      font-size: max(0.5rem, 2.3cqi);
+    }
+    .feat__ro {
+      font-size: max(0.5rem, 2.3cqi);
+    }
+  }
+</style>
