@@ -5,7 +5,7 @@ year: 2026
 epigraph: "The vessel is rebuilt to the exact volume of your surrender."
 href: "/gallery/equal-volume/"
 medium: "Visualized poem in three parts; interactive page"
-order: 8
+order: 9
 status: on-view
 sign: pisces
 plate: "#1a2030"

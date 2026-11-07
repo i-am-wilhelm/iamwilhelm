@@ -5,7 +5,7 @@ year: 2026
 epigraph: "Prometheus, the liver, and a gift that landed before anyone could hold it."
 href: "/gallery/the-only-sighted-one/"
 medium: "Visualized essay; interactive page"
-order: 7
+order: 8
 status: on-view
 sign: aquarius
 plate: "#1d2230"
