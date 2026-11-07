@@ -21,6 +21,7 @@ export const accents = {
   writings: '#6a3fa0',    // Pharmakon/Medea, fumigation purple (fixed by spec)
   lineage: '#6a3fa0',     // Citations/Pan, the same fumigation purple
   babalon: '#a01f1f',     // Babalon, red (fixed by spec)
+  futurist: '#c0281c',    // Futurist essays, the stamp red of Everyone, Searchable (src/config/series.ts)
 } as const;
 
 export type SectionId = keyof typeof accents;

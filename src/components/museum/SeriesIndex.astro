@@ -1,0 +1,85 @@
+---
+/**
+ * A writing series' index (/writings/<id>/), in the reading room's style.
+ * Everything comes from the series registry (src/config/series.ts) and the
+ * `writings` entries that name the series, newest first, so the page never
+ * needs touching when a piece joins.
+ */
+import Museum from '../../layouts/Museum.astro';
+import Placard from './Placard.astro';
+import WritingsList from './WritingsList.astro';
+import Meander from './Meander.astro';
+import Colophon from './Colophon.astro';
+import { series as registry, seriesAccent, type SeriesId } from '../../config/series';
+import { SITE_URL } from '../../config/site';
+
+interface Props {
+  id: SeriesId;
+}
+const { id } = Astro.props;
+const s = registry[id];
+const url = `${SITE_URL}${s.href}`;
+---
+
+<Museum
+  title={`${s.title} · Writings · Michael Wilhelm`}
+  description={`${s.title} by Michael Wilhelm. ${s.statement}`}
+  current="writings"
+  schema={[
+    {
+      '@type': ['CollectionPage', 'CreativeWorkSeries'],
+      '@id': `${url}#series`,
+      url,
+      name: s.title,
+      author: { '@id': `${SITE_URL}/#person` },
+      isPartOf: { '@type': 'CollectionPage', name: 'Writings', url: `${SITE_URL}/writings/` },
+    },
+  ]}
+>
+  <section class="page" aria-labelledby="series-title" style={`--room-accent: ${seriesAccent(id)}`}>
+    <div class="page__inner wrap">
+      <div class="page__head">
+        <Placard
+          id="series-title"
+          level={1}
+          label="The Reading Room · A series"
+          title={s.name}
+          medium={s.statement}
+          catalog="Cat. III"
+        />
+        <p class="lede page__statement" data-reveal>The series so far, newest first.</p>
+      </div>
+      <WritingsList level={2} series={id} />
+      <div data-reveal>
+        <a class="cta" href="/writings/">All writings</a>
+      </div>
+    </div>
+  </section>
+  <Meander />
+  <Colophon />
+</Museum>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem);
+  }
+  .page__inner {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+  .page__head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .page__statement {
+    padding-top: 0.5rem;
+    color: var(--ink);
+  }
+  @media (max-width: 820px) {
+    .page__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

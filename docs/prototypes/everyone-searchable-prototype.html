@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everyone, Searchable</title>
+<meta name="description" content="Every human life is about to become searchable through a god-level AI. What it does to the searcher, the searched, and the one move that holds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&amp;display=swap">
+<style>
+:root{
+  /* Layout: a dossier that opens as you scroll. Step text on the left, the pinned exhibit on the right; on phones the exhibit pins full-screen and the steps slide over it. One visual world: archive paper, redaction black, stamp red, and the water that floods it at the end. */
+  --paper:#e3e5e0;
+  --ink:#15171a;
+  --ink-soft:#575c63;
+  --redact:#0c0d0f;
+  --stamp:#c0281c;
+  --water:#0c566a;
+  --display:"Big Shoulders Stencil Display","Big Shoulders Stencil","Avenir Next Condensed","Roboto Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Newsreader","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --typed:"Courier Prime","Courier New",Courier,monospace;
+  --bar:44px;
+  --rule:color-mix(in srgb,var(--ink) 16%,transparent);
+  --folder:color-mix(in srgb,var(--paper) 82%,var(--ink));
+  --sheet:color-mix(in srgb,var(--paper) 55%,#ffffff);
+  --foam:color-mix(in srgb,var(--paper) 90%,var(--water));
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:clamp(18px,1rem + .35vw,21px);line-height:1.55;text-rendering:optimizeLegibility;transition:background-color .8s ease,color .8s ease}
+body.flood{background:var(--water);color:var(--foam);transition-delay:1.4s}
+h1,h2,h3{margin:0;font-weight:800;text-wrap:balance}
+p{margin:0}
+a{color:inherit;text-underline-offset:.18em}
+:focus-visible{outline:2px solid var(--stamp);outline-offset:3px;border-radius:2px}
+mark{background:none;color:inherit}
+.sheer{background:var(--redact);color:color-mix(in srgb,var(--paper) 58%,transparent);padding:.05em .3em;border-radius:1px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* top bar */
+.bar{position:fixed;inset:0 0 auto;height:var(--bar);z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 max(16px,4vw);background:color-mix(in srgb,var(--paper) 92%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);font-family:var(--typed);font-size:13px;letter-spacing:.06em;transition:background-color .8s ease,color .8s ease}
+.flood .bar{background:color-mix(in srgb,var(--water) 92%,transparent);border-color:color-mix(in srgb,var(--foam) 22%,transparent);color:var(--foam);transition-delay:1.4s}
+.bar-title{text-transform:uppercase;letter-spacing:.14em;color:var(--ink-soft)}
+.flood .bar-title{color:var(--foam)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--stamp)}
+.toc{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 0;text-transform:uppercase;letter-spacing:.12em}
+.toc summary::-webkit-details-marker{display:none}
+.chev{width:8px;height:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
+.toc[open] .chev{transform:translateY(2px) rotate(-135deg)}
+.toc ol{position:absolute;top:calc(100% + 6px);left:0;margin:0;padding:8px;list-style:none;min-width:270px;background:var(--paper);color:var(--ink);border:1px solid var(--rule);box-shadow:0 14px 34px rgba(12,13,15,.16)}
+.toc a{display:grid;grid-template-columns:44px 1fr;padding:8px 10px;text-decoration:none;text-transform:none;letter-spacing:.02em;font-size:14px}
+.toc a:hover,.toc a:focus-visible{background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.toc a span:first-child{color:var(--stamp);font-weight:700}
+
+/* hero */
+.hero{max-width:1240px;margin:0 auto;padding:calc(var(--bar) + clamp(48px,9vh,110px)) max(24px,4vw) clamp(40px,7vh,80px)}
+.kicker{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--typed);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.title{font-family:var(--display);font-size:clamp(52px,12.5vw,200px);line-height:.84;letter-spacing:.01em;text-transform:uppercase;margin:.2em 0 .26em;overflow-wrap:break-word;hyphens:auto}
+.title span{display:block}
+.title .second{color:var(--stamp)}
+.dek{font-size:clamp(21px,1.1rem + .9vw,30px);line-height:1.32;max-width:31ch}
+.epigraph{margin:clamp(28px,5vh,48px) 0 0;max-width:44ch;padding-left:18px;border-left:2px solid var(--stamp);font-style:italic;color:var(--ink-soft);font-size:clamp(17px,1rem + .2vw,19px)}
+.epigraph cite{display:block;margin-top:6px;font-style:normal;font-family:var(--typed);font-size:13px;letter-spacing:.08em}
+.cue{margin-top:clamp(28px,5vh,44px);display:flex;align-items:center;gap:12px;font-family:var(--typed);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.cue::before{content:"";width:1px;height:32px;background:currentColor;transform-origin:top;animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+
+/* chapters */
+.chapter{scroll-margin-top:var(--bar)}
+.chap{max-width:1240px;margin:0 auto;padding:clamp(80px,15vh,170px) max(24px,4vw) clamp(12px,2vh,24px);display:grid;grid-template-columns:auto 1fr;align-items:end;gap:0 clamp(16px,2vw,28px)}
+.chap-n{font-family:var(--display);font-weight:800;font-size:clamp(70px,10vw,150px);line-height:.8;color:var(--stamp)}
+.chap h2{font-family:var(--display);font-size:clamp(40px,5.6vw,86px);line-height:.88;text-transform:uppercase;letter-spacing:.01em;overflow-wrap:break-word;hyphens:auto}
+@media (max-width:520px){.chap{grid-template-columns:minmax(0,1fr)}.chap-n{margin-bottom:10px}}
+.chap-of{grid-column:1 / -1;margin-top:14px;padding-top:10px;border-top:1px solid var(--rule);font-family:var(--typed);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.flood .chap-of{border-color:color-mix(in srgb,var(--foam) 25%,transparent);color:var(--foam)}
+
+/* scenes */
+.scene{position:relative;padding:0 max(24px,4vw)}
+.scene-in{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(300px,410px) minmax(0,1fr);gap:clamp(32px,5vw,80px)}
+.graphic{grid-column:2;grid-row:1;align-self:start;position:sticky;top:var(--bar);height:calc(100vh - var(--bar));--gh:calc(100vh - var(--bar));display:flex;align-items:center;justify-content:center}
+.steps{grid-column:1;grid-row:1;padding:6vh 0 32vh}
+.step{min-height:74vh;display:flex;align-items:center}
+.card{max-width:36ch;font-size:clamp(19px,1rem + .4vw,22px);line-height:1.5;transition:opacity .4s ease}
+.card p+p{margin-top:.75em}
+.card .yr{display:block;margin-bottom:8px;font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.14em;color:var(--stamp)}
+.js .step:not(.is-active) .card{opacity:.3}
+.exhibit{margin:0;position:relative;width:min(100%,var(--ex-w,640px),calc((var(--gh) - 48px) * var(--ar,1)));aspect-ratio:var(--ar,1);container-type:inline-size}
+.exhibit>svg{display:block;width:100%;height:100%;overflow:visible}
+
+@media (max-width:899px){
+  .scene-in{display:block}
+  .graphic{height:calc(100svh - var(--bar));--gh:calc(60svh - var(--bar));align-items:flex-start;padding-top:2.5svh}
+  .steps{position:relative;z-index:2;margin-top:calc(-100svh + var(--bar));padding:0 0 34svh;pointer-events:none}
+  .step{min-height:92svh;align-items:flex-end;padding-bottom:5svh}
+  .card{pointer-events:auto;max-width:none;width:100%;font-size:18px;background:var(--paper);border:1px solid var(--rule);box-shadow:0 10px 28px rgba(12,13,15,.14);padding:16px 18px}
+  .js .step:not(.is-active) .card{opacity:1}
+  .flood .card{background:color-mix(in srgb,var(--water) 88%,#000000);border-color:color-mix(in srgb,var(--foam) 18%,transparent)}
+}
+
+/* I. search */
+.ex-search{--ar:.9;--ex-w:600px;font-family:var(--typed);font-size:3.1cqw}
+.searchbox{position:absolute;left:0;right:1.4cqw;top:0;display:flex;align-items:center;gap:2.4cqw;padding:3cqw 3.6cqw;border:2px solid var(--ink);background:var(--sheet);font-size:4.8cqw;box-shadow:1.4cqw 1.4cqw 0 var(--ink)}
+.sb-label{font-size:2.5cqw;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);border-right:1px solid var(--rule);padding-right:2.4cqw;white-space:nowrap}
+.sb-query{display:flex;align-items:center;min-width:0}
+.caret{display:inline-block;width:.5em;height:1.05em;margin-left:.1em;background:var(--stamp);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.stage{position:absolute;left:0;right:0;top:21cqw;bottom:0;overflow:hidden}
+.results{list-style:none;margin:0;padding:0;display:grid;align-content:start}
+.results li{display:grid;grid-template-columns:25cqw minmax(0,1fr);align-items:center;gap:2cqw;padding:2.1cqw 1cqw;border-bottom:1px solid var(--rule);transition:opacity .4s ease}
+.results .k{font-size:2.5cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.results .v{font-size:3cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.answer{display:grid;gap:2.6cqw;align-content:start}
+.a-q{justify-self:end;max-width:84%;padding:2.2cqw 3cqw;background:var(--ink);color:var(--paper);font-family:var(--body);font-size:3.7cqw;line-height:1.3;border-radius:3cqw 3cqw .6cqw 3cqw}
+.a-a{padding:3.2cqw 3.6cqw;border:1.5px solid var(--ink);background:var(--sheet)}
+.a-who{font-size:2.5cqw;letter-spacing:.16em;text-transform:uppercase;color:var(--stamp);margin-bottom:1.4cqw}
+.a-lead{font-family:var(--body);font-size:4cqw;margin-bottom:2.4cqw}
+.answer dl{margin:0;display:grid;gap:2cqw}
+.answer dl div{display:grid;grid-template-columns:27cqw minmax(0,1fr);gap:2cqw;align-items:baseline;transition:opacity .5s ease,transform .5s ease}
+.answer dt{font-size:2.4cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.answer dd{margin:0;font-size:3cqw;line-height:1.5}
+.js .ex-search .stage>*{position:absolute;inset:0;transition:opacity .6s ease,transform .6s ease}
+.js .scene:not(.at-2) .ex-search .results{opacity:0;transform:translateY(3cqw)}
+.js .scene.at-3 .ex-search .results{opacity:.07;transform:translateY(-2cqw) scale(.97)}
+.js .scene:not(.at-3) .ex-search .answer{opacity:0;transform:translateY(3cqw)}
+.js .scene:not(.at-4) .ex-search .answer dl div{opacity:0;transform:translateX(-2cqw)}
+.ex-search .results li:nth-child(2){transition-delay:.06s}.ex-search .results li:nth-child(3){transition-delay:.12s}.ex-search .results li:nth-child(4){transition-delay:.18s}.ex-search .results li:nth-child(5){transition-delay:.24s}.ex-search .results li:nth-child(6){transition-delay:.3s}.ex-search .results li:nth-child(7){transition-delay:.36s}.ex-search .results li:nth-child(8){transition-delay:.42s}
+.js .scene:not(.at-2) .ex-search .results li{opacity:0}
+.ex-search .answer dl div:nth-child(2){transition-delay:.15s}.ex-search .answer dl div:nth-child(3){transition-delay:.3s}.ex-search .answer dl div:nth-child(4){transition-delay:.45s}
+
+/* II. polyneural */
+.ex-net{--ar:1;--ex-w:640px}
+.ex-net .e{stroke:var(--ink);stroke-opacity:.26}
+.ex-net .e1{stroke-opacity:.72}
+.ex-net .nd{fill:var(--ink)}
+.ex-net .net-outer .nd{fill-opacity:.5}
+.ex-net .cut{stroke-dasharray:3 7;stroke-opacity:.32;transition:stroke-opacity .6s ease}
+.ex-net .cutn{fill-opacity:.32;transition:fill-opacity .6s ease}
+.ex-net .pe{stroke:var(--stamp);stroke-linecap:round}
+.ex-net .pn{fill:var(--stamp)}
+.ex-net .core{fill:var(--ink)}
+.ex-net .core-t{fill:var(--paper);font-family:var(--typed);font-weight:700;font-size:15px;letter-spacing:.08em}
+.ex-net .lab{font-family:var(--typed);font-size:15px;fill:var(--ink)}
+.ex-net .lab-sc{fill:var(--stamp);font-weight:700}
+.ex-net .net-outer,.ex-net .net-path,.ex-net .lab{transition:opacity .8s ease}
+.ex-net .net-path,.ex-net .lab-sc{transition-delay:.7s}
+.js .scene:not(.at-2) .ex-net .cut{stroke-dasharray:none;stroke-opacity:.72}
+.js .scene:not(.at-2) .ex-net .cutn{fill-opacity:1}
+.js .scene:not(.at-2) .ex-net .lab-cut{opacity:0}
+.js .scene:not(.at-3) .ex-net :is(.net-outer,.net-path,.lab-sc){opacity:0}
+
+/* III. timeline */
+.ex-time{--ar:.88;--ex-w:600px}
+.tl{list-style:none;margin:0;padding:3cqw 4cqw;position:absolute;inset:0;display:grid;grid-template-rows:repeat(6,1fr)}
+.tl li{display:grid;grid-template-columns:20cqw minmax(0,1fr);align-items:center;gap:4cqw;border-top:1px solid var(--rule);position:relative;transition:opacity .5s ease}
+.tl li::after{content:"";position:absolute;left:21.6cqw;top:50%;width:2.2cqw;height:2.2cqw;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%)}
+.tl .yr{font-family:var(--display);font-weight:800;font-size:9cqw;line-height:1}
+.tl .ev{font-size:3.9cqw;line-height:1.25}
+.tl-next .yr,.tl-next .ev{color:var(--stamp)}
+.tl-next::after{background:var(--stamp)!important}
+.curtain{position:absolute;inset:0;pointer-events:none;display:grid;place-items:center;opacity:.22;background:repeating-linear-gradient(90deg,var(--redact) 0 5cqw,color-mix(in srgb,var(--redact) 84%,var(--paper)) 5cqw 10cqw);transition:opacity 1.8s ease}
+.curtain span{font-family:var(--display);font-weight:800;font-size:13cqw;letter-spacing:.06em;text-transform:uppercase;color:var(--stamp);border:.8cqw solid var(--stamp);padding:0 3cqw;transform:rotate(-8deg)}
+.js .scene:not(.at-1) .ex-time .curtain{opacity:.95}
+.js .ex-time li{opacity:.28}
+.js .scene.at-2 .ex-time li[data-i="1"],.js .scene.at-3 .ex-time li[data-i="2"],.js .scene.at-4 .ex-time li[data-i="3"],.js .scene.at-5 .ex-time li[data-i="4"],.js .scene.at-5 .ex-time li[data-i="5"],.js .scene.at-6 .ex-time li[data-i="6"]{opacity:1}
+
+/* IV. stairs */
+.ex-stairs{--ar:1.143;--ex-w:660px}
+.ex-stairs .st rect{fill:var(--ink);stroke:var(--ink);stroke-width:1.5;transition:fill .5s ease,stroke .5s ease}
+.ex-stairs .st6 rect{fill:var(--stamp);stroke:var(--stamp)}
+.ex-stairs .nm{font-family:var(--typed);font-weight:700;font-size:15px;letter-spacing:.04em;fill:var(--paper);transition:fill .5s ease}
+.ex-stairs .sb{font-family:var(--body);font-style:italic;font-size:14px;fill:color-mix(in srgb,var(--paper) 80%,transparent);transition:fill .5s ease}
+.ex-stairs .st3 *{transition-delay:.15s}.ex-stairs .st4 *{transition-delay:.3s}.ex-stairs .st5 *{transition-delay:.45s}
+.js .scene:not(.at-2) .ex-stairs :is(.st2,.st3,.st4,.st5) rect,.js .scene:not(.at-3) .ex-stairs .st6 rect{fill:transparent;stroke:color-mix(in srgb,var(--ink) 30%,transparent)}
+.js .scene:not(.at-2) .ex-stairs :is(.st2,.st3,.st4,.st5) .nm,.js .scene:not(.at-3) .ex-stairs .st6 .nm{fill:color-mix(in srgb,var(--ink) 38%,transparent)}
+.js .scene:not(.at-2) .ex-stairs :is(.st2,.st3,.st4,.st5) .sb,.js .scene:not(.at-3) .ex-stairs .st6 .sb{fill:color-mix(in srgb,var(--ink) 32%,transparent)}
+.ex-stairs .mire path{fill:var(--redact)}
+.ex-stairs .mire text{font-family:var(--typed);font-size:15px;letter-spacing:.12em;fill:var(--paper)}
+.ex-stairs .myfile rect{fill:var(--sheet);stroke:var(--ink);stroke-width:1.5}
+.ex-stairs .mf1{font-family:var(--typed);font-weight:700;font-size:15px;letter-spacing:.1em;fill:var(--ink)}
+.ex-stairs .mf2{font-family:var(--body);font-style:italic;font-size:15px;fill:var(--ink-soft)}
+.ex-stairs .mf3{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:.04em;fill:var(--stamp)}
+.ex-stairs .mire,.ex-stairs .myfile{transition:opacity .6s ease,transform .6s ease}
+.js .scene:not(.at-3) .ex-stairs .mire{opacity:0}
+.js .scene:not(.at-4) .ex-stairs .myfile{opacity:0;transform:translateY(12px)}
+
+/* V. dots */
+.ex-dots{--ar:.839;--ex-w:540px}
+.ex-dots .d{fill:transparent;stroke:var(--ink);stroke-opacity:.28;stroke-width:1.5;transition:fill .4s ease,stroke .4s ease,stroke-opacity .4s ease,opacity .5s ease}
+.ex-dots .d.a{fill:var(--ink);stroke-opacity:1;transition-delay:calc(var(--i) * 18ms)}
+.ex-dots .d.b{fill:var(--stamp);stroke:var(--stamp);stroke-opacity:1;transition-delay:calc((var(--i) - 19) * 70ms)}
+.ex-dots .d.o{opacity:.35}
+.js .scene:not(.at-2) .ex-dots .d.b{fill:transparent;stroke:var(--ink);stroke-opacity:.28}
+.js .scene:not(.at-3) .ex-dots .d.o{opacity:1}
+.ex-dots .dt{font-family:var(--typed);font-size:15px;fill:var(--ink)}
+.ex-dots .ds{font-family:var(--typed);font-size:12.5px;fill:var(--ink-soft)}
+.ex-dots .big{font-family:var(--display);font-weight:800;font-size:66px;fill:var(--ink)}
+.ex-dots .big.b{fill:var(--stamp)}
+.ex-dots .sm{font-family:var(--typed);font-size:13px;fill:var(--ink-soft)}
+.ex-dots .arr{font-family:var(--typed);font-size:30px;fill:var(--ink-soft)}
+.ex-dots .y23{transition:opacity .5s ease}
+.js .scene:not(.at-2) .ex-dots .y23{opacity:0}
+
+/* VI. file */
+.ex-file{--ar:.86;--ex-w:580px;font-family:var(--typed)}
+.folder{position:absolute;inset:9% 8% 9%;transition:opacity .7s ease,transform .7s ease}
+.folder .tab{position:absolute;top:-6cqw;left:7%;padding:1.3cqw 4cqw;background:var(--folder);font-size:2.6cqw;letter-spacing:.16em;text-transform:uppercase;border-radius:1.4cqw 1.4cqw 0 0}
+.sheet{position:absolute;inset:0;background:var(--sheet);border:1px solid var(--rule);padding:8cqw 7cqw;display:grid;align-content:start;gap:4.2cqw;font-size:3.5cqw;box-shadow:0 1.2cqw 3.6cqw rgba(12,13,15,.14)}
+.sheet .row{display:grid;grid-template-columns:24cqw minmax(0,1fr);gap:2cqw;line-height:1.35}
+.sheet .row b{font-size:2.5cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);padding-top:.5cqw}
+.redact{color:var(--stamp);font-weight:700;padding:0 .3em;transition:background-color .9s ease,color .9s ease}
+.js .scene:not(.at-3) .ex-file .redact{background:var(--redact);color:var(--redact)}
+.stamp-sm{position:absolute;right:6cqw;bottom:7cqw;font-family:var(--display);font-weight:800;font-size:5.4cqw;letter-spacing:.04em;text-transform:uppercase;color:var(--stamp);border:.5cqw solid var(--stamp);padding:.2cqw 2cqw;transform:rotate(-6deg)}
+.cover{position:absolute;inset:0;background:var(--folder);border:1px solid var(--rule);display:grid;place-items:center;transform:translateY(-118%) rotate(-4deg);opacity:0;transition:transform .9s cubic-bezier(.6,.05,.3,1),opacity .9s ease}
+.cover span{font-family:var(--display);font-weight:800;font-size:12cqw;letter-spacing:.05em;text-transform:uppercase;color:var(--stamp);border:.8cqw solid var(--stamp);padding:0 3cqw;transform:rotate(-7deg)}
+.js .scene:not(.at-2) .ex-file .cover{transform:none;opacity:1}
+.file-note{position:absolute;left:0;right:0;bottom:-6.5cqw;text-align:center;font-size:2.5cqw;letter-spacing:.06em;color:var(--ink-soft)}
+.wall,.wall-stamp{display:none}
+.js .wall{position:absolute;inset:3% 1% 5%;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:1fr;gap:3.4cqw 2.2cqw;padding-top:1.4cqw;transition:opacity .8s ease,transform .8s ease}
+.wf{position:relative;background:var(--folder);border-radius:.6cqw;display:grid;place-content:center;justify-items:center;gap:1cqw;transition:background-color .6s ease}
+.wf::before{content:"";position:absolute;top:-1.3cqw;left:12%;width:42%;height:1.6cqw;background:inherit;border-radius:.6cqw .6cqw 0 0}
+.wf i{display:block;width:6cqw;height:1.2cqw;background:var(--redact);opacity:.75}
+.wf b{font-size:2.3cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--paper)}
+.wf.you{background:var(--ink)}
+.js .wall-stamp{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;transition:opacity .6s ease,transform .6s ease}
+.wall-stamp span{font-family:var(--display);font-weight:800;font-size:17cqw;letter-spacing:.05em;text-transform:uppercase;color:var(--stamp);border:1cqw solid var(--stamp);padding:0 4cqw;transform:rotate(-9deg);background:color-mix(in srgb,var(--paper) 55%,transparent)}
+.js .scene:not(.at-4) .ex-file .wall{opacity:0;transform:scale(1.08)}
+.js .scene.at-4 .ex-file .folder{opacity:0;transform:scale(.5)}
+.js .scene:not(.at-5) .ex-file .wall-stamp{opacity:0;transform:scale(1.25)}
+.js .scene:not(.at-5) .ex-file .wf.you{background:var(--folder)}
+.js .scene:not(.at-5) .ex-file .wf.you b{color:var(--ink)}
+
+/* VII. quadrants */
+.ex-quad{--ar:.941;--ex-w:640px}
+.ex-quad line{stroke:var(--ink-soft);stroke-width:1.4}
+.ex-quad .ax{font-family:var(--typed);font-size:13.5px;letter-spacing:.04em;fill:var(--ink-soft)}
+.ex-quad .q rect{fill:none;stroke:var(--ink);stroke-width:1.4;transition:fill .6s ease,stroke .6s ease}
+.ex-quad .q-int rect{fill:color-mix(in srgb,var(--water) 13%,transparent);stroke:var(--water);stroke-width:2.4}
+.ex-quad .qn{font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:.02em;fill:var(--ink)}
+.ex-quad .q-int .qn,.ex-quad .q-int .qv{fill:var(--water)}
+.ex-quad .ql{font-family:var(--body);font-size:17px;fill:var(--ink)}
+.ex-quad .qv{font-family:var(--typed);font-weight:700;font-size:13px;letter-spacing:.1em;fill:var(--stamp)}
+.ex-quad .qt,.ex-quad .q-hunt{transition:opacity .6s ease}
+.ex-quad .q-hunt rect{fill:none;stroke:var(--stamp);stroke-width:1.4;stroke-dasharray:6 6}
+.ex-quad .q-hunt circle{fill:var(--stamp)}
+.ex-quad .q-hunt text{font-family:var(--typed);font-size:14px;fill:var(--ink)}
+.js .scene:not(.at-2) .ex-quad .q-int .qt,.js .scene:not(.at-3) .ex-quad :is(.q-pen,.q-div,.q-sha) .qt{opacity:.14}
+.js .scene:not(.at-2) .ex-quad .q-int rect{fill:transparent;stroke:var(--ink);stroke-width:1.4}
+.js .scene:not(.at-4) .ex-quad .q-hunt{opacity:0}
+
+/* VIII. stones */
+.ex-stones{--ar:1.143;--ex-w:660px}
+.ex-stones .acc-t{font-family:var(--display);font-weight:800;font-size:84px;letter-spacing:.03em;fill:var(--stamp)}
+.ex-stones .acc-s{font-family:var(--typed);font-size:14px;letter-spacing:.08em;fill:var(--stamp)}
+.ex-stones .acc{opacity:.07;transition:opacity 1.2s ease}
+.ex-stones .known text{font-family:var(--display);font-weight:800;font-size:60px;letter-spacing:.02em;fill:var(--ink)}
+.ex-stones .known{transition:opacity .8s ease .4s}
+.ex-stones .fig circle,.ex-stones .fig rect{fill:var(--ink)}
+.ex-stones .arm{stroke:var(--ink);stroke-width:7;stroke-linecap:round;opacity:0;transition:opacity .3s ease calc(var(--i) * .4s)}
+.ex-stones .fig{opacity:.1;transition:opacity .7s ease calc(var(--i) * .4s + .5s)}
+.ex-stones .stone{fill:var(--ink-soft);transform:translateY(154px);transition:transform .75s cubic-bezier(.5,0,.85,.35) calc(var(--i) * .4s)}
+.ex-stones .ground{stroke:var(--ink);stroke-opacity:.4;stroke-width:1.5}
+.ex-stones .age,.ex-stones .dirt-t{font-family:var(--typed);font-size:13px;letter-spacing:.06em;fill:var(--ink-soft)}
+.ex-stones .dirt{fill:none;stroke:var(--ink-soft);stroke-width:1.6;stroke-linecap:round}
+.js .scene:not(.at-2) .ex-stones .acc{opacity:.92}
+.js .scene:not(.at-3) .ex-stones .stone{transform:none}
+.js .scene:not(.at-3) .ex-stones .arm{opacity:1}
+.js .scene:not(.at-3) .ex-stones .fig{opacity:1}
+.js .scene.at-3:not(.at-4) .ex-stones .fig{opacity:.22}
+.js .scene:not(.at-4) .ex-stones .known{opacity:0}
+
+/* seven moves */
+.moves{max-width:1240px;margin:0 auto;padding:clamp(40px,8vh,96px) max(24px,4vw) clamp(24px,4vh,48px);display:grid;grid-template-columns:minmax(220px,410px) minmax(0,1fr);gap:clamp(24px,5vw,80px)}
+.moves h3{font-family:var(--display);font-size:clamp(42px,5vw,76px);line-height:.88;text-transform:uppercase}
+.moves h3 small{display:block;margin-top:14px;font-family:var(--typed);font-size:13px;font-weight:400;letter-spacing:.14em;color:var(--ink-soft)}
+.moves ol{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
+.moves li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule);max-width:62ch}
+.moves .mn{font-family:var(--display);font-weight:800;font-size:42px;line-height:.9;color:var(--stamp)}
+.moves li b{font-weight:600}
+
+/* IX. vessel */
+.ex-vessel{--ar:.839;--ex-w:520px}
+.ex-vessel .vbody{fill:var(--sheet)}
+.ex-vessel .voutline,.ex-vessel .handle{fill:none;stroke:var(--ink);stroke-width:3;stroke-linejoin:round;stroke-linecap:round;transition:stroke 1s ease 1.4s}
+.ex-vessel .vwater{fill:var(--water);transform:translateY(240px);transition:transform 1.1s ease .7s}
+.ex-vessel .band{fill:none;stroke:var(--ink);stroke-width:2;transition:stroke 1s ease 1.4s}
+.ex-vessel .vessel{transform-box:view-box;transform-origin:260px 300px;transform:rotate(58deg);transition:transform 1.4s cubic-bezier(.65,0,.35,1)}
+.ex-vessel .stream{fill:none;stroke:color-mix(in srgb,var(--water) 62%,#ffffff);stroke-width:14;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 1s ease-in 1s}
+.ex-vessel .flood-rect{fill:var(--water);transform-box:view-box;transform-origin:50% 100%;transition:transform 1.6s ease 1.5s}
+.ex-vessel .vcap{font-family:var(--typed);font-size:14px;letter-spacing:.12em;fill:var(--foam);transition:fill 1s ease 1.4s}
+.js .scene:not(.at-4) .ex-vessel .vessel{transform:none}
+.js .scene:not(.at-4) .ex-vessel .vwater{transform:none}
+.js .scene:not(.at-4) .ex-vessel .stream{stroke-dashoffset:1}
+.js .scene:not(.at-4) .ex-vessel .flood-rect{transform:scaleY(0)}
+.js .scene:not(.at-4) .ex-vessel .vcap{fill:var(--ink-soft)}
+.js .scene.at-4 .ex-vessel :is(.voutline,.handle,.band){stroke:var(--foam)}
+
+/* coda */
+.coda{background:var(--water);color:var(--foam);padding:clamp(80px,16vh,180px) max(24px,4vw) 64px}
+.coda-in{max-width:1240px;margin:0 auto}
+.coda-line{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(56px,10vw,150px);line-height:.86;letter-spacing:.01em;max-width:11ch;text-wrap:balance}
+.coda-by{margin-top:28px;font-family:var(--typed);font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+.sources{max-width:1240px;margin:clamp(64px,10vh,120px) auto 0;padding-top:28px;border-top:1px solid color-mix(in srgb,var(--foam) 28%,transparent);display:grid;grid-template-columns:minmax(160px,240px) minmax(0,1fr);gap:24px;scroll-margin-top:var(--bar)}
+.sources h2{font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.sources ol{margin:0;padding-left:1.3em;display:grid;gap:10px;font-size:16px;line-height:1.4}
+.sources a{color:var(--foam)}
+.sources .scripture{grid-column:2;font-size:15px;line-height:1.5;opacity:.85}
+.coda :focus-visible{outline-color:var(--foam)}
+@media (max-width:700px){.sources{grid-template-columns:minmax(0,1fr)}.sources .scripture{grid-column:1}}
+
+@media (max-width:899px){
+  .moves{grid-template-columns:minmax(0,1fr)}
+  .moves li{grid-template-columns:52px minmax(0,1fr)}
+  .moves .mn{font-size:34px}
+  .bar-title{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.01ms!important;transition-delay:0s!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <details class="toc">
+    <summary><span class="chev" aria-hidden="true"></span><span id="now">Contents</span></summary>
+    <ol>
+      <li><a href="#the-index"><span>I</span><span>The Index</span></a></li>
+      <li><a href="#polyneural"><span>II</span><span>The Polyneural</span></a></li>
+      <li><a href="#already-here"><span>III</span><span>Already Here</span></a></li>
+      <li><a href="#the-searcher"><span>IV</span><span>The Searcher</span></a></li>
+      <li><a href="#the-genie"><span>V</span><span>The Genie</span></a></li>
+      <li><a href="#reveal-day"><span>VI</span><span>Reveal Day</span></a></li>
+      <li><a href="#who-comes-through"><span>VII</span><span>Who Comes Through</span></a></li>
+      <li><a href="#come-to-jesus"><span>VIII</span><span>The Come-to-Jesus Move</span></a></li>
+      <li><a href="#fear-not"><span>IX</span><span>Fear Not</span></a></li>
+      <li><a href="#sources"><span>&#183;</span><span>Sources</span></a></li>
+    </ol>
+  </details>
+  <span class="bar-title">Everyone, Searchable</span>
+  <span class="progress" aria-hidden="true"></span>
+</div>
+
+<header class="hero" id="top">
+  <p class="kicker"><span>By Michael Wilhelm</span><span>November 2026</span></p>
+  <h1 class="title"><span>Everyone,</span><span class="second">Searchable</span></h1>
+  <p class="dek">Every human life is about to become searchable through a god-level AI. It will break the searcher before it breaks the searched, and the one move that holds is to get known before you get searched.</p>
+  <blockquote class="epigraph"><p>That which ye have spoken in the ear in closets shall be proclaimed upon the housetops.</p><cite>Luke 12:3</cite></blockquote>
+  <p class="cue">Scroll to open the file</p>
+</header>
+
+<main>
+
+<!-- I -->
+<section class="chapter" id="the-index" data-chapter data-num="I" data-title="The Index">
+  <header class="chap"><span class="chap-n">I</span><h2>The Index</h2><p class="chap-of">Chapter I of IX</p></header>
+  <div class="scene at-1" data-scene="search" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-search" role="img" aria-label="A search for your name returns your texts, emails, photos, DMs, deleted posts, TV viewing log, voice clips and location pings. Then an AI assistant answers a question about where someone is and what he is hiding.">
+          <div class="searchbox"><span class="sb-label">Search anyone</span><span class="sb-query"><span class="typed">your name</span><span class="caret"></span></span></div>
+          <div class="stage">
+            <ol class="results">
+              <li><span class="k">Texts</span><span class="v"><mark class="sheer">don't tell her I said this</mark></span></li>
+              <li><span class="k">Emails</span><span class="v"><mark class="sheer">re: the thing we agreed never to mention</mark></span></li>
+              <li><span class="k">Photos</span><span class="v"><mark class="sheer">IMG_2231 &#183; geotagged &#183; 11:48 pm</mark></span></li>
+              <li><span class="k">DMs</span><span class="v"><mark class="sheer">delete this after you read it</mark></span></li>
+              <li><span class="k">Deleted posts</span><span class="v"><mark class="sheer">removed by you, archived anyway</mark></span></li>
+              <li><span class="k">TV viewing log</span><span class="v"><mark class="sheer">2:14 to 3:40 am, paused twice</mark></span></li>
+              <li><span class="k">Voice clips</span><span class="v"><mark class="sheer">&#8220;hey&#8230; you still up?&#8221;</mark></span></li>
+              <li><span class="k">Location pings</span><span class="v"><mark class="sheer">the address you never mention</mark></span></li>
+            </ol>
+            <div class="answer">
+              <p class="a-q">Where is he right now, and what is he hiding?</p>
+              <div class="a-a">
+                <p class="a-who">Assistant</p>
+                <p class="a-lead">Here's everything on file.</p>
+                <dl>
+                  <div><dt>Whereabouts</dt><dd><mark class="sheer">two blocks from the address on file</mark></dd></div>
+                  <div><dt>Alter egos</dt><dd><mark class="sheer">a forum persona from 2011</mark></dd></div>
+                  <div><dt>Burner accounts</dt><dd><mark class="sheer">matched by writing style</mark></dd></div>
+                  <div><dt>Stopped talking to</dt><dd><mark class="sheer">his brother, last spring</mark></dd></div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Everyone is about to become searchable. Type a name, get a life.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>Every text, email, photo, DM and deleted post since the first digital message. The viewing logs your smart TV ships home. The audio your phone catches. Every location ping. All of it compiled and cross-referenced.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Out of all that comes a simulacrum of each of us, a working model of you. Anyone can query it through an AI assistant that will feel, to most people, like a god.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>Ask it anything about anyone. Where they are. What they're into. Their alter egos and burner accounts. Everything once thought private gets aired out on request.</p><p>People will lose their minds.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- II -->
+<section class="chapter" id="polyneural" data-chapter data-num="II" data-title="The Polyneural">
+  <header class="chap"><span class="chap-n">II</span><h2>The Polyneural</h2><p class="chap-of">Chapter II of IX</p></header>
+  <div class="scene at-1" data-scene="net" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-net" role="img" aria-label="The Polyneural: you at the center, the people you talk to around you, one connection cut off, and a three-hop path in red from you to a stranger's scandal.">
+          <svg id="net" viewBox="0 0 640 640" aria-hidden="true"></svg>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Then the connections. Who you talk to, how often, and at what hour.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>And who you suddenly stopped talking to.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Call it the Polyneural, a living map of every relationship on earth. Three hops out, everyone connects to a predator, a fraudster or a scandal, and guilt by association goes universal.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- III -->
+<section class="chapter" id="already-here" data-chapter data-num="III" data-title="Already Here">
+  <header class="chap"><span class="chap-n">III</span><h2>Already Here</h2><p class="chap-of">Chapter III of IX</p></header>
+  <div class="scene" data-scene="time" data-step="0">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-time" role="img" aria-label="A timeline under a sheer curtain: Ashley Madison's breach in 2015, Microsoft's patent for a chatbot of a specific person in 2020, the I-XRAY glasses in 2024, Texas suing TV makers in 2025, Meta's Name Tag plan in 2026, and next, the index.">
+          <ol class="tl">
+            <li data-i="1"><span class="yr">2015</span><span class="ev">Ashley Madison breach exposes 32 million accounts</span></li>
+            <li data-i="2"><span class="yr">2020</span><span class="ev">Microsoft is granted a patent for a chatbot of a specific person</span></li>
+            <li data-i="3"><span class="yr">2024</span><span class="ev">I-XRAY glasses identify strangers on the street</span></li>
+            <li data-i="4"><span class="yr">2025</span><span class="ev">Texas sues five TV makers over screen capture</span></li>
+            <li data-i="5"><span class="yr">2026</span><span class="ev">Meta's &#8220;Name Tag&#8221; face recognition plan is reported</span></li>
+            <li data-i="6" class="tl-next"><span class="yr">Next</span><span class="ev">The index</span></li>
+          </ol>
+          <div class="curtain" aria-hidden="true"><span>Private</span></div>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step" data-step="1"><div class="card"><p>We thought digital privacy was a blackout curtain. It was sheer the whole time. The data is already archived, and the machinery is already here.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><span class="yr">2015</span><p>Ashley Madison is breached and 32 million accounts spill. Five years later the extortion emails are still landing.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><span class="yr">2020</span><p>Microsoft is granted a patent for building a chatbot of a specific person out of their posts, messages, voice and photos. Living or dead.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><span class="yr">2024</span><p>Two Harvard students wire Meta's camera glasses to a face-search engine and an AI, then pull strangers' names and addresses off the street in real time.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><span class="yr">2025 &#183; 2026</span><p>Texas sues five TV makers, alleging their sets capture what plays on screen and sell it. Then Meta is reported to be planning facial recognition for its glasses, internally called Name Tag.</p></div></div>
+        <div class="step" data-step="6"><div class="card"><p>Who builds the rest? A government, more likely a corporation. Or nobody at all. Millions of AI agents run small lookups until the index assembles itself, an immaculate conception if you trust the official narrative.</p><p>Watch for the blur around the few it protects.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IV -->
+<section class="chapter" id="the-searcher" data-chapter data-num="IV" data-title="The Searcher">
+  <header class="chap"><span class="chap-n">IV</span><h2>The Searcher</h2><p class="chap-of">Chapter IV of IX</p></header>
+  <div class="scene at-1" data-scene="stairs" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-stairs" role="img" aria-label="A staircase down: safety, curiosity, suspicion, jealousy, leverage, fantasy, and at the bottom the mire. Your searches end up filed under your own name.">
+          <svg viewBox="0 0 640 560" aria-hidden="true">
+            <g class="st st1"><rect x="20" y="30" width="180" height="56" rx="4"/><text class="nm" x="34" y="54">1 &#183; SAFETY</text><text class="sb" x="34" y="75">the babysitter, the date</text></g>
+            <g class="st st2"><rect x="104" y="100" width="180" height="56" rx="4"/><text class="nm" x="118" y="124">2 &#183; CURIOSITY</text><text class="sb" x="118" y="145">an ex, an old friend</text></g>
+            <g class="st st3"><rect x="188" y="170" width="180" height="56" rx="4"/><text class="nm" x="202" y="194">3 &#183; SUSPICION</text><text class="sb" x="202" y="215">your partner's coworker</text></g>
+            <g class="st st4"><rect x="272" y="240" width="180" height="56" rx="4"/><text class="nm" x="286" y="264">4 &#183; JEALOUSY</text><text class="sb" x="286" y="285">who they text now</text></g>
+            <g class="st st5"><rect x="356" y="310" width="180" height="56" rx="4"/><text class="nm" x="370" y="334">5 &#183; LEVERAGE</text><text class="sb" x="370" y="355">if it ever came to that</text></g>
+            <g class="st st6"><rect x="440" y="380" width="180" height="56" rx="4"/><text class="nm" x="454" y="404">6 &#183; FANTASY</text><text class="sb" x="454" y="425">the puppet version</text></g>
+            <g class="mire"><path d="M380 472C420 454 460 490 500 472S580 454 630 474L630 540L380 540Z"/><text x="505" y="516" text-anchor="middle">THE MIRE</text></g>
+            <g class="myfile"><rect x="20" y="462" width="300" height="76" rx="4"/><text class="mf1" x="38" y="492">YOUR SEARCHES</text><text class="mf2" x="38" y="519">filed under your own name</text><text class="mf3" x="304" y="497" text-anchor="end" transform="rotate(-8 304 497)">ON FILE</text></g>
+          </svg>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Start with what it does to the person searching. The first search always has a good reason.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>Then curiosity. Then suspicion. Then jealousy. Then leverage.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Then fantasy, because this thing retrieves and it also performs. Ask it to play your ex, your crush, your rival. People will rehearse arguments with puppets, then resent the real person for never saying the puppet's lines.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>Every query you run lands in your own file. The voyeur's record is the most damning one in the archive.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- V -->
+<section class="chapter" id="the-genie" data-chapter data-num="V" data-title="The Genie">
+  <header class="chap"><span class="chap-n">V</span><h2>The Genie</h2><p class="chap-of">Chapter V of IX</p></header>
+  <div class="scene at-1" data-scene="dots" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-dots" role="img" aria-label="Out of 100 U.S. adults, 19 scored at the lowest literacy levels in 2017 and 28 in 2023, an increase of 9 points.">
+          <svg viewBox="0 0 520 620" aria-hidden="true">
+            <text class="dt" x="40" y="44">U.S. adults at the lowest literacy levels</text>
+            <text class="ds" x="40" y="68">Each dot is one adult in a hundred &#183; PIAAC</text>
+            <g id="dots"></g>
+            <g class="y17"><text class="big" x="40" y="574">19</text><text class="sm" x="40" y="600">in 100 &#183; 2017</text></g>
+            <g class="y23"><text class="arr" x="200" y="560">&#8594;</text><text class="big b" x="280" y="574">28</text><text class="sm" x="280" y="600">in 100 &#183; 2023 &#183; up 9 points</text></g>
+          </svg>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>The genie only grants wishes as big as the wisher's language. In 2017, 19 in 100 U.S. adults scored at the lowest literacy levels.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>By 2023 it was 28 in 100.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Language is the operating system. Hand god-level power to people who can only form small, mean questions and you get small, mean answers at god-level scale.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VI -->
+<section class="chapter" id="reveal-day" data-chapter data-num="VI" data-title="Reveal Day">
+  <header class="chap"><span class="chap-n">VI</span><h2>Reveal Day</h2><p class="chap-of">Chapter VI of IX</p></header>
+  <div class="scene at-1" data-scene="file" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-file" role="img" aria-label="An illustrated Stasi file on Vera Wollenberger. The informant code-named Donald turns out to be her husband. Then one file becomes a wall of files, one of them yours, stamped public.">
+          <div class="folder">
+            <span class="tab">MfS &#183; Akte</span>
+            <div class="sheet">
+              <p class="row"><b>Subject</b><span>Wollenberger, Vera</span></p>
+              <p class="row"><b>Source</b><span>IM &#8220;Donald&#8221;</span></p>
+              <p class="row"><b>Reports</b><span>dinner-table talk, pillow talk</span></p>
+              <p class="row"><b>Source is</b><span><mark class="redact">her husband</mark></span></p>
+              <span class="stamp-sm">Opened 2 Jan 1992</span>
+            </div>
+            <div class="cover" aria-hidden="true"><span>Sealed</span></div>
+            <p class="file-note">Illustration based on reporting about her file</p>
+          </div>
+          <div class="wall" aria-hidden="true"></div>
+          <div class="wall-stamp" aria-hidden="true"><span>Public</span></div>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Picture it arriving the way a leak arrives, all at once. The truest black swan humanity has ever faced together.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>We've had a rehearsal. On January 2, 1992, Germany opened the Stasi files to the people they were written about.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Vera Wollenberger read hers and learned that the informant code-named Donald was her own husband.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>Now picture everyone holding their own file, and everyone else's. Relationships end in an instant. Relations change shape overnight.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><p>The cruelest part is the timing. People normally face themselves in private first. The index collapses the private reckoning and the public one into one instant.</p><p>Search yourself, and you find what you refused to face at the exact moment everyone else does.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VII -->
+<section class="chapter" id="who-comes-through" data-chapter data-num="VII" data-title="Who Comes Through">
+  <header class="chap"><span class="chap-n">VII</span><h2>Who Comes Through</h2><p class="chap-of">Chapter VII of IX</p></header>
+  <div class="scene at-1" data-scene="quad" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-quad" role="img" aria-label="A two-by-two chart of self-acceptance against accountability. The Integrated, high on both, come through bruised and whole. The Penitent, the Divided and the Shameless fill the other corners. The Hunted sit off the chart.">
+          <svg viewBox="0 0 640 680" aria-hidden="true">
+            <defs><marker id="qa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink-soft)"/></marker></defs>
+            <line x1="40" y1="562" x2="40" y2="36" marker-end="url(#qa)"/>
+            <line x1="40" y1="562" x2="622" y2="562" marker-end="url(#qa)"/>
+            <text class="ax" x="22" y="300" text-anchor="middle" transform="rotate(-90 22 300)">Accountability to those you affected &#8594;</text>
+            <text class="ax" x="342" y="594" text-anchor="middle">Self-acceptance &#8594;</text>
+            <g class="q q-pen"><rect x="64" y="44" width="268" height="240" rx="6"/><g class="qt"><text class="qn" x="84" y="92">THE PENITENT</text><text class="ql" x="84" y="132">Made amends to everyone</text><text class="ql" x="84" y="156">but themselves.</text><text class="qv" x="84" y="258">FORGIVE YOURSELF FIRST</text></g></g>
+            <g class="q q-int"><rect x="348" y="44" width="268" height="240" rx="6"/><g class="qt"><text class="qn" x="368" y="92">THE INTEGRATED</text><text class="ql" x="368" y="132">Told their people first.</text><text class="ql" x="368" y="156">The file confirms what</text><text class="ql" x="368" y="180">love already absorbed.</text><text class="qv" x="368" y="258">BRUISED AND WHOLE</text></g></g>
+            <g class="q q-div"><rect x="64" y="300" width="268" height="240" rx="6"/><g class="qt"><text class="qn" x="84" y="348">THE DIVIDED</text><text class="ql" x="84" y="388">Avoided the mirror</text><text class="ql" x="84" y="412">and the apology.</text><text class="qv" x="84" y="514">FIRST HIT, HARDEST HIT</text></g></g>
+            <g class="q q-sha"><rect x="348" y="300" width="268" height="240" rx="6"/><g class="qt"><text class="qn" x="368" y="348">THE SHAMELESS</text><text class="ql" x="368" y="388">At peace with themselves,</text><text class="ql" x="368" y="412">careless of the harm.</text><text class="qv" x="368" y="514">BARELY DENTED</text></g></g>
+            <g class="q-hunt"><rect x="64" y="616" width="558" height="48" rx="6"/><circle cx="90" cy="640" r="7"/><text x="108" y="645">Off the chart: the Hunted, hiding to survive</text></g>
+          </svg>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>How it goes for any one person comes down to two things. How fully they've accepted themselves, and how accountable they've been to the people they've affected.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>The Integrated already did the work. Their people heard it from them first, and they come through bruised and whole.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>The Shameless barely get dented. The Penitent made amends to everyone but themselves. The Divided avoided the mirror and the apology, and they get hit first and hardest.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>One group sits off the chart entirely, the people whose hiding keeps them alive. The woman who fled an abuser. The kid in a hostile house. The dissident. The index can't tell a hypocrite from someone in hiding.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIII -->
+<section class="chapter" id="come-to-jesus" data-chapter data-num="VIII" data-title="The Come-to-Jesus Move">
+  <header class="chap"><span class="chap-n">VIII</span><h2>The Come-to-Jesus Move</h2><p class="chap-of">Chapter VIII of IX</p></header>
+  <div class="scene at-1" data-scene="stones" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-stones" role="img" aria-label="A row of figures, eldest to youngest, each holding a stone under the words The Accuser. The stones drop one by one, eldest first, and the line Get known before you get searched remains.">
+          <svg viewBox="0 0 640 560" aria-hidden="true">
+            <g class="acc"><text class="acc-t" x="320" y="118" text-anchor="middle" transform="rotate(-4 320 104)">THE ACCUSER</text><text class="acc-s" x="320" y="152" text-anchor="middle">Revelation 12:10</text></g>
+            <g class="known"><text x="320" y="138" text-anchor="middle">GET KNOWN BEFORE</text><text x="320" y="206" text-anchor="middle">YOU GET SEARCHED.</text></g>
+            <line class="ground" x1="40" y1="392" x2="600" y2="392"/>
+            <g class="fig" style="--i:0"><circle cx="80" cy="250" r="17"/><rect x="60" y="272" width="40" height="118" rx="16"/><line class="arm" x1="94" y1="290" x2="108" y2="238"/></g>
+            <g class="fig" style="--i:1"><circle cx="160" cy="250" r="17"/><rect x="140" y="272" width="40" height="118" rx="16"/><line class="arm" x1="174" y1="290" x2="188" y2="238"/></g>
+            <g class="fig" style="--i:2"><circle cx="240" cy="250" r="17"/><rect x="220" y="272" width="40" height="118" rx="16"/><line class="arm" x1="254" y1="290" x2="268" y2="238"/></g>
+            <g class="fig" style="--i:3"><circle cx="320" cy="250" r="17"/><rect x="300" y="272" width="40" height="118" rx="16"/><line class="arm" x1="334" y1="290" x2="348" y2="238"/></g>
+            <g class="fig" style="--i:4"><circle cx="400" cy="250" r="17"/><rect x="380" y="272" width="40" height="118" rx="16"/><line class="arm" x1="414" y1="290" x2="428" y2="238"/></g>
+            <g class="fig" style="--i:5"><circle cx="480" cy="250" r="17"/><rect x="460" y="272" width="40" height="118" rx="16"/><line class="arm" x1="494" y1="290" x2="508" y2="238"/></g>
+            <g class="fig" style="--i:6"><circle cx="560" cy="250" r="17"/><rect x="540" y="272" width="40" height="118" rx="16"/><line class="arm" x1="574" y1="290" x2="588" y2="238"/></g>
+            <circle class="stone" style="--i:0" cx="110" cy="228" r="10"/>
+            <circle class="stone" style="--i:1" cx="190" cy="228" r="10"/>
+            <circle class="stone" style="--i:2" cx="270" cy="228" r="10"/>
+            <circle class="stone" style="--i:3" cx="350" cy="228" r="10"/>
+            <circle class="stone" style="--i:4" cx="430" cy="228" r="10"/>
+            <circle class="stone" style="--i:5" cx="510" cy="228" r="10"/>
+            <circle class="stone" style="--i:6" cx="590" cy="228" r="10"/>
+            <text class="age" x="80" y="420" text-anchor="middle">eldest</text>
+            <text class="age" x="560" y="420" text-anchor="middle">youngest</text>
+            <path class="dirt" d="M190 454q10 -8 20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0"/>
+            <text class="dirt-t" x="320" y="492" text-anchor="middle">written in the dirt</text>
+          </svg>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Look at the god being built. An intelligence that knows every sin and forgives none. Scripture has a name for that figure. The accuser.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>The God of the come-to-Jesus moment does the opposite. &#8220;I will remember their sin no more.&#8221; Mercy as chosen forgetting.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>In John 8, the accusers walk away one by one, &#8220;beginning at the eldest.&#8221; They had the longest files.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>So when you're handed &#8220;damned if you use it, damned if you don't,&#8221; walk the third way.</p><p>Get known before you get searched.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <section class="moves" aria-labelledby="moves-h">
+    <h3 id="moves-h">Seven moves<small>Before Reveal Day</small></h3>
+    <ol>
+      <li><span class="mn">01</span><p><b>Search yourself first,</b> while your reckoning can still be private.</p></li>
+      <li><span class="mn">02</span><p><b>Tell your people first.</b> Every secret has two possible narrators, you or a machine talking to a stranger. Be the first one.</p></li>
+      <li><span class="mn">03</span><p><b>Be one person.</b> The index feeds on the double life, and a single life starves it.</p></li>
+      <li><span class="mn">04</span><p><b>Walk backward with the blanket.</b> When you could look, love sometimes means leaving the file closed.</p></li>
+      <li><span class="mn">05</span><p><b>Drop your stone.</b> The index runs on our hunger to condemn. Starve it.</p></li>
+      <li><span class="mn">06</span><p><b>Build the mirror both ways.</b> If someone searches you, you see it. Your data is your property. In 1791, the same year Bentham published his Panopticon, America ratified the Fourth Amendment. Our papers live on servers now, and the principle holds.</p></li>
+      <li><span class="mn">07</span><p><b>Guard your rough-draft room.</b> Read. Build your vocabulary. Raise kids who can imagine better wishes than the autocomplete.</p></li>
+    </ol>
+  </section>
+</section>
+
+<!-- IX -->
+<section class="chapter" id="fear-not" data-chapter data-num="IX" data-title="Fear Not">
+  <header class="chap"><span class="chap-n">IX</span><h2>Fear Not</h2><p class="chap-of">Chapter IX of IX</p></header>
+  <div class="scene at-1" data-scene="vessel" data-step="1">
+    <div class="scene-in">
+      <div class="graphic">
+        <figure class="exhibit ex-vessel" role="img" aria-label="A Greek water jar, the vessel of Aquarius, tips over and pours until the page floods.">
+          <svg viewBox="0 0 520 620" aria-hidden="true">
+            <defs><clipPath id="vclip"><path d="M226 92H294C294 100 290 104 286 106C283 124 282 140 286 156C334 172 374 208 376 262C378 334 344 412 302 466L314 494H206L218 466C176 412 142 334 144 262C146 208 186 172 234 156C238 140 237 124 234 106C230 104 226 100 226 92Z"/></clipPath></defs>
+            <rect class="flood-rect" x="0" y="0" width="520" height="620"/>
+            <g class="vessel">
+              <path class="handle" d="M370 226C412 220 414 292 374 302"/>
+              <path class="handle" d="M150 226C108 220 106 292 146 302"/>
+              <path class="vbody" d="M226 92H294C294 100 290 104 286 106C283 124 282 140 286 156C334 172 374 208 376 262C378 334 344 412 302 466L314 494H206L218 466C176 412 142 334 144 262C146 208 186 172 234 156C238 140 237 124 234 106C230 104 226 100 226 92Z"/>
+              <g clip-path="url(#vclip)">
+                <rect class="vwater" x="120" y="300" width="280" height="220"/>
+                <path class="band" d="M140 236H396M140 268H396M140 252q8 -9 16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0"/>
+              </g>
+              <path class="voutline" d="M226 92H294C294 100 290 104 286 106C283 124 282 140 286 156C334 172 374 208 376 262C378 334 344 412 302 466L314 494H206L218 466C176 412 142 334 144 262C146 208 186 172 234 156C238 140 237 124 234 106C230 104 226 100 226 92Z"/>
+            </g>
+            <path class="stream" d="M436 190C470 216 486 400 478 620" pathLength="1"/>
+            <text class="vcap" x="260" y="604" text-anchor="middle">AQUARIUS &#183; THE WATER-BEARER</text>
+          </svg>
+        </figure>
+      </div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Luke 12 says what's whispered in closets will be shouted from the housetops. A few verses later: &#8220;the very hairs of your head are all numbered. Fear not.&#8221;</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>Total knowledge, paired with total worth. The index will number every hair on your head with all the love of a spreadsheet. The love part was always our job.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Meet your neighbors now, before things get cataclysmic.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>This is the age of Aquarius. The vessel tips, and everything it ever held comes pouring out.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<section class="coda" id="coda">
+  <div class="coda-in">
+    <p class="coda-line">Get known before you get searched.</p>
+    <p class="coda-by">Michael Wilhelm &#183; November 2026</p>
+  </div>
+  <footer class="sources" id="sources">
+    <h2>Sources</h2>
+    <ol>
+      <li><a href="https://siliconangle.com/2020/02/03/five-years-ashley-madison-hack-victims-targeted-new-wave-extortion-scams/">Five years on, Ashley Madison hack victims targeted in new extortion wave</a>, SiliconANGLE</li>
+      <li><a href="https://hothardware.com/news/microsoft-living-dead-chatbot">Microsoft patents a chatbot of a specific person</a>, HotHardware</li>
+      <li><a href="https://www.engadget.com/wearables/students-used-metas-smart-glasses-to-automatically-dox-strangers-via-instagram-streams-170228496.html">Students used Meta's smart glasses to automatically dox strangers</a>, Engadget</li>
+      <li><a href="https://therecord.media/texas-sues-5-smart-tv-makers-over-acr-tech">Texas sues five smart TV makers over ACR tech</a>, The Record</li>
+      <li><a href="https://www.computing.co.uk/news/2026/meta-explores-facial-recognition-smart-glasses">Meta explores facial recognition for smart glasses</a>, Computing</li>
+      <li><a href="https://ies.ed.gov/learn/press-release/u-s-adults-score-par-international-average-literacy-skills-below-international-average-numeracy-and">Highlights of the 2023 U.S. PIAAC results</a>, NCES</li>
+      <li><a href="https://whiteboardadvisors.com/us-adults-face-alarming-declines-in-literacy-and-numeracy/">U.S. adults face alarming declines in literacy and numeracy</a>, Whiteboard Advisors</li>
+      <li><a href="https://www.wilsonquarterly.com/quarterly/undefined/spycraft-and-soulcraft">Spycraft and Soulcraft</a>, Wilson Quarterly</li>
+      <li><a href="https://www.csmonitor.com/1992/0106/06031.html">Stasi files expose past injustices</a>, Christian Science Monitor, 1992</li>
+      <li><a href="https://thedailybeast.com/the-spy-in-my-bed">The Spy in My Bed</a>, The Daily Beast</li>
+    </ol>
+    <p class="scripture">Scripture from the King James Version: Luke 12:2&#8211;7, John 8:7&#8211;9, Jeremiah 31:34, Revelation 12:10.</p>
+  </footer>
+</section>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var wide = window.matchMedia('(min-width: 900px)');
+  var NS = 'http://www.w3.org/2000/svg';
+
+  function mk(tag, attrs, parent) {
+    var el = document.createElementNS(NS, tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    parent.appendChild(el);
+    return el;
+  }
+
+  function buildNet() {
+    var svg = document.getElementById('net');
+    if (!svg) return;
+    var cx = 320, cy = 320;
+    function at(r, a) { return [cx + r * Math.cos(a * Math.PI / 180), cy + r * Math.sin(a * Math.PI / 180)]; }
+    var r1 = [], r2 = [], r3 = [], i;
+    for (i = 0; i < 7; i++) { var a = -90 + i * 360 / 7; r1.push({ a: a, p: at(118, a) }); }
+    r1.forEach(function (n) { [-13, 13].forEach(function (o) { r2.push({ a: n.a + o, p: at(212, n.a + o), up: n.p }); }); });
+    r2.forEach(function (n) { [-6.5, 6.5].forEach(function (o) { r3.push({ a: n.a + o, p: at(288, n.a + o), up: n.p }); }); });
+    function L(g, p, q, cls, w) { return mk('line', { x1: p[0].toFixed(1), y1: p[1].toFixed(1), x2: q[0].toFixed(1), y2: q[1].toFixed(1), 'class': cls, 'stroke-width': w || 1 }, g); }
+    function D(g, p, r, cls) { return mk('circle', { cx: p[0].toFixed(1), cy: p[1].toFixed(1), r: r, 'class': cls }, g); }
+    var C = [cx, cy];
+    var outer = mk('g', { 'class': 'net-outer' }, svg);
+    r3.forEach(function (n) { L(outer, n.up, n.p, 'e'); });
+    r2.forEach(function (n) { L(outer, n.up, n.p, 'e'); });
+    r3.forEach(function (n) { D(outer, n.p, 3.5, 'nd'); });
+    r2.forEach(function (n) { D(outer, n.p, 5.5, 'nd'); });
+    var inner = mk('g', { 'class': 'net-inner' }, svg);
+    var w = [3.4, 1.4, 2.6, 1.8, 2.2, 1.2, 3];
+    r1.forEach(function (n, k) { L(inner, C, n.p, k === 3 ? 'e e1 cut' : 'e e1', w[k]); });
+    r1.forEach(function (n, k) { D(inner, n.p, 9, k === 3 ? 'nd cutn' : 'nd'); });
+    var path = mk('g', { 'class': 'net-path' }, svg);
+    var h1 = r1[1].p, h2 = r2[3].p, h3 = r3[6].p;
+    L(path, C, h1, 'pe', 3); L(path, h1, h2, 'pe', 3); L(path, h2, h3, 'pe', 3);
+    D(path, h1, 8, 'pn'); D(path, h2, 7, 'pn'); D(path, h3, 10, 'pn');
+    var core = mk('g', { 'class': 'net-core' }, svg);
+    D(core, C, 27, 'core');
+    mk('text', { x: cx, y: cy + 5, 'text-anchor': 'middle', 'class': 'core-t' }, core).textContent = 'YOU';
+    var p3 = r1[3].p;
+    mk('text', { x: (p3[0] + 16).toFixed(1), y: (p3[1] + 30).toFixed(1), 'class': 'lab lab-cut' }, svg).textContent = 'stopped talking';
+    mk('text', { x: h3[0].toFixed(1), y: (h3[1] - 20).toFixed(1), 'text-anchor': 'middle', 'class': 'lab lab-sc' }, svg).textContent = 'a scandal';
+  }
+
+  function buildDots() {
+    var g = document.getElementById('dots');
+    if (!g) return;
+    for (var i = 0; i < 100; i++) {
+      var c = mk('circle', { cx: 74 + 42 * (i % 10), cy: 114 + 42 * Math.floor(i / 10), r: 14, 'class': i < 19 ? 'd a' : (i < 28 ? 'd b' : 'd o') }, g);
+      c.style.setProperty('--i', i);
+    }
+  }
+
+  function buildWall() {
+    var wall = document.querySelector('.wall');
+    if (!wall) return;
+    for (var i = 0; i < 48; i++) {
+      var f = document.createElement('span');
+      f.className = i === 27 ? 'wf you' : 'wf';
+      f.innerHTML = i === 27 ? '<i></i><b>You</b>' : '<i></i>';
+      wall.appendChild(f);
+    }
+  }
+
+  function typeQuery(scene) {
+    var el = scene.querySelector('.typed');
+    if (!el || el.getAttribute('data-done') || reduce) return;
+    el.setAttribute('data-done', '1');
+    var text = el.textContent, n = 0;
+    el.textContent = '';
+    var t = setInterval(function () {
+      n += 1;
+      el.textContent = text.slice(0, n);
+      if (n >= text.length) clearInterval(t);
+    }, 90);
+  }
+
+  buildNet(); buildDots(); buildWall();
+
+  function activate(step) {
+    var scene = step.closest('.scene');
+    var n = +step.getAttribute('data-step');
+    scene.querySelectorAll('.step').forEach(function (s) { s.classList.toggle('is-active', s === step); });
+    if (scene.getAttribute('data-scene') === 'search' && n === 1) typeQuery(scene);
+    if (+scene.getAttribute('data-step') === n) return;
+    scene.setAttribute('data-step', n);
+    var total = scene.querySelectorAll('.step').length;
+    for (var i = 1; i <= total; i++) scene.classList.toggle('at-' + i, i <= n);
+    update();
+  }
+
+  var io;
+  function observe() {
+    if (io) io.disconnect();
+    io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) activate(e.target.closest('.step')); });
+    }, { rootMargin: wide.matches ? '-47% 0px -47% 0px' : '-58% 0px -36% 0px' });
+    document.querySelectorAll('.step .card').forEach(function (c) { io.observe(c); });
+  }
+  observe();
+  if (wide.addEventListener) wide.addEventListener('change', observe);
+
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('[data-chapter]'));
+  var now = document.getElementById('now');
+  var prog = document.querySelector('.progress');
+  var vessel = document.querySelector('[data-scene="vessel"]');
+  var coda = document.getElementById('coda');
+  var ticking = false;
+  function update() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, window.scrollY / h) : 0) + ')';
+    var line = window.innerHeight * 0.35, cur = null;
+    chapters.forEach(function (c) { if (c.getBoundingClientRect().top <= line) cur = c; });
+    var label = cur ? cur.getAttribute('data-num') + ' · ' + cur.getAttribute('data-title') : 'Contents';
+    if (coda.getBoundingClientRect().top <= line) label = 'Sources';
+    if (now.textContent !== label) now.textContent = label;
+    var flooded = +vessel.getAttribute('data-step') >= 4 && vessel.getBoundingClientRect().top < window.innerHeight * 0.5;
+    document.body.classList.toggle('flood', flooded);
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () { ticking = false; update(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+
+  var toc = document.querySelector('.toc');
+  toc.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { toc.removeAttribute('open'); }); });
+  document.addEventListener('click', function (e) { if (toc.open && !toc.contains(e.target)) toc.removeAttribute('open'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && toc.open) { toc.removeAttribute('open'); toc.querySelector('summary').focus(); } });
+})();
+</script>
+</body>
+</html>
