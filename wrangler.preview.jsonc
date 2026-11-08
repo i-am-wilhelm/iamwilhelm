@@ -5,8 +5,10 @@
   // never touch the production worker or its custom domains.
   "name": "iamwilhelm-preview",
   "compatibility_date": "2026-07-01",
-  // The script only runs for /api/* (run_worker_first); every other request
-  // is served straight from the static assets without invoking it.
+  // The script only runs for /api/* and the Google Search Console file
+  // (run_worker_first); every other request is served straight from the
+  // static assets without invoking it. The Search Console path must stay:
+  // see worker/index.ts.
   "main": "./worker/index.ts",
   "workers_dev": true,
   "assets": {
@@ -14,7 +16,7 @@
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*", "/google8b497834161e9abd.html"]
   },
   // Equal Volume two-phone rooms: one PoemRoom per four-character code.
   "durable_objects": {

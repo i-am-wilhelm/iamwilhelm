@@ -57,6 +57,11 @@ No WebGL, no dithering, no audio on these pages.
   new scrolly is hung or restyled and commit the JPEGs;
   `npm run links` checks every outbound link in the build.
 
+Google Search Console verification: `/google8b497834161e9abd.html` is
+served by the Worker (`worker/index.ts`, plus its entry in
+`run_worker_first` in both wrangler configs), not from `public/`. Keep it
+permanently: Google re-checks the file and verification lapses if it goes.
+
 Branch previews: pushes to `museum-homepage` deploy to the
 `iamwilhelm-preview` worker on workers.dev (`.github/workflows/preview.yml`,
 `wrangler.preview.jsonc`). Production deploys only from `main`.
