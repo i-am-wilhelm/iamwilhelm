@@ -2,14 +2,16 @@
 /**
  * Equal Volume, hung in the Gallery of Visualized Poetry. A poem in three
  * parts: the shattered vessel, the descent for the pieces, and being seen
- * to the volume of your surrender. One fixed canvas (hall, mirrors, vessel,
- * the little one) behind a single column of loose lines.
+ * to the volume of your surrender. One fixed canvas (hall, six mirrors that
+ * project and take in the same gesture, the vessel, the little one) behind
+ * a single column of loose lines, with a guide strip at the foot of the
+ * screen that tells the reader what the room wants next.
  *
- * Ported verbatim from the owner's prototype (equal-volume.html). The only
- * changes: the page wrapper and meta come from the Poem layout, the fonts
- * are the site's self-hosted files, and the "two phones" block talks to the
- * PoemRoom Durable Object (worker/poem-room.ts) over a WebSocket in place of
- * the prototype host's room API.
+ * Second cut, ported from the owner's prototype (equal-volume-v2.html). The
+ * only changes: the page wrapper and meta come from the Poem layout, the
+ * fonts are the site's self-hosted files, and the "two phones" block talks
+ * to the PoemRoom Durable Object (worker/poem-room.ts) over a WebSocket in
+ * place of the prototype host's room API.
  */
 import Poem from '../../layouts/Poem.astro';
 ---
@@ -24,11 +26,13 @@ import Poem from '../../layouts/Poem.astro';
 >
 <canvas id="stage" aria-hidden="true"></canvas>
 <div id="lantern" aria-hidden="true"></div>
-<div id="black" aria-hidden="true"><span>look</span></div>
+<div id="black" aria-hidden="true"><span>the glass is dark now.<br>the face in it is yours.</span></div>
 
-<div id="hold" aria-live="polite">
+<div id="guide" aria-live="polite"><p id="guideTxt">scroll slowly. the hall is listening.</p></div>
+
+<div id="hold">
   <div class="ring" id="ring"><i>hold</i></div>
-  <p id="holdmsg">press and hold anywhere, as long as you are willing</p>
+  <p id="holdmsg">press and hold anywhere. it fills for as long as you stay.</p>
   <button class="skip" id="skip" type="button">let go</button>
 </div>
 
@@ -41,7 +45,7 @@ import Poem from '../../layouts/Poem.astro';
       <b>condition</b><span>broken, kept</span>
       <b>repair</b><span>gold, left visible</span>
     </p>
-    <p class="hint">scroll slowly · tap the mirrors when you reach them</p>
+    <p class="howto">The room answers to your hands. <b>Scroll</b> slowly. When the hall goes dark, <b>tap the mirrors</b>. When the page stops, <b>hold</b>. Some poetry is read in two-player mode.</p>
     <div class="pair" id="pairTop" hidden>
       <button type="button" data-pair>read this with one other person</button>
       <div class="box" id="pairBox">
@@ -52,7 +56,7 @@ import Poem from '../../layouts/Poem.astro';
     </div>
   </header>
 
-  <section id="sec1" data-mood="0">
+  <section id="sec1">
     <p class="num">I</p>
     <p class="ln">You arrived carrying something whole.</p>
     <p class="ln">A vessel,</p>
@@ -64,7 +68,7 @@ import Poem from '../../layouts/Poem.astro';
     <p class="ln">No guard at the door.</p>
     <p class="ln">You held it out the way a child holds out a found stone,</p>
     <p class="ln">certain the world would know what it was.</p>
-    <p class="ln gap">And the world knew.</p>
+    <p class="ln gap" data-fx="mirrors">And the world knew.</p>
     <p class="ln" data-fx="drain">It took a cupful</p>
     <p class="ln">and called it tithe.</p>
     <p class="ln" data-fx="drain">It took a cupful</p>
@@ -82,7 +86,7 @@ import Poem from '../../layouts/Poem.astro';
     <p class="ln">that the fullness was a sin,</p>
     <p class="ln" data-fx="crack">that an empty vessel was the only one</p>
     <p class="ln">the heaven they described would hold.</p>
-    <p class="ln gap" data-fx="mirrors">Mirrors went up where the windows had been.</p>
+    <p class="ln gap" data-fx="project">Mirrors went up where the windows had been.</p>
     <p class="ln">Every face that leaned over you</p>
     <p class="ln">wore your face back at you</p>
     <p class="ln mirror" data-fx="crack">and said: this is you.</p>
@@ -102,7 +106,7 @@ import Poem from '../../layouts/Poem.astro';
     <p class="ln">before anyone thought to ask what they were.</p>
   </section>
 
-  <section id="sec2" data-mood="1">
+  <section id="sec2">
     <p class="num">II</p>
     <p class="ln" data-fx="lantern">You go down for the pieces.</p>
     <p class="ln">No one sends you.</p>
@@ -118,7 +122,6 @@ import Poem from '../../layouts/Poem.astro';
     <p class="ln">and asking it,</p>
     <p class="ln">slowly,</p>
     <p class="ln big">who hung you here.</p>
-    <p class="hint">tap a mirror</p>
     <p class="ln gap">It is finding the faces behind the glass,</p>
     <p class="ln">the fathers,</p>
     <p class="ln">the preachers,</p>
@@ -167,7 +170,7 @@ import Poem from '../../layouts/Poem.astro';
     <p class="ln">waiting for the student to turn around.</p>
   </section>
 
-  <section id="sec3" data-mood="2">
+  <section id="sec3">
     <p class="num">III</p>
     <p class="ln big" data-fx="rebuild">So turn around.</p>
     <p class="ln gap">This is the part that asks for the deep water.</p>
@@ -219,28 +222,36 @@ import Poem from '../../layouts/Poem.astro';
     <p class="ln">filled to a brim that was never a sin,</p>
     <p class="ln">offered freely,</p>
     <p class="ln">and this time</p>
-    <p class="ln big gold">kept.</p>
+    <p class="ln big gold" data-fx="end">kept.</p>
   </section>
 </main>
 
 <footer>
   <div>Michael Wilhelm · <a href="https://iamwilhelm.com">iamwilhelm.com</a></div>
-  <div id="levelNote"></div>
+  <div class="ledger" id="ledger">
+    <b>mirrors asked</b><span id="lgMirrors">0 of 6</span>
+    <b>coats returned</b><span id="lgCoats">0</span>
+    <b>floor</b><span id="lgFloor">not yet</span>
+    <b>held</b><span id="lgHeld">not yet</span>
+    <b>vessel</b><span id="lgVessel">not yet</span>
+    <b>read</b><span id="lgRead">alone</span>
+  </div>
   <div class="pair" id="pairBottom" hidden><button type="button" data-pair>read it again with someone</button></div>
 </footer>
 </Poem>
 
 <style is:global>
-/* Layout: one fixed canvas (hall, mirrors, vessel, the little one) behind a single
-   column of loose lines. No boxes. Each line is placed by its own margin, like a
-   word falling where it lands. Single night-to-dawn world, so one theme by choice. */
+/* Layout: one fixed canvas (hall, six mirrors that project and take at once, the
+   vessel, the little one) behind a single column of loose lines, and a fixed
+   guide strip at the bottom that tells the reader what the room wants next.
+   Single night-to-dawn world, so one theme by choice. */
 :root{
   --bg:#0b0e15;            /* night interior */
   --fg:#e9e4d9;            /* bone */
   --dim:#8c8a84;           /* dust */
   --clay:#a8674a;          /* the vessel */
   --glass:#7f93ad;         /* mirror light */
-  --gold:#d4a84b;          /* repair, visible */
+  --gold:#d4a84b;          /* what was taken; what repairs */
   --serif:"Cormorant Garamond",Garamond,"Times New Roman",serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   color-scheme:dark;
@@ -250,21 +261,23 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);margin:0;over
 body.locked{overflow:hidden}
 canvas#stage{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
 #lantern{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity 1.6s ease;
-  --lx:50%;--ly:55%;--lr:190px;
-  background:radial-gradient(circle at var(--lx) var(--ly),transparent 0,transparent calc(var(--lr) - 70px),rgba(3,4,8,.985) var(--lr))}
+  --lx:50%;--ly:55%;--lr:200px;
+  background:radial-gradient(circle at var(--lx) var(--ly),transparent 0,transparent calc(var(--lr) - 80px),rgba(3,4,8,.985) var(--lr))}
 #lantern.on{opacity:1}
 #black{position:fixed;inset:0;z-index:3;background:#000;opacity:0;pointer-events:none;transition:opacity 1.4s ease;display:grid;place-items:center}
 #black.on{opacity:1;pointer-events:auto}
-#black span{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#3a3a3a;opacity:0;transition:opacity 1s ease .9s}
+#black span{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:#3a3a3a;opacity:0;transition:opacity 1s ease 1s;text-align:center;line-height:2;padding:0 2rem}
 #black.on span{opacity:1}
 
 main{position:relative;z-index:1;max-width:36rem;margin:0 auto;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-block:14vh 20vh}
-.open{min-height:70vh;display:flex;flex-direction:column;justify-content:center;gap:1.4rem}
+  padding-block:14vh 22vh}
+.open{min-height:72vh;display:flex;flex-direction:column;justify-content:center;gap:1.5rem}
 h1{font-weight:400;font-size:clamp(2.6rem,9vw,4.6rem);line-height:.95;letter-spacing:-.01em;margin:0;text-wrap:balance}
 .spec{font-family:var(--mono);font-size:.7rem;line-height:1.9;color:var(--dim);letter-spacing:.04em;margin:0;display:grid;grid-template-columns:max-content 1fr;column-gap:1.2rem}
 .spec b{font-weight:400;color:#5e5c57}
+.howto{font-family:var(--mono);font-size:.68rem;line-height:1.9;letter-spacing:.06em;color:#8c8a84;margin:0;max-width:34ch}
+.howto b{font-weight:400;color:var(--gold)}
 .num{font-family:var(--mono);font-size:.7rem;color:var(--dim);letter-spacing:.3em;margin:0 0 2.2rem}
 section{padding-block:18vh 10vh}
 .ln{font-size:clamp(1.22rem,4.6vw,1.62rem);line-height:1.32;font-weight:400;margin:0 0 .42rem;max-width:30ch;position:relative;
@@ -276,36 +289,50 @@ section{padding-block:18vh 10vh}
   -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0),#000 85%);mask-image:linear-gradient(to bottom,rgba(0,0,0,0),#000 85%)}
 .ln.mirror .t{display:inline-block;transform:scaleX(-1);color:var(--glass)}
 .ln.mirror .rx{transform:none;opacity:.9;color:var(--fg);filter:none;-webkit-mask-image:none;mask-image:none}
-.ln.quiet{color:var(--dim)}
 .ln.gold{color:var(--gold)}
 .ln.big{font-size:clamp(1.6rem,6.4vw,2.3rem);line-height:1.15}
 #sec2 .ln{color:#cfc8ba}
-.hint{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#56544f;margin:1.6rem 0 0}
 
-#hold{position:fixed;left:0;right:0;bottom:0;z-index:4;display:none;flex-direction:column;align-items:center;gap:.8rem;
+/* guide strip: the one voice that tells the reader what the room wants */
+#guide{position:fixed;left:0;right:0;bottom:0;z-index:4;pointer-events:none;display:flex;justify-content:center;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-top:14px;
+  background:linear-gradient(to top,rgba(6,8,13,.9),rgba(6,8,13,0))}
+#guide p{margin:0;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:#7d786d;text-align:center;line-height:1.8;max-width:34ch;
+  transition:opacity .6s ease,transform .6s ease}
+#guide p.swap{opacity:0;transform:translateY(4px)}
+#guide p b{font-weight:400;color:var(--gold)}
+#guide.hide{opacity:0;transition:opacity .4s}
+
+#hold{position:fixed;left:0;right:0;bottom:0;z-index:5;display:none;flex-direction:column;align-items:center;gap:.9rem;
   padding-bottom:calc(10vh + env(safe-area-inset-bottom,0px));pointer-events:none}
 #hold.on{display:flex}
-#hold .ring{width:92px;height:92px;border-radius:50%;border:1px solid #4a4640;position:relative;display:grid;place-items:center;
-  background:radial-gradient(circle,rgba(212,168,75,0) 0,rgba(212,168,75,0) 60%,rgba(212,168,75,.0) 100%)}
-#hold .ring::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--gold);
+#hold .ring{width:104px;height:104px;border-radius:50%;border:1px solid #4a4640;position:relative;display:grid;place-items:center;
+  animation:breathe 3.2s ease-in-out infinite}
+#hold .ring.down{animation:none}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(212,168,75,0)}50%{box-shadow:0 0 0 14px rgba(212,168,75,.07)}}
+#hold .ring::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1.5px solid var(--gold);
   clip-path:inset(calc((1 - var(--lv,0)) * 100%) 0 0 0);transition:clip-path .25s linear}
 #hold .ring i{font-family:var(--mono);font-style:normal;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:#9a948a}
 #hold .ring.down i{color:var(--gold)}
-#hold p{margin:0;font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#6b675f;text-align:center;max-width:24ch;line-height:1.7}
+#hold p{margin:0;font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#8c867a;text-align:center;max-width:26ch;line-height:1.8}
 #hold .skip{pointer-events:auto;background:none;border:0;color:#4e4b45;font:inherit;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;opacity:0;transition:opacity 1s}
 #hold .skip.show{opacity:1}
 #hold .skip:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
 
-footer{position:relative;z-index:1;max-width:36rem;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:2rem 6rem;
-  font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:#5e5c57;display:flex;flex-direction:column;gap:1rem}
+footer{position:relative;z-index:1;max-width:36rem;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:2rem 9rem;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:#5e5c57;display:flex;flex-direction:column;gap:1.1rem}
 footer a{color:#8c8a84;text-decoration:none;border-bottom:1px solid #2a2c33}
 footer a:focus-visible,button:focus-visible,input:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+.ledger{display:grid;grid-template-columns:max-content 1fr;column-gap:1.2rem;row-gap:.25rem;line-height:1.8;color:#6b675f}
+.ledger b{font-weight:400;color:#5e5c57}
+.ledger span.y{color:var(--gold)}
 
 /* pairing */
-.pair{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:#6b675f;display:flex;flex-direction:column;gap:.6rem;margin-top:.6rem}
+.pair{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:#8c8a84;display:flex;flex-direction:column;gap:.7rem;margin-top:.4rem}
 .pair[hidden]{display:none}
-.pair button{background:none;border:1px solid #33353c;color:#9a948a;font:inherit;padding:.5rem .8rem;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;font-size:.62rem;width:max-content}
-.pair button:hover{border-color:#6b675f;color:var(--fg)}
+.pair button{background:none;border:1px solid #3a3d46;color:#b3ada0;font:inherit;padding:.55rem .9rem;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;font-size:.62rem;width:max-content}
+.pair button:hover{border-color:var(--gold);color:var(--fg)}
 .pair .box{display:none;flex-direction:column;gap:.7rem;border-left:1px solid #2a2c33;padding-left:1rem}
 .pair .box.on{display:flex}
 .pair code{font-family:var(--mono);font-size:1.1rem;letter-spacing:.3em;color:var(--gold)}
@@ -318,6 +345,7 @@ footer a:focus-visible,button:focus-visible,input:focus-visible{outline:1px soli
   .ln,.ln.wait{transition:none;transform:none;opacity:1}
   #lantern{display:none}
   #black{transition:none}
+  #hold .ring{animation:none}
 }
 
 /* The Poem layout's shared line mechanics (flex sections, wider column,
@@ -325,7 +353,7 @@ footer a:focus-visible,button:focus-visible,input:focus-visible{outline:1px soli
    its own, so hand the defaults back to the prototype's values. */
 body.ev :not(.poem-exit),body.ev :not(.poem-exit)::before,body.ev :not(.poem-exit)::after{box-sizing:content-box}
 body.ev{font-size:16px;line-height:normal;-webkit-font-smoothing:auto}
-body.ev main{max-width:36rem;padding-block:14vh 20vh}
+body.ev main{max-width:36rem;padding-block:14vh 22vh}
 body.ev section{min-height:0;display:block;gap:normal;padding-block:18vh 10vh}
 </style>
 
@@ -335,33 +363,41 @@ const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
 const lantern = document.getElementById('lantern'), black = document.getElementById('black');
 const holdEl = document.getElementById('hold'), ring = document.getElementById('ring'), holdMsg = document.getElementById('holdmsg'), skip = document.getElementById('skip');
+const guide = document.getElementById('guide'), guideTxt = document.getElementById('guideTxt');
 let W = 0, H = 0, DPR = 1;
 
 /* ---------- state ---------- */
 const S = {
-  mood: 0,                // 0 hall, 1 under, 2 dawn (continuous)
-  level: 1, levelT: 1,    // liquid in the vessel
-  cracks: 0,              // 0..6 hairlines
-  scatter: 0, scatterT: 0,// 0 whole, 1 shards on the floor
-  gold: 0, goldT: 0,      // seams visible
-  floor: 0, floorT: 0,    // bedrock line
-  thud: 0,
-  lo: {x: .12, y: .9, h: 46, a: .55},  xT: .12, yT: .9, hT: 46, aT: .55,   // the little one
-  el: {x: 1.15, y: .9, h: 72, a: 0},   elT: {x: 1.15, y: .9, h: 72, a: 0}, // the one who came back
-  panels: [],             // mirror panels
-  pointer: {x: .5, y: .55},
+  mood: 0,                 // 0 hall, 1 under, 2 dawn (continuous)
+  level: 1, levelT: 1,     // liquid in the vessel
+  cracks: 0,
+  scatter: 0, scatterT: 0,
+  gold: 0, goldT: 0,
+  floor: 0, floorT: 0,
+  thud: 0, ripple: 0,
+  lo: {x: .12, y: .9, h: 46, a: .55},  xT: .12, yT: .9, hT: 46, aT: .55,
+  el: {x: 1.15, y: .9, h: 72, a: 0},   elT: {x: 1.15, y: .9, h: 72, a: 0},
+  panels: [], threads: [], motes: [],
   vy: .8, vyT: .8, vs: 1, vsT: 1,
-  hall: 0, hallT: 0,
+  focus: -1,               // panel index drawing the "tap me" ring
   t: 0
 };
-const NAMES = ['father', 'mother', 'preacher', 'beloved', 'teacher', 'the one who said thank you'];
-for (let i = 0; i < 6; i++) S.panels.push({state: 'glass', s: 0, sT: 0, sky: 0, skyT: 0, off: 0, offT: 0, name: NAMES[i]});
+const NAMES = ['father', 'mother', 'preacher', 'beloved', 'teacher', 'thank you'];
+for (let i = 0; i < 6; i++) S.panels.push({
+  state: 'glass', name: NAMES[i],
+  beam: 0, beamT: 0,      // the projection: how much of "you" the panel throws back
+  face: 0, faceT: 0,      // the one behind the glass
+  off: 0, offT: 0,        // the coat sliding out and away
+  sky: 0, skyT: 0,        // window
+  flare: 0,               // flash when the projector is caught
+  phase: Math.random() * 6.28
+});
+for (let i = 0; i < 70; i++) S.motes.push({x: Math.random(), y: Math.random(), s: .4 + Math.random() * 1.1, v: .004 + Math.random() * .01, p: Math.random() * 6.28});
+
+const found = {mirrors: new Set(), coats: 0, floor: false, held: 0, vessel: false, paired: false};
 
 /* ---------- geometry ---------- */
-// Signature of everything the canvas draws from; frame() repaints only when it changes.
-let lastSig = '';
 function resize() {
-  lastSig = '';
   DPR = Math.min(2, devicePixelRatio || 1);
   W = innerWidth; H = innerHeight;
   cv.width = W * DPR; cv.height = H * DPR;
@@ -370,34 +406,37 @@ function resize() {
 addEventListener('resize', resize, {passive: true}); resize();
 
 function panelRects() {
-  const pw = Math.max(34, W * .075), ph = H * .3, gap = H * .05;
-  const top = H * .12, lx = Math.max(6, W * .018), rx = W - lx - pw;
+  const pw = Math.max(36, W * .08), ph = H * .3, gap = H * .05;
+  const top = H * .1, lx = Math.max(6, W * .018), rx = W - lx - pw;
   const r = [];
   for (let i = 0; i < 3; i++) r.push({x: lx, y: top + i * (ph + gap), w: pw, h: ph});
   for (let i = 0; i < 3; i++) r.push({x: rx, y: top + i * (ph + gap) + ph * .33, w: pw, h: ph});
   return r;
 }
-
-/* vessel outline sampled from the left rim, down to the base, up to the right rim */
+function vesselGeom() {
+  // a wide frame (desktop, the share card) sets the bowl beside the column instead of under it
+  const wide = W / H > 1.4;
+  const size = Math.min(W, H) * (wide ? .27 : .4) * S.vs;
+  const w = size, h = size * .62, cx = wide ? W * .8 : W / 2, cy = H * (wide ? .64 : S.vy), y0 = cy - h * .5;
+  return {w, h, cx, cy, y0};
+}
 function bowl(cx, y0, w, h) {
   const pts = [], N = 72;
   const cub = (a, b, c, d, t) => { const u = 1 - t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; };
   for (let i = 0; i <= N; i++) {
-    const t = i / N;
-    let x, y;
+    const t = i / N; let x, y;
     if (t <= .5) { const s = t * 2; x = cub(cx - w/2, cx - w/2, cx - w*.28, cx, s); y = cub(y0, y0 + h*.8, y0 + h, y0 + h, s); }
     else { const s = (t - .5) * 2; x = cub(cx, cx + w*.28, cx + w/2, cx + w/2, s); y = cub(y0 + h, y0 + h, y0 + h*.8, y0, s); }
     pts.push([x, y]);
   }
   return pts;
 }
-const SCAT = [[-.9, .18, -.9], [-.55, .3, .6], [-.2, .22, 1.9], [.15, .32, -1.4], [.5, .2, .4], [.85, .28, -2.4]]; // dx, dy (of w,h), rot
+const SCAT = [[-.9, .18, -.9], [-.55, .3, .6], [-.2, .22, 1.9], [.15, .32, -1.4], [.5, .2, .4], [.85, .28, -2.4]];
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = (a, b, k) => a + (b - a) * k;
-function mix(c1, c2, t) { return c1.map((v, i) => Math.round(lerp(v, c2[i], t))); }
+const mix = (c1, c2, t) => c1.map((v, i) => Math.round(lerp(v, c2[i], t)));
 const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 function pal(m) {
-  // hall → under → dawn
   const top = [[22, 27, 40], [5, 6, 10], [34, 46, 68]], bot = [[9, 11, 17], [0, 0, 0], [15, 19, 29]];
   const i = Math.min(1, Math.floor(m)), f = Math.min(1, m - i);
   return {top: mix(top[i], top[Math.min(2, i + 1)], f), bot: mix(bot[i], bot[Math.min(2, i + 1)], f)};
@@ -424,78 +463,139 @@ function drawFigure(x, y, h, a, warm) {
   ctx.restore();
 }
 
-function drawPanels(m) {
-  const rects = panelRects();
+/* the projection: a cone of glass-light thrown from the mirror onto the vessel.
+   In the hall it is pale blue and aimed at you. As a window it becomes a warm
+   shaft of daylight that falls inward and down, asking nothing back. */
+function drawBeams(m, rects) {
+  const {cx, cy} = vesselGeom();
+  S.panels.forEach((p, i) => {
+    const r = rects[i];
+    const px = r.x + r.w / 2, py = r.y + r.h * .45;
+    // mirror beam
+    const b = p.beam * (1 - p.sky);
+    if (b > .01) {
+      const sway = Math.sin(S.t * .6 + p.phase) * W * .04;
+      const tx = cx + sway, ty = cy - 10;
+      const spread = Math.min(W, H) * .16 * (0.6 + .4 * b);
+      const dx = tx - px, dy = ty - py, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+      const g = ctx.createLinearGradient(px, py, tx, ty);
+      const dark = Math.min(1, m);
+      g.addColorStop(0, `rgba(170,190,220,${(.22 - .14 * dark) * b + p.flare * .5})`);
+      g.addColorStop(1, `rgba(170,190,220,0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.moveTo(px, py - r.w * .3); ctx.lineTo(px, py + r.w * .3);
+      ctx.lineTo(tx + nx * spread, ty + ny * spread); ctx.lineTo(tx - nx * spread, ty - ny * spread); ctx.closePath(); ctx.fill();
+      // the lens: a small bright point at the throat of the beam
+      ctx.fillStyle = `rgba(220,230,245,${(.5 - .25 * dark) * b + p.flare})`;
+      ctx.beginPath(); ctx.arc(px, py, 2 + 2 * b + p.flare * 4, 0, Math.PI * 2); ctx.fill();
+    }
+    // window shaft
+    if (p.sky > .01) {
+      const dir = r.x < W / 2 ? 1 : -1;
+      const g = ctx.createLinearGradient(px, r.y, px + dir * W * .35, H);
+      g.addColorStop(0, `rgba(236,222,190,${.16 * p.sky})`); g.addColorStop(1, 'rgba(236,222,190,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.moveTo(r.x, r.y + r.w * .5); ctx.lineTo(r.x + r.w, r.y + r.w * .5);
+      ctx.lineTo(px + dir * W * .42 + r.w * 1.6, H); ctx.lineTo(px + dir * W * .42 - r.w * 1.6, H); ctx.closePath(); ctx.fill();
+    }
+  });
+}
+
+function drawPanels(m, rects) {
   S.panels.forEach((p, i) => {
     const r = rects[i];
     ctx.save();
-    // arch clip
     ctx.beginPath(); ctx.moveTo(r.x, r.y + r.h); ctx.lineTo(r.x, r.y + r.w / 2); ctx.arc(r.x + r.w / 2, r.y + r.w / 2, r.w / 2, Math.PI, 0); ctx.lineTo(r.x + r.w, r.y + r.h); ctx.closePath();
     ctx.clip();
-    // base glass
     const dark = Math.min(1, m);
     const g = ctx.createLinearGradient(r.x, r.y, r.x + r.w, r.y + r.h);
     g.addColorStop(0, rgb(mix([52, 64, 86], [10, 11, 16], dark)));
     g.addColorStop(.5, rgb(mix([30, 37, 52], [6, 7, 10], dark)));
     g.addColorStop(1, rgb(mix([16, 20, 30], [3, 3, 5], dark)));
     ctx.fillStyle = g; ctx.fillRect(r.x, r.y, r.w, r.h);
-    // faint reflected light
-    ctx.fillStyle = `rgba(200,210,230,${.08 * (1 - dark) + .02})`;
-    ctx.fillRect(r.x + r.w * .62, r.y, r.w * .06, r.h);
-    // figure behind the glass
-    if (p.s > 0.01) {
-      ctx.save(); ctx.translate(p.off * r.w * 1.4, 0);
-      drawFigure(r.x + r.w / 2, r.y + r.h * .92, r.h * .5, p.s * .5, false);
-      ctx.globalAlpha = p.s;
-      ctx.fillStyle = '#9a948a'; ctx.font = `${Math.max(9, r.w * .22)}px "JetBrains Mono",monospace`; ctx.textAlign = 'center';
-      ctx.fillText(p.name.length > 9 ? 'thank you' : p.name, r.x + r.w / 2, r.y + r.h * .97 - 2);
+    // the vessel's own ghost, as the glass holds it: the taking, made visible
+    if (p.beam > .01 && p.sky < .5) {
+      const gy = r.y + r.h * .55, gw = r.w * .55, gh = gw * .62;
+      ctx.globalAlpha = (.35 - .2 * dark) * p.beam * (1 - p.sky);
+      ctx.fillStyle = '#d4a84b';
+      ctx.beginPath(); ctx.moveTo(r.x + r.w / 2 - gw / 2, gy); ctx.quadraticCurveTo(r.x + r.w / 2 - gw / 2, gy + gh, r.x + r.w / 2, gy + gh); ctx.quadraticCurveTo(r.x + r.w / 2 + gw / 2, gy + gh, r.x + r.w / 2 + gw / 2, gy); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    // faint highlight stripe
+    ctx.fillStyle = `rgba(200,210,230,${.08 * (1 - dark) + .02})`; ctx.fillRect(r.x + r.w * .62, r.y, r.w * .06, r.h);
+    // the one behind the glass
+    if (p.face > .01) {
+      ctx.save(); ctx.translate(p.off * r.w * 1.6, p.off * r.h * .3);
+      drawFigure(r.x + r.w / 2, r.y + r.h * .9, r.h * .5, p.face * .6, false);
+      ctx.globalAlpha = p.face;
+      ctx.fillStyle = '#b3ada0'; ctx.font = `${Math.max(9, r.w * .2)}px "JetBrains Mono",monospace`; ctx.textAlign = 'center';
+      ctx.fillText(p.name, r.x + r.w / 2, r.y + r.h * .97 - 2);
       ctx.restore();
     }
-    // empty hole after the coat is handed back
-    if (p.state === 'empty' || p.state === 'sky') {
-      ctx.fillStyle = `rgba(2,2,4,${p.off})`; ctx.fillRect(r.x, r.y, r.w, r.h);
-    }
-    // sky
-    if (p.sky > 0.01) {
+    if (p.state === 'empty' || p.state === 'sky') { ctx.fillStyle = `rgba(2,2,4,${p.off})`; ctx.fillRect(r.x, r.y, r.w, r.h); }
+    if (p.sky > .01) {
       const sg = ctx.createLinearGradient(0, r.y, 0, r.y + r.h);
       sg.addColorStop(0, `rgba(150,176,208,${p.sky})`); sg.addColorStop(.6, `rgba(214,204,186,${p.sky})`); sg.addColorStop(1, `rgba(236,222,198,${p.sky})`);
       ctx.fillStyle = sg; ctx.fillRect(r.x, r.y, r.w, r.h);
     }
     ctx.restore();
     // frame
-    ctx.strokeStyle = `rgba(170,140,90,${.35 - dark * .25 + p.sky * .3})`; ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(170,140,90,${.35 - dark * .25 + p.sky * .3 + p.flare * .5})`; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(r.x, r.y + r.h); ctx.lineTo(r.x, r.y + r.w / 2); ctx.arc(r.x + r.w / 2, r.y + r.w / 2, r.w / 2, Math.PI, 0); ctx.lineTo(r.x + r.w, r.y + r.h); ctx.stroke();
+    // the "tap me" ring
+    if (S.focus === i) {
+      const k = (Math.sin(S.t * 2.2) + 1) / 2;
+      ctx.strokeStyle = `rgba(212,168,75,${.35 + .45 * k})`; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.roundRect(r.x - 6 - 4 * k, r.y - 6 - 4 * k, r.w + 12 + 8 * k, r.h + 12 + 8 * k, r.w / 2 + 6); ctx.stroke();
+    }
   });
 }
 
+/* the taking: a thread of gold lifting out of the vessel into a mirror */
+function drawThreads() {
+  const {cx, y0, w} = vesselGeom();
+  const rects = panelRects();
+  for (const th of S.threads) {
+    const r = rects[th.p], ex = r.x + r.w / 2, ey = r.y + r.h * .55;
+    const sx = cx + (th.p < 3 ? -w * .3 : w * .3), sy = y0 + 4;
+    const mx = (sx + ex) / 2, my = Math.min(sy, ey) - H * .18;
+    const q = (t) => [(1 - t) * (1 - t) * sx + 2 * (1 - t) * t * mx + t * t * ex, (1 - t) * (1 - t) * sy + 2 * (1 - t) * t * my + t * t * ey];
+    const head = Math.min(1, th.t), tail = Math.max(0, th.t - .35);
+    ctx.save(); ctx.lineCap = 'round';
+    for (let s = tail; s < head; s += .02) {
+      const [x1, y1] = q(s), [x2, y2] = q(Math.min(head, s + .02));
+      const a = (s - tail) / (head - tail || 1);
+      ctx.strokeStyle = `rgba(232,200,110,${.15 + .75 * a})`; ctx.lineWidth = .8 + 1.8 * a;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    }
+    const [hx, hy] = q(head);
+    ctx.fillStyle = 'rgba(255,236,180,.95)'; ctx.shadowColor = 'rgba(212,168,75,.9)'; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.arc(hx, hy, 2.2, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+}
+
 function drawVessel() {
-  const size = Math.min(W, H) * .4 * S.vs;
-  const w = size, h = size * .62, cx = W / 2, cy = H * S.vy, y0 = cy - h * .5;
-  const pts = bowl(cx, y0, w, h);
-  const N = pts.length - 1;
+  const {w, h, cx, cy, y0} = vesselGeom();
+  const pts = bowl(cx, y0, w, h), N = pts.length - 1;
   const inner = pts.map(([x, y]) => [lerp(x, cx, .14), lerp(y, y0 + h * .3, .14)]);
-  const sc = S.scatter;
-  const clay = [168, 103, 74], clayDk = [96, 58, 42];
+  const sc = S.scatter, clay = [168, 103, 74], clayDk = [96, 58, 42];
   ctx.save();
   if (sc < .999) {
-    // whole vessel (fading out as it scatters)
     ctx.globalAlpha = 1 - sc;
     ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath();
-    ctx.fillStyle = rgb(clayDk, .75); ctx.fill();
-    // liquid
+    ctx.fillStyle = rgb(clayDk, .78); ctx.fill();
     ctx.save(); ctx.clip();
-    const ly = y0 + (1 - S.level) * h;
-    const lg = ctx.createLinearGradient(0, ly, 0, y0 + h);
-    const warm = S.gold;
-    lg.addColorStop(0, `rgba(${lerp(232, 212, warm)},${lerp(222, 168, warm)},${lerp(200, 75, warm)},.55)`);
+    const ly = y0 + (1 - S.level) * h + Math.sin(S.t * 9) * 2 * S.ripple;
+    const lg = ctx.createLinearGradient(0, ly, 0, y0 + h), warm = S.gold;
+    lg.addColorStop(0, `rgba(${lerp(232, 212, warm)},${lerp(222, 168, warm)},${lerp(200, 75, warm)},.6)`);
     lg.addColorStop(1, `rgba(${lerp(232, 212, warm)},${lerp(222, 168, warm)},${lerp(200, 75, warm)},.12)`);
     ctx.fillStyle = lg; ctx.fillRect(cx - w, ly, w * 2, h);
-    ctx.strokeStyle = `rgba(240,232,210,${.5})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx - w / 2, ly); ctx.lineTo(cx + w / 2, ly); ctx.stroke();
+    ctx.strokeStyle = 'rgba(240,232,210,.55)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx - w / 2, ly); ctx.lineTo(cx + w / 2, ly); ctx.stroke();
+    if (S.ripple > .01) { ctx.strokeStyle = `rgba(255,236,180,${.5 * S.ripple})`; for (let k = 1; k <= 3; k++) { ctx.beginPath(); ctx.ellipse(cx, ly, w * .12 * k * (1.4 - S.ripple), 3 * k * (1.4 - S.ripple), 0, 0, Math.PI * 2); ctx.stroke(); } }
     ctx.restore();
     ctx.strokeStyle = rgb(clay, .9); ctx.lineWidth = 1.2; ctx.stroke();
-    // rim
     ctx.beginPath(); ctx.ellipse(cx, y0, w / 2, w * .07, 0, 0, Math.PI * 2); ctx.strokeStyle = rgb(clay, .8); ctx.stroke();
-    // cracks (jagged seams) and gold seams
     for (let k = 1; k < 6; k++) {
       const i = Math.round(k / 6 * N), [x, y] = pts[i], [ix, iy] = inner[i];
       const mid = [lerp(x, ix, .5) + (k % 2 ? 3 : -3), lerp(y, iy, .5)];
@@ -506,13 +606,11 @@ function drawVessel() {
       }
       if (S.gold > .02) {
         ctx.strokeStyle = `rgba(212,168,75,${S.gold})`; ctx.lineWidth = 1.6; ctx.shadowColor = 'rgba(212,168,75,.6)'; ctx.shadowBlur = 6 * S.gold;
-        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(mid[0], mid[1]); ctx.lineTo(far[0], far[1]); ctx.stroke();
-        ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(mid[0], mid[1]); ctx.lineTo(far[0], far[1]); ctx.stroke(); ctx.shadowBlur = 0;
       }
     }
   }
   if (sc > .001) {
-    // shards
     ctx.globalAlpha = 1;
     for (let k = 0; k < 6; k++) {
       const a = Math.round(k / 6 * N), b = Math.round((k + 1) / 6 * N);
@@ -529,54 +627,55 @@ function drawVessel() {
   ctx.restore();
 }
 
+function drawMotes(m) {
+  const dawn = Math.max(0, m - 1), dark = Math.min(1, m);
+  for (const mo of S.motes) {
+    const a = (.18 * (1 - dark) + .3 * dawn) * (.5 + .5 * Math.sin(S.t * 1.3 + mo.p));
+    ctx.fillStyle = `rgba(${lerp(200, 240, dawn)},${lerp(205, 225, dawn)},${lerp(220, 190, dawn)},${a})`;
+    ctx.beginPath(); ctx.arc(mo.x * W, mo.y * H, mo.s, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
 let last = performance.now();
 function frame(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; S.t += dt;
-  const k = RM ? 1 : 1 - Math.pow(.02, dt);     // smoothing
-  S.level = ease(S.level, S.levelT, k * .6);
-  S.scatter = ease(S.scatter, S.scatterT, k * .5);
-  S.gold = ease(S.gold, S.goldT, k * .4);
-  S.floor = ease(S.floor, S.floorT, k * .6);
+  const k = RM ? 1 : 1 - Math.pow(.02, dt);
+  S.level = ease(S.level, S.levelT, k * .6); S.scatter = ease(S.scatter, S.scatterT, k * .5);
+  S.gold = ease(S.gold, S.goldT, k * .4); S.floor = ease(S.floor, S.floorT, k * .6);
   S.vy = ease(S.vy, S.vyT, k * .5); S.vs = ease(S.vs, S.vsT, k * .5);
   S.lo.x = ease(S.lo.x, S.xT, k * .35); S.lo.y = ease(S.lo.y, S.yT, k * .35); S.lo.h = ease(S.lo.h, S.hT, k * .35); S.lo.a = ease(S.lo.a, S.aT, k * .5);
   ['x', 'y', 'h', 'a'].forEach(q => S.el[q] = ease(S.el[q], S.elT[q], k * .35));
-  S.panels.forEach(p => { p.s = ease(p.s, p.sT, k * .5); p.sky = ease(p.sky, p.skyT, k * .25); p.off = ease(p.off, p.offT, k * .4); });
-  S.thud = Math.max(0, S.thud - dt * 3);
-  if (holding) { const rate = pairOk() ? 1 : 0; if (rate) S.levelT = Math.min(1, S.levelT + (1 - S.levelT) * dt / 6); updateRing(); }
-  // Idle frames repaint nothing new; skip them so a still scene costs no main-thread time.
-  const sig = [S.mood, S.level, S.scatter, S.gold, S.floor, S.thud, S.vy, S.vs, S.cracks, S.lo.x, S.lo.y, S.lo.h, S.lo.a, S.el.x, S.el.y, S.el.h, S.el.a]
-    .concat(...S.panels.map(p => [p.s, p.sky, p.off, p.state]))
-    .map(v => typeof v === 'number' ? Math.round(v * 1e4) : v).join();
-  if (sig === lastSig) { requestAnimationFrame(frame); return; }
-  lastSig = sig;
+  S.panels.forEach(p => { p.beam = ease(p.beam, p.beamT, k * .4); p.face = ease(p.face, p.faceT, k * .5); p.sky = ease(p.sky, p.skyT, k * .25); p.off = ease(p.off, p.offT, k * .4); p.flare = Math.max(0, p.flare - dt * 1.6); });
+  S.thud = Math.max(0, S.thud - dt * 3); S.ripple = Math.max(0, S.ripple - dt * .7);
+  for (const th of S.threads) { th.t += dt * .55; if (th.t >= 1 && !th.done) { th.done = true; const p = S.panels[th.p]; p.beamT = Math.min(1, p.beamT + .5); p.flare = .6; } }
+  S.threads = S.threads.filter(th => th.t < 1.4);
+  for (const mo of S.motes) { mo.y -= mo.v * dt * (RM ? 0 : 1); mo.x += Math.sin(S.t * .4 + mo.p) * .0003; if (mo.y < -.02) { mo.y = 1.02; mo.x = Math.random(); } }
+  if (holding) { if (pairOk()) { S.levelT = Math.min(1, S.levelT + (1 - S.levelT) * dt / 6); found.held += dt; } updateRing(); }
 
-  const m = S.mood, P = pal(m);
+  const m = S.mood, P = pal(m), rects = panelRects();
   ctx.save();
   if (S.thud > 0) ctx.translate(0, Math.sin(S.thud * 40) * 2 * S.thud);
   const bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, rgb(P.top)); bg.addColorStop(1, rgb(P.bot));
   ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-  // candle warmth in the hall, dawn light later
   const dawn = Math.max(0, m - 1);
   const glow = ctx.createRadialGradient(W * .5, H * .1, 0, W * .5, H * .1, H * .9);
   glow.addColorStop(0, `rgba(${lerp(201, 236, dawn)},${lerp(162, 222, dawn)},${lerp(74, 198, dawn)},${(.16 * (1 - Math.min(1, m)) + .22 * dawn)})`);
   glow.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-  // floor sheen
   const fl = ctx.createLinearGradient(0, H * .62, 0, H); fl.addColorStop(0, 'rgba(255,255,255,0)'); fl.addColorStop(1, `rgba(${lerp(120, 200, dawn)},${lerp(130, 190, dawn)},${lerp(150, 170, dawn)},${.08 * (1 - Math.min(1, m)) + .12 * dawn})`);
   ctx.fillStyle = fl; ctx.fillRect(0, H * .62, W, H * .38);
-  drawPanels(m);
-  if (S.floor > .01) {
-    ctx.strokeStyle = `rgba(212,168,75,${.55 * S.floor})`; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, H * .84); ctx.lineTo(W * S.floor, H * .84); ctx.stroke();
-  }
+  drawBeams(m, rects);
+  drawMotes(m);
+  drawPanels(m, rects);
+  if (S.floor > .01) { ctx.strokeStyle = `rgba(212,168,75,${.55 * S.floor})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, H * .84); ctx.lineTo(W * S.floor, H * .84); ctx.stroke(); }
   drawVessel();
+  drawThreads();
   drawFigure(S.lo.x * W, S.lo.y * H, S.lo.h, S.lo.a, true);
   drawFigure(S.el.x * W, S.el.y * H, S.el.h, S.el.a, false);
   ctx.restore();
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
-if (document.fonts) document.fonts.ready.then(() => { lastSig = ''; });
 
 /* ---------- scroll: mood ---------- */
 const secs = [...document.querySelectorAll('section')];
@@ -586,18 +685,32 @@ function onScroll() {
   let m = 0;
   if (y >= r[2].top) m = 1 + Math.min(1, (y - r[2].top) / (r[2].h * .35));
   else if (y >= r[1].top) m = Math.min(1, (y - r[1].top) / (r[1].h * .25));
-  else m = 0;
   S.mood = m;
 }
 addEventListener('scroll', onScroll, {passive: true}); onScroll();
 
-/* ---------- lines: placement, reflection, reveal ---------- */
+/* ---------- guide ---------- */
+let guideTimer = 0;
+function say(html) {
+  clearTimeout(guideTimer);
+  guideTxt.classList.add('swap');
+  guideTimer = setTimeout(() => { guideTxt.innerHTML = html; guideTxt.classList.remove('swap'); }, RM ? 0 : 600);
+}
+function ledger() {
+  const set = (id, v, y) => { const el = document.getElementById(id); el.textContent = v; el.className = y ? 'y' : ''; };
+  set('lgMirrors', `${found.mirrors.size} of 6`, found.mirrors.size === 6);
+  set('lgCoats', String(found.coats), found.coats > 0);
+  set('lgFloor', found.floor ? 'found' : 'not yet', found.floor);
+  set('lgHeld', found.held > 0 ? `${found.held.toFixed(1)} s · ${Math.round(S.levelT * 100)}% of the brim` : 'not yet', found.held > 0);
+  set('lgVessel', found.vessel ? 'rung' : 'not yet', found.vessel);
+  set('lgRead', found.paired ? 'with another' : 'alone', found.paired);
+}
+
+/* ---------- lines ---------- */
 const lines = [...document.querySelectorAll('.ln')];
 lines.forEach((el, i) => {
   el.style.marginLeft = ((i * 37) % 23) + '%';
-  if (el.closest('#sec1')) {
-    const t = el.innerHTML; el.innerHTML = `<span class="t">${t}</span><span class="rx" aria-hidden="true">${t}</span>`;
-  }
+  if (el.closest('#sec1')) { const t = el.innerHTML; el.innerHTML = `<span class="t">${t}</span><span class="rx" aria-hidden="true">${t}</span>`; }
   if (!RM) el.classList.add('wait');
 });
 const fired = new Set();
@@ -609,87 +722,118 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 }), {rootMargin: '0px 0px -18% 0px', threshold: .2});
 lines.forEach(l => io.observe(l));
 
-let tappable = false, coats = 0, windows = 0;
+let tappable = false, drains = 0, windows = 0, vesselLive = false;
 function trigger(fx) {
   switch (fx) {
-    case 'drain': S.levelT = Math.max(.08, S.levelT - .31); break;
+    case 'mirrors': S.panels.forEach(p => p.beamT = .18); say('the mirrors are lit. <b>watch what they throw back</b>.'); break;
+    case 'drain': {
+      S.levelT = Math.max(.08, S.levelT - .31);
+      const a = drains * 2, b = drains * 2 + 1; drains++;
+      S.threads.push({p: a, t: 0}); setTimeout(() => S.threads.push({p: b, t: 0}), 350);
+      if (drains === 1) say('it takes the gold. <b>it gives back glass</b>.');
+      if (drains === 3) say('a projector and a taker. <b>the same hand</b>.');
+      break;
+    }
     case 'crack': S.cracks = Math.min(6, S.cracks + 1); break;
-    case 'mirrors': break;
-    case 'shatter': S.scatterT = 1; S.levelT = 0; S.vyT = .82; S.aT = .35; break;
-    case 'lantern': lantern.classList.add('on'); S.xT = .1; S.yT = .92; S.hT = 40; S.aT = .5; break;
-    case 'tappable': tappable = true; break;
-    case 'coats': S.panels.forEach((p, i) => { if (p.state === 'figure') setTimeout(() => handBack(p), 300 * i); }); break;
+    case 'project': S.panels.forEach(p => p.beamT = 1); say('every mirror is aimed at you now.'); break;
+    case 'shatter': S.scatterT = 1; S.levelT = 0; S.vyT = .82; S.aT = .35; S.panels.forEach(p => p.beamT = .5); say('go down for the pieces.'); break;
+    case 'lantern': lantern.classList.add('on'); S.xT = .1; S.yT = .92; S.hT = 40; S.aT = .5; say('the lantern follows your finger.'); break;
+    case 'tappable': tappable = true; S.focus = 0; S.panels.forEach(p => p.beamT = .35); say('<b>tap a mirror</b>. ask it who hung it there.'); break;
+    case 'coats':
+      if (found.mirrors.size === 0) say('the mirrors are still waiting. <b>tap one</b>.');
+      else say('<b>tap it again</b> to hand the coat back.');
+      break;
     case 'floor':
-      S.floorT = 1; S.thud = RM ? 0 : 1;
+      S.floorT = 1; S.thud = RM ? 0 : 1; found.floor = true;
       try { navigator.vibrate && navigator.vibrate(40); } catch (e) {}
       lantern.style.setProperty('--lr', Math.max(W, H) * 1.3 + 'px');
-      S.panels.forEach(p => { if (p.state === 'figure') handBack(p); });
+      S.panels.forEach(p => { if (p.state === 'figure') handBack(p); p.beamT = 0; });
+      S.focus = -1; say('bedrock. nothing here is projected.'); ledger();
       break;
-    case 'littleone': S.xT = .18; S.yT = .92; S.hT = 54; S.aT = .9; break;
-    case 'rebuild': lantern.classList.remove('on'); S.scatterT = 0; S.vyT = .78; S.vsT = 1.05; S.floorT = 0; S.goldT = .35; S.xT = .22; S.yT = .93; S.hT = 56; S.aT = .9; S.panels.forEach(p => { p.state = 'empty'; p.offT = 1; p.sT = 0; }); break;
+    case 'littleone': S.xT = .18; S.yT = .92; S.hT = 54; S.aT = .9; say('the little one kept the record.'); break;
+    case 'rebuild':
+      lantern.classList.remove('on'); S.scatterT = 0; S.vyT = .78; S.vsT = 1.05; S.floorT = 0; S.goldT = .35; S.xT = .22; S.yT = .93; S.hT = 56; S.aT = .9;
+      S.panels.forEach(p => { p.state = 'empty'; p.offT = 1; p.faceT = 0; p.beamT = 0; });
+      say('the pieces are coming back together.');
+      break;
     case 'hold': openHold(); break;
     case 'black': if (!RM) blackout(); break;
-    case 'window': { const p = S.panels[windows++ % 6]; p.state = 'sky'; p.skyT = 1; p.offT = 0; break; }
+    case 'window': { const p = S.panels[windows++ % 6]; p.state = 'sky'; p.skyT = 1; p.offT = 0; if (windows === 1) say('the mirrors are forgetting. <b>windows</b>.'); break; }
     case 'elder': S.elT = {x: .8, y: .93, h: 84, a: .85}; S.xT = .24; break;
     case 'sit': S.hT = 36; S.yT = .94; S.xT = .27; S.elT = {x: .73, y: .94, h: 48, a: .85}; S.panels.forEach(p => { p.state = 'sky'; p.skyT = 1; p.offT = 0; }); break;
+    case 'end': vesselLive = true; say('one more. <b>tap the vessel</b>.'); ledger(); break;
   }
 }
-function handBack(p) { p.state = 'empty'; p.offT = 1; setTimeout(() => { p.sT = 0; }, 700); }
+function handBack(p) { p.state = 'empty'; p.offT = 1; found.coats++; setTimeout(() => { p.faceT = 0; }, 700); ledger(); }
 
-/* ---------- pointer: lantern + mirrors ---------- */
-function movePointer(e) {
-  const x = e.clientX, y = e.clientY;
-  lantern.style.setProperty('--lx', x + 'px'); lantern.style.setProperty('--ly', y + 'px');
-}
+/* ---------- pointer: lantern, mirrors, vessel ---------- */
+function movePointer(e) { lantern.style.setProperty('--lx', e.clientX + 'px'); lantern.style.setProperty('--ly', e.clientY + 'px'); }
 addEventListener('pointermove', movePointer, {passive: true});
 addEventListener('pointerdown', e => {
   movePointer(e);
+  if (vesselLive) {
+    const {w, h, cx, y0} = vesselGeom();
+    if (Math.abs(e.clientX - cx) < w * .55 && e.clientY > y0 - 20 && e.clientY < y0 + h + 20) { ringVessel(); return; }
+  }
   if (!tappable || S.mood < .5 || S.mood > 1.5) return;
   const rects = panelRects();
   rects.forEach((r, i) => {
-    if (e.clientX >= r.x - 10 && e.clientX <= r.x + r.w + 10 && e.clientY >= r.y && e.clientY <= r.y + r.h) {
+    if (e.clientX >= r.x - 14 && e.clientX <= r.x + r.w + 14 && e.clientY >= r.y - 10 && e.clientY <= r.y + r.h + 10) {
       const p = S.panels[i];
-      if (p.state === 'glass') { p.state = 'figure'; p.sT = 1; }
-      else if (p.state === 'figure') handBack(p);
+      if (p.state === 'glass') {
+        p.state = 'figure'; p.faceT = 1; p.flare = 1; p.beamT = 0; found.mirrors.add(i);
+        if (S.focus === i) S.focus = -1;
+        say(found.mirrors.size === 1 ? `<b>${p.name}</b>. the light went out when you looked. <b>tap again</b> to hand it back.` : `<b>${p.name}</b>. ${6 - found.mirrors.size} still lit.`);
+        ledger();
+      } else if (p.state === 'figure') { handBack(p); say(`coat returned. <b>${6 - found.mirrors.size} mirrors</b> still waiting.`); }
     }
   });
 }, {passive: true});
 if (RM) lantern.style.display = 'none';
 
-/* ---------- the black beat ---------- */
-function blackout() {
-  black.classList.add('on');
-  setTimeout(() => black.classList.remove('on'), 2600);
+/* the vessel rings: a struck-bowl tone, synthesized */
+let ac = null;
+function ringVessel() {
+  S.ripple = 1; found.vessel = true; ledger();
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = ac.currentTime, out = ac.createGain(); out.gain.value = .0001; out.connect(ac.destination);
+    out.gain.exponentialRampToValueAtTime(.35, t0 + .02); out.gain.exponentialRampToValueAtTime(.0001, t0 + 5.5);
+    const base = 196 * (1 + (1 - S.levelT) * .5);   // a fuller vessel rings lower
+    [1, 2.71, 4.98, 7.6].forEach((r, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = base * r; g.gain.value = [1, .35, .15, .06][i]; o.connect(g); g.connect(out); o.start(t0); o.stop(t0 + 6); });
+    say(`the vessel rings at <b>${Math.round(S.levelT * 100)}%</b> of its volume.`);
+  } catch (e) { say('the vessel rings.'); }
 }
 
+/* ---------- the black beat ---------- */
+function blackout() { black.classList.add('on'); setTimeout(() => black.classList.remove('on'), 3200); }
+
 /* ---------- press and hold ---------- */
-let holding = false, holdOpen = false, heldOnce = false, holdStart = 0;
+let holding = false, holdOpen = false, holdStart = 0;
 function openHold() {
-  holdOpen = true; holdEl.classList.add('on'); document.body.classList.add('locked');
+  holdOpen = true; holdEl.classList.add('on'); document.body.classList.add('locked'); guide.classList.add('hide');
   S.levelT = Math.max(S.levelT, .04); S.goldT = 1;
   setTimeout(() => skip.classList.add('show'), 7000);
   updateRing();
 }
 function closeHold() {
-  holdOpen = false; holdEl.classList.remove('on'); document.body.classList.remove('locked');
-  const pct = Math.round(S.levelT * 100);
-  document.getElementById('levelNote').textContent = `vessel rebuilt to ${pct}% of its volume`;
+  holdOpen = false; holdEl.classList.remove('on'); document.body.classList.remove('locked'); guide.classList.remove('hide');
+  say(`rebuilt to <b>${Math.round(S.levelT * 100)}%</b>. now watch the glass.`); ledger();
 }
 function updateRing() {
   ring.style.setProperty('--lv', S.levelT.toFixed(3));
   if (holding && !pairOk()) holdMsg.textContent = 'waiting for the other hand';
   else if (holding) holdMsg.textContent = 'it fills as long as you stay';
-  else holdMsg.textContent = paired() ? 'press and hold, both of you' : 'press and hold anywhere, as long as you are willing';
+  else holdMsg.textContent = paired() ? 'press and hold, both of you' : 'press and hold anywhere. it fills for as long as you stay.';
 }
 function down(e) {
-  if (!holdOpen || holding) return;
-  if (e.target === skip) return;
+  if (!holdOpen || holding || e.target === skip) return;
   holding = true; holdStart = performance.now(); ring.classList.add('down'); setPresence(true); updateRing();
 }
 function up() {
   if (!holding) return;
   holding = false; ring.classList.remove('down'); setPresence(false);
-  if (performance.now() - holdStart > 350) { heldOnce = true; setTimeout(closeHold, 900); }
+  if (performance.now() - holdStart > 350) setTimeout(closeHold, 900);
   updateRing();
 }
 addEventListener('pointerdown', down); addEventListener('pointerup', up); addEventListener('pointercancel', up);
@@ -717,6 +861,7 @@ function code() {
 function peersChanged() {
   const n = others().length;
   pairSt.textContent = n ? (n === 1 ? 'two hands here' : `${n + 1} here`) : 'alone for now, send them the code';
+  if (n) { found.paired = true; ledger(); }
   if (holdOpen) updateRing();
 }
 function solo(msg) {
@@ -769,5 +914,6 @@ if ('WebSocket' in window) {
   addEventListener('pagehide', () => { const s = ws; ws = null; if (s) { try { s.close(1000); } catch (e) {} } });
   addEventListener('pageshow', e => { if (e.persisted && roomCode && !ws) joinRoom(roomCode); });
 }
+ledger();
 })();
 </script>
