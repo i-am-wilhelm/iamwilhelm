@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varo's Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#120e0a; --umber:#1e1710; --ochre:#c89b5a; --dim:#6b5438; --bone:#e9e0cf;
+  --candle:#ffb347; --teal:#4f7f7a; --muted:#8e8372;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:720px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ochre)}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(46px,13.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em}
+h1 em{font-style:italic;color:var(--ochre)}
+.sub{max-width:34ch;margin:0 auto;font-size:19px;color:#cfc4b0;font-style:italic}
+.hint{margin-top:10vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(18,14,10,.76);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(200,155,90,.22);padding:18px 20px 16px;font-size:17.5px}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--ochre);display:block;margin-bottom:9px;text-transform:uppercase}
+.card .big{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;font-weight:400}
+.card .big i{color:var(--ochre)}
+
+.end{padding:16vh 22px 20vh;text-align:center;max-width:720px;margin:0 auto}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,8vw,64px);line-height:1;margin:0 0 .5em}
+.end p{color:#cfc4b0;max-width:46ch;margin:0 auto 1em}
+.end .colophon{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7vh;line-height:1.8}
+.end .next{display:inline-block;margin-top:3vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ochre);border:1px solid rgba(200,155,90,.35);padding:10px 16px;text-decoration:none}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,155,90,.5),transparent);margin:0 auto;width:60%}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A scrolly for the ones who work alone</div>
+    <h1>Varo's <em>Workshop</em></h1>
+    <p class="sub">A room, a candle, a figure at a desk doing something impossible. Every maker's self-portrait.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · The room -->
+<section class="scene" id="s1">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">I · The room</span><p>Remedios Varo built rooms the way de Chirico did: one vanishing point, and everything in the picture leaning toward it. Watch the room arrive from a single dot.</p></div></div>
+    <div class="step"><div class="card"><p>Her father was a hydraulic engineer. As a girl she copied his plans, and the perspective came first; the magic was poured into it afterward. The floor is a checkerboard. Black and white, married. Opposites laid down as tile.</p></div></div>
+    <div class="step"><div class="card"><p>A tall window. A small moon. The room exists to hold one point of attention, and a body.</p></div></div>
+  </div>
+</section>
+
+<!-- II · The figure -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">II · The figure</span><p>She painted herself constantly: a narrow figure with a heart-shaped face and enormous eyes, seated at a desk. Varo's people are El Greco tall and candle-thin, and in her workshops the light has one source.</p></div></div>
+    <div class="step"><div class="card"><p>The candle is a self-portrait too. Traces of candlelight in a Varo are how you know she is in the room.</p></div></div>
+    <div class="step"><div class="card"><p>Look at the shadow. It is the only thing in here that moves freely.</p></div></div>
+  </div>
+</section>
+
+<!-- III · The impossible work -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">III · The impossible work</span><p>Her figures do things. They grind starlight, spin thread from a hole in the sky, feed the moon with a spoon. In Mexico City she and Leonora Carrington ran with a Gurdjieff circle, where &ldquo;food for the moon&rdquo; was doctrine, and the task in the painting is a method, drawn exactly.</p></div></div>
+    <div class="step"><div class="card"><p>The point is the posture. One person at a desk, late, performing a task no one asked for, with total technical seriousness.</p></div></div>
+    <div class="step"><div class="card"><p>This is what making anything looks like from the inside. A spool of attention. A thread that runs out of the room and into other people's rooms.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">The room is <i>woven</i> from the work.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · Dissolution -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">IV · Dissolution</span><p>Her last trick: the figure dissolves into the environment. Hair becomes wallpaper, cloak becomes floor, the maker becomes the pattern she was sitting in.</p></div></div>
+    <div class="step"><div class="card"><p>Varo made more than five hundred works and died in 1963, at fifty-four, right as the world began to pay attention. The rooms stayed lit.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">Leave the <i>candle</i> burning.</p></div></div>
+  </div>
+</section>
+
+<section class="end">
+  <hr class="rule">
+  <h2 style="margin-top:10vh">Every workshop<br>is a Varo.</h2>
+  <p>One of the three <i>brujas</i> of Mexico City, with Carrington and Kati Horna. Alchemy and Gurdjieff and the literature of German Romanticism in the bookshelf; a hydraulic engineer's perspective grid under every floor. Her pictures are instructions for a posture: sit down, light the one light, and do the impossible thing with your whole technique.</p>
+  <p>Anyone who builds alone at night has already been painted by her.</p>
+  <a class="next" href="#hero">Read it again &uarr;</a>
+  <div class="colophon">
+    Drawn in code. One vanishing point, one candle, no images loaded.<br>
+    Previous: <i>The Double Image</i> &middot; Next: <i>Monet Invented the Dither</i>
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function hash(i, j, k) { let n = (i * 374761393 + j * 668265263 + k * 1274126177) | 0; n = Math.imul(n ^ (n >>> 13), 1274126177); return ((n ^ (n >>> 16)) >>> 0) / 4294967295; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  let resized = false; if (c.width !== W || c.height !== H) { c.width = W; c.height = H; resized = true; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h, dpr, resized };
+}
+
+/* ---------- the room: one vanishing point ---------- */
+const DEPTH = 12, COLS = 8, KD = 0.33;
+function Room(w, h) {
+  const vp = { x: w * 0.5, y: h * 0.42 };
+  const s = k => 1 / (1 + k * KD);
+  const halfW = Math.max(w * 0.78, h * 0.42);
+  // u in [-1,1] across the floor, k depth 0..DEPTH, v height 0 (floor) .. 1 (ceiling)
+  const P = (u, k, v) => { const sc = s(k); const yF = vp.y + (h - vp.y) * sc; const yC = vp.y - vp.y * 1.05 * sc; return { x: vp.x + u * halfW * sc, y: yF + (yC - yF) * v, sc }; };
+  return { vp, s, halfW, P, w, h };
+}
+function drawRoom(ctx, R, grow, t, opts = {}) {
+  const { w, h, vp, P } = R;
+  const kMin = DEPTH * (1 - grow);  // room grows toward the viewer from the vanishing point
+  // back wall + window
+  if (grow > 0.02) {
+    const a = ramp(grow, 0.02, 0.2);
+    const bw = P(-1, DEPTH, 0), bwT = P(1, DEPTH, 1);
+    ctx.fillStyle = `rgba(36,28,20,${a})`; ctx.fillRect(bw.x, bwT.y, bwT.x - bw.x, bw.y - bwT.y);
+    // window (arched)
+    const wl = P(-0.2, DEPTH, 0.22), wr = P(0.2, DEPTH, 0.22), wt = P(0, DEPTH, 0.9);
+    const ww = wr.x - wl.x, wb = wl.y, wtop = wt.y + ww * 0.5;
+    ctx.beginPath(); ctx.moveTo(wl.x, wb); ctx.lineTo(wl.x, wtop); ctx.arc(vp.x, wtop, ww / 2, Math.PI, 0); ctx.lineTo(wr.x, wb); ctx.closePath();
+    const sky = ctx.createLinearGradient(0, wt.y, 0, wb); sky.addColorStop(0, `rgba(38,70,78,${a})`); sky.addColorStop(1, `rgba(20,38,48,${a})`);
+    ctx.fillStyle = sky; ctx.fill();
+    ctx.strokeStyle = `rgba(200,155,90,${0.8 * a})`; ctx.lineWidth = 1.2; ctx.stroke();
+    // moon
+    const m = moonPos(R);
+    const mg = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r * 4);
+    mg.addColorStop(0, `rgba(232,228,216,${0.35 * a})`); mg.addColorStop(1, 'rgba(232,228,216,0)');
+    ctx.save(); ctx.clip(); ctx.fillStyle = mg; ctx.fillRect(m.x - m.r * 4, m.y - m.r * 4, m.r * 8, m.r * 8);
+    ctx.fillStyle = `rgba(232,228,216,${a})`; ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, TAU); ctx.fill(); ctx.restore();
+  }
+  // floor tiles, far to near
+  for (let k = DEPTH - 1; k >= 0; k--) {
+    if (k + 1 < kMin) continue;
+    const rowA = clamp((k + 1 - kMin), 0, 1);
+    for (let i = 0; i < COLS; i++) {
+      const u0 = -1 + 2 * i / COLS, u1 = -1 + 2 * (i + 1) / COLS;
+      const a = P(u0, k, 0), b = P(u1, k, 0), c = P(u1, k + 1, 0), d = P(u0, k + 1, 0);
+      const light = (i + k) % 2 === 0;
+      ctx.fillStyle = light ? `rgba(70,54,36,${rowA})` : `rgba(26,19,13,${rowA})`;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill();
+    }
+  }
+  // converging lines: floor columns, wall verticals, ceiling beams
+  ctx.lineWidth = 1; ctx.strokeStyle = `rgba(200,155,90,${0.45 * clamp(grow * 3, 0, 1)})`;
+  const kFar = DEPTH, kNear = Math.max(kMin, 0);
+  for (let i = 0; i <= COLS; i++) {
+    const u = -1 + 2 * i / COLS; const a = P(u, kFar, 0), b = P(u, kNear, 0);
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    const a2 = P(u, kFar, 1), b2 = P(u, kNear, 1);
+    ctx.beginPath(); ctx.moveTo(a2.x, a2.y); ctx.lineTo(b2.x, b2.y); ctx.stroke();
+  }
+  for (let k = 0; k <= DEPTH; k++) {
+    if (k < kMin) continue;
+    for (const u of [-1, 1]) { const a = P(u, k, 0), b = P(u, k, 1); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    // floor row seams
+    const a = P(-1, k, 0), b = P(1, k, 0); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  }
+  // wall-ceiling and wall-floor edges
+  for (const v of [0, 1]) for (const u of [-1, 1]) { const a = P(u, kFar, v), b = P(u, kNear, v); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+}
+function moonPos(R) { const m = R.P(0.06, DEPTH, 0.62); return { x: m.x, y: m.y, r: R.halfW * R.s(DEPTH) * 0.045 }; }
+
+/* ---------- desk, candle, figure ---------- */
+const DESK = { k0: 3.0, k1: 4.3, u0: -0.36, u1: 0.36, v: 0.30 };
+function deskGeom(R) {
+  const { P } = R;
+  const fl = P(DESK.u0, DESK.k0, DESK.v), fr = P(DESK.u1, DESK.k0, DESK.v), br = P(DESK.u1, DESK.k1, DESK.v), bl = P(DESK.u0, DESK.k1, DESK.v);
+  const fl0 = P(DESK.u0, DESK.k0, 0), fr0 = P(DESK.u1, DESK.k0, 0);
+  return { fl, fr, br, bl, fl0, fr0, candle: P(0.24, DESK.k0 + 0.35, DESK.v), spool: P(-0.08, DESK.k0 + 0.5, DESK.v) };
+}
+function drawDesk(ctx, R, a) {
+  const d = deskGeom(R);
+  ctx.fillStyle = `rgba(58,42,26,${a})`;
+  ctx.beginPath(); ctx.moveTo(d.fl.x, d.fl.y); ctx.lineTo(d.fr.x, d.fr.y); ctx.lineTo(d.br.x, d.br.y); ctx.lineTo(d.bl.x, d.bl.y); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = `rgba(34,24,15,${a})`;
+  ctx.beginPath(); ctx.moveTo(d.fl.x, d.fl.y); ctx.lineTo(d.fr.x, d.fr.y); ctx.lineTo(d.fr0.x, d.fr0.y); ctx.lineTo(d.fl0.x, d.fl0.y); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = `rgba(200,155,90,${0.6 * a})`; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(d.fl.x, d.fl.y); ctx.lineTo(d.fr.x, d.fr.y); ctx.lineTo(d.br.x, d.br.y); ctx.lineTo(d.bl.x, d.bl.y); ctx.closePath(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(d.fl.x, d.fl.y); ctx.lineTo(d.fl0.x, d.fl0.y); ctx.moveTo(d.fr.x, d.fr.y); ctx.lineTo(d.fr0.x, d.fr0.y); ctx.stroke();
+}
+// figure in local units: origin at feet, +y up, height 1
+function figurePath(base, H) {
+  const p = new Path2D();
+  const X = (x) => base.x + x * H, Y = (y) => base.y - y * H;
+  // cloak + torso
+  p.moveTo(X(-0.21), Y(0));
+  p.bezierCurveTo(X(-0.17), Y(0.35), X(-0.14), Y(0.6), X(-0.11), Y(0.72));
+  p.quadraticCurveTo(X(-0.06), Y(0.77), X(-0.03), Y(0.78));
+  p.lineTo(X(0.03), Y(0.78));
+  p.quadraticCurveTo(X(0.06), Y(0.77), X(0.11), Y(0.72));
+  p.bezierCurveTo(X(0.14), Y(0.6), X(0.17), Y(0.35), X(0.21), Y(0));
+  p.closePath();
+  // head (narrow, heart-shaped, slightly bowed)
+  p.moveTo(X(0.0), Y(0.96));
+  p.bezierCurveTo(X(0.085), Y(0.96), X(0.085), Y(0.82), X(0.0), Y(0.775));
+  p.bezierCurveTo(X(-0.085), Y(0.82), X(-0.085), Y(0.96), X(0.0), Y(0.96));
+  // arms reaching forward to the desk
+  p.moveTo(X(-0.11), Y(0.70)); p.bezierCurveTo(X(-0.2), Y(0.6), X(-0.22), Y(0.5), X(-0.16), Y(0.42)); p.lineTo(X(-0.12), Y(0.43)); p.bezierCurveTo(X(-0.16), Y(0.5), X(-0.14), Y(0.58), X(-0.08), Y(0.66)); p.closePath();
+  p.moveTo(X(0.11), Y(0.70)); p.bezierCurveTo(X(0.2), Y(0.6), X(0.22), Y(0.5), X(0.16), Y(0.42)); p.lineTo(X(0.12), Y(0.43)); p.bezierCurveTo(X(0.16), Y(0.5), X(0.14), Y(0.58), X(0.08), Y(0.66)); p.closePath();
+  return p;
+}
+function figureGeom(R) { const base = R.P(0, DESK.k1 + 0.6, 0); const H = (R.P(0, DESK.k1 + 0.6, 0).y - R.P(0, DESK.k1 + 0.6, 0.86).y); return { base, H }; }
+function flame(t) { return 0.78 + 0.14 * Math.sin(t * 0.021) + 0.08 * Math.sin(t * 0.047 + 1.3) + 0.05 * Math.sin(t * 0.113); }
+function drawCandle(ctx, R, lit, t) {
+  const d = deskGeom(R), c = d.candle, sc = c.sc;
+  const ch = R.halfW * sc * 0.12, cw = R.halfW * sc * 0.028;
+  ctx.fillStyle = `rgba(233,224,207,${0.9})`; ctx.fillRect(c.x - cw / 2, c.y - ch, cw, ch);
+  if (lit <= 0) return;
+  const f = flame(t);
+  const fx = c.x + Math.sin(t * 0.013) * cw * 0.3, fy = c.y - ch - ch * 0.22 * f;
+  const fr = ch * 0.22 * f;
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, fr);
+  g.addColorStop(0, `rgba(255,245,200,${lit})`); g.addColorStop(0.4, `rgba(255,170,60,${0.9 * lit})`); g.addColorStop(1, 'rgba(255,120,30,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(fx, fy, fr * 0.55, fr, 0, 0, TAU); ctx.fill();
+  // room glow
+  const Rg = Math.max(R.w, R.h) * 0.55 * (0.9 + 0.1 * f);
+  const g2 = ctx.createRadialGradient(fx, fy, 0, fx, fy, Rg);
+  g2.addColorStop(0, `rgba(255,170,70,${0.22 * lit})`); g2.addColorStop(0.35, `rgba(255,140,50,${0.07 * lit})`); g2.addColorStop(1, 'rgba(255,120,30,0)');
+  ctx.fillStyle = g2; ctx.fillRect(0, 0, R.w, R.h);
+  ctx.globalCompositeOperation = 'source-over';
+  return { fx, fy };
+}
+function drawFigure(ctx, R, a, t, lit) {
+  if (a <= 0) return;
+  const { base, H } = figureGeom(R);
+  const path = figurePath(base, H);
+  const d = deskGeom(R), c = d.candle;
+  // shadow on the floor, thrown away from the candle
+  const dx = -(c.x - base.x), dy = (base.y - c.y);
+  const L = 0.9 + 0.1 * flame(t);
+  const n = Math.hypot(dx, dy) || 1;
+  const sx = dx / n * H * 1.6 * L, sy = (0.55 + Math.abs(dy) / n * 0.4) * H * 1.1 * L;
+  // a point at height yh above the base (screen dy = -yh) lands at base + (yh/H)*(sx, sy)
+  ctx.save();
+  ctx.translate(base.x, base.y); ctx.transform(0.85, 0, -sx / H, -sy / H, 0, 0); ctx.translate(-base.x, -base.y);
+  ctx.fillStyle = `rgba(0,0,0,${0.55 * a * lit})`; ctx.fill(path);
+  ctx.restore();
+  // body
+  ctx.fillStyle = `rgba(22,16,11,${a})`; ctx.fill(path);
+  // candle rim light clipped to the body
+  if (lit > 0) {
+    ctx.save(); ctx.clip(path);
+    const g = ctx.createRadialGradient(c.x, c.y - H * 0.25, 0, c.x, c.y - H * 0.25, H * 1.1);
+    g.addColorStop(0, `rgba(255,170,80,${0.55 * lit * a})`); g.addColorStop(0.5, `rgba(200,120,60,${0.18 * lit * a})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, R.w, R.h);
+    ctx.restore();
+  }
+  // eyes: two small pale marks
+  const ex = base.x, ey = base.y - H * 0.86;
+  ctx.fillStyle = `rgba(233,224,207,${0.85 * a})`;
+  ctx.beginPath(); ctx.ellipse(ex - H * 0.028, ey, H * 0.012, H * 0.016, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(ex + H * 0.028, ey, H * 0.012, H * 0.016, 0, 0, TAU); ctx.fill();
+  return path;
+}
+
+/* ---------- hero: slow candle in the dark ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC);
+  ctx.clearRect(0, 0, w, h);
+  const f = flame(t);
+  const x = w * 0.5, y = h * 0.86;
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(x, y, 0, x, y, Math.max(w, h) * 0.7);
+  g.addColorStop(0, `rgba(255,170,70,${0.18 * fade * f})`); g.addColorStop(0.4, `rgba(200,120,50,${0.05 * fade})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.globalCompositeOperation = 'source-over';
+  // faint perspective lines converging on the title
+  ctx.strokeStyle = `rgba(200,155,90,${0.10 * fade})`; ctx.lineWidth = 1;
+  for (let i = 0; i <= 10; i++) { const u = -1 + 2 * i / 10; ctx.beginPath(); ctx.moveTo(w * 0.5 + u * w * 1.2, h); ctx.lineTo(w * 0.5, h * 0.45); ctx.stroke(); }
+}
+
+/* ---------- scene 1: the room arrives ---------- */
+const s1 = document.querySelector('#s1 canvas');
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(s1); const R = Room(w, h);
+  ctx.fillStyle = '#120e0a'; ctx.fillRect(0, 0, w, h);
+  const grow = sstep(ramp(p, 0.02, 0.62));
+  // the vanishing point itself, before anything
+  const dotA = 1 - ramp(p, 0.0, 0.12);
+  if (dotA > 0) { ctx.fillStyle = `rgba(200,155,90,${dotA})`; ctx.beginPath(); ctx.arc(R.vp.x, R.vp.y, 2.2, 0, TAU); ctx.fill(); }
+  drawRoom(ctx, R, grow, t);
+  const dA = sstep(ramp(p, 0.66, 0.85));
+  if (dA > 0) drawDesk(ctx, R, dA);
+  if (p > 0.72) { ctx.save(); ctx.globalAlpha = ramp(p, 0.72, 0.9); drawCandle(ctx, R, 0, t); ctx.restore(); }
+}
+
+/* ---------- scene 2: the figure ---------- */
+const s2 = document.querySelector('#s2 canvas');
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(s2); const R = Room(w, h);
+  ctx.fillStyle = '#120e0a'; ctx.fillRect(0, 0, w, h);
+  drawRoom(ctx, R, 1, t);
+  const lit = sstep(ramp(p, 0.05, 0.3));
+  const fa = sstep(ramp(p, 0.22, 0.55));
+  drawFigure(ctx, R, fa, t, lit);
+  drawDesk(ctx, R, 1);
+  drawCandle(ctx, R, lit, t);
+}
+
+/* ---------- scene 3: the impossible work ---------- */
+const s3 = document.querySelector('#s3 canvas');
+const THREAD = []; for (let i = 0; i < 260; i++) THREAD.push({ q: Math.random(), sp: 0.6 + Math.random() * 0.8, ph: Math.random() * TAU, sz: 0.8 + Math.random() * 1.4 });
+function bez(a, c1, c2, b, s) { const u = 1 - s; return { x: u * u * u * a.x + 3 * u * u * s * c1.x + 3 * u * s * s * c2.x + s * s * s * b.x, y: u * u * u * a.y + 3 * u * u * s * c1.y + 3 * u * s * s * c2.y + s * s * s * b.y }; }
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(s3); const R = Room(w, h);
+  ctx.fillStyle = '#120e0a'; ctx.fillRect(0, 0, w, h);
+  drawRoom(ctx, R, 1, t);
+  drawFigure(ctx, R, 1, t, 1);
+  drawDesk(ctx, R, 1);
+  const d = deskGeom(R), m = moonPos(R), S = d.spool;
+  const tt = reduce ? 0 : t;
+  // thread of moonlight from window to spool
+  const ta = sstep(ramp(p, 0.05, 0.3));
+  if (ta > 0) {
+    const c1 = { x: m.x + w * 0.05, y: m.y + (S.y - m.y) * 0.35 }, c2 = { x: S.x - w * 0.12, y: S.y - (S.y - m.y) * 0.25 };
+    ctx.globalCompositeOperation = 'lighter';
+    for (const q of THREAD) {
+      const s = (q.q + tt * 0.00012 * q.sp) % 1;
+      const pt = bez(m, c1, c2, S, s);
+      const wig = Math.sin(s * 18 + tt * 0.004 + q.ph) * (2 + 8 * s) * (1 - s * 0.6);
+      const a = ta * (0.25 + 0.75 * Math.sin(Math.PI * s)) * (0.6 + 0.4 * Math.sin(tt * 0.01 + q.ph));
+      ctx.fillStyle = `rgba(232,228,216,${a})`;
+      ctx.fillRect(pt.x + wig, pt.y + wig * 0.4, q.sz * (0.6 + s), q.sz * (0.6 + s));
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  // spool on the desk
+  const sr = R.halfW * S.sc * 0.055;
+  const spin = tt * 0.004;
+  ctx.fillStyle = 'rgba(60,44,28,1)'; ctx.beginPath(); ctx.ellipse(S.x, S.y - sr * 0.4, sr, sr * 0.45, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = `rgba(232,228,216,${0.5 + 0.5 * ta})`; ctx.lineWidth = 1;
+  for (let i = 0; i < 6; i++) { const an = spin + i * TAU / 6; ctx.beginPath(); ctx.moveTo(S.x, S.y - sr * 0.4); ctx.lineTo(S.x + Math.cos(an) * sr, S.y - sr * 0.4 + Math.sin(an) * sr * 0.45); ctx.stroke(); }
+  const sg = ctx.createRadialGradient(S.x, S.y - sr * 0.4, 0, S.x, S.y - sr * 0.4, sr * 3);
+  sg.addColorStop(0, `rgba(232,228,216,${0.35 * ta})`); sg.addColorStop(1, 'rgba(232,228,216,0)');
+  ctx.fillStyle = sg; ctx.fillRect(S.x - sr * 3, S.y - sr * 3.5, sr * 6, sr * 6);
+  // the cord runs off the desk and re-weaves the floor in moonlight
+  const weave = sstep(ramp(p, 0.42, 0.95));
+  if (weave > 0) {
+    const edge = R.P(-0.08, DESK.k0, DESK.v), foot = R.P(-0.08, DESK.k0, 0);
+    ctx.strokeStyle = `rgba(232,228,216,${0.9})`; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(S.x, S.y); ctx.lineTo(edge.x, edge.y); ctx.lineTo(foot.x, foot.y); ctx.stroke();
+    // lines light up one at a time, near-to-far rows then the converging columns
+    const items = [];
+    for (let k = 0; k <= DEPTH; k++) items.push({ a: R.P(-1, k, 0), b: R.P(1, k, 0) });
+    for (let i = 0; i <= COLS; i++) { const u = -1 + 2 * i / COLS; items.push({ a: R.P(u, 0, 0), b: R.P(u, DEPTH, 0) }); }
+    const n = items.length;
+    ctx.shadowColor = 'rgba(232,228,216,0.9)'; ctx.shadowBlur = 6;
+    for (let i = 0; i < n; i++) {
+      const f = clamp(weave * n - i, 0, 1); if (f <= 0) continue;
+      const it = items[i];
+      const bx = lerp(it.a.x, it.b.x, f), by = lerp(it.a.y, it.b.y, f);
+      ctx.strokeStyle = `rgba(232,228,216,${0.35 + 0.45 * Math.sin(tt * 0.003 + i)})`; ctx.lineWidth = 1.1;
+      ctx.beginPath(); ctx.moveTo(it.a.x, it.a.y); ctx.lineTo(bx, by); ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+  }
+  drawCandle(ctx, R, 1, t);
+}
+
+/* ---------- scene 4: dissolution ---------- */
+const s4 = document.querySelector('#s4 canvas');
+const S4 = { pts: null, w: 0, h: 0 };
+function buildDissolve(ctx, R) {
+  const { base, H } = figureGeom(R);
+  const path = figurePath(base, H);
+  const pts = [];
+  const x0 = base.x - H * 0.26, x1 = base.x + H * 0.26, y0 = base.y - H * 1.0, y1 = base.y;
+  const step = Math.max(2.2, H / 60);
+  for (let y = y0; y < y1; y += step) for (let x = x0; x < x1; x += step) {
+    if (ctx.isPointInPath(path, x * (ctx.getTransform().a), y * (ctx.getTransform().d))) {
+      // target: a random dark tile center somewhere on the floor
+      const k = Math.floor(Math.random() * DEPTH), i = Math.floor(Math.random() * COLS);
+      const tc = R.P(-1 + 2 * (i + 0.5) / COLS, k + 0.5, 0);
+      const order = (y1 - y) / (y1 - y0); // 1 at head, 0 at feet
+      pts.push({ x, y, tx: tc.x + (Math.random() - 0.5) * 6, ty: tc.y + (Math.random() - 0.5) * 3, o: order, ph: Math.random() * TAU, light: (i + k) % 2 === 0 });
+    }
+  }
+  return pts;
+}
+function renderS4(p, t) {
+  const { ctx, w, h, resized } = prep(s4); const R = Room(w, h);
+  if (!S4.pts || resized || S4.w !== w || S4.h !== h) { S4.pts = buildDissolve(ctx, R); S4.w = w; S4.h = h; }
+  ctx.fillStyle = '#120e0a'; ctx.fillRect(0, 0, w, h);
+  drawRoom(ctx, R, 1, t);
+  const dis = sstep(ramp(p, 0.08, 0.75));
+  // body fades top-down: draw figure with alpha falling, then the departing points carry it
+  const bodyA = 1 - sstep(ramp(p, 0.08, 0.5));
+  drawFigure(ctx, R, bodyA, t, 1);
+  drawDesk(ctx, R, 1);
+  const tt = reduce ? 0 : t;
+  for (const q of S4.pts) {
+    const e = sstep(clamp((dis - (1 - q.o) * 0.55) / 0.45, 0, 1)); // head leaves first
+    if (e <= 0 && bodyA > 0.98) continue;
+    // arc through the air
+    const x = lerp(q.x, q.tx, e), y = lerp(q.y, q.ty, e) - Math.sin(Math.PI * e) * h * 0.08;
+    const drift = Math.sin(tt * 0.002 + q.ph) * 1.5 * (1 - e);
+    const a = e < 1 ? 0.9 : 0.75;
+    ctx.fillStyle = q.light && e > 0.95 ? `rgba(90,70,44,${a})` : `rgba(200,155,90,${a * (0.5 + 0.5 * e)})`;
+    const s = lerp(1.6, 2.4, e);
+    ctx.fillRect(x + drift, y, s, s);
+  }
+  drawCandle(ctx, R, 1, t);
+}
+
+/* ---------- loop ---------- */
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 },
+  { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 },
+  { el: document.getElementById('s4'), render: renderS4 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight;
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+    s.render(p, t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
