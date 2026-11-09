@@ -118,9 +118,32 @@ const gallery = defineCollection({
         .default('pisces'),
       /** Plate colour inside the frame; a muted, dark hue reads best. */
       plate: z.string().default('#2b2230'),
+      /**
+       * The Bureau of Coincidence's docket. A poem with `subject: feminine`
+       * and a `case` carries the Bureau's stamp at its foot
+       * (src/components/scroll/BureauStamp.astro: "Certified coincidental,
+       * Case No. …", linking to the hearing, /gallery/ladies-ladies/).
+       *
+       * The case number is the ecliptic longitude of the natal placement
+       * that governs the poem, written degrees.minutes from 0° Aries
+       * (000.00 to 359.59; three digits, a point, two): Venus at 9°01'
+       * Aries is 009.01, Neptune at 16°08' Capricorn 286.08, Black Moon
+       * Lilith at 23°52' Sagittarius 263.52. The hearing's own number,
+       * 302.30, is Saturn at 2°30' Aquarius on the MC. Placements come
+       * from the Author's chart, src/scripts/natal/chart.michael.ts.
+       */
+      subject: z.enum(['feminine']).optional(),
+      case: z
+        .string()
+        .regex(/^(?:[0-2]\d\d|3[0-5]\d)\.[0-5]\d$/, '`case` is degrees.minutes of ecliptic longitude, e.g. "009.01".')
+        .optional(),
       ...seriesFields,
     })
-    .refine(seriesTogether.check, { message: seriesTogether.message, path: ['seriesNo'] }),
+    .refine(seriesTogether.check, { message: seriesTogether.message, path: ['seriesNo'] })
+    .refine((d) => (d.subject === undefined) === (d.case === undefined), {
+      message: '`subject` and `case` go together: the stamp needs both.',
+      path: ['case'],
+    }),
 });
 
 export const collections = { writings, gallery };
