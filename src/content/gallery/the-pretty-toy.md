@@ -5,7 +5,7 @@ year: 2026
 epigraph: "Persephone's flower, Narcissus's pool, and one gesture told twice."
 href: "/gallery/the-pretty-toy/"
 medium: "Visualized essay; interactive page"
-order: 2
+order: 3
 status: on-view
 sign: virgo
 plate: "#0f1620"

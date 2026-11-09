@@ -5,7 +5,7 @@ year: 2026
 epigraph: "Hades to the Kore: a descent in five movements, gated by six pomegranate seeds."
 href: "/writings/the-unseen-one/"
 medium: "Visualized poem in five movements; interactive descent"
-order: 3
+order: 4
 status: on-view
 sign: scorpio
 plate: "#1c1420"

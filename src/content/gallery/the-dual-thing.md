@@ -5,7 +5,7 @@ year: 2026
 epigraph: "Orphic genesis, the Titan ash, and how a soul comes to wear a body."
 href: "/gallery/the-dual-thing/"
 medium: "Visualized essay; interactive page"
-order: 1
+order: 2
 status: on-view
 sign: capricorn
 plate: "#14121c"
