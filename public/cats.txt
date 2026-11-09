@@ -1,0 +1,115 @@
+iamwilhelm.com / cats.txt
+=========================
+
+Room IV. The Cattery.
+Not on the map. Not in the nav. Hung here for whoever reads the plain files.
+
+The Greeks had a word for the animal before they had the animal:
+αἴλουρος, ailouros, "the one with the waving tail." Herodotus saw them
+in Egypt and wrote it down (II.66). Nobody has improved on the word.
+
+
+    Cat. IV.01 — The Keeper
+    ------------------------------------------------------------
+    A lighthouse cat. Watches the beam. Does not steer it.
+
+              /\_____/\
+             /  o   o  \
+            ( ==  ^  == )
+             )         (
+            (           )
+           ( (  )   (  ) )
+          (__(__)___(__)__)
+
+          Light list · Character: Fl W 7s · Station: the hidden house
+
+
+    Cat. IV.02 — Pharmakon
+    ------------------------------------------------------------
+    The cat that knocks the vial off the table and watches it land.
+    Poison or cure: the cat does not choose either.
+
+               |\      _,,,---,,_
+         ZZZzz /,`.-'`'    -.  ;-;;,_
+              |,4-  ) )-,_. ,\ (  `'-'
+             '---''(_/--'  `-'\_)
+
+          Substance: φάρμακον · Preparation: one paw, one tip
+
+
+    Cat. IV.03 — The Unseen One
+    ------------------------------------------------------------
+    A black cat on a black page. You cannot see him. He can see you.
+    Hades owned one object outright: the cap that made its wearer unseen.
+    He lent it to the cat.
+
+          .
+                                                    .
+               .                     .
+                              (nothing here. keep scrolling.)
+                   .                              .
+
+
+    Cat. IV.04 — Equal Volume
+    ------------------------------------------------------------
+    Fills the vessel to the brim. Every time. Hold to pour.
+
+                 ,_     _
+                 |\\_,-~/
+                 / _  _ |    ,--.
+                (  @  @ )   / ,-'
+                 \  _T_/-._( (
+                 /         `. \
+                |         _  \ |
+                 \ \ ,  /      |
+                  || |-_\__   /
+                 ((_/`(____,-'
+
+          Capacity: to the brim · Condition: whole · Repair: not needed
+
+
+    Cat. IV.05 — Mimics & Mythmakers
+    ------------------------------------------------------------
+    Points its mirror at the screen. Pointed at a screen, it sees a cat.
+
+            /\_/\      /\_/\
+           ( o.o )    ( o.o )
+            > ^ <      > ^ <
+           -------    -------
+            the cat    the feed
+
+
+    Cat. IV.06 — True Amazons
+    ------------------------------------------------------------
+    Nine steps. Nine lives. One Greek word carries the whole argument.
+
+                      ___
+            /\_/\    | ἰός |
+           ( ^.^ )   |arrow|
+            (")(")   |venom|
+          ~~~~~~~~~  |rust |
+           step IX   |_____|
+
+
+Colophon
+------------------------------------------------------------
+No cat was harmed. No cat was consulted. Every cat is a reading,
+not a text: inferred, not cited, and tagged accordingly.
+
+                              _
+                             | \
+                             | |
+                             | |
+        |\                   | |
+       /, ~\                / /
+      X     `-.....-------./ /
+       ~-. ~  ~              |
+          \             /    |
+           \  /_     ___\   /
+           | /\ ~~~~~   \ |
+           | | \        || |
+           | |\ \       || )
+          (_/ (_/      ((_/
+
+    Set in monospace, whatever you have. The Gallery is at /gallery/.
+    The rest of the house: /writings/ · /method/ · /support/ · /rss.xml
