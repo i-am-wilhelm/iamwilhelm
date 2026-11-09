@@ -22,7 +22,7 @@ as-is.
 | Field | Value |
 | --- | --- |
 | Title | Everyone, Searchable |
-| Slug / route | `everyone-searchable` → `/writings/everyone-searchable/` |
+| Slug / route | `everyone-searchable` → `/gallery/everyone-searchable/` (moved from `/writings/everyone-searchable/`, which redirects) |
 | Series | Futurist · No. 1 |
 | Byline | By Michael Wilhelm |
 | Date | 2026-11-06 *(chosen: the prototype says "November 2026"; set the real day when it ships)* |
@@ -101,7 +101,7 @@ it on the Gallery wall is a separate, optional choice.
    description: "…"          # the page's meta description
    treatment: scrolly
    series: futurist
-   seriesNumber: 2
+   seriesNo: 2
    ---
    ```
 
@@ -116,7 +116,7 @@ it on the Gallery wall is a separate, optional choice.
      dither, no backdrop fade, no smoke, the audio layer dormant;
    - puts it on `npm run og:scrollies`' list.
 
-   The schema refuses `series` without `seriesNumber`, and the reverse.
+   The schema refuses `series` without `seriesNo`, and the reverse.
 3. **The share image.** `npm run og:scrollies -- <slug>` renders only that
    card (`public/og/<slug>.jpg`, its opening frame at 1200×630) and leaves the
    other cards' bytes and cache-busting hashes alone. Commit the JPEG.

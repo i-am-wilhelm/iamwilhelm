@@ -1,6 +1,6 @@
 ---
 /**
- * Layout for the public museum pages (/, /gallery, /writings, 404): full
+ * Layout for the public museum pages (/, /gallery, /writings, /method, 404): full
  * meta, Open Graph and Twitter cards, JSON-LD, self-hosted font preloads,
  * the sticky nav, and the colophon footer. No WebGL stage, no dither, no
  * audio: those belong to the archived homepage (/atelier) and the poem
@@ -17,6 +17,7 @@ import {
   MANIFESTO_URL,
   SITE_NAME,
   SITE_URL,
+  FEEDS,
 } from '../config/site';
 import { ogImage } from '../config/og';
 
@@ -27,7 +28,7 @@ interface Props {
   image?: string;
   imageAlt?: string;
   home?: boolean;
-  current?: 'gallery' | 'writings';
+  current?: 'gallery' | 'writings' | 'method' | 'support';
   noindex?: boolean;
   /** Extra JSON-LD nodes for this page (merged into the @graph). */
   schema?: Record<string, unknown>[];
@@ -96,6 +97,8 @@ const jsonLd = {
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {FEEDS.map((f) => <link rel="alternate" type={f.type} title={f.title} href={f.href} />)}
+    <slot name="head" />
 
     <link rel="preload" href="/fonts/cormorant-garamond-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 

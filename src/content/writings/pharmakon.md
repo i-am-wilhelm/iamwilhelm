@@ -5,6 +5,8 @@ accent: writings
 symbols: ["medea", "poison-arrow"]
 draft: false
 description: "A poem in six movements on φάρμακον, the one word for drug, remedy, poison, and spell, with a headnote on reading it across Homer, the herbals, the lexicons, and the Septuagint."
+series: poems
+seriesNo: 1
 ---
 
 Greek keeps a single word for drug, remedy, poison, and spell: φάρμακον, <em>pharmakon</em>. Homer already works the word across its whole range. Helen pours a φάρμακον of forgetting into the wine at Sparta; Circe stirs one into the barley-drink on Aiaia; and Athena remembers Odysseus sailing to Ephyra in search of a man-killing φάρμακον to smear on his bronze-tipped arrows (<em>Odyssey</em> 1.261–262). One wordform covers the healer's simple, the witch's cup, and the archer's venom, and its sense settles only in use: in the hand that holds the jar, and the direction it tips.

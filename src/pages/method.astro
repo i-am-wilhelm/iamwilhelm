@@ -1,0 +1,213 @@
+---
+/**
+ * /method: how the pages are read. Three sections: the tagging system
+ * (text / reading / disputed, with the legend True Amazons introduced),
+ * what is read in the original, and what is machine-assisted. Linked from
+ * every source ledger and from the Philosophy page's placard. The copy in
+ * each section is a TODO(owner) block; the legend's wording is the one the
+ * pages already use.
+ */
+import Museum from '../layouts/Museum.astro';
+import Placard from '../components/museum/Placard.astro';
+import Meander from '../components/museum/Meander.astro';
+import Colophon from '../components/museum/Colophon.astro';
+import { SITE_URL } from '../config/site';
+
+const legend = [
+  {
+    tag: 'text',
+    cls: 'text',
+    means: 'An ancient source says it, cited in the ledger at the end of the page.',
+  },
+  {
+    tag: 'reading',
+    cls: 'read',
+    means: 'The inference laid on top of the text: a scholar’s, or the author’s.',
+  },
+  {
+    tag: 'disputed',
+    cls: 'disp',
+    means: 'A reading past the standard lexicon or the consensus, named as such: the author’s own argument, or a philology the field has yet to follow.',
+  },
+];
+---
+
+<Museum
+  title="Method · Michael Wilhelm"
+  description="How the pages on iamwilhelm.com are read: the tagging system (text, reading, disputed), what is read in the original Greek, and what is machine-assisted."
+  current="method"
+  schema={[
+    {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/method/#page`,
+      url: `${SITE_URL}/method/`,
+      name: 'Method',
+      author: { '@id': `${SITE_URL}/#person` },
+    },
+  ]}
+>
+  <article class="page" aria-labelledby="method-title" style="--room-accent: var(--room-v)">
+    <div class="page__inner wrap">
+      <div class="page__head">
+        <Placard
+          id="method-title"
+          level={1}
+          label="The Reading Room"
+          title="Method"
+          medium="How the pages are read: the tags, the originals, and the machines"
+        />
+        <div class="page__statement prose-museum" data-reveal>
+          {/* TODO(owner): the opening statement on method, in your own voice. */}
+          <p class="lede">
+            Every claim on a scroll page wears a tag, every Greek word is read before it is translated, and every place
+            a machine helped is named. This page is the key.
+          </p>
+        </div>
+      </div>
+
+      <section class="sect" aria-labelledby="tags-title" data-reveal>
+        <h2 class="sect__title display" id="tags-title">The tagging system</h2>
+        <div class="sect__body prose-museum">
+          {/* TODO(owner): what the three tags are for and why every claim wears one. The legend below is the wording the pages use. */}
+          <p>
+            A scroll page argues from sources, and the reader should always be able to see which kind of ground a
+            sentence stands on. So every claim carries one of three tags.
+          </p>
+          <dl class="legend">
+            {
+              legend.map((l) => (
+                <div class="legend__row">
+                  <dt>
+                    <span class:list={['tag', l.cls]}>{l.tag}</span>
+                  </dt>
+                  <dd>{l.means}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <p>
+            The source ledger at the end of each page lists what every tagged claim rests on and filters by tag. The
+            colours follow the pages: green is the ground, bronze and purple are the climb.
+          </p>
+        </div>
+      </section>
+
+      <section class="sect" aria-labelledby="original-title" data-reveal>
+        <h2 class="sect__title display" id="original-title">What is read in the original</h2>
+        <div class="sect__body prose-museum">
+          {/* TODO(owner): the in-the-original method. Which texts and editions are read in Greek (and Latin, German), which lexicons (LSJ, Beekes, Chantraine), what is checked against a standard translation and where the translations are the author's. */}
+          <p>
+            The Greek is read in Greek. Where a page turns on a word, the word is given in the original with the
+            lexicon entry it rests on, and translations are the author’s unless a translator is named.
+          </p>
+          <p class="page__todo mono">Section copy pending.</p>
+        </div>
+      </section>
+
+      <section class="sect" aria-labelledby="machine-title" data-reveal>
+        <h2 class="sect__title display" id="machine-title">What is machine-assisted</h2>
+        <div class="sect__body prose-museum">
+          {/* TODO(owner): the disclosure. Which parts of the pages are built with machine help (the page systems, the canvases, the ports from prototypes), which are not (the essays, the poems, the readings of the sources), and how the line is kept. */}
+          <p>
+            The essays and poems are written by hand. The page systems that stage them, the canvases, the choreography
+            and the share images, are built with machine help, from the author’s own prototypes.
+          </p>
+          <p class="page__todo mono">Section copy pending.</p>
+        </div>
+      </section>
+    </div>
+  </article>
+  <Meander />
+  <Colophon />
+</Museum>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem);
+  }
+  .page__inner {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+  .page__head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .page__statement {
+    padding-top: 0.5rem;
+    color: var(--ink-soft);
+  }
+  .page__statement .lede {
+    color: var(--ink);
+  }
+  .sect {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+    padding-top: clamp(2rem, 1.5rem + 2vw, 3rem);
+    border-top: 1px solid var(--rule);
+  }
+  .sect__title {
+    font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.6rem);
+    color: var(--ink);
+  }
+  .sect__body {
+    color: var(--ink-soft);
+  }
+  .legend {
+    display: grid;
+    gap: 0.9rem;
+    margin: 1.4rem 0;
+    max-width: var(--measure);
+  }
+  .legend__row {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: 0.8rem;
+    align-items: start;
+  }
+  .legend dt,
+  .legend dd {
+    margin: 0;
+  }
+  /* The tags, in the voice the scroll pages give them. */
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+  .tag.text {
+    color: #2f6e55;
+  }
+  .tag.read {
+    color: #7b4128;
+  }
+  .tag.disp {
+    color: #5a3c63;
+  }
+  .page__todo {
+    margin-top: 1.2rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px dashed var(--ink-faint);
+    color: var(--ink-faint);
+    max-width: var(--measure);
+  }
+  @media (max-width: 820px) {
+    .page__head,
+    .sect {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .legend__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.3rem;
+    }
+  }
+</style>

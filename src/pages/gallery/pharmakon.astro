@@ -7,6 +7,9 @@
  * src/content/writings/pharmakon.md, where the essay and headnote also live.
  */
 import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
 
 <Poem
@@ -20,10 +23,33 @@ import Poem from '../../layouts/Poem.astro';
 
   <main>
     <header class="poem-head">
-      <p class="char"><span>Pharmacopoeia</span><span>Substance <b lang="grc">φάρμακον</b></span><span>Preparation <b>two vials, one heat</b></span><span>Under <b>Medea</b></span></p>
+      <p class="log"><SeriesMark id="pharmakon" /></p>
+      <p class="char">
+        <span>Pharmacopoeia</span><span class="sr-only">, </span>
+        <span>Substance <b lang="grc">φάρμακον</b></span><span class="sr-only">, </span>
+        <span>Preparation <b>two vials, one heat</b></span><span class="sr-only">, </span>
+        <span>Under <b>Medea</b></span>
+      </p>
       <h1>Pharmakon</h1>
       <p class="sub">the old Greek word that refuses to choose between the poison and the cure</p>
       <p class="log">scroll · the veil thins where you touch · tap the pool to tip a vial</p>
+      <!-- Keyboard path to the canvas: the hand under the veil and the vial, same state the pointer writes. -->
+      <p class="ctl">
+        <span
+          class="ctl__k"
+          id="veil-ctl"
+          role="slider"
+          tabindex="0"
+          aria-label="Lift the veil"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="50"
+          aria-valuetext="hand 50 percent across the nave"
+          aria-describedby="veil-help">lift the veil <span aria-hidden="true">&larr; &rarr;</span></span>
+        <span id="veil-help" class="sr-only">Left and right arrows move the hand across the nave; the veil thins around it. Enter or Space tips a vial into the pool where the hand is.</span>
+        <button type="button" class="ctl__k" id="vial-ctl" aria-describedby="vial-help">tip a vial</button>
+        <span id="vial-help" class="sr-only">Drops venom or antidote into the pool, alternating, and thins the veil.</span>
+      </p>
     </header>
 
     <section data-mode="born">
@@ -31,7 +57,7 @@ import Poem from '../../layouts/Poem.astro';
       <p class="l" style="--ml:0%">I was born under a full moon, which is to say</p>
       <p class="l" style="--ml:14%">I was born legible, and lonely for a reader.</p>
       <p class="l gap" style="--ml:0%">Split down the spine like a psalter,</p>
-      <div class="l facing"><span class="left">the Fish</span><span class="spine"></span><span>and the Maiden</span></div>
+      <div class="l facing"><span class="left">the Fish </span><span class="spine"></span><span>and the Maiden</span></div>
       <p class="l" style="--ml:22%">facing each other across</p>
       <p class="l dim" style="--ml:8%">the long candlelit nave of the sky.</p>
       <p class="l gap" style="--ml:0%">I have never wanted to be merely loved.</p>
@@ -172,6 +198,7 @@ import Poem from '../../layouts/Poem.astro';
         <span>Michael Wilhelm · 2026</span>
         <span><a href="/writings/pharmakon/">Read the headnote</a> · <a href="/gallery/true-amazons/">Companion: True Amazons</a> · <a href="/gallery/">Return to the gallery</a></span>
       </footer>
+      <ScrollFoot id="pharmakon" class="poem-sf" />
     </section>
   </main>
 </Poem>
@@ -237,6 +264,45 @@ import Poem from '../../layouts/Poem.astro';
   }
   .char b {
     color: var(--gold);
+  }
+  /* Quiet controls: the keyboard's way to the canvas, in the log's voice. */
+  .ctl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.2rem;
+    margin-top: -0.4rem;
+  }
+  .ctl__k {
+    display: inline-block;
+    font-family: var(--log);
+    font-size: 0.5em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    color: var(--dim);
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--dim) 35%, transparent);
+    border-radius: 0;
+    padding: 0.35em 0.75em;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.4s ease, border-color 0.4s ease;
+  }
+  .ctl__k:hover,
+  .ctl__k:focus-visible {
+    color: var(--fg);
+    border-color: var(--gold);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* I: the psalter */
@@ -573,11 +639,48 @@ import Poem from '../../layouts/Poem.astro';
   }
   addEventListener('pointermove', (e) => { pointer = { x: e.clientX, y: e.clientY }; pointerT = performance.now(); }, { passive: true });
   addEventListener('pointerdown', (e) => {
-    if ((e.target as Element).closest('a,button')) return;
+    if ((e.target as Element).closest('a,button,[role="slider"]')) return;
     pointer = { x: e.clientX, y: e.clientY }; pointerT = performance.now();
     tip(e.clientX, e.clientY, nextKind); nextKind ^= 1;
     target.veil = Math.max(0, target.veil - 0.25);
   }, { passive: true });
+
+  // The keyboard's hand: a slider in the header places `pointer` across the
+  // nave (the veil thins around it), and a button tips the vial there, the
+  // same drop, the same veil lift the tap gives.
+  const veilCtl = document.getElementById('veil-ctl')!;
+  const vialCtl = document.getElementById('vial-ctl')!;
+  let hand = 50;
+  function placeHand(pct: number) {
+    hand = Math.max(0, Math.min(100, pct));
+    veilCtl.setAttribute('aria-valuenow', String(Math.round(hand)));
+    veilCtl.setAttribute('aria-valuetext', `hand ${Math.round(hand)} percent across the nave`);
+    pointer = { x: (W * hand) / 100, y: H * 0.5 }; pointerT = performance.now();
+    engage();
+  }
+  function tipVial() {
+    const x = pointer ? pointer.x : W * 0.5;
+    pointerT = performance.now();
+    tip(x, H * 0.4, nextKind); nextKind ^= 1;
+    target.veil = Math.max(0, target.veil - 0.25);
+    engage();
+  }
+  veilCtl.addEventListener('keydown', (e) => {
+    const step = e.shiftKey ? 25 : 10;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowUp': placeHand(hand + step); break;
+      case 'ArrowLeft': case 'ArrowDown': placeHand(hand - step); break;
+      case 'PageUp': placeHand(hand + 25); break;
+      case 'PageDown': placeHand(hand - 25); break;
+      case 'Home': placeHand(0); break;
+      case 'End': placeHand(100); break;
+      case 'Enter': case ' ': placeHand(hand); tipVial(); break;
+      default: return;
+    }
+    e.preventDefault();
+  });
+  veilCtl.addEventListener('click', () => { placeHand(hand); tipVial(); });
+  vialCtl.addEventListener('click', tipVial);
 
   function flame(x: number, y: number, size: number, col: RGB, t: number, a: number) {
     if (a <= 0.01) return;

@@ -5,6 +5,8 @@ accent: cluster
 symbols: []
 draft: false
 description: "The stars were letters first: one Greek word for a letter, an element, and a heavenly body, read through Hesiod, Pythagoras, Plato, and Kepler, and a note on how ideas choose the people who carry them."
+series: through-the-lens
+seriesNo: 1
 ---
 
 <section class="part" aria-label="I">

@@ -1,7 +1,7 @@
 ---
 /**
- * /gallery: the Gallery of Visualized Poetry on its own. Same framed tiles
- * as the homepage's Room II; new poems drop in from src/content/gallery.
+ * /gallery: The Gallery on its own. Same framed tiles as the homepage's
+ * Room II; new pieces drop in from src/content/gallery.
  */
 import Museum from '../../layouts/Museum.astro';
 import Placard from '../../components/museum/Placard.astro';
@@ -12,7 +12,7 @@ import { SITE_URL } from '../../config/site';
 ---
 
 <Museum
-  title="Gallery of Visualized Poetry · Michael Wilhelm"
+  title="The Gallery · Michael Wilhelm"
   description="Visualized poems and essays by Michael Wilhelm, each framed and opening onto its own interactive page: Everyone, Searchable, the first Futurist essay; Where It Was, the third Through the Lens essay; The Keeper and the Flame, PHARMAKON, Equal Volume, True Amazons, Mimics & Mythmakers, and the in-the-original essays The Only Sighted One, The Dual Thing, and The Pretty Toy."
   current="gallery"
   schema={[
@@ -20,7 +20,7 @@ import { SITE_URL } from '../../config/site';
       '@type': 'CollectionPage',
       '@id': `${SITE_URL}/gallery/#page`,
       url: `${SITE_URL}/gallery/`,
-      name: 'Gallery of Visualized Poetry',
+      name: 'The Gallery',
       author: { '@id': `${SITE_URL}/#person` },
     },
   ]}
@@ -31,8 +31,8 @@ import { SITE_URL } from '../../config/site';
         <Placard
           id="gallery-page-title"
           level={1}
-          label="The Gallery"
-          title="Visualized Poetry"
+          label="Room II"
+          title="The Gallery"
           medium="Poems and essays written to be read slowly, each set on its own interactive page"
           catalog="Cat. II"
         />

@@ -1,25 +1,26 @@
 ---
 /**
- * The writings index: title, date, and description for each published
- * piece, newest first. Shared by Room III (latest few), /writings (all) and
- * the series indexes (`series`: that series only, numbered in it). A piece
- * in a series carries its label, "Futurist · No. 1", in the series accent.
+ * Rows of pieces in the reading room's style: the series label as the
+ * primary line (in the series accent, linking to the series index), the
+ * title, the date, and the one-line description. Shared by Room III (the
+ * latest few readings), /writings (every reading: the readings shelf) and
+ * the series indexes (`series`: that series' pieces, scroll pages and
+ * readings alike, numbered in it). The catalogue number is a sort key and
+ * is not printed.
  */
-import { getCollection } from 'astro:content';
-import { series as seriesSpec, seriesAccent, seriesLabel, type SeriesId } from '../../config/series';
+import { series as seriesSpec, seriesAccent, type SeriesId } from '../../config/series';
+import { getReadings, getSeriesPieces, type Piece } from '../../lib/pieces';
 
 interface Props {
   limit?: number;
   level?: 2 | 3;
-  /** Only this series, numbered by its place in it ("No. 1"). */
+  /** Only this series, scroll pages and readings, newest first. */
   series?: SeriesId;
 }
 const { limit, level = 3, series } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 
-const all = (
-  await getCollection('writings', ({ data }) => !data.draft && (!series || data.series === series))
-).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const all: (Piece & { companion?: Piece })[] = series ? await getSeriesPieces(series) : await getReadings();
 const posts = limit ? all.slice(0, limit) : all;
 
 const fmt = (d: Date) =>
@@ -28,24 +29,31 @@ const fmt = (d: Date) =>
 
 <ol class="writings" role="list">
   {
-    posts.map((post, i) => (
+    posts.map((p) => (
       <li class="entry" data-reveal>
-        <span class="entry__num mono">
-          {series ? `No. ${post.data.seriesNumber}` : `III.${String(i + 1).padStart(2, '0')}`}
-        </span>
+        <span class="entry__num mono">{p.seriesNo ? `No. ${p.seriesNo}` : '·'}</span>
         <div class="entry__body">
-          {!series && post.data.series && post.data.seriesNumber && (
-            <p class="entry__series mono" style={`--series-accent: ${seriesAccent(post.data.series)}`}>
-              <a href={seriesSpec[post.data.series].href}>{seriesLabel(post.data.series, post.data.seriesNumber)}</a>
+          {p.series && p.label && (
+            <p class="entry__series mono" style={`--series-accent: ${seriesAccent(p.series)}`}>
+              {series ? <span>{p.label}</span> : <a href={seriesSpec[p.series].href}>{p.label}</a>}
+              {p.kind === 'scroll' && <span class="entry__kind">Scroll page</span>}
             </p>
           )}
           <H class="entry__title">
-            <a href={`/writings/${post.id}/`}>{post.data.title}</a>
+            <a href={p.path}>{p.title}</a>
           </H>
           <p class="entry__date">
-            <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+            <time datetime={p.date.toISOString()}>{fmt(p.date)}</time>
           </p>
-          {post.data.description && <p class="entry__desc">{post.data.description}</p>}
+          {p.line && <p class="entry__desc">{p.line}</p>}
+          {p.verb && <p class="entry__verb">{p.verb}</p>}
+          {p.companion && (
+            <p class="entry__companion">
+              <a class="text-link" href={p.companion.path}>
+                Read the headnote and essay
+              </a>
+            </p>
+          )}
         </div>
       </li>
     ))
@@ -91,7 +99,11 @@ const fmt = (d: Date) =>
     background-size: 100% 1px;
   }
   .entry__series {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
     letter-spacing: 0.06em;
+    color: var(--series-accent);
   }
   .entry__series a {
     color: var(--series-accent);
@@ -102,6 +114,9 @@ const fmt = (d: Date) =>
   .entry__series a:focus-visible {
     text-decoration: underline;
   }
+  .entry__kind {
+    color: var(--ink-faint);
+  }
   .entry__date {
     color: var(--ink-faint);
     font-variant-caps: all-small-caps;
@@ -110,6 +125,17 @@ const fmt = (d: Date) =>
   .entry__desc {
     max-width: var(--measure);
     color: var(--ink-soft);
+  }
+  .entry__verb,
+  .entry__companion {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  .entry__companion {
+    font-style: normal;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
   }
   @media (max-width: 480px) {
     .entry {

@@ -7,6 +7,8 @@ draft: false
 description: "Hades to the Kore: a descent in five movements, gated by six pomegranate seeds, with a headnote on the names nobody said aloud."
 treatment: descent
 fade: descent
+series: poems
+seriesNo: 4
 ---
 
 The god of the dead is a god nobody named. Ἀΐδης, <em>Aïdēs</em>, the Unseen One, was a word the Greeks preferred to walk around: they called him Πλούτων, <em>Plouton</em>, Wealth, for the gold and silver and seed grain that have to go under the ground before they are worth anything; Πολυδέγμων, Host of Many; Εὐβουλεύς, Good Counsel. The god of where our loss goes is, by his own public title, the god of buried wealth. And the girl he took was a title too. Κόρη, <em>Kore</em>, means Maiden. The Homeric Hymn to Demeter gives her the throne and the name only after she has been under: Persephone, with the epithet ἐπαινή, dread. In the mysteries at Eleusis her name was not spoken. The hymn also records what sealed it. Before letting her go up to her mother, Aidoneus gives her <span lang="grc">ῥοιῆς κόκκον μελιηδέα</span>, a honey-sweet seed of pomegranate (<em>Hymn to Demeter</em> 412), and the seed is the law: whoever eats below belongs below for a share of the year.

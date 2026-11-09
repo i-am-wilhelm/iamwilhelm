@@ -1,0 +1,8 @@
+# Scroll pages have one route, under /gallery/. The reading-room URLs they
+# first shipped at redirect permanently (Cloudflare static assets _redirects).
+/writings/everyone-searchable/ /gallery/everyone-searchable/ 301
+/writings/everyone-searchable /gallery/everyone-searchable/ 301
+/writings/the-unseen-one/ /gallery/the-unseen-one/ 301
+/writings/the-unseen-one /gallery/the-unseen-one/ 301
+/writings/where-it-was/ /gallery/where-it-was/ 301
+/writings/where-it-was /gallery/where-it-was/ 301

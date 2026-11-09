@@ -5,6 +5,9 @@ accent: philosophy
 symbols: []
 draft: false
 description: "Atlas, Columbia, and Pallas Athena: the weight, the torch, and the shield, and what I found in the underworld and worship now."
+series: readings
+seriesNo: 2
+methodLink: true
 ---
 
 <section class="part part--front" aria-label="Epigraph">

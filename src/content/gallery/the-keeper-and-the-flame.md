@@ -9,6 +9,10 @@ order: 7
 status: on-view
 sign: aries
 plate: "#2a1a16"
+date: 2026-10-28
+verb: "one night to morning · you steer the beam"
+series: poems
+seriesNo: 2
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/WM6K9TyMLupDHKB6fhYzCR).

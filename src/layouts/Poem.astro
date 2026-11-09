@@ -1,6 +1,6 @@
 ---
 /**
- * Layout for a visualized poem in the Gallery (/gallery/<slug>/). Each poem
+ * Layout for a piece in The Gallery (/gallery/<slug>/). Each poem
  * is a night piece of its own: one fixed canvas behind a single column of
  * loose lines that brighten and settle as they arrive. The museum wall
  * (ivory, grain, nav) stays outside the frame; the only museum element on
@@ -15,7 +15,7 @@
  * `exit`, `partOf`, `published` and `preload` cover it, and their defaults
  * leave every night piece exactly as it was.
  */
-import { SITE_NAME, SITE_URL } from '../config/site';
+import { FEEDS, SITE_NAME, SITE_URL } from '../config/site';
 import { ogImage } from '../config/og';
 
 interface Props {
@@ -51,7 +51,7 @@ const {
   bodyClass,
   scheme = 'dark',
   exit = true,
-  partOf = { name: 'Gallery of Visualized Poetry', url: `${SITE_URL}/gallery/`, type: 'CollectionPage' },
+  partOf = { name: 'The Gallery', url: `${SITE_URL}/gallery/`, type: 'CollectionPage' },
   published,
   preload = ['/fonts/cormorant-garamond-latin-400-normal.woff2'],
 } = Astro.props;
@@ -94,6 +94,8 @@ const htmlStyle = `--night:${night};--exit:${accent}${scheme === 'light' ? ';col
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {preload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+    {FEEDS.map((f) => <link rel="alternate" type={f.type} title={f.title} href={f.href} />)}
+    <slot name="head" />
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content={SITE_NAME} />

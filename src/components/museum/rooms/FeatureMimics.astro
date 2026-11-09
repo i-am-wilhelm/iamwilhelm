@@ -53,7 +53,7 @@ const sparks = [
             </svg>
             {sparks.map((p) => <i class="feat__spark" style={`--x:${p.x}%;--y:${p.y}%;--s:${p.s}px;--d:${p.d}s`}></i>)}
           </span>
-          <span class="feat__go"><span class="feat__go-a">So go in.</span><span class="feat__go-b">So go in.</span></span>
+          <span class="feat__go"><span class="feat__go-a">So go in.</span><span class="feat__go-b" aria-hidden="true" data-text="So go in."></span></span>
         </span>
       </span>
     </a>
@@ -343,6 +343,10 @@ const sparks = [
   .feat__go-a {
     color: #0d1a20;
     clip-path: inset(0 0 50% 0);
+  }
+  /* The pale half paints the same words from data-text, so the line is in the DOM once. */
+  .feat__go-b::before {
+    content: attr(data-text);
   }
   .feat__go-b {
     position: absolute;

@@ -1,6 +1,6 @@
 # The Unseen One Pleads His Case (`src/scripts/unseen/`)
 
-The descent island for `/writings/the-unseen-one/`. Mounted by `boot.ts`
+The descent island for `/gallery/the-unseen-one/` (moved from `/writings/the-unseen-one/`, which redirects). Mounted by `boot.ts`
 wherever `.seed-gate` markup exists; the page itself is the writings route
 rendered with `treatment: descent` (see `src/components/writings/Descent.astro`).
 

@@ -29,7 +29,8 @@ text that settles into place on scroll (same 7/8 meter as the poem pages).
 No WebGL, no dithering, no audio on these pages.
 
 - `src/layouts/Museum.astro`: meta, Open Graph and Twitter cards, JSON-LD
-  Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, `/writings/<slug>`, and 404.
+  Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, `/writings/<slug>`,
+  the series indexes, `/method`, `/support`, and 404.
 - `src/components/museum/`: Placard, Room, Meander, ZodiacRing, Glyph (SVG
   zodiac paths in `zodiac.ts`), PoemGallery, WritingsList, Colophon, and the
   rooms in `rooms/`.
@@ -41,7 +42,25 @@ No WebGL, no dithering, no audio on these pages.
   ALM `work.ts`), and the screenshots in `public/work/`. Re-import a room in
   `src/pages/index.astro` and restore its `NAV` entry to hang it again.
 - `src/content/gallery/`: one markdown file per framed work. Drop a file in
-  to hang a new piece on `/gallery` and in Room II; `href` points at its page.
+  to hang a new piece on `/gallery` and in Room II; `href` points at its page,
+  `series` and `seriesNo` place it in a series, `verb` is the card's verb
+  line, `date` orders it in the feeds.
+- Series: declared once in `src/config/series.ts` (in-the-original,
+  through-the-lens, futurist, mimics, poems, readings); every live piece
+  names one on its collection entry. `src/lib/pieces.ts` is the one view of
+  both collections (scroll pages and readings) that the cards, rows, series
+  indexes (`/writings/<series>/`), the scroll-page foot and the feeds read.
+  Feeds: `/rss.xml`, `/atom.xml`, and `/writings/<series>/rss.xml`; readings
+  carry their full text, scroll pages a summary and link.
+- Every scroll page lives under `/gallery/` (one route): the pieces that
+  first shipped under `/writings/` redirect from `public/_redirects`. The
+  reading room (`/writings/`) is the readings shelf.
+- `src/components/scroll/`: the pieces every scroll page mounts. `ScrollFoot`
+  (share, next in the series, the newsletter field, the patronage door to
+  `/support`), `SeriesMark` (the series label in the header), `MethodLink`
+  (the line every source ledger ends on, to `/method`), and `SplitText`
+  (text shown twice for effect with one readable copy in the DOM; the
+  copies paint from `data-text`).
 - `src/pages/gallery/<slug>.astro` + `src/layouts/Poem.astro`: the visualized
   pieces themselves (The Keeper and the Flame, PHARMAKON, The Only Sighted
   One), ported from the owner's Claude artifacts. Each is a night scene of its
@@ -51,8 +70,8 @@ No WebGL, no dithering, no audio on these pages.
   scheduler link, BackGold newsletter embed).
 - `npm run og` re-renders `public/og.png` and the PNG icons;
   `npm run og:scrollies` renders each scroll page's own opening frame
-  into `public/og/<slug>.jpg` (the Gallery pages and the descent-treatment
-  writings), which those routes use as their share image, versioned with a
+  into `public/og/<slug>.jpg` (every page under `/gallery/`), which those
+  routes use as their share image, versioned with a
   content-hash `?v=` so platforms refetch a changed card. Run it whenever a
   new scrolly is hung or restyled and commit the JPEGs;
   `npm run links` checks every outbound link in the build.
@@ -62,7 +81,7 @@ served by the Worker (`worker/index.ts`, plus its entry in
 `run_worker_first` in both wrangler configs), not from `public/`. Keep it
 permanently: Google re-checks the file and verification lapses if it goes.
 
-Branch previews: pushes to `museum-homepage` deploy to the
+Branch previews: pushes to `museum-homepage`, `scrolly/**` and `facelift/**` deploy to the
 `iamwilhelm-preview` worker on workers.dev (`.github/workflows/preview.yml`,
 `wrangler.preview.jsonc`). Production deploys only from `main`.
 

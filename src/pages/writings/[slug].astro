@@ -1,37 +1,30 @@
 ---
 /**
- * A writing, hung in the museum's reading room. Static paths come from the
- * `writings` content collection; drafts stay unpublished. The post opens on
- * a placard, then the long-form text set as wall text; poem movements
- * embedded in the markdown (section.poem-movement) read as verse. When the
- * piece also hangs in the Gallery (same id in the `gallery` collection), the
- * placard links to its interactive page.
- *
- * A piece with `treatment: descent` in its frontmatter takes the other
- * branch below: the same route rendered through Base.astro, with the WebGL
- * stage, the scroll choreography and the orchestra pit live, its movements
- * read from the markdown as `.section[data-section]`. The Unseen One is the
- * first of these.
- *
- * A piece with `treatment: scrolly` is not rendered here at all: it is its
- * own page on Poem.astro at src/pages/writings/<id>.astro (Everyone,
- * Searchable is the first), clear of the stage, the fade and the pit.
+ * A reading, hung in the museum's reading room. Static paths come from the
+ * `museum`-treatment entries of the `writings` collection; drafts stay
+ * unpublished, and the descent and scrolly entries are scroll pages in the
+ * Gallery (src/pages/gallery/<id>.astro), not rendered here. The post opens
+ * on a placard with its series label, then the long-form text set as wall
+ * text; poem movements embedded in the markdown (section.poem-movement)
+ * read as verse. When the piece also hangs in the Gallery (same id in the
+ * `gallery` collection), the placard links to its interactive page. Every
+ * reading ends on the shared foot (ScrollFoot): share, next in the series,
+ * the newsletter, the patronage door.
  *
  * The esoteric treatment of this page (WebGL stage, facecards, PostHeader,
  * Prose) stays in src/components/writings for the archived /atelier side.
  */
 import { getCollection, render } from 'astro:content';
 import Museum from '../../layouts/Museum.astro';
-import Base from '../../layouts/Base.astro';
 import Placard from '../../components/museum/Placard.astro';
 import Meander from '../../components/museum/Meander.astro';
-import Descent from '../../components/writings/Descent.astro';
-import { SITE_NAME, SITE_URL } from '../../config/site';
-import { ogImage } from '../../config/og';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import { series as registry } from '../../config/series';
+import { SITE_URL } from '../../config/site';
+import { getPiece } from '../../lib/pieces';
 
 export async function getStaticPaths() {
-  /* Scrolly pieces are their own page at src/pages/writings/<id>.astro. */
-  const posts = await getCollection('writings', ({ data }) => !data.draft && data.treatment !== 'scrolly');
+  const posts = await getCollection('writings', ({ data }) => !data.draft && data.treatment === 'museum');
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -40,61 +33,15 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const piece = await getPiece(post.id, 'reading');
 const hung = (await getCollection('gallery')).find((g) => g.id === post.id);
 const date = post.data.date;
 const dateLabel = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
-const url = `${SITE_URL}/writings/${post.id}/`;
-const descent = post.data.treatment === 'descent';
-const fullTitle = `${post.data.title} · Writings · ${SITE_NAME}`;
-/* Descent pieces share their own opening frame (public/og/<slug>.jpg, from
-   `npm run og:scrollies`); the reading room keeps the museum card. Both are
-   versioned by content hash. */
-const image = ogImage(descent ? `/og/${post.id}.jpg` : undefined);
-const article = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  '@id': `${url}#article`,
-  url,
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: date.toISOString(),
-  author: { '@type': 'Person', '@id': `${SITE_URL}/#person`, name: 'Michael Wilhelm', url: `${SITE_URL}/` },
-};
+const url = piece.url;
+const s = piece.series ? registry[piece.series] : undefined;
 ---
 
-{
-  descent ? (
-    <Base title={fullTitle} description={post.data.description} fade={post.data.fade}>
-      <Fragment slot="head">
-        <link rel="canonical" href={url} />
-        <meta name="theme-color" content="#17141a" />
-        <meta name="color-scheme" content="dark" />
-        <meta name="author" content="Michael Wilhelm" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="preload" href="/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-        <meta property="og:type" content="article" />
-        <meta property="og:site_name" content={SITE_NAME} />
-        <meta property="og:title" content={fullTitle} />
-        <meta property="og:description" content={post.data.description} />
-        <meta property="og:url" content={url} />
-        <meta property="og:image" content={image} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={fullTitle} />
-        <meta name="twitter:description" content={post.data.description} />
-        <meta name="twitter:image" content={image} />
-        <script type="application/ld+json" set:html={JSON.stringify(article)} />
-      </Fragment>
-      <Descent title={post.data.title} dateLabel={dateLabel}>
-        <Content />
-      </Descent>
-    </Base>
-  ) : (
-
-<Museum
+    <Museum
   title={`${post.data.title} · Writings · Michael Wilhelm`}
   description={post.data.description}
   current="writings"
@@ -115,12 +62,30 @@ const article = {
       <Placard
         id="post-title"
         level={1}
-        label="The Reading Room"
+        label={piece.label ? `The Reading Room · ${piece.label}` : 'The Reading Room'}
         title={post.data.title}
         medium={post.data.description ?? 'Writing'}
         year={dateLabel}
-        catalog="Cat. III"
       />
+      {
+        s && (
+          <p class="post__series" data-reveal>
+            <a class="text-link" href={s.href}>
+              All of {s.name}
+            </a>
+          </p>
+        )
+      }
+      {
+        post.data.methodLink && (
+          <p class="post__method" data-reveal>
+            <span class="smallcaps">How these are read</span>
+            <a class="text-link" href="/method/">
+              The method: the tags, the originals, and the machines
+            </a>
+          </p>
+        )
+      }
       {
         hung?.data.href && (
           <p class="post__hung" data-reveal>
@@ -138,13 +103,14 @@ const article = {
       </div>
     </div>
     <p class="post__back wrap">
-      <a class="text-link" href="/writings/">All writings</a>
+      <a class="text-link" href="/writings/">All readings</a>
     </p>
+    <div class="wrap">
+      <ScrollFoot id={post.id} kind="reading" class="post__foot" />
+    </div>
   </article>
   <Meander />
 </Museum>
-  )
-}
 
 <style>
   .post {
@@ -158,10 +124,21 @@ const article = {
   .post__head :global(.placard) {
     max-width: 34rem;
   }
-  .post__hung {
+  .post__hung,
+  .post__method {
     display: grid;
     gap: 0.3rem;
     color: var(--room-accent);
+  }
+  .post__series {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 1.05rem;
+  }
+  .post__foot {
+    color: var(--ink-soft);
+    max-width: 44rem;
+    margin-inline: 0;
   }
   .post__body {
     margin-top: clamp(2.5rem, 2rem + 3vw, 4.5rem);

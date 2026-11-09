@@ -1,0 +1,96 @@
+---
+/**
+ * Text that a page shows more than once for effect (a reflection under a
+ * title, a line split at a waterline, an echo trailing off) with one
+ * readable copy in the DOM. The copies are empty elements that paint their
+ * text from `data-text` through a ::before pseudo-element, so they are not
+ * in innerText, not in find-in-page, not selectable, and aria-hidden
+ * besides. The page styles the copies through `ghostClass` exactly as it
+ * styled its old duplicate markup.
+ *
+ *   <SplitText as="p" class="wl-text" text="So go in." readClass="wl-a" ghostClass="wl-b" />
+ *   <SplitText as="div" readAs="h1" readClass="title" ghostClass="reflection"
+ *     parts={[{ text: 'Mimics' }, { text: '& Mythmakers', tag: 'em' }]} />
+ *   <SplitText as="span" class="echo" ghosts={['said to her.', 'to her.', 'her.']} />
+ *
+ * `ghosts` is a count (copies of the same text) or a list of strings (each
+ * its own copy, for a trail). With no `text` or `parts` only the copies
+ * render, for a trail that follows readable text already on the page.
+ */
+interface Part {
+  text: string;
+  tag?: 'span' | 'em' | 'i' | 'b' | 'strong';
+}
+interface Props {
+  as?: string;
+  /** Element for the readable copy (default span). */
+  readAs?: string;
+  text?: string;
+  parts?: Part[];
+  ghosts?: number | string[];
+  class?: string;
+  readClass?: string;
+  ghostClass?: string;
+}
+const {
+  as: Tag = 'span',
+  readAs: ReadTag = 'span',
+  text,
+  parts,
+  ghosts = 1,
+  class: cls,
+  readClass,
+  ghostClass,
+} = Astro.props;
+
+const readParts: Part[] = parts ?? (text !== undefined ? [{ text }] : []);
+const ghostList: Part[][] =
+  typeof ghosts === 'number' ? Array.from({ length: ghosts }, () => readParts) : ghosts.map((t) => [{ text: t }]);
+---
+
+<Tag class:list={['split-text', cls]}>
+  {
+    readParts.length > 0 && (
+      <ReadTag class:list={['split-text__read', readClass]}>
+        {readParts.map((p, i) => {
+          const P = p.tag ?? 'span';
+          return (
+            <>
+              {i > 0 && ' '}
+              <P>{p.text}</P>
+            </>
+          );
+        })}
+      </ReadTag>
+    )
+  }
+  {
+    ghostList.map((g) => (
+      <>
+        {' '}
+        <span class:list={['split-text__ghost', ghostClass]} aria-hidden="true">
+          {g.map((p, i) => {
+            const P = p.tag ?? 'span';
+            return (
+              <>
+                {i > 0 && ' '}
+                <P data-text={p.text} />
+              </>
+            );
+          })}
+        </span>
+      </>
+    ))
+  }
+</Tag>
+
+<style is:global>
+  .split-text__ghost {
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: none;
+  }
+  .split-text__ghost [data-text]::before {
+    content: attr(data-text);
+  }
+</style>

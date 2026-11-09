@@ -1,19 +1,21 @@
 ---
 /**
- * The framed poem tiles, shared by Room II and /gallery. Each poem on view
- * is one link (title, year, epigraph) to its full interactive page, so the
- * gallery is a plain list of links in tab order. Forthcoming entries hang
- * as empty frames with no link.
+ * The framed tiles of the Gallery, shared by Room II and /gallery. Each
+ * piece on view is one link to its page, so the wall is a plain list of
+ * links in tab order. Forthcoming entries hang as empty frames with no link.
  *
- * A piece in a writing series (a `writings` entry with the same id and a
- * `series`) carries its label, "Futurist · No. 1", in the series accent. With
- * `hero`, the homepage wall hangs its first piece as the hero frame: the
- * full width of the wall, frame and placard side by side.
+ * The placard under each frame: the series label as the primary line
+ * ("In the Original · No. 1", in the series accent), the title, the one-line
+ * description, and the verb line from the entry's `verb` ("nine steps · you
+ * draw the bow"). The catalogue `order` sorts the wall and is not printed.
+ * With `hero`, the homepage wall hangs its first piece as the hero frame:
+ * the full width of the wall, frame and placard side by side.
  */
-import { getCollection } from 'astro:content';
 import Glyph from './Glyph.astro';
 import { roman } from './zodiac';
-import { seriesAccent, seriesLabel } from '../../config/series';
+import { series as registry, seriesAccent } from '../../config/series';
+import { getCollection } from 'astro:content';
+import { getScrollPieces } from '../../lib/pieces';
 
 interface Props {
   /** Heading level for tile titles (h3 inside a room, h2 on /gallery). */
@@ -24,47 +26,40 @@ interface Props {
 const { level = 3, hero = false } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 
-const poems = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
-const inSeries = new Map(
-  (await getCollection('writings', ({ data }) => !data.draft && !!data.series)).map((w) => [w.id, w.data]),
-);
+/* Every frame, on view or forthcoming, in wall order; the pieces view
+   carries the series and verb for the ones on view. */
+const frames = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
 ---
 
 <ul class="poems" role="list">
   {
-    poems.map((p, i) => {
-      const d = p.data;
-      const onView = d.status === 'on-view' && !!d.href;
+    frames.map((f, i) => {
+      const d = f.data;
+      const p = pieces.get(f.id);
+      const onView = !!p;
       const isHero = hero && i === 0 && onView;
-      const w = inSeries.get(p.id);
-      const label = w?.series && w.seriesNumber ? seriesLabel(w.series, w.seriesNumber) : undefined;
+      const s = p?.series ? registry[p.series] : undefined;
       const inner = (
         <>
           <div class="poem__frame" aria-hidden="true">
             <div class="poem__mat">
               <div class="poem__plate" style={`--plate: ${d.plate}`}>
                 <Glyph sign={d.sign} size={28} class="poem__glyph" />
-                <span class="poem__plate-title">{d.plateTitle ?? d.title}</span>
-                {d.epigraph && <span class="poem__plate-epigraph">{d.epigraph}</span>}
-                {!onView && <span class="poem__plate-epigraph">In preparation</span>}
+                <span class="poem__plate-title" data-text={d.plateTitle ?? d.title} />
+                {d.epigraph && <span class="poem__plate-epigraph" data-text={d.epigraph} />}
+                {!onView && <span class="poem__plate-epigraph" data-text="In preparation" />}
               </div>
             </div>
           </div>
           <div class="poem__placard">
-            <p class="poem__cat mono">
-              <span>Cat. II.{String(i + 1).padStart(2, '0')}</span>
-              {label && w?.series && (
-                <span class="poem__series" style={`--series-accent: ${seriesAccent(w.series)}`}>
-                  {label}
-                </span>
-              )}
-            </p>
-            <H class="poem__title">{d.title}</H>
-            <p class="poem__meta">
-              <span class="poem__medium">{d.medium}</span>
+            <p class="poem__series mono" style={s && p?.series ? `--series-accent: ${seriesAccent(p.series)}` : undefined}>
+              {s && p?.label ? <span>{p.label}</span> : <span class="poem__series--none">Forthcoming</span>}
               {d.year && <span class="poem__year">{d.year}</span>}
             </p>
-            {d.epigraph && <p class="poem__epigraph">{d.epigraph}</p>}
+            <H class="poem__title">{d.title}</H>
+            {(p?.line ?? d.epigraph) && <p class="poem__epigraph">{p?.line ?? d.epigraph}</p>}
+            {p?.verb && <p class="poem__verb">{p.verb}</p>}
             {onView ? (
               <span class="poem__open smallcaps">Enter the work</span>
             ) : (
@@ -80,7 +75,7 @@ const inSeries = new Map(
           data-numeral={roman(i + 1)}
         >
           {onView ? (
-            <a class="poem__link" href={d.href}>
+            <a class="poem__link" href={p.path}>
               {inner}
             </a>
           ) : (
@@ -156,6 +151,12 @@ const inSeries = new Map(
     color: var(--gilt-bright);
     opacity: 0.9;
   }
+  /* The plate repeats the placard's title and line as decoration: painted from
+     data-text so each is in the DOM once (the plate is aria-hidden besides). */
+  .poem__plate-title::before,
+  .poem__plate-epigraph::before {
+    content: attr(data-text);
+  }
   .poem__plate-title {
     font-family: var(--font-display);
     font-weight: 300;
@@ -181,16 +182,21 @@ const inSeries = new Map(
     gap: 0.35rem;
     align-content: start;
   }
-  .poem__cat {
+  /* The primary line: the series, in its accent; the year sits opposite. */
+  .poem__series {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.2rem 1rem;
-    color: var(--gilt-ink);
-  }
-  .poem__series {
-    color: var(--series-accent);
+    color: var(--series-accent, var(--gilt-ink));
     letter-spacing: 0.06em;
+  }
+  .poem__series--none {
+    color: var(--ink-faint);
+  }
+  .poem__year {
+    color: var(--ink-faint);
+    font-variant-numeric: oldstyle-nums;
   }
   .poem__title {
     font-family: var(--font-display);
@@ -198,23 +204,17 @@ const inSeries = new Map(
     font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.95rem);
     line-height: 1.12;
   }
-  .poem__meta {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.2rem 1rem;
-    color: var(--ink-faint);
-    font-style: italic;
-    font-size: 1rem;
-  }
-  .poem__year {
-    font-style: normal;
-    font-variant-numeric: oldstyle-nums;
-  }
   .poem__epigraph {
     color: var(--ink-soft);
     font-size: 1rem;
     line-height: 1.45;
+  }
+  /* The verb line: what the page is and what the reader does in it. */
+  .poem__verb {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.4;
   }
   .poem__open {
     margin-top: 0.4rem;

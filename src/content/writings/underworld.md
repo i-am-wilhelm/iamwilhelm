@@ -5,6 +5,8 @@ accent: underworld
 symbols: []
 draft: false
 description: "Five descents: Orpheus looking back, Virgil as guide, the Kindly Ones, the marks on the soul, and the feather of Ma'at."
+series: readings
+seriesNo: 1
 ---
 
 <section class="part" aria-labelledby="orpheus">

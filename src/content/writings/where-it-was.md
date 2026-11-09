@@ -7,7 +7,7 @@ draft: false
 description: "Freud wrote das Ich und das Es, the I and the It. His translators made it ego and id, and the Latin hid how closely his three-part soul follows Plato's logistikon, thumoeides, and epithumetikon. Read through the Greek, from Homer's Odysseus scolding his own heart to Paul's inner man to Berne's Parent, Adult, Child."
 treatment: scrolly
 series: through-the-lens
-seriesNumber: 3
+seriesNo: 3
 ---
 
 The essay itself is the scrolly at src/pages/writings/where-it-was.astro,

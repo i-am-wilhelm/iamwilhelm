@@ -6,7 +6,23 @@ import { seriesIds } from './config/series';
  * Local markdown collections. A Ghost backend can be wired in later by
  * swapping this glob loader for a Ghost Content API loader, the schema is
  * the stable interface the pages depend on.
+ *
+ * Both collections carry the same series fields: `series` (an id from
+ * src/config/series.ts) and `seriesNo` (the piece's number in it). A scroll
+ * page is numbered on its `gallery` entry, a reading on its `writings`
+ * entry; a piece with both entries (PHARMAKON, The Unseen One, Everyone,
+ * Searchable, Where It Was) carries the same pair on both and the build
+ * refuses a mismatch (src/lib/pieces.ts).
  */
+const seriesFields = {
+  series: z.enum(seriesIds).optional(),
+  seriesNo: z.number().int().positive().optional(),
+};
+const seriesTogether = {
+  check: (d: { series?: string; seriesNo?: number }) => (d.series === undefined) === (d.seriesNo === undefined),
+  message: '`series` and `seriesNo` go together: set both or neither.',
+};
+
 const writings = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/writings' }),
   schema: z
@@ -20,75 +36,87 @@ const writings = defineCollection({
       draft: z.boolean().default(false),
       description: z.string().optional(),
       /**
-       * How /writings/[slug] stages the piece. `museum` is wall text in the
-       * reading room. `descent` renders the same route through Base.astro,
-       * with the WebGL stage, scroll choreography, and the orchestra pit, for
-       * pieces whose movements are marked up as `.section[data-section]`.
+       * How the piece is staged. `museum` is wall text in the reading room
+       * at /writings/[slug]. `descent` renders the entry through Base.astro,
+       * with the WebGL stage, scroll choreography, and the orchestra pit,
+       * for pieces whose movements are marked up as `.section[data-section]`;
+       * since the face-lift its page lives in the Gallery, at
+       * src/pages/gallery/<id>.astro (The Unseen One).
        *
-       * `scrolly` opts the route out of all of that: [slug] does not render
-       * the entry, and the piece is its own page at
-       * src/pages/writings/<id>.astro on Poem.astro, the page system of The
+       * `scrolly` means the piece is its own page at
+       * src/pages/gallery/<id>.astro on Poem.astro, the page system of The
        * Dual Thing. Poem.astro never mounts Base.astro's stack, so there is no
        * #gl-stage (no glyph dither, no smoke), no data-fade backdrop fade, and
-       * the orchestra pit is never imported: the audio layer stays dormant (no
-       * Tone.js, no tap listener, nothing sounds). The entry still lists the
-       * piece in the reading room and carries its meta and series.
+       * the orchestra pit is never imported: the audio layer stays dormant.
+       * The entry carries the piece's meta; the `gallery` entry hangs it.
+       *
+       * /writings/[slug] renders only `museum` entries: the reading room is
+       * the readings shelf, every scroll page is in the Gallery.
        */
       treatment: z.enum(['museum', 'descent', 'scrolly']).default('museum'),
       /** Fade mode for the descent treatment (src/design/tokens.ts fadeModes). */
       fade: z.enum(['dawn', 'descent']).default('dawn'),
-      /** Series id from src/config/series.ts; the piece is No. `seriesNumber` in it. */
-      series: z.enum(seriesIds).optional(),
-      seriesNumber: z.number().int().positive().optional(),
+      /** Show the link to /method in the reading's placard (the Philosophy page). */
+      methodLink: z.boolean().default(false),
+      ...seriesFields,
     })
-    .refine((d) => (d.series === undefined) === (d.seriesNumber === undefined), {
-      message: '`series` and `seriesNumber` go together: set both or neither.',
-      path: ['seriesNumber'],
-    }),
+    .refine(seriesTogether.check, { message: seriesTogether.message, path: ['seriesNo'] }),
 });
 
 /**
- * The Gallery of Visualized Poetry. One markdown file per framed poem in
- * src/content/gallery; the homepage's Room II and /gallery both render
- * every entry, sorted by `order`. To hang a new poem, add a file: title,
- * year, a one-line epigraph, and `href` pointing at its interactive page.
+ * The Gallery. One markdown file per framed piece in src/content/gallery;
+ * the homepage's Room II and /gallery both render every entry, sorted by
+ * `order` (the catalogue number is a sort key, never a label). To hang a
+ * new piece, add a file: title, date, a one-line epigraph, the `verb` line,
+ * its `series` and `seriesNo`, and `href` pointing at its interactive page.
  * Entries with `status: forthcoming` render as an empty frame with no link.
- * A frame whose id matches a `writings` entry in a series shows that series'
- * label ("Futurist · No. 1") from the writings entry; nothing to repeat here.
  */
 const gallery = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
-  schema: z.object({
-    title: z.string(),
-    /** Display form of the title inside the frame (e.g. spaced caps). */
-    plateTitle: z.string().optional(),
-    year: z.coerce.string().optional(),
-    epigraph: z.string().optional(),
-    /** The poem's full interactive page. Required once the poem is on view. */
-    href: z.string().optional(),
-    medium: z.string().default('Visualized poem; interactive page'),
-    order: z.number().default(100),
-    status: z.enum(['on-view', 'forthcoming']).default('on-view'),
-    /** Zodiac sign for the frame's wayfinding mark (components/museum/zodiac.ts). */
-    sign: z
-      .enum([
-        'aries',
-        'taurus',
-        'gemini',
-        'cancer',
-        'leo',
-        'virgo',
-        'libra',
-        'scorpio',
-        'sagittarius',
-        'capricorn',
-        'aquarius',
-        'pisces',
-      ])
-      .default('pisces'),
-    /** Plate colour inside the frame; a muted, dark hue reads best. */
-    plate: z.string().default('#2b2230'),
-  }),
+  schema: z
+    .object({
+      title: z.string(),
+      /** Display form of the title inside the frame (e.g. spaced caps). */
+      plateTitle: z.string().optional(),
+      year: z.coerce.string().optional(),
+      /** Publication date, for the feeds and newest-first ordering. */
+      date: z.coerce.date().optional(),
+      /** One line under the title on the card and the plate. */
+      epigraph: z.string().optional(),
+      /** Longer summary for feeds and meta; the epigraph stands in when absent. */
+      description: z.string().optional(),
+      /**
+       * The verb line on the card: what the page is and what the reader does
+       * in it, "nine steps · you draw the bow".
+       */
+      verb: z.string().optional(),
+      /** The piece's full interactive page. Required once the piece is on view. */
+      href: z.string().optional(),
+      medium: z.string().default('Visualized poem; interactive page'),
+      order: z.number().default(100),
+      status: z.enum(['on-view', 'forthcoming']).default('on-view'),
+      /** Zodiac sign for the frame's wayfinding mark (components/museum/zodiac.ts). */
+      sign: z
+        .enum([
+          'aries',
+          'taurus',
+          'gemini',
+          'cancer',
+          'leo',
+          'virgo',
+          'libra',
+          'scorpio',
+          'sagittarius',
+          'capricorn',
+          'aquarius',
+          'pisces',
+        ])
+        .default('pisces'),
+      /** Plate colour inside the frame; a muted, dark hue reads best. */
+      plate: z.string().default('#2b2230'),
+      ...seriesFields,
+    })
+    .refine(seriesTogether.check, { message: seriesTogether.message, path: ['seriesNo'] }),
 });
 
 export const collections = { writings, gallery };

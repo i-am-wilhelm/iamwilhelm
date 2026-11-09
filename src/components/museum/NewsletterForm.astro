@@ -1,0 +1,73 @@
+---
+/**
+ * The newsletter field itself, shared by the colophon's Newsletter block and
+ * the scroll-page footer so both post to the same place. When
+ * NEWSLETTER_EMBED_HTML (config/site.ts) holds BackGold's embed snippet it
+ * renders verbatim; until then the stand-in form renders, marked
+ * data-placeholder: it validates the address, tells the visitor sign-up
+ * opens soon, and sends nothing. Unstyled beyond its hooks (.nl-form,
+ * .nl-form__status); the mount styles it.
+ */
+import { NEWSLETTER_EMBED_HTML } from '../../config/site';
+
+interface Props {
+  /** Unique per mount: the input's id and the label's `for`. */
+  id?: string;
+  /** Extra class on the form, for the mount's styling. */
+  class?: string;
+  labelledby?: string;
+  buttonClass?: string;
+}
+const { id = 'newsletter-email', class: cls, labelledby, buttonClass } = Astro.props;
+const hasEmbed = NEWSLETTER_EMBED_HTML.trim().length > 0;
+---
+
+{
+  hasEmbed ? (
+    <div class="nl-embed" set:html={NEWSLETTER_EMBED_HTML} />
+  ) : (
+    <form class:list={['nl-form', cls]} data-placeholder aria-labelledby={labelledby} novalidate>
+      {/* PLACEHOLDER(owner): replace with the BackGold embeddable form via NEWSLETTER_EMBED_HTML. */}
+      <label class="sr-only" for={id}>
+        Email address
+      </label>
+      <input id={id} name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required />
+      <button class={buttonClass} type="submit">
+        Subscribe
+      </button>
+      <p class="nl-form__status" role="status" aria-live="polite" data-status />
+    </form>
+  )
+}
+
+<script>
+  for (const form of document.querySelectorAll<HTMLFormElement>('.nl-form[data-placeholder]')) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const input = form.querySelector<HTMLInputElement>('input[type="email"]')!;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!input.checkValidity()) {
+        status.textContent = 'Please enter a full email address.';
+        input.setAttribute('aria-invalid', 'true');
+        input.focus();
+        return;
+      }
+      input.removeAttribute('aria-invalid');
+      status.textContent = 'Thank you. Sign-up opens soon; please check back.';
+    });
+  }
+</script>
+
+<style is:global>
+  .nl-form .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

@@ -9,6 +9,10 @@ order: 2
 status: on-view
 sign: capricorn
 plate: "#14121c"
+date: 2026-11-05
+verb: "one soul's sequence · you drink from two springs"
+series: in-the-original
+seriesNo: 2
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/HNMmkbXhn3QK5JUehuTX3o).
