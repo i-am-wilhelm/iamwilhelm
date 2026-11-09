@@ -31,6 +31,9 @@ import PoemGallery from '../PoemGallery.astro';
     <p class="gal__more" data-reveal>
       <a class="text-link" href="/gallery/">Visit the gallery on its own</a>
     </p>
+    <p class="gal__more" data-reveal>
+      Pieces like these are built to order. <a class="text-link" href="/services/">Commissions &rarr;</a>
+    </p>
   </div>
 </Room>
 
@@ -51,6 +54,9 @@ import PoemGallery from '../PoemGallery.astro';
   }
   .gal__statement .lede {
     color: var(--ink);
+  }
+  .gal__more + .gal__more {
+    margin-top: calc(-1 * clamp(2.5rem, 2rem + 3vw, 4.5rem) + 0.6rem);
   }
   .gal__more {
     font-variant-caps: all-small-caps;

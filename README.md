@@ -30,7 +30,8 @@ No WebGL, no dithering, no audio on these pages.
 
 - `src/layouts/Museum.astro`: meta, Open Graph and Twitter cards, JSON-LD
   Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, `/writings/<slug>`,
-  the series indexes, `/method`, `/support`, and 404.
+  the series indexes, `/method`, `/support`, `/services` (Room IV, the
+  commissions page for scrollies), and 404.
 - `src/components/museum/`: Placard, Room, Meander, ZodiacRing, Glyph (SVG
   zodiac paths in `zodiac.ts`), PoemGallery, WritingsList, Colophon, and the
   rooms in `rooms/`.

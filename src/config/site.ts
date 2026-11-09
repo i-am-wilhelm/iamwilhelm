@@ -39,6 +39,7 @@ export const NAV = [
   { label: 'BackGold', id: 'backgold' },
   { label: 'Gallery', id: 'gallery', page: '/gallery/' },
   { label: 'Writings', id: 'writings', page: '/writings/' },
+  { label: 'Commissions', id: 'services', page: '/services/', room: false },
   { label: 'Earl', id: 'earl', page: '/earl/', room: false },
   { label: 'Contact', id: 'contact' },
 ] as const;

@@ -5,7 +5,7 @@
  * own og:image), the next piece in its series by number (wrapping to the
  * series index after the last), the newsletter field (the same form and
  * endpoint as the colophon, via NewsletterForm), and the patronage door to
- * /support.
+ * /support, and one line to the commissions page, since every piece ends here.
  *
  * Self-contained: everything inherits the page's colour and text face, and
  * the small type reads the page's mono variable (--font-mono, --log or
@@ -73,6 +73,9 @@ const uid = `sf-${id}`;
       <a class="scroll-foot__btn scroll-foot__door" href="/support/">Keep the lights on</a>
     </div>
   </div>
+  <p class="scroll-foot__commission">
+    Pieces like these are built to order. <a href="/services/">Commissions &rarr;</a>
+  </p>
 </aside>
 
 <script>
@@ -250,6 +253,20 @@ const uid = `sf-${id}`;
   }
   .scroll-foot__door {
     justify-self: start;
+  }
+  .scroll-foot__commission {
+    margin: 2rem 0 0;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--sf-rule);
+    font-family: var(--sf-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .scroll-foot__commission a {
+    color: inherit;
+    text-underline-offset: 0.3em;
   }
   @media print {
     .scroll-foot {
