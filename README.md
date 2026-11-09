@@ -49,7 +49,7 @@ No WebGL, no dithering, no audio on these pages.
   `series` and `seriesNo` place it in a series, `verb` is the card's verb
   line, `date` orders it in the feeds.
 - Series: declared once in `src/config/series.ts` (in-the-original,
-  through-the-lens, futurist, mimics, poems, readings); every live piece
+  through-the-lens, futurist, mimics, seeing, poems, readings); every live piece
   names one on its collection entry. `src/lib/pieces.ts` is the one view of
   both collections (scroll pages and readings) that the cards, rows, series
   indexes (`/writings/<series>/`), the scroll-page foot and the feeds read.
