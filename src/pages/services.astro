@@ -4,7 +4,8 @@
  * (visualized essays, poems, stories) and nothing else. Built from the
  * museum's own parts: the placard, the Room I feature-list cells, the
  * Gallery cards (six live pieces, their own share images as thumbnails),
- * the meander and the colophon. No script beyond what Museum.astro loads.
+ * the meander and the colophon, and the ten questions (IV.05) whose answers
+ * also feed the FAQPage JSON-LD. No script beyond what Museum.astro loads.
  */
 import Museum from '../layouts/Museum.astro';
 import Placard from '../components/museum/Placard.astro';
@@ -50,6 +51,53 @@ const steps = [
   },
 ];
 
+
+/* IV.05 · Questions. The copy is the owner's, verbatim; the FAQPage
+   JSON-LD below is built from this same array so the schema can never
+   disagree with the visible text. */
+const faq = [
+  {
+    q: 'What is a scrolly?',
+    a: 'A scrolly is a long piece told as a web page where the design is part of the argument. As you scroll, a pinned exhibit changes state, a chart draws itself when you reach it, a held button turns the page. Newsrooms call them scrollytelling; I build them for essays, poems, reports, and founders\u2019 stories.',
+  },
+  {
+    q: 'What does a scrolly cost?',
+    a: 'A scrolly starts at $2,500. The base price covers a piece of six to nine chapters with custom exhibits, a plain-text twin, a share image rendered from the page, and a source ledger where the piece makes claims. Longer pieces, original illustration, data cleaning, and voice or sound are quoted on the call. Half to start, half at launch.',
+  },
+  {
+    q: 'How long does a scrolly take?',
+    a: 'Three to five weeks from the story session to launch for a base piece. Week one is the spine and chapter outline you approve; weeks two and three are the exhibits and a working prototype on desktop and phone; the last stretch is the build, the twin, and your review. Larger pieces are scheduled on the call.',
+  },
+  {
+    q: 'Do I need data to commission a scrolly?',
+    a: 'No. Most of the pieces in my gallery are built from a text, a myth, or a story, with the exhibits drawn to carry the argument. If you have data, it becomes a chart the reader reaches at the right moment; if you have none, the exhibits are drawings, documents, and instruments the reader handles.',
+  },
+  {
+    q: 'Does a scrolly work on a phone?',
+    a: 'Yes. I read on a phone, so every piece is designed for the phone first and the desktop second. Pinned exhibits stack so the picture stays visible during the step that changes it, touch targets are sized for thumbs, and nothing depends on hover.',
+  },
+  {
+    q: 'Does a scrolly work with scripts off or with a screen reader?',
+    a: 'Yes. Every piece ships with a plain-text twin: the full text in reading order, with each exhibit described in a sentence. A reader with scripts blocked, a screen reader, or a reduced-motion setting gets the whole argument. Search engines and AI assistants read that same version.',
+  },
+  {
+    q: 'Who owns the files?',
+    a: 'You do. At launch you receive the source, the built page, the twin, and the share image, and you may host them anywhere. If I host the piece on my domain, you can move it at any time. Nothing is held back and nothing is licensed back to you.',
+  },
+  {
+    q: 'Can a scrolly live on my own domain?',
+    a: 'Yes. A scrolly can be hosted on your domain, on a subdomain of it, or on mine with a link from your site. Hosting on your domain is the default for impact reports and origin stories; hosting on mine suits a single essay or poem that wants a gallery around it.',
+  },
+  {
+    q: 'What is epistemic tagging?',
+    a: 'Epistemic tagging marks every claim in a piece as text, reading, or disputed. \u201cText\u201d means the source says it; \u201creading\u201d means I am interpreting; \u201cdisputed\u201d means scholars disagree. A filterable ledger at the end lists every claim with its tag and source, so a reader can check the argument instead of taking it on faith.',
+  },
+  {
+    q: 'Can you build an impact report, a launch page, or an origin story?',
+    a: 'Yes. Those are the three commissions I build most, alongside essays and poems. An impact report tells a year\u2019s work as a page donors finish; a launch page gives a chapter, track, or series its own interactive home with a door built in; an origin story tells how a company came to be, product arriving where it arrives in the telling.',
+  },
+];
+
 const pieces = [
   'mimics-and-mythmakers',
   'everyone-searchable',
@@ -84,6 +132,16 @@ const schema = [
       availability: 'https://schema.org/InStock',
       offeredBy: { '@id': `${SITE_URL}/#person` },
     },
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': `${url}#faq`,
+    url,
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
   },
 ];
 ---
@@ -180,9 +238,29 @@ const schema = [
         </div>
       </section>
 
-      <section class="sect sect--close" aria-labelledby="close-title" data-reveal>
+      <section class="sect" aria-labelledby="faq-title" data-reveal>
         <div class="sect__head">
           <p class="sect__num mono">IV.05</p>
+          <h2 class="sect__title display" id="faq-title">Questions</h2>
+        </div>
+        <div class="sect__body faq">
+          {
+            faq.map(({ q, a }) => (
+              <div class="faq__item">
+                <h3 class="faq__q">{q}</h3>
+                <p class="faq__a">{a}</p>
+              </div>
+            ))
+          }
+          <p class="more faq__more">
+            <a class="text-link" href="/what-is-a-scrolly/">What is a scrolly? &rarr;</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="sect sect--close" aria-labelledby="close-title" data-reveal>
+        <div class="sect__head">
+          <p class="sect__num mono">IV.06</p>
           <h2 class="sect__title display" id="close-title">Bring the story. I will show you the page it becomes.</h2>
         </div>
         <div class="sect__body">
@@ -306,6 +384,36 @@ const schema = [
     font-variant-caps: all-small-caps;
     letter-spacing: 0.12em;
     font-size: 1.05rem;
+  }
+
+  /* IV.05: the questions, one answer each, in the reading face. */
+  .faq {
+    gap: clamp(1.4rem, 1rem + 1.5vw, 2rem);
+  }
+  .faq__item {
+    display: grid;
+    gap: 0.45rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .faq__item:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .faq__q {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .faq__a {
+    max-width: var(--measure);
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+  .faq__more {
+    padding-top: 0.4rem;
   }
 
   /* IV.03: three numbered steps. */
