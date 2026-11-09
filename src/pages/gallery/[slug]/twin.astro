@@ -6,13 +6,16 @@
  * engines and anyone who wants to quote it. Linked from the scroll page's
  * foot ("Plain text") and from its <link rel="alternate">.
  *
- * The twin is derived from the page, never written twice: the scroll page
- * component is rendered here with Astro's Container API and reduced to
- * text by src/lib/twin.ts. An exhibit's sentence is the `data-twin`
- * attribute on its container in the page (or its aria-label, for a
- * role="img" figure). Canonical points at the scroll page.
+ * The twin is derived from the page, never written twice. This page
+ * renders the frame (layout, placard, schema) around an empty
+ * `.twin__text[data-twin-body]`; after the build, the twins integration
+ * (src/integrations/twins.ts) reads the scroll page beside it in dist/,
+ * reduces it with src/lib/twin.ts and fills the element. In `astro dev`
+ * the page fetches the scroll page from the dev server and fills it here.
+ * An exhibit's sentence is the `data-twin` attribute on its container in
+ * the page (or its aria-label, for a role="img" figure). Canonical points
+ * at the scroll page.
  */
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import Museum from '../../../layouts/Museum.astro';
 import Placard from '../../../components/museum/Placard.astro';
 import Meander from '../../../components/museum/Meander.astro';
@@ -31,15 +34,12 @@ const { slug } = Astro.params;
 const piece = await getPiece(slug!);
 const s = piece.series ? registry[piece.series] : undefined;
 
-/* Every scroll page, by slug; only the one asked for is loaded. */
-const pages = import.meta.glob<{ default: any }>('../*.astro');
-const loader = pages[`../${slug}.astro`];
-if (!loader) throw new Error(`twin: no scroll page at src/pages/gallery/${slug}.astro`);
-const mod = await loader();
-const container = await AstroContainer.create();
-const pageHtml = await container.renderToString(mod.default, { request: new Request(piece.url) });
-const twin = twinFromHtml(pageHtml, piece.title);
-if (!twin.html.trim()) throw new Error(`twin: ${slug} rendered to nothing.`);
+/* Filled after the build by the twins integration; in dev, from the dev server now. */
+let body = '';
+if (import.meta.env.DEV) {
+  const res = await fetch(new URL(piece.path, Astro.url.origin));
+  if (res.ok) body = twinFromHtml(await res.text(), piece.title).html;
+}
 
 const dateLabel = piece.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const modified = piece.gallery?.data.updated ?? piece.date;
@@ -94,7 +94,7 @@ const image = ogImage(piece.ogPath);
       </div>
     </div>
     <div class="twin__body wrap">
-      <div class="twin__text" set:html={twin.html} />
+      <div class="twin__text" data-twin-body data-twin-title={piece.title} set:html={body} />
     </div>
     <nav class="twin__after wrap" aria-label="After the twin">
       <a class="cta" href={piece.path}>Open the scroll page</a>

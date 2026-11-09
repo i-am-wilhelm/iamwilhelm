@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import twins from './src/integrations/twins';
 
 // Static-first build. Interactive layers (WebGL pipeline, orchestra pit,
 // easter-egg engine) hydrate as client-side islands from src/scripts.
@@ -22,6 +23,7 @@ export default defineConfig({
     inlineStylesheets: 'always',
   },
   integrations: [
+    twins(),
     sitemap({
       filter: (page) => {
         const { pathname } = new URL(page);
