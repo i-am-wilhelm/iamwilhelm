@@ -4,14 +4,15 @@
  * room (museum.ts marks the room in view with aria-current); elsewhere,
  * Gallery and Writings go to their own routes and the rest return to the
  * homepage rooms. An item with `room: false` (Earl) has no room: it goes to
- * its route from every page and stays out of the scroll-spy.
+ * its route from every page and stays out of the scroll-spy. At the right
+ * end, one quiet gilt button books a call (the BackGold scheduler).
  */
-import { NAV } from '../../config/site';
+import { NAV, SCHEDULER_URL } from '../../config/site';
 
 interface Props {
   home?: boolean;
   /** Route key for aria-current="page" on standalone pages. */
-  current?: 'gallery' | 'writings' | 'method' | 'support';
+  current?: 'gallery' | 'writings' | 'method' | 'support' | 'services';
 }
 const { home = false, current } = Astro.props;
 
@@ -44,6 +45,7 @@ const items = NAV.map((item) => {
         ))
       }
     </ul>
+    <a class="site-nav__book" href={SCHEDULER_URL}>Book a call</a>
   </nav>
 </header>
 
@@ -135,6 +137,31 @@ const items = NAV.map((item) => {
     transform: scaleX(1);
   }
 
+  /* The one button in the nav: gilt hairline, small caps, quiet. */
+  .site-nav__book {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.9rem;
+    border: 1px solid var(--gilt);
+    color: var(--gilt-ink);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+    transition:
+      background-color 400ms var(--ease-settle),
+      color 400ms var(--ease-settle);
+  }
+  .site-nav__book:hover,
+  .site-nav__book:focus-visible {
+    background: var(--gilt-ink);
+    border-color: var(--gilt-ink);
+    color: var(--wall);
+  }
+
   /* Narrow screens: the brand keeps its monogram; the links ride one row
      that scrolls inside the nav, never the page. */
   @media (max-width: 860px) {
@@ -161,6 +188,11 @@ const items = NAV.map((item) => {
     }
     .site-nav__list::-webkit-scrollbar {
       display: none;
+    }
+    .site-nav__book {
+      padding: 0 0.7rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
     }
   }
 </style>

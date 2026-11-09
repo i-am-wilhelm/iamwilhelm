@@ -9,7 +9,10 @@
  * description, and the verb line from the entry's `verb` ("nine steps · you
  * draw the bow"). The catalogue `order` sorts the wall and is not printed.
  * With `hero`, the homepage wall hangs its first piece as the hero frame:
- * the full width of the wall, frame and placard side by side.
+ * the full width of the wall, frame and placard side by side. With `ids`,
+ * only those frames hang, in that order (the commissions page); with
+ * `thumbs`, each frame shows the piece's own share image (public/og/<id>.jpg)
+ * in place of the painted plate.
  */
 import Glyph from './Glyph.astro';
 import { roman } from './zodiac';
@@ -22,13 +25,18 @@ interface Props {
   level?: 2 | 3;
   /** Hang the first piece as the hero frame (the homepage wall). */
   hero?: boolean;
+  /** Only these pieces, in this order. */
+  ids?: string[];
+  /** Show each piece's share image in the frame instead of the plate. */
+  thumbs?: boolean;
 }
-const { level = 3, hero = false } = Astro.props;
+const { level = 3, hero = false, ids, thumbs = false } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 
 /* Every frame, on view or forthcoming, in wall order; the pieces view
    carries the series and verb for the ones on view. */
-const frames = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+const all = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+const frames = ids ? ids.map((id) => all.find((f) => f.id === id)).filter((f) => !!f) : all;
 const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
 ---
 
@@ -44,12 +52,24 @@ const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
         <>
           <div class="poem__frame" aria-hidden="true">
             <div class="poem__mat">
+              {thumbs ? (
+                <img
+                  class="poem__thumb"
+                  src={`/og/${f.id}.jpg`}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
               <div class="poem__plate" style={`--plate: ${d.plate}`}>
                 <Glyph sign={d.sign} size={28} class="poem__glyph" />
                 <span class="poem__plate-title" data-text={d.plateTitle ?? d.title} />
                 {d.epigraph && <span class="poem__plate-epigraph" data-text={d.epigraph} />}
                 {!onView && <span class="poem__plate-epigraph" data-text="In preparation" />}
               </div>
+              )}
             </div>
           </div>
           <div class="poem__placard">
@@ -139,6 +159,15 @@ const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
       radial-gradient(90% 70% at 50% 35%, color-mix(in srgb, var(--plate) 70%, #fff 12%), transparent 75%),
       var(--plate);
     overflow: hidden;
+  }
+  /* The share image as the plate: the page's own opening frame. */
+  .poem__thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    background: #1d1b18;
   }
   .poem__plate::after {
     content: '';
