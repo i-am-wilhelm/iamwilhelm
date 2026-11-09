@@ -18,6 +18,7 @@ const year = new Date().getFullYear();
       <a href="/method/">Method</a>
       <a href="/support/">Support</a>
       <a href={FEEDS[0].href} type={FEEDS[0].type}>RSS</a>
+      <a href="/cats.txt" class="site-footer__cats">cats.txt</a>
       <a href={BACKGOLD_URL} rel="noopener">BackGold</a>
       <a href={ALM_URL} rel="noopener">Advancing Liberty Media</a>
     </nav>
@@ -65,6 +66,13 @@ const year = new Date().getFullYear();
   .site-footer__links a:hover {
     color: var(--ink);
     text-decoration: underline;
+  }
+  /* A filename among the rooms: set in the mono, no small caps. */
+  .site-footer__links .site-footer__cats {
+    font-family: var(--font-mono);
+    font-variant-caps: normal;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
   }
   .site-footer__type {
     flex-basis: 100%;
