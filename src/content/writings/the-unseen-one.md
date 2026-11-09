@@ -19,6 +19,8 @@ Death is one thing. Hades is another. Thanatos does one job and leaves. Hades is
 
 ---
 
+<div class="twin-note" data-twin="Behind the poem a WebGL stage dithers the page into Greek glyphs: a constellation seeded by each movement, smoke drawn to one side or the other, and a fade that goes down with the descent. The movements arrive one at a time and the seeds gate the way."></div>
+
 <section class="section poem-movement poem-front" data-section="unseen-0" data-symbols="hades,persephone,pomegranate,asphodel" data-smoke-side="right" style="--section-accent: var(--accent-underworld)">
   <div class="copy">
     <p class="poem-dedication">Hades, to the Kore</p>
@@ -50,7 +52,7 @@ Death is one thing. Hades is another. Thanatos does one job and leaves. Hades is
 <section class="section poem-movement poem-litany" data-section="unseen-2" data-symbols="persephone,pomegranate" data-smoke-side="right" data-copy-reveal="manual" style="--section-accent: var(--accent-underworld)">
   <div class="copy">
     <h3 class="mvt">II.</h3>
-    <div class="seed-gate" data-seed="1" aria-label="Take the first seed"></div>
+    <div class="seed-gate" data-seed="1" aria-label="Take the first seed" data-twin="A seed gate: the reader takes the first pomegranate seed to go on."></div>
     <div class="litany-part" data-part="1">
       <p class="hush">Now listen. I will say it until the saying holds.</p>
       <p class="big">You are sublime.</p>
@@ -79,7 +81,7 @@ Death is one thing. Hades is another. Thanatos does one job and leaves. Hades is
       and had not looked.</p>
       <p class="cmd">Look.</p>
     </div>
-    <div class="seed-gate" data-seed="2" aria-label="Take the second seed"></div>
+    <div class="seed-gate" data-seed="2" aria-label="Take the second seed" data-twin="A seed gate: the reader takes the second pomegranate seed to go on."></div>
     <div class="litany-part" data-part="2">
       <p>Let it break against your teeth.<br />
       That is the sound of the girl who waited to be told.<br />
@@ -93,7 +95,7 @@ Death is one thing. Hades is another. Thanatos does one job and leaves. Hades is
       That was your own voice, unreturned, and it was enough.<br />
       That is what this place is for.</p>
     </div>
-    <div class="seed-gate" data-seed="3" aria-label="Take the third seed"></div>
+    <div class="seed-gate" data-seed="3" aria-label="Take the third seed" data-twin="A seed gate: the reader takes the third pomegranate seed to go on."></div>
     <div class="litany-part" data-part="3">
       <p>Feel where my hand is.<br />
       It is at the small of your back and it is not moving,<br />
@@ -112,7 +114,7 @@ Death is one thing. Hades is another. Thanatos does one job and leaves. Hades is
       and the dead have waited an eternity to hear exactly that.</p>
       <p class="her big">I am alive. I choose this. I am not taken.</p>
     </div>
-    <div class="seed-gate" data-seed="4" aria-label="Take the fourth seed"></div>
+    <div class="seed-gate" data-seed="4" aria-label="Take the fourth seed" data-twin="A seed gate: the reader takes the fourth pomegranate seed to go on."></div>
     <div class="litany-part" data-part="4">
       <p>My mouth is at your throat where the pulse is,<br />
       and I am tasting the one thing I have never had,<br />
@@ -136,13 +138,13 @@ Death is one thing. Hades is another. Thanatos does one job and leaves. Hades is
       <p>That is the office. Liaison of the just-arrived.<br />
       The first true face. The one who tells the dead they're home.</p>
     </div>
-    <div class="seed-gate" data-seed="5" aria-label="Take the fifth seed"></div>
+    <div class="seed-gate" data-seed="5" aria-label="Take the fifth seed" data-twin="A seed gate: the reader takes the fifth pomegranate seed to go on."></div>
     <div class="litany-part" data-part="5">
       <p class="cmd">Say my name. Nobody says it.</p>
       <p class="cmd">Say yours. Nobody says it either.</p>
       <p>We will be the two unspoken things that spoke.</p>
     </div>
-    <div class="seed-gate seed-gate--hold" data-seed="6" aria-label="Take the sixth seed. Press and hold."></div>
+    <div class="seed-gate seed-gate--hold" data-seed="6" aria-label="Take the sixth seed. Press and hold." data-twin="A seed gate: the reader takes the sixth seed, pressed and held, to go on."></div>
   </div>
 </section>
 

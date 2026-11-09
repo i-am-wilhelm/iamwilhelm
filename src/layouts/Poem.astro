@@ -61,6 +61,8 @@ const canonical = new URL(Astro.url.pathname, SITE_URL).href;
    stands in until it exists. */
 const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop();
 const image = ogImage(`/og/${slug}.jpg`);
+/* The plain-text twin (src/pages/gallery/[slug]/twin.astro): the same piece as semantic HTML. */
+const twinUrl = `${canonical.replace(/\/?$/, '/')}twin/`;
 const fullTitle = `${title} · ${partOf.name} · ${SITE_NAME}`;
 
 const jsonLd = {
@@ -95,6 +97,7 @@ const htmlStyle = `--night:${night};--exit:${accent}${scheme === 'light' ? ';col
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {preload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
     {FEEDS.map((f) => <link rel="alternate" type={f.type} title={f.title} href={f.href} />)}
+    <link rel="alternate" type="text/html" title={`${title} · plain text`} href={twinUrl} />
     <slot name="head" />
 
     <meta property="og:type" content="article" />

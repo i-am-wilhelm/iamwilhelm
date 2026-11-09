@@ -26,20 +26,20 @@ import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
   accent="#d4a84b"
   bodyClass="ev"
 >
-<canvas id="stage" aria-hidden="true"></canvas>
+<canvas id="stage" aria-hidden="true" data-twin="A fixed canvas is the hall: a stoneware vessel that cracks and drains as the poem's hands reach in, mirrors that light one by one in the dark and hand the coat back when the reader faces them, and at the end a vessel the reader holds to fill, rebuilt in gold to the exact volume of what they give."></canvas>
 <div id="lantern" aria-hidden="true"></div>
 <div id="black" aria-hidden="true"><span>the glass is dark now.<br>the face in it is yours.</span></div>
 
-<div id="guide" aria-live="polite"><p id="guideTxt">scroll slowly. the hall is listening.</p></div>
+<div id="guide" aria-live="polite" data-twin-skip><p id="guideTxt">scroll slowly. the hall is listening.</p></div>
 <!-- Keyboard path for the canvas: the same state the pointer drives (mirrors,
      the coat, the vessel), as three quiet buttons above the guide strip. -->
-<div id="keys" role="group" aria-label="Keyboard controls for the room">
+<div id="keys" role="group" aria-label="Keyboard controls for the room" data-twin-skip>
   <button type="button" id="keyMirror" aria-label="Face the next lit mirror">face a mirror</button>
   <button type="button" id="keyCoat" aria-label="Hand the coat back to the mirror you faced">hand it back</button>
   <button type="button" id="keyVessel" aria-label="Ring the vessel">ring the vessel</button>
 </div>
 
-<div id="hold">
+<div id="hold" data-twin-skip>
   <button class="ring" id="ring" type="button" aria-label="Hold to fill the vessel. Press and hold Space or Enter; it fills for as long as you stay." aria-describedby="holdmsg"><i aria-hidden="true">hold</i></button>
   <p id="holdmsg" aria-live="polite">press and hold anywhere. it fills for as long as you stay.</p>
   <button class="skip" id="skip" type="button">let go</button>

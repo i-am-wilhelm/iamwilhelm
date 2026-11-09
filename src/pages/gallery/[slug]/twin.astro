@@ -1,0 +1,299 @@
+---
+/**
+ * /gallery/<slug>/twin/: the plain-text twin of a scroll page. The whole
+ * piece as semantic HTML in reading order, with every exhibit described in
+ * one sentence, for readers with scripts off, screen readers, search
+ * engines and anyone who wants to quote it. Linked from the scroll page's
+ * foot ("Plain text") and from its <link rel="alternate">.
+ *
+ * The twin is derived from the page, never written twice: the scroll page
+ * component is rendered here with Astro's Container API and reduced to
+ * text by src/lib/twin.ts. An exhibit's sentence is the `data-twin`
+ * attribute on its container in the page (or its aria-label, for a
+ * role="img" figure). Canonical points at the scroll page.
+ */
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import Museum from '../../../layouts/Museum.astro';
+import Placard from '../../../components/museum/Placard.astro';
+import Meander from '../../../components/museum/Meander.astro';
+import Byline from '../../../components/scroll/Byline.astro';
+import { series as registry } from '../../../config/series';
+import { SITE_URL } from '../../../config/site';
+import { ogImage } from '../../../config/og';
+import { getPiece, getScrollPieces } from '../../../lib/pieces';
+import { twinFromHtml } from '../../../lib/twin';
+
+export async function getStaticPaths() {
+  return (await getScrollPieces()).map((p) => ({ params: { slug: p.id } }));
+}
+
+const { slug } = Astro.params;
+const piece = await getPiece(slug!);
+const s = piece.series ? registry[piece.series] : undefined;
+
+/* Every scroll page, by slug; only the one asked for is loaded. */
+const pages = import.meta.glob<{ default: any }>('../*.astro');
+const loader = pages[`../${slug}.astro`];
+if (!loader) throw new Error(`twin: no scroll page at src/pages/gallery/${slug}.astro`);
+const mod = await loader();
+const container = await AstroContainer.create();
+const pageHtml = await container.renderToString(mod.default, { request: new Request(piece.url) });
+const twin = twinFromHtml(pageHtml, piece.title);
+if (!twin.html.trim()) throw new Error(`twin: ${slug} rendered to nothing.`);
+
+const url = `${SITE_URL}${piece.twinPath}`;
+const dateLabel = piece.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const modified = piece.gallery?.data.updated ?? piece.date;
+const image = ogImage(piece.ogPath);
+---
+
+<Museum
+  title={`${piece.title} · Plain text · Michael Wilhelm`}
+  description={`${piece.title}, as plain text: ${piece.description}`}
+  image={piece.ogPath}
+  imageAlt={`${piece.title}, the opening frame of the scroll page`}
+  current="gallery"
+  canonical={piece.url}
+  schema={[
+    {
+      '@type': 'Article',
+      '@id': `${piece.url}#article`,
+      url: piece.url,
+      mainEntityOfPage: piece.url,
+      headline: piece.title,
+      description: piece.description,
+      image,
+      datePublished: piece.date.toISOString(),
+      dateModified: modified.toISOString(),
+      author: { '@id': `${SITE_URL}/#person` },
+      ...(s && { isPartOf: { '@type': 'CreativeWorkSeries', name: s.title, url: `${SITE_URL}${s.href}` } }),
+    },
+  ]}
+>
+  <Fragment slot="head">
+    <link rel="alternate" type="text/html" title={`${piece.title} · the scroll page`} href={piece.url} />
+  </Fragment>
+  <article class="twin" aria-labelledby="twin-title" style={`--room-accent: ${s ? s.accent : 'var(--room-iv)'}`}>
+    <div class="twin__head wrap">
+      <Placard
+        id="twin-title"
+        level={1}
+        label={piece.label ? `Plain text · ${piece.label}` : 'Plain text'}
+        title={piece.title}
+        medium={piece.description}
+        year={dateLabel}
+      />
+      <div class="twin__about" data-reveal>
+        <p class="lede">
+          The plain-text twin of <a class="text-link" href={piece.path}>the scroll page</a>: the whole piece in reading
+          order, with each exhibit described in a sentence. Nothing here moves.
+        </p>
+        <p class="twin__by">
+          <Byline />
+          {s && <a class="text-link" href={s.href}>{s.name}</a>}
+        </p>
+      </div>
+    </div>
+    <div class="twin__body wrap">
+      <div class="twin__text" set:html={twin.html} />
+    </div>
+    <nav class="twin__after wrap" aria-label="After the twin">
+      <a class="cta" href={piece.path}>Open the scroll page</a>
+      {s && <a class="text-link" href={s.href}>All of {s.name}</a>}
+      <a class="text-link" href="/gallery/">The Gallery</a>
+    </nav>
+  </article>
+  <Meander />
+</Museum>
+
+<style>
+  .twin {
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem);
+  }
+  .twin__head {
+    display: grid;
+    gap: 1.75rem;
+    justify-items: start;
+  }
+  .twin__head :global(.placard) {
+    max-width: 34rem;
+  }
+  .twin__about {
+    display: grid;
+    gap: 0.8rem;
+  }
+  .twin__by {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    align-items: baseline;
+    color: var(--ink-soft);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 1.05rem;
+  }
+  .twin__body {
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+  .twin__text {
+    max-width: 40rem;
+    margin-inline: auto;
+    color: var(--ink);
+  }
+  .twin__text :global(p),
+  .twin__text :global(li),
+  .twin__text :global(dd) {
+    text-wrap: pretty;
+  }
+  .twin__text :global(p + p),
+  .twin__text :global(* + p),
+  .twin__text :global(* + ul),
+  .twin__text :global(* + ol),
+  .twin__text :global(* + table),
+  .twin__text :global(* + blockquote),
+  .twin__text :global(* + dl) {
+    margin-top: 1.1em;
+  }
+  .twin__text :global(h1) {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.4rem);
+    line-height: 1.05;
+    margin-top: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+  .twin__text :global(h2),
+  .twin__text :global(h3),
+  .twin__text :global(h4) {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4rem);
+    margin-bottom: 0.8rem;
+    padding-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-top: 1px solid var(--rule);
+    text-wrap: balance;
+  }
+  .twin__text :global(h2) {
+    font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.5rem);
+  }
+  .twin__text :global(h3) {
+    font-size: clamp(1.4rem, 1.2rem + 1vw, 1.9rem);
+  }
+  .twin__text :global(h4) {
+    font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  }
+  .twin__text :global(h1 + *),
+  .twin__text :global(h2 + *),
+  .twin__text :global(h3 + *) {
+    margin-top: 0;
+  }
+  .twin__text :global(ul),
+  .twin__text :global(ol) {
+    padding-left: 1.4rem;
+  }
+  .twin__text :global(li + li) {
+    margin-top: 0.5em;
+  }
+  .twin__text :global(blockquote) {
+    margin: 1.4rem 0;
+    padding: 0.4rem 0 0.4rem 1.4rem;
+    border-left: 1px solid var(--gilt);
+    color: var(--ink-soft);
+  }
+  .twin__text :global(blockquote p + p) {
+    margin-top: 0.6em;
+  }
+  .twin__text :global(cite) {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--ink-faint);
+    font-style: normal;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+  .twin__text :global(hr) {
+    width: 4rem;
+    margin: clamp(2.5rem, 2rem + 3vw, 4rem) auto;
+    border: 0;
+    border-top: 1px solid var(--gilt);
+  }
+  /* An exhibit, described: the one line of the twin set apart. */
+  .twin__text :global(.twin-exhibit) {
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--wall) 70%, white);
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .twin__text :global(.twin-exhibit-k) {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--room-accent);
+    margin-right: 0.4rem;
+  }
+  .twin__text :global(.twin-caption) {
+    color: var(--ink-faint);
+    font-size: 0.95rem;
+  }
+  .twin__text :global(.twin-tag) {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--room-accent);
+  }
+  .twin__text :global([lang='grc']) {
+    font-family: 'GFS Didot', 'Gentium Plus', 'Palatino Linotype', Georgia, serif;
+  }
+  .twin__text :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .twin__text :global(th),
+  .twin__text :global(td) {
+    padding: 0.6rem 0.6rem 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    text-align: left;
+  }
+  .twin__text :global(th) {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+  .twin__text :global(a) {
+    color: var(--room-accent);
+  }
+  .twin__after {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.6rem;
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4rem);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 1.05rem;
+  }
+  @media (max-width: 640px) {
+    .twin__text :global(table),
+    .twin__text :global(tbody),
+    .twin__text :global(tr),
+    .twin__text :global(td),
+    .twin__text :global(th) {
+      display: block;
+    }
+    .twin__text :global(tr) {
+      padding-block: 0.6rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .twin__text :global(td),
+    .twin__text :global(th) {
+      border: 0;
+      padding: 0.15rem 0;
+    }
+  }
+</style>

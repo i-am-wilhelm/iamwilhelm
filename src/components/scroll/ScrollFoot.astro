@@ -74,6 +74,11 @@ const uid = `sf-${id}`;
     </div>
   </div>
   <p class="scroll-foot__commission">
+    {p.twinPath && (
+      <span class="scroll-foot__twin">
+        Plain text: <a href={p.twinPath}>read this piece as text</a> &middot;{' '}
+      </span>
+    )}
     Pieces like these are built to order. <a href="/services/">Commissions &rarr;</a>
   </p>
 </aside>

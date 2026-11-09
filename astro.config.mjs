@@ -7,8 +7,11 @@ import sitemap from '@astrojs/sitemap';
 // touching the page layer: swap the loaders in src/content.config.ts.
 //
 // The sitemap lists the public museum only: the archived homepage
-// (/atelier) and the lab workbench stay out, alongside their noindex tags.
+// (/atelier) and the lab workbench stay out, alongside their noindex tags,
+// and so do the plain-text twins (/gallery/<slug>/twin/), whose canonical
+// is the scroll page they mirror.
 const PRIVATE = ['/atelier', '/lab/'];
+const isTwin = (pathname) => /\/twin\/?$/.test(pathname);
 
 export default defineConfig({
   site: 'https://iamwilhelm.com',
@@ -20,7 +23,10 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !PRIVATE.some((p) => new URL(page).pathname.startsWith(p)),
+      filter: (page) => {
+        const { pathname } = new URL(page);
+        return !PRIVATE.some((p) => pathname.startsWith(p)) && !isTwin(pathname);
+      },
     }),
   ],
 });

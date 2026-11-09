@@ -35,6 +35,8 @@ export interface Piece {
   label?: string;
   /** Share image path under public/, when the piece renders its own. */
   ogPath?: string;
+  /** The plain-text twin (/gallery/<id>/twin/), for scroll pages. */
+  twinPath?: string;
   gallery?: CollectionEntry<'gallery'>;
   writing?: CollectionEntry<'writings'>;
 }
@@ -74,6 +76,7 @@ async function build(): Promise<Piece[]> {
       seriesNo: g.data.seriesNo,
       label: g.data.series && g.data.seriesNo ? seriesLabel(g.data.series, g.data.seriesNo) : undefined,
       ogPath: `/og/${g.id}.jpg`,
+      twinPath: `${g.data.href.replace(/\/?$/, '/')}twin/`,
       gallery: g,
       writing: w,
     });
