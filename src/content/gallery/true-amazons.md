@@ -5,7 +5,7 @@ year: 2026
 epigraph: "Arrow, venom, rust: the Amazons as a venom culture, read through one Greek word."
 href: "/gallery/true-amazons/"
 medium: "Visualized essay in nine steps; interactive page"
-order: 4
+order: 5
 status: on-view
 sign: sagittarius
 plate: "#141c17"

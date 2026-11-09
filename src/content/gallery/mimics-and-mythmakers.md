@@ -5,7 +5,7 @@ year: 2026
 epigraph: "Every man is a mirror. Most of them are pointed at a screen."
 href: "/gallery/mimics-and-mythmakers/"
 medium: "Visualized essay in six depths and one ascent; interactive page"
-order: 5
+order: 6
 status: on-view
 sign: gemini
 plate: "#0a2a39"

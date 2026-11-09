@@ -35,7 +35,8 @@ mkdirSync(out, { recursive: true });
    (src/pages/writings/<slug>.astro) shoot their hero at the full 1200x630.
    Descent pieces are a narrow column on a wide wall, so they shoot at
    800x420 scaled up (the column fills the card), centred on the poem's title
-   movement; `target` is the selector to centre on. */
+   movement; `target` is the selector to centre on. Any page can instead mark
+   one element data-og-frame to be centred (see below). */
 const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 let routes = [];
 for (const f of readdirSync(resolve(root, 'src/pages/gallery'))) {
@@ -79,7 +80,17 @@ for (const { slug, route, width, settle, target } of routes) {
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1200 / width });
   await page.goto(base + route, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
-  if (target) await page.evaluate((t) => document.querySelector(t)?.scrollIntoView({ block: 'center' }), target);
+  /* A page can name its own card: the element marked data-og-frame is
+     centred instead of the opening frame (Where It Was shoots its lyre and
+     dike panel), and <html> gets the class `og`, which the page's CSS can
+     use to show that frame in its resolved state. */
+  const frame = target ?? ((await page.$('[data-og-frame]')) ? '[data-og-frame]' : null);
+  if (frame) {
+    await page.evaluate((t) => {
+      document.documentElement.classList.add('og');
+      document.querySelector(t)?.scrollIntoView({ block: 'center' });
+    }, frame);
+  }
   await page.waitForTimeout(settle);
   /* Hide the fixed exits and rails so the card is the work alone; a page
      marks any other site chrome (a top bar's way back) with data-og-hide. */

@@ -32,6 +32,15 @@ export const series = {
     /* PLACEHOLDER(owner): the series' one-line statement, shown on /writings/futurist/. */
     statement: 'Essays on what comes next, each staged as its own scrolling page.',
   },
+  'through-the-lens': {
+    name: 'Through the Lens',
+    title: 'Through the Lens',
+    href: '/writings/through-the-lens/',
+    /* The writings accent: the draft's frontmatter sets `accent: writings`. */
+    accent: 'writings',
+    /* PLACEHOLDER(owner): the series' one-line statement, shown on /writings/through-the-lens/. */
+    statement: 'Modern ideas read back through the Greek words underneath them.',
+  },
 } as const satisfies Record<string, SeriesSpec>;
 
 export type SeriesId = keyof typeof series;

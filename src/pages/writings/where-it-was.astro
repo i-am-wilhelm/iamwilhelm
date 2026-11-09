@@ -1,0 +1,1005 @@
+---
+/**
+ * Where It Was: Through the Lens No. 3. Freud's three, Plato's three, and
+ * the Latin that hid the family resemblance, as a scrolly in seven
+ * movements on the True Amazons system: tagged passages (text / reading /
+ * disputed), one thing to touch per movement, the source ledger last. Built
+ * from the owner's draft in the vault ("Draft - Where It Was (Through the
+ * Lens).md"), whose essay text ships verbatim; only the UI copy (labels,
+ * readouts, the legend) is the page's own.
+ *
+ * The movements: Odysseus's line fades in line by line (I); Leontius's
+ * shout stays veiled until the reader presses and holds to look (II); the
+ * three German pronouns under their thin Latin overlay (III); the lineup,
+ * three columns sliding into register, with a removable name layer on
+ * Freud's column, Latin / German / Greek, that the rest of the page then
+ * follows (IV); the centrepiece, a three-string lyre tuned by its pegs
+ * (WebAudio, created on the first touch, resolved to the site's key) beside
+ * a dike dragged across a sea, and the choice of which to leave the section
+ * on, remembered and carried to the close (V); Plato's beast, lion and man
+ * as a constellation figure, and Paul's ἔσω ἄνθρωπος fading in over Plato's
+ * ἐντὸς ἄνθρωπος letter by letter (VI); Parent, Adult, Child, the disputed
+ * close, and the bridge to the Futurist series (VII).
+ *
+ * Same page system as True Amazons and Everyone, Searchable (Poem.astro;
+ * `treatment: scrolly` on the writings entry): no glyph dither, no backdrop
+ * fade, no smoke, the orchestra pit never imported. The stylesheet is scoped
+ * under body.wiw so Poem.astro's line and section globals cannot reach it.
+ * Title, description, date and series come from
+ * src/content/writings/where-it-was.md. The lyre and dike panel carries
+ * data-og-frame, so `npm run og:scrollies` shoots it for the share image.
+ */
+import { getEntry } from 'astro:content';
+import Poem from '../../layouts/Poem.astro';
+import { series, seriesLabel } from '../../config/series';
+import { SITE_URL } from '../../config/site';
+
+const entry = await getEntry('writings', 'where-it-was');
+if (!entry?.data.series || !entry.data.seriesNumber || !entry.data.description) {
+  throw new Error('where-it-was: the writings entry needs a series, a number and a description.');
+}
+const { title, description, date } = entry.data;
+const s = series[entry.data.series];
+const label = seriesLabel(entry.data.series, entry.data.seriesNumber);
+const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<Poem
+  title={title}
+  description={description}
+  year={String(date.getUTCFullYear())}
+  published={date}
+  night="#0b0d12"
+  accent="#c9a24a"
+  genre="Essay"
+  partOf={{ name: s.title, url: `${SITE_URL}${s.href}`, type: 'CreativeWorkSeries' }}
+  preload={[
+    '/fonts/literata-latin-opsz-normal.woff2',
+    '/fonts/literata-greek-ext-opsz-normal.woff2',
+    '/fonts/bodoni-moda-latin-opsz-normal.woff2',
+  ]}
+  bodyClass="wiw"
+>
+<div id="progress" aria-hidden="true"></div>
+<nav class="nav" aria-label="Movements">
+  <a href="#m1">I</a><a href="#m2">II</a><a href="#m3">III</a><a href="#m4">IV</a><a href="#m5">V</a><a href="#m6">VI</a><a href="#m7">VII</a><a href="#ledger">&middot;</a>
+</nav>
+
+<main class="wi">
+<header class="hero">
+  <p class="eyebrow"><a href={s.href}>{label}</a> &middot; A scrolly in seven movements</p>
+  <h1>Where <em>It</em> Was</h1>
+  <p class="dek">Freud’s three, Plato’s three, and the Latin that hid the family resemblance</p>
+  <ul class="marks" aria-label="The page’s symbols">
+    <li>
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 36v4c0 6 20 6 20 0v-4z"/><path d="M16 36C8 28 8 16 13 8M32 36c8-8 8-20 3-28M10 8h28M19 9v27M24 9v27M29 9v27"/><circle cx="19" cy="8" r="1.6"/><circle cx="24" cy="8" r="1.6"/><circle cx="29" cy="8" r="1.6"/></svg>
+      <span>the three-string lyre</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="34" r="8"/><path d="M18 26v16M10 34h16M12.3 28.3l11.4 11.4M23.7 28.3L12.3 39.7M14 26l2-10h14l2 10"/><circle cx="24" cy="8" r="3"/><path d="M24 11v6M24 13l-7-2M24 13l7-2M17 11L4 7M31 11l13-4"/></svg>
+      <span>the charioteer</span>
+    </li>
+    <li>
+      <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="8" r="5"/><path d="M8 45c0-14 6-21 16-21s16 7 16 21"/><circle cx="24" cy="31" r="3.2"/><circle cx="24" cy="31" r="5.6" stroke-dasharray="1.2 2.2"/><path d="M16 44c2-4 4-6 8-6s6 2 8 6M17 40v-2.5M24 38v-2M31 40v-2.5"/><circle cx="17" cy="37" r=".9"/><circle cx="24" cy="35.6" r=".9"/><circle cx="31" cy="37" r=".9"/></svg>
+      <span>the lion and the beast, inside the man</span>
+    </li>
+  </ul>
+  <p class="kicker">By Michael Wilhelm &middot; {month}</p>
+  <p class="how"><b>How to read this page.</b> Every claim wears a tag. <span class="tag text" tabindex="0" data-tip="A source says it. Cited in the ledger at the end.">text</span> means a source says it, cited in the ledger. <span class="tag read" tabindex="0" data-tip="The inference laid on top of the text.">reading</span> marks the inference laid on top of the text. <span class="tag disp" tabindex="0" data-tip="The author’s own argument, forward-looking.">disputed</span> marks the one argument that is the author’s own and looks forward. Each movement has one thing to touch.</p>
+</header>
+
+<article class="essay">
+
+<section class="mv" id="m1" data-t="Hold, heart">
+  <div class="wm" aria-hidden="true">I</div>
+  <blockquote class="greek-quote">
+    <p lang="grc" class="grc"><span class="ln" data-fade style="--d:0">στῆθος δὲ πλήξας κραδίην ἠνίπαπε μύθῳ·</span><br /><span class="ln" data-fade style="--d:1">τέτλαθι δή, κραδίη· καὶ κύντερον ἄλλο ποτ᾽ ἔτλης.</span></p>
+    <p class="translation" data-fade style="--d:2">He struck his chest and called his heart to order: “Hold, heart. You have held through worse than this.”</p>
+    <cite data-fade style="--d:3">Homer, <em>Odyssey</em> 20.17–18</cite>
+  </blockquote>
+  <h2 data-fade><span>I.</span> Hold, heart</h2>
+  <p data-fade><span class="tag text" data-tip="Homer, Odyssey 20.17–18">text</span> Odysseus is lying awake in his own hall, disguised as a beggar, listening to the suitors’ women laugh on their way to the suitors’ beds. Something in him wants to get up and kill them all tonight. Something else knows that tomorrow is the day, and that tonight is for lying still. The poet does not say “he restrained himself.” He says Odysseus struck his own chest and spoke to his heart as to a dog that needs settling. The heart, <span lang="grc">κραδίη</span>, is addressed in the second person. It has a history of its own (“you have held through worse”) and it can be reasoned with.</p>
+  <p data-fade><span class="tag text" data-tip="Plato, Republic 441a–b">text</span> That is the oldest surviving record in Greek of a person discovering that he is more than one. The discovery is older than philosophy by three centuries, and philosophy knew it. When Plato needs to prove that the part of us that reasons is a different part from the part that surges, he does not build an argument first. He quotes this line (<em>Republic</em> 441b). Homer had already done the experiment.</p>
+</section>
+
+<section class="mv" id="m2" data-t="The thirsty man and the man at the wall">
+  <div class="wm" aria-hidden="true">II</div>
+  <h2><span>II.</span> The thirsty man and the man at the wall</h2>
+  <p><span class="tag text" data-tip="Plato, Republic IV 436b–c; 439a–d">text</span> Plato’s argument, when it comes, is short and has never been improved on. The same thing cannot do or undergo opposites in the same respect at the same time (436b). A thirsty man who stands at the water and does not drink is therefore two things: a thing that reaches for the cup and a thing that holds the hand back (439c). He calls the reaching thing <span lang="grc">τὸ ἐπιθυμητικόν</span>, the desiring part, and the holding thing <span lang="grc">τὸ λογιστικόν</span>, the reckoning part, from <span lang="grc">λογίζομαι</span>, to count, to calculate, to take stock.</p>
+  <p><span class="tag text" data-tip="Rep. 439e–440a">text</span> Then he tells a story to find the third. Leontius, son of Aglaion, is walking up from the Piraeus when he notices corpses lying at the executioner’s ground outside the north wall. He wants to look. He is disgusted that he wants to look. He fights himself, covers his eyes, loses, and runs up to the bodies with his eyes forced open, shouting at them: <span lang="grc" class="veil">ἰδοὺ ὑμῖν, ὦ κακοδαίμονες, ἐμπλήσθητε τοῦ καλοῦ θεάματος</span>, “There, you wretches, drink your fill of the lovely sight” (439e–440a).</p>
+
+  <div class="play look" id="lookplay" data-label="Rep. 439e–440a · outside the north wall">
+    <svg class="wall" viewBox="0 0 600 200" aria-hidden="true">
+      <rect x="0" y="88" width="600" height="38" fill="#121521" stroke="#9a958a" stroke-opacity=".35"/>
+      <path d="M0 107H600M60 88v19M120 107v19M180 107v19M240 88v19M300 88v19M360 107v19M420 107v19M480 88v19M540 88v19" stroke="#9a958a" stroke-opacity=".22" fill="none"/>
+      <path d="M0 172H600" stroke="#9a958a" stroke-opacity=".4"/>
+      <g class="leon">
+        <path d="M200 82v18M188 100h24M200 100l-6 40M200 100l6 40M194 140l-8 32M206 140l8 32" stroke="#e6dfcf" stroke-opacity=".7" fill="none" stroke-width="1"/>
+        <circle cx="200" cy="72" r="9" fill="none" stroke="#e6dfcf" stroke-width="1"/>
+        <g fill="#e6dfcf"><circle cx="200" cy="72" r="2"/><circle cx="188" cy="100" r="2"/><circle cx="212" cy="100" r="2"/><circle cx="194" cy="140" r="2"/><circle cx="206" cy="140" r="2"/><circle cx="186" cy="172" r="2"/><circle cx="214" cy="172" r="2"/></g>
+        <g class="arm l" stroke="#e8c877" fill="#e8c877" stroke-width="1.2"><path d="M188 100l8-28" fill="none"/><circle cx="196" cy="72" r="3"/></g>
+        <g class="arm r" stroke="#e8c877" fill="#e8c877" stroke-width="1.2"><path d="M212 100l-8-28" fill="none"/><circle cx="204" cy="72" r="3"/></g>
+        <path class="gaze" d="M212 72L560 150" stroke="#e8c877" stroke-opacity=".6" stroke-dasharray="2 6" fill="none"/>
+      </g>
+      <text class="lab" x="12" y="190">up from the Piraeus</text>
+      <text class="lab" x="588" y="190" text-anchor="end">the executioner’s ground, out of frame &rarr;</text>
+    </svg>
+    <p lang="grc" class="grc big veil">ἰδοὺ ὑμῖν, ὦ κακοδαίμονες, ἐμπλήσθητε τοῦ καλοῦ θεάματος</p>
+    <p class="translation seenonly">“There, you wretches, drink your fill of the lovely sight.”</p>
+    <div class="row"><button class="btn hold" id="lookbtn" aria-pressed="false">Press and hold to look</button><button class="btn ghost" id="lookreset" hidden>Cover his eyes again</button><div class="out" id="lookout">His hands are over his eyes. The bodies are off to the right, out of the frame, and they stay there.</div></div>
+  </div>
+
+  <p>Plato’s point is the shouting. The thing in Leontius that is angry is angry <em>at his own eyes</em>. It is on the side of the reasoning part, and it has teeth. He names it <span lang="grc">τὸ θυμοειδές</span>, the thumos-like part, and his whole account of the soul turns on the fact that there are three, since anger at oneself is neither appetite nor calculation.</p>
+  <p><span class="tag read" data-tip="Chantraine, Dictionnaire étymologique, s.v. θυμός, θύω">reading</span> The Greek words are doing more than the English lets through. <span lang="grc">θυμός</span>, the surge in the chest, the seat of anger and pride and courage in Homer, sits inside <span lang="grc">ἐπιθυμία</span>: appetite is literally a thumos-<em>toward</em>, a surge aimed at an object. The two lower parts share a root, and the root is heat; the family of <span lang="grc">θύω</span>, to rush and to smoke, is cousin to Latin <em>fumus</em>. Reason, by contrast, is named for a bookkeeper’s verb. Plato’s soul is two fires and an accountant.</p>
+</section>
+
+<section class="mv" id="m3" data-t="Vienna, 1923">
+  <div class="wm" aria-hidden="true">III</div>
+  <h2><span>III.</span> Vienna, 1923: the I and the It</h2>
+  <div class="vienna" role="img" aria-label="Das Ich, das Es, das Über-Ich, set large, with ego, id and super-ego laid thinly over them">
+    <div class="de" style="--d:0"><span class="w" lang="de">Ich</span><span class="la" lang="la">ego</span></div>
+    <div class="de" style="--d:1"><span class="w" lang="de">Es</span><span class="la" lang="la">id</span></div>
+    <div class="de" style="--d:2"><span class="w" lang="de">Über-Ich</span><span class="la" lang="la">super-ego</span></div>
+  </div>
+  <p><span class="tag text" data-tip="Freud, Das Ich und das Es (1923), chs. II–III; Nietzsche, Jenseits von Gut und Böse §17">text</span> Twenty-three centuries later a physician in Vienna publishes a short book called <em>Das Ich und das Es</em>. The title is two pronouns: the I and the It. The third term, introduced in chapter III, is <em>das Über-Ich</em>, the Over-I. Freud chose the plainest words German has. He took <em>das Es</em> from Georg Groddeck, whose <em>Book of the It</em> appeared the same year, and he notes in a footnote that Groddeck took the usage from Nietzsche, who had written in <em>Beyond Good and Evil</em> (§17) that a thought comes when <em>it</em> wants, not when <em>I</em> want: <em>es denkt</em>. The It is the grammar of everything that happens in you without your having done it. “It came over me.” “It got the better of me.” Every language already had the word; Freud only capitalized it.</p>
+  <p><span class="tag read" data-tip="Bettelheim, Freud and Man’s Soul (1983)">reading</span> His English translators, from Joan Riviere’s 1927 version to James Strachey’s Standard Edition, buried the pronouns under Latin: ego, id, super-ego. Bruno Bettelheim spent a book (<em>Freud and Man’s Soul</em>, 1983) on what that cost. Freud’s <em>Seele</em>, soul, became “mind” and “mental apparatus.” The Over-I, which any German child could parse, became a technical term. And a plain-spoken, three-part account of the soul that a reader of the <em>Republic</em> would have recognized on sight was dressed in enough Latin that the recognition rarely happened. The Latin made Freud sound like a scientist. It also made him sound as though he had no ancestors.</p>
+  <p><span class="tag text" data-tip="Freud, Drei Abhandlungen, preface to the 4th ed. (1920)">text</span> He knew he had them. In 1920 he wrote that psychoanalysis’s enlarged idea of sexuality “coincides with the Eros of the divine Plato.” Eros, Oedipus, Narcissus: every name he reached for when he needed one was Greek. The three-part soul he did not name, and the resemblance has to be read out.</p>
+</section>
+
+<section class="mv" id="m4" data-t="The lineup">
+  <div class="wm" aria-hidden="true">IV</div>
+  <h2><span>IV.</span> The lineup</h2>
+  <p>Set the two triads side by side and the fit is close at the bottom, loose in the middle, and startling at the top.</p>
+
+  <div class="play lineup" id="lineup" data-label="Three triads · one name layer">
+    <div class="cols">
+      <div class="col plato">
+        <h3>Plato <small>Republic IV, c. 375 BC</small></h3>
+        <ol>
+          <li><span class="term" lang="grc">τὸ θυμοειδές</span><span class="g">the thumos-like part</span></li>
+          <li><span class="term" lang="grc">τὸ λογιστικόν</span><span class="g">the reckoning part</span></li>
+          <li><span class="term" lang="grc">τὸ ἐπιθυμητικόν</span><span class="g">the desiring part</span></li>
+        </ol>
+      </div>
+      <div class="col freud" data-state="latin">
+        <h3>Freud <small>Das Ich und das Es, 1923</small></h3>
+        <ol>
+          <li><span class="term" lang="de">das Über-Ich</span><span class="g">the Over-I</span><span class="over la" lang="la">super-ego</span><span class="over gr" lang="grc">θυμοειδές</span></li>
+          <li><span class="term" lang="de">das Ich</span><span class="g">the I</span><span class="over la" lang="la">ego</span><span class="over gr" lang="grc">λογιστικόν</span></li>
+          <li><span class="term" lang="de">das Es</span><span class="g">the It</span><span class="over la" lang="la">id</span><span class="over gr" lang="grc">ἐπιθυμητικόν</span></li>
+        </ol>
+        <span class="sheet-tab" aria-hidden="true">a layer &middot; tap to lift</span>
+      </div>
+      <div class="col berne">
+        <h3>Berne <small>Games People Play, 1964</small></h3>
+        <ol>
+          <li><span class="term">Parent</span><span class="g">the trained part</span></li>
+          <li><span class="term">Adult</span><span class="g">the one doing the reckoning</span></li>
+          <li><span class="term">Child</span><span class="g">the surge</span></li>
+        </ol>
+      </div>
+    </div>
+    <div class="row"><button class="btn" id="layerbtn">Lift the Latin</button><div class="out" id="layerout"></div></div>
+  </div>
+
+  <p><span class="tag text" data-tip="Rep. IX 580e–581a">text</span> <strong>The It and the desiring part.</strong> These are nearly the same word. Plato’s <span lang="grc">ἐπιθυμητικόν</span> is “the desiring thing”; Freud’s <em>Es</em> is the reservoir of the <em>Triebe</em>, the drives. Plato adds that it is also the money-loving part, since money is how desires get fed (580e–581a), and Freud would have had no quarrel with that. Both describe it as the largest part, the oldest, and the one that does not know what time it is.</p>
+  <p><span class="tag text" data-tip="Rep. IX 581b–582e; Freud, Neue Folge (1933), Lecture 31; Das Ich und das Es, ch. II; Phaedrus 246a, 253d–e">text</span> <strong>The I and the reckoning part.</strong> Here the fit slips. Plato’s <span lang="grc">λογιστικόν</span> has a desire of its own: it loves learning and truth, it is <span lang="grc">φιλόσοφον</span>, and it has a pleasure proper to it that the other parts cannot taste (581b–582e). Freud’s I has no appetite. In the 1933 lectures he calls it the servant of three harsh masters, the outer world, the It, and the Over-I, and its only native talent is reality-testing: knowing what is actually there. Freud’s I is Plato’s reckoning part with the love of truth removed and the bookkeeping left in. His image for it is a rider who must steer a stronger horse, and who often, to stay in the saddle, has to guide it where it already wanted to go (<em>Das Ich und das Es</em>, ch. II). Plato’s charioteer in the <em>Phaedrus</em> (246a, 253d–e) has two horses and a whip, and the whole point is that the good horse pulls with him.</p>
+  <p><span class="tag text" data-tip="Rep. 441a, 441e–442a; Freud, Das Unbehagen in der Kultur (1930), ch. VII; Das Ich und das Es, ch. III">text</span> <strong>The Over-I and the thumos part.</strong> This is the match that makes the essay. Both are the part that turns on you. Leontius’s rage at his own eyes is a shame reaction; Freud’s Over-I is the seat of shame’s sibling, guilt, and its severity, he says, is borrowed aggression, the It’s own violence turned inward. Both are the <em>trained</em> part. Plato says thumos is reason’s natural ally “unless corrupted by bad upbringing” (441a), and that music and gymnastics exist to tune it (441e–442a). Freud says the Over-I is built out of the parents’ voices and the culture’s demands, the “heir of the Oedipus complex.” Both say the trained part can be trained wrong, and that when it is, it stops being an ally and becomes a jailer. Plato’s word for the jailer version is a soul ruled by <span lang="grc">φιλονικία</span>, love of winning, the timocratic man of Book VIII. Freud’s is melancholia.</p>
+  <p><span class="tag text" data-tip="Rep. IX 581c">text</span> The difference underneath is this. Plato’s three parts each have their own <em>eros</em> and their own object: truth, honor, gain (581c). The soul is a small city with three estates and three economies. Freud’s three parts are stations for one energy, libido, which moves among them like water through locks. Plato wrote a politics of the soul. Freud wrote its hydraulics.</p>
+</section>
+
+<section class="mv" id="m5" data-t="Where It was">
+  <div class="wm" aria-hidden="true">V</div>
+  <h2><span>V.</span> Where It was</h2>
+  <p><span class="tag text" data-tip="Freud, Neue Folge der Vorlesungen (1933), Lecture 31">text</span> The hydraulics show in Freud’s most famous sentence, the last line of Lecture 31: <em lang="de">Wo Es war, soll Ich werden.</em> Where It was, I shall come to be. Strachey gave it as “Where id was, there ego shall be,” which is accurate and sounds like a motto on a building. Freud’s own gloss is the one that matters: it is a work of culture, he says, like the draining of the Zuider Zee. The It is a sea. The I is reclaimed land. Progress is dikes.</p>
+  <p><span class="tag text" data-tip="Rep. 433a–b, 443d">text</span> Plato ends his account of the soul in the same place with a different instrument. Justice, he says, is each part doing its own work (433a–b), reason ruling, thumos in alliance, desire ruled. But when he describes what that rule <em>feels like</em> from inside, the image is musical: the just man “binds the three together like the three fixed notes of a scale, lowest, highest, and middle,” <span lang="grc">νεάτης τε καὶ ὑπάτης καὶ μέσης</span>, “and becomes one out of many” (443d). Freud drains a sea. Plato tunes a lyre. Both say the I should rule; they disagree about what ruling looks like. For Freud it looks like land where there was water. For Plato it looks like consonance, three strings that were already there, brought into one sound.</p>
+
+  <div class="play instruments" id="instruments" data-label="Two instruments · Lecture 31 and Rep. 443d" data-og-frame>
+    <div class="inst lyre" id="lyre">
+      <h3>Tune the lyre</h3>
+      <svg class="lyresvg" id="lyresvg" viewBox="0 0 320 300" role="group" aria-label="The lyre: three strings, νεάτη, μέση and ὑπάτη, each with a tuning peg">
+        <defs>
+          <pattern id="wiwDots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".7" fill="#e6dfcf" fill-opacity=".16"/></pattern>
+        </defs>
+        <path class="arm" d="M100 252C60 200 58 120 82 60" fill="none" stroke="#9a958a" stroke-width="6" stroke-linecap="round"/>
+        <path class="arm" d="M220 252C260 200 262 120 238 60" fill="none" stroke="#9a958a" stroke-width="6" stroke-linecap="round"/>
+        <path d="M92 250c0-10 136-10 136 0v12c0 36-136 36-136 0z" fill="#1a1e2c" stroke="#9a958a" stroke-width="1.5"/>
+        <path d="M92 250c0-10 136-10 136 0v12c0 36-136 36-136 0z" fill="url(#wiwDots)"/>
+        <rect x="108" y="248" width="104" height="4" fill="#9a958a"/>
+        <path d="M68 60H252" stroke="#9a958a" stroke-width="7" stroke-linecap="round"/>
+        <line class="string" data-i="0" x1="120" y1="63" x2="120" y2="248"/>
+        <line class="string" data-i="1" x1="160" y1="63" x2="160" y2="248"/>
+        <line class="string" data-i="2" x1="200" y1="63" x2="200" y2="248"/>
+        <g class="peg" data-i="0" tabindex="0" role="slider" aria-label="νεάτη, the high string: tuning peg, in cents" aria-valuemin="-60" aria-valuemax="60" aria-valuenow="22" aria-orientation="vertical"><circle cx="120" cy="60" r="16" fill="transparent"/><circle class="pegc" cx="120" cy="60" r="9.5" fill="#121521" stroke="#c9a24a" stroke-width="1.5"/><line class="key" x1="120" y1="53" x2="120" y2="67" stroke="#e8c877" stroke-width="1.8" stroke-linecap="round"/></g>
+        <g class="peg" data-i="1" tabindex="0" role="slider" aria-label="μέση, the middle string: tuning peg, in cents" aria-valuemin="-60" aria-valuemax="60" aria-valuenow="-14" aria-orientation="vertical"><circle cx="160" cy="60" r="16" fill="transparent"/><circle class="pegc" cx="160" cy="60" r="9.5" fill="#121521" stroke="#c9a24a" stroke-width="1.5"/><line class="key" x1="160" y1="53" x2="160" y2="67" stroke="#e8c877" stroke-width="1.8" stroke-linecap="round"/></g>
+        <g class="peg" data-i="2" tabindex="0" role="slider" aria-label="ὑπάτη, the low string: tuning peg, in cents" aria-valuemin="-60" aria-valuemax="60" aria-valuenow="9" aria-orientation="vertical"><circle cx="200" cy="60" r="16" fill="transparent"/><circle class="pegc" cx="200" cy="60" r="9.5" fill="#121521" stroke="#c9a24a" stroke-width="1.5"/><line class="key" x1="200" y1="53" x2="200" y2="67" stroke="#e8c877" stroke-width="1.8" stroke-linecap="round"/></g>
+      </svg>
+      <div class="strings-row" aria-hidden="true">
+        <div class="sname"><span lang="grc">νεάτη</span><b class="cents" id="c0">+22¢</b></div>
+        <div class="sname"><span lang="grc">μέση</span><b class="cents" id="c1">−14¢</b></div>
+        <div class="sname"><span lang="grc">ὑπάτη</span><b class="cents" id="c2">+9¢</b></div>
+      </div>
+      <div class="row"><button class="btn" id="strike">Strike the strings</button><button class="btn ghost" id="detune">Detune</button></div>
+      <div class="out" id="lyreout" aria-live="polite">Three strings, three pitches, no chord. Drag a peg up or down until the beating stops; on a keyboard, focus a peg and use the arrow keys.</div>
+    </div>
+    <div class="inst dike" id="dike">
+      <h3>Drain the sea</h3>
+      <svg class="dikesvg" id="dikesvg" viewBox="0 0 600 300" aria-hidden="true">
+        <defs>
+          <linearGradient id="wiwSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b0d12"/><stop offset="1" stop-color="#141b2b"/></linearGradient>
+          <linearGradient id="wiwSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4e66"/><stop offset="1" stop-color="#0c1f2e"/></linearGradient>
+          <pattern id="wiwWaves" width="40" height="14" patternUnits="userSpaceOnUse"><path d="M0 7q10-6 20 0t20 0" fill="none" stroke="#5fa3bd" stroke-opacity=".28" stroke-width="1"/></pattern>
+          <pattern id="wiwFurrows" width="600" height="16" patternUnits="userSpaceOnUse"><path d="M0 8H600" stroke="#a3bf78" stroke-opacity=".2" stroke-width="1"/></pattern>
+          <clipPath id="wiwLand"><rect id="landclip" x="0" y="0" width="0" height="300"/></clipPath>
+        </defs>
+        <rect width="600" height="300" fill="url(#wiwSky)"/>
+        <rect id="sea" x="0" y="120" width="600" height="180" fill="url(#wiwSea)"/>
+        <rect id="seawaves" x="0" y="120" width="600" height="180" fill="url(#wiwWaves)"/>
+        <g clip-path="url(#wiwLand)">
+          <rect x="0" y="150" width="600" height="150" fill="#232e1f"/>
+          <rect x="0" y="150" width="600" height="150" fill="url(#wiwFurrows)"/>
+          <path d="M0 150H600" stroke="#a3bf78" stroke-opacity=".55"/>
+        </g>
+        <g id="dikeg">
+          <path d="M-12 300L-3 104h6l9 196z" fill="#171b14" stroke="#c9a24a" stroke-opacity=".9" stroke-width="1.2"/>
+          <path d="M-3 104h6" stroke="#e8c877" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <text class="lab" x="588" y="290" text-anchor="end">Zuider Zee</text>
+        <text class="lab" id="landlab" x="12" y="290" opacity="0">reclaimed land</text>
+      </svg>
+      <label class="gauge"><span class="sr">Drain the sea into reclaimed land</span><input type="range" id="dikerange" min="0" max="100" value="0" step="1" /></label>
+      <div class="out" id="dikeout" aria-live="polite">The Zuider Zee. Drag right to push the water back.</div>
+    </div>
+    <div class="leave" role="group" aria-label="Which image to leave the section on">
+      <span class="leave-l">Leave the section on</span>
+      <button class="btn" data-leave="lyre" aria-pressed="false">the lyre</button>
+      <button class="btn" data-leave="dike" aria-pressed="false">the dike</button>
+      <span class="out" id="leaveout">The close takes its colour from your choice.</span>
+    </div>
+  </div>
+
+  <p>That disagreement is not academic. If the lower parts are water, the work is to push them back and hold the line, forever, against a sea that is always rising. If they are strings, the work is to tune them, and a tuned string is not a defeated one. Odysseus, lying in the dark, did not drain his heart. He spoke to it, and it held, and in the morning it was the same heart that strung the bow.</p>
+</section>
+
+<section class="mv" id="m6" data-t="The man inside the man">
+  <div class="wm" aria-hidden="true">VI</div>
+  <h2><span>VI.</span> The man inside the man</h2>
+  <p>There is a third witness between Athens and Vienna, and he writes in the same Greek.</p>
+  <p><span class="tag text" data-tip="Rep. IX 588b–589b">text</span> Plato closes the argument of the <em>Republic</em> with a picture (588b–589b): imagine a creature that is a many-headed beast, a lion, and a man, all sewn inside the skin of a man, so that from outside you see only the man. The beast is appetite, the lion is thumos, and the little man within is reason. The unjust man feeds the beast and starves the man; the just man makes <span lang="grc">ὁ ἐντὸς ἄνθρωπος</span>, “the man inside,” the master of the whole animal (589a).</p>
+
+  <div class="play figure" data-label="Rep. 588b–589b · the creature">
+    <div class="figwrap">
+      <svg class="figsvg" viewBox="0 0 300 460" role="img" aria-label="A human outline drawn as a constellation. Inside it, low in the body, a many-headed beast; above it a lion; in the chest a small man, faintly pulsing.">
+        <defs>
+          <pattern id="wiwDither" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r=".65" fill="#e6dfcf" fill-opacity=".13"/></pattern>
+          <clipPath id="wiwBody"><circle cx="150" cy="55" r="30"/><path d="M118 90C100 100 80 110 72 150L60 250l20 5 12-85v130l8 140h35l15-120 15 120h35l8-140V170l12 85 20-5-12-100c-8-40-28-50-46-60z"/></clipPath>
+        </defs>
+        <g clip-path="url(#wiwBody)"><rect width="300" height="460" fill="url(#wiwDither)"/></g>
+        <g class="outline"><circle cx="150" cy="55" r="30"/><path d="M118 90C100 100 80 110 72 150L60 250l20 5 12-85v130l8 140h35l15-120 15 120h35l8-140V170l12 85 20-5-12-100c-8-40-28-50-46-60"/></g>
+        <g class="beast">
+          <g class="hair"><path d="M150 330l-30 15m30-15l30 15m-30-15l-15 45m15-45l15 45m-45-30l15 30m45-30l-15 30M150 330l-45-30m45 30l-30-45m30 45l-12-52m12 52v-55m0 55l12-52m-12 52l30-45m-30 45l45-30"/></g>
+          <g class="star"><circle cx="150" cy="330" r="3"/><circle cx="120" cy="345" r="2.4"/><circle cx="180" cy="345" r="2.4"/><circle cx="135" cy="375" r="2.4"/><circle cx="165" cy="375" r="2.4"/></g>
+          <g class="head"><circle cx="105" cy="300" r="3.2"/><circle cx="120" cy="285" r="3.2"/><circle cx="138" cy="278" r="3.2"/><circle cx="150" cy="275" r="3.2"/><circle cx="162" cy="278" r="3.2"/><circle cx="180" cy="285" r="3.2"/><circle cx="195" cy="300" r="3.2"/></g>
+        </g>
+        <g class="lion">
+          <g class="hair"><path d="M150 172l16.5 5.4 10.2 14-0 17.3-10.2 14-16.5 5.4-16.5-5.4-10.2-14 0-17.3 10.2-14zM150 172v-10m16.5 5.4l6-8m10.2 14l9-4m0 17.3l10 1m-10.2 14l7 7m-16.5 5.4l3 9m-16.5-5.4v10m-16.5-5.4l-3 9m-10.2-14l-7 7m0-17.3l-10 1m0-17.3l-9-4m10.2-14l-6-8"/><path d="M142 196l8 12 8-12"/></g>
+          <g class="star"><circle cx="150" cy="172" r="2.2"/><circle cx="166.5" cy="177.4" r="2.2"/><circle cx="176.7" cy="191.4" r="2.2"/><circle cx="176.7" cy="208.7" r="2.2"/><circle cx="166.5" cy="222.7" r="2.2"/><circle cx="150" cy="228.1" r="2.2"/><circle cx="133.5" cy="222.7" r="2.2"/><circle cx="123.3" cy="208.7" r="2.2"/><circle cx="123.3" cy="191.4" r="2.2"/><circle cx="133.5" cy="177.4" r="2.2"/><circle cx="142" cy="196" r="2.6"/><circle cx="158" cy="196" r="2.6"/><circle cx="150" cy="208" r="2"/></g>
+        </g>
+        <g class="man pulse">
+          <circle class="halo" cx="150" cy="128" r="26"/>
+          <g class="hair"><path d="M150 111v7m-8 0h16m-8 0l-4 20m4-20l4 20m-4 20l-3 12m3-12l3 12"/></g>
+          <g class="star"><circle cx="150" cy="108" r="3.2"/><circle cx="142" cy="118" r="1.8"/><circle cx="158" cy="118" r="1.8"/><circle cx="146" cy="138" r="1.8"/><circle cx="154" cy="138" r="1.8"/><circle cx="143" cy="150" r="1.8"/><circle cx="157" cy="150" r="1.8"/></g>
+        </g>
+      </svg>
+      <ul class="figkey">
+        <li class="k-man"><b>the man within</b><span>reason &middot; <span class="tri" data-part="mid"><span class="t-la" lang="la">ego</span><span class="t-de" lang="de">das Ich</span><span class="t-gr" lang="grc">λογιστικόν</span></span></span><span class="g">faint, small, last to arrive, and pulsing</span></li>
+        <li class="k-lion"><b>the lion</b><span>thumos &middot; <span class="tri" data-part="top"><span class="t-la" lang="la">super-ego</span><span class="t-de" lang="de">das Über-Ich</span><span class="t-gr" lang="grc">θυμοειδές</span></span></span><span class="g">the part with teeth, trainable either way</span></li>
+        <li class="k-beast"><b>the many-headed beast</b><span>appetite &middot; <span class="tri" data-part="low"><span class="t-la" lang="la">id</span><span class="t-de" lang="de">das Es</span><span class="t-gr" lang="grc">ἐπιθυμητικόν</span></span></span><span class="g">the largest, the oldest, the one fed first</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <p><span class="tag text" data-tip="Romans 7:15, 7:22–23; Exodus 20:17 (LXX); Galatians 5:17">text</span> Four centuries later Paul writes to Rome: “I do not do the good I want; the evil I do not want, that I do” (Romans 7:15). “I delight in the law of God <span lang="grc">κατὰ τὸν ἔσω ἄνθρωπον</span>, according to the inner man, but I see another law in my members at war with the law of my mind” (7:22–23). The inner man is Plato’s phrase with one preposition swapped. The war in the members is Leontius at the wall. And the Greek of the Tenth Commandment, as the Septuagint has it, legislates on Plato’s lowest part by name: <span lang="grc">οὐκ ἐπιθυμήσεις</span>, you shall not <em>desire</em> (Exodus 20:17). Paul says the same in Galatians with the verb intact: the flesh <span lang="grc">ἐπιθυμεῖ</span> against the spirit (5:17).</p>
+
+  <div class="play inner" id="inner" data-label="589a · Romans 7:22 · one preposition">
+    <div class="grid" lang="grc">
+      <span class="who" lang="en">Plato</span><span class="w plato">ὁ</span><span class="w plato prep">ἐντὸς</span><span class="w plato">ἄνθρωπος</span>
+      <span class="who" lang="en">Paul</span><span class="w paul">ὁ</span><span class="w paul prep">ἔσω</span><span class="w paul">ἄνθρωπος</span>
+    </div>
+    <p class="out">The article and the noun are the same letters. Only the preposition changed: <span lang="grc">ἐντός</span>, within, for <span lang="grc">ἔσω</span>, inside. Both phrases in the nominative.</p>
+  </div>
+
+  <p>Read laterally, the three corpora, the philosopher, the apostle, and the physician, are one conversation about one discovery, carried on for two and a half thousand years in two languages, and the discovery is Homer’s: the thing you call “I” is the smallest of the three, it was last to arrive, and its first act was to speak to the others.</p>
+</section>
+
+<section class="mv" id="m7" data-t="Parent, Adult, Child">
+  <div class="wm" aria-hidden="true">VII</div>
+  <h2><span>VII.</span> Parent, Adult, Child</h2>
+  <p><span class="tag text" data-tip="Berne, Games People Play (1964), ch. 2">text</span> The conversation did not stop in Vienna. In 1964 Eric Berne published <em>Games People Play</em> and gave the triad its third set of names, in a language even plainer than Freud’s German: Parent, Adult, Child. Berne insisted these were not the Over-I, the I, and the It, that they were observable states a person visibly shifts between in a room, and he was right that the method was different. But the shape is the shape. The Parent is the trained part, the recorded voices. The Child is the surge. The Adult is the one doing the reckoning, and Berne’s whole therapy is Plato’s: get the Adult into the chair.</p>
+  <div class="pac" role="list" aria-label="Parent, Adult, Child, each with the earlier name">
+    <div class="pc" role="listitem"><b>Parent</b><span class="g">the trained part, the recorded voices</span><span class="tri" data-part="top"><span class="t-la" lang="la">super-ego</span><span class="t-de" lang="de">das Über-Ich</span><span class="t-gr" lang="grc">θυμοειδές</span></span></div>
+    <div class="pc" role="listitem"><b>Adult</b><span class="g">the one doing the reckoning</span><span class="tri" data-part="mid"><span class="t-la" lang="la">ego</span><span class="t-de" lang="de">das Ich</span><span class="t-gr" lang="grc">λογιστικόν</span></span></div>
+    <div class="pc" role="listitem"><b>Child</b><span class="g">the surge</span><span class="tri" data-part="low"><span class="t-la" lang="la">id</span><span class="t-de" lang="de">das Es</span><span class="t-gr" lang="grc">ἐπιθυμητικόν</span></span></div>
+  </div>
+  <p>What Berne added was something neither Plato nor Freud had: the observation that two people’s triads play <em>each other</em>. The Parent in me hooks the Child in you, and the two of us run a script neither of us wrote. That is a Greek idea too, though Berne did not say so. It is what the tragedians meant when they made the Furies a family inheritance.</p>
+  <p class="disputed"><span class="tag disp" data-tip="The author’s own argument, forward-looking; the bridge to the Futurist series">disputed</span> And the lens turns forward. The three parts now have prosthetics. The feed is the desiring part’s broker, tuned to its heat by machines that measure where the eyes go, which is to say it is Leontius’s executioner’s ground, optimized. The metrics, the counts, the public ledger of likes and views, are an Over-I that lives outside the skull and never sleeps. The reckoning part, the small man inside, is the only one of the three that no one has built an engine for yet, and it is the one being squeezed. That is a separate essay, in a drier series. But it starts here, with the Greek, because the Greek is where we first learned that there were three of us in the chest, and that the one who speaks last is the one who has to speak first.</p>
+
+  <a class="companion" href="/writings/everyone-searchable/">
+    <div class="eyebrow">The separate essay, in the drier series &middot; Futurist &middot; No. 1</div>
+    <div class="ct">Everyone, Searchable</div>
+    <p>Every human life is about to become searchable through a god-level AI. What it does to the searcher, the searched, and the one move that holds.</p>
+    <div class="mono">Open Everyone, Searchable &rarr;</div>
+  </a>
+
+  <blockquote class="greek-quote close" id="close">
+    <p lang="grc" class="grc">τέτλαθι δή, κραδίη.</p>
+    <p class="translation">Hold, heart.</p>
+    <p class="left-on" id="lefton" aria-live="polite"></p>
+  </blockquote>
+</section>
+
+</article>
+
+<section class="ledger" id="ledger">
+  <h2>Source ledger</h2>
+  <p class="sub">What each movement rests on, by tag. Filter by tier.</p>
+  <div class="filter" role="group" aria-label="Filter ledger">
+    <button class="btn ghost on" data-f="all">All</button><button class="btn gold" data-f="text">text</button><button class="btn silver" data-f="read">reading</button><button class="btn purple" data-f="disp">disputed</button>
+  </div>
+  <div class="tablewrap">
+  <table class="ltable" id="ltable">
+    <thead><tr><th>Tag</th><th>Source</th><th>Where</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Homer, Odyssey 20.17–18</td><td>§I, close</td><td>Odysseus addresses his heart</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Plato, Republic IV 436b–c</td><td>§II</td><td>principle of opposites</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Rep. 439a–d</td><td>§II</td><td>the thirsty man</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Rep. 439e–440a</td><td>§II</td><td>Leontius at the north wall</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Rep. 441a–b</td><td>§I, §IV</td><td>thumos as reason’s ally; Homer quoted</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Rep. 441e–442a</td><td>§IV</td><td>music and gymnastics tune reason and thumos</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Rep. 433a–b, 443d</td><td>§V</td><td>justice as each doing its own; the three strings</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Rep. IX 580d–583a</td><td>§IV</td><td>three parts, three loves, three pleasures</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Rep. IX 588b–589b</td><td>§VI</td><td>beast, lion, man; <span lang="grc">ὁ ἐντὸς ἄνθρωπος</span></td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Plato, Phaedrus 246a–b, 253d–e</td><td>§IV</td><td>charioteer and two horses</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Exodus 20:17 (LXX)</td><td>§VI</td><td><span lang="grc">οὐκ ἐπιθυμήσεις</span></td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Romans 7:15, 7:22–23; Galatians 5:17</td><td>§VI</td><td>the inner man; flesh desires against spirit</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Freud, Das Ich und das Es (1923), chs. II–III, V</td><td>§III–IV</td><td>Groddeck/Nietzsche footnote; rider and horse; Over-I as heir of Oedipus</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Freud, Neue Folge der Vorlesungen (1933), Lecture 31</td><td>§IV–V</td><td>three masters; Wo Es war; Zuider Zee</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Freud, Drei Abhandlungen, preface to 4th ed. (1920)</td><td>§III</td><td>Eros of the divine Plato</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Freud, Das Unbehagen in der Kultur (1930), ch. VII</td><td>§IV</td><td>Over-I’s severity as borrowed aggression</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Nietzsche, Jenseits von Gut und Böse §17</td><td>§III</td><td>es denkt</td></tr>
+      <tr data-t="read"><td><span class="tag read">reading</span></td><td class="c">Bettelheim, Freud and Man’s Soul (1983)</td><td>§III</td><td>the Latinizing of Ich/Es/Seele</td></tr>
+      <tr data-t="read"><td><span class="tag read">reading</span></td><td class="c">Chantraine, Dictionnaire étymologique, s.v. <span lang="grc">θυμός, θύω</span></td><td>§II</td><td>thumos / fumus; epi-thumia</td></tr>
+      <tr data-t="text"><td><span class="tag text">text</span></td><td class="c">Berne, Games People Play (1964), ch. 2</td><td>§VII</td><td>Parent, Adult, Child; his disclaimer vs. Freud’s triad</td></tr>
+      <tr data-t="disp"><td><span class="tag disp">disputed</span></td><td class="c">§VII last paragraph</td><td>—</td><td>the prosthetics argument is the author’s, forward-looking; bridge to the Futurist series</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="foot">All translations from Greek and German are the author’s unless noted. Strachey’s renderings are quoted only where his wording is itself the subject.</p>
+
+  <footer class="wi-foot">
+    <span>an essay &middot; Michael Wilhelm &middot; {date.getUTCFullYear()}</span>
+    <span><a href={s.href}>{s.name}</a> &middot; <a href="/writings/everyone-searchable/">Everyone, Searchable</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
+  </footer>
+</section>
+</main>
+</Poem>
+
+<style is:global>
+  /* Where It Was faces, the True Amazons set, self-hosted (public/fonts, SIL
+     OFL): Bodoni Moda display (latin, latin-ext, math for its Greek
+     letters), Literata text with greek and greek-ext for the polytonic
+     Greek, JetBrains Mono with greek as 'Lens Mono'. No new files. */
+  @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-math-opsz-normal.woff2') format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF}
+  @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-ext-opsz-italic.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url('/fonts/bodoni-moda-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-normal.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-italic.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-italic.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-italic.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+  @font-face{font-family:'Lens Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url('/fonts/jetbrains-mono-greek-wght-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+  @font-face{font-family:'Lens Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url('/fonts/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+  @font-face{font-family:'Lens Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url('/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+/* Plan: one night with a blue cast (the dark sea of Lecture 31), bone text,
+   and two accents the reader chooses between in V: the lyre's gilt and the
+   dike's sea-blue. Tags: text in gilt, reading in star-silver, disputed in
+   the writings' fumigation purple. A single column of movements, each with
+   one frame to touch; the lineup's name layer (Latin / German / Greek) sets
+   body[data-layer] and the .tri chips across the page follow it; the choice
+   in V sets body[data-leave] and the close takes its colour. */
+body.wiw{
+  --ink:#0b0d12;--ink-2:#121521;--ink-3:#1a1e2c;
+  --bone:#e6dfcf;--bone-dim:#9a958a;
+  --gilt:#c9a24a;--gilt-hi:#e8c877;
+  --sea:#1d4e66;--sea-hi:#5fa3bd;
+  --land:#6f8a4e;--land-hi:#a3bf78;
+  --silver:#8fa8c8;--silver-hi:#b9c9df;
+  --violet:#6a3fa0;--violet-hi:#b08ae0;
+  --font-display:"Bodoni Moda","Didot",Georgia,serif;
+  --font-body:"Literata","Iowan Old Style",Georgia,serif;
+  --font-greek:"Literata","EB Garamond Greek","Gentium Plus","Palatino Linotype","Times New Roman",serif;
+  --font-mono:"Lens Mono","JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  --leave-accent:var(--gilt);
+  margin:0;background:var(--ink);color:var(--bone);font-family:var(--font-body);font-size:18px;line-height:1.62;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;overflow-x:hidden;color-scheme:dark;
+}
+body.wiw[data-leave="lyre"]{--leave-accent:var(--gilt-hi)}
+body.wiw[data-leave="dike"]{--leave-accent:var(--sea-hi)}
+html:has(> body.wiw){scroll-behavior:smooth}
+.wiw *{box-sizing:border-box}
+.wiw a{color:var(--gilt);text-decoration-thickness:1px;text-underline-offset:3px}
+.wiw a:focus-visible,.wiw button:focus-visible,.wiw input:focus-visible,.wiw [tabindex]:focus-visible{outline:2px solid var(--gilt-hi);outline-offset:3px}
+.wiw h1,.wiw h2,.wiw h3{font-family:var(--font-display);font-weight:400;line-height:1.05;text-wrap:balance;margin:0}
+/* Bodoni Moda's display optical sizes thin its hairlines almost to nothing
+   on screens (see Mimics & Mythmakers): every Bodoni role here sets a low
+   optical size and a sturdier weight. */
+.wiw h1,.wiw h2,.wiw h3,.wiw .term,.wiw .de .w,.wiw .freud .over.la,.wiw .companion .ct,.wiw .pc b,.wiw .figkey b{font-weight:560;font-variation-settings:"opsz" 18}
+.wiw .hero h1{font-weight:560;font-variation-settings:"opsz" 20}
+.wiw .plato .term,.wiw .freud .over.gr{font-weight:400;font-variation-settings:normal}
+.wiw p{margin:0 0 1.2em}
+.wiw [lang="grc"]{font-family:var(--font-greek);font-style:normal}
+.wiw button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.wiw .sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wiw .btn{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--gilt);color:var(--gilt-hi);background:var(--ink-2);border-radius:2px;transition:background .2s,color .2s,border-color .2s,transform .1s}
+.wiw .btn:hover{background:var(--gilt);color:var(--ink)}
+.wiw .btn:active{transform:translateY(1px)}
+.wiw .btn.ghost{border-color:rgba(201,162,74,.4);color:var(--bone-dim)}
+.wiw .btn.ghost:hover{background:var(--ink-3);color:var(--bone)}
+.wiw .btn[disabled]{opacity:.45;cursor:default}
+.wiw .btn[disabled]:hover{background:var(--ink-2);color:var(--gilt-hi)}
+.wiw .btn.gold{border-color:var(--gilt);color:var(--gilt-hi)}
+.wiw .btn.silver{border-color:var(--silver);color:var(--silver-hi)}
+.wiw .btn.silver:hover{background:var(--silver);color:var(--ink)}
+.wiw .btn.purple{border-color:var(--violet);color:var(--violet-hi)}
+.wiw .btn.purple:hover{background:var(--violet);color:var(--bone)}
+.wiw .btn[aria-pressed="true"]{background:var(--gilt);color:var(--ink)}
+.wiw .btn[data-leave="dike"][aria-pressed="true"]{background:var(--sea-hi);border-color:var(--sea-hi)}
+
+.wiw #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gilt),var(--sea-hi));z-index:50}
+.wiw .nav{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40}
+.wiw .nav a{display:block;width:28px;height:18px;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.06em;color:var(--bone-dim);text-decoration:none;text-align:right;opacity:.6;transition:color .2s,opacity .2s}
+.wiw .nav a:hover{opacity:1;color:var(--bone)}
+.wiw .nav a.on{color:var(--gilt-hi);opacity:1}
+@media (max-width:1180px){.wiw .nav{display:none}}
+
+/* Mounted in Poem.astro: neutralise its column, section and line rules. */
+.wiw main.wi{max-width:none;margin:0;padding:0;position:relative;z-index:1}
+.wiw section{display:block;min-height:0;padding:0;gap:0}
+
+/* hero */
+.wiw .hero{position:relative;padding:clamp(72px,11vh,130px) 16px 40px;max-width:1120px;margin:0 auto;display:grid;gap:26px}
+.wiw .eyebrow{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gilt);margin:0}
+.wiw .eyebrow a{color:var(--gilt)}
+.wiw .hero h1{font-size:clamp(56px,12vw,160px);letter-spacing:-.025em;color:var(--bone);animation:rise 1.1s cubic-bezier(.2,.7,.2,1) both}
+.wiw .hero h1 em{font-style:italic;color:var(--gilt);position:relative}
+.wiw .hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.08em;height:.06em;background:linear-gradient(90deg,var(--gilt),transparent);opacity:.6}
+@keyframes rise{from{opacity:.35;transform:translateY(14px)}to{opacity:1;transform:none}}
+.wiw .hero .dek{max-width:60ch;font-size:clamp(19px,2.1vw,25px);font-weight:300;margin:0}
+.wiw .marks{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:16px 34px}
+.wiw .marks li{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim)}
+.wiw .marks svg{width:44px;height:44px;flex:none;fill:none;stroke:var(--gilt);stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
+.wiw .kicker{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim);margin:0}
+.wiw .how{font-size:.95rem;color:var(--bone-dim);max-width:70ch;border-left:2px solid var(--gilt);padding-left:14px;margin:0}
+.wiw .how b{color:var(--bone)}
+.wiw .tag{display:inline-block;font-family:var(--font-mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px;vertical-align:middle;margin-right:6px;position:relative;cursor:help;line-height:1.4}
+.wiw .tag.text{color:var(--gilt);border-color:var(--gilt)}
+.wiw .tag.read{color:var(--silver);border-color:var(--silver)}
+.wiw .tag.disp{color:var(--violet-hi);border-color:var(--violet);background:rgba(106,63,160,.25)}
+.wiw .tag[data-tip]::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 6px);background:var(--ink-3);color:var(--bone);font-size:.68rem;letter-spacing:.02em;text-transform:none;padding:6px 9px;border:1px solid rgba(201,162,74,.4);border-radius:2px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:3;max-width:min(80vw,420px);white-space:normal;width:max-content}
+.wiw .tag[data-tip]:hover::after,.wiw .tag[data-tip]:focus-visible::after{opacity:1}
+
+/* the movements */
+.wiw .essay{max-width:1120px;margin:0 auto;padding:0 16px}
+.wiw .mv{position:relative;max-width:66ch;padding:10vh 0 6vh;scroll-margin-top:12px}
+.wiw .mv .wm{position:absolute;right:-10px;top:6vh;font-family:var(--font-display);font-size:clamp(90px,14vw,200px);line-height:1;color:var(--gilt);opacity:.07;transition:opacity .6s;pointer-events:none;user-select:none}
+.wiw .mv.on .wm{opacity:.15}
+.wiw .mv h2{font-size:clamp(34px,4.4vw,60px);color:var(--bone);margin:0 0 .6em;position:relative}
+.wiw .mv h2 span{color:var(--gilt)}
+.wiw p.disputed{border-left:2px solid var(--violet);padding-left:14px;background:linear-gradient(90deg,rgba(106,63,160,.16),transparent 70%)}
+
+/* the Greek: lang="grc", polytonic-safe stack, the translation under it */
+.wiw .greek-quote{margin:0 0 2em;padding:22px 26px;background:var(--ink-2);border-left:2px solid var(--gilt)}
+.wiw .greek-quote .grc{font-size:clamp(1.25rem,1rem + 1.4vw,1.8rem);line-height:1.5;font-weight:300;color:var(--bone);margin:0 0 .6em}
+.wiw .greek-quote .ln{display:inline-block}
+.wiw .translation{color:var(--bone-dim);font-size:1rem;margin:0}
+.wiw .greek-quote cite{display:block;font-family:var(--font-mono);font-style:normal;font-size:.72rem;color:var(--gilt);margin-top:10px;letter-spacing:.04em}
+.wiw .greek-quote cite em{font-style:italic}
+
+/* I: line by line */
+.js .wiw [data-fade]{opacity:0;transform:translateY(10px);transition:opacity 1.1s ease calc(var(--d,0) * .4s),transform 1.1s ease calc(var(--d,0) * .4s)}
+.js .wiw [data-fade].in{opacity:1;transform:none}
+
+/* interactive frames */
+.wiw .play{margin:1.6em 0;border:1px solid rgba(201,162,74,.5);background:linear-gradient(180deg,var(--ink-2),var(--ink));padding:18px;display:grid;gap:14px;position:relative}
+.wiw .play::before{content:attr(data-label);position:absolute;top:-9px;left:14px;background:var(--ink);padding:0 8px;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gilt)}
+.wiw .play .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.wiw .play .out{font-family:var(--font-mono);font-size:.8rem;color:var(--bone-dim);min-height:1.4em;letter-spacing:.02em}
+.wiw .play .out b{color:var(--bone);font-weight:600}
+.wiw .play .out .g{color:var(--gilt-hi)}
+.wiw .play .out .s{color:var(--sea-hi)}
+.wiw .play svg{width:100%;height:auto;display:block}
+.wiw .lab{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;fill:var(--bone-dim)}
+
+/* II: the veil */
+.wiw #m2{--look:0}
+.wiw #m2 .veil{filter:blur(calc((1 - var(--look)) * 7px));opacity:calc(.6 + .4 * var(--look));transition:filter .6s ease,opacity .6s ease}
+.wiw #m2.holding .veil{transition:none}
+.wiw .look .wall{background:var(--ink);border:1px solid rgba(201,162,74,.25)}
+.wiw .look .arm{transform-box:view-box;transition:transform .6s ease}
+.wiw #m2.holding .look .arm{transition:none}
+.wiw .look .arm.l{transform-origin:188px 100px;transform:rotate(calc(var(--look) * -150deg))}
+.wiw .look .arm.r{transform-origin:212px 100px;transform:rotate(calc(var(--look) * 150deg))}
+.wiw .look .gaze{opacity:var(--look);transition:opacity .6s ease}
+.wiw .look .big{font-size:clamp(1.3rem,1rem + 1.6vw,1.9rem);line-height:1.45;font-weight:300;margin:0}
+.wiw .look .seenonly{opacity:0;transition:opacity .9s ease .2s}
+.wiw #m2.seen .seenonly{opacity:1}
+.wiw .hold{user-select:none;-webkit-user-select:none;touch-action:none}
+
+/* III: the overlay */
+.wiw .vienna{display:flex;flex-wrap:wrap;gap:.1em 1.1em;align-items:baseline;margin:0 0 1.4em;padding:10px 0}
+.wiw .de{position:relative;display:inline-block;padding:.06em 0}
+.wiw .de .w{display:block;font-family:var(--font-display);font-weight:500;font-size:clamp(56px,11vw,124px);line-height:1;letter-spacing:-.02em;color:var(--bone)}
+.wiw .de .la{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-body);font-weight:200;font-style:italic;font-size:clamp(20px,3.2vw,36px);letter-spacing:.16em;color:var(--sea-hi);text-shadow:0 0 10px var(--ink);pointer-events:none;background:linear-gradient(180deg,transparent 30%,rgba(95,163,189,.14) 50%,transparent 70%)}
+.wiw .de .la::before,.wiw .de .la::after{content:"";position:absolute;left:0;right:0;height:1px;background:var(--sea-hi);opacity:.35}
+.wiw .de .la::before{top:38%}.wiw .de .la::after{bottom:38%}
+.js .wiw .vienna .w{opacity:0;transform:translateY(16px);transition:opacity 1s ease calc(var(--d) * .25s),transform 1s ease calc(var(--d) * .25s)}
+.js .wiw .vienna .la{opacity:0;transition:opacity 1.4s ease calc(1.1s + var(--d) * .25s)}
+.js .wiw .vienna.in .w{opacity:1;transform:none}
+.js .wiw .vienna.in .la{opacity:1}
+
+/* IV: the lineup */
+.wiw .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.wiw .col{position:relative;background:var(--ink);border:1px solid rgba(201,162,74,.25);padding:14px;transition:transform 1.1s cubic-bezier(.2,.7,.2,1),opacity .9s ease}
+.js .wiw .lineup:not(.in) .col.plato{transform:translate(-36px,18px);opacity:.45}
+.js .wiw .lineup:not(.in) .col.freud{transform:translateY(-16px);opacity:.8}
+.js .wiw .lineup:not(.in) .col.berne{transform:translate(36px,18px);opacity:.45}
+.wiw .col h3{font-size:1.5rem;margin:0 0 10px}
+.wiw .col h3 small{display:block;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-dim);margin-top:5px}
+.wiw .col ol{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.wiw .col li{position:relative;display:grid;gap:3px;min-height:4.2em;border-top:1px solid rgba(201,162,74,.18);padding:8px 0 4px}
+.wiw .term{font-family:var(--font-display);font-size:1.3rem;line-height:1.1;color:var(--bone)}
+.wiw .plato .term{font-family:var(--font-greek);font-size:1.12rem;font-weight:400}
+.wiw .g{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--bone-dim)}
+.wiw .freud{cursor:pointer}
+.wiw .freud .over{position:absolute;inset:4px 0 0;display:flex;align-items:center;padding:4px 10px;background:var(--ink-2);outline:1px solid rgba(230,223,207,.22);box-shadow:0 6px 18px -8px rgba(0,0,0,.8);font-family:var(--font-display);font-size:1.3rem;line-height:1.1;opacity:0;transform:translateY(-10px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+.wiw .freud .over.la{font-style:italic;color:var(--sea-hi);letter-spacing:.04em}
+.wiw .freud .over.gr{font-family:var(--font-greek);color:var(--gilt-hi);font-size:1.12rem}
+.wiw .freud[data-state="latin"] .over.la,.wiw .freud[data-state="greek"] .over.gr{opacity:1;transform:none}
+.wiw .sheet-tab{position:absolute;right:10px;top:-9px;background:var(--ink);padding:0 6px;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sea-hi);transition:color .4s}
+.wiw .freud[data-state="german"] .sheet-tab{color:var(--bone-dim)}
+.wiw .freud[data-state="greek"] .sheet-tab{color:var(--gilt-hi)}
+/* the name layer, across the page */
+.wiw .tri > span{display:none}
+.wiw .tri .t-la{display:inline;font-style:italic;color:var(--sea-hi)}
+body.wiw[data-layer="german"] .tri .t-la,body.wiw[data-layer="greek"] .tri .t-la{display:none}
+body.wiw[data-layer="german"] .tri .t-de{display:inline;color:var(--bone)}
+body.wiw[data-layer="greek"] .tri .t-gr{display:inline;color:var(--gilt-hi)}
+
+/* V: the instruments */
+.wiw .instruments{grid-template-columns:1fr 1fr;gap:18px 22px}
+.wiw .inst{display:grid;gap:10px;align-content:start;min-width:0;transition:opacity .7s ease}
+.wiw .inst h3{font-size:1.3rem}
+body.wiw[data-leave="lyre"] .inst.dike,body.wiw[data-leave="dike"] .inst.lyre{opacity:.5}
+.wiw .lyresvg{width:min(100%,300px);margin:0 auto}
+.wiw .peg{cursor:ns-resize;touch-action:none;outline:none}
+.wiw .peg:focus-visible .pegc,.wiw .peg.on .pegc{stroke:var(--gilt-hi);stroke-width:2.5;fill:var(--ink-3)}
+.wiw .peg .key{transform-box:fill-box;transform-origin:center;transform:rotate(var(--rot,0deg))}
+.wiw .string{stroke:var(--bone);stroke-width:1.6;cursor:pointer;transform-box:fill-box;transform-origin:center;transition:stroke .5s,filter .5s}
+.wiw .string.ring{animation:vib .07s linear infinite alternate}
+@keyframes vib{from{transform:translateX(-1.4px)}to{transform:translateX(1.4px)}}
+.wiw .lyre.tuned .string{stroke:var(--gilt-hi);filter:drop-shadow(0 0 5px rgba(232,200,119,.95))}
+.wiw .strings-row{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:1rem}
+.wiw .cents{display:block;font-family:var(--font-mono);font-size:.7rem;color:var(--bone-dim);font-variant-numeric:tabular-nums;font-weight:400}
+.wiw .lyre.tuned .cents{color:var(--gilt-hi)}
+.wiw .dikesvg{border:1px solid rgba(201,162,74,.25);touch-action:pan-y;cursor:ew-resize}
+.wiw .gauge{display:block}
+.wiw .gauge input[type=range]{width:100%;accent-color:var(--sea-hi);margin:0}
+.wiw .leave{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-top:1px dashed rgba(201,162,74,.35);padding-top:14px}
+.wiw .leave-l{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim)}
+
+/* VI: the creature, and the letters */
+.wiw .figwrap{display:grid;grid-template-columns:minmax(0,220px) 1fr;gap:18px 24px;align-items:center}
+.wiw .figsvg{width:100%;max-width:220px}
+.wiw .figsvg .outline{fill:none;stroke:var(--bone-dim);stroke-width:1.2;stroke-dasharray:1 5;stroke-linecap:round}
+.wiw .figsvg .hair{fill:none;stroke-width:.8;opacity:.65}
+.wiw .figsvg .beast .hair{stroke:var(--sea-hi)}.wiw .figsvg .beast .star,.wiw .figsvg .beast .head{fill:var(--sea-hi)}
+.wiw .figsvg .lion .hair{stroke:var(--gilt)}.wiw .figsvg .lion .star{fill:var(--gilt-hi)}
+.wiw .figsvg .man .hair{stroke:var(--bone)}.wiw .figsvg .man .star{fill:var(--bone)}
+.wiw .figsvg .halo{fill:none;stroke:var(--bone);stroke-opacity:.18;stroke-width:1}
+.wiw .figsvg .pulse{animation:pulse 3.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.wiw .figkey{list-style:none;margin:0;padding:0;display:grid;gap:14px;font-size:.95rem}
+.wiw .figkey li{display:grid;gap:3px;padding-left:14px;border-left:2px solid}
+.wiw .figkey b{font-family:var(--font-display);font-size:1.2rem;font-weight:400;line-height:1.1}
+.wiw .figkey .tri{font-family:var(--font-greek);font-size:1rem}
+.wiw .k-man{border-color:var(--bone)}.wiw .k-lion{border-color:var(--gilt)}.wiw .k-beast{border-color:var(--sea-hi)}
+.wiw .inner .grid{display:grid;grid-template-columns:auto auto auto auto;gap:8px .55em;align-items:baseline;justify-content:start;font-family:var(--font-greek);font-size:clamp(1.5rem,1rem + 2.6vw,2.4rem);font-weight:300;line-height:1.2}
+.wiw .inner .who{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim);align-self:center;padding-right:8px}
+.wiw .inner .w{white-space:nowrap}
+.js .wiw .inner .paul i{font-style:normal;opacity:0;transition:opacity .5s ease calc(var(--i) * 90ms)}
+.js .wiw .inner.in .paul i{opacity:1}
+.js .wiw .inner .plato.w:not(.prep){transition:opacity 1.4s ease 1.3s}
+.js .wiw .inner.in .plato.w:not(.prep){opacity:.3}
+.wiw .inner.in .prep,.wiw .inner.in .paul.prep i{color:var(--violet-hi)}
+.wiw .inner .out{margin:0}
+
+/* VII */
+.wiw .pac{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 1.6em}
+.wiw .pc{background:var(--ink-2);border:1px solid rgba(201,162,74,.25);padding:12px;display:grid;gap:6px;align-content:start}
+.wiw .pc b{font-family:var(--font-display);font-size:1.5rem;font-weight:400;line-height:1}
+.wiw .pc .tri{font-family:var(--font-greek);font-size:1.05rem;margin-top:4px}
+.wiw .companion{display:block;margin:2.2em 0 0;padding:22px 24px;border:1px solid var(--gilt);background:linear-gradient(135deg,var(--ink-2),var(--ink));color:var(--bone);text-decoration:none;position:relative;overflow:hidden;transition:border-color .25s,transform .2s}
+.wiw .companion::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(192,40,28,.28),transparent 70%);transition:transform .4s}
+.wiw .companion:hover{border-color:#c0281c;transform:translateY(-2px)}
+.wiw .companion:hover::after{transform:scale(1.4)}
+.wiw .companion .eyebrow{color:#c0281c}
+.wiw .companion .ct{font-family:var(--font-display);font-size:2.2rem;line-height:1;margin:6px 0 10px;color:var(--bone)}
+.wiw .companion p{font-size:.95rem;color:var(--bone-dim);margin:0 0 12px;max-width:52ch}
+.wiw .companion .mono{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gilt)}
+.wiw .close{margin:3em 0 0;border-left-color:var(--leave-accent);transition:border-color .8s ease}
+.wiw .close .grc{font-size:clamp(2rem,1.4rem + 3vw,3.4rem);color:var(--leave-accent);transition:color .8s ease;margin-bottom:.3em}
+.wiw .close .translation{font-size:1.15rem;color:var(--bone)}
+.wiw .left-on{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-dim);margin:14px 0 0;min-height:1em}
+
+/* ledger */
+.wiw .ledger{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:60px 16px 100px;border-top:1px solid var(--gilt)}
+.wiw .ledger h2{font-size:clamp(34px,4vw,56px);margin-bottom:.3em}
+.wiw .ledger .sub{color:var(--bone-dim);max-width:70ch;margin-bottom:28px}
+.wiw .filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.wiw .filter .btn.on{background:var(--ink-3);color:var(--bone)}
+.wiw .tablewrap{overflow-x:auto}
+.wiw .ltable{width:100%;border-collapse:collapse;font-size:.92rem}
+.wiw .ltable th{text-align:left;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gilt);padding:10px 8px;border-bottom:1px solid var(--gilt)}
+.wiw .ltable td{padding:12px 8px;border-bottom:1px solid rgba(201,162,74,.25);vertical-align:top}
+.wiw .ltable td:nth-child(3){white-space:nowrap;font-family:var(--font-mono);font-size:.76rem;color:var(--bone-dim)}
+.wiw .ltable .c{font-family:var(--font-mono);font-size:.76rem;color:var(--bone-dim);min-width:16ch}
+.wiw .ltable tr.hide{display:none}
+.wiw .ledger .foot{margin-top:36px;color:var(--bone-dim);font-size:.9rem;max-width:72ch}
+.wiw .wi-foot{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:48px;padding-top:18px;border-top:1px solid rgba(201,162,74,.35);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-dim)}
+.wiw .wi-foot a{color:inherit;text-underline-offset:.3em}
+.wiw .wi-foot a:hover{color:var(--bone)}
+
+@media (max-width:860px){
+  .wiw .hero{padding-top:max(64px, calc(env(safe-area-inset-top, 0px) + 64px))}
+  .wiw .mv{padding:6vh 0}
+  .wiw .mv .wm{font-size:90px;top:2vh}
+  .wiw .cols,.wiw .pac,.wiw .instruments{grid-template-columns:1fr}
+  .js .wiw .lineup:not(.in) .col.plato{transform:translateY(18px)}
+  .js .wiw .lineup:not(.in) .col.berne{transform:translateY(18px)}
+  .wiw .figwrap{grid-template-columns:1fr;justify-items:center}
+  .wiw .figkey{justify-self:stretch}
+  .wiw .inner .grid{font-size:clamp(1.3rem,.9rem + 3.4vw,2rem);gap:6px .4em}
+  .wiw .tag[data-tip]::after{left:auto;right:0}
+}
+@media (max-width:360px){.wiw .inner .grid{grid-template-columns:auto auto auto auto;font-size:1.15rem}}
+
+/* The share image: `npm run og:scrollies` centres [data-og-frame] and sets
+   html.og; show the panel resolved, both instruments bright, no chrome. */
+html.og .wiw #progress,html.og .wiw .nav{display:none}
+html.og .wiw #m5{max-width:none}
+html.og .wiw .instruments{grid-template-columns:1fr 1fr;padding:30px 34px 26px;gap:12px 36px}
+html.og .wiw .instruments .out,html.og .wiw .instruments .leave,html.og .wiw .instruments .row{display:none}
+html.og .wiw .lyresvg{width:min(100%,250px)}
+html.og .wiw .inst{opacity:1 !important}
+html.og .wiw .lyre .string{stroke:var(--gilt-hi);filter:drop-shadow(0 0 5px rgba(232,200,119,.95))}
+html.og .wiw [data-fade],html.og .wiw .vienna .w,html.og .wiw .vienna .la,html.og .wiw .col{opacity:1 !important;transform:none !important}
+
+@media (prefers-reduced-motion:reduce){
+  html:has(> body.wiw){scroll-behavior:auto}
+  .wiw *,.wiw *::before,.wiw *::after{animation:none !important;transition-duration:.01ms !important;transition-delay:0s !important}
+  .js .wiw [data-fade],.js .wiw .vienna .w,.js .wiw .vienna .la,.js .wiw .inner .paul i{opacity:1;transform:none}
+  .js .wiw .lineup:not(.in) .col{transform:none;opacity:1}
+  .wiw .figsvg .pulse{opacity:.85}
+}
+</style>
+
+<script>
+  import { droneFor } from '../../design/tokens';
+
+  (function () {
+    const $ = (s: string, c: ParentNode = document) => c.querySelector(s) as HTMLElement | null;
+    const $$ = (s: string, c: ParentNode = document) => Array.from(c.querySelectorAll(s)) as HTMLElement[];
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.documentElement.classList.add('js');
+
+    /* ---------- reveals: I line by line, III, IV and VI on entry ---------- */
+    const targets = $$('[data-fade], .vienna, #lineup, #inner');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }),
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
+      );
+      targets.forEach((el) => io.observe(el));
+    } else targets.forEach((el) => el.classList.add('in'));
+
+    /* ---------- movements: numeral, nav, progress ---------- */
+    const mvs = $$('.mv'), navs = $$('.nav a'), prog = $('#progress');
+    function setActive(i: number) {
+      mvs.forEach((m, j) => m.classList.toggle('on', j === i));
+      navs.forEach((a, j) => a.classList.toggle('on', j === i));
+    }
+    if ('IntersectionObserver' in window) {
+      const io2 = new IntersectionObserver(
+        (es) => es.forEach((e) => { if (e.isIntersecting) setActive(mvs.indexOf(e.target as HTMLElement)); }),
+        { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
+      );
+      mvs.forEach((m) => io2.observe(m));
+    }
+    function onScroll() {
+      const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+      if (prog) prog.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    }
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ---------- II: press and hold to look ---------- */
+    (function () {
+      const sec = $('#m2'), btn = $('#lookbtn') as HTMLButtonElement | null, reset = $('#lookreset') as HTMLButtonElement | null, out = $('#lookout');
+      if (!sec || !btn || !reset || !out) return;
+      let look = 0, holding = false, seen = false, raf = 0, last = 0;
+      const setLook = (v: number) => { look = clamp(v, 0, 1); sec.style.setProperty('--look', look.toFixed(3)); };
+      function step(t: number) {
+        if (!holding) return;
+        const dt = last ? t - last : 16; last = t;
+        setLook(look + dt / 1400);
+        if (look >= 1) { release(); return; }
+        raf = requestAnimationFrame(step);
+      }
+      function start(e?: Event) {
+        if (seen || holding) return;
+        if (e) e.preventDefault();
+        holding = true; last = 0;
+        sec!.classList.add('holding');
+        btn!.setAttribute('aria-pressed', 'true');
+        out!.textContent = 'He is looking. The hands come down.';
+        if (reduce) { setLook(1); release(); return; }
+        raf = requestAnimationFrame(step);
+      }
+      function release() {
+        if (!holding) return;
+        holding = false; cancelAnimationFrame(raf);
+        sec!.classList.remove('holding');
+        seen = true; setLook(1); sec!.classList.add('seen');
+        btn!.setAttribute('aria-pressed', 'false'); btn!.textContent = 'He looked'; btn!.disabled = true; reset!.hidden = false;
+        out!.innerHTML = 'The line resolves and stays. Plato’s point is not what he saw but what he <b>shouted</b>, and at whom.';
+      }
+      btn.addEventListener('pointerdown', start);
+      addEventListener('pointerup', () => { if (holding) release(); });
+      addEventListener('pointercancel', () => { if (holding) release(); });
+      btn.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) start(e); });
+      btn.addEventListener('keyup', (e) => { if ((e.key === ' ' || e.key === 'Enter') && holding) release(); });
+      reset.addEventListener('click', () => {
+        seen = false; setLook(0); sec!.classList.remove('seen'); reset!.hidden = true;
+        btn!.disabled = false; btn!.textContent = 'Press and hold to look';
+        out!.textContent = 'His hands are over his eyes. The bodies are off to the right, out of the frame, and they stay there.';
+      });
+    })();
+
+    /* ---------- IV: the name layer ---------- */
+    (function () {
+      const col = $('.col.freud'), lb = $('#layerbtn'), lo = $('#layerout');
+      if (!col || !lb || !lo) return;
+      const ORDER = ['latin', 'german', 'greek'];
+      const TXT: Record<string, [string, string]> = {
+        latin: ['Lift the Latin', 'Freud’s column as his translators left it: <b>super-ego, ego, id</b>.'],
+        german: ['Lay the Greek over it', 'Freud’s own words: <b lang="de">das Über-Ich, das Ich, das Es</b>. The Over-I, the I, the It.'],
+        greek: ['Put the Latin back', 'Plato’s words in Freud’s slots: <b lang="grc">θυμοειδές, λογιστικόν, ἐπιθυμητικόν</b>. The fit the Latin hid.'],
+      };
+      function setLayer(l: string) {
+        col!.dataset.state = l; document.body.dataset.layer = l;
+        lb!.textContent = TXT[l][0];
+        lo!.innerHTML = TXT[l][1] + ' The rest of the page names the three by whichever layer you leave on top.';
+      }
+      const next = () => setLayer(ORDER[(ORDER.indexOf(col!.dataset.state || 'latin') + 1) % ORDER.length]);
+      lb.addEventListener('click', next);
+      col.addEventListener('click', next);
+      setLayer('latin');
+    })();
+
+    /* ---------- V: the lyre ---------- */
+    (function () {
+      const lyre = $('#lyre'), svg = $('#lyresvg') as unknown as SVGSVGElement | null, out = $('#lyreout');
+      if (!lyre || !svg || !out) return;
+      const pegs = $$('.peg', svg), strings = $$('.string', svg), centsEls = [$('#c0'), $('#c1'), $('#c2')];
+      const NAMES = ['νεάτη', 'μέση', 'ὑπάτη'];
+      /* The site's key. The orchestra pit opens its score on the hero drone
+         (C2 in src/design/tokens.ts; the circle of fifths descends from
+         it), so the lyre resolves to C: hypate C3, mese a just fourth above
+         (4:3), nete the octave (2:1). Plato's three fixed notes, 443d, in
+         just intonation, so a tuned chord has no beats in it at all. */
+      const noteHz = (n: string) => {
+        const m = /^([A-G])([#b]?)(-?\d)$/.exec(n);
+        if (!m) return 65.41;
+        const semis = ({ C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 } as Record<string, number>)[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (parseInt(m[3], 10) + 1) * 12;
+        return 440 * Math.pow(2, (semis - 69) / 12);
+      };
+      const root = noteHz(droneFor('hero') || 'C2') * 2;
+      const target = [root * 2, (root * 4) / 3, root];
+      const DEFAULT = [22, -14, 9], TOL = 4;
+      let cents = DEFAULT.slice(), tuned = false;
+      const hz = (i: number) => target[i] * Math.pow(2, cents[i] / 1200);
+
+      /* WebAudio, created on the first gesture and never before. */
+      let ac: AudioContext | null = null, master: GainNode | null = null;
+      function audio() {
+        if (ac) { if (ac.state === 'suspended') ac.resume(); return ac; }
+        const AC = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AC) return null;
+        try { ac = new AC(); } catch (e) { return null; }
+        master = ac.createGain(); master.gain.value = 0.6;
+        const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 4;
+        master.connect(comp); comp.connect(ac.destination);
+        return ac;
+      }
+      function voice(freq: number, type: OscillatorType, gain: number, t0: number, dur: number) {
+        const o = ac!.createOscillator(), g = ac!.createGain();
+        o.type = type; o.frequency.setValueAtTime(freq, t0);
+        g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        o.connect(g); g.connect(master!); o.start(t0); o.stop(t0 + dur + 0.05);
+      }
+      const ringT: number[] = [0, 0, 0];
+      function ring(i: number, ms: number) {
+        strings[i].classList.add('ring'); clearTimeout(ringT[i]);
+        ringT[i] = window.setTimeout(() => strings[i].classList.remove('ring'), ms);
+      }
+      /* A pluck sounds the string at its pitch and, quietly, the pitch the peg
+         is aiming for: the two beat against each other until they agree. */
+      function pluck(i: number, dur = 1.8) {
+        const a = audio(); if (!a) return;
+        const t0 = a.currentTime, f = hz(i);
+        voice(f, 'triangle', 0.22, t0, dur);
+        voice(f * 2, 'sine', 0.05, t0, dur * 0.45);
+        voice(target[i], 'sine', 0.1, t0, dur);
+        ring(i, Math.min(900, dur * 500));
+      }
+      function chord() { if (!audio()) return; for (let i = 0; i < 3; i++) pluck(i, 3.2); }
+      /* Held while a peg is dragged, the string and its reference sustain. */
+      let held: { i: number; osc: OscillatorNode; ref: OscillatorNode; g: GainNode } | null = null;
+      function holdStart(i: number) {
+        const a = audio(); if (!a) return;
+        holdStop();
+        const t0 = a.currentTime, g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.16, t0 + 0.08); g.connect(master!);
+        const osc = a.createOscillator(); osc.type = 'triangle'; osc.frequency.value = hz(i); osc.connect(g); osc.start();
+        const rg = a.createGain(); rg.gain.value = 0.5; rg.connect(g);
+        const ref = a.createOscillator(); ref.type = 'sine'; ref.frequency.value = target[i]; ref.connect(rg); ref.start();
+        held = { i, osc, ref, g };
+        strings[i].classList.add('ring');
+      }
+      function holdUpdate() { if (held && ac) held.osc.frequency.setTargetAtTime(hz(held.i), ac.currentTime, 0.02); }
+      function holdStop() {
+        if (!held || !ac) return;
+        const h = held, t = ac.currentTime; held = null;
+        h.g.gain.cancelScheduledValues(t); h.g.gain.setValueAtTime(Math.max(h.g.gain.value, 0.0001), t); h.g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+        h.osc.stop(t + 0.3); h.ref.stop(t + 0.3);
+        strings[h.i].classList.remove('ring');
+      }
+
+      const fmt = (c: number) => { const r = Math.round(c); return (r > 0 ? '+' : r < 0 ? '−' : '') + Math.abs(r) + '¢'; };
+      function status() {
+        const off = NAMES.filter((_, i) => Math.abs(cents[i]) > TOL);
+        if (off.length === 3) return 'Three strings, three pitches, no chord. Drag a peg up or down until the beating stops; on a keyboard, focus a peg and use the arrow keys.';
+        if (off.length === 2) return '<b lang="grc">' + off[0] + '</b> and <b lang="grc">' + off[1] + '</b> still beat against the third.';
+        return 'Only <b lang="grc">' + off[0] + '</b> is out now. Listen for the slow wobble and bring it in.';
+      }
+      function render() {
+        pegs.forEach((p, i) => {
+          p.style.setProperty('--rot', cents[i] * 1.6 + 'deg');
+          p.setAttribute('aria-valuenow', String(Math.round(cents[i])));
+          p.setAttribute('aria-valuetext', fmt(cents[i]) + (Math.abs(cents[i]) <= TOL ? ', in tune' : cents[i] > 0 ? ', sharp' : ', flat'));
+          if (centsEls[i]) centsEls[i]!.textContent = fmt(cents[i]);
+        });
+        const now = cents.every((c) => Math.abs(c) <= TOL);
+        lyre!.classList.toggle('tuned', now);
+        if (now && !tuned) {
+          out!.innerHTML = '<span class="g">In tune.</span> One clean chord: hypate, mese, nete, a fourth and a fifth framing the octave. Three strings that were already there, brought into one sound.';
+          if (ac) chord();
+        } else if (!now) out!.innerHTML = (tuned ? 'Detuned again. ' : '') + status();
+        tuned = now;
+      }
+
+      let drag: { i: number; y: number; c: number } | null = null;
+      pegs.forEach((p, i) => {
+        p.addEventListener('pointerdown', (e) => {
+          e.preventDefault(); drag = { i, y: e.clientY, c: cents[i] };
+          try { p.setPointerCapture(e.pointerId); } catch (_) { /* older WebKit */ }
+          p.classList.add('on'); holdStart(i);
+        });
+        p.addEventListener('pointermove', (e) => {
+          if (!drag || drag.i !== i) return;
+          const scale = svg!.getBoundingClientRect().height / 300;
+          cents[i] = clamp(drag.c + (drag.y - e.clientY) / (scale * 1.1), -60, 60);
+          holdUpdate(); render();
+        });
+        const end = () => { if (!drag || drag.i !== i) return; drag = null; p.classList.remove('on'); holdStop(); render(); };
+        p.addEventListener('pointerup', end); p.addEventListener('pointercancel', end); p.addEventListener('lostpointercapture', end);
+        p.addEventListener('keydown', (e) => {
+          let d = 0;
+          if (e.key === 'ArrowUp' || e.key === 'ArrowRight') d = e.shiftKey ? 10 : 2;
+          else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') d = e.shiftKey ? -10 : -2;
+          else if (e.key === 'PageUp') d = 10;
+          else if (e.key === 'PageDown') d = -10;
+          else if (e.key === 'Home') cents[i] = -60;
+          else if (e.key === 'End') cents[i] = 60;
+          else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pluck(i); return; }
+          else return;
+          e.preventDefault(); cents[i] = clamp(cents[i] + d, -60, 60); render(); pluck(i, 1.1);
+        });
+      });
+      strings.forEach((s, i) => s.addEventListener('click', () => pluck(i)));
+      $('#strike')?.addEventListener('click', chord);
+      $('#detune')?.addEventListener('click', () => { cents = DEFAULT.slice(); render(); });
+      render();
+    })();
+
+    /* ---------- V: the dike ---------- */
+    (function () {
+      const r = $('#dikerange') as HTMLInputElement | null, svg = $('#dikesvg') as unknown as SVGSVGElement | null;
+      const clip = $('#landclip'), dg = $('#dikeg'), sea = $('#sea'), waves = $('#seawaves'), lab = $('#landlab'), out = $('#dikeout');
+      if (!r || !svg || !clip || !dg || !sea || !waves || !lab || !out) return;
+      function set(v: number) {
+        v = clamp(Math.round(v), 0, 100);
+        if (String(v) !== r!.value) r!.value = String(v);
+        const x = v * 6, y = 120 + v * 0.3;
+        clip!.setAttribute('width', String(x));
+        dg!.setAttribute('transform', 'translate(' + x + ' 0)');
+        sea!.setAttribute('y', String(y)); waves!.setAttribute('y', String(y));
+        lab!.setAttribute('opacity', v > 16 ? '1' : '0');
+        out!.innerHTML = v < 8 ? 'The Zuider Zee. Drag right to push the water back.'
+          : v < 55 ? 'A dike, and behind it the first flat land. <span class="s">A work of culture</span>, he called it.'
+          : v < 100 ? 'Most of the sea is land now. The dike has to hold, and it has to hold forever.'
+          : '<span class="s" lang="de">Wo Es war, soll Ich werden.</span> Where It was. The water is still there, on the other side of the line.';
+      }
+      r.addEventListener('input', () => set(+r!.value));
+      let dd = false;
+      const move = (e: PointerEvent) => { const b = svg!.getBoundingClientRect(); set(((e.clientX - b.left) / b.width) * 100); };
+      svg.addEventListener('pointerdown', (e) => { dd = true; try { svg!.setPointerCapture(e.pointerId); } catch (_) { /* older WebKit */ } move(e); });
+      svg.addEventListener('pointermove', (e) => { if (dd) move(e); });
+      const up = () => { dd = false; };
+      svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', up); svg.addEventListener('lostpointercapture', up);
+      set(0);
+    })();
+
+    /* ---------- V: which image to leave the section on ---------- */
+    (function () {
+      const KEY = 'wiw:leave', btns = $$('.leave [data-leave]'), lefton = $('#lefton'), lout = $('#leaveout');
+      if (!btns.length || !lefton || !lout) return;
+      function apply(v: string, say: boolean) {
+        document.body.dataset.leave = v;
+        btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.leave === v)));
+        lefton!.textContent = v === 'dike' ? 'left on the dike' : 'left on the lyre';
+        if (say) lout!.innerHTML = v === 'dike' ? 'The close takes the dike’s blue: land where there was water.' : 'The close takes the lyre’s gold: three strings, one sound.';
+      }
+      let saved: string | null = null;
+      try { saved = localStorage.getItem(KEY); } catch (_) { /* private mode, blocked storage */ }
+      if (saved === 'lyre' || saved === 'dike') apply(saved, false);
+      btns.forEach((b) => b.addEventListener('click', () => {
+        const v = b.dataset.leave || 'lyre'; apply(v, true);
+        try { localStorage.setItem(KEY, v); } catch (_) { /* fine: the choice lives for this page view */ }
+      }));
+    })();
+
+    /* ---------- VI: Paul's letters over Plato's ---------- */
+    (function () {
+      let n = 0;
+      $$('#inner .paul.w').forEach((w) => {
+        const chars = Array.from(w.textContent || '');
+        w.textContent = '';
+        chars.forEach((ch) => { const i = document.createElement('i'); i.textContent = ch; i.style.setProperty('--i', String(n++)); w.appendChild(i); });
+      });
+    })();
+
+    /* ---------- ledger filter ---------- */
+    $$('.filter button').forEach((b) => b.addEventListener('click', () => {
+      $$('.filter button').forEach((x) => x.classList.remove('on')); b.classList.add('on');
+      const f = b.dataset.f;
+      $$('#ltable tbody tr').forEach((tr) => tr.classList.toggle('hide', f !== 'all' && tr.dataset.t !== f));
+    }));
+  })();
+</script>
