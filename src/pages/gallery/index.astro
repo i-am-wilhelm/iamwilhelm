@@ -1,7 +1,8 @@
 ---
 /**
- * /gallery: The Gallery on its own. Same framed tiles as the homepage's
- * Room II; new pieces drop in from src/content/gallery.
+ * /gallery: The Gallery on its own. The same framed tiles as the homepage's
+ * Room II, hung by series (each wall headed by its series, linking to the
+ * series index); new pieces drop in from src/content/gallery.
  */
 import Museum from '../../layouts/Museum.astro';
 import Placard from '../../components/museum/Placard.astro';
@@ -41,10 +42,10 @@ import { SITE_URL } from '../../config/site';
             Each piece here is staged as a page you walk through. Movements arrive one at a time and the text settles
             into place as you read.
           </p>
-          <p>Choose a frame to enter. New work is hung here as it is finished.</p>
+          <p>The wall is hung by series. Choose a frame to enter; new work is hung here as it is finished.</p>
         </div>
       </div>
-      <PoemGallery level={2} />
+      <PoemGallery level={2} grouped />
       <p class="page__more" data-reveal>
         Pieces like these are built to order. <a class="text-link" href="/services/">Commissions &rarr;</a>
       </p>

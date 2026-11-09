@@ -3,7 +3,8 @@
  * per-series feeds (/writings/<series>/rss.xml). Hand-rolled: two small
  * templates, no dependency. A reading carries its full text (the markdown
  * rendered by the content layer); a scroll page carries its summary and a
- * link, since the page is the piece.
+ * link, since the page is the piece. Every item names its author
+ * (dc:creator in RSS, <author> in Atom).
  */
 import { SITE_NAME, SITE_URL } from '../config/site';
 import type { Piece } from './pieces';
@@ -51,6 +52,7 @@ export function rss(spec: FeedSpec): string {
       <link>${esc(p.url)}</link>
       <guid isPermaLink="true">${esc(p.url)}</guid>
       <pubDate>${p.date.toUTCString()}</pubDate>
+      <dc:creator>${esc(SITE_NAME)}</dc:creator>
       <description>${esc(b.full ? summary(p) : b.html)}</description>
       ${content}${cats}
     </item>`;
@@ -58,7 +60,7 @@ export function rss(spec: FeedSpec): string {
     .join('\n');
   const latest = spec.items[0]?.date ?? new Date(0);
   return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>${esc(spec.title)}</title>
     <link>${esc(spec.home)}</link>
@@ -86,6 +88,7 @@ export function atom(spec: FeedSpec): string {
     <id>${esc(p.url)}</id>
     <published>${p.date.toISOString()}</published>
     <updated>${p.date.toISOString()}</updated>
+    <author><name>${esc(SITE_NAME)}</name><uri>${esc(SITE_URL)}/</uri></author>
     <summary>${esc(summary(p))}</summary>
     ${content}
     ${cats}
