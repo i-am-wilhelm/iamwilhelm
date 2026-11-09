@@ -5,13 +5,15 @@ name: Preview
 # production worker and its custom domains are untouched; production still
 # deploys only from main (deploy.yml). Scrolly branches (scrolly/<slug>)
 # and face-lift branches (facelift/<scope>) deploy here too, so a new piece
-# or a site-wide pass can be read on the preview before it lands.
+# or a site-wide pass can be read on the preview before it lands; so do
+# the commissions (services/**) and the search-and-distribution (geo/**)
+# branches.
 #
 # Uses the same repository secrets as deploy.yml:
 #   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
 on:
   push:
-    branches: [museum-homepage, 'scrolly/**', 'facelift/**', 'services/**']
+    branches: [museum-homepage, 'scrolly/**', 'facelift/**', 'services/**', 'geo/**']
   workflow_dispatch:
 
 concurrency:

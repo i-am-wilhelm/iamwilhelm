@@ -31,10 +31,12 @@ No WebGL, no dithering, no audio on these pages.
 - `src/layouts/Museum.astro`: meta, Open Graph and Twitter cards, JSON-LD
   Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, `/writings/<slug>`,
   the series indexes, `/method`, `/support`, `/services` (Room IV, the
-  commissions page for scrollies), and 404.
+  commissions page for scrollies), `/what-is-a-scrolly` (Room IV, the
+  glossary), the plain-text twins, and 404.
 - `src/components/museum/`: Placard, Room, Meander, ZodiacRing, Glyph (SVG
-  zodiac paths in `zodiac.ts`), PoemGallery, WritingsList, Colophon, and the
-  rooms in `rooms/`.
+  zodiac paths in `zodiac.ts`), PoemGallery (the wall; `grouped` hangs it by
+  series, as `/gallery` does) and PoemCard (one frame), WritingsList,
+  Colophon, and the rooms in `rooms/`.
 - Unmounted rooms, kept in the repo and referenced from nowhere on the
   public site: `rooms/RoomManifesto.astro` (the libertariantoolsuite
   manifesto exhibit) and `rooms/RoomAlm.astro` (Advancing Liberty Media /
@@ -57,11 +59,29 @@ No WebGL, no dithering, no audio on these pages.
   first shipped under `/writings/` redirect from `public/_redirects`. The
   reading room (`/writings/`) is the readings shelf.
 - `src/components/scroll/`: the pieces every scroll page mounts. `ScrollFoot`
-  (share, next in the series, the newsletter field, the patronage door to
-  `/support`), `SeriesMark` (the series label in the header), `MethodLink`
-  (the line every source ledger ends on, to `/method`), and `SplitText`
+  (share: copy link, X, Facebook, Bluesky and the device's share sheet;
+  next in the series; the newsletter field; the patronage door to
+  `/support`; the "Plain text" link to the twin), `SeriesMark` (the series
+  label in the header), `Byline` (the author's name linking to `/`, in
+  every title block and signature), `MethodLink` (the line every source
+  ledger ends on, "How this was made", to `/method`), and `SplitText`
   (text shown twice for effect with one readable copy in the DOM; the
   copies paint from `data-text`).
+- The plain-text twin: every scroll page has one at `/gallery/<slug>/twin/`,
+  the whole piece as semantic HTML in reading order with each exhibit
+  described in a sentence (`src/pages/gallery/[slug]/twin.astro` renders
+  the page with Astro's Container API; `src/lib/twin.ts` reduces it). An
+  exhibit's sentence is the `data-twin` attribute on its container (or its
+  aria-label, for a `role="img"` figure); `data-twin-skip` marks chrome
+  the twin never reads. The twin's canonical is the scroll page, it stays
+  out of the sitemap, and the page links it in the foot and in
+  `<link rel="alternate" type="text/html">`. `/llms.txt` lists the twins.
+- Schema: every page carries the one Person node (`Museum.astro`,
+  `@id #person`); every piece and reading an Article with author,
+  datePublished, dateModified (`updated` in frontmatter, else the date) and
+  its share image; `/services` a Service, Offer and FAQPage; the glossary at
+  `/what-is-a-scrolly` a DefinedTerm, Article and FAQPage. The FAQ schemas
+  are built from the same arrays as the visible questions.
 - `src/pages/gallery/<slug>.astro` + `src/layouts/Poem.astro`: the visualized
   pieces themselves (The Keeper and the Flame, PHARMAKON, The Only Sighted
   One), ported from the owner's Claude artifacts. Each is a night scene of its
@@ -82,7 +102,7 @@ served by the Worker (`worker/index.ts`, plus its entry in
 `run_worker_first` in both wrangler configs), not from `public/`. Keep it
 permanently: Google re-checks the file and verification lapses if it goes.
 
-Branch previews: pushes to `museum-homepage`, `scrolly/**` and `facelift/**` deploy to the
+Branch previews: pushes to `museum-homepage`, `scrolly/**`, `facelift/**`, `services/**` and `geo/**` deploy to the
 `iamwilhelm-preview` worker on workers.dev (`.github/workflows/preview.yml`,
 `wrangler.preview.jsonc`). Production deploys only from `main`.
 

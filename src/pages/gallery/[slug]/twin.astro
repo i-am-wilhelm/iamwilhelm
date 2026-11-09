@@ -41,7 +41,6 @@ const pageHtml = await container.renderToString(mod.default, { request: new Requ
 const twin = twinFromHtml(pageHtml, piece.title);
 if (!twin.html.trim()) throw new Error(`twin: ${slug} rendered to nothing.`);
 
-const url = `${SITE_URL}${piece.twinPath}`;
 const dateLabel = piece.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const modified = piece.gallery?.data.updated ?? piece.date;
 const image = ogImage(piece.ogPath);

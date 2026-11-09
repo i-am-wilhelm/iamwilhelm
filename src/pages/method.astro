@@ -13,6 +13,7 @@ import Placard from '../components/museum/Placard.astro';
 import Meander from '../components/museum/Meander.astro';
 import Colophon from '../components/museum/Colophon.astro';
 import { SITE_URL } from '../config/site';
+import { ogImage } from '../config/og';
 
 const url = `${SITE_URL}/method/`;
 const modified = new Date('2026-11-09T00:00:00Z');
@@ -35,6 +36,7 @@ const legend = [
       url,
       mainEntityOfPage: url,
       headline: 'How these pieces are made.',
+      image: ogImage('/og.png'),
       description:
         'Every claim in an essay is tagged text, reading, or disputed and listed in a ledger; Greek, Latin, and Hebrew are read in the original; the pages are designed and written by Michael Wilhelm with software assistance for code, source checks, and outline drafts; every piece ships with a plain-text twin.',
       datePublished: modified.toISOString(),
