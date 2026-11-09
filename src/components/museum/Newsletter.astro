@@ -1,58 +1,17 @@
 ---
 /**
- * The BackGold newsletter form. When NEWSLETTER_EMBED_HTML (config/site.ts)
- * holds BackGold's embed snippet it renders verbatim. Until then a stand-in
- * form in the museum style renders, marked data-placeholder: it validates
- * the address and tells the visitor sign-up opens soon, and sends nothing.
+ * The BackGold newsletter block in the colophon: title, note, and the
+ * shared field (NewsletterForm), which renders BackGold's embed once
+ * NEWSLETTER_EMBED_HTML is set and the stand-in form until then.
  */
-import { NEWSLETTER_EMBED_HTML } from '../../config/site';
-const hasEmbed = NEWSLETTER_EMBED_HTML.trim().length > 0;
+import NewsletterForm from './NewsletterForm.astro';
 ---
 
 <div class="newsletter">
   <h3 class="newsletter__title smallcaps" id="newsletter-title">The newsletter</h3>
   <p class="newsletter__note">Occasional letters when a new room opens or a new poem is hung.</p>
-  {
-    hasEmbed ? (
-      <div class="newsletter__embed" set:html={NEWSLETTER_EMBED_HTML} />
-    ) : (
-      <form class="newsletter__form" data-placeholder aria-labelledby="newsletter-title" novalidate>
-        {/* PLACEHOLDER(owner): replace with the BackGold embeddable form via NEWSLETTER_EMBED_HTML. */}
-        <label class="sr-only" for="newsletter-email">Email address</label>
-        <input
-          id="newsletter-email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          inputmode="email"
-          placeholder="you@example.com"
-          required
-        />
-        <button class="cta cta--gilt" type="submit">Subscribe</button>
-        <p class="newsletter__status" role="status" aria-live="polite" data-status></p>
-      </form>
-    )
-  }
+  <NewsletterForm class="newsletter__form" labelledby="newsletter-title" buttonClass="cta cta--gilt" />
 </div>
-
-<script>
-  const form = document.querySelector<HTMLFormElement>('.newsletter__form[data-placeholder]');
-  if (form) {
-    const status = form.querySelector<HTMLElement>('[data-status]')!;
-    const input = form.querySelector<HTMLInputElement>('input[type="email"]')!;
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!input.checkValidity()) {
-        status.textContent = 'Please enter a full email address.';
-        input.setAttribute('aria-invalid', 'true');
-        input.focus();
-        return;
-      }
-      input.removeAttribute('aria-invalid');
-      status.textContent = 'Thank you. Sign-up opens soon; please check back.';
-    });
-  }
-</script>
 
 <style>
   .newsletter {
@@ -67,13 +26,13 @@ const hasEmbed = NEWSLETTER_EMBED_HTML.trim().length > 0;
   .newsletter__note {
     color: var(--ink-soft);
   }
-  .newsletter__form {
+  .newsletter :global(.newsletter__form) {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 0.4rem;
   }
-  .newsletter__form input {
+  .newsletter :global(.newsletter__form input) {
     flex: 1 1 14rem;
     min-width: 0;
     min-height: 44px;
@@ -85,14 +44,14 @@ const hasEmbed = NEWSLETTER_EMBED_HTML.trim().length > 0;
     border: 1px solid var(--ink-faint);
     border-radius: 0;
   }
-  .newsletter__form input::placeholder {
+  .newsletter :global(.newsletter__form input::placeholder) {
     color: var(--ink-faint);
     opacity: 1;
   }
-  .newsletter__form input[aria-invalid='true'] {
+  .newsletter :global(.newsletter__form input[aria-invalid='true']) {
     border-color: var(--room-ii);
   }
-  .newsletter__status {
+  .newsletter :global(.nl-form__status) {
     flex-basis: 100%;
     min-height: 1.6em;
     color: var(--ink-soft);

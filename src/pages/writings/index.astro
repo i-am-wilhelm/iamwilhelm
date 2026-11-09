@@ -1,8 +1,8 @@
 ---
 /**
- * /writings: the full writings index in the museum style. Each post page
- * (/writings/[slug]) keeps its own immersive treatment; a poem's page is
- * the exhibit, and this index is the reading room's catalogue.
+ * /writings: the readings shelf. Every reading (wall text at
+ * /writings/[slug]) newest first, with its series label; the scroll pages
+ * hang in the Gallery and are listed by their series indexes.
  */
 import Museum from '../../layouts/Museum.astro';
 import Placard from '../../components/museum/Placard.astro';
@@ -34,7 +34,7 @@ import { SITE_URL } from '../../config/site';
           level={1}
           label="The Reading Room"
           title="Writings"
-          medium="Essays, poems, and close readings of ancient words"
+          medium="The readings shelf: essays and close readings, with the series each belongs to"
           catalog="Cat. III"
         />
         <p class="lede page__statement" data-reveal>

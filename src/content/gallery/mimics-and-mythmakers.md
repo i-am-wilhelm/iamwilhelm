@@ -9,6 +9,10 @@ order: 6
 status: on-view
 sign: gemini
 plate: "#0a2a39"
+date: 2026-11-07
+verb: "six depths and one ascent · you tap the dark"
+series: mimics
+seriesNo: 1
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/Uoi1YmTv8Apc8kKFsD6N5r).

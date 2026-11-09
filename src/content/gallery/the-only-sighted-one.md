@@ -9,6 +9,10 @@ order: 9
 status: on-view
 sign: aquarius
 plate: "#1d2230"
+date: 2026-10-29
+verb: "several nights and days · you watch the eagle come"
+series: in-the-original
+seriesNo: 1
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/VnjmDvGN2aCmtD14T5uMUu).

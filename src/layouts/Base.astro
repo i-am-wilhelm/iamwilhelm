@@ -2,6 +2,7 @@
 import '../styles/global.css';
 
 import type { FadeMode } from '../design/tokens';
+import { FEEDS } from '../config/site';
 
 interface Props {
   title: string;
@@ -31,6 +32,7 @@ const {
     <meta name="description" content={description} />
     <title>{title}</title>
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {FEEDS.map((f) => <link rel="alternate" type={f.type} title={f.title} href={f.href} />)}
     <slot name="head" />
   </head>
   <body>

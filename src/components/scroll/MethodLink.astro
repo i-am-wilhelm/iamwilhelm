@@ -1,0 +1,27 @@
+---
+/**
+ * The one line every source ledger ends on: the way through to /method,
+ * where the tagging system and the reading method are explained. Inherits
+ * the ledger's face; the page may pass a class for placement.
+ */
+interface Props {
+  class?: string;
+}
+const { class: cls } = Astro.props;
+---
+
+<p class:list={['method-link', cls]}>
+  How these pages are read, and what the tags mean: <a href="/method/">the method</a>.
+</p>
+
+<style is:global>
+  .method-link {
+    margin: 1.4rem 0 0;
+    font-size: 0.92rem;
+    opacity: 0.85;
+  }
+  .method-link a {
+    color: inherit;
+    text-underline-offset: 0.3em;
+  }
+</style>

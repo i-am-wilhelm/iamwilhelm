@@ -9,6 +9,9 @@
  * νάρκισσος rail reads surface, reaching, stunned, below.
  */
 import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
 
 <Poem
@@ -38,7 +41,7 @@ import Poem from '../../layouts/Poem.astro';
         </p>
         <h1>The Pretty<br /><em>Toy</em></h1>
         <p class="deck">Persephone's flower, Narcissus's pool, and one gesture told twice.</p>
-        <p class="log sig"><span>an essay · Michael Wilhelm</span><span>in the original</span></p>
+        <p class="log sig"><span>an essay · Michael Wilhelm</span><span><SeriesMark id="the-pretty-toy" /></span></p>
       </header>
 
       <hr />
@@ -130,7 +133,9 @@ import Poem from '../../layouts/Poem.astro';
           <li>Plotinus, <i>Enneads</i> I.6.8 (Narcissus and the shadows in Hades)</li>
           <li>Beekes, <i>Etymological Dictionary of Greek</i>, s.v. νάρκισσος, ὑάκινθος (pre-Greek -σσ-)</li>
         </ul>
-        <p class="log sig"><span><a href="/gallery/">The Gallery</a></span><span>in the original · III</span></p>
+        <MethodLink />
+        <p class="log sig"><span><a href="/gallery/">The Gallery</a></span><span><SeriesMark id="the-pretty-toy" /></span></p>
+        <ScrollFoot id="the-pretty-toy" class="toy-sf" />
       </footer>
     </div>
   </main>

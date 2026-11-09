@@ -9,6 +9,10 @@ order: 8
 status: on-view
 sign: pisces
 plate: "#2e2236"
+date: 2026-10-28
+verb: "six movements · you tip the vial"
+series: poems
+seriesNo: 1
 ---
 
 The poem's subtitle serves as the epigraph. Ported from the owner's Claude

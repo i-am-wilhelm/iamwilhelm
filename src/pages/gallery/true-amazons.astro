@@ -16,6 +16,9 @@
  * Poem.astro's line and section globals cannot reach it.
  */
 import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
 
 <Poem
@@ -35,7 +38,7 @@ import Poem from '../../layouts/Poem.astro';
 
 <main class="ta">
 <header class="hero">
-  <div class="eyebrow">A scrolly in nine steps &middot; after Ammon Hillman &middot; companion to <a href="/gallery/pharmakon/">Pharmakon</a></div>
+  <div class="eyebrow"><SeriesMark id="true-amazons" /> &middot; A scrolly in nine steps &middot; after Ammon Hillman &middot; companion to <a href="/gallery/pharmakon/">Pharmakon</a></div>
   <h1>True <em>Amazons</em></h1>
   <p class="dek">The women of the Thermodon and the Maeotian marsh were a venom culture before they were a war culture. One Greek word carries the whole argument. It means <strong>arrow</strong>. It means <strong>venom</strong>. It means <strong>rust</strong>. Press each one.</p>
   <div class="triad" role="group" aria-label="The three meanings of ios">
@@ -49,7 +52,6 @@ import Poem from '../../layouts/Poem.astro';
 
 <section class="scrolly">
   <aside class="sticky" aria-live="polite">
-    <div class="num" id="stNum">I / IX</div>
     <svg class="blade" id="blade" data-state="arrow" viewBox="0 0 300 390" aria-hidden="true">
       <defs>
         <linearGradient id="bronzeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a455"/><stop offset=".55" stop-color="#9c6a2a"/><stop offset="1" stop-color="#5a3a14"/></linearGradient>
@@ -71,8 +73,11 @@ import Poem from '../../layouts/Poem.astro';
       <rect x="140" y="330" width="20" height="60" fill="#3b2a12"/>
       <path d="M140 338 l10 6 l10 -6 M140 352 l10 6 l10 -6 M140 366 l10 6 l10 -6" stroke="#b7843a" stroke-width="2" fill="none"/>
     </svg>
-    <div class="word" id="stWord">ἰός</div>
-    <div class="gloss" id="stGloss">arrow &middot; venom &middot; rust. One sound, three deaths.</div>
+    <div class="stripe">
+      <div class="num" id="stNum">I / IX</div>
+      <div class="word" id="stWord">ἰός</div>
+      <div class="gloss" id="stGloss">arrow &middot; venom &middot; rust. One sound, three deaths.</div>
+    </div>
   </aside>
 
   <div class="steps">
@@ -357,6 +362,7 @@ import Poem from '../../layouts/Poem.astro';
   </table>
   </div>
   <p class="foot"><b>A note on Hillman.</b> He holds a Classics PhD from Wisconsin with a specialty in ancient pharmacy and bacteriology, and <em>The Chemical Muse</em> was published by St. Martin's. He reads the Greek as pharmacology first, with no theology between the reader and the text, and that lens opened this page. The Amazon sources turn out to be unusually hospitable to it.</p>
+  <MethodLink class="foot" />
   <div class="srcs">
     <p><a href="https://classics.mit.edu/Hippocrates/airwatpl.17.17.html">Hippocrates, Airs, Waters, Places 17 (Adams trans.)</a></p>
     <p><a href="https://sententiaeantiquae.com/tag/amazons/">Sententiae Antiquae: Sauromatae and Mimnermus fr. 21, with Greek</a></p>
@@ -381,6 +387,7 @@ import Poem from '../../layouts/Poem.astro';
     <span>an essay &middot; Michael Wilhelm &middot; 2026</span>
     <span><a href="/gallery/pharmakon/">Read PHARMAKON</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
   </footer>
+  <ScrollFoot id="true-amazons" class="ta-sf" />
 </section>
 </main>
 </Poem>
@@ -496,6 +503,9 @@ body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--
 .amazons .scrolly{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,72px);align-items:start}
 .amazons .sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:24px 0}
 .amazons .sticky .num{font-family:var(--font-mono);font-size:.74rem;color:var(--bronze);letter-spacing:.2em}
+/* The numeral, word and gloss share one wrapper so the phone strip can stack them; on the wide layout the wrapper is transparent and the numeral keeps its place above the blade. */
+.amazons .sticky .stripe{display:contents}
+.amazons .sticky .num{order:-1}
 .amazons .sticky .word{font-family:var(--font-display);font-size:clamp(44px,6vw,86px);line-height:.95;color:var(--bone);transition:color .5s}
 .amazons .sticky .gloss{font-family:var(--font-mono);font-size:.8rem;color:var(--bone-dim);letter-spacing:.04em;max-width:34ch}
 .amazons .blade{width:min(100%,340px);aspect-ratio:1/1.3;filter:drop-shadow(0 20px 40px rgba(0,0,0,.6))}
@@ -546,6 +556,8 @@ body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--
 .amazons .gauge{display:grid;gap:8px}
 .amazons .gauge input[type=range]{width:100%;accent-color:var(--verdigris)}
 .amazons .bars{display:grid;gap:8px;margin-top:6px}
+/* The answer bars stay hidden until "Open the mounds" is pressed: display:grid would otherwise beat the [hidden] attribute. */
+.amazons .bars[hidden]{display:none}
 .amazons .bar{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;font-family:var(--font-mono);font-size:.72rem;color:var(--bone-dim)}
 .amazons .bar .t{height:14px;background:var(--ink-3);border:1px solid rgba(183,132,58,.3);overflow:hidden}
 .amazons .bar .f{height:100%;width:0;background:var(--bronze);transition:width 1s cubic-bezier(.2,.7,.2,1)}
@@ -629,6 +641,7 @@ body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--
 
 /* ledger */
 .amazons .ledger{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:60px 16px 100px;border-top:1px solid var(--bronze)}
+.amazons .ta-sf{max-width:none;padding-inline:0;color:var(--bone)}
 .amazons .ledger h2{font-size:clamp(34px,4vw,56px);margin-bottom:.3em}
 .amazons .ledger .sub{color:var(--bone-dim);max-width:70ch;margin-bottom:28px}
 .amazons .ltable{width:100%;border-collapse:collapse;font-size:.92rem}
@@ -644,12 +657,18 @@ body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--
 .amazons .filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .amazons .ltable tr.hide{display:none}
 
-@media (max-width:860px){
-  .amazons .scrolly{grid-template-columns:1fr}
+/* Phones and small tablets: the sticky panel becomes a compact pinned strip
+   above the steps. The scrolly drops to a block (not a one-column grid): a
+   sticky grid item can only stick inside its own row, which is just its own
+   height, so on engines that honour that (WebKit) the blade scrolled away
+   with the hero and was never beside the text that says "watch the blade".
+   As a block child of .scrolly it sticks for the whole run of steps. */
+@media (max-width:899px){
+  .amazons .scrolly{display:block}
   .amazons .sticky{position:sticky;top:0;height:auto;flex-direction:row;align-items:center;gap:14px;padding:10px 0;background:linear-gradient(var(--ink) 80%,transparent);z-index:5}
   .amazons .sticky .blade{width:60px;aspect-ratio:1/1.3;filter:none}
   .amazons .sticky .word{font-size:28px}
-  .amazons .sticky .gloss,.amazons .sticky .num{display:none}
+  .amazons .sticky .gloss{display:none}
   .amazons .step{min-height:0;padding:6vh 0}
   .amazons .step .wm{font-size:90px;top:2vh}
   .amazons .triad{grid-template-columns:1fr}
@@ -666,12 +685,18 @@ body.amazons{margin:0;background:var(--ink);color:var(--bone);font-family:var(--
 .amazons .ta-foot{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:48px;padding-top:18px;border-top:1px solid rgba(183,132,58,.35);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-dim)}
 .amazons .ta-foot a{color:inherit;text-underline-offset:.3em}
 .amazons .ta-foot a:hover{color:var(--bone)}
-/* The gallery exit sits top-left; on phones the sticky bar shares its line,
-   blade and word set to the right of the placard. */
-@media (max-width:860px){
-  .amazons .sticky{justify-content:flex-end;padding:max(8px, env(safe-area-inset-top, 0px)) 0 10px 150px;gap:12px}
-  .amazons .sticky .blade{width:52px}
-  .amazons .sticky .word{font-size:clamp(20px,6vw,28px);white-space:nowrap}
+/* The gallery exit sits top-left; on phones the sticky strip shares its line:
+   the blade just right of the placard (the nearest thing to "on the left" the
+   phone has), then the step numeral over the Greek word. The strip is 72px
+   tall so its three states (glint, drip and tint, verdigris stain) read at a
+   glance without covering the text below it. */
+@media (max-width:899px){
+  .amazons .sticky{justify-content:flex-start;min-height:72px;padding:max(8px, env(safe-area-inset-top, 0px)) 12px 8px 150px;gap:12px}
+  .amazons .sticky .blade{width:40px;flex:none}
+  .amazons .sticky .stripe{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}
+  .amazons .sticky .num{order:0;font-size:.62rem;letter-spacing:.16em;line-height:1.2;white-space:nowrap}
+  .amazons .sticky .stripe{flex:1 1 auto}
+  .amazons .sticky .word{font-size:clamp(18px,5.6vw,26px);line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 @media (max-width:340px){.amazons .sticky .word{display:none}}
 

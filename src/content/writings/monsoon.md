@@ -5,6 +5,8 @@ accent: monsoon
 symbols: []
 draft: false
 description: "A fish raised in a dry riverbed: Phoenix, the Gila valley, the summer storms, and the move north to where the rain is a climate."
+series: through-the-lens
+seriesNo: 2
 ---
 
 <section class="part part--front" aria-label="Prelude">

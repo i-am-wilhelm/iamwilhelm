@@ -3,12 +3,16 @@ title: "Everyone, Searchable"
 plateTitle: "Everyone, Searchable"
 year: 2026
 epigraph: "Every human life is about to become searchable through a god-level AI. What it does to the searcher, the searched, and the one move that holds."
-href: "/writings/everyone-searchable/"
+href: "/gallery/everyone-searchable/"
 medium: "Visualized essay; interactive page"
 order: 0
 status: on-view
 sign: aquarius
 plate: "#0b2730"
+date: 2026-11-06
+verb: "nine chapters · you search your own name"
+series: futurist
+seriesNo: 1
 ---
 
 The first Futurist essay, and the hero frame of the homepage wall (the

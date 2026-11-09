@@ -3,12 +3,16 @@ title: "Where It Was"
 plateTitle: "Where It Was"
 year: 2026
 epigraph: "Freud's three, Plato's three, and the Latin that hid the family resemblance"
-href: "/writings/where-it-was/"
+href: "/gallery/where-it-was/"
 medium: "Visualized essay in seven movements; interactive page"
 order: 1
 status: on-view
 sign: libra
 plate: "#121826"
+date: 2026-11-08
+verb: "seven movements · you tune the lyre"
+series: through-the-lens
+seriesNo: 3
 ---
 
 Through the Lens, No. 3; the label comes from src/content/writings/where-it-was.md.

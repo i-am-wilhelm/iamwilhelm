@@ -26,21 +26,22 @@
  * fade, no smoke, the orchestra pit never imported. The stylesheet is scoped
  * under body.wiw so Poem.astro's line and section globals cannot reach it.
  * Title, description, date and series come from
- * src/content/writings/where-it-was.md. The lyre and dike panel carries
+ * the gallery entry (src/lib/pieces.ts); the route is /gallery/where-it-was/,
+ * the old /writings/ URL redirects (public/_redirects). The lyre and dike panel carries
  * data-og-frame, so `npm run og:scrollies` shoots it for the share image.
  */
-import { getEntry } from 'astro:content';
 import Poem from '../../layouts/Poem.astro';
-import { series, seriesLabel } from '../../config/series';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
+import { series } from '../../config/series';
 import { SITE_URL } from '../../config/site';
+import { getPiece } from '../../lib/pieces';
 
-const entry = await getEntry('writings', 'where-it-was');
-if (!entry?.data.series || !entry.data.seriesNumber || !entry.data.description) {
-  throw new Error('where-it-was: the writings entry needs a series, a number and a description.');
-}
-const { title, description, date } = entry.data;
-const s = series[entry.data.series];
-const label = seriesLabel(entry.data.series, entry.data.seriesNumber);
+const piece = await getPiece('where-it-was');
+if (!piece.series) throw new Error('where-it-was: the gallery entry needs a series.');
+const { title, description, date } = piece;
+const s = series[piece.series];
 const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
@@ -67,7 +68,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
 
 <main class="wi">
 <header class="hero">
-  <p class="eyebrow"><a href={s.href}>{label}</a> &middot; A scrolly in seven movements</p>
+  <p class="eyebrow"><SeriesMark id="where-it-was" /> &middot; A scrolly in seven movements</p>
   <h1>Where <em>It</em> Was</h1>
   <p class="dek">Freud’s three, Plato’s three, and the Latin that hid the family resemblance</p>
   <ul class="marks" aria-label="The page’s symbols">
@@ -324,7 +325,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
   <p>What Berne added was something neither Plato nor Freud had: the observation that two people’s triads play <em>each other</em>. The Parent in me hooks the Child in you, and the two of us run a script neither of us wrote. That is a Greek idea too, though Berne did not say so. It is what the tragedians meant when they made the Furies a family inheritance.</p>
   <p class="disputed"><span class="tag disp" data-tip="The author’s own argument, forward-looking; the bridge to the Futurist series">disputed</span> And the lens turns forward. The three parts now have prosthetics. The feed is the desiring part’s broker, tuned to its heat by machines that measure where the eyes go, which is to say it is Leontius’s executioner’s ground, optimized. The metrics, the counts, the public ledger of likes and views, are an Over-I that lives outside the skull and never sleeps. The reckoning part, the small man inside, is the only one of the three that no one has built an engine for yet, and it is the one being squeezed. That is a separate essay, in a drier series. But it starts here, with the Greek, because the Greek is where we first learned that there were three of us in the chest, and that the one who speaks last is the one who has to speak first.</p>
 
-  <a class="companion" href="/writings/everyone-searchable/">
+  <a class="companion" href="/gallery/everyone-searchable/">
     <div class="eyebrow">The separate essay, in the drier series &middot; Futurist &middot; No. 1</div>
     <div class="ct">Everyone, Searchable</div>
     <p>Every human life is about to become searchable through a god-level AI. What it does to the searcher, the searched, and the one move that holds.</p>
@@ -375,11 +376,13 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
   </table>
   </div>
   <p class="foot">All translations from Greek and German are the author’s unless noted. Strachey’s renderings are quoted only where his wording is itself the subject.</p>
+  <MethodLink class="foot" />
 
   <footer class="wi-foot">
     <span>an essay &middot; Michael Wilhelm &middot; {date.getUTCFullYear()}</span>
-    <span><a href={s.href}>{s.name}</a> &middot; <a href="/writings/everyone-searchable/">Everyone, Searchable</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
+    <span><a href={s.href}>{s.name}</a> &middot; <a href="/gallery/everyone-searchable/">Everyone, Searchable</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
   </footer>
+  <ScrollFoot id="where-it-was" class="wi-sf" />
 </section>
 </main>
 </Poem>
@@ -648,6 +651,7 @@ body.wiw[data-leave="lyre"] .inst.dike,body.wiw[data-leave="dike"] .inst.lyre{op
 
 /* ledger */
 .wiw .ledger{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:60px 16px 100px;border-top:1px solid var(--gilt)}
+.wiw .wi-sf{max-width:none;padding-inline:0;color:var(--bone)}
 .wiw .ledger h2{font-size:clamp(34px,4vw,56px);margin-bottom:.3em}
 .wiw .ledger .sub{color:var(--bone-dim);max-width:70ch;margin-bottom:28px}
 .wiw .filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}

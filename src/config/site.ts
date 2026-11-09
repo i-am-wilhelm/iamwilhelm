@@ -42,3 +42,9 @@ export const NAV = [
   { label: 'Earl', id: 'earl', page: '/earl/', room: false },
   { label: 'Contact', id: 'contact' },
 ] as const;
+
+/** The site feeds, linked from every page head and listed in the footer. */
+export const FEEDS = [
+  { href: '/rss.xml', type: 'application/rss+xml', title: `${SITE_NAME} · RSS` },
+  { href: '/atom.xml', type: 'application/atom+xml', title: `${SITE_NAME} · Atom` },
+] as const;

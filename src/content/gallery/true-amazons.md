@@ -9,6 +9,10 @@ order: 5
 status: on-view
 sign: sagittarius
 plate: "#141c17"
+date: 2026-11-06
+verb: "nine steps · you draw the bow"
+series: in-the-original
+seriesNo: 4
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/Szw5Fd6dWfZXf4g9JR5dGt),

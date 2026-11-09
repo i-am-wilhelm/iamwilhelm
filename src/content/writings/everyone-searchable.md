@@ -6,7 +6,7 @@ draft: false
 description: "Every human life is about to become searchable through a god-level AI. What it does to the searcher, the searched, and the one move that holds."
 treatment: scrolly
 series: futurist
-seriesNumber: 1
+seriesNo: 1
 ---
 
 The essay itself is the scrolly at src/pages/writings/everyone-searchable.astro,

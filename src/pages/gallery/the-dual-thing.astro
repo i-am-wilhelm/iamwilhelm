@@ -11,6 +11,9 @@
  * design of record.
  */
 import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
 
 <Poem
@@ -48,7 +51,7 @@ import Poem from '../../layouts/Poem.astro';
           <p>Before we had our becoming here, we existed There, men other than now; we were pure souls. Intelligence inbound with the entire of reality, not fenced off, integral to that All. [&hellip;] Then it was as if One voice sounded. One word was uttered and from every side an ear attended and received and there was an effective hearing; now we are become a dual thing, no longer that which we were at first, dormant, and in a sense no longer present.</p>
           <cite>Plotinus, Enneads VI.4.14</cite>
         </blockquote>
-        <p class="log sig"><span>an essay · Michael Wilhelm</span><span>in the original</span></p>
+        <p class="log sig"><span>an essay · Michael Wilhelm</span><span><SeriesMark id="the-dual-thing" /></span></p>
       </header>
 
       <hr />
@@ -174,6 +177,8 @@ import Poem from '../../layouts/Poem.astro';
         <p class="apparatus">
           <b>Sources.</b> Aristotle, <i>Metaphysics</i> Λ 1071b27 · Derveni papyrus col. XVII · Orphic fragments 54–60, 167, 240–241 (Kern), 303–315 (Bernabé) · Clement, <i>Protrepticus</i> 2.17–18 · Olympiodorus, <i>In Phaedonem</i> 1.3 · Plato, <i>Cratylus</i> 400b–c, <i>Phaedo</i> 62b and 69c, <i>Laws</i> 701c, <i>Meno</i> 81b · Pindar fr. 133 · Olbia bone tablets (SEG 28.659–661) · Empedocles B115 and B126 · Plotinus, <i>Enneads</i> IV.3.12, VI.4.14, VI.9.11 · Proclus, <i>In Timaeum</i> on 33b · Gold leaves: Petelia (OF 476), Hipponion (OF 474), Thurii (OF 487–490), Pelinna (OF 485–486) · Septuagint, Genesis 2:4, 2:7, 3:21 · Philo, <i>Quaestiones in Genesim</i> 1.53 · Origen, <i>Contra Celsum</i> 4.40 · Gregory of Nyssa, <i>De anima et resurrectione</i>
         </p>
+        <MethodLink class="apparatus" />
+        <ScrollFoot id="the-dual-thing" class="dual-sf" />
       </footer>
     </div>
   </main>

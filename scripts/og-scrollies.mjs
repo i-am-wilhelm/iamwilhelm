@@ -1,6 +1,6 @@
 /**
- * Renders a share image for every scroll page (the Gallery pieces and the
- * descent-treatment writings) from the page itself: the built route is
+ * Renders a share image for every scroll page (everything under /gallery/)
+ * from the page itself: the built route is
  * served from dist/, opened at 1200x630 with the canvas running, and the
  * opening frame is screenshotted to public/og/<slug>.jpg (JPEG keeps every
  * card well under the ~300 KB some messaging apps allow for previews). Poem.astro and
@@ -12,6 +12,7 @@
  * Name slugs to render only those, leaving every other card's bytes (and its
  * cache-busting hash) as they are:
  *   npm run og:scrollies -- everyone-searchable
+ * The foot (ScrollFoot) and every exit are hidden in the shot by data-og-hide.
  *
  * Needs a local Chromium (Playwright's, or set CHROMIUM_PATH).
  */
@@ -30,30 +31,29 @@ if (!existsSync(resolve(dist, 'index.html'))) throw new Error('dist/ is missing.
 const out = resolve(root, 'public/og');
 mkdirSync(out, { recursive: true });
 
-/* Which routes get a rendered card: every Gallery page, plus every writing
-   staged with the descent or scrolly treatment. Gallery pages and scrollies
-   (src/pages/writings/<slug>.astro) shoot their hero at the full 1200x630.
-   Descent pieces are a narrow column on a wide wall, so they shoot at
-   800x420 scaled up (the column fills the card), centred on the poem's title
-   movement; `target` is the selector to centre on. Any page can instead mark
-   one element data-og-frame to be centred (see below). */
+/* Which routes get a rendered card: every Gallery page (every scroll page
+   lives under /gallery/ since the face-lift). Most shoot their hero at the
+   full 1200x630. A descent piece (a writings entry with `treatment: descent`
+   under the same slug, The Unseen One) is a narrow column on a wide wall, so
+   it shoots at 800x420 scaled up (the column fills the card), centred on the
+   poem's title movement; `target` is the selector to centre on. Any page can
+   instead mark one element data-og-frame to be centred (see below). */
 const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 let routes = [];
+const descent = (slug) => {
+  const md = resolve(root, 'src/content/writings', `${slug}.md`);
+  if (!existsSync(md)) return false;
+  const fm = readFileSync(md, 'utf8').split('---')[1] || '';
+  return /^treatment:\s*descent/m.test(fm);
+};
 for (const f of readdirSync(resolve(root, 'src/pages/gallery'))) {
   if (f === 'index.astro' || !f.endsWith('.astro')) continue;
   const slug = f.replace(/\.astro$/, '');
-  routes.push({ slug, route: `/gallery/${slug}/`, width: 1200, settle: 1600 });
-}
-for (const f of readdirSync(resolve(root, 'src/content/writings'))) {
-  if (!f.endsWith('.md')) continue;
-  const fm = readFileSync(resolve(root, 'src/content/writings', f), 'utf8').split('---')[1] || '';
-  if (/^draft:\s*true/m.test(fm)) continue;
-  const slug = f.replace(/\.md$/, '');
-  if (/^treatment:\s*descent/m.test(fm)) {
-    routes.push({ slug, route: `/writings/${slug}/`, width: 800, settle: 2200, target: '.poem-front, .poem-movement' });
-  } else if (/^treatment:\s*scrolly/m.test(fm)) {
-    routes.push({ slug, route: `/writings/${slug}/`, width: 1200, settle: 1600 });
-  }
+  routes.push(
+    descent(slug)
+      ? { slug, route: `/gallery/${slug}/`, width: 800, settle: 2200, target: '.poem-front, .poem-movement' }
+      : { slug, route: `/gallery/${slug}/`, width: 1200, settle: 1600 },
+  );
 }
 if (only.length) {
   const unknown = only.filter((s) => !routes.some((r) => r.slug === s));

@@ -14,6 +14,8 @@
  * place of the prototype host's room API.
  */
 import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 ---
 
 <Poem
@@ -29,15 +31,23 @@ import Poem from '../../layouts/Poem.astro';
 <div id="black" aria-hidden="true"><span>the glass is dark now.<br>the face in it is yours.</span></div>
 
 <div id="guide" aria-live="polite"><p id="guideTxt">scroll slowly. the hall is listening.</p></div>
+<!-- Keyboard path for the canvas: the same state the pointer drives (mirrors,
+     the coat, the vessel), as three quiet buttons above the guide strip. -->
+<div id="keys" role="group" aria-label="Keyboard controls for the room">
+  <button type="button" id="keyMirror" aria-label="Face the next lit mirror">face a mirror</button>
+  <button type="button" id="keyCoat" aria-label="Hand the coat back to the mirror you faced">hand it back</button>
+  <button type="button" id="keyVessel" aria-label="Ring the vessel">ring the vessel</button>
+</div>
 
 <div id="hold">
-  <div class="ring" id="ring"><i>hold</i></div>
-  <p id="holdmsg">press and hold anywhere. it fills for as long as you stay.</p>
+  <button class="ring" id="ring" type="button" aria-label="Hold to fill the vessel. Press and hold Space or Enter; it fills for as long as you stay." aria-describedby="holdmsg"><i aria-hidden="true">hold</i></button>
+  <p id="holdmsg" aria-live="polite">press and hold anywhere. it fills for as long as you stay.</p>
   <button class="skip" id="skip" type="button">let go</button>
 </div>
 
 <main>
   <header class="open">
+    <p class="series"><SeriesMark id="equal-volume" /></p>
     <h1>Equal Volume</h1>
     <p class="spec">
       <b>body</b><span>stoneware, hand-built, fired once</span>
@@ -50,7 +60,7 @@ import Poem from '../../layouts/Poem.astro';
       <button type="button" data-pair>read this with one other person</button>
       <div class="box" id="pairBox">
         <div>your room <code id="myCode">····</code></div>
-        <div class="row"><span>or join theirs</span><input id="joinIn" maxlength="4" autocomplete="off" spellcheck="false" aria-label="room code"><button type="button" id="joinBtn">join</button></div>
+        <div class="row"><span>or join theirs</span><input id="joinIn" maxlength="4" autocomplete="off" spellcheck="false" aria-label="room code"><button type="button" id="joinBtn">enter</button></div>
         <div class="st" id="pairSt">alone for now</div>
       </div>
     </div>
@@ -237,10 +247,13 @@ import Poem from '../../layouts/Poem.astro';
     <b>read</b><span id="lgRead">alone</span>
   </div>
   <div class="pair" id="pairBottom" hidden><button type="button" data-pair>read it again with someone</button></div>
+  <ScrollFoot id="equal-volume" class="ev-sf" />
 </footer>
 </Poem>
 
 <style is:global>
+body.ev .open .series{font-family:var(--log);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim,#8f8a80);margin:0 0 .6rem}
+body.ev .ev-sf{padding-inline:0;max-width:none}
 /* Layout: one fixed canvas (hall, six mirrors that project and take at once, the
    vessel, the little one) behind a single column of loose lines, and a fixed
    guide strip at the bottom that tells the reader what the room wants next.
@@ -285,6 +298,7 @@ section{padding-block:18vh 10vh}
 .ln.wait{transform:translateY(14px);opacity:.42}
 .ln.gap{margin-top:2.4rem}
 .ln em{font-style:italic;font-weight:400}
+.ln .rx::before{content:attr(data-text)}
 .ln .rx{display:block;transform:scaleY(-1);opacity:.17;color:var(--glass);filter:blur(.4px);pointer-events:none;user-select:none;
   -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0),#000 85%);mask-image:linear-gradient(to bottom,rgba(0,0,0,0),#000 85%)}
 .ln.mirror .t{display:inline-block;transform:scaleX(-1);color:var(--glass)}
@@ -304,11 +318,22 @@ section{padding-block:18vh 10vh}
 #guide p b{font-weight:400;color:var(--gold)}
 #guide.hide{opacity:0;transition:opacity .4s}
 
+/* the keyboard cluster: three quiet buttons riding just above the guide strip */
+#keys{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(58px + env(safe-area-inset-bottom,0px));z-index:4;display:flex;flex-direction:column;align-items:flex-end;gap:.35rem}
+#keys button{background:rgba(6,8,13,.55);border:1px solid #2a2c33;color:#6b675f;font:inherit;font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;padding:.4rem .6rem;cursor:pointer;
+  transition:color .4s,border-color .4s}
+#keys button:hover,#keys button:focus-visible{color:var(--fg);border-color:var(--gold);outline:none}
+#keys button.live{color:var(--gold)}
+body.locked #keys{display:none}
+@media (max-width:480px){#keys{flex-direction:row;right:auto;left:0;width:100%;justify-content:center;gap:.3rem;padding-inline:8px;bottom:calc(64px + env(safe-area-inset-bottom,0px))}#keys button{font-size:.52rem;padding:.38rem .45rem}}
+
 #hold{position:fixed;left:0;right:0;bottom:0;z-index:5;display:none;flex-direction:column;align-items:center;gap:.9rem;
   padding-bottom:calc(10vh + env(safe-area-inset-bottom,0px));pointer-events:none}
 #hold.on{display:flex}
 #hold .ring{width:104px;height:104px;border-radius:50%;border:1px solid #4a4640;position:relative;display:grid;place-items:center;
+  background:none;padding:0;cursor:pointer;pointer-events:auto;color:inherit;font:inherit;
   animation:breathe 3.2s ease-in-out infinite}
+#hold .ring:focus-visible{outline:1px solid var(--gold);outline-offset:8px}
 #hold .ring.down{animation:none}
 @keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(212,168,75,0)}50%{box-shadow:0 0 0 14px rgba(212,168,75,.07)}}
 #hold .ring::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1.5px solid var(--gold);
@@ -710,7 +735,8 @@ function ledger() {
 const lines = [...document.querySelectorAll('.ln')];
 lines.forEach((el, i) => {
   el.style.marginLeft = ((i * 37) % 23) + '%';
-  if (el.closest('#sec1')) { const t = el.innerHTML; el.innerHTML = `<span class="t">${t}</span><span class="rx" aria-hidden="true">${t}</span>`; }
+  /* The reflection under each line of part I is an empty span that paints its text from data-text (::before), so the poem is in the DOM once. */
+  if (el.closest('#sec1')) { const t = el.innerHTML; const rx = document.createElement('span'); rx.className = 'rx'; rx.setAttribute('aria-hidden', 'true'); rx.dataset.text = el.textContent; el.innerHTML = `<span class="t">${t}</span>`; el.appendChild(rx); }
   if (!RM) el.classList.add('wait');
 });
 const fired = new Set();
@@ -769,26 +795,56 @@ function handBack(p) { p.state = 'empty'; p.offT = 1; found.coats++; setTimeout(
 /* ---------- pointer: lantern, mirrors, vessel ---------- */
 function movePointer(e) { lantern.style.setProperty('--lx', e.clientX + 'px'); lantern.style.setProperty('--ly', e.clientY + 'px'); }
 addEventListener('pointermove', movePointer, {passive: true});
+/* one mirror, asked: shared by the pointer and the keyboard */
+const mirrorsReady = () => tappable && S.mood >= .5 && S.mood <= 1.5;
+function askMirror(i) {
+  const p = S.panels[i];
+  if (p.state === 'glass') {
+    p.state = 'figure'; p.faceT = 1; p.flare = 1; p.beamT = 0; found.mirrors.add(i);
+    if (S.focus === i) S.focus = -1;
+    say(found.mirrors.size === 1 ? `<b>${p.name}</b>. the light went out when you looked. <b>tap again</b> to hand it back.` : `<b>${p.name}</b>. ${6 - found.mirrors.size} still lit.`);
+    ledger();
+  } else if (p.state === 'figure') { handBack(p); say(`coat returned. <b>${6 - found.mirrors.size} mirrors</b> still waiting.`); }
+}
 addEventListener('pointerdown', e => {
+  if (e.target instanceof Element && e.target.closest('#keys')) return;
   movePointer(e);
   if (vesselLive) {
     const {w, h, cx, y0} = vesselGeom();
     if (Math.abs(e.clientX - cx) < w * .55 && e.clientY > y0 - 20 && e.clientY < y0 + h + 20) { ringVessel(); return; }
   }
-  if (!tappable || S.mood < .5 || S.mood > 1.5) return;
+  if (!mirrorsReady()) return;
   const rects = panelRects();
   rects.forEach((r, i) => {
-    if (e.clientX >= r.x - 14 && e.clientX <= r.x + r.w + 14 && e.clientY >= r.y - 10 && e.clientY <= r.y + r.h + 10) {
-      const p = S.panels[i];
-      if (p.state === 'glass') {
-        p.state = 'figure'; p.faceT = 1; p.flare = 1; p.beamT = 0; found.mirrors.add(i);
-        if (S.focus === i) S.focus = -1;
-        say(found.mirrors.size === 1 ? `<b>${p.name}</b>. the light went out when you looked. <b>tap again</b> to hand it back.` : `<b>${p.name}</b>. ${6 - found.mirrors.size} still lit.`);
-        ledger();
-      } else if (p.state === 'figure') { handBack(p); say(`coat returned. <b>${6 - found.mirrors.size} mirrors</b> still waiting.`); }
-    }
+    if (e.clientX >= r.x - 14 && e.clientX <= r.x + r.w + 14 && e.clientY >= r.y - 10 && e.clientY <= r.y + r.h + 10) askMirror(i);
   });
 }, {passive: true});
+
+/* ---------- keyboard: the same room, by button ---------- */
+const keyMirror = document.getElementById('keyMirror'), keyCoat = document.getElementById('keyCoat'), keyVessel = document.getElementById('keyVessel');
+keyMirror.addEventListener('click', () => {
+  if (!mirrorsReady()) { say(found.mirrors.size === 6 ? 'every mirror has been asked.' : 'the mirrors are not lit yet. <b>keep reading</b>.'); return; }
+  let i = S.panels.findIndex((p, k) => p.state === 'glass' && k >= Math.max(0, S.focus));
+  if (i < 0) i = S.panels.findIndex(p => p.state === 'glass');
+  if (i < 0) { say('every mirror has been asked. <b>hand the coats back</b>.'); return; }
+  askMirror(i);
+  const next = S.panels.findIndex(p => p.state === 'glass');
+  S.focus = next;
+});
+keyCoat.addEventListener('click', () => {
+  const i = S.panels.findIndex(p => p.state === 'figure');
+  if (i < 0) { say(found.mirrors.size ? 'no coat is waiting. <b>face a mirror</b>.' : 'face a mirror first.'); return; }
+  askMirror(i);
+});
+keyVessel.addEventListener('click', () => {
+  if (vesselLive) ringVessel(); else say('the vessel is not whole yet. <b>keep reading</b>.');
+});
+function keysState() {
+  keyMirror.classList.toggle('live', mirrorsReady() && S.panels.some(p => p.state === 'glass'));
+  keyCoat.classList.toggle('live', S.panels.some(p => p.state === 'figure'));
+  keyVessel.classList.toggle('live', vesselLive);
+}
+setInterval(keysState, 500);
 if (RM) lantern.style.display = 'none';
 
 /* the vessel rings: a struck-bowl tone, synthesized */
@@ -815,6 +871,7 @@ function openHold() {
   S.levelT = Math.max(S.levelT, .04); S.goldT = 1;
   setTimeout(() => skip.classList.add('show'), 7000);
   updateRing();
+  try { ring.focus({preventScroll: true}); } catch (e) {}
 }
 function closeHold() {
   holdOpen = false; holdEl.classList.remove('on'); document.body.classList.remove('locked'); guide.classList.remove('hide');
@@ -823,7 +880,7 @@ function closeHold() {
 function updateRing() {
   ring.style.setProperty('--lv', S.levelT.toFixed(3));
   if (holding && !pairOk()) holdMsg.textContent = 'waiting for the other hand';
-  else if (holding) holdMsg.textContent = 'it fills as long as you stay';
+  else if (holding) holdMsg.textContent = `it fills as long as you stay · ${Math.round(S.levelT * 100)}% of the brim`;
   else holdMsg.textContent = paired() ? 'press and hold, both of you' : 'press and hold anywhere. it fills for as long as you stay.';
 }
 function down(e) {

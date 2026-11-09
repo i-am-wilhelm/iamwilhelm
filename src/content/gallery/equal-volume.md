@@ -9,6 +9,10 @@ order: 10
 status: on-view
 sign: pisces
 plate: "#1a2030"
+date: 2026-11-01
+verb: "three parts · you hold to fill the vessel"
+series: poems
+seriesNo: 3
 ---
 
 Ported from the owner's prototype page (equal-volume.html). The poem names

@@ -7,7 +7,7 @@
  * movements marked up as `.section[data-section]` in the markdown.
  *
  * This component carries the chrome around the content: the exit back to
- * the reading room, the title block with the "read it straight through"
+ * the Gallery, the title block (series label, dedication, title) with the "read it straight through"
  * un-gate (shown only once the island is live), and the styles for the
  * headnote, the poem movements, the seed gates, the metamorphosis, the hall
  * of asphodel, the seat-mirror, and the return. The island itself lives in
@@ -15,20 +15,26 @@
  *
  * One red thing on the whole page: the seeds.
  */
+import SeriesMark from '../scroll/SeriesMark.astro';
+
 interface Props {
+  /** The piece's id, for its series label. */
+  id: string;
   title: string;
   dateLabel: string;
-  eyebrow?: string;
+  /** The line above the title, the same words the poem's own front carries. */
+  dedication?: string;
 }
 
-const { title, dateLabel, eyebrow = 'The Reading Room' } = Astro.props;
+const { id, title, dateLabel, dedication } = Astro.props;
 ---
 
-<a class="descent-exit" href="/writings/"><span aria-hidden="true">&larr;</span> Writings</a>
+<a class="descent-exit" href="/gallery/" data-og-hide><span aria-hidden="true">&larr;</span> The Gallery</a>
 
 <article class="descent" aria-labelledby="descent-title">
   <header class="descent__head">
-    <p class="eyebrow">{eyebrow} &middot; <time>{dateLabel}</time></p>
+    <p class="eyebrow"><SeriesMark id={id} /> &middot; <time>{dateLabel}</time></p>
+    {dedication && <p class="descent__dedication">{dedication}</p>}
     <h1 id="descent-title" class="descent__title">{title}</h1>
     <button class="straight" id="unseen-straight" type="button" hidden>Read it straight through</button>
   </header>
@@ -36,8 +42,9 @@ const { title, dateLabel, eyebrow = 'The Reading Room' } = Astro.props;
     <slot />
   </div>
   <p class="descent__back">
-    <a href="/writings/">All writings</a>
+    <a href="/gallery/">The Gallery</a>
   </p>
+  <slot name="after" />
 </article>
 
 <style is:global>
@@ -149,6 +156,11 @@ const { title, dateLabel, eyebrow = 'The Reading Room' } = Astro.props;
     .descent__head {
       padding-inline: 0;
     }
+  }
+  .descent__dedication {
+    margin: 0;
+    font-style: italic;
+    color: var(--descent-dim);
   }
   .descent__title {
     font-weight: 500;
@@ -340,6 +352,15 @@ const { title, dateLabel, eyebrow = 'The Reading Room' } = Astro.props;
   }
   .descent__back a:hover {
     color: var(--descent-fg);
+  }
+  .descent__foot {
+    max-width: var(--descent-measure);
+    color: var(--descent-fg);
+  }
+  .descent__foot .scroll-foot__k,
+  .descent__foot .scroll-foot__note {
+    color: var(--descent-dim);
+    opacity: 1;
   }
 
   /* ---- The litany ----------------------------------------------------- */

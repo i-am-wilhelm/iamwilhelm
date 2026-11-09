@@ -6,6 +6,9 @@
  * turns toward a hand on the water. Sister page: /gallery/pharmakon/.
  */
 import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
 
 <Poem
@@ -19,9 +22,30 @@ import Poem from '../../layouts/Poem.astro';
 
   <main>
     <header class="poem-head">
-      <p class="char"><span>Light list</span><span>Character <b>Fl W 7s</b></span><span>Range <b>40 M</b></span><span>Station <b>the hidden house</b></span></p>
+      <p class="log"><SeriesMark id="the-keeper-and-the-flame" /></p>
+      <p class="char">
+        <span>Light list</span><span class="sr-only">, </span>
+        <span>Character <b>Fl W 7s</b></span><span class="sr-only">, </span>
+        <span>Range <b>40 M</b></span><span class="sr-only">, </span>
+        <span>Station <b>the hidden house</b></span>
+      </p>
       <h1>The Keeper<br />and the <em>Flame</em></h1>
       <p class="log">scroll · the beam turns · tap the water to steer it</p>
+      <!-- Keyboard path to the canvas: the same aim() a hand on the water calls. -->
+      <p class="ctl">
+        <span
+          class="ctl__k"
+          id="steer-ctl"
+          role="slider"
+          tabindex="0"
+          aria-label="Steer the beam"
+          aria-valuemin="0"
+          aria-valuemax="360"
+          aria-valuenow="180"
+          aria-valuetext="bearing 180 degrees"
+          aria-describedby="steer-help">steer the beam <span aria-hidden="true">&larr; &rarr;</span></span>
+        <span id="steer-help" class="sr-only">Left and right arrows turn the beam ten degrees, Shift for thirty. Enter or Space touches the water where it points and brightens the flame.</span>
+      </p>
     </header>
 
     <section data-mode="night">
@@ -123,6 +147,7 @@ import Poem from '../../layouts/Poem.astro';
       <p class="l morning" style="--ml:16%">and comes back as the morning,</p>
       <p class="l stars-line morning gap" style="--ml:30%"><span class="star">star</span> by <span class="star">star</span> by <span class="star">star</span>.</p>
       <footer class="poem-foot"><span>Michael Wilhelm · 2026</span><a href="/gallery/">Return to the gallery</a></footer>
+      <ScrollFoot id="the-keeper-and-the-flame" class="poem-sf" />
     </section>
   </main>
 </Poem>
@@ -161,6 +186,45 @@ import Poem from '../../layouts/Poem.astro';
   }
   .aries {
     color: var(--aries);
+  }
+  /* Quiet controls: the keyboard's way to the canvas, in the log's voice. */
+  .ctl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.2rem;
+    margin-top: -0.4rem;
+  }
+  .ctl__k {
+    display: inline-block;
+    font-family: var(--log);
+    font-size: 0.5em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    color: var(--dim);
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--dim) 35%, transparent);
+    border-radius: 0;
+    padding: 0.35em 0.75em;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.4s ease, border-color 0.4s ease;
+  }
+  .ctl__k:hover,
+  .ctl__k:focus-visible {
+    color: var(--fg);
+    border-color: var(--ember);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* stairs: the liturgy climbs */
@@ -430,11 +494,40 @@ import Poem from '../../layouts/Poem.astro';
     steerUntil = performance.now() + ms;
   }
   addEventListener('pointerdown', (e) => {
-    if ((e.target as Element).closest('a,button')) return;
+    if ((e.target as Element).closest('a,button,[role="slider"]')) return;
     aim(e.clientX, e.clientY, 2600);
     target.flame = Math.min(2.4, target.flame + 0.3);
   }, { passive: true });
   addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') aim(e.clientX, e.clientY, 900); }, { passive: true });
+
+  // The keyboard's hand: a slider in the header that writes the same `steer`
+  // the pointer does. Bearing is the canvas angle (0 right, 90 down, 180 left
+  // across the water); Enter or Space is the tap, flame and all.
+  const steerCtl = document.getElementById('steer-ctl')!;
+  let bearing = 180;
+  function setBearing(deg: number, touch = false) {
+    bearing = ((deg % 360) + 360) % 360;
+    steerCtl.setAttribute('aria-valuenow', String(Math.round(bearing)));
+    steerCtl.setAttribute('aria-valuetext', `bearing ${Math.round(bearing)} degrees`);
+    steer = (bearing * Math.PI) / 180;
+    steerUntil = performance.now() + 2600;
+    if (touch) target.flame = Math.min(2.4, target.flame + 0.3);
+  }
+  steerCtl.addEventListener('keydown', (e) => {
+    const step = e.shiftKey ? 30 : 10;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowUp': setBearing(bearing + step); break;
+      case 'ArrowLeft': case 'ArrowDown': setBearing(bearing - step); break;
+      case 'PageUp': setBearing(bearing + 30); break;
+      case 'PageDown': setBearing(bearing - 30); break;
+      case 'Home': setBearing(0); break;
+      case 'End': setBearing(359); break;
+      case 'Enter': case ' ': setBearing(bearing, true); break;
+      default: return;
+    }
+    e.preventDefault();
+  });
+  steerCtl.addEventListener('click', () => setBearing(bearing, true));
 
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
   const mix = (c1: RGB, c2: RGB, t: number): RGB => c1.map((v, i) => Math.round(lerp(v, c2[i], t))) as RGB;
