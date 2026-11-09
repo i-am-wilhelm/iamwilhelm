@@ -111,5 +111,32 @@ not a text: inferred, not cited, and tagged accordingly.
            | |\ \       || )
           (_/ (_/      ((_/
 
-    Set in monospace, whatever you have. The Gallery is at /gallery/.
-    The rest of the house: /writings/ · /method/ · /support/ · /rss.xml
+    Set in monospace, whatever you have.
+
+
+The blog
+------------------------------------------------------------
+The reading room, where the long pieces are:
+
+    https://iamwilhelm.com/writings/          essays and close readings
+    https://iamwilhelm.com/gallery/           the scroll pages
+    https://iamwilhelm.com/rss.xml            follow everything (Atom: /atom.xml)
+
+
+For hire
+------------------------------------------------------------
+The cats are free. I am not.
+
+    Web design and development, for campaigns, causes and small shops:
+    https://backgold.com
+    Book a consultation:
+    https://app.backgold.com/book/backgold/web-design-consultation
+
+    Media and sites for the liberty movement:
+    https://advancinglibertymedia.com
+
+    Or write: wilhelm@backgold.com
+
+           /\_/\
+          ( o.o )   "Yes, this cat is a business card."
+           > ^ <
