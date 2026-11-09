@@ -41,6 +41,10 @@ import { CONTACT_EMAIL, SCHEDULER_URL, SCHEDULER_IS_PLACEHOLDER } from '../../co
         <Newsletter />
       </div>
     </div>
+    <p class="colophon__cats" data-reveal>
+      There is one room that is not on the map. It is plain text and it is full of cats:
+      <a class="text-link" href="/cats.txt">cats.txt</a>
+    </p>
   </div>
 </section>
 
@@ -109,6 +113,18 @@ import { CONTACT_EMAIL, SCHEDULER_URL, SCHEDULER_IS_PLACEHOLDER } from '../../co
     margin-top: 0.6rem;
     color: var(--ink-soft);
     overflow-wrap: anywhere;
+  }
+  .colophon__cats {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 0.95rem;
+    max-width: var(--measure);
+  }
+  .colophon__cats a {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
   }
   @media (max-width: 760px) {
     .colophon__grid {
