@@ -29,6 +29,8 @@ const writings = defineCollection({
     .object({
       title: z.string(),
       date: z.coerce.date(),
+      /** Last substantive revision, for dateModified; `date` when absent. */
+      updated: z.coerce.date().optional(),
       /** Symbols chosen for thematic relevance to the piece (spec §4.6). */
       symbols: z.array(z.string()).default([]),
       /** Accent token id from src/design/tokens.ts. */
@@ -81,6 +83,8 @@ const gallery = defineCollection({
       year: z.coerce.string().optional(),
       /** Publication date, for the feeds and newest-first ordering. */
       date: z.coerce.date().optional(),
+      /** Last substantive revision, for dateModified in the piece's Article schema; `date` when absent. */
+      updated: z.coerce.date().optional(),
       /** One line under the title on the card and the plate. */
       epigraph: z.string().optional(),
       /** Longer summary for feeds and meta; the epigraph stands in when absent. */

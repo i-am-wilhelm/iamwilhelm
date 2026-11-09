@@ -17,6 +17,8 @@
  */
 import { FEEDS, SITE_NAME, SITE_URL } from '../config/site';
 import { ogImage } from '../config/og';
+import { series as registry } from '../config/series';
+import { getPieces } from '../lib/pieces';
 
 interface Props {
   title: string;
@@ -35,8 +37,10 @@ interface Props {
   exit?: boolean;
   /** What the piece belongs to, for the title suffix and the schema. Default: the Gallery. */
   partOf?: { name: string; url: string; type?: string };
-  /** Publication date, for datePublished and article:published_time. */
+  /** Publication date, for datePublished and article:published_time. Default: the piece's `date`. */
   published?: Date;
+  /** Last substantive revision, for dateModified. Default: the piece's `updated`, else `published`. */
+  modified?: Date;
   /** Font files to preload (site-root paths). Default: the Cormorant the night pieces set. */
   preload?: string[];
 }
@@ -51,8 +55,9 @@ const {
   bodyClass,
   scheme = 'dark',
   exit = true,
-  partOf = { name: 'The Gallery', url: `${SITE_URL}/gallery/`, type: 'CollectionPage' },
-  published,
+  partOf: partOfProp,
+  published: publishedProp,
+  modified: modifiedProp,
   preload = ['/fonts/cormorant-garamond-latin-400-normal.woff2'],
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE_URL).href;
@@ -61,17 +66,39 @@ const canonical = new URL(Astro.url.pathname, SITE_URL).href;
    stands in until it exists. */
 const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop();
 const image = ogImage(`/og/${slug}.jpg`);
+/* The piece's collection entry, by slug: its dates and series feed the
+   Article schema so a page need not repeat them. */
+const piece = (await getPieces()).find((p) => p.kind === 'scroll' && p.id === slug);
+const published = publishedProp ?? piece?.date;
+const modified = modifiedProp ?? piece?.gallery?.data.updated ?? published;
+const s = piece?.series ? registry[piece.series] : undefined;
+const partOf =
+  partOfProp ??
+  (s
+    ? { name: s.title, url: `${SITE_URL}${s.href}`, type: 'CreativeWorkSeries' }
+    : { name: 'The Gallery', url: `${SITE_URL}/gallery/`, type: 'CollectionPage' });
+/* The plain-text twin (src/pages/gallery/[slug]/twin.astro): the same piece as semantic HTML. */
+const twinUrl = `${canonical.replace(/\/?$/, '/')}twin/`;
 const fullTitle = `${title} · ${partOf.name} · ${SITE_NAME}`;
 
+/* Article, so every piece carries author, datePublished, dateModified and
+   its own share image; `genre` keeps the poem or essay. The author is the
+   site's one Person, named by @id (the Museum pages carry the full node)
+   and by name and url here, where no other node is on the page. */
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'CreativeWork',
-  '@id': `${canonical}#poem`,
+  '@type': 'Article',
+  '@id': `${canonical}#article`,
+  mainEntityOfPage: canonical,
+  headline: title,
   name: title,
+  description,
   genre,
   url: canonical,
+  image,
   dateCreated: year,
   ...(published && { datePublished: published.toISOString() }),
+  ...(modified && { dateModified: modified.toISOString() }),
   author: { '@type': 'Person', '@id': `${SITE_URL}/#person`, name: 'Michael Wilhelm', url: `${SITE_URL}/` },
   isPartOf: { '@type': partOf.type ?? 'CollectionPage', name: partOf.name, url: partOf.url },
 };
@@ -95,6 +122,7 @@ const htmlStyle = `--night:${night};--exit:${accent}${scheme === 'light' ? ';col
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {preload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
     {FEEDS.map((f) => <link rel="alternate" type={f.type} title={f.title} href={f.href} />)}
+    <link rel="alternate" type="text/html" title={`${title} · plain text`} href={twinUrl} />
     <slot name="head" />
 
     <meta property="og:type" content="article" />
@@ -106,6 +134,8 @@ const htmlStyle = `--night:${night};--exit:${accent}${scheme === 'light' ? ';col
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     {published && <meta property="article:published_time" content={published.toISOString()} />}
+    {modified && <meta property="article:modified_time" content={modified.toISOString()} />}
+    <meta property="article:author" content={`${SITE_URL}/`} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />

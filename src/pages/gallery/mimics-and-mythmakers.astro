@@ -19,6 +19,7 @@
 import Poem from '../../layouts/Poem.astro';
 import SplitText from '../../components/scroll/SplitText.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
@@ -33,7 +34,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   bodyClass="mimics"
   preload={['/fonts/bodoni-moda-latin-opsz-normal.woff2', '/fonts/literata-latin-opsz-normal.woff2']}
 >
-<canvas id="sea" aria-hidden="true"></canvas>
+<canvas id="sea" aria-hidden="true" data-twin="A fixed canvas behind the page is the water column: light rays at the surface, bubbles, marine snow in the twilight, bioluminescence in the dark. A depth readout and a gauge at the edge track the metres as the reader sinks and climbs back up."></canvas>
 <div class="readout" aria-hidden="true" data-og-hide><span class="ro-depth">0 m</span><span class="ro-zone">The surface</span></div>
 <div class="gauge" aria-hidden="true" data-og-hide><i style="top:13.5%"></i><i style="top:30.2%"></i><i style="top:60.5%"></i><i style="top:74.1%"></i><i style="top:100%"></i><b></b></div>
 
@@ -52,7 +53,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <p class="eyebrow"><SeriesMark id="mimics-and-mythmakers" /> &middot; An essay in six depths and one ascent</p>
     <SplitText as="div" readAs="h1" readClass="title" ghostClass="reflection" parts={[{ text: 'Mimics' }, { text: '& Mythmakers', tag: 'em' }]} />
     <p class="deck">Every man is a mirror. Most of them are pointed at a screen.</p>
-    <p class="byline">Michael Wilhelm</p>
+    <p class="byline"><Byline /></p>
     <p class="cue">Scroll to go under</p>
   </div>
 </header>
@@ -133,11 +134,11 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <figure class="fig glow" style="--mark:var(--biolum);--track:rgba(127,208,255,.13)">
       <p class="fig-num">76<small>of every 100</small></p>
       <div class="units" data-n="76" role="img" aria-label="76 of 100 dots lit: animals observed in the open ocean that can make their own light"></div>
-      <div class="key"><span>Can make light</span><span class="off">Can't</span></div>
+      <div class="key" data-twin-skip><span>Can make light</span><span class="off">Can't</span></div>
       <figcaption>Animals seen in the open water off California, surface to 3,900 m. Martini &amp; Haddock, <i>Scientific Reports</i>, 2017.</figcaption>
     </figure>
     <p class="lead">Down here, the only light is the light you make.</p>
-    <p class="hint">Tap the dark</p>
+    <p class="hint" data-twin="Tap the dark: in the midnight zone a tap on the page makes a point of light, the way three in four animals down here do.">Tap the dark</p>
     <p class="lead">This is the work. Look around and feel the world around you. Reach deep and create the meaning in yourself. Test it. Dive deeper. Test it. Repeat.</p>
     <figure class="fig dive">
       <svg viewBox="0 0 360 232" role="img" aria-label="Dive profile: down to reach, up to test, deeper, up to test, deeper, up to test with others, then back to the dive">
@@ -172,7 +173,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
         <div><p>1990</p><div class="units sm" data-n="3" role="img" aria-label="1990: 3 of 100 men reported no close friends"></div><p class="val">3 in 100</p></div>
         <div><p>2021</p><div class="units sm" data-n="15" role="img" aria-label="2021: 15 of 100 men reported no close friends"></div><p class="val">15 in 100</p></div>
       </div>
-      <div class="key"><span>No close friends</span><span class="off">At least one</span></div>
+      <div class="key" data-twin-skip><span>No close friends</span><span class="off">At least one</span></div>
       <figcaption>American men. Survey Center on American Life, 2021, against a 1990 Gallup poll. The method changed between the two, and some later polls find a smaller gap.</figcaption>
     </figure>
     <p class="lead">Know the people around you. Know the color of their eyes.</p>
@@ -242,7 +243,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <figure class="fig" style="--mark:var(--dawn);--track:rgba(226,176,98,.17)">
       <p class="fig-num">≈7h<small>of a 16-hour waking day</small></p>
       <div class="meter" data-n="7" data-total="16" role="img" aria-label="About 7 of 16 waking hours on an internet-connected screen"></div>
-      <div class="key"><span>On a screen</span><span class="off">Everything else</span></div>
+      <div class="key" data-twin-skip><span>On a screen</span><span class="off">Everything else</span></div>
       <figcaption>U.S. internet users, DataReportal figures compiled by Exploding Topics. Other estimates run from about 6½ to 7 hours.</figcaption>
     </figure>
     <p>In 2004, 28% of Americans read for pleasure on an average day. By 2023 it was 16%, a drop of more than 40% in twenty years.</p>
@@ -257,7 +258,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <figure class="fig" style="--mark:var(--dawn);--track:rgba(226,176,98,.17)">
       <p class="fig-num">54<small>of every 100 adults</small></p>
       <div class="units" data-n="54" role="img" aria-label="54 of 100 dots filled: American adults reading below the equivalent of a sixth-grade level"></div>
-      <div class="key"><span>Below a sixth-grade equivalent</span><span class="off">At or above</span></div>
+      <div class="key" data-twin-skip><span>Below a sixth-grade equivalent</span><span class="off">At or above</span></div>
       <figcaption>Adults 16–74. Gallup for the Barbara Bush Foundation, 2020, from federal PIAAC data; the test's makers discourage grade-level comparisons. 2023 figures from NCES.</figcaption>
     </figure>
     <p>Language is the operating system. The way we speak wires the brain, and words become actions. Dumb down a people's language and you undermine the civilization running on it.</p>
@@ -302,7 +303,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
       <li>Depths follow the standard ocean zones. Challenger Deep is usually given as about 10,935 m; estimates differ by a few dozen meters.</li>
     </ol>
     <MethodLink class="colophon" />
-    <p class="mm-foot"><span>an essay &middot; Michael Wilhelm &middot; 2026</span><a href="/gallery/">Return to the gallery</a></p>
+    <p class="mm-foot"><span>an essay &middot; <Byline /> &middot; 2026</span><a href="/gallery/">Return to the gallery</a></p>
     <ScrollFoot id="mimics-and-mythmakers" class="mm-sf" />
   </div>
 </footer>

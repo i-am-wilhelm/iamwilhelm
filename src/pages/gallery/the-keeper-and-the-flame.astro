@@ -7,6 +7,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
@@ -22,7 +23,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
 
   <main>
     <header class="poem-head">
-      <p class="log"><SeriesMark id="the-keeper-and-the-flame" /></p>
+      <p class="log"><SeriesMark id="the-keeper-and-the-flame" /> &middot; <Byline /></p>
       <p class="char">
         <span>Light list</span><span class="sr-only">, </span>
         <span>Character <b>Fl W 7s</b></span><span class="sr-only">, </span>
@@ -32,7 +33,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
       <h1>The Keeper<br />and the <em>Flame</em></h1>
       <p class="log">scroll · the beam turns · tap the water to steer it</p>
       <!-- Keyboard path to the canvas: the same aim() a hand on the water calls. -->
-      <p class="ctl">
+      <p class="ctl" data-twin="A fixed canvas behind the poem is the sea at night: a lighthouse beam that turns, the flame in the glass that brightens, stars, and the water the reader taps to steer the beam; by the last movement the dawn comes up over it. On a keyboard the arrows turn the beam.">
         <span
           class="ctl__k"
           id="steer-ctl"
@@ -146,7 +147,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
       <p class="l gap morning" style="--ml:0%">The light goes out across the world</p>
       <p class="l morning" style="--ml:16%">and comes back as the morning,</p>
       <p class="l stars-line morning gap" style="--ml:30%"><span class="star">star</span> by <span class="star">star</span> by <span class="star">star</span>.</p>
-      <footer class="poem-foot"><span>Michael Wilhelm · 2026</span><a href="/gallery/">Return to the gallery</a></footer>
+      <footer class="poem-foot"><span><Byline /> · 2026</span><a href="/gallery/">Return to the gallery</a></footer>
       <ScrollFoot id="the-keeper-and-the-flame" class="poem-sf" />
     </section>
   </main>

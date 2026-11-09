@@ -1,27 +1,27 @@
 ---
 /**
- * The framed tiles of the Gallery, shared by Room II and /gallery. Each
- * piece on view is one link to its page, so the wall is a plain list of
- * links in tab order. Forthcoming entries hang as empty frames with no link.
+ * The framed tiles of the Gallery (PoemCard), shared by Room II, /gallery
+ * and /services. Each piece on view is one link to its page, so the wall is
+ * a plain list of links in tab order; forthcoming entries hang as empty
+ * frames with no link. The catalogue `order` sorts the wall and is not
+ * printed.
  *
- * The placard under each frame: the series label as the primary line
- * ("In the Original · No. 1", in the series accent), the title, the one-line
- * description, and the verb line from the entry's `verb` ("nine steps · you
- * draw the bow"). The catalogue `order` sorts the wall and is not printed.
  * With `hero`, the homepage wall hangs its first piece as the hero frame:
  * the full width of the wall, frame and placard side by side. With `ids`,
  * only those frames hang, in that order (the commissions page); with
  * `thumbs`, each frame shows the piece's own share image (public/og/<id>.jpg)
- * in place of the painted plate.
+ * in place of the painted plate. With `grouped` (/gallery), the wall is
+ * hung by series, in the order of src/config/series.ts: each series gets a
+ * heading that links to its index, its one-line statement, and its pieces
+ * by number; a piece in no series hangs last, under "Elsewhere".
  */
-import Glyph from './Glyph.astro';
-import { roman } from './zodiac';
-import { series as registry, seriesAccent } from '../../config/series';
+import PoemCard from './PoemCard.astro';
+import { series as registry, seriesAccent, seriesIds, type SeriesId } from '../../config/series';
 import { getCollection } from 'astro:content';
-import { getScrollPieces } from '../../lib/pieces';
+import { getScrollPieces, type Piece } from '../../lib/pieces';
 
 interface Props {
-  /** Heading level for tile titles (h3 inside a room, h2 on /gallery). */
+  /** Heading level for tile titles (h3 inside a room, h2 on a flat page); grouped, the series headings take it and the tiles one lower. */
   level?: 2 | 3;
   /** Hang the first piece as the hero frame (the homepage wall). */
   hero?: boolean;
@@ -29,83 +29,71 @@ interface Props {
   ids?: string[];
   /** Show each piece's share image in the frame instead of the plate. */
   thumbs?: boolean;
+  /** Hang the wall by series. */
+  grouped?: boolean;
 }
-const { level = 3, hero = false, ids, thumbs = false } = Astro.props;
+const { level = 3, hero = false, ids, thumbs = false, grouped = false } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
+const tileLevel = (grouped ? level + 1 : level) as 2 | 3 | 4;
 
 /* Every frame, on view or forthcoming, in wall order; the pieces view
    carries the series and verb for the ones on view. */
 const all = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
 const frames = ids ? ids.map((id) => all.find((f) => f.id === id)).filter((f) => !!f) : all;
 const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
+
+type Group = { id?: SeriesId; name: string; href?: string; statement?: string; accent?: string; frames: typeof frames };
+const groups: Group[] = [];
+if (grouped) {
+  for (const id of seriesIds) {
+    const s = registry[id];
+    const inSeries = frames
+      .filter((f) => pieces.get(f.id)?.series === id)
+      .sort((a, b) => (pieces.get(a.id)?.seriesNo ?? 0) - (pieces.get(b.id)?.seriesNo ?? 0));
+    if (inSeries.length) groups.push({ id, name: s.name, href: s.href, statement: s.statement, accent: seriesAccent(id), frames: inSeries });
+  }
+  const loose = frames.filter((f) => !pieces.get(f.id)?.series);
+  if (loose.length) groups.push({ name: 'Elsewhere', frames: loose });
+}
+const pieceFor = (id: string): Piece | undefined => pieces.get(id);
 ---
 
-<ul class="poems" role="list">
-  {
-    frames.map((f, i) => {
-      const d = f.data;
-      const p = pieces.get(f.id);
-      const onView = !!p;
-      const isHero = hero && i === 0 && onView;
-      const s = p?.series ? registry[p.series] : undefined;
-      const inner = (
-        <>
-          <div class="poem__frame" aria-hidden="true">
-            <div class="poem__mat">
-              {thumbs ? (
-                <img
-                  class="poem__thumb"
-                  src={`/og/${f.id}.jpg`}
-                  alt=""
-                  width="1200"
-                  height="630"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-              <div class="poem__plate" style={`--plate: ${d.plate}`}>
-                <Glyph sign={d.sign} size={28} class="poem__glyph" />
-                <span class="poem__plate-title" data-text={d.plateTitle ?? d.title} />
-                {d.epigraph && <span class="poem__plate-epigraph" data-text={d.epigraph} />}
-                {!onView && <span class="poem__plate-epigraph" data-text="In preparation" />}
-              </div>
-              )}
-            </div>
-          </div>
-          <div class="poem__placard">
-            <p class="poem__series mono" style={s && p?.series ? `--series-accent: ${seriesAccent(p.series)}` : undefined}>
-              {s && p?.label ? <span>{p.label}</span> : <span class="poem__series--none">Forthcoming</span>}
-              {d.year && <span class="poem__year">{d.year}</span>}
-            </p>
-            <H class="poem__title">{d.title}</H>
-            {(p?.line ?? d.epigraph) && <p class="poem__epigraph">{p?.line ?? d.epigraph}</p>}
-            {p?.verb && <p class="poem__verb">{p.verb}</p>}
-            {onView ? (
-              <span class="poem__open smallcaps">Enter the work</span>
-            ) : (
-              <span class="poem__open poem__open--soon smallcaps">Forthcoming</span>
-            )}
-          </div>
-        </>
-      );
-      return (
-        <li
-          class:list={['poem', !onView && 'poem--forthcoming', isHero && 'poem--hero']}
-          data-reveal
-          data-numeral={roman(i + 1)}
+{
+  grouped ? (
+    <div class="walls">
+      {groups.map((g) => (
+        <section
+          class="wall"
+          aria-labelledby={`wall-${g.id ?? 'elsewhere'}`}
+          style={g.accent ? `--series-accent: ${g.accent}` : undefined}
         >
-          {onView ? (
-            <a class="poem__link" href={p.path}>
-              {inner}
-            </a>
-          ) : (
-            <div class="poem__link">{inner}</div>
-          )}
-        </li>
-      );
-    })
-  }
-</ul>
+          <header class="wall__head" data-reveal>
+            <H class="wall__title display" id={`wall-${g.id ?? 'elsewhere'}`}>
+              {g.href ? <a href={g.href}>{g.name}</a> : g.name}
+            </H>
+            {g.statement && <p class="wall__statement">{g.statement}</p>}
+            {g.href && (
+              <p class="wall__all mono">
+                <a href={g.href}>All of {g.name}</a>
+              </p>
+            )}
+          </header>
+          <ul class="poems" role="list">
+            {g.frames.map((f, i) => (
+              <PoemCard frame={f} piece={pieceFor(f.id)} index={i} level={tileLevel} thumb={thumbs} />
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  ) : (
+    <ul class="poems" role="list">
+      {frames.map((f, i) => (
+        <PoemCard frame={f} piece={pieceFor(f.id)} index={i} level={tileLevel} hero={hero && i === 0} thumb={thumbs} />
+      ))}
+    </ul>
+  )
+}
 
 <style>
   .poems {
@@ -114,223 +102,55 @@ const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
     gap: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(1.5rem, 1rem + 2vw, 3rem);
   }
-  .poem {
-    min-width: 0;
-  }
-  .poem__link {
+
+  /* The wall by series: a heading in the series' accent, the statement,
+     then the frames. */
+  .walls {
     display: grid;
-    align-content: start;
-    gap: 1.25rem;
-    height: 100%;
+    gap: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+  }
+  .wall {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    padding-top: clamp(2rem, 1.5rem + 2vw, 3rem);
+    border-top: 1px solid var(--rule);
+  }
+  .wall__head {
+    display: grid;
+    gap: 0.5rem;
+    max-width: 40rem;
+  }
+  .wall__title {
+    font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.6rem);
+    color: var(--series-accent, var(--ink));
+  }
+  .wall__title a {
     color: inherit;
     text-decoration: none;
-    outline-offset: 8px;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size calc(var(--beat) * 1.2) var(--ease-settle);
   }
-
-  /* Frame: charcoal moulding, ivory mat, gilt fillet, a dark plate. */
-  .poem__frame {
-    padding: 10px;
-    background: linear-gradient(135deg, #2a2622, #1a1815 60%, #2a2622);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.4),
-      0 24px 40px -26px rgba(40, 28, 12, 0.6);
-    transition:
-      transform calc(var(--beat) * 1.2) var(--ease-settle),
-      box-shadow calc(var(--beat) * 1.2) var(--ease-settle);
+  .wall__title a:hover,
+  .wall__title a:focus-visible {
+    background-size: 100% 1px;
   }
-  .poem__mat {
-    padding: clamp(1rem, 0.7rem + 1.2vw, 1.6rem);
-    background: #fbf8f1;
-    outline: 1px solid var(--gilt);
-    outline-offset: -5px;
-  }
-  .poem__plate {
-    position: relative;
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: 0.9rem;
-    aspect-ratio: 4 / 5;
-    padding: 1.5rem 1.25rem;
-    container-type: inline-size;
-    text-align: center;
-    color: #efe6d3;
-    background:
-      radial-gradient(90% 70% at 50% 35%, color-mix(in srgb, var(--plate) 70%, #fff 12%), transparent 75%),
-      var(--plate);
-    overflow: hidden;
-  }
-  /* The share image as the plate: the page's own opening frame. */
-  .poem__thumb {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1200 / 630;
-    object-fit: cover;
-    background: #1d1b18;
-  }
-  .poem__plate::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-  .poem :global(.poem__glyph) {
-    color: var(--gilt-bright);
-    opacity: 0.9;
-  }
-  /* The plate repeats the placard's title and line as decoration: painted from
-     data-text so each is in the DOM once (the plate is aria-hidden besides). */
-  .poem__plate-title::before,
-  .poem__plate-epigraph::before {
-    content: attr(data-text);
-  }
-  .poem__plate-title {
-    font-family: var(--font-display);
-    font-weight: 300;
-    /* Sized to the plate so one long word (PHARMAKON) never pushes the frame wider. */
-    font-size: min(2.1rem, 10.5cqi);
-    letter-spacing: 0.24em;
-    line-height: 1.15;
-    text-transform: uppercase;
-    padding-left: 0.24em;
-    transition: letter-spacing calc(var(--beat) * 1.6) var(--ease-settle);
-  }
-  .poem__plate-epigraph {
-    max-width: 16rem;
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1.05rem;
-    line-height: 1.35;
-    color: rgba(239, 230, 211, 0.82);
-  }
-
-  .poem__placard {
-    display: grid;
-    gap: 0.35rem;
-    align-content: start;
-  }
-  /* The primary line: the series, in its accent; the year sits opposite. */
-  .poem__series {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.2rem 1rem;
-    color: var(--series-accent, var(--gilt-ink));
-    letter-spacing: 0.06em;
-  }
-  .poem__series--none {
-    color: var(--ink-faint);
-  }
-  .poem__year {
-    color: var(--ink-faint);
-    font-variant-numeric: oldstyle-nums;
-  }
-  .poem__title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.95rem);
-    line-height: 1.12;
-  }
-  .poem__epigraph {
+  .wall__statement {
     color: var(--ink-soft);
-    font-size: 1rem;
-    line-height: 1.45;
+    text-wrap: pretty;
   }
-  /* The verb line: what the page is and what the reader does in it. */
-  .poem__verb {
-    color: var(--ink-faint);
-    font-style: italic;
-    font-size: 0.95rem;
-    line-height: 1.4;
-  }
-  .poem__open {
-    margin-top: 0.4rem;
-    color: var(--room-accent, var(--gilt-ink));
+  .wall__all a {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
+    min-height: 44px;
+    color: var(--series-accent, var(--gilt-ink));
+    text-decoration: none;
+    text-underline-offset: 0.3em;
   }
-  .poem__open::after {
-    content: '';
-    width: 1.4rem;
-    height: 1px;
-    background: currentColor;
-    transition: width 500ms var(--ease-settle);
-  }
-  .poem__open--soon::after {
-    display: none;
-  }
-  .poem__open--soon {
-    color: var(--ink-faint);
-  }
-
-  a.poem__link:hover .poem__frame,
-  a.poem__link:focus-visible .poem__frame {
-    transform: translateY(-4px);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.4),
-      0 34px 50px -26px rgba(40, 28, 12, 0.7);
-  }
-  a.poem__link:hover .poem__plate-title,
-  a.poem__link:focus-visible .poem__plate-title {
-    letter-spacing: 0.3em;
-  }
-  a.poem__link:hover .poem__open::after,
-  a.poem__link:focus-visible .poem__open::after {
-    width: 2.4rem;
-  }
-  /* The hero frame: the wall's first piece across the whole wall, a wide
-     plate beside its placard. Stacked on narrow screens, where the plate
-     squares up instead of the tiles' 4:5. */
-  .poem--hero {
-    grid-column: 1 / -1;
-  }
-  .poem--hero .poem__link {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    align-items: center;
-    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
-  }
-  .poem--hero .poem__frame {
-    padding: 14px;
-  }
-  .poem--hero .poem__plate {
-    aspect-ratio: 16 / 10;
-    gap: 1.2rem;
-    padding: 2rem;
-  }
-  .poem--hero .poem__plate-title {
-    font-size: min(3.2rem, 7.5cqi);
-  }
-  .poem--hero .poem__plate-epigraph {
-    max-width: 28rem;
-    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
-  }
-  .poem--hero .poem__placard {
-    gap: 0.5rem;
-  }
-  .poem--hero .poem__title {
-    font-size: clamp(2.1rem, 1.5rem + 2vw, 3.2rem);
-  }
-  .poem--hero .poem__epigraph {
-    max-width: 30rem;
-    font-size: 1.1rem;
-  }
-  @media (max-width: 820px) {
-    .poem--hero .poem__link {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .poem--hero .poem__plate {
-      aspect-ratio: 1 / 1;
-      padding: 1.5rem 1.25rem;
-    }
-  }
-
-  .poem--forthcoming .poem__plate {
-    filter: saturate(0.6);
-  }
-  .poem--forthcoming .poem__plate-title {
-    opacity: 0.75;
+  .wall__all a:hover,
+  .wall__all a:focus-visible {
+    text-decoration: underline;
   }
 </style>

@@ -24,6 +24,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "typescript": "^5.9.3",
+    "ultrahtml": "^1.7.0",
     "wrangler": "^4.14.0"
   }
 }

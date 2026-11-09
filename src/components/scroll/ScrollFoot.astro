@@ -1,8 +1,9 @@
 ---
 /**
  * The foot of every scroll page and every reading: share the piece (copy
- * the link, X, Bluesky; the card each platform draws comes from the page's
- * own og:image), the next piece in its series by number (wrapping to the
+ * the link, X, Facebook, Bluesky, and the device's own share sheet where
+ * navigator.share exists; the card each platform draws comes from the
+ * page's own og:image), the next piece in its series by number (wrapping to the
  * series index after the last), the newsletter field (the same form and
  * endpoint as the colophon, via NewsletterForm), and the patronage door to
  * /support, and one line to the commissions page, since every piece ends here.
@@ -28,6 +29,7 @@ const s = p.series ? registry[p.series] : undefined;
 const shareText = [p.title, p.label].filter(Boolean).join(' · ');
 const x = `https://x.com/intent/post?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(p.url)}`;
 const bsky = `https://bsky.app/intent/compose?text=${encodeURIComponent(`${shareText} ${p.url}`)}`;
+const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(p.url)}`;
 const uid = `sf-${id}`;
 ---
 
@@ -39,7 +41,9 @@ const uid = `sf-${id}`;
       <div class="scroll-foot__row">
         <button class="scroll-foot__btn" type="button" data-copy={p.url}>Copy link</button>
         <a class="scroll-foot__btn" href={x} rel="noopener noreferrer" target="_blank">Post on X</a>
+        <a class="scroll-foot__btn" href={fb} rel="noopener noreferrer" target="_blank">Share on Facebook</a>
         <a class="scroll-foot__btn" href={bsky} rel="noopener noreferrer" target="_blank">Post on Bluesky</a>
+        <button class="scroll-foot__btn" type="button" data-share-title={p.title} data-share-url={p.url} hidden>Share&hellip;</button>
       </div>
       <p class="scroll-foot__status" role="status" aria-live="polite" data-copy-status></p>
     </div>
@@ -74,11 +78,30 @@ const uid = `sf-${id}`;
     </div>
   </div>
   <p class="scroll-foot__commission">
+    {p.twinPath && (
+      <span class="scroll-foot__twin">
+        Plain text: <a href={p.twinPath}>read this piece as text</a> &middot;{' '}
+      </span>
+    )}
     Pieces like these are built to order. <a href="/services/">Commissions &rarr;</a>
   </p>
 </aside>
 
 <script>
+  /* The device's own share sheet (phones, mostly): shown only where the
+     browser offers it, so the row never promises a control it lacks. */
+  if (typeof navigator.share === 'function') {
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('.scroll-foot [data-share-url]')) {
+      btn.hidden = false;
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.share({ title: btn.dataset.shareTitle, url: btn.dataset.shareUrl });
+        } catch {
+          /* The reader closed the sheet. */
+        }
+      });
+    }
+  }
   for (const btn of document.querySelectorAll<HTMLButtonElement>('.scroll-foot [data-copy]')) {
     const status = btn.closest('.scroll-foot__cell')?.querySelector<HTMLElement>('[data-copy-status]');
     btn.addEventListener('click', async () => {

@@ -19,8 +19,10 @@ import Museum from '../../layouts/Museum.astro';
 import Placard from '../../components/museum/Placard.astro';
 import Meander from '../../components/museum/Meander.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import { series as registry } from '../../config/series';
 import { SITE_URL } from '../../config/site';
+import { ogImage } from '../../config/og';
 import { getPiece } from '../../lib/pieces';
 
 export async function getStaticPaths() {
@@ -39,6 +41,7 @@ const date = post.data.date;
 const dateLabel = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const url = piece.url;
 const s = piece.series ? registry[piece.series] : undefined;
+const modified = post.data.updated ?? date;
 ---
 
     <Museum
@@ -50,10 +53,14 @@ const s = piece.series ? registry[piece.series] : undefined;
       '@type': 'Article',
       '@id': `${url}#article`,
       url,
+      mainEntityOfPage: url,
       headline: post.data.title,
       description: post.data.description,
+      image: ogImage('/og.png'),
       datePublished: date.toISOString(),
+      dateModified: modified.toISOString(),
       author: { '@id': `${SITE_URL}/#person` },
+      ...(s && { isPartOf: { '@type': 'CreativeWorkSeries', name: s.title, url: `${SITE_URL}${s.href}` } }),
     },
   ]}
 >
@@ -67,6 +74,9 @@ const s = piece.series ? registry[piece.series] : undefined;
         medium={post.data.description ?? 'Writing'}
         year={dateLabel}
       />
+      <p class="post__byline" data-reveal>
+        <Byline before="By" />
+      </p>
       {
         s && (
           <p class="post__series" data-reveal>
@@ -79,7 +89,7 @@ const s = piece.series ? registry[piece.series] : undefined;
       {
         post.data.methodLink && (
           <p class="post__method" data-reveal>
-            <span class="smallcaps">How these are read</span>
+            <span class="smallcaps">How this was made</span>
             <a class="text-link" href="/method/">
               The method: the tags, the originals, and the machines
             </a>
@@ -129,6 +139,12 @@ const s = piece.series ? registry[piece.series] : undefined;
     display: grid;
     gap: 0.3rem;
     color: var(--room-accent);
+  }
+  .post__byline {
+    color: var(--ink-soft);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 1.05rem;
   }
   .post__series {
     font-variant-caps: all-small-caps;

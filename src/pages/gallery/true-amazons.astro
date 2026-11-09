@@ -17,6 +17,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
@@ -30,7 +31,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   genre="Essay"
   bodyClass="amazons"
 >
-<canvas id="motes" aria-hidden="true"></canvas>
+<canvas id="motes" aria-hidden="true" data-twin="A slow drift of bronze and verdigris motes hangs behind the whole page."></canvas>
 <div id="progress" aria-hidden="true"></div>
 <nav class="nav" aria-label="Steps">
   <a href="#s1">I</a><a href="#s2">II</a><a href="#s3">III</a><a href="#s4">IV</a><a href="#s5">V</a><a href="#s6">VI</a><a href="#s7">VII</a><a href="#s8">VIII</a><a href="#s9">IX</a>
@@ -38,10 +39,10 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
 
 <main class="ta">
 <header class="hero">
-  <div class="eyebrow"><SeriesMark id="true-amazons" /> &middot; A scrolly in nine steps &middot; after Ammon Hillman &middot; companion to <a href="/gallery/pharmakon/">Pharmakon</a></div>
+  <div class="eyebrow"><SeriesMark id="true-amazons" /> &middot; <Byline /> &middot; A scrolly in nine steps &middot; after Ammon Hillman &middot; companion to <a href="/gallery/pharmakon/">Pharmakon</a></div>
   <h1>True <em>Amazons</em></h1>
   <p class="dek">The women of the Thermodon and the Maeotian marsh were a venom culture before they were a war culture. One Greek word carries the whole argument. It means <strong>arrow</strong>. It means <strong>venom</strong>. It means <strong>rust</strong>. Press each one.</p>
-  <div class="triad" role="group" aria-label="The three meanings of ios">
+  <div class="triad" role="group" aria-label="The three meanings of ios" data-twin="Three buttons under the title press the three meanings of ἰός, arrow, venom and rust, and the line beneath them quotes the source for each: Iliad 1.48, Euripides Ion 1015, Plato Republic 609a.">
     <button class="on" data-state="arrow" data-line="<b>Iliad 1.48</b>: Apollo kneels and looses an ἰός into the Greek camp. The plague begins with an arrow."><div class="k">ἰός</div><div class="v">arrow</div><div class="src">Iliad 1.48 &middot; 8.514</div></button>
     <button data-state="venom" data-line="<b>Ion 1015</b>: the second drop of Gorgon blood kills, &ldquo;for it is ἰός from the Gorgon&rsquo;s serpents.&rdquo;"><div class="k">ἰός</div><div class="v">venom of serpents</div><div class="src">Aesch. Eum. 478 &middot; Eur. Ion 1015</div></button>
     <button data-state="rust" data-line="<b>Republic 609a</b>: every thing has its own evil, says Socrates; for bronze and iron it is ἰός, the rust."><div class="k">ἰός</div><div class="v">rust, verdigris</div><div class="src">Plato Rep. 609a</div></button>
@@ -51,7 +52,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
 </header>
 
 <section class="scrolly">
-  <aside class="sticky" aria-live="polite">
+  <aside class="sticky" aria-live="polite" data-twin="A Scythian arrowhead stays pinned beside the steps and oxidises from bronze through venom-purple to verdigris as the argument moves; a stripe under it names each step's Greek word and gloss.">
     <svg class="blade" id="blade" data-state="arrow" viewBox="0 0 300 390" aria-hidden="true">
       <defs>
         <linearGradient id="bronzeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a455"/><stop offset=".55" stop-color="#9c6a2a"/><stop offset="1" stop-color="#5a3a14"/></linearGradient>
@@ -83,7 +84,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   <div class="steps">
 
     <article class="step" id="s1" data-word="ἰός" data-gloss="arrow · venom · rust. One sound, three deaths." data-n="I / IX" data-blade="arrow">
-      <div class="wm">I</div>
+      <div class="wm" aria-hidden="true">I</div>
       <h2><span>I.</span> The word is the weapon</h2>
       <p class="lede">The lexicon lists <span class="grc">ἰός</span> three times, as three words that happen to sound the same. Arrow, in Homer. The venom of serpents, in the tragedians. Rust on iron and verdigris on bronze, in Plato. Hillman's whole project rests on refusing that "happen to."</p>
       <p><span class="tag text" data-tip="LSJ; Beekes, Etymological Dictionary of Greek">text</span> The arrow sense is Indo-European and old: Sanskrit <span class="grc">íṣu</span>, Avestan <span class="grc">išu</span>. The venom sense is older in a different way: Beekes calls it an ancient word for poison that most languages replaced with euphemisms (<span class="grc">φάρμακον</span>, <em>venenum</em>, <em>gift</em>) and that survived only on the margins. The rust sense shows up in Theognis and the Hippocratic corpus.</p>
@@ -92,7 +93,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s2" data-word="Οἰόρπατα" data-gloss="oior-pata · man-killers. The Scythian name for them." data-n="II / IX" data-blade="arrow">
-      <div class="wm">II</div>
+      <div class="wm" aria-hidden="true">II</div>
       <h2><span>II.</span> Three men before one</h2>
       <p class="lede">Herodotus, Book Four. Greeks beat the Amazons at the Thermodon, load the prisoners onto three ships, and the prisoners kill the crews at sea. They drift to the Maeotian marsh, steal horses, and meet a band of young Scythians who decide these women are worth marrying. The children are the Sauromatae.</p>
       <blockquote class="quote">
@@ -102,7 +103,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
       </blockquote>
       <p>The Hippocratic <em>Airs, Waters, Places</em> raises the price. <span class="tag text" data-tip="[Hippocrates] AWP 17">text</span> The Sauromatian women ride, shoot, and throw the javelin from horseback and fight <em>as long as they are virgins</em>. They do not put off virginity until they have killed three enemies, and do not live with a man before performing the lawful rites. Once married, a woman stops riding unless a general levy compels her. And the right breast is cauterised in infancy with a heated bronze instrument so that all its strength goes to the right shoulder and arm.</p>
 
-      <div class="play" data-label="The law · Hippocrates 17" id="killplay">
+      <div class="play" data-label="The law · Hippocrates 17" id="killplay" data-twin="The law, Hippocrates 17: three enemies on the steppe. The reader looses an arrow at each, and a tally counts her from παρθένος, riding and shooting, to the three kills that let her marry.">
         <svg class="field" viewBox="0 0 600 190" aria-label="Three enemies on the steppe. Click each to loose an arrow.">
           <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14160f"/><stop offset="1" stop-color="#0b0c0a"/></linearGradient></defs>
           <rect width="600" height="190" fill="url(#sky)"/>
@@ -125,11 +126,11 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s3" data-word="κουργάν" data-gloss="kurgan · the mound. Three hundred women with bows in them." data-n="III / IX" data-blade="arrow">
-      <div class="wm">III</div>
+      <div class="wm" aria-hidden="true">III</div>
       <h2><span>III.</span> The mounds agree</h2>
       <p class="lede">For a century the Amazons were filed under propaganda: monstrous women invented to be killed by heroes. Then the kurgans were sexed properly, by bone instead of by grave goods.</p>
 
-      <div class="play" data-label="Sex the cemetery · Mayor 2014" id="guessplay">
+      <div class="play" data-label="Sex the cemetery · Mayor 2014" id="guessplay" data-twin="Sex the cemetery, Mayor 2014: the reader guesses what share of the armed burials in the richest steppe cemeteries are women, then opens the mounds against the figures: 37% in some cemeteries, 20% east of the Don in the fifth and fourth centuries, 20% of Sargat female graves with bows.">
         <div class="gauge">
           <label for="guess" class="out">Of the armed burials in the richest steppe cemeteries, what share are women? Your guess: <b id="guessval">10%</b></label>
           <input type="range" id="guess" min="0" max="100" value="10" step="1">
@@ -149,11 +150,11 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s4" data-word="σκυθικόν" data-gloss="skythikon · the Scythian poison. Viper, blood, dung, time." data-n="IV / IX" data-blade="venom">
-      <div class="wm">IV</div>
+      <div class="wm" aria-hidden="true">IV</div>
       <h2><span>IV.</span> The recipe</h2>
       <p class="lede">The Peripatetic collection <em>On Marvellous Things Heard</em> is nearly the only surviving account of how the arrow poison was made. It reads like a recipe because it is one. Make it.</p>
 
-      <div class="play" data-label="Σκυθικόν · Mir. Ausc. 141" id="brewplay">
+      <div class="play" data-label="Σκυθικόν · Mir. Ausc. 141" id="brewplay" data-twin="Σκυθικόν, Mir. Ausc. 141: a pot the reader fills in the order the text gives, vipers just whelped, human blood, then buries in dung and waits the days it takes to rot.">
         <div class="row" style="align-items:flex-start">
           <svg class="pot" viewBox="0 0 160 150" style="width:150px;flex:none" aria-hidden="true">
             <path d="M30 40 Q 20 120 80 125 Q 140 120 130 40 Z" fill="#1c1f16" stroke="#b7843a" stroke-width="2"/>
@@ -177,7 +178,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
       <p><span class="tag text" data-tip="[Aristotle] Mir. Ausc. 141 (845a); Aelian; Ovid Tristia 3.10">text</span> Pseudo-Aristotle, <em>Mir. Ausc.</em> 141. Aelian confirms the human serum. Ovid, exiled on the Black Sea coast, saw the arrows himself and wrote that the barbs carried a double death. The shafts were painted in the zigzag and diamond patterns of the vipers whose venom they carried, so the archer knew which poison she was drawing. The Greeks had a word for this class of drug: <span class="grc">τοξικὸν φάρμακον</span>, the bow-drug. Every "toxic" thing in English descends from the arrow.</p>
       <p>And Homer already knew where a hero went for it. Athena, in <em>Odyssey</em> 1, remembers Odysseus at Ephyra. Hover the words.</p>
 
-      <div class="play" data-label="Odyssey 1.261–262 · interlinear">
+      <div class="play" data-label="Odyssey 1.261–262 · interlinear" data-twin="Odyssey 1.261–262, interlinear: φάρμακον ἀνδροφόνον διζήμενος, ὄφρα οἱ εἴη ἰοὺς χρίεσθαι χαλκήρεας. On the scroll page each word opens its gloss; ἰούς, arrows, and χρίεσθαι, to smear or anoint, are the two the page turns on.">
         <div class="inter" id="inter">
           <span class="w" data-g="φάρμακον · pharmakon: drug, poison, remedy. One word for all three.">φάρμακον</span>
           <span class="w" data-g="ἀνδροφόνον · andro-phonon: man-killing. Same root as Oiorpata's -pata? No; but the same idea.">ἀνδροφόνον</span>
@@ -197,12 +198,12 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s5" data-word="Ἔχιδνα" data-gloss="Echidna · she-viper. Half nymph, half speckled snake, never ages." data-n="V / IX" data-blade="venom">
-      <div class="wm">V</div>
+      <div class="wm" aria-hidden="true">V</div>
       <h2><span>V.</span> The mother is a viper</h2>
       <p class="lede">Hesiod gives the Amazons' country an ancestress long before Herodotus does. She lives in a cave, she is half a nymph with glancing eyes and fair cheeks, half a huge speckled snake, she eats raw flesh, and she dies not nor grows old all her days.</p>
       <p><span class="tag text" data-tip="Hesiod, Theogony 295–305; Herodotus 4.8–10">text</span> <em>Theogony</em> 295–305. The Pontic Greeks told Herodotus a local version. Heracles, driving Geryon's cattle, naps in what will become Scythia; his mares vanish; he finds in a cave a creature woman above the buttocks and serpent below, who will return the horses only if he sleeps with her. Three sons. Heracles leaves a bow and a belt: the boy who can string the bow and wear the belt stays and rules. Only Scythes can. <em>Histories</em> 4.8–10.</p>
 
-      <div class="play" data-label="The test · Herodotus 4.10" id="bowplay">
+      <div class="play" data-label="The test · Herodotus 4.10" id="bowplay" data-twin="The test, Herodotus 4.10: a bow the reader holds to draw and must release in the green band. Agathyrsus and Gelonus fail the pull; Scythes strings it.">
         <svg class="bowsvg" viewBox="0 0 600 120" aria-hidden="true">
           <path d="M60 60 Q 300 -40 540 60" stroke="#b7843a" stroke-width="5" fill="none" stroke-linecap="round"/>
           <path id="bowstring" d="M60 60 L300 60 L540 60" stroke="#e4ddc8" stroke-width="1.5" fill="none"/>
@@ -222,13 +223,13 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s6" data-word="ἀμβροσία" data-gloss="a-mbrotos · not-mortal. Anoint by day, bury in fire by night." data-n="VI / IX" data-blade="venom">
-      <div class="wm">VI</div>
+      <div class="wm" aria-hidden="true">VI</div>
       <h2><span>VI.</span> Pharmakon in the womb, fire in the hearth</h2>
       <p class="lede">The claim that a child could be born already tolerant to venom is not Hillman's invention. Pliny says it about the Psylli.</p>
       <p><span class="tag text" data-tip="Pliny NH 7.14; Cassius Dio 51.14; Celsus 5.27">text</span> The Psylli of Libya were immune to snakebite; their saliva cured it; they put newborns to the fiercest snakes as a test of legitimacy, since the snakes would not flee a child of adulterous blood (<em>Natural History</em> 7.14). Pliny gives the Italian Marsi the same gift and traces it to Circe. Octavian sent for Psylli to suck the venom out of Cleopatra. Celsus, the sceptic, said their skill was boldness confirmed by experience and that anyone with no sores in the mouth could do it.</p>
       <p>Now the Eleusinian text. <span class="tag text" data-tip="Homeric Hymn to Demeter 231–262">text</span> Demeter, nursing the infant Demophoon, feeds him neither grain nor breast; she anoints him with ambrosia by day and at night hides him in the fire like a brand, to burn the mortal part out of him. The mother walks in, screams, and the goddess drops the child and curses her ignorance. Thetis does the same to Achilles. The word ambrosia is <span class="grc">ἀ-μβροτος</span>: not-mortal. You are the goddess. The mother is in the next room.</p>
 
-      <div class="play" data-label="The rite · Hymn to Demeter 235–249" id="fireplay">
+      <div class="play" data-label="The rite · Hymn to Demeter 235–249" id="fireplay" data-twin="The rite, Hymn to Demeter 235–249: a hearth with the child in it. The reader anoints him with ambrosia by day and puts him in the fire by night while a bar of mortality drains, until the mother looks in and the rite breaks.">
         <svg class="hearth day" id="hearth" viewBox="0 0 600 170" aria-hidden="true">
           <rect width="600" height="170" fill="#0b0c0a"/>
           <rect x="200" y="120" width="200" height="40" fill="#1c1f16" stroke="#b7843a" stroke-width="1"/>
@@ -252,11 +253,11 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s7" data-word="Μέδουσα" data-gloss="Medousa · the ruler. Mortal sister. Left vein kills, right vein raises." data-n="VII / IX" data-blade="rust">
-      <div class="wm">VII</div>
+      <div class="wm" aria-hidden="true">VII</div>
       <h2><span>VII.</span> Stone death, and the two bloods</h2>
       <p class="lede">Of the three Gorgons only Medusa could die, which is why Perseus went for her head. Pindar calls the head "stony death." Her blood dropped on Libya and became its snakes. Athena drained the rest into two vials and handed them to a physician.</p>
 
-      <div class="play" data-label="Asclepius' choice · Apollodorus 3.10.3" id="vialplay">
+      <div class="play" data-label="Asclepius' choice · Apollodorus 3.10.3" id="vialplay" data-twin="Asclepius' choice, Apollodorus 3.10.3: two vials from the Gorgon over a patient on the table, left vein ἰός, right vein ἀντίδοτος. The reader gives one side; the patient turns to stone or rises.">
         <div class="vials">
           <button class="vial lv" id="vialL"><div class="h">left vein · ἰός</div><svg viewBox="0 0 60 90" style="width:48px" aria-hidden="true"><rect x="22" y="4" width="16" height="12" fill="#9a9480"/><path d="M18 16 L42 16 L50 80 Q 30 92 10 80 Z" fill="#6b1f4a" stroke="#c98aa8" stroke-width="1.5"/></svg><div class="out">bane</div></button>
           <div class="mid"><svg viewBox="0 0 120 150" style="width:110px" aria-hidden="true"><g class="patient" id="patient"><circle cx="60" cy="30" r="16" fill="#e4ddc8"/><path d="M60 46 L60 100 M60 60 L36 84 M60 60 L84 84 M60 100 L44 140 M60 100 L76 140" stroke="#e4ddc8" stroke-width="6" stroke-linecap="round" fill="none"/><g class="cracks"><path d="M52 22 l6 10 l-4 8 M66 34 l5 9 M58 70 l4 12 l-6 8" stroke="#0b0c0a" stroke-width="1.5" fill="none"/></g></g></svg></div>
@@ -272,11 +273,11 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s8" data-word="ἴον" data-gloss="ion · violet. The purple that may or may not be there." data-n="VIII / IX" data-blade="rust">
-      <div class="wm">VIII</div>
+      <div class="wm" aria-hidden="true">VIII</div>
       <h2><span>VIII.</span> The purple question</h2>
       <p class="lede">You wanted the hair. Here is exactly what the record will and will not give you, on a slider. The tick marks where the texts stop.</p>
 
-      <div class="play" data-label="Stain her hair · the evidence slider" id="hairplay">
+      <div class="play" data-label="Stain her hair · the evidence slider" id="hairplay" data-twin="Stain her hair: a slider from serpents to Hillman, with a tick where the texts stop. The Amazon's hair takes its purple only past the point any source supports; before it, serpents and a speckled skin are all the record gives.">
         <div class="hairwrap">
           <svg viewBox="0 0 140 160" style="width:140px" aria-hidden="true">
             <defs><linearGradient id="hairG" x1="0" y1="0" x2="0" y2="1"><stop id="hs1" offset="0" stop-color="#1c1f16"/><stop id="hs2" offset="1" stop-color="#2f7a66"/></linearGradient></defs>
@@ -300,12 +301,12 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     </article>
 
     <article class="step" id="s9" data-word="ἀντίδοτος" data-gloss="anti-dotos · the thing given against. Her side of the vein." data-n="IX / IX" data-blade="rust">
-      <div class="wm">IX</div>
+      <div class="wm" aria-hidden="true">IX</div>
       <h2><span>IX.</span> The choice</h2>
       <p class="lede"><span class="grc">Ἀντίδοτος</span> is a participle before it is a noun: the thing given against. Against the arrow, against the venom, against the rust. Every figure on this page holds both sides of the vein, and every story turns on which one she hands over.</p>
       <p>The Sauromatian maiden chooses the enemy three times with the bow before she chooses one man with her body. Echidna chooses to return the mares for a son who can draw the bow. Demeter chooses the fire and is stopped. Medusa's two bloods are literally separated by Athena and handed to a physician. Circe hands out the swine-drug and then, to one man, the moly.</p>
 
-      <div class="play" data-label="Build the thesis you can defend" id="thesisplay">
+      <div class="play" data-label="Build the thesis you can defend" id="thesisplay" data-twin="Build the thesis you can defend: three checkboxes, text, reading and disputed, assemble the thesis a tier at a time. With text and reading on it reads: The women the Greeks called Amazons rode, shot and killed before they married; their arrows were steeped in putrefied viper and human serum; their ancestress was a snake-woman who did not age; their Gorgon's blood both killed and raised the dead; and the Greeks feared them enough to carve the war onto the Parthenon. Read through one word, ἰός, that is a venom culture: the kill count is the qualification, the marriage is the dose, and the woman's authority is the antidote she earns by surviving the venom and gives only to the man she has chosen. The disputed tier adds: Her hair is stained purple with it, ἰός shading into ἴον, the violet, and her body is the vessel the poison was prepared in.">
         <div class="tiers">
           <label><input type="checkbox" id="t1" checked> text</label>
           <label><input type="checkbox" id="t2" checked> reading</label>
@@ -384,7 +385,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   </div>
 
   <footer class="ta-foot">
-    <span>an essay &middot; Michael Wilhelm &middot; 2026</span>
+    <span>an essay &middot; <Byline /> &middot; 2026</span>
     <span><a href="/gallery/pharmakon/">Read PHARMAKON</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
   </footer>
   <ScrollFoot id="true-amazons" class="ta-sf" />

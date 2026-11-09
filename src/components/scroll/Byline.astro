@@ -1,0 +1,36 @@
+---
+/**
+ * The author's name on every scroll page, every reading and every twin:
+ * "Michael Wilhelm", linking to the foyer. Inline and unstyled beyond the
+ * link, so it sits in whatever kicker, log line or signature the page
+ * already sets and takes that line's face. `before` is a word to set ahead
+ * of the name in the same line ("By", "an essay ·"); `after` a word to
+ * follow it (a year). The Article JSON-LD on each piece names the same
+ * person by @id (Museum.astro, Poem.astro).
+ */
+import { SITE_NAME } from '../../config/site';
+
+interface Props {
+  class?: string;
+  before?: string;
+  after?: string;
+}
+const { class: cls, before, after } = Astro.props;
+---
+
+<span class:list={['byline', cls]}>
+  {before && <span class="byline__before">{before} </span>}<a class="byline__name" href="/" rel="author">{SITE_NAME}</a>{after && <span class="byline__after"> {after}</span>}
+</span>
+
+<style is:global>
+  .byline__name {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+    transition: border-color 0.3s ease;
+  }
+  .byline__name:hover,
+  .byline__name:focus-visible {
+    border-bottom-color: currentColor;
+  }
+</style>

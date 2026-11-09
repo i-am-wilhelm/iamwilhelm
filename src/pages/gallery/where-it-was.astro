@@ -32,6 +32,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 import { series } from '../../config/series';
@@ -85,7 +86,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
       <span>the lion and the beast, inside the man</span>
     </li>
   </ul>
-  <p class="kicker">By Michael Wilhelm &middot; {month}</p>
+  <p class="kicker"><Byline before="By" /> &middot; {month}</p>
   <p class="how"><b>How to read this page.</b> Every claim wears a tag. <span class="tag text" tabindex="0" data-tip="A source says it. Cited in the ledger at the end.">text</span> means a source says it, cited in the ledger. <span class="tag read" tabindex="0" data-tip="The inference laid on top of the text.">reading</span> marks the inference laid on top of the text. <span class="tag disp" tabindex="0" data-tip="The author’s own argument, forward-looking.">disputed</span> marks the one argument that is the author’s own and looks forward. Each movement has one thing to touch.</p>
 </header>
 
@@ -195,7 +196,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
   <p><span class="tag text" data-tip="Freud, Neue Folge der Vorlesungen (1933), Lecture 31">text</span> The hydraulics show in Freud’s most famous sentence, the last line of Lecture 31: <em lang="de">Wo Es war, soll Ich werden.</em> Where It was, I shall come to be. Strachey gave it as “Where id was, there ego shall be,” which is accurate and sounds like a motto on a building. Freud’s own gloss is the one that matters: it is a work of culture, he says, like the draining of the Zuider Zee. The It is a sea. The I is reclaimed land. Progress is dikes.</p>
   <p><span class="tag text" data-tip="Rep. 433a–b, 443d">text</span> Plato ends his account of the soul in the same place with a different instrument. Justice, he says, is each part doing its own work (433a–b), reason ruling, thumos in alliance, desire ruled. But when he describes what that rule <em>feels like</em> from inside, the image is musical: the just man “binds the three together like the three fixed notes of a scale, lowest, highest, and middle,” <span lang="grc">νεάτης τε καὶ ὑπάτης καὶ μέσης</span>, “and becomes one out of many” (443d). Freud drains a sea. Plato tunes a lyre. Both say the I should rule; they disagree about what ruling looks like. For Freud it looks like land where there was water. For Plato it looks like consonance, three strings that were already there, brought into one sound.</p>
 
-  <div class="play instruments" id="instruments" data-label="Two instruments · Lecture 31 and Rep. 443d" data-og-frame>
+  <div class="play instruments" id="instruments" data-label="Two instruments · Lecture 31 and Rep. 443d" data-og-frame data-twin="Two instruments, Lecture 31 and Republic 443d: a three-string lyre, νεάτη, μέση and ὑπάτη, whose pegs the reader tunes until the beating stops, Plato's image for a just soul; and the Zuider Zee, which the reader drains by dragging right, Freud's image for where It was. The reader chooses which of the two the section closes on.">
     <div class="inst lyre" id="lyre">
       <h3>Tune the lyre</h3>
       <svg class="lyresvg" id="lyresvg" viewBox="0 0 320 300" role="group" aria-label="The lyre: three strings, νεάτη, μέση and ὑπάτη, each with a tuning peg">
@@ -251,7 +252,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
       <label class="gauge"><span class="sr">Drain the sea into reclaimed land</span><input type="range" id="dikerange" min="0" max="100" value="0" step="1" /></label>
       <div class="out" id="dikeout" aria-live="polite">The Zuider Zee. Drag right to push the water back.</div>
     </div>
-    <div class="leave" role="group" aria-label="Which image to leave the section on">
+    <div class="leave" role="group" aria-label="Which image to leave the section on" data-twin-skip>
       <span class="leave-l">Leave the section on</span>
       <button class="btn" data-leave="lyre" aria-pressed="false">the lyre</button>
       <button class="btn" data-leave="dike" aria-pressed="false">the dike</button>
@@ -379,7 +380,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
   <MethodLink class="foot" />
 
   <footer class="wi-foot">
-    <span>an essay &middot; Michael Wilhelm &middot; {date.getUTCFullYear()}</span>
+    <span>an essay &middot; <Byline /> &middot; {date.getUTCFullYear()}</span>
     <span><a href={s.href}>{s.name}</a> &middot; <a href="/gallery/everyone-searchable/">Everyone, Searchable</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
   </footer>
   <ScrollFoot id="where-it-was" class="wi-sf" />
