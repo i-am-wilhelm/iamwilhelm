@@ -10,6 +10,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
@@ -41,7 +42,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
         </p>
         <h1>The Pretty<br /><em>Toy</em></h1>
         <p class="deck">Persephone's flower, Narcissus's pool, and one gesture told twice.</p>
-        <p class="log sig"><span>an essay · Michael Wilhelm</span><span><SeriesMark id="the-pretty-toy" /></span></p>
+        <p class="log sig"><span>an essay · <Byline /></span><span><SeriesMark id="the-pretty-toy" /></span></p>
       </header>
 
       <hr />

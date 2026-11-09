@@ -29,6 +29,8 @@ const writings = defineCollection({
     .object({
       title: z.string(),
       date: z.coerce.date(),
+      /** Last substantive revision, for dateModified; `date` when absent. */
+      updated: z.coerce.date().optional(),
       /** Symbols chosen for thematic relevance to the piece (spec §4.6). */
       symbols: z.array(z.string()).default([]),
       /** Accent token id from src/design/tokens.ts. */

@@ -32,6 +32,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 import { series } from '../../config/series';
@@ -85,7 +86,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
       <span>the lion and the beast, inside the man</span>
     </li>
   </ul>
-  <p class="kicker">By Michael Wilhelm &middot; {month}</p>
+  <p class="kicker"><Byline before="By" /> &middot; {month}</p>
   <p class="how"><b>How to read this page.</b> Every claim wears a tag. <span class="tag text" tabindex="0" data-tip="A source says it. Cited in the ledger at the end.">text</span> means a source says it, cited in the ledger. <span class="tag read" tabindex="0" data-tip="The inference laid on top of the text.">reading</span> marks the inference laid on top of the text. <span class="tag disp" tabindex="0" data-tip="The author’s own argument, forward-looking.">disputed</span> marks the one argument that is the author’s own and looks forward. Each movement has one thing to touch.</p>
 </header>
 
@@ -379,7 +380,7 @@ const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric',
   <MethodLink class="foot" />
 
   <footer class="wi-foot">
-    <span>an essay &middot; Michael Wilhelm &middot; {date.getUTCFullYear()}</span>
+    <span>an essay &middot; <Byline /> &middot; {date.getUTCFullYear()}</span>
     <span><a href={s.href}>{s.name}</a> &middot; <a href="/gallery/everyone-searchable/">Everyone, Searchable</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
   </footer>
   <ScrollFoot id="where-it-was" class="wi-sf" />

@@ -8,6 +8,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
@@ -23,7 +24,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
 
   <main>
     <header class="poem-head">
-      <p class="log"><SeriesMark id="pharmakon" /></p>
+      <p class="log"><SeriesMark id="pharmakon" /> &middot; <Byline /></p>
       <p class="char">
         <span>Pharmacopoeia</span><span class="sr-only">, </span>
         <span>Substance <b lang="grc">φάρμακον</b></span><span class="sr-only">, </span>
@@ -195,7 +196,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
       <p class="l sign" style="--ml:0%">I could not have imagined her.</p>
       <p class="l right gap">That is how I'll be sure she's real.</p>
       <footer class="poem-foot">
-        <span>Michael Wilhelm · 2026</span>
+        <span><Byline /> · 2026</span>
         <span><a href="/writings/pharmakon/">Read the headnote</a> · <a href="/gallery/true-amazons/">Companion: True Amazons</a> · <a href="/gallery/">Return to the gallery</a></span>
       </footer>
       <ScrollFoot id="pharmakon" class="poem-sf" />

@@ -15,6 +15,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 ---
 
@@ -47,7 +48,7 @@ import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 
 <main>
   <header class="open">
-    <p class="series"><SeriesMark id="equal-volume" /></p>
+    <p class="series"><SeriesMark id="equal-volume" /> &middot; <Byline /></p>
     <h1>Equal Volume</h1>
     <p class="spec">
       <b>body</b><span>stoneware, hand-built, fired once</span>
@@ -237,7 +238,7 @@ import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 </main>
 
 <footer>
-  <div>Michael Wilhelm · <a href="https://iamwilhelm.com">iamwilhelm.com</a></div>
+  <div><Byline /> · <a href="/">iamwilhelm.com</a></div>
   <div class="ledger" id="ledger">
     <b>mirrors asked</b><span id="lgMirrors">0 of 6</span>
     <b>coats returned</b><span id="lgCoats">0</span>

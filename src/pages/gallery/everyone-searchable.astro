@@ -23,6 +23,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 import { series } from '../../config/series';
@@ -77,7 +78,7 @@ const s = series[piece.series];
 </div>
 
 <header class="hero" id="top">
-  <p class="kicker"><span><SeriesMark id="everyone-searchable" /></span><span>By Michael Wilhelm</span><span>November 2026</span></p>
+  <p class="kicker"><span><SeriesMark id="everyone-searchable" /></span><span><Byline before="By" /></span><span>November 2026</span></p>
   <h1 class="title"><span>Everyone,</span><span class="second">Searchable</span></h1>
   <p class="dek">Every human life is about to become searchable through a god-level AI. It will break the searcher before it breaks the searched, and the one move that holds is to get known before you get searched.</p>
   <blockquote class="epigraph"><p>That which ye have spoken in the ear in closets shall be proclaimed upon the housetops.</p><cite>Luke 12:3</cite></blockquote>
@@ -393,7 +394,7 @@ const s = series[piece.series];
 <section class="coda" id="coda">
   <div class="coda-in">
     <p class="coda-line">Get known before you get searched.</p>
-    <p class="coda-by">Michael Wilhelm &#183; November 2026</p>
+    <p class="coda-by"><Byline /> &#183; November 2026</p>
   </div>
   <footer class="sources" id="sources">
     <h2>Sources</h2>

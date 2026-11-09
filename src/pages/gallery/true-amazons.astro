@@ -17,6 +17,7 @@
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
@@ -38,7 +39,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
 
 <main class="ta">
 <header class="hero">
-  <div class="eyebrow"><SeriesMark id="true-amazons" /> &middot; A scrolly in nine steps &middot; after Ammon Hillman &middot; companion to <a href="/gallery/pharmakon/">Pharmakon</a></div>
+  <div class="eyebrow"><SeriesMark id="true-amazons" /> &middot; <Byline /> &middot; A scrolly in nine steps &middot; after Ammon Hillman &middot; companion to <a href="/gallery/pharmakon/">Pharmakon</a></div>
   <h1>True <em>Amazons</em></h1>
   <p class="dek">The women of the Thermodon and the Maeotian marsh were a venom culture before they were a war culture. One Greek word carries the whole argument. It means <strong>arrow</strong>. It means <strong>venom</strong>. It means <strong>rust</strong>. Press each one.</p>
   <div class="triad" role="group" aria-label="The three meanings of ios" data-twin="Three buttons under the title press the three meanings of ἰός, arrow, venom and rust, and the line beneath them quotes the source for each: Iliad 1.48, Euripides Ion 1015, Plato Republic 609a.">
@@ -384,7 +385,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   </div>
 
   <footer class="ta-foot">
-    <span>an essay &middot; Michael Wilhelm &middot; 2026</span>
+    <span>an essay &middot; <Byline /> &middot; 2026</span>
     <span><a href="/gallery/pharmakon/">Read PHARMAKON</a> &middot; <a href="/gallery/">Return to the gallery</a></span>
   </footer>
   <ScrollFoot id="true-amazons" class="ta-sf" />

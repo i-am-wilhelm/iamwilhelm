@@ -19,6 +19,7 @@
 import Poem from '../../layouts/Poem.astro';
 import SplitText from '../../components/scroll/SplitText.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
@@ -52,7 +53,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <p class="eyebrow"><SeriesMark id="mimics-and-mythmakers" /> &middot; An essay in six depths and one ascent</p>
     <SplitText as="div" readAs="h1" readClass="title" ghostClass="reflection" parts={[{ text: 'Mimics' }, { text: '& Mythmakers', tag: 'em' }]} />
     <p class="deck">Every man is a mirror. Most of them are pointed at a screen.</p>
-    <p class="byline">Michael Wilhelm</p>
+    <p class="byline"><Byline /></p>
     <p class="cue">Scroll to go under</p>
   </div>
 </header>
@@ -302,7 +303,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
       <li>Depths follow the standard ocean zones. Challenger Deep is usually given as about 10,935 m; estimates differ by a few dozen meters.</li>
     </ol>
     <MethodLink class="colophon" />
-    <p class="mm-foot"><span>an essay &middot; Michael Wilhelm &middot; 2026</span><a href="/gallery/">Return to the gallery</a></p>
+    <p class="mm-foot"><span>an essay &middot; <Byline /> &middot; 2026</span><a href="/gallery/">Return to the gallery</a></p>
     <ScrollFoot id="mimics-and-mythmakers" class="mm-sf" />
   </div>
 </footer>

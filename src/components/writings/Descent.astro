@@ -16,6 +16,7 @@
  * One red thing on the whole page: the seeds.
  */
 import SeriesMark from '../scroll/SeriesMark.astro';
+import Byline from '../scroll/Byline.astro';
 
 interface Props {
   /** The piece's id, for its series label. */
@@ -33,7 +34,7 @@ const { id, title, dateLabel, dedication } = Astro.props;
 
 <article class="descent" aria-labelledby="descent-title">
   <header class="descent__head">
-    <p class="eyebrow"><SeriesMark id={id} /> &middot; <time>{dateLabel}</time></p>
+    <p class="eyebrow"><SeriesMark id={id} /> &middot; <Byline /> &middot; <time>{dateLabel}</time></p>
     {dedication && <p class="descent__dedication">{dedication}</p>}
     <h1 id="descent-title" class="descent__title">{title}</h1>
     <button class="straight" id="unseen-straight" type="button" hidden>Read it straight through</button>
