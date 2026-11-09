@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monet Invented the Dither</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{ --bg:#0b0a10; --bone:#ece6d8; --gold:#d4a84b; --muted:#8f8a7e; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:760px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(44px,12.5vw,118px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-shadow:0 2px 30px rgba(0,0,0,.5)}
+h1 em{font-style:italic;color:var(--gold)}
+.sub{max-width:34ch;margin:0 auto;font-size:19px;color:#e3dccb;font-style:italic;text-shadow:0 1px 14px rgba(0,0,0,.6)}
+.hint{margin-top:10vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:#d8d2c4;text-shadow:0 1px 10px rgba(0,0,0,.6)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:#0b0a10}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(11,10,16,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(212,168,75,.22);padding:18px 20px 16px;font-size:17.5px}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin-bottom:9px;text-transform:uppercase}
+.card .big{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;font-weight:400}
+.card .big i{color:var(--gold)}
+.tag{position:absolute;left:12px;top:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(236,230,216,.8);background:rgba(11,10,16,.55);padding:5px 8px;border:1px solid rgba(236,230,216,.15);pointer-events:none}
+
+.end{padding:16vh 22px 20vh;text-align:center;max-width:720px;margin:0 auto}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,8vw,64px);line-height:1;margin:0 0 .5em}
+.end p{color:#d6cfbf;max-width:46ch;margin:0 auto 1em}
+.end .colophon{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7vh;line-height:1.8}
+.end .next{display:inline-block;margin-top:3vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(212,168,75,.35);padding:10px 16px;text-decoration:none}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,75,.5),transparent);margin:0 auto;width:60%}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A scrolly on resolution</div>
+    <h1>Monet Invented<br>the <em>Dither</em></h1>
+    <p class="sub">Up close, a mess of color. At distance, a morning. The screen in your hand works the same way.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · Up close -->
+<section class="scene" id="s1">
+  <div class="stage"><canvas></canvas><div class="tag" id="tag1">magnification &times;7</div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">I · Up close</span><p>This is a riverbank at the hour the light changes. You are standing too close to see it. Every mark is a pure color laid beside another pure color, and nothing has been blended.</p></div></div>
+    <div class="step"><div class="card"><p>Step back. The eye does the mixing the palette refused to do. Monet called it broken color; the physicists called it optical mixing. A yellow dab beside a blue dab makes a green no tube of green can match.</p></div></div>
+    <div class="step"><div class="card"><p>The trick packs more color into every square inch than blending allows. From across the room the picture resolves. Up close it sings.</p></div></div>
+  </div>
+</section>
+
+<!-- II · The series -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas></canvas><div class="tag" id="tag2">dawn</div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">II · The series</span><p>In 1890 he painted the same haystacks again and again: dawn, noon, frost, dusk. The subject never changed. The light did, and the light was the subject.</p></div></div>
+    <div class="step"><div class="card"><p>Watch the riverbank go through a day. Not one dab has moved.</p></div></div>
+    <div class="step"><div class="card"><p>Shadow is color. The shadow on snow is violet and blue, sometimes orange. The Impressionists darkened with complements and kept black off the palette.</p></div></div>
+  </div>
+</section>
+
+<!-- III · The dot -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas></canvas><div class="tag" id="tag3">broken color</div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">III · The dot</span><p>Seurat took the dab and made it a system: uniform dots, scientific hue, Chevreul's color wheel on the easel. Pointillism is broken color with a grid under it.</p></div></div>
+    <div class="step"><div class="card"><p>Printers took the grid and gave the dot a variable size. Halftone: one ink, a thousand sizes, and your eye supplies the grey.</p></div></div>
+    <div class="step"><div class="card"><p>Then the screen. Three phosphors, red, green, blue, too small to see, mixed in the eye at arm's length. Every pixel you have ever looked at is a Seurat.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">The dither is a <i>Monet</i><br>with the brush taken away.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · Blended / broken -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas></canvas><div class="tag" id="tag4">blended &nbsp;|&nbsp; broken &middot; tap to change the hour</div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">IV · Blended / broken</span><p>Here is the riverbank twice. On one side the colors are mixed on the palette, the academic way: smooth, correct, and still. On the other nothing is mixed, and the picture breathes.</p></div></div>
+    <div class="step"><div class="card"><p>This site runs its images through a field of Greek letters whose density is brightness. That is a halftone with an alphabet for ink, and a direct descendant of a dab of cadmium yellow set beside cobalt in a field in 1890.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">Up close, <i>it sings.</i></p></div></div>
+  </div>
+</section>
+
+<section class="end">
+  <hr class="rule">
+  <h2 style="margin-top:10vh">Resolution is<br>a decision.</h2>
+  <p>Broken color, pointillism, halftone, the phosphor triad, the character dither: one idea, five tools. Put small pure things next to each other and let the eye finish the job at whatever distance it stands. The painter chooses where the picture resolves. So does the screen. So does whoever builds the screen.</p>
+  <p>Every image on this site is drawn at two distances on purpose.</p>
+  <a class="next" href="#hero">Read it again &uarr;</a>
+  <div class="colophon">
+    Drawn in code. 5,000 dabs, one riverbank, no images loaded.<br>
+    Previous: <i>Varo's Workshop</i> &middot; <i>The Double Image</i>
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function hash(i, j, k) { let n = (i * 374761393 + j * 668265263 + k * 1274126177) | 0; n = Math.imul(n ^ (n >>> 13), 1274126177); return ((n ^ (n >>> 16)) >>> 0) / 4294967295; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  let resized = false; if (c.width !== W || c.height !== H) { c.width = W; c.height = H; resized = true; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h, dpr, resized };
+}
+function hsl2rgb(h, s, l) {
+  h = ((h % 360) + 360) % 360; s = clamp(s, 0, 1); l = clamp(l, 0, 1);
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2;
+  let r, g, b;
+  if (h < 60) [r, g, b] = [c, x, 0]; else if (h < 120) [r, g, b] = [x, c, 0]; else if (h < 180) [r, g, b] = [0, c, x];
+  else if (h < 240) [r, g, b] = [0, x, c]; else if (h < 300) [r, g, b] = [x, 0, c]; else [r, g, b] = [c, 0, x];
+  return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
+}
+
+/* ---------- the riverbank, as a function of place and hour ---------- */
+// hour: 0 dawn · 0.33 noon · 0.66 dusk · 1 night
+const KEY = {
+  skyTop: [[262, .45, .42], [206, .62, .58], [276, .5, .32], [238, .55, .10]],
+  skyBot: [[26, .80, .72], [200, .45, .84], [16, .85, .58], [228, .40, .18]],
+  sun: [[32, .95, .80], [52, 1.0, .94], [14, .95, .68], [48, .50, .92]],
+  hills: [[268, .30, .34], [212, .25, .46], [290, .30, .26], [236, .30, .12]],
+  tree: [[118, .32, .22], [112, .45, .30], [296, .25, .17], [232, .32, .09]],
+  shadowHue: [262, 230, 285, 240],
+};
+function kf(arr, hour) {
+  const x = clamp(hour, 0, 0.9999) * 3, i = Math.floor(x), f = sstep(x - i);
+  const a = arr[i], b = arr[Math.min(3, i + 1)];
+  if (typeof a === 'number') return lerp(a, b, f);
+  return [lerp(a[0], b[0], f), lerp(a[1], b[1], f), lerp(a[2], b[2], f)];
+}
+const HORIZON = 0.53, SUN = { u: 0.64, v: 0.37, r: 0.055 }, TREE = { u: 0.22, cv: 0.27, rx: 0.115, ry: 0.15, trunkW: 0.014 };
+function region(u, v) {
+  const du = (u - TREE.u) / TREE.rx, dv = (v - TREE.cv) / TREE.ry;
+  if (du * du + dv * dv < 1) return 'tree';
+  if (Math.abs(u - TREE.u) < TREE.trunkW / 2 && v > TREE.cv && v < HORIZON) return 'trunk';
+  const ds = Math.hypot(u - SUN.u, (v - SUN.v) * 1.0);
+  if (ds < SUN.r) return 'sun';
+  if (v < HORIZON - 0.075) return 'sky';
+  if (v < HORIZON) return 'hills';
+  return 'water';
+}
+// returns [h,s,l]
+function sceneColor(u, v, hour, t) {
+  const reg = region(u, v);
+  const top = kf(KEY.skyTop, hour), bot = kf(KEY.skyBot, hour), sun = kf(KEY.sun, hour);
+  if (reg === 'sun') return sun;
+  if (reg === 'sky') {
+    const f = sstep(clamp(v / (HORIZON - 0.075), 0, 1));
+    const ds = Math.hypot(u - SUN.u, v - SUN.v);
+    const glow = Math.exp(-ds * ds / 0.03) * (hour < 0.9 ? 1 : 0.4);
+    return [lerp(lerp(top[0], bot[0], f), sun[0], glow * 0.7), lerp(lerp(top[1], bot[1], f), sun[1], glow * 0.5), lerp(lerp(top[2], bot[2], f), sun[2], glow * 0.6)];
+  }
+  if (reg === 'hills') { const c = kf(KEY.hills, hour); const f = (v - (HORIZON - 0.075)) / 0.075; return [c[0], c[1], c[2] * (1 - 0.25 * f)]; }
+  if (reg === 'tree' || reg === 'trunk') { const c = kf(KEY.tree, hour); return reg === 'trunk' ? [c[0], c[1] * 0.6, c[2] * 0.7] : c; }
+  // water: mirror of the sky, darker, with the sun's column and the tree's reflection
+  const vm = HORIZON - (v - HORIZON) * 0.9;           // mirrored v
+  const wob = Math.sin(v * 70) * 0.012 + Math.sin(v * 23) * 0.01;
+  const um = u + wob;
+  const base = sceneColor(um, clamp(vm, 0, HORIZON - 0.001), hour, 0);
+  let c = [base[0], base[1] * 0.9, base[2] * 0.72];
+  // sun column
+  const dcol = Math.abs(um - SUN.u);
+  const col = Math.exp(-dcol * dcol / 0.004) * (1 - clamp((v - HORIZON) / 0.5, 0, 1)) * 0.9;
+  c = [lerp(c[0], sun[0], col), lerp(c[1], sun[1], col), lerp(c[2], sun[2], col)];
+  // tree reflection
+  const du = (um - TREE.u) / TREE.rx, dv = (vm - TREE.cv) / (TREE.ry);
+  if (du * du + dv * dv < 1.05) { const tr = kf(KEY.tree, hour); c = [tr[0], tr[1] * 0.8, tr[2] * 0.8]; }
+  return c;
+}
+// broken color: push the dab toward a neighbouring hue, keep the value
+function breakColor(c, j, amt) {
+  return [c[0] + j * 30 * amt, clamp(c[1] + 0.12 * amt, 0, 1), clamp(c[2] + j * 0.07 * amt, 0.03, 0.97)];
+}
+const css = c => `hsl(${c[0].toFixed(0)},${(c[1] * 100).toFixed(0)}%,${(c[2] * 100).toFixed(0)}%)`;
+
+/* ---------- dabs ---------- */
+function makeDabs(n, seed) {
+  const d = [];
+  for (let i = 0; i < n; i++) {
+    const u = hash(i, seed, 1), v = hash(i, seed, 2);
+    const reg = region(u, v);
+    let ang, len;
+    if (reg === 'water') { ang = (hash(i, seed, 3) - 0.5) * 0.12; len = 0.028 + hash(i, seed, 4) * 0.02; }
+    else if (reg === 'sky') { ang = (hash(i, seed, 3) - 0.5) * 0.5; len = 0.022 + hash(i, seed, 4) * 0.016; }
+    else if (reg === 'tree') { ang = hash(i, seed, 3) * TAU; len = 0.010 + hash(i, seed, 4) * 0.008; }
+    else if (reg === 'trunk') { ang = Math.PI / 2 + (hash(i, seed, 3) - 0.5) * 0.2; len = 0.012; }
+    else if (reg === 'sun') { ang = hash(i, seed, 3) * TAU; len = 0.012; }
+    else { ang = (hash(i, seed, 3) - 0.5) * 0.8; len = 0.016 + hash(i, seed, 4) * 0.01; }
+    d.push({ u, v, ang, len, j: hash(i, seed, 5) * 2 - 1, reg });
+  }
+  return d;
+}
+const DABS = makeDabs(5000, 17);
+// paint the riverbank in dabs into a rect (x0,y0,W,H) at a given hour and brokenness
+function paintDabs(ctx, dabs, x0, y0, W, H, hour, broken, t, alpha = 1) {
+  ctx.lineCap = 'round';
+  const key = Math.round(hour * 160) + '|' + broken.toFixed(2);
+  if (dabs._key !== key) { for (const d of dabs) d.cs = css(breakColor(sceneColor(d.u, d.v, hour, 0), d.j, broken)); dabs._key = key; }
+  for (const d of dabs) {
+    ctx.strokeStyle = d.cs;
+    ctx.globalAlpha = alpha;
+    const L = d.len * W, x = x0 + d.u * W, y = y0 + d.v * H;
+    const dx = Math.cos(d.ang) * L / 2, dy = Math.sin(d.ang) * L / 2;
+    ctx.lineWidth = L * 0.42;
+    ctx.beginPath(); ctx.moveTo(x - dx, y - dy); ctx.lineTo(x + dx, y + dy); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+// a smooth, palette-mixed version of the same riverbank, in coarse blocks
+const SMOOTH = { key: '', cells: [] };
+function paintSmooth(ctx, x0, y0, W, H, hour, block, t) {
+  const key = [W, H, block, Math.round(hour * 160)].join('|');
+  if (SMOOTH.key !== key) {
+    SMOOTH.cells = [];
+    for (let y = 0; y < H; y += block) for (let x = 0; x < W; x += block) SMOOTH.cells.push([x, y, css(sceneColor((x + block / 2) / W, (y + block / 2) / H, hour, 0))]);
+    SMOOTH.key = key;
+  }
+  for (const [x, y, cs] of SMOOTH.cells) { ctx.fillStyle = cs; ctx.fillRect(x0 + x, y0 + y, block + 0.6, block + 0.6); }
+}
+// the picture's frame inside a stage: fill the stage, cropping to keep proportions pleasant
+function frameRect(w, h) {
+  // the scene is composed for ~ 4:5 portrait or 3:2 landscape; stretch within reason
+  return { x0: 0, y0: 0, W: w, H: h };
+}
+
+/* ---------- hero: the finished picture, breathing ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC);
+  const f = frameRect(w, h);
+  ctx.fillStyle = '#0b0a10'; ctx.fillRect(0, 0, w, h);
+  paintDabs(ctx, DABS, f.x0, f.y0, f.W, f.H, 0.2, 1, 0, 0.92 * fade + 0.08);
+  ctx.fillStyle = `rgba(11,10,16,${0.25})`; ctx.fillRect(0, 0, w, h);
+}
+
+/* ---------- scene 1: zoom out ---------- */
+const s1 = document.querySelector('#s1 canvas'), tag1 = document.getElementById('tag1');
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(s1);
+  ctx.fillStyle = '#0b0a10'; ctx.fillRect(0, 0, w, h);
+  const z = lerp(7, 1, sstep(ramp(p, 0.05, 0.85)));
+  // focal point drifts from the sun's reflection to the centre as we zoom out
+  const k = sstep(ramp(p, 0.05, 0.85));
+  const fu = lerp(0.64, 0.5, k), fv = lerp(0.62, 0.5, k);
+  ctx.save();
+  ctx.translate(w / 2, h / 2); ctx.scale(z, z); ctx.translate(-fu * w, -fv * h);
+  paintDabs(ctx, DABS, 0, 0, w, h, 0.2, 1, reduce ? 0 : t);
+  ctx.restore();
+  tag1.textContent = z > 1.05 ? `magnification ×${z.toFixed(1)}` : 'the whole picture';
+}
+
+/* ---------- scene 2: the day passes ---------- */
+const s2 = document.querySelector('#s2 canvas'), tag2 = document.getElementById('tag2');
+const HOURS = ['dawn', 'morning', 'noon', 'afternoon', 'dusk', 'evening', 'night'];
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(s2);
+  ctx.fillStyle = '#0b0a10'; ctx.fillRect(0, 0, w, h);
+  const hour = sstep(ramp(p, 0.04, 0.96));
+  paintDabs(ctx, DABS, 0, 0, w, h, hour, 1, reduce ? 0 : t);
+  tag2.textContent = HOURS[Math.min(6, Math.floor(hour * 6.999))];
+}
+
+/* ---------- scene 3: dab → dot → halftone → phosphor → glyph ---------- */
+const s3 = document.querySelector('#s3 canvas'), tag3 = document.getElementById('tag3');
+const G = ' ·.:;ιτνυοσεθφΘΨΦΩ';
+const S3 = { cells: null, w: 0, h: 0 };
+function buildCells(w, h) {
+  const cols = w < 600 ? 40 : 72, cell = w / cols, rows = Math.ceil(h / cell);
+  const cells = [];
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+    const gx = (i + 0.5) * cell, gy = (j + 0.5) * cell;
+    const u = gx / w, v = gy / h;
+    const ox = (hash(i, j, 1) - 0.5) * cell * 2.2, oy = (hash(i, j, 2) - 0.5) * cell * 2.2;
+    const c0 = sceneColor(u, v, 0.22, 0), jit = hash(i, j, 4) * 2 - 1;
+    cells.push({ gx, gy, dx: gx + ox, dy: gy + oy, u, v, ang: (hash(i, j, 3) - 0.5) * (region(u, v) === 'tree' ? TAU : 0.5), j: jit, i, jj: j,
+      lum: c0[2], rgb: hsl2rgb(c0[0], c0[1], c0[2]), csBroken: css(breakColor(c0, jit, 1)), csDot: css(breakColor(c0, jit, 0.3)) });
+  }
+  return { cells, cell, cols, rows };
+}
+function renderS3(p, t) {
+  const { ctx, w, h, resized } = prep(s3);
+  if (!S3.cells || resized || S3.w !== w || S3.h !== h) { S3.cells = buildCells(w, h); S3.w = w; S3.h = h; }
+  const { cells, cell } = S3.cells;
+  const hour = 0.22;
+  const m1 = sstep(ramp(p, 0.04, 0.26));   // dab → dot on a grid
+  const m2 = sstep(ramp(p, 0.30, 0.50));   // → halftone
+  const m3 = sstep(ramp(p, 0.54, 0.74));   // → phosphor triads
+  const m4 = sstep(ramp(p, 0.78, 0.94));   // → glyphs
+  // background: dark → paper (halftone) → black (phosphor) → dark
+  const paperA = m2 * (1 - m3);
+  ctx.fillStyle = '#0b0a10'; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = `rgba(242,236,224,${paperA})`; ctx.fillRect(0, 0, w, h);
+  const tt = reduce ? 0 : t;
+  ctx.lineCap = 'round'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = `${cell * 0.95}px 'IBM Plex Mono', monospace`;
+  for (const q of cells) {
+    const x = lerp(q.dx, q.gx, m1), y = lerp(q.dy, q.gy, m1);
+    const lum = q.lum;
+    // 1. dab → dot
+    const wDab = 1 - m2;
+    if (wDab > 0.01) {
+      const L = lerp(cell * 1.9, cell * 0.95, m1);
+      const dx = Math.cos(q.ang) * L / 2 * (1 - m1), dy = Math.sin(q.ang) * L / 2 * (1 - m1);
+      ctx.strokeStyle = m1 > 0.5 ? q.csDot : q.csBroken; ctx.globalAlpha = wDab; ctx.lineWidth = lerp(L * 0.45, cell * 0.92, m1);
+      ctx.beginPath(); ctx.moveTo(x - dx, y - dy); ctx.lineTo(x + dx, y + dy); ctx.stroke();
+    }
+    // 2. halftone: one ink, size by darkness
+    const wHalf = m2 * (1 - m3);
+    if (wHalf > 0.01) {
+      const r = cell * 0.62 * Math.sqrt(1 - lum) + 0.2;
+      ctx.fillStyle = `rgba(24,20,30,${wHalf})`;
+      ctx.beginPath(); ctx.arc(q.gx, q.gy, r, 0, TAU); ctx.fill();
+    }
+    // 3. phosphor triad
+    const wRGB = m3 * (1 - m4);
+    if (wRGB > 0.01) {
+      const [r, g, b] = q.rgb;
+      const bw = cell / 3, bh = cell * 0.86, y0 = q.gy - bh / 2, x0 = q.gx - cell / 2;
+      ctx.fillStyle = `rgba(255,40,40,${wRGB * r / 255})`; ctx.fillRect(x0, y0, bw * 0.9, bh);
+      ctx.fillStyle = `rgba(40,255,70,${wRGB * g / 255})`; ctx.fillRect(x0 + bw, y0, bw * 0.9, bh);
+      ctx.fillStyle = `rgba(60,90,255,${wRGB * b / 255})`; ctx.fillRect(x0 + 2 * bw, y0, bw * 0.9, bh);
+    }
+    // 4. glyph by brightness, with the fringe collapsing
+    if (m4 > 0.01) {
+      const bri = clamp(lum + (hash(q.i, q.jj, Math.floor(tt / 170)) - 0.5) * 0.08, 0, 1);
+      const gi = Math.min(G.length - 1, Math.round(bri * (G.length - 1)));
+      if (gi > 0) {
+        const ch = G[gi], sh = (1 - m4) * cell * 0.3;
+        if (sh > 0.4) {
+          ctx.fillStyle = `rgba(255,70,80,${0.5 * m4})`; ctx.fillText(ch, q.gx - sh, q.gy);
+          ctx.fillStyle = `rgba(70,200,255,${0.5 * m4})`; ctx.fillText(ch, q.gx + sh, q.gy);
+        }
+        ctx.fillStyle = `rgba(236,230,216,${m4 * (0.3 + 0.7 * bri)})`; ctx.fillText(ch, q.gx, q.gy);
+      }
+    }
+  }
+  ctx.globalAlpha = 1;
+  tag3.textContent = m4 > 0.5 ? 'character dither' : m3 > 0.5 ? 'phosphor triad' : m2 > 0.5 ? 'halftone' : m1 > 0.5 ? 'pointillism' : 'broken color';
+}
+
+/* ---------- scene 4: blended | broken ---------- */
+const s4 = document.querySelector('#s4 canvas');
+const S4 = { hour: 0.62 };
+s4.addEventListener('pointerdown', () => { S4.hour = (S4.hour + 0.25) % 1; });
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(s4);
+  ctx.fillStyle = '#0b0a10'; ctx.fillRect(0, 0, w, h);
+  const tt = reduce ? 0 : t;
+  const divide = lerp(1.0, 0.0, sstep(ramp(p, 0.06, 0.62)));   // 1 = all blended, 0 = all broken
+  const dx = w * divide;
+  // blended, left of the divider
+  if (dx > 0) {
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, dx, h); ctx.clip();
+    paintSmooth(ctx, 0, 0, w, h, S4.hour, w < 600 ? 9 : 12, tt);
+    ctx.restore();
+  }
+  // broken, right of the divider
+  if (dx < w) {
+    ctx.save(); ctx.beginPath(); ctx.rect(dx, 0, w - dx, h); ctx.clip();
+    paintDabs(ctx, DABS, 0, 0, w, h, S4.hour, 1, tt);
+    ctx.restore();
+  }
+  if (dx > 0 && dx < w) {
+    ctx.strokeStyle = 'rgba(236,230,216,.9)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(dx, 0); ctx.lineTo(dx, h); ctx.stroke();
+  }
+}
+
+/* ---------- loop ---------- */
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 },
+  { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 },
+  { el: document.getElementById('s4'), render: renderS4 },
+];
+const hero = document.getElementById('hero');
+let last = 0;
+function frame(t) {
+  const vh = window.innerHeight;
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+    s.render(p, t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

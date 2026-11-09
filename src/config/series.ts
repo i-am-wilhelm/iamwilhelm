@@ -67,6 +67,13 @@ export const series = {
     /* TODO(owner): the series' one-line statement, shown on /writings/poems/ and in its feed. */
     statement: 'Poems set on their own night pages, each with a canvas that answers the reader.',
   },
+  seeing: {
+    name: 'Seeing',
+    title: 'Seeing',
+    href: '/writings/seeing/',
+    accent: '#7d5f18',
+    statement: 'Essays on how a picture resolves: the double image, the lit room, the broken dab, and the glyph dither they lead to.',
+  },
   readings: {
     name: 'Readings',
     title: 'Readings',

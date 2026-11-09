@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Double Image</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070609; --ink:#15131f; --paper:#f3efe4; --bone:#e9e2d2;
+  --gold:#c9a24a; --muted:#8e8777; --desmos:#2d70b3; --orange:#fa7e19;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.mono{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:720px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(46px,13.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em}
+h1 em{font-style:italic;color:var(--gold)}
+.sub{max-width:32ch;margin:0 auto;font-size:19px;color:#cfc8b8;font-style:italic}
+.hint{margin-top:10vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+/* scenes */
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(7,6,9,.74);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(201,162,74,.2);padding:18px 20px 16px;font-size:17.5px}
+.card.light{background:rgba(243,239,228,.9);color:#1a1826;border-color:rgba(21,19,31,.14)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin-bottom:9px;text-transform:uppercase}
+.card.light .n{color:#8a6a1f}
+.card .big{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;font-weight:400}
+.card .big i{color:var(--gold)}
+.card.light .big i{color:#8a6a1f}
+
+/* desmos panel */
+.panel{position:absolute;left:10px;top:10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:#2a2740;background:rgba(243,239,228,.86);border:1px solid rgba(42,39,64,.14);border-radius:3px;padding:7px 10px;max-width:min(94vw,380px);pointer-events:none}
+.panel div{opacity:0;transform:translateX(-5px);transition:opacity .55s ease,transform .55s ease;white-space:nowrap}
+.panel div.on{opacity:1;transform:none}
+.panel .lbl{color:#8a6a1f;margin-left:.7em;font-style:italic}
+.panel sup{font-size:9px}
+.panel .sw{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--desmos);margin-right:7px;vertical-align:middle}
+
+/* end */
+.end{padding:16vh 22px 20vh;text-align:center;max-width:720px;margin:0 auto}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,8vw,64px);line-height:1;margin:0 0 .5em}
+.end p{color:#cfc8b8;max-width:46ch;margin:0 auto 1em}
+.end .colophon{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7vh;line-height:1.8}
+.end .next{display:inline-block;margin-top:3vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,162,74,.35);padding:10px 16px;text-decoration:none}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,74,.5),transparent);margin:0 auto;width:60%}
+@media (prefers-reduced-motion: reduce){ .panel div{transition:none} }
+@media (max-width:420px){ .panel{font-size:10px;line-height:1.7;padding:6px 8px} }
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A scrolly on seeing twice</div>
+    <h1>The <em>Double</em> Image</h1>
+    <p class="sub">One set of lines. Two pictures. The one you get depends on what you brought.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- SCENE 1 · Figure / Ground · Desmos -->
+<section class="scene" id="s1">
+  <div class="stage">
+    <canvas></canvas>
+    <div class="panel" id="panel1"></div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card light"><span class="n">I · Figure and ground</span><p>Start with a column. Two vertical lines and nothing between them but paper.</p></div></div>
+    <div class="step"><div class="card light"><p>Add a bump. A profile is a sum of bumps &mdash; brow, nose, lips, chin &mdash; and each bump is a bell curve on a line. Watch the nose arrive.</p></div></div>
+    <div class="step"><div class="card light"><p>Fill the space between the lines. A vase. You would put flowers in it.</p></div></div>
+    <div class="step"><div class="card light"><p>Fill the space outside the lines instead. Two faces, close enough to kiss.</p><p>Nothing moved. The ink changed sides. Edgar Rubin published this flip in 1915, and every double image since runs on the same hinge: figure and ground trade places, and the picture you see is the one you decided was <i>the thing</i>.</p></div></div>
+  </div>
+</section>
+
+<!-- SCENE 2 · Murmuration -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">II · The paranoiac eye</span><p>In 1929 a young Catalan painter met Jacques Lacan, whose thesis was on paranoia: the mind's habit of reading intent into everything. Dal&iacute; took it as a gift.</p></div></div>
+    <div class="step"><div class="card"><p>He called the result the <i>paranoiac-critical method</i>: simulate the delusion, keep the sanity, and paint what the delusion sees with photographic precision. Breton's surrealists let the unconscious write. Dal&iacute; interrogated it.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">A flock is just a flock.<br>Unless you are <i>afraid enough.</i></p></div></div>
+    <div class="step"><div class="card"><p>That is the move in <i>The Great Paranoiac</i>, <i>The Endless Enigma</i>, <i>Metamorphosis of Narcissus</i>: one set of forms, two or three readings, and a hand steady enough to make every reading convincing. Freud, who had no patience for surrealists, met Dal&iacute; in London in 1938 and made an exception.</p></div></div>
+  </div>
+</section>
+
+<!-- SCENE 3 · Letters first -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">III · Letters first</span><p>Arcimboldo did it with fruit in the 1560s. Dal&iacute; did it with rocks and bathers. A screen does it with characters.</p></div></div>
+    <div class="step"><div class="card"><p>Every image on this site passes through a glyph field: a grid of Greek letters whose density is brightness. Up close, an alphabet. At distance, a face. Monet's broken color, set in type.</p></div></div>
+    <div class="step"><div class="card"><p>The function has not changed since the vase. Same bumps, same curve. The ink picked the other side, and the two faces that met across the vase now face away from each other.</p><p>That is Janus. The double image as a god.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">The stars were <i>letters</i> first.</p></div></div>
+  </div>
+</section>
+
+<!-- SCENE 4 · Hold -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">IV · The hinge</span><p>Here is the thing about a double image: the picture never changes. You do.</p><p>Scroll-driven art is the first medium where that is literally true. The reader's thumb is the paranoiac eye, and the threshold where one reading becomes the other is a line the author gets to place.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">Stop scrolling.<br>It keeps turning anyway.</p><p style="margin-top:.6em;font-size:15px;color:#bdb5a3">Tap the image to choose a side.</p></div></div>
+  </div>
+</section>
+
+<section class="end">
+  <hr class="rule">
+  <h2 style="margin-top:10vh">Two readings,<br>one hand.</h2>
+  <p>Dal&iacute; described his method as irrational knowledge held to critical standards. Strip the mysticism and the recipe is plain: pick an ordinary thing, let the interpretive drive run until it finds a second thing inside the first, then render the hinge so cleanly that both survive. Rubin's vase is the proof of concept. Goya's masked satires, Arcimboldo's fruit, Varo's workshops, the Polish poster school &mdash; all of them are double images with the second reading reserved for whoever brought the key.</p>
+  <p>This page is one. Every picture on it is the same function wearing different ink.</p>
+  <a class="next" href="#hero">Read it again &uarr;</a>
+  <div class="colophon">
+    Drawn in functions. No images were loaded.<br>
+    r(y) = 0.19 + &Sigma; a<sub>k</sub>&middot;e<sup>&minus;((y&minus;&mu;<sub>k</sub>)/s<sub>k</sub>)&sup2;</sup> &nbsp;&nbsp;{&minus;0.9 &lt; y &lt; 0.9}<br>
+    Next in the series: <i>Monet Invented the Dither</i> &middot; <i>Varo's Workshop</i>
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- the one function ---------- */
+const BASE = 0.19;
+const TERMS = [
+  { a: -0.09, mu: 0.93, s: 0.12, l: 'crown' },
+  { a: 0.05, mu: 0.42, s: 0.10, l: 'brow' },
+  { a: 0.14, mu: 0.12, s: 0.07, l: 'nose' },
+  { a: 0.045, mu: -0.05, s: 0.035, l: 'upper lip' },
+  { a: 0.045, mu: -0.15, s: 0.04, l: 'lower lip' },
+  { a: 0.07, mu: -0.32, s: 0.08, l: 'chin' },
+  { a: -0.07, mu: -0.50, s: 0.07, l: 'throat' },
+  { a: 0.12, mu: -0.85, s: 0.12, l: 'foot' },
+];
+function profile(y, w) {
+  let r = BASE;
+  for (let i = 0; i < TERMS.length; i++) {
+    const k = w ? w[i] : 1; if (k <= 0) continue;
+    const t = TERMS[i], d = (y - t.mu) / t.s;
+    r += k * t.a * Math.exp(-d * d);
+  }
+  return r;
+}
+function vasePath(cx, cy, S, w) {
+  const p = new Path2D(), N = 180;
+  for (let i = 0; i <= N; i++) { const y = 0.9 - 1.8 * i / N; const X = cx + profile(y, w) * S, Y = cy - y * S; i ? p.lineTo(X, Y) : p.moveTo(X, Y); }
+  for (let i = N; i >= 0; i--) { const y = 0.9 - 1.8 * i / N; p.lineTo(cx - profile(y, w) * S, cy - y * S); }
+  p.closePath(); return p;
+}
+function hash(i, j, k) {
+  let n = (i * 374761393 + j * 668265263 + k * 1274126177) | 0;
+  n = Math.imul(n ^ (n >>> 13), 1274126177);
+  return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
+}
+
+/* ---------- canvas plumbing ---------- */
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight;
+  const W = Math.round(w * dpr), H = Math.round(h * dpr);
+  let resized = false;
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; resized = true; }
+  const ctx = c.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h, dpr, resized };
+}
+
+/* ---------- HERO: drifting glyphs ---------- */
+const G = ' ·.:;ιτνυοσεθφΘΨΦΩ';
+const heroC = document.getElementById('heroCanvas');
+const heroGl = [];
+for (let i = 0; i < 110; i++) heroGl.push({ x: Math.random(), y: Math.random(), s: 10 + Math.random() * 26, v: 0.02 + Math.random() * 0.05, ch: G[3 + Math.floor(Math.random() * (G.length - 3))], ph: Math.random() * TAU });
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC);
+  ctx.clearRect(0, 0, w, h);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const g of heroGl) {
+    const yy = ((g.y - (t * 0.00001 * g.v * 40)) % 1 + 1) % 1;
+    const x = g.x * w, y = yy * h;
+    const a = (0.08 + 0.12 * (0.5 + 0.5 * Math.sin(t * 0.0012 + g.ph))) * fade;
+    ctx.font = `${g.s}px 'IBM Plex Mono', monospace`;
+    const sh = 1.2 + 0.8 * Math.sin(t * 0.0009 + g.ph);
+    ctx.fillStyle = `rgba(255,70,80,${a * 0.8})`; ctx.fillText(g.ch, x - sh, y);
+    ctx.fillStyle = `rgba(80,200,255,${a * 0.8})`; ctx.fillText(g.ch, x + sh, y);
+    ctx.fillStyle = `rgba(233,226,210,${a})`; ctx.fillText(g.ch, x, y);
+  }
+}
+
+/* ---------- SCENE 1: Desmos vase ---------- */
+const s1 = document.querySelector('#s1 canvas');
+const panel = document.getElementById('panel1');
+const fmt = (v, d) => (Math.abs(v)).toFixed(d);
+const lines = [];
+{
+  const mk = html => { const d = document.createElement('div'); d.innerHTML = html; panel.appendChild(d); return d; };
+  lines.push(mk(`<span class="sw"></span>r(y) = 0.19`));
+  for (const t of TERMS) {
+    const sg = t.a < 0 ? '&minus;' : '+';
+    const ms = t.mu < 0 ? '+' : '&minus;';
+    lines.push(mk(`&nbsp;&nbsp;${sg} ${fmt(t.a, t.a === 0.045 ? 3 : 2)}&middot;e<sup>&minus;((y ${ms} ${fmt(t.mu, 2)}) / ${fmt(t.s, t.s === 0.035 ? 3 : 2)})&sup2;</sup><span class="lbl">${t.l}</span>`));
+  }
+  lines.push(mk(`x = &plusmn;r(y) &nbsp;{&minus;0.9 &lt; y &lt; 0.9}`));
+}
+const S1 = { w: null };
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(s1);
+  // weights
+  const W = TERMS.map((_, i) => { const a0 = 0.13 + i * 0.037; return sstep(ramp(p, a0, a0 + 0.055)); });
+  lines[0].classList.toggle('on', p > 0.015);
+  for (let i = 0; i < TERMS.length; i++) lines[i + 1].classList.toggle('on', W[i] > 0.02);
+  lines[lines.length - 1].classList.toggle('on', p > 0.46);
+
+  // paper + grid
+  ctx.fillStyle = '#f3efe4'; ctx.fillRect(0, 0, w, h);
+  const S = Math.min(h * 0.40, (w * 0.5 - 18) / 0.42);
+  const cx = w / 2, cy = h * 0.5;
+  ctx.lineWidth = 1;
+  for (let k = -40; k <= 40; k++) {
+    const v = k * 0.1; const major = k % 5 === 0;
+    ctx.strokeStyle = major ? 'rgba(42,39,64,.22)' : 'rgba(42,39,64,.08)';
+    const X = cx + v * S, Y = cy - v * S;
+    if (X >= 0 && X <= w) { ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, h); ctx.stroke(); }
+    if (Y >= 0 && Y <= h) { ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(w, Y); ctx.stroke(); }
+  }
+  ctx.strokeStyle = 'rgba(42,39,64,.55)'; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+  ctx.fillStyle = 'rgba(42,39,64,.6)'; ctx.font = `10px 'IBM Plex Mono', monospace`; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  for (let k = -2; k <= 2; k++) { if (!k) continue; const v = k * 0.5; ctx.fillText(v.toString(), cx + 4, cy - v * S + 3); ctx.fillText(v.toString(), cx + v * S + 3, cy + 4); }
+
+  const path = vasePath(cx, cy, S, W);
+  // fills
+  const vaseA = sstep(ramp(p, 0.50, 0.62)) * (1 - sstep(ramp(p, 0.76, 0.90)));
+  const outA = sstep(ramp(p, 0.76, 0.90));
+  if (vaseA > 0) { ctx.fillStyle = `rgba(21,19,31,${vaseA})`; ctx.fill(path); }
+  if (outA > 0) {
+    const p2 = new Path2D(); p2.rect(0, 0, w, h); p2.addPath(path);
+    ctx.fillStyle = `rgba(21,19,31,${outA})`; ctx.fill(p2, 'evenodd');
+    // eyes of the two faces
+    const ea = clamp((outA - 0.55) / 0.45, 0, 1);
+    if (ea > 0) {
+      const ey = 0.34, ex = profile(ey, W) + 0.075;
+      ctx.fillStyle = `rgba(243,239,228,${ea})`;
+      for (const sgn of [-1, 1]) { ctx.beginPath(); ctx.arc(cx + sgn * ex * S, cy - ey * S, 0.013 * S, 0, TAU); ctx.fill(); }
+    }
+  }
+  // curve
+  ctx.strokeStyle = outA > 0.5 ? `rgba(201,162,74,${0.6 + 0.4 * outA})` : '#2d70b3';
+  ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
+  if (p > 0.015) ctx.stroke(path);
+  // desmos points at term peaks
+  for (let i = 0; i < TERMS.length; i++) {
+    if (W[i] < 0.5 || outA > 0.3) continue;
+    const y = TERMS[i].mu, r = profile(y, W);
+    for (const sgn of [-1, 1]) {
+      ctx.beginPath(); ctx.arc(cx + sgn * r * S, cy - y * S, 4.2, 0, TAU);
+      ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fa7e19'; ctx.stroke();
+    }
+  }
+}
+
+/* ---------- SCENE 2: murmuration -> skull ---------- */
+const s2 = document.querySelector('#s2 canvas');
+const S2 = { pts: null, w: 0, h: 0, first: true };
+function buildSkull(w, h) {
+  const off = document.createElement('canvas'); off.width = 200; off.height = 240;
+  const o = off.getContext('2d');
+  o.fillStyle = '#fff';
+  o.beginPath(); o.ellipse(100, 92, 72, 80, 0, 0, TAU); o.fill();
+  o.beginPath(); o.moveTo(52, 128); o.lineTo(48, 176); o.quadraticCurveTo(48, 216, 82, 216); o.lineTo(118, 216); o.quadraticCurveTo(152, 216, 152, 176); o.lineTo(148, 128); o.closePath(); o.fill();
+  o.globalCompositeOperation = 'destination-out';
+  o.beginPath(); o.ellipse(70, 108, 21, 25, -0.15, 0, TAU); o.fill();
+  o.beginPath(); o.ellipse(130, 108, 21, 25, 0.15, 0, TAU); o.fill();
+  o.beginPath(); o.moveTo(100, 126); o.lineTo(88, 156); o.lineTo(112, 156); o.closePath(); o.fill();
+  o.fillRect(60, 186, 80, 2.2);
+  for (const x of [70, 81, 92, 103, 114, 125]) o.fillRect(x, 186, 2, 30);
+  o.globalCompositeOperation = 'source-over';
+  const img = o.getImageData(0, 0, 200, 240).data;
+  const cand = [];
+  for (let y = 0; y < 240; y += 2) for (let x = 0; x < 200; x += 2) if (img[(y * 200 + x) * 4 + 3] > 120) cand.push([x + Math.random() * 2, y + Math.random() * 2]);
+  for (let i = cand.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;[cand[i], cand[j]] = [cand[j], cand[i]]; }
+  const N = Math.min(2600, cand.length);
+  const Sz = Math.min(w * 0.82, h * 0.60);
+  const cx = w / 2, cy = h * 0.47;
+  const pts = [];
+  for (let i = 0; i < N; i++) {
+    const [px, py] = cand[i];
+    pts.push({
+      tx: cx + (px - 100) / 240 * Sz, ty: cy + (py - 120) / 240 * Sz,
+      u: Math.random(), v: Math.random(), spd: 0.6 + Math.random() * 0.9,
+      p1: Math.random() * TAU, p2: Math.random() * TAU, p3: Math.random() * TAU,
+      sz: 1.1 + Math.random() * 1.1
+    });
+  }
+  return pts;
+}
+function renderS2(p, t) {
+  const { ctx, w, h, resized } = prep(s2);
+  if (!S2.pts || resized || S2.w !== w || S2.h !== h) { S2.pts = buildSkull(w, h); S2.w = w; S2.h = h; S2.first = true; }
+  if (S2.first) { ctx.fillStyle = '#070609'; ctx.fillRect(0, 0, w, h); S2.first = false; }
+  else { ctx.fillStyle = 'rgba(7,6,9,0.30)'; ctx.fillRect(0, 0, w, h); }
+  const e = sstep(ramp(p, 0.30, 0.80));
+  const tt = reduce ? 0 : t;
+  for (const q of S2.pts) {
+    let u = (q.u + tt * 0.000028 * q.spd) % 1;
+    const edge = Math.sin(Math.PI * u);
+    const fx = w * (-0.1 + u * 1.2) + Math.sin(tt * 0.0007 + q.p2) * w * 0.06;
+    const fy = h * 0.42 + Math.sin(u * 6.2 + tt * 0.0011 + q.p1 * 0.3) * h * 0.13 + (q.v - 0.5) * h * 0.14 + Math.sin(tt * 0.0005 + q.p3) * h * 0.04;
+    const flutter = (1 - e) * 2.5;
+    const x = lerp(fx, q.tx, e) + Math.sin(tt * 0.004 + q.p1) * (flutter + 0.35);
+    const y = lerp(fy, q.ty, e) + Math.cos(tt * 0.0035 + q.p2) * (flutter + 0.35);
+    const a = lerp(0.85 * edge, 0.95, e);
+    const r = lerp(205, 236, e), g = lerp(215, 228, e), b = lerp(240, 210, e);
+    ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
+    const s = lerp(q.sz, 1.35, e);
+    ctx.fillRect(x, y, s, s);
+  }
+  // faint gold breath in the sockets when fully resolved
+  const ga = clamp((e - 0.92) / 0.08, 0, 1);
+  if (ga > 0) {
+    const Sz = Math.min(w * 0.82, h * 0.60), cx = w / 2, cy = h * 0.47;
+    for (const sx of [70, 130]) {
+      const X = cx + (sx - 100) / 240 * Sz, Y = cy + (108 - 120) / 240 * Sz;
+      const gr = ctx.createRadialGradient(X, Y, 0, X, Y, Sz * 0.07);
+      gr.addColorStop(0, `rgba(201,162,74,${0.22 * ga * (0.6 + 0.4 * Math.sin(t * 0.002))})`); gr.addColorStop(1, 'rgba(201,162,74,0)');
+      ctx.fillStyle = gr; ctx.fillRect(X - Sz * 0.08, Y - Sz * 0.08, Sz * 0.16, Sz * 0.16);
+    }
+  }
+}
+
+/* ---------- SCENE 3: glyph field -> Janus ---------- */
+const s3 = document.querySelector('#s3 canvas');
+const IW = 96, IH = 128;
+const IMG = new Float32Array(IW * IH);
+{
+  const ey = 0.34, exr = profile(ey) - 0.085;
+  for (let j = 0; j < IH; j++) for (let i = 0; i < IW; i++) {
+    const y = 0.95 - 1.9 * (j + 0.5) / IH;
+    const x = ((i + 0.5) / IW - 0.5) * (IW / IH) * 1.9;
+    let b;
+    if (y > -0.9 && y < 0.9 && Math.abs(x) < profile(y)) {
+      const r = profile(y), q = Math.abs(x) / r;
+      b = 0.42 + 0.52 * Math.pow(1 - q * q, 0.7);
+      // rim light on the outer edges
+      b += 0.12 * Math.pow(q, 6);
+      const dx = Math.abs(x) - exr, dy = y - ey;
+      if (dx * dx + dy * dy < 0.035 * 0.035) b = 0.10;
+    } else {
+      b = 0.09 + 0.24 * hash(i, j, 7);
+    }
+    IMG[j * IW + i] = clamp(b, 0, 1);
+  }
+}
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(s3);
+  ctx.fillStyle = '#070609'; ctx.fillRect(0, 0, w, h);
+  const maxCols = w < 600 ? 38 : 76;
+  const cols = Math.round(lerp(9, maxCols, sstep(ramp(p, 0.06, 0.70))));
+  const cell = w / cols, rows = Math.ceil(h / cell) + 1;
+  const boxH = h * 0.88, boxW = boxH * IW / IH, bx = (w - boxW) / 2, by = (h - boxH) / 2;
+  const sharp = sstep(ramp(p, 0.70, 0.90));
+  const sh = lerp(cell * 0.24 + 0.6, 0, sharp);
+  const frame = Math.floor(t / 160);
+  ctx.font = `${cell * 0.95}px 'IBM Plex Mono', monospace`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const doFringe = sh > 0.5;
+  for (let j = 0; j < rows; j++) {
+    const y = (j + 0.5) * cell;
+    for (let i = 0; i < cols; i++) {
+      const x = (i + 0.5) * cell;
+      let b;
+      const u = (x - bx) / boxW, v = (y - by) / boxH;
+      if (u >= 0 && u < 1 && v >= 0 && v < 1) b = IMG[Math.floor(v * IH) * IW + Math.floor(u * IW)];
+      else b = 0.09 + 0.24 * hash(i, j, 11);
+      // flicker, heavier when unresolved
+      b += (hash(i, j, frame) - 0.5) * lerp(0.22, 0.05, sharp);
+      b = clamp(b, 0, 1);
+      const gi = Math.min(G.length - 1, Math.floor(b * (G.length - 1) + 0.5));
+      if (gi === 0) continue;
+      const ch = G[gi];
+      if (doFringe && b > 0.16) {
+        ctx.fillStyle = `rgba(255,70,80,${0.55 * b})`; ctx.fillText(ch, x - sh, y);
+        ctx.fillStyle = `rgba(70,200,255,${0.55 * b})`; ctx.fillText(ch, x + sh, y);
+      }
+      ctx.fillStyle = `rgba(233,226,210,${0.25 + 0.75 * b})`; ctx.fillText(ch, x, y);
+    }
+  }
+  // gold hairline of the function, only once resolved
+  const la = clamp((sharp - 0.6) / 0.4, 0, 1);
+  if (la > 0) {
+    const S = boxH / 1.9, cx = w / 2, cy = h / 2 + (0.025 * S);
+    ctx.strokeStyle = `rgba(201,162,74,${0.55 * la})`; ctx.lineWidth = 1;
+    ctx.stroke(vasePath(cx, cy, S));
+  }
+}
+
+/* ---------- SCENE 4: the hinge ---------- */
+const s4 = document.querySelector('#s4 canvas');
+const S4 = { manual: false, target: 0, f: 0 };
+s4.addEventListener('pointerdown', () => { S4.manual = true; S4.target = S4.f < 0.5 ? 1 : 0; });
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(s4);
+  const auto = 0.5 + 0.5 * Math.sin(t * 0.0006);
+  if (S4.manual) S4.f = lerp(S4.f, S4.target, 0.07); else S4.f = auto;
+  const f = clamp(S4.f, 0, 1);
+  const reveal = sstep(ramp(p, 0.02, 0.35));
+  ctx.fillStyle = '#070609'; ctx.fillRect(0, 0, w, h);
+  const S = Math.min(h * 0.40, (w * 0.5 - 16) / 0.42), cx = w / 2, cy = h * 0.47;
+  const path = vasePath(cx, cy, S);
+  // inside (Janus head) light with f, outside (two faces) light with 1-f
+  ctx.fillStyle = `rgba(233,226,210,${f * reveal})`; ctx.fill(path);
+  const p2 = new Path2D(); p2.rect(0, 0, w, h); p2.addPath(path);
+  ctx.fillStyle = `rgba(233,226,210,${(1 - f) * reveal})`; ctx.fill(p2, 'evenodd');
+  // eyes for each reading
+  const ey = 0.34;
+  ctx.fillStyle = `rgba(21,19,31,${(1 - f) * reveal})`;
+  for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(cx + s * (profile(ey) + 0.075) * S, cy - ey * S, 0.013 * S, 0, TAU); ctx.fill(); }
+  ctx.fillStyle = `rgba(21,19,31,${f * reveal})`;
+  for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(cx + s * (profile(ey) - 0.085) * S, cy - ey * S, 0.013 * S, 0, TAU); ctx.fill(); }
+  // gold hairline
+  ctx.strokeStyle = `rgba(201,162,74,${0.85 * reveal})`; ctx.lineWidth = 1.3; ctx.stroke(path);
+  // caption
+  const ca = Math.abs(f - 0.5) * 2 * reveal;
+  ctx.fillStyle = `rgba(142,135,119,${ca})`; ctx.font = `11px 'IBM Plex Mono', monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(f < 0.5 ? 'T W O   F A C E S ,   M E E T I N G' : 'T W O   F A C E S ,   D E P A R T I N G', cx, cy + 1.08 * S);
+}
+
+/* ---------- loop ---------- */
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 },
+  { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 },
+  { el: document.getElementById('s4'), render: renderS4 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight;
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+    s.render(p, t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
