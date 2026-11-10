@@ -31,3 +31,19 @@ export const SEEN_CHAIN = [
 export const SEEN_AI_LINE_SOURCE =
   'Research, writing and code made with AI assistance and checked against the sources listed.';
 export const SEEN_AI_LINE = SEEN_AI_LINE_SOURCE;
+
+/**
+ * The batch hangs in the Gallery only: the homepage wall (RoomGallery)
+ * leaves these frames out. Remove a slug to hang it on the homepage too.
+ */
+export const SEEN_GALLERY_ONLY: string[] = [
+  'nobody-sees-the-same-sea',
+  'type-is-an-image',
+  'the-sleep-of-reason',
+  'why-klimt-went-to-ravenna',
+  'redons-turn',
+  'how-to-throw-a-flame-twenty-miles',
+  'living-vanitas',
+  'the-mask-is-the-method',
+  'the-snowflake-machine',
+];
