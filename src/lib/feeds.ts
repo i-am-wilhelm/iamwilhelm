@@ -5,6 +5,14 @@
  * rendered by the content layer); a scroll page carries its summary and a
  * link, since the page is the piece. Every item names its author
  * (dc:creator in RSS, <author> in Atom).
+ *
+ * Both name /feed.css in an xml-stylesheet instruction, so a person who
+ * opens a feed in a browser sees a readable page in place of the markup
+ * (public/feed.css; CSS, since Chrome stops running XSLT in November 2026).
+ * Feed readers ignore it. For that page to read cleanly, an RSS item's
+ * <description> is always the plain summary, and any HTML (a reading's
+ * full text, a scroll page's summary and link) travels in content:encoded,
+ * which readers prefer when both are present.
  */
 import { SITE_NAME, SITE_URL } from '../config/site';
 import type { Piece } from './pieces';
@@ -18,6 +26,9 @@ export interface FeedSpec {
   self: string;
   items: Piece[];
 }
+
+/** The stylesheet a browser applies when a person opens a feed. */
+const STYLE = '<?xml-stylesheet type="text/css" href="/feed.css"?>';
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -44,22 +55,21 @@ export function rss(spec: FeedSpec): string {
     .map((p) => {
       const b = body(p);
       const cats = p.series ? `<category>${esc(p.label!)}</category>` : '';
-      const content = b.full
-        ? `<content:encoded><![CDATA[${b.html}]]></content:encoded>`
-        : '';
+      const content = `<content:encoded><![CDATA[${b.html.replace(/]]>/g, ']]]]><![CDATA[>')}]]></content:encoded>`;
       return `    <item>
       <title>${esc(p.title)}</title>
       <link>${esc(p.url)}</link>
       <guid isPermaLink="true">${esc(p.url)}</guid>
       <pubDate>${p.date.toUTCString()}</pubDate>
       <dc:creator>${esc(SITE_NAME)}</dc:creator>
-      <description>${esc(b.full ? summary(p) : b.html)}</description>
+      <description>${esc(summary(p))}</description>
       ${content}${cats}
     </item>`;
     })
     .join('\n');
   const latest = spec.items[0]?.date ?? new Date(0);
   return `<?xml version="1.0" encoding="UTF-8"?>
+${STYLE}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>${esc(spec.title)}</title>
@@ -97,6 +107,7 @@ export function atom(spec: FeedSpec): string {
     .join('\n');
   const latest = spec.items[0]?.date ?? new Date(0);
   return `<?xml version="1.0" encoding="UTF-8"?>
+${STYLE}
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>${esc(spec.title)}</title>
   <subtitle>${esc(spec.description)}</subtitle>
