@@ -1,0 +1,170 @@
+/*
+ * What a person sees when they open a feed (/rss.xml, /atom.xml,
+ * /writings/<series>/rss.xml) in a browser. The feeds name this file in an
+ * xml-stylesheet instruction (src/lib/feeds.ts); feed readers ignore it.
+ *
+ * Plain CSS on the feed's own elements, not XSLT: Chrome stops running XSLT
+ * on 17 November 2026, and CSS on XML stays supported everywhere. The cost is
+ * that an address in a feed is text, not a link, so each one is set in mono
+ * and can be selected whole with one tap.
+ *
+ * Selectors are by local name with no default namespace, so one sheet reads
+ * both formats: RSS (rss > channel > item) and Atom (feed > entry).
+ */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/eb-garamond-latin-wght-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-var.woff2') format('woff2');
+}
+
+rss,
+feed {
+  display: block;
+  margin: 0;
+  padding: clamp(1.5rem, 1rem + 4vw, 4rem) clamp(1rem, 0.6rem + 2vw, 2.5rem);
+  background: #f4eee2;
+  color: #1d1b18;
+  font: 400 1.125rem/1.55 'EB Garamond', Georgia, 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+}
+channel,
+feed {
+  display: block;
+}
+channel,
+feed > * {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+/* The note at the head: what this page is and what to do with it. */
+channel::before,
+feed::before {
+  display: block;
+  max-width: 40rem;
+  margin: 0 auto 2.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(29, 27, 24, 0.16);
+  border-left: 3px solid #b08a43;
+  background: #ece4d4;
+  color: #46403a;
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  content: 'This is a feed, a page written for feed readers.\A To follow new work, copy this page\2019s address into a feed reader. To read the pieces, visit iamwilhelm.com.';
+}
+
+/* The feed's own name, its line, and where it lives. */
+channel > title,
+feed > title {
+  display: block;
+  font: 500 clamp(2.2rem, 1.6rem + 3vw, 3.4rem) / 1.05 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+channel > description,
+feed > subtitle {
+  display: block;
+  margin-top: 0.75rem;
+  color: #46403a;
+  text-wrap: pretty;
+}
+channel > link,
+feed > link[rel='alternate'] {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+/* Every address: mono, selectable in one tap, allowed to wrap. */
+link,
+feed > link[rel='alternate']::after,
+entry > link[rel='alternate']::after {
+  font: 400 0.8rem/1.5 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color: #7a5a1f;
+  overflow-wrap: anywhere;
+  -webkit-user-select: all;
+  user-select: all;
+}
+/* Atom keeps the address in an attribute. */
+link[rel='alternate']::after {
+  content: attr(href);
+}
+
+/* One piece. */
+item,
+entry {
+  display: block;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(29, 27, 24, 0.16);
+}
+channel > item:first-of-type,
+feed > entry:first-of-type {
+  margin-top: 3rem;
+}
+item > title,
+entry > title {
+  display: block;
+  font: 500 1.7rem/1.15 'Cormorant Garamond', Georgia, serif;
+  text-wrap: balance;
+}
+item > description,
+entry > summary {
+  display: block;
+  margin-top: 0.4rem;
+  color: #46403a;
+  text-wrap: pretty;
+}
+item > link,
+entry > link[rel='alternate'] {
+  display: block;
+  margin-top: 0.5rem;
+}
+item > category,
+item > pubDate,
+entry > category,
+entry > published {
+  display: inline-block;
+  margin: 0.6rem 1rem 0 0;
+  font: 400 0.72rem/1.5 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #625b50;
+}
+/* Atom keeps the series label in an attribute too. */
+entry > category::after {
+  content: attr(label);
+}
+
+/* For feed readers only: machine fields, and the full text a reader renders. */
+language,
+lastBuildDate,
+guid,
+creator,
+encoded,
+link[rel='self'],
+feed > id,
+feed > updated,
+feed > author,
+entry > id,
+entry > updated,
+entry > author,
+entry > content {
+  display: none;
+}
