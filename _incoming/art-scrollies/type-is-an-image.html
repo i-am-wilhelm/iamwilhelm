@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type Is an Image</title>
+<meta name="description" content="Five ways a letter is a drawing: a pen stroke, a piece of metal, a set of curves, a grid of gray squares, and a woven page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#f3eee3; --bone:#1d1a16; --copper:#a3271c; --copper-hi:#8f1f16; --acid:#27457f; --ink:#1d1a16; --gold:#a3271c; --muted:#6b6457; --paper:#fbf8f0;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#fbf8f0;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#4b453b;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(252,249,241,.95);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(163,39,28,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#1d1a16}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#1d1a16}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(252,249,241,.72);border:1px solid rgba(163,39,28,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(252,249,241,.82);border:1px solid rgba(163,39,28,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(29,26,22,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(163,39,28,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#4b453b;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(163,39,28,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(29,26,22,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#4b453b}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#4b453b;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(163,39,28,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fbf8f0;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#fbf8f0;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+
+/* additions for this piece: function panel, controls, the live paragraph */
+.fx{position:absolute;left:12px;top:46px;font-family:var(--mono);font-size:11px;line-height:1.75;color:var(--bone);background:rgba(252,249,241,.88);border:1px solid rgba(163,39,28,.25);padding:6px 10px;max-width:min(calc(100% - 24px),560px);pointer-events:none}
+.fx div{opacity:.32;transition:opacity .5s}
+.fx div.on{opacity:1}
+.fx b{font-weight:500;color:var(--gold)}
+.fx .g{color:#5a5347;font-style:italic;margin-left:.7em}
+.tag{background:rgba(252,249,241,.88)}
+.palette{top:12px;background:rgba(252,249,241,.94)}
+.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(40vw,220px);height:44px;accent-color:#a3271c}
+.palette output{font-family:var(--mono);font-size:11px;min-width:5.4em;color:var(--bone)}
+.palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#fbf8f0}
+.spec{position:absolute;left:0;right:0;top:172px;margin:0 auto;width:min(88vw,27em);font-family:var(--body);font-size:clamp(16px,2.1vw,20px);color:#1d1a16;opacity:0;pointer-events:none;line-height:var(--lh,1.45);filter:blur(var(--blur,0em));transition:filter .6s}
+.spec p{margin:0}
+.obj i{font-style:italic}
+@media (max-width:899px){ .palette{top:100px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+@media (max-width:520px){ .palette{top:100px} .palette input[type=range]{width:34vw} }
+@media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:150px} .spec{top:236px} }
+.exhibit .tag{font-size:13px}
+.exhibit .fx{font-size:15px;max-width:min(calc(100% - 24px),780px)}
+.exhibit .spec{font-size:clamp(18px,2.6vw,30px)}
+.exhibit .palette label,.exhibit .palette .pl{font-size:13px}
+.exhibit .palette button{font-size:15px}
+.exhibit .palette output{font-size:14px}
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .palette{left:35%;top:auto;bottom:26px} .palette .pl{display:inline} .spec{left:35%;right:auto;margin:0;top:50%;width:min(44vw,27em);transform:translate(-50%,-50%);font-size:21px} }
+@media (prefers-reduced-motion:reduce){ .fx div,.spec{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#find">Skip to the list of books and sources</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">Seen · No. 9 · A scrolly on letters, from pen to pixel</div>
+    <h1>Type Is an Image</h1>
+    <p class="sub">You stopped seeing letters the day you learned to read. Every one is still a drawing: a pen stroke, cast in metal, traced in curves, filled in with squares of gray.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · the pen -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A flat-tipped pen writes the letters o and n. The line comes out thick in some directions and thin in others." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">Broad pen · held at one angle</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.04"><b>tip = (w/2) · (cos θ, sin θ)</b><span class="g">the pen tip: a short line at angle θ</span></div><div data-at="0.1"><b>thickness = w · |sin(φ − θ)|</b><span class="g">φ is the way the pen is moving</span></div><div data-at="0.66"><b>3 + 1 + 2 + 1 + 3 + 2 + 3 = 15</b><span class="g">strokes in m·i·n·i·m·u·m</span></div></div>
+    <div class="palette" id="penBar">
+      <label for="pen">Pen angle</label>
+      <input type="range" id="pen" min="0" max="90" value="30" step="1" aria-valuetext="30 degrees">
+      <output id="penOut" for="pen">30°</output>
+    </div>
+    <p class="sr-only" id="s1d">The pen tip is a short straight edge held at 30 degrees. Where the pen moves across its edge the line is thick. Where it moves along its edge the line is thin. A slider turns the pen from 0 to 90 degrees and the thick and thin parts of both letters move. Then the round letters fade and the pen writes the word minimum in a steep, narrow German hand: fifteen upright strokes in a row, like a fence. At the end, brackets mark where each letter starts and two small ticks appear over the letter i.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The pen</h2><p>Every letter on this screen began as a pen stroke. The pen had a flat tip, wide one way and thin the other, and the writer held it at one steady angle.</p></div></div>
+    <div class="step"><div class="card"><p>Follow the pen around the o. Nobody chose where the line gets thick. The angle of the tip chose it.</p></div></div>
+    <div class="step"><div class="card"><p>Turn the pen with the slider. The thin spots move, and the letter changes character. Much of the difference between an old typeface and a modern one comes down to this one angle.</p></div></div>
+    <div class="step"><div class="card"><p>Now make the strokes straight and steep, and pack them close. German scribes wrote Bibles this way in the 1400s. Each short upright stroke is called a minim.</p></div></div>
+    <div class="step"><div class="card"><p>Here is the word <i>minimum</i>: fifteen minims in a row. It was handsome and hard to read. Readers needed help finding the i, and that is how the i got its dot.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the metal -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="Four squares in a row: a steel punch, a copper matrix, a piece of lead type and a printed page. The same letter R flips left to right at each step." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true">Punch · matrix · type · page</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.05"><b>x → −x</b><span class="g">one flip: a mirror</span></div><div data-at="0.6"><b>flip · flip · flip = flip</b><span class="g">three flips from punch to page</span></div><div data-at="0.8"><b>1 punch → many matrices → countless type</b><span class="g">a copy of a copy of a copy</span></div></div>
+    <p class="sr-only" id="s2d">On the punch the R is raised and backwards. Struck into copper, it leaves a sunken R that reads forwards. Metal cast in that hollow gives a raised, backwards R on a piece of type. Inked and pressed, the type prints a forwards R on paper. At the end, a grid of 290 small squares fills in, one for every different character in the font Gutenberg used for his Bible.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The metal</h2><p>In Mainz, in the early 1450s, Johannes Gutenberg set out to make that handwriting repeatable. His Bible has 42 lines to a page. The first copies were ready by 1454 or 1455.</p></div></div>
+    <div class="step"><div class="card"><p>The classic method takes three flips. First, carve the letter backwards on the end of a steel bar. That is the punch.</p></div></div>
+    <div class="step"><div class="card"><p>Strike the punch into soft copper. The dent reads the right way round. That is the matrix.</p></div></div>
+    <div class="step"><div class="card"><p>Pour hot metal into the dent: lead, tin and antimony. Out comes a piece of type, backwards again. Ink it, press it, and the page reads forwards.</p></div></div>
+    <div class="step"><div class="card"><p>The Bible font needed about 290 different characters: the alphabet, plus the joined letters and shortcuts that scribes used. Printers went on cutting punches by hand for about four hundred years.</p></div></div>
+    <div class="step"><div class="card"><p>How Gutenberg cast his own first type is still argued over. In 2001 two researchers at Princeton measured his printed letters and found more small differences than one mould should give.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the outline -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="Three points and a curve. A dot travels along the curve from the first point to the last, pulled toward the middle point." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true">Outline · points and curves</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.04"><b>B(t) = (1−t)²·P₀ + 2(1−t)·t·P₁ + t²·P₂</b><span class="g">one curve from three points</span></div><div data-at="0.46"><b>o = 16 curves = 32 points = 64 numbers</b><span class="g">the whole letter</span></div><div data-at="0.78"><b>(x, y) → (s·x, s·y)</b><span class="g">any size: multiply every point by s</span></div></div>
+    <div class="palette" id="tBar">
+      <label for="tIn">Slide t</label>
+      <input type="range" id="tIn" min="0" max="100" value="0" step="1" aria-valuetext="t equals 0">
+      <output id="tOut" for="tIn">t = 0.00</output>
+    </div>
+    <p class="sr-only" id="s3d">A slider moves the dot by changing a number called t from 0 to 1. Then the middle point moves, and the curve bends to follow it without touching it. Next, 32 points appear in two rings and sixteen short curves join them into the letter o. At the end the same letter shrinks to the size of an ant and then grows until only one clean edge of it fits in the frame.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The outline</h2><p>Metal type lasted about five centuries. Then the letter moved into the computer, and it had to become numbers.</p></div></div>
+    <div class="step"><div class="card"><p>A font file stores each letter as a short list of points. Between the points, one small formula draws the curve. Slide t from 0 to 1 and watch it draw.</p></div></div>
+    <div class="step"><div class="card"><p>Two of the points sit on the letter. The third pulls the curve toward itself and never touches it.</p></div></div>
+    <div class="step"><div class="card"><p>This o is sixteen of those curves. That is 32 points, or 64 numbers. The file holds no picture of the letter at all.</p></div></div>
+    <div class="step"><div class="card"><p>Because the letter is a formula, it can be the size of an ant or the side of a building, and the edge stays clean.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · the pixels -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="A letter a laid over a grid of squares. Each square turns a shade of gray that matches how much of it the letter covers." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true">Pixels · one shade per square</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.1"><b>gray = area covered ÷ area of the square</b><span class="g">one number for each square</span></div><div data-at="0.3"><b>black if covered &gt; ½</b><span class="g">the rule with no grays</span></div><div data-at="0.52"><b>N × N squares, N: 8 → 64</b><span class="g">more squares, finer steps</span></div></div>
+    <div class="palette" id="modes" role="group" aria-label="Fill the squares with">
+      <span class="pl">Fill with</span>
+      <button type="button" data-mode="bw" aria-pressed="false">Black or white</button>
+      <button type="button" data-mode="gray" aria-pressed="true">Shades of gray</button>
+    </div>
+    <p class="sr-only" id="s4d">The grid starts at 8 squares by 8. Two buttons switch between filling each square black or white, which gives the letter a stair-step edge, and filling it with shades of gray, which looks smooth from a distance. The grid then grows finer, up to 64 by 64, and the squares become too small to notice. At the end, small copies of both versions sit side by side: the gray one reads as a smooth letter and the black and white one stays jagged.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · The pixels</h2><p>A screen cannot draw a curve. It has a grid of tiny squares, and each square can show only one shade.</p></div></div>
+    <div class="step"><div class="card"><p>So the computer asks every square one question: how much of you does the letter cover? All of it, black. None of it, white. Part of it, gray.</p></div></div>
+    <div class="step"><div class="card"><p>Try it both ways with the buttons. With black and white only, the edge turns into stairs. With grays, your eye smooths the stairs back into a curve.</p></div></div>
+    <div class="step"><div class="card"><p>Add more squares and the steps get too small to see. The words you are reading now are built this way. Each letter is a little mosaic of grays.</p></div></div>
+    <div class="step"><div class="card"><p>A newspaper photo, a cuttlefish and a letter on a phone share one trick: small spots, blended by your eye.</p></div></div>
+  </div>
+</section>
+
+<!-- V · the texture -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="A paragraph of text whose line spacing tightens and loosens, then blurs into an even gray block." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true">Texture · the color of a page</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.04"><b>gray = ink ÷ page</b><span class="g">the rule from part IV, one size up</span></div><div data-at="0.2"><b>leading = size × 1.45</b><span class="g">from one line of text to the next</span></div><div data-at="0.74"><b>page = 2 columns × 42 lines</b><span class="g">Gutenberg's grid</span></div></div>
+    <div class="spec" id="spec" aria-hidden="true"><p>You are not reading these words one letter at a time. Your eye lands on a line, takes a small bite, and jumps ahead. A good page makes that easy. The strokes and the gaps settle into an even gray. The lines sit far enough apart to find the next one, and near enough to belong together. When it works, you stop seeing the page at all.</p></div>
+    <div class="palette" id="texBar">
+      <label for="lead">Line spacing</label>
+      <input type="range" id="lead" min="100" max="220" value="145" step="5" aria-valuetext="1.45 times the type size">
+      <button type="button" id="squint" aria-pressed="false">Squint</button>
+    </div>
+    <p class="sr-only" id="s5d">The paragraph reads: You are not reading these words one letter at a time. Your eye lands on a line, takes a small bite, and jumps ahead. A good page makes that easy. A slider sets the line spacing from tight, where the lines tangle, to loose, where they look like stripes. A Squint button blurs the words so only the gray of the block is left. At the end the paragraph gives way to a diagram of a page from Gutenberg's Bible, seen close at first and then whole: two columns of 42 lines, with a blue initial and red marks added by hand. The strokes in the diagram are stand-ins and do not spell the real text.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · The texture</h2><p>Now step back from the letters. Before a page says anything, it has a color: an even gray, made of black strokes and white gaps.</p></div></div>
+    <div class="step"><div class="card"><p>Line spacing sets that gray. Too tight, and the lines tangle. Too loose, and they drift apart into stripes. Try the slider.</p></div></div>
+    <div class="step"><div class="card"><p>People who design pages check them by squinting until the words blur. If the gray is even, the page is working. Press Squint.</p></div></div>
+    <div class="step"><div class="card"><p>The script Gutenberg copied is called Textura. Its strokes mesh like threads in cloth. The word <i>text</i> comes from the Latin for a woven thing.</p></div></div>
+    <div class="step"><div class="card"><p>Two columns, forty-two lines. From across the room it is a weave. Up close it is one pen stroke, repeated.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>Type is<br>an image.</h2>
+  <p class="lede">You have been reading drawings this whole time: pen strokes, cast in metal, traced in curves, filled in with gray.</p>
+  <p class="lede">Next time a letter catches your eye, look for the pen in it. It is usually still there.</p>
+
+  <h3 id="find">See the real thing</h3>
+  <ul class="objs">
+    <li class="obj"><b>Gutenberg Bible</b><span>Mainz, about 1455. Printed on vellum, complete, bound in three volumes. Bought with government funds in 1930.</span><span class="who">Library of Congress, Washington, D.C. · Part II and Part V</span></li>
+    <li class="obj"><b>Giant Bible of Mainz</b><span>Written by hand by one scribe between April 4, 1452 and July 9, 1453, probably in or near Mainz, while Gutenberg was printing. Gift of Lessing J. Rosenwald, 1952.</span><span class="who">Library of Congress, Washington, D.C. · Part I</span></li>
+    <li class="obj"><b>Gutenberg Bible</b><span>Printed on vellum, with initials and borders painted by hand. Bought by Henry E. Huntington in 1911.</span><span class="who">The Huntington Library, San Marino, California · Part V</span></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>Gutenberg's Bible: dates, 42 lines, about 290 characters and the surviving copies as summarized in <a href="https://en.wikipedia.org/wiki/Gutenberg_Bible">Wikipedia, &ldquo;Gutenberg Bible&rdquo;</a>. These figures await a check against each library's own catalog.</li>
+    <li>Minims and the dotted i: <a href="https://en.wikipedia.org/wiki/Minim_(palaeography)">Wikipedia, &ldquo;Minim (palaeography)&rdquo;</a>.</li>
+    <li>Punch, matrix and mould: <a href="https://en.wikipedia.org/wiki/Punchcutting">Wikipedia, &ldquo;Punchcutting&rdquo;</a>.</li>
+    <li>The open question about Gutenberg's casting: Blaise Ag&uuml;era y Arcas and Adrienne Fairhall, <a href="https://www.nature.com/articles/35082698">&ldquo;Archaeology of type,&rdquo; <i>Nature</i> 411 (2001)</a>; Princeton University, <a href="https://www.princeton.edu/news/2001/02/08/gutenbergs-role-reviewed">&ldquo;Gutenberg's role reviewed&rdquo; (2001)</a>, on the work of Paul Needham and Ag&uuml;era y Arcas.</li>
+    <li>The Giant Bible of Mainz: <a href="https://en.wikipedia.org/wiki/Giant_Bible_of_Mainz">Wikipedia, &ldquo;Giant Bible of Mainz&rdquo;</a>.</li>
+    <li>The word <i>text</i>: <a href="https://www.etymonline.com/word/text">Online Etymology Dictionary, &ldquo;text&rdquo;</a>.</li>
+    <li>The curve in Part III is the quadratic B&eacute;zier curve used in TrueType fonts. The gray rule in Part IV is the standard way screens smooth an edge, called antialiasing.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false">Exhibit mode</button>
+  </div>
+  <div class="colophon">
+    Seen, No. 9. Drawn in code. No photographs and no image generators. The pen letters are drawn by the functions shown beside them. The a in Part IV is this page's own text face. The Bible page in Part V is a diagram with stand-in strokes.<br>
+    Set in Cormorant Garamond, Newsreader and IBM Plex Mono, three open-source typefaces.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.<br>
+    Previous: <i>Nobody Sees the Same Sea</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span>Exhibit mode · touch to explore</span><button type="button" id="exitExhibit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+
+/* ---------- palette and small tools ---------- */
+const PAPER = '#f3eee3', INKC = '#1d1a16', RED = '#a3271c', BLUE = '#27457f', MUTE = '#6b6457';
+const SOFT = 'rgba(29,26,22,.24)', FAINT = 'rgba(29,26,22,.1)';
+const SERIF = `'Newsreader', Georgia, serif`, D2R = Math.PI / 180;
+const FX = [...document.querySelectorAll('.fx')].map(el => [...el.children]);
+function fx(i, p) { let last = FX[i][0]; for (const d of FX[i]) { const on = p >= +d.dataset.at; d.classList.toggle('on', on); d.classList.remove('cur'); if (on) last = d; } last.classList.add('cur'); }
+function paper(ctx, w, h) {
+  ctx.fillStyle = PAPER; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(w * .5, h * .42, 0, w * .5, h * .42, Math.max(w, h) * .8);
+  g.addColorStop(0, 'rgba(255,252,244,.85)'); g.addColorStop(1, 'rgba(222,211,190,.5)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+/* where a drawing can sit without touching the labels, the controls or the text cards */
+function zone(F, w, h) {
+  const y0 = F.wide ? (exhibit ? 158 : 134) : w >= 900 ? 224 : 166, y1 = F.wide ? h - 92 : Math.max(y0 + 220, h * .665), x0 = F.cx - F.aw / 2;
+  return { x0, x1: x0 + F.aw, y0, y1, cx: F.cx, cy: (y0 + y1) / 2, zw: F.aw, zh: y1 - y0 };
+}
+/* canvas label size: follows the screen, and grows in exhibit mode */
+const fsOf = (F, w) => (F.wide ? clamp(w / 125, 11, 14) : clamp(w / 40, 9.5, 15)) * (exhibit ? 1.25 : 1);
+function bar(el, on) { if (el._on !== on) { el._on = on; el.classList.toggle('on', on); el.inert = !on; } }
+function txt(el, s) { if (el._s !== s) { el._s = s; el.textContent = s; } }
+const expo = (a, b, t) => a * Math.pow(b / a, t);
+const mix2 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t)];
+const M = (pts, ox, oy, s) => pts.map(q => [ox + q[0] * s, oy - q[1] * s]); // letter units (y up) to screen
+function arc(cx, cy, rx, ry, a0, a1, n) { const out = []; for (let i = 0; i <= n; i++) { const a = lerp(a0, a1, i / n); out.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a)]); } return out; }
+function pathLen(pts) { let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); return L; }
+
+/* THE PEN. Sweep a flat tip (width W, held at angle th) along a path. The tip never turns,
+   so each short step leaves a parallelogram, and the thick and thin take care of themselves:
+   thickness = W * |sin(direction of travel - th)| */
+function nib(ctx, pts, W, th, upto = 1) {
+  const hx = Math.cos(th) * W / 2, hy = -Math.sin(th) * W / 2;
+  let rem = pathLen(pts) * clamp(upto, 0, 1), last = pts[0], dir = th + Math.PI / 2;
+  ctx.beginPath();
+  for (let i = 1; i < pts.length && rem > 1e-6; i++) {
+    const a = pts[i - 1]; let b = pts[i]; const d = Math.hypot(b[0] - a[0], b[1] - a[1]); if (d === 0) continue;
+    if (d > rem) b = [lerp(a[0], b[0], rem / d), lerp(a[1], b[1], rem / d)];
+    rem -= d;
+    if ((b[0] - a[0]) * hy - (b[1] - a[1]) * hx >= 0) { ctx.moveTo(a[0] - hx, a[1] - hy); ctx.lineTo(a[0] + hx, a[1] + hy); ctx.lineTo(b[0] + hx, b[1] + hy); ctx.lineTo(b[0] - hx, b[1] - hy); }
+    else { ctx.moveTo(a[0] - hx, a[1] - hy); ctx.lineTo(b[0] - hx, b[1] - hy); ctx.lineTo(b[0] + hx, b[1] + hy); ctx.lineTo(a[0] + hx, a[1] + hy); }
+    ctx.closePath(); last = b; dir = Math.atan2(-(b[1] - a[1]), b[0] - a[0]);
+  }
+  ctx.fill(); return { x: last[0], y: last[1], dir };
+}
+/* one finished minim as an eight-sided shape: diamond head, stem, diamond foot (the pen at 45 degrees) */
+function minim(ctx, x, y0, y1, W) {
+  const a = .354 * W, b = .774 * W, c = .066 * W;
+  ctx.moveTo(x - c, y0 - a); ctx.lineTo(x + a, y0 + c); ctx.lineTo(x + a, y1 - b); ctx.lineTo(x + b, y1 - a);
+  ctx.lineTo(x + c, y1 + a); ctx.lineTo(x - a, y1 - c); ctx.lineTo(x - a, y0 + b); ctx.lineTo(x - b, y0 + a); ctx.closePath();
+}
+function drawNib(ctx, x, y, W, th) { // the tip in red, the barrel square to it
+  const hx = Math.cos(th) * W / 2, hy = -Math.sin(th) * W / 2, bx = Math.sin(th), by = Math.cos(th), L = W * 4.6;
+  ctx.save(); ctx.fillStyle = 'rgba(29,26,22,.12)'; ctx.strokeStyle = 'rgba(29,26,22,.45)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x - hx, y - hy); ctx.lineTo(x + hx, y + hy); ctx.lineTo(x + hx * .5 + bx * L, y + hy * .5 + by * L); ctx.lineTo(x - hx * .5 + bx * L, y - hy * .5 + by * L); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = RED; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x - hx, y - hy); ctx.lineTo(x + hx, y + hy); ctx.stroke(); ctx.restore();
+}
+
+/* ---------- hero: three slow rows of pen strokes ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC), T2 = reduce ? 0 : t; paper(ctx, w, h);
+  for (const [fy, W0, dir] of [[.15, 20, 1], [.5, 46, -1], [.87, 28, 1]]) {
+    const W = W0 * (w < 700 ? .7 : 1), d = W * 1.5, xh = W * 4.3, y0 = h * fy - xh / 2, off = ((T2 * .006 * dir) % d + d) % d;
+    ctx.fillStyle = `rgba(29,26,22,${.06 * fade})`; ctx.beginPath(); for (let x = -d + off; x < w + d; x += d) minim(ctx, x, y0, y0 + xh, W); ctx.fill();
+  }
+}
+
+/* ---------- I · the pen: thickness = w * |sin(phi - theta)| ---------- */
+const c1 = document.querySelector('#s1 canvas'), penBar = document.getElementById('penBar'), penIn = document.getElementById('pen'), penOut = document.getElementById('penOut');
+let userPen = false; penBar.inert = true; penIn.addEventListener('input', () => { userPen = true; });
+/* skeletons in x-height units. The o is two pulled strokes that both start at the thin spot. */
+const SK_N = [[[0, 1], [0, 0]], [...arc(.31, .69, .31, .31, Math.PI, 0, 30), [.62, 0]]];
+const skelO = th => { const s = th + Math.PI / 2; return [arc(.5, .5, .5, .5, s, s + Math.PI, 44), arc(.5, .5, .5, .5, s, s - Math.PI, 44)]; };
+const LET = [3, 1, 2, 1, 3, 2, 3], WORD = 'minimum';
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(0, p); paper(ctx, w, h);
+  bar(penBar, p > .36 && p < .6);
+  if (!userPen) penIn.value = String(Math.round(p < .42 ? lerp(30, 5, ease(p, .37, .42)) : p < .5 ? lerp(5, 70, ease(p, .42, .5)) : lerp(70, 30, ease(p, .5, .57))));
+  const deg = +penIn.value, th = deg * D2R; txt(penOut, deg + '°');
+  if (penIn._v !== deg) { penIn._v = deg; penIn.setAttribute('aria-valuetext', deg + ' degrees'); }
+  let pen = null;
+  const aR = 1 - ease(p, .6, .66);
+  if (aR > 0) { // the round hand: o and n
+    const s = Math.min(Z.zw / 2.3, Z.zh / 1.8), top = Z.cy - s * .9, base = top + s, ox = Z.cx - s * .95, nx = ox + s * 1.28, W = s * .2;
+    ctx.globalAlpha = aR; ctx.strokeStyle = SOFT; ctx.lineWidth = 1; ctx.beginPath(); for (const y of [top, base]) { ctx.moveTo(Z.x0, y); ctx.lineTo(Z.x1, y); } ctx.stroke();
+    if (F.wide) { mono(ctx, 'x-height', Z.x0, top - 10, MUTE, 'left', 9.5); mono(ctx, 'baseline', Z.x0, base + 11, MUTE, 'left', 9.5); }
+    const strokes = [...skelO(th).map(q => M(q, ox, base, s)), ...SK_N.map(q => M(q, nx, base, s))], cuts = [.06, .15, .24, .29, .38];
+    ctx.setLineDash([3, 4]); ctx.strokeStyle = 'rgba(163,39,28,.55)'; ctx.beginPath(); for (const q of strokes) { ctx.moveTo(q[0][0], q[0][1]); for (const v of q) ctx.lineTo(v[0], v[1]); } ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = INKC;
+    if (p < cuts[0]) pen = { x: strokes[0][0][0], y: strokes[0][0][1], dir: th + Math.PI, W, th };
+    strokes.forEach((q, i) => { const u = ramp(p, cuts[i], cuts[i + 1]); if (u > 0) { const r = nib(ctx, q, W, th, u); if (u < 1) pen = { ...r, W, th }; } });
+    const below = base + s * .32;
+    if (pen) { // what the pen is doing right now
+      const phi = ((pen.dir / D2R) % 180 + 180) % 180, thick = Math.abs(Math.sin(pen.dir - th));
+      mono(ctx, `pen angle θ = ${deg}°    moving φ = ${phi.toFixed(0)}°`, Z.cx, below, MUTE, 'center', fs);
+      mono(ctx, `thickness = ${thick.toFixed(2)} × w`, Z.cx, below + fs * 2, RED, 'center', fs + 1);
+      const bw = s * .5; ctx.fillStyle = FAINT; ctx.fillRect(Z.cx - bw / 2, below + fs * 3.3, bw, 5); ctx.fillStyle = RED; ctx.fillRect(Z.cx - bw / 2, below + fs * 3.3, bw * thick, 5);
+    } else { // the pen at rest: show its angle, and where it leaves thick and thin
+      const r = s * .17, dy = below + r * .5, dx = Z.cx - r * .9;
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = SOFT; ctx.beginPath(); ctx.moveTo(dx - r * 1.3, dy); ctx.lineTo(dx + r * 1.3, dy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = MUTE; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(dx, dy, r * .62, 0, -th, true); ctx.stroke();
+      ctx.strokeStyle = RED; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(dx - Math.cos(th) * r, dy + Math.sin(th) * r); ctx.lineTo(dx + Math.cos(th) * r, dy - Math.sin(th) * r); ctx.stroke();
+      mono(ctx, `θ = ${deg}°`, dx + r * 1.5, dy, RED, 'left', fs + 1);
+      const oc = [ox + s * .5, base - s * .5];
+      for (const [a, name, col] of [[th + Math.PI / 2, 'thin', RED], [th - Math.PI / 2, 'thin', RED], [th, 'thick', MUTE], [th + Math.PI, 'thick', MUTE]]) {
+        const ux = Math.cos(a), uy = -Math.sin(a), rr2 = s * .5 + W * .5 + fs * 1.5;
+        mono(ctx, name, oc[0] + ux * rr2, oc[1] + uy * rr2, col, 'center', fs);
+      }
+    }
+  }
+  const aT = ease(p, .62, .68);
+  if (aT > 0) { // the steep German hand: the word minimum, fifteen strokes
+    const d = Z.zw * .96 / 16.65, W = d / 1.5, xh = W * 4.3, y0 = Z.cy - xh * .5 - W * .2, y1 = y0 + xh, th45 = Math.PI / 4, L = Z.cx - 16.65 * d / 2;
+    ctx.globalAlpha = aT; ctx.strokeStyle = SOFT; ctx.lineWidth = 1; ctx.beginPath(); for (const y of [y0 - .354 * W, y1 + .354 * W]) { ctx.moveTo(Z.x0, y); ctx.lineTo(Z.x1, y); } ctx.stroke();
+    let x = L + .774 * W; const xs = [], spans = [];
+    LET.forEach(n => { const a = x; for (let j = 0; j < n; j++) { xs.push(x); x += d; } spans.push([a, x - d]); x += d * .27; });
+    const prog = ramp(p, .68, .86) * 15; ctx.fillStyle = INKC;
+    xs.forEach((mx, i) => { const u = clamp(prog - i, 0, 1); if (u > 0) { const r = nib(ctx, [[mx - .42 * W, y0], [mx, y0 + .42 * W], [mx, y1 - .42 * W], [mx + .42 * W, y1]], W, th45, u); if (u < 1) pen = { ...r, W, th: th45 }; } });
+    mono(ctx, `${Math.min(15, Math.ceil(prog))} of 15 strokes · pen angle 45°`, Z.cx, y0 - W * 3.2, MUTE, 'center', fs);
+    const aB = ease(p, .88, .95);
+    if (aB > 0) { // which stroke belongs to which letter, and the mark that saved the i
+      ctx.globalAlpha = aT * aB; ctx.strokeStyle = RED; ctx.lineWidth = 1.5; const by = y1 + W * 1.25;
+      spans.forEach(([a, b], li) => {
+        ctx.beginPath(); ctx.moveTo(a - W * .5, by - 4); ctx.lineTo(a - W * .5, by); ctx.lineTo(b + W * .6, by); ctx.lineTo(b + W * .6, by - 4); ctx.stroke();
+        ctx.font = `italic 400 ${Math.max(15, W * 1.5)}px ${SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = RED; ctx.fillText(WORD[li], (a + b) / 2 + W * .05, by + 5);
+        if (WORD[li] === 'i') { ctx.lineWidth = Math.max(1.5, W * .14); ctx.beginPath(); ctx.moveTo(a - W * .25, y0 - W * .95); ctx.lineTo(a + W * .45, y0 - W * 1.65); ctx.stroke(); ctx.lineWidth = 1.5; }
+      });
+    }
+  }
+  ctx.globalAlpha = 1;
+  if (pen && p > .015 && p < .87) drawNib(ctx, pen.x, pen.y, pen.W, pen.th);
+}
+
+/* ---------- II · the metal: x -> -x, three times ---------- */
+const c2 = document.querySelector('#s2 canvas');
+const SK_R = [[[0, 1], [0, 0]], [[0, 1], [.34, 1], ...arc(.36, .76, .25, .24, Math.PI / 2, -Math.PI / 2, 26), [0, .52]], [[.3, .52], [.7, 0]]];
+const gCache = new Map();
+function glyph(px, color) { // the letter R, written with the pen of part I and kept as a small picture
+  const key = px + color; let c = gCache.get(key); if (c) return c;
+  c = document.createElement('canvas'); c.width = c.height = px; const k = c.getContext('2d'), s = px * .6;
+  k.fillStyle = color; for (const q of SK_R) nib(k, M(q, px * .5 - s * .35, px * .5 + s * .5, s), s * .15, 30 * D2R);
+  gCache.set(key, c); return c;
+}
+function putG(ctx, color, cx, cy, T, sx, a, px) { // sx = -1 draws the mirror image
+  if (a <= 0 || Math.abs(sx) < .03) return;
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(cx, cy); ctx.scale(sx, 1); ctx.drawImage(glyph(px, color), -T / 2, -T / 2, T, T); ctx.restore();
+}
+const MARKS = (() => { const R = rng(42), a = []; for (let i = 0; i < 290; i++) a.push([1 + Math.floor(R() * 4), R() < .3]); return a; })();
+const STAGES = [['PUNCH', 'steel', 'backwards', '#b6bec5', '#68707a'], ['MATRIX', 'copper', 'forwards', '#dca26e', '#a2622f'], ['TYPE', 'lead alloy', 'backwards', '#a6abb1', '#6b7076'], ['PAGE', 'paper', 'forwards', '#fdfaf3', '#f6f0e2']];
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w) * (F.wide ? 1.05 : .9); fx(1, p); paper(ctx, w, h);
+  const T = Math.min(Z.zw / 4.6, Z.zh * .34), gap = (Z.zw - 4 * T) / 3, labH = fs * 4.6, cols = 29, rows = 10;
+  const g = Math.min(Z.zw / cols, (Z.zh - T * 1.5 - labH - 50) / rows), gridH = g * rows, blockH = T * 1.5 + labH + 28 + gridH + fs * 2.4;
+  const ty = Z.cy - blockH / 2 + T * .5, tcy = ty + T / 2, cxs = i => Z.x0 + T / 2 + i * (T + gap), px = Math.round(T * Math.min(2, window.devicePixelRatio || 1));
+  const A = [ease(p, .03, .09), ease(p, .3, .36), ease(p, .5, .56), ease(p, .72, .78)], inked = ease(p, .59, .63);
+  for (let i = 0; i < 4; i++) {
+    const cx = cxs(i), x = cx - T / 2, a = A[i], st = STAGES[i], o = T * .024;
+    ctx.globalAlpha = 1; ctx.setLineDash([3, 4]); ctx.strokeStyle = SOFT; ctx.lineWidth = 1; ctx.strokeRect(x + .5, ty + .5, T - 1, T - 1); ctx.setLineDash([]);
+    if (a > 0) {
+      ctx.globalAlpha = a; const lg = ctx.createLinearGradient(x, ty, x + T, ty + T); lg.addColorStop(0, st[3]); lg.addColorStop(1, st[4]);
+      if (i === 3) { ctx.save(); ctx.shadowColor = 'rgba(40,30,10,.28)'; ctx.shadowBlur = 12; ctx.shadowOffsetY = 3; ctx.fillStyle = lg; ctx.fillRect(x, ty, T, T); ctx.restore(); }
+      else { ctx.fillStyle = lg; ctx.fillRect(x, ty, T, T); ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.moveTo(x + .5, ty + T); ctx.lineTo(x + .5, ty + .5); ctx.lineTo(x + T, ty + .5); ctx.stroke(); ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.moveTo(x + T - .5, ty); ctx.lineTo(x + T - .5, ty + T - .5); ctx.lineTo(x, ty + T - .5); ctx.stroke(); }
+      if (i === 0) { putG(ctx, '#2c3137', cx + o, tcy + o * 1.2, T, -1, .85, px); putG(ctx, '#f3f5f7', cx, tcy, T, -1, 1, px); }           // raised, backwards
+      if (i === 1) { putG(ctx, '#f7d6ae', cx + o, tcy + o, T, 1, .9, px); putG(ctx, '#4a2810', cx, tcy, T, 1, 1, px); }                   // sunk, forwards
+      if (i === 2) { putG(ctx, '#30343a', cx + o, tcy + o * 1.2, T, -1, .85, px); putG(ctx, '#e6e8ea', cx, tcy, T, -1, 1, px); putG(ctx, '#14110e', cx, tcy, T, -1, inked, px); } // raised, backwards, then inked
+      if (i === 3) putG(ctx, '#14110e', cx, tcy, T, 1, .94, px);                                                                         // printed, forwards
+    }
+    ctx.globalAlpha = .4 + .6 * a;
+    mono(ctx, st[0], cx, ty + T + fs * 1.5, RED, 'center', fs + .5); mono(ctx, st[1], cx, ty + T + fs * 2.8, INKC, 'center', fs); mono(ctx, st[2], cx, ty + T + fs * 4, MUTE, 'center', fs);
+  }
+  ctx.globalAlpha = 1;
+  [[.18, .34, 'strike', -1], [.4, .54, 'cast', 1], [.62, .76, 'print', -1]].forEach(([a, b, name, sign], i) => { // the letter in flight, turning over
+    const u = ramp(p, a, b); if (u <= 0 || u >= 1) return;
+    const e = sstep(u), x = lerp(cxs(i), cxs(i + 1), e), y = tcy - Math.sin(Math.PI * e) * T * .42;
+    putG(ctx, RED, x, y, T * .92, sign * Math.cos(Math.PI * e), .88, px);
+    mono(ctx, `${name} · x → −x`, clamp(x, Z.x0 + 56, Z.x1 - 56), ty - T * .36, RED, 'center', fs + 1);
+  });
+  const flips = (p > .27) + (p > .47) + (p > .69), fy = ty + T + labH + 10;
+  if (flips > 0) mono(ctx, flips < 3 ? `flips so far: ${flips}` : 'three flips: cut it backwards, read it forwards', Z.cx, fy, flips < 3 ? MUTE : RED, 'center', fs + .5);
+  const n = Math.round(290 * ramp(p, .8, .95));
+  if (n > 0) { // one square for every character in the font
+    const gx = Z.cx - cols * g / 2, gy = fy + 18;
+    for (let i = 0; i < n; i++) {
+      const x = gx + (i % cols) * g, y = gy + Math.floor(i / cols) * g, mk = MARKS[i];
+      ctx.fillStyle = (i + Math.floor(i / cols)) % 2 ? '#8b9096' : '#80858b'; ctx.fillRect(x + .5, y + .5, g - 1, g - 1); ctx.fillStyle = '#eceef0';
+      for (let k = 0; k < mk[0]; k++) ctx.fillRect(x + g * (.5 + (k - (mk[0] - 1) / 2) * .19) - g * .045, y + g * .3, g * .09, g * .44);
+      if (mk[1]) ctx.fillRect(x + g * .26, y + g * .17, g * .48, g * .07);
+    }
+    mono(ctx, `${n} of 290 characters`, Z.cx, gy + gridH + fs * 1.5, MUTE, 'center', fs + .5);
+  }
+}
+
+/* ---------- III · the outline: B(t) = (1-t)^2 P0 + 2(1-t)t P1 + t^2 P2 ---------- */
+const c3 = document.querySelector('#s3 canvas'), tBar = document.getElementById('tBar'), tIn = document.getElementById('tIn'), tOut = document.getElementById('tOut');
+let userT = false; tBar.inert = true; tIn.addEventListener('input', () => { userT = true; });
+const qb = (a, b, c, t) => { const u = 1 - t; return [u * u * a[0] + 2 * u * t * b[0] + t * t * c[0], u * u * a[1] + 2 * u * t * b[1] + t * t * c[1]]; };
+/* eight curves around an ellipse: sixteen points, taking turns on the letter and off it */
+function ring(ax, ay, rot) {
+  const out = [], c = Math.cos(rot), s = Math.sin(rot);
+  for (let k = 0; k < 16; k++) { const a = k * Math.PI / 8, r = k % 2 ? 1 / Math.cos(Math.PI / 8) : 1, x = ax * r * Math.cos(a), y = ay * r * Math.sin(a); out.push([x * c - y * s, x * s + y * c]); }
+  return out;
+}
+const O_OUT = ring(1, 1, 0), O_IN = ring(.86, .6, 120 * D2R); // the inner oval leans the way the pen of part I leaves it
+function dotAt(ctx, q, r, fill, stroke) { ctx.beginPath(); ctx.arc(q[0], q[1], r, 0, TAU); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); } }
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(2, p); paper(ctx, w, h);
+  bar(tBar, p > .05 && p < .41);
+  if (!userT) tIn.value = String(Math.round(100 * ease(p, .07, .27)));
+  const tt = +tIn.value / 100; txt(tOut, 't = ' + tt.toFixed(2));
+  if (tIn._v !== tt) { tIn._v = tt; tIn.setAttribute('aria-valuetext', 't equals ' + tt.toFixed(2)); }
+  const a1 = 1 - ease(p, .4, .45);
+  if (a1 > 0) { // one curve, three points
+    const wob = ease(p, .28, .31) * (1 - ease(p, .37, .4)), ang = (p - .28) / .12 * TAU;
+    const P0 = [Z.x0 + Z.zw * .1, Z.y1 - Z.zh * .14], P2 = [Z.x1 - Z.zw * .1, Z.y1 - Z.zh * .26];
+    const P1 = [Z.cx - Z.zw * .1 + Math.sin(ang) * Z.zw * .2 * wob, Z.y0 + Z.zh * .08 + (1 - Math.cos(ang)) * Z.zh * .17 * wob];
+    ctx.globalAlpha = a1; ctx.setLineDash([4, 4]); ctx.strokeStyle = SOFT; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(P0[0], P0[1]); ctx.lineTo(P1[0], P1[1]); ctx.lineTo(P2[0], P2[1]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = FAINT; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(P0[0], P0[1]); ctx.quadraticCurveTo(P1[0], P1[1], P2[0], P2[1]); ctx.stroke();
+    ctx.strokeStyle = INKC; ctx.lineWidth = 3.5; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(P0[0], P0[1]); for (let i = 1; i <= 48; i++) { const q = qb(P0, P1, P2, tt * i / 48); ctx.lineTo(q[0], q[1]); } ctx.stroke();
+    const A = mix2(P0, P1, tt), B = mix2(P1, P2, tt), C = mix2(A, B, tt);
+    if (tt > .005 && tt < .995) { ctx.strokeStyle = BLUE; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke(); dotAt(ctx, A, 4, BLUE); dotAt(ctx, B, 4, BLUE); }
+    ctx.fillStyle = INKC; ctx.fillRect(P0[0] - 5, P0[1] - 5, 10, 10); ctx.fillRect(P2[0] - 5, P2[1] - 5, 10, 10); dotAt(ctx, P1, 6, PAPER, RED); dotAt(ctx, C, 7, RED);
+    mono(ctx, 'P₀  on the letter', P0[0] - 4, P0[1] + 20, INKC, 'left', fs); mono(ctx, 'P₂', P2[0], P2[1] + 20, INKC, 'center', fs); mono(ctx, 'P₁  off the letter', P1[0] + 14, P1[1] - 2, RED, 'left', fs);
+    mono(ctx, `t = ${tt.toFixed(2)}`, C[0] + 14, C[1] - 14, RED, 'left', fs + 1);
+  }
+  const a2 = ease(p, .42, .47);
+  if (a2 > 0) { // the whole o: two rings of points, sixteen curves
+    const R = Math.min(Z.zw, Z.zh) * .36, u = ramp(p, .78, .98);
+    const S = u <= 0 ? 1 : u < .3 ? expo(1, .05, sstep(u / .3)) : expo(.05, 9, sstep((u - .3) / .7));
+    const C0 = [Z.cx, Z.cy - 8], Q = [C0[0] + R * Math.cos(120 * D2R), C0[1] - R * Math.sin(120 * D2R)];
+    const anchor = S > 1 ? Q : C0, pos = S > 1 ? mix2(Q, [Z.cx, Z.cy], ease(S, 1, 4)) : C0; // past full size, zoom in on the thin spot
+    const X = q => [pos[0] + (C0[0] + q[0] * R - anchor[0]) * S, pos[1] + (C0[1] - q[1] * R - anchor[1]) * S];
+    const rings = [O_OUT.map(X), O_IN.map(X)], n = Math.round(32 * ramp(p, .47, .63)), fillA = ease(p, .63, .69), ptA = 1 - ease(p, .74, .78);
+    ctx.save(); ctx.beginPath(); ctx.rect(Z.x0, Z.y0 - 10, Z.zw, Z.zh + 20); ctx.clip();
+    if (fillA > 0) {
+      ctx.globalAlpha = a2 * fillA; ctx.fillStyle = INKC; ctx.beginPath();
+      for (const r of rings) { ctx.moveTo(r[0][0], r[0][1]); for (let k = 0; k < 8; k++) { const c = r[2 * k + 1], e = r[(2 * k + 2) % 16]; ctx.quadraticCurveTo(c[0], c[1], e[0], e[1]); } ctx.closePath(); }
+      ctx.fill('evenodd');
+    }
+    let curves = 0;
+    if (ptA > 0) {
+      ctx.globalAlpha = a2 * ptA;
+      rings.forEach((r, ri) => { for (let k = 0; k < 8; k++) { if (ri * 16 + 2 * k + 1 >= n) continue; curves++; const a = r[2 * k], c = r[2 * k + 1], e = r[(2 * k + 2) % 16];
+        ctx.strokeStyle = 'rgba(163,39,28,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(e[0], e[1]); ctx.stroke();
+        ctx.strokeStyle = fillA > .5 ? RED : INKC; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(c[0], c[1], e[0], e[1]); ctx.stroke(); } });
+      rings.forEach((r, ri) => r.forEach((q, i) => { if (ri * 16 + i >= n) return; if (i % 2) dotAt(ctx, q, 4, PAPER, RED); else { ctx.fillStyle = PAPER; ctx.fillRect(q[0] - 5, q[1] - 5, 10, 10); ctx.fillStyle = INKC; ctx.fillRect(q[0] - 3.5, q[1] - 3.5, 7, 7); } }));
+    }
+    ctx.restore(); ctx.globalAlpha = a2;
+    if (u <= 0) mono(ctx, `points ${n}   numbers ${2 * n}   curves ${curves}`, Z.cx, Math.min(Z.y1 + 6, C0[1] + R * 1.2 + 18), MUTE, 'center', fs);
+    else { ctx.strokeStyle = SOFT; ctx.lineWidth = 1; ctx.strokeRect(Z.x0 + .5, Z.y0 - 9.5, Z.zw - 1, Z.zh + 19); mono(ctx, `size × ${S < 1 ? S.toFixed(2) : S.toFixed(1)}   the same 64 numbers`, Z.cx, Z.y1 + 24, RED, 'center', fs + .5); }
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- IV · the pixels: gray = area covered / area of the square ---------- */
+const c4 = document.querySelector('#s4 canvas'), modes = document.getElementById('modes'), HI = 240;
+let mode = 'gray', userMode = false, hiA = null, hiC = null, hiR = null, hot = 0; const cov = new Map(), bmp = new Map(); modes.inert = true;
+function setMode(m) { if (m === mode) return; mode = m; for (const b of modes.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.mode === m)); }
+modes.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { userMode = true; setMode(b.dataset.mode); } });
+function hiGlyph() { // the page's own letter a, drawn once at 240 x 240. Its alpha channel is "how much letter is here".
+  const c = document.createElement('canvas'); c.width = c.height = HI; const k = c.getContext('2d', { willReadFrequently: true });
+  k.font = `400 200px ${SERIF}`; const m = k.measureText('a'), bw = m.actualBoundingBoxLeft + m.actualBoundingBoxRight, bh = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, sc = HI * .8 / Math.max(bw, bh);
+  k.setTransform(sc, 0, 0, sc, HI / 2, HI / 2); k.fillStyle = INKC; k.textAlign = 'left'; k.textBaseline = 'alphabetic'; k.fillText('a', -bw / 2 + m.actualBoundingBoxLeft, bh / 2 - m.actualBoundingBoxDescent);
+  const d = k.getImageData(0, 0, HI, HI).data; hiA = new Float32Array(HI * HI); for (let i = 0; i < HI * HI; i++) hiA[i] = d[i * 4 + 3] / 255;
+  hiC = c; hiR = document.createElement('canvas'); hiR.width = hiR.height = HI; const r = hiR.getContext('2d'); r.drawImage(c, 0, 0); r.globalCompositeOperation = 'source-in'; r.fillStyle = RED; r.fillRect(0, 0, HI, HI);
+  cov.clear(); bmp.clear();
+  const a = coverage(8); let best = 9; for (let j = 2; j < 7; j++) for (let i = 1; i < 7; i++) { const e = Math.abs(a[j * 8 + i] - .38); if (e < best) { best = e; hot = j * 8 + i; } }
+}
+if (document.fonts && document.fonts.load) document.fonts.load(`400 200px 'Newsreader'`).then(hiGlyph, hiGlyph);
+function coverage(N) { // average the letter over each square
+  let a = cov.get(N); if (a) return a; a = new Float32Array(N * N);
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const x0 = Math.floor(i * HI / N), x1 = Math.floor((i + 1) * HI / N), y0 = Math.floor(j * HI / N), y1 = Math.floor((j + 1) * HI / N); let s = 0;
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) s += hiA[y * HI + x];
+    a[j * N + i] = s / ((x1 - x0) * (y1 - y0));
+  }
+  cov.set(N, a); return a;
+}
+function bitmap(N, m) { // an N x N picture: one shade per square
+  const key = N + m; let c = bmp.get(key); if (c) return c;
+  const a = coverage(N); c = document.createElement('canvas'); c.width = c.height = N; const k = c.getContext('2d'), im = k.createImageData(N, N);
+  for (let i = 0; i < N * N; i++) { im.data[i * 4] = 29; im.data[i * 4 + 1] = 26; im.data[i * 4 + 2] = 22; im.data[i * 4 + 3] = Math.round((m === 'bw' ? (a[i] > .5 ? 1 : 0) : a[i]) * 255); }
+  k.putImageData(im, 0, 0); bmp.set(key, c); return c;
+}
+const NS = [8, 10, 12, 16, 20, 24, 32, 48, 64];
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(3, p); paper(ctx, w, h); if (!hiA) hiGlyph();
+  bar(modes, p > .28 && p < .76);
+  if (!userMode) setMode(p > .31 && p < .42 ? 'bw' : 'gray');
+  const N = NS[Math.min(NS.length - 1, Math.floor(ramp(p, .5, .74) * NS.length))];
+  const S = Math.min(Z.zw * .62, Z.zh * (F.wide ? .86 : .8)), gx = Z.x0 + (F.wide ? Z.zw * .04 : 0), gy = Z.cy - S / 2, cell = S / N;
+  ctx.fillStyle = '#fdfaf3'; ctx.fillRect(gx, gy, S, S);
+  const inkA = 1 - ease(p, .07, .13), redA = ease(p, .07, .13) * (1 - ease(p, .5, .56)) * .3;
+  if (inkA > 0) { ctx.globalAlpha = inkA; ctx.drawImage(hiC, gx, gy, S, S); ctx.globalAlpha = 1; }
+  const done = ramp(p, .1, .27) * N * N, rowsDone = Math.floor(done / N); // the squares answer one at a time
+  ctx.save(); ctx.beginPath(); ctx.rect(gx, gy, S, rowsDone * cell); ctx.rect(gx, gy + rowsDone * cell, (done - rowsDone * N) * cell, cell); ctx.clip();
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(bitmap(N, mode), gx, gy, S, S); ctx.imageSmoothingEnabled = true; ctx.restore();
+  if (redA > 0) { ctx.globalAlpha = redA; ctx.drawImage(hiR, gx, gy, S, S); ctx.globalAlpha = 1; }
+  const gl = clamp((cell - 3) / 9, 0, 1) * .5 * ease(p, .02, .07);
+  if (gl > 0) { ctx.strokeStyle = `rgba(29,26,22,${gl})`; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 1; i < N; i++) { const v = Math.round(i * cell) + .5; ctx.moveTo(gx + v, gy); ctx.lineTo(gx + v, gy + S); ctx.moveTo(gx, gy + v); ctx.lineTo(gx + S, gy + v); } ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(29,26,22,.55)'; ctx.lineWidth = 1; ctx.strokeRect(gx + .5, gy + .5, S - 1, S - 1);
+  const ix = gx + S + (F.wide ? 24 : 10), iw = Z.x1 - ix; let iy = gy + fs;
+  mono(ctx, `${N} × ${N}`, ix, iy, INKC, 'left', fs + 4); iy += fs * 1.9; mono(ctx, `= ${N * N} squares`, ix, iy, MUTE, 'left', fs); iy += fs * 1.9;
+  if (p > .1) { mono(ctx, mode === 'bw' ? 'black or white' : 'shades of gray', ix, iy, RED, 'left', fs); iy += fs * 2.6; }
+  if (N === 8 && p > .14 && p < .5) { // follow one square
+    const i = hot % 8, j = Math.floor(hot / 8), pct = Math.round(coverage(8)[hot] * 100);
+    ctx.strokeStyle = RED; ctx.lineWidth = 2.5; ctx.strokeRect(gx + i * cell, gy + j * cell, cell, cell);
+    mono(ctx, 'the red square:', ix, iy, INKC, 'left', fs); mono(ctx, `${pct}% covered`, ix, iy + fs * 1.7, INKC, 'left', fs);
+    mono(ctx, mode === 'bw' ? (pct > 50 ? '→ black' : '→ white') : `→ ${pct}% gray`, ix, iy + fs * 3.4, RED, 'left', fs);
+  }
+  const aC = ease(p, .78, .84);
+  if (aC > 0) { // the same 16 x 16 squares, at three distances
+    const k = clamp(Math.floor((iw / 2 - 6) / 16), 2, 6), sizes = [k * 16, Math.max(1, Math.round(k / 2)) * 16, 16], colW = iw / 2; let y = iy + fs * .6;
+    ctx.globalAlpha = aC; mono(ctx, 'no grays', ix, y, MUTE, 'left', fs - .5); mono(ctx, 'grays', ix + colW + 3, y, MUTE, 'left', fs - .5); y += fs * 1.2;
+    ctx.imageSmoothingEnabled = false;
+    for (const sz of sizes) { ctx.fillStyle = '#fdfaf3'; ctx.fillRect(ix, y, sz, sz); ctx.fillRect(ix + colW + 3, y, sz, sz); ctx.drawImage(bitmap(16, 'bw'), ix, y, sz, sz); ctx.drawImage(bitmap(16, 'gray'), ix + colW + 3, y, sz, sz); y += sz + 8; }
+    ctx.imageSmoothingEnabled = true; mono(ctx, '16 × 16 each,', ix, y + fs * .6, MUTE, 'left', fs - .5); mono(ctx, 'near to far', ix, y + fs * 2.1, MUTE, 'left', fs - .5); ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- V · the texture: gray = ink / page ---------- */
+const c5 = document.querySelector('#s5 canvas'), spec = document.getElementById('spec'), texBar = document.getElementById('texBar'), leadIn = document.getElementById('lead'), squintBtn = document.getElementById('squint');
+let userLead = false, userSquint = false, squint = false; texBar.inert = true;
+leadIn.addEventListener('input', () => { userLead = true; });
+function setSquint(v) { if (v === squint) return; squint = v; squintBtn.setAttribute('aria-pressed', String(v)); spec.style.setProperty('--blur', v ? '.2em' : '0em'); }
+squintBtn.addEventListener('click', () => { userSquint = true; setSquint(!squint); });
+const SPEC_TXT = spec.textContent.trim();
+/* a stand-in for one page of the Bible: two columns of 42 lines, built from the minim of part I.
+   The strokes are placed by a seeded random number generator. They do not spell the real text. */
+const PAGE = (() => {
+  const R = rng(1455), W = 760, H = 1100, pitch = 20, top = 124, colW = 262, cols = [86, 394], Wn = 3.3, d = Wn * 1.5, xh = 8.2;
+  const lines = [], red = [], caps = [], starts = { '0:18': RED, '0:32': BLUE, '1:10': BLUE, '1:27': RED };
+  for (let c = 0; c < 2; c++) for (let j = 0; j < 42; j++) {
+    const y1 = top + j * pitch + 14, y0 = y1 - xh, xL = cols[c] + (c === 0 && j < 5 ? 64 : 0), key = c + ':' + j, key2 = c + ':' + (j - 1);
+    const ind = starts[key] || starts[key2] ? 26 : 0; if (starts[key]) caps.push([cols[c] + 11, y1 + pitch / 2 - 4, starts[key]]);
+    const words = []; let used = 0; const room = colW - (xL - cols[c]) - ind;
+    for (;;) { // make words until the line is full
+      const nl = 2 + Math.floor(R() * 6), st = [], bars = []; let x = 0;
+      for (let l = 0; l < nl; l++) {
+        const r = R();
+        if (r < .14) { st.push([x, 0, 0]); x += d; }
+        else if (r < .3) { st.push([x, 0, 0], [x + d, 0, 0]); x += 2 * d; }
+        else if (r < .4) { st.push([x, 0, 0], [x + d, 0, 0], [x + 2 * d, 0, 0]); x += 3 * d; }
+        else if (r < .5) { st.push([x, 1, 0]); x += d; }
+        else if (r < .62) { st.push([x, 1, 0], [x + d, 0, 0]); bars.push([x, 1]); x += 2 * d; }
+        else if (r < .7) { st.push([x, 0, 1], [x + d, 0, 0]); bars.push([x, 0], [x, 1]); x += 2 * d; }
+        else if (r < .78) { st.push([x, 0, 0], [x + d, 1, 0]); bars.push([x, 0], [x, 1]); x += 2 * d; }
+        else { st.push([x, 0, 0], [x + d, 0, 0]); bars.push([x, 0], [x, 1]); x += 2 * d; }
+        x += d * .22;
+      }
+      const ww = x - d * .22 - d + Wn * 1.55;
+      if (used + ww > room) break;
+      words.push({ st, bars, ww, rub: R() < .1 }); used += ww + d * 1.7;
+    }
+    const gaps = Math.max(1, words.length - 1), sp = d * 1.7 + (room - (used - d * 1.7)) / gaps, ln = { y: y1, m: [], b: [] }; let x = xL + ind + Wn * .78;
+    for (const wd of words) {
+      for (const s of wd.st) ln.m.push([x + s[0], y0 - s[1] * xh * .78, y1 + s[2] * xh * .62]);
+      for (const b of wd.bars) ln.b.push([x + b[0] - Wn * .2, b[1] ? y1 - Wn * .5 : y0 - Wn * .35, d + Wn * .4, Wn * .7]);
+      if (wd.rub) red.push([x - 1.1, y0 - 4.5, 1.5, xh + 8]);
+      x += wd.ww + sp;
+    }
+    lines.push(ln);
+  }
+  return { W, H, pitch, top, cols, colW, lines, red, caps, Wn };
+})();
+function drawPage(ctx, vy0, vy1) {
+  const P = PAGE, g = ctx.createLinearGradient(0, 0, P.W, P.H); g.addColorStop(0, '#f1e7cc'); g.addColorStop(1, '#e6d9b8');
+  ctx.save(); ctx.shadowColor = 'rgba(40,30,10,.3)'; ctx.shadowBlur = 26; ctx.shadowOffsetY = 6; ctx.fillStyle = g; ctx.fillRect(0, 0, P.W, P.H); ctx.restore();
+  ctx.fillStyle = '#1b1712'; ctx.beginPath();
+  for (const ln of P.lines) { if (ln.y < vy0 || ln.y > vy1) continue; for (const m of ln.m) minim(ctx, m[0], m[1], m[2], P.Wn); for (const b of ln.b) ctx.rect(b[0], b[1], b[2], b[3]); }
+  ctx.fill();
+  ctx.fillStyle = RED; ctx.beginPath(); for (const r of P.red) if (r[1] > vy0 && r[1] < vy1) ctx.rect(r[0], r[1], r[2], r[3]);
+  for (let i = 0; i < 7; i++) minim(ctx, P.W / 2 - 24 + i * 8, P.top - 44, P.top - 32, 5.2); ctx.fill(); // the running title, in red
+  ctx.lineWidth = 5.5; ctx.lineCap = 'butt'; for (const c of P.caps) { ctx.strokeStyle = c[2]; ctx.beginPath(); ctx.arc(c[0], c[1], 9, .22 * Math.PI, 1.78 * Math.PI); ctx.stroke(); ctx.fillStyle = c[2]; ctx.fillRect(c[0] - 1, c[1] - 9, 3.2, 18); }
+  const x = P.cols[0], y = P.top + 2, hh = P.pitch * 5 - 8; // the big initial: blue body, red pen work
+  ctx.fillStyle = BLUE; ctx.beginPath(); ctx.moveTo(x + 2, y); ctx.lineTo(x + 22, y); ctx.quadraticCurveTo(x + 15, y + hh / 2, x + 22, y + hh); ctx.lineTo(x + 2, y + hh); ctx.quadraticCurveTo(x + 9, y + hh / 2, x + 2, y); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x + 17, y + 3); ctx.bezierCurveTo(x + 62, y - 4, x + 68, y + hh + 4, x + 17, y + hh - 3); ctx.bezierCurveTo(x + 44, y + hh - 16, x + 44, y + 16, x + 17, y + 3); ctx.fill();
+  ctx.strokeStyle = RED; ctx.lineWidth = 1.1; ctx.beginPath();
+  for (const dx of [-7, -11]) { ctx.moveTo(x + dx, y - 26); ctx.bezierCurveTo(x + dx - 9, y + hh * .5, x + dx + 7, y + hh * 1.4, x + dx - 3, y + hh * 2.6); }
+  ctx.moveTo(x - 7, y - 26); ctx.bezierCurveTo(x + 6, y - 40, x + 30, y - 16, x + 46, y - 30); ctx.stroke();
+}
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(4, p); paper(ctx, w, h);
+  bar(texBar, p > .16 && p < .7);
+  if (!userLead) leadIn.value = String(Math.round((p < .3 ? lerp(1.45, 1, ease(p, .2, .28)) : p < .42 ? lerp(1, 2.2, ease(p, .3, .4)) : lerp(2.2, 1.45, ease(p, .42, .5))) * 20) * 5);
+  const lh = +leadIn.value / 100, aS = +(ease(p, .01, .06) * (1 - ease(p, .7, .75))).toFixed(3);
+  if (!userSquint) setSquint(p > .54 && p < .68);
+  if (spec._a !== aS) { spec._a = aS; spec.style.opacity = aS; }
+  if (spec._lh !== lh) { spec._lh = lh; spec.style.setProperty('--lh', lh); leadIn.setAttribute('aria-valuetext', lh.toFixed(2) + ' times the type size'); }
+  if (aS > 0) { // notes around the live paragraph
+    const cr = c5.getBoundingClientRect(), r = spec.getBoundingClientRect(), x = r.left - cr.left, y = r.top - cr.top, yb = r.bottom - cr.top;
+    if (spec._w !== r.width) { spec._w = r.width; spec._fs = parseFloat(getComputedStyle(spec).fontSize); ctx.font = `400 ${spec._fs}px ${SERIF}`; spec._cpl = Math.round(r.width / (ctx.measureText(SPEC_TXT).width / SPEC_TXT.length)); }
+    const L = lh * spec._fs, bx = x - 10;
+    ctx.globalAlpha = aS; ctx.strokeStyle = RED; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(bx + 5, y + L * .5); ctx.lineTo(bx, y + L * .5); ctx.lineTo(bx, y + L * 1.5); ctx.lineTo(bx + 5, y + L * 1.5); ctx.stroke();
+    mono(ctx, squint ? 'squinting: judge the gray, not the words' : `leading = size × ${lh.toFixed(2)}   ${lh < 1.2 ? 'tangled' : lh > 1.75 ? 'striped' : 'even'}`, x, yb + 18, RED, 'left', fs);
+    mono(ctx, `about ${spec._cpl} characters to a line`, x, yb + 18 + fs * 1.8, MUTE, 'left', fs); ctx.globalAlpha = 1;
+  }
+  const aP = ease(p, .72, .78);
+  if (aP > 0) { // the page: close at first, then whole
+    const P = PAGE, u = ease(p, .79, .96), k0 = Z.zh / (9 * P.pitch), k1 = Math.min(Z.zw / P.W, Z.zh / P.H) * .97, k = expo(k0, k1, u);
+    const f0 = [P.cols[0] - 30 + Z.zw / (2 * k0), P.top - 34 + Z.zh / (2 * k0)], f = mix2(f0, [P.W / 2, P.H / 2], u), half = Z.zh / (2 * k) + 30;
+    ctx.save(); ctx.beginPath(); ctx.rect(Z.x0, Z.y0 - 10, Z.zw, Z.zh + 20); ctx.clip(); ctx.globalAlpha = aP;
+    ctx.translate(Z.cx - f[0] * k, Z.cy - f[1] * k); ctx.scale(k, k); drawPage(ctx, f[1] - half, f[1] + half); ctx.restore();
+    ctx.globalAlpha = aP * ease(p, .9, .96); mono(ctx, '2 columns × 42 lines   a diagram, with stand-in strokes', Z.cx, Z.y1 + 24, MUTE, 'center', fs); ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- exhibit mode and the loop ---------- */
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

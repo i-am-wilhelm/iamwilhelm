@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Living Vanitas</title>
+<meta name="description" content="The Dutch vanitas table, rebuilt in code: one window, a skull, a bubble, an hourglass and a peel over the edge. Five functions, then the same table set with the things on a desk today.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#12100c; --bone:#e9e1cf; --copper:#9fb0b8; --copper-hi:#f0dc8a; --acid:#9fb7bd; --ink:#e5484d; --gold:#e0c25a; --muted:#9a9282; --paper:#e9e1cf;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#12100c;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#cfc6b2;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(22,19,14,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(224,194,90,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#fff3dc}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#fff3dc}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(18,16,12,.72);border:1px solid rgba(224,194,90,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(18,16,12,.82);border:1px solid rgba(224,194,90,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(224,194,90,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#cfc6b2;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(224,194,90,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#cfc6b2}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#cfc6b2;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(224,194,90,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#12100c;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#12100c;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+
+/* additions for this piece: function panel and controls */
+.fx{position:absolute;left:12px;top:46px;font-family:var(--mono);font-size:11px;line-height:1.75;color:var(--bone);background:rgba(18,16,12,.86);border:1px solid rgba(224,194,90,.28);padding:6px 10px;max-width:min(calc(100% - 24px),560px);pointer-events:none}
+.fx div{opacity:.3;transition:opacity .5s}
+.fx div.on{opacity:1}
+.fx b{font-weight:500;color:var(--gold)}
+.fx .g{color:#b5ad9a;font-style:italic;margin-left:.7em}
+.palette{top:12px}
+.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(38vw,220px);height:44px;accent-color:#e0c25a}
+.palette output{font-family:var(--mono);font-size:11px;min-width:5.6em;color:var(--bone)}
+.palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#12100c}
+.obj i{font-style:italic}
+@media (max-width:899px){ .palette{top:100px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+@media (max-width:520px){ .palette input[type=range]{width:32vw} }
+@media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:150px} }
+.exhibit .tag{font-size:13px}
+.exhibit .fx{font-size:15px;max-width:min(calc(100% - 24px),780px)}
+.exhibit .palette label,.exhibit .palette .pl{font-size:13px}
+.exhibit .palette button{font-size:15px}
+.exhibit .palette output{font-size:14px}
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .palette{left:35%;top:auto;bottom:26px} .palette .pl{display:inline} }
+@media (prefers-reduced-motion:reduce){ .fx div{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#find">Skip to the list of paintings and sources</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">Seen · No. 14 · A scrolly on light, bubbles, sand and the edge of the table</div>
+    <h1>Living Vanitas</h1>
+    <p class="sub">For four hundred years painters have set a table with a skull, a bubble and an hourglass to say one thing: this will pass. Here is how that table is built, and what it looks like set with the things on your desk.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · the window -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A skull resting on a closed book, lit by a single light. As the light moves, the bright side and the shadow side of the skull trade places." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">One window · where the light comes from</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>brightness = cos(angle to the light)</b><span class="g">face the light: bright. turn away: dark</span></div><div data-at="0.5"><b>cos 0° = 1 &nbsp; cos 60° = ½ &nbsp; cos 90° = 0</b><span class="g">the whole skull is this one rule</span></div></div>
+    <div class="palette" id="sunBar">
+      <label for="sun">Window</label>
+      <input type="range" id="sun" min="-80" max="80" value="-45" step="1" aria-valuetext="light from the upper left, 45 degrees">
+      <output id="sunOut" for="sun">left 45°</output>
+    </div>
+    <p class="sr-only" id="s1d">A slider moves the light from the far left, over the top, to the far right. Every point on the skull is as bright as the cosine of the angle between its surface and the light. A marked point on the forehead shows its angle and its brightness: 1 when it faces the light, one half at 60 degrees, 0 at 90 degrees.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The window</h2><p>Every table of this kind starts with one decision: where the window is. The painters most often set it high and to the left, just outside the frame.</p></div></div>
+    <div class="step"><div class="card"><p>A surface that faces the light is bright. Turn it away and it dims by the cosine of the angle. That one rule models the whole skull. Slide the window.</p></div></div>
+    <div class="step"><div class="card"><p>Johann Lambert wrote the rule down in 1760. The painters had worked it out by looking, more than a century earlier.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the bubble -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="A large soap bubble with bands of colour and the reflection of a window. As it ages the colours slide down, the top turns black, and it bursts." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true">Homo bulla · man is a bubble</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>colour = f(thickness of the film)</b><span class="g">each thickness keeps some colours and cancels others</span></div><div data-at="0.36"><b>bright when 2 · n · d = (m + ½) · λ</b><span class="g">n: 1.33 for soapy water. d: thickness. λ: wavelength</span></div><div data-at="0.66"><b>d → 0: every colour cancels</b><span class="g">black, then gone</span></div></div>
+    <div class="palette" id="filmBar">
+      <label for="film">Age</label>
+      <input type="range" id="film" min="0" max="100" value="0" step="1" aria-valuetext="new: thinnest point 620 nanometers">
+      <output id="filmOut" for="film">620 nm</output>
+    </div>
+    <p class="sr-only" id="s2d">A slider ages the bubble. A new bubble's film is about 600 nanometers thick at the top and thicker at the bottom, and shows bands of green and pink. As it drains, the bands slide downward. When the top is thinner than about 50 nanometers it reflects no colour and looks black. At the end of the slider the bubble bursts. A scale beside it shows which colour each thickness gives.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The bubble</h2><p>The oldest painting of this kind that anyone knows floats a soap bubble over a skull. Jacques de Gheyn painted it in 1603.</p></div></div>
+    <div class="step"><div class="card"><p>The Latin tag is <i>homo bulla</i>: man is a bubble. The Roman writer Varro was already calling it an old saying two thousand years ago.</p></div></div>
+    <div class="step"><div class="card"><p>A bubble's colours are a ruler. The film is about as thick as a wave of light is long, and each thickness keeps some colours and cancels others. Slide the age and the film drains.</p></div></div>
+    <div class="step"><div class="card"><p>When the film is too thin for any colour, it goes black. Then it is gone.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the glass -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="An hourglass and a candle beside a small chart. As time passes the sand falls, the candle shortens, and two lines on the chart fall: a straight one for sand and a curved one for water." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true">The glass · two honest clocks</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>sand left = full − rate × time</b><span class="g">a straight line</span></div><div data-at="0.36"><b>water: speed = √(2 · g · h)</b><span class="g">a jar drains slower as its level h falls</span></div><div data-at="0.66"><b>sand: rate stays the same</b><span class="g">the grains hold each other up</span></div></div>
+    <div class="palette" id="clockBar">
+      <label for="clock">Minutes</label>
+      <input type="range" id="clock" min="0" max="60" value="0" step="1" aria-valuetext="0 minutes: all the sand is in the top">
+      <output id="clockOut" for="clock">0 min</output>
+    </div>
+    <p class="sr-only" id="s3d">A slider runs an hour. The sand in the hourglass falls at a steady pace, so half of it is left at 30 minutes. The candle shortens at a steady pace too, and at 60 minutes it is out, with a thread of smoke. On the chart the line for sand is straight. The line for water draining from a jar is curved: three quarters of the water is gone at 30 minutes, and the last of it takes the longest.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The glass</h2><p>Time gets two objects on the table: an hourglass and a flame. Both are honest clocks.</p></div></div>
+    <div class="step"><div class="card"><p>Sand has an odd property. It runs through the neck at the same pace whether the top bulb is full or nearly empty. Water draining from a jar slows as its level falls.</p></div></div>
+    <div class="step"><div class="card"><p>So the line for sand is straight. Slide the minutes and watch both.</p></div></div>
+    <div class="step"><div class="card"><p>When the flame goes out, the painters keep the smoke. In Pieter Claesz's small panel of 1628 the wick of the lamp is still guttering.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · the edge -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="The end of a table seen from the side. A pewter plate with a lemon on it sticks out past the edge, and a spiral of lemon peel hangs down from it." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true">The edge · a plate pushed toward you</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>x = r · cos t &nbsp; y = k · t</b><span class="g">a peel is a spiral, seen from the side</span></div><div data-at="0.5"><b>tips when the middle passes the edge</b><span class="g">overhang &gt; half the width</span></div></div>
+    <div class="palette" id="pushBar">
+      <label for="push">Plate</label>
+      <input type="range" id="push" min="0" max="70" value="15" step="1" aria-valuetext="15 percent over the edge: it holds">
+      <output id="pushOut" for="push">15% over</output>
+    </div>
+    <p class="sr-only" id="s4d">A slider pushes the plate out over the edge of the table, from fully on the table to 70 percent off it. A dot marks the middle of the plate. While the dot is over the table the plate holds. Once more than half the plate is past the edge, the dot is over empty air and the plate tips. A strip of lemon peel hangs from the plate in a spiral.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · The edge</h2><p>Look at where the table ends. In painting after painting a plate, a knife or a strip of lemon peel hangs out over the edge, toward you.</p></div></div>
+    <div class="step"><div class="card"><p>It does two jobs. It makes the table seem to carry on into the room where you are standing. And it looks as if it could fall.</p></div></div>
+    <div class="step"><div class="card"><p>The peel is a spiral, drawn here with a cosine. Willem Heda's banquet of 1635 hangs one over the front of the table.</p></div></div>
+    <div class="step"><div class="card"><p>A plate holds until its middle passes the edge. Slide it out and find the point.</p></div></div>
+  </div>
+</section>
+
+<!-- V · the table -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="A dark table set with a skull on books, a bubble, an hourglass, a snuffed candle, a tipped glass, coins and a lemon with its peel over the edge. One at a time the old objects are replaced by new ones." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true">The table · 1640 to today</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>battery left = full − drain × time</b><span class="g">the hourglass, again</span></div><div data-at="0.5"><b>y = a · cosh(x ÷ a)</b><span class="g">the catenary: the curve of any hanging cable</span></div></div>
+    <div class="palette" id="swapBar">
+      <label for="swap">Swap</label>
+      <input type="range" id="swap" min="0" max="5" value="0" step="1" aria-valuetext="1640: nothing swapped">
+      <output id="swapOut" for="swap">1640</output>
+    </div>
+    <p class="sr-only" id="s5d">A slider swaps five objects, one at a time. The hourglass becomes a phone at 3 percent battery. The bubble becomes a red notification badge. The lemon peel over the edge becomes a charging cable that hangs in a curve called a catenary. The coins become a lanyard and name badge. The tipped glass becomes a tipped paper cup. The skull, the books and the smoking candle stay as they are.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · The table</h2><p>Put it together. One window. A skull on a book. A bubble, an hourglass, a tipped glass, a few coins, a peel over the edge. That is the grammar.</p></div></div>
+    <div class="step"><div class="card"><p>Now change the nouns. Slide from 1640 to today.</p></div></div>
+    <div class="step"><div class="card"><p>The hourglass becomes a phone at 3%. The bubble becomes a notification. The peel becomes a charging cable, which hangs in a curve with an equation of its own.</p></div></div>
+    <div class="step"><div class="card"><p>The skull and the smoke stay. They needed no translation.</p></div></div>
+    <div class="step"><div class="card"><p>That is the column: the same table, set again each month with what is on the desk.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>This will pass.<br>Look closely anyway.</h2>
+  <p class="lede">The painters set themselves a hard problem: say that nothing lasts, using objects that are a pleasure to look at. Four centuries on, their answer still reads.</p>
+  <p class="lede">Next time you meet one of these tables in a gallery, find the window first. Then find what hangs over the edge.</p>
+
+  <h3 id="find">See the real thing</h3>
+  <ul class="objs">
+    <li class="obj"><b>Jacques de Gheyn II, <i>Vanitas Still Life</i>, 1603</b><span>Oil on wood. A skull, a large bubble, cut flowers and a smoking urn. Generally considered the earliest known independent still life on this subject.</span><span class="who">The Metropolitan Museum of Art, New York · Charles B. Curtis, Marquand, Victor Wilbour Memorial, and The Alfred N. Punnett Endowment Funds, 1974 (1974.1) · Part II</span></li>
+    <li class="obj"><b>Pieter Claesz, <i>Still Life with a Skull and a Writing Quill</i>, 1628</b><span>Oil on wood, 24 by 36 centimeters. A toppled glass, a skull with missing teeth and an oil lamp that has just gone out.</span><span class="who">The Metropolitan Museum of Art, New York · Rogers Fund, 1949 (49.107) · Parts I and III</span></li>
+    <li class="obj"><b>Willem Claesz Heda, <i>Banquet Piece with Mince Pie</i>, 1635</b><span>Oil on canvas. At the left, a cut lemon whose rind hangs in a spiral over the front edge of the table.</span><span class="who">National Gallery of Art, Washington · Patrons' Permanent Fund (1991.87.1) · Part IV</span></li>
+    <li class="obj"><b>David Bailly, vanitas with a self-portrait, 1651</b><span>Oil on wood. Painted in Leiden, the university town known for these pictures. A slip of paper at the table's edge carries the line from Ecclesiastes that names them: vanity of vanities, all is vanity.</span><span class="who">Museum De Lakenhal, Leiden · the whole table</span></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>The paintings: The Met, <a href="https://www.metmuseum.org/art/collection/search/436485">de Gheyn</a> and <a href="https://www.metmuseum.org/art/collection/search/435904">Claesz</a>; National Gallery of Art, <a href="https://www.nga.gov/artworks/72869-banquet-piece-mince-pie">Heda</a>; Bailly as described in <a href="https://ifl.web.baylor.edu/sites/g/files/ecbvkj771/files/2022-12/DeathArtBailly.pdf">a Baylor University study</a>.</li>
+    <li>The plate and peel at the table's edge as a device for space: Museo Thyssen-Bornemisza on <a href="https://www.museothyssen.org/en/node/16739">a Heda still life</a>.</li>
+    <li>The cosine rule: <a href="https://en.wikipedia.org/wiki/Lambert%27s_cosine_law">Wikipedia, &ldquo;Lambert's cosine law&rdquo;</a>. Bubble colours and the black film: the Exploratorium, <a href="https://annex.exploratorium.edu/ronh/bubbles/bubble_colors.html">&ldquo;Bubble Colors&rdquo;</a>. Sand's steady pace: <a href="https://en.wikipedia.org/wiki/Hourglass">Wikipedia, &ldquo;Hourglass&rdquo;</a>. The hanging cable: <a href="https://www.britannica.com/topic/catenary">Britannica, &ldquo;catenary&rdquo;</a>.</li>
+    <li><i>Homo bulla</i>: Varro, <i>On Agriculture</i>, the opening of book 1; Erasmus, <i>Adages</i>.</li>
+    <li>The drawings are diagrams. The skull is a handful of rounded forms lit by the cosine rule. The bubble's colours come from three bands of light, where the eye sees a continuous spectrum. The plate tips as a flat, even disc would.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false">Exhibit mode</button>
+  </div>
+  <div class="colophon">
+    Seen, No. 14. Drawn in code, one function at a time. No photographs and no image generators.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.<br>
+    Previous: <i>How to Throw a Flame Twenty Miles</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span>Exhibit mode · touch to explore</span><button type="button" id="exitExhibit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+
+/* ---------- palette and small tools ---------- */
+const LEMON = '#e0c25a', BONE = '#e9e1cf', MUTE = '#9a9282', DARK = '#12100c', PEWTER = '#9fb0b8', REDN = '#e5484d', D2R = Math.PI / 180;
+const FX = [...document.querySelectorAll('.fx')].map(el => [...el.children]);
+function fx(i, p) { let last = FX[i][0]; for (const d of FX[i]) { const on = p >= +d.dataset.at; d.classList.toggle('on', on); d.classList.remove('cur'); if (on) last = d; } last.classList.add('cur'); }
+function ground(ctx, w, h) { // a dark wall, warmed from the upper left where the window is
+  ctx.fillStyle = DARK; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(w * .18, h * .12, 0, w * .18, h * .12, Math.max(w, h) * .9); g.addColorStop(0, 'rgba(150,126,78,.2)'); g.addColorStop(1, 'rgba(18,16,12,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+function zone(F, w, h) { // where a drawing can sit without touching the labels, the controls or the text cards
+  const y0 = F.wide ? (exhibit ? 158 : 134) : w >= 900 ? 224 : 166, y1 = F.wide ? h - 92 : Math.max(y0 + 220, h * .665), x0 = F.cx - F.aw / 2;
+  return { x0, x1: x0 + F.aw, y0, y1, cx: F.cx, cy: (y0 + y1) / 2, zw: F.aw, zh: y1 - y0 };
+}
+const area = (Z, fs) => { const y1 = Z.y1 - fs * 4; return { y0: Z.y0, y1, h: y1 - Z.y0, cy: (Z.y0 + y1) / 2, a: Z.y1 - fs * 2.6, b: Z.y1 - fs * .95 }; }; // the picture, then two lines of readout under it
+const fsOf = (F, w) => (F.wide ? clamp(w / 125, 11, 14) : clamp(w / 40, 9.5, 15)) * (exhibit ? 1.25 : 1);
+function bar(el, on) { if (el._on !== on) { el._on = on; el.classList.toggle('on', on); el.inert = !on; } }
+function txt(el, s) { if (el._s !== s) { el._s = s; el.textContent = s; } }
+function ell(k, x, y, rx, ry, c, rot = 0) { k.fillStyle = c; k.beginPath(); k.ellipse(x, y, rx, ry, rot, 0, TAU); k.fill(); }
+function ledge(ctx, x0, x1, yEdge, depth, face) { // a table: a lit top, a darker front, one bright line where they meet
+  const g = ctx.createLinearGradient(0, yEdge - depth, 0, yEdge); g.addColorStop(0, 'rgba(70,58,40,0)'); g.addColorStop(1, 'rgba(92,76,52,.75)'); ctx.fillStyle = g; ctx.fillRect(x0, yEdge - depth, x1 - x0, depth);
+  const f = ctx.createLinearGradient(0, yEdge, 0, yEdge + face); f.addColorStop(0, 'rgba(46,38,27,.95)'); f.addColorStop(1, 'rgba(24,20,15,0)'); ctx.fillStyle = f; ctx.fillRect(x0, yEdge, x1 - x0, face);
+  ctx.strokeStyle = 'rgba(190,165,115,.55)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, yEdge + .5); ctx.lineTo(x1, yEdge + .5); ctx.stroke();
+}
+
+/* ---------- THE SKULL. Two rounded forms; every pixel is as bright as the cosine of its angle to the light. ---------- */
+const SK = { w: 216, h: 240, u0: -1.2, u1: 1.2, v0: -1.3, v1: 1.37 }, BETA = 27 * D2R;
+const PARTS = [[0, .32, 1, .93, 1, 0], [.04, -.55, .52, .5, .7, .22], [-.5, -.33, .31, .15, .5, .06], [.58, -.33, .31, .15, .5, .06], [.04, -.99, .4, .15, .5, .34]]; // cx, cy, radii a b c, pushed forward by
+const HOLES = [[-.36, -.05, .25, .2], [.44, -.05, .25, .2], [.04, -.47, .1, .16]];
+const skc = document.createElement('canvas'); skc.width = SK.w; skc.height = SK.h; const skk = skc.getContext('2d'), skim = skk.createImageData(SK.w, SK.h);
+const lightOf = phi => [Math.sin(phi * D2R) * Math.cos(BETA), Math.cos(phi * D2R) * Math.cos(BETA), Math.sin(BETA)];
+let skKey = null;
+function skullImage(phi) {
+  const key = Math.round(phi); if (key === skKey) return skc; skKey = key;
+  const L = lightOf(key), d = skim.data;
+  for (let j = 0; j < SK.h; j++) for (let i = 0; i < SK.w; i++) {
+    const u = SK.u0 + (i + .5) / SK.w * (SK.u1 - SK.u0), v = SK.v1 - (j + .5) / SK.h * (SK.v1 - SK.v0), o = (j * SK.w + i) * 4;
+    let best = -9, nx = 0, ny = 0, nz = 0, edge = 0;
+    for (const [cx, cy, a, b, c, zo] of PARTS) { const q = 1 - ((u - cx) / a) ** 2 - ((v - cy) / b) ** 2; if (q <= 0) continue; edge = Math.max(edge, q); const zz = c * Math.sqrt(q); if (zz + zo > best) { best = zz + zo; nx = (u - cx) / (a * a); ny = (v - cy) / (b * b); nz = zz / (c * c); } }
+    if (best < -8) { d[o + 3] = 0; continue; }
+    let I = .06 + .94 * Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / Math.hypot(nx, ny, nz)), k = 1;
+    for (const [ex, ey, rx, ry] of HOLES) { const q = ((u - ex) / rx) ** 2 + ((v - ey) / ry) ** 2; if (q < 1) k = Math.min(k, .1 + .9 * sstep(clamp((q - .5) / .5, 0, 1))); }
+    if (v < -.86 && v > -1.16 && Math.abs(u - .04) < .42 && frac((u + 2.02) * 7) < .16) k *= .28; // gaps between the teeth
+    if (v < -.82 && v > -.87 && Math.abs(u - .04) < .4) k *= .45;
+    I *= k; d[o] = 236 * I + 6; d[o + 1] = 224 * I + 5; d[o + 2] = 196 * I + 4; d[o + 3] = 255 * clamp(edge * 16, 0, 1);
+  }
+  skk.putImageData(skim, 0, 0); return skc;
+}
+function skull(ctx, x, y, s, phi) { ctx.drawImage(skullImage(phi), x + SK.u0 * s, y - (SK.v1 + 1.14) * s, (SK.u1 - SK.u0) * s, (SK.v1 - SK.v0) * s); } // x: middle, y: where it rests
+
+/* ---------- objects for the table. x is the middle, y is where the thing rests, s is its unit of size ---------- */
+function book(ctx, x, y, w, h, cover = '#3b2a1b') {
+  ctx.fillStyle = cover; ctx.fillRect(x - w / 2, y - h, w, h); ctx.fillStyle = '#cbbd98'; ctx.fillRect(x - w / 2 + w * .04, y - h * .8, w * .96, h * .6);
+  ctx.strokeStyle = 'rgba(80,66,44,.6)'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 1; i < 4; i++) { ctx.moveTo(x - w / 2 + w * .04, y - h * .8 + h * .15 * i); ctx.lineTo(x + w / 2, y - h * .8 + h * .15 * i); } ctx.stroke();
+  ctx.fillStyle = 'rgba(255,240,200,.12)'; ctx.fillRect(x - w / 2, y - h, w, Math.max(1, h * .1));
+}
+function bulb(ctx, x, top, mid, s, up) { // one half of the hourglass: wide at top (or bottom), pinched at mid
+  const y0 = up ? top : mid + (mid - top), sgn = up ? 1 : -1, H = mid - top;
+  ctx.beginPath(); ctx.moveTo(x - .56 * s, y0); ctx.bezierCurveTo(x - .62 * s, y0 + sgn * H * .62, x - .07 * s, mid - sgn * H * .2, x - .045 * s, mid); ctx.lineTo(x + .045 * s, mid); ctx.bezierCurveTo(x + .07 * s, mid - sgn * H * .2, x + .62 * s, y0 + sgn * H * .62, x + .56 * s, y0); ctx.closePath();
+}
+function hourglass(ctx, x, y, s, f) { // f: the share of sand still in the top
+  const bot = y - .16 * s, top = y - 3.04 * s, mid = (top + bot) / 2, H = mid - top, wood = '#6b4f2c';
+  ctx.strokeStyle = wood; ctx.lineWidth = Math.max(1.5, .08 * s); ctx.beginPath(); for (const m of [-1, 1]) { ctx.moveTo(x + m * .7 * s, bot); ctx.lineTo(x + m * .7 * s, top); } ctx.stroke();
+  const sand = '#d8b877';
+  ctx.save(); bulb(ctx, x, top, mid, s, true); ctx.clip(); const yT = mid - H * Math.cbrt(f); ctx.fillStyle = sand; ctx.beginPath(); ctx.moveTo(x - s, yT); ctx.quadraticCurveTo(x, yT + H * .16 * Math.min(1, (1 - f) * 4), x + s, yT); ctx.lineTo(x + s, mid + 2); ctx.lineTo(x - s, mid + 2); ctx.closePath(); if (f > 0) ctx.fill(); ctx.restore();
+  ctx.save(); bulb(ctx, x, top, mid, s, false); ctx.clip(); const hb = H * (1 - Math.cbrt(f)); ctx.fillStyle = sand; ctx.beginPath(); ctx.moveTo(x - s, bot - hb * .82); ctx.quadraticCurveTo(x, bot - hb * 1.25 - (f < 1 ? H * .05 : 0), x + s, bot - hb * .82); ctx.lineTo(x + s, bot + 2); ctx.lineTo(x - s, bot + 2); ctx.closePath(); if (f < 1) ctx.fill();
+  if (f > 0 && f < 1) { ctx.strokeStyle = sand; ctx.lineWidth = Math.max(1, .03 * s); ctx.beginPath(); ctx.moveTo(x, mid); ctx.lineTo(x, bot); ctx.stroke(); } ctx.restore();
+  ctx.strokeStyle = 'rgba(200,222,214,.6)'; ctx.lineWidth = 1.2; bulb(ctx, x, top, mid, s, true); ctx.stroke(); bulb(ctx, x, top, mid, s, false); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = Math.max(1, .05 * s); ctx.beginPath(); ctx.moveTo(x - .4 * s, top + H * .14); ctx.quadraticCurveTo(x - .45 * s, top + H * .4, x - .28 * s, top + H * .62); ctx.stroke();
+  ctx.fillStyle = wood; ctx.fillRect(x - .84 * s, y - .16 * s, 1.68 * s, .16 * s); ctx.fillRect(x - .84 * s, top - .16 * s, 1.68 * s, .16 * s); ctx.fillStyle = 'rgba(255,230,170,.18)'; ctx.fillRect(x - .84 * s, top - .16 * s, 1.68 * s, .04 * s);
+}
+function candle(ctx, x, y, s, len, lit, t) { // len: 1 is a new candle; lit or snuffed
+  const brass = ctx.createLinearGradient(x - .6 * s, 0, x + .6 * s, 0); brass.addColorStop(0, '#c9a24c'); brass.addColorStop(.45, '#8a6a2a'); brass.addColorStop(1, '#3d2e12'); ctx.fillStyle = brass;
+  ctx.beginPath(); ctx.moveTo(x - .62 * s, y); ctx.lineTo(x + .62 * s, y); ctx.lineTo(x + .16 * s, y - .34 * s); ctx.lineTo(x + .12 * s, y - 1.02 * s); ctx.lineTo(x + .42 * s, y - 1.1 * s); ctx.lineTo(x + .42 * s, y - 1.2 * s); ctx.lineTo(x - .42 * s, y - 1.2 * s); ctx.lineTo(x - .42 * s, y - 1.1 * s); ctx.lineTo(x - .12 * s, y - 1.02 * s); ctx.lineTo(x - .16 * s, y - .34 * s); ctx.closePath(); ctx.fill();
+  const h = 2.3 * s * len, top = y - 1.2 * s - h, wax = ctx.createLinearGradient(x - .17 * s, 0, x + .17 * s, 0); wax.addColorStop(0, '#efe5c8'); wax.addColorStop(1, '#8f8468'); ctx.fillStyle = wax; ctx.fillRect(x - .17 * s, top, .34 * s, h);
+  ctx.strokeStyle = '#2a2118'; ctx.lineWidth = Math.max(1, .04 * s); ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x + .02 * s, top - .16 * s); ctx.stroke();
+  if (lit) { const fy = top - .2 * s, fl = reduce ? 0 : Math.sin(t * .011) * .03 * s, g = ctx.createRadialGradient(x, fy - .2 * s, 0, x, fy - .2 * s, 1.5 * s); g.addColorStop(0, 'rgba(255,214,130,.5)'); g.addColorStop(1, 'rgba(255,214,130,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, fy - .2 * s, 1.5 * s, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#ffe9b0'; ctx.beginPath(); ctx.moveTo(x + fl, fy - .58 * s); ctx.quadraticCurveTo(x + .2 * s, fy - .1 * s, x, fy + .06 * s); ctx.quadraticCurveTo(x - .2 * s, fy - .1 * s, x + fl, fy - .58 * s); ctx.fill(); }
+  else { ctx.lineWidth = Math.max(1, .05 * s); ctx.lineCap = 'round'; for (let k = 0; k < 44; k++) { const a = k / 44, yy = top - .18 * s - k * .085 * s, sw = t2 => Math.sin(k * .3 + t2) * (.02 + a * .5) * s, tt = reduce ? 0 : t * .0009; ctx.strokeStyle = `rgba(210,205,190,${.5 * (1 - a) ** 1.4})`; ctx.beginPath(); ctx.moveTo(x + .02 * s + sw(tt), yy); ctx.lineTo(x + .02 * s + Math.sin((k + 1) * .3 + tt) * (.02 + (k + 1) / 44 * .5) * s, yy - .085 * s); ctx.stroke(); } ctx.lineCap = 'butt'; }
+}
+function roemer(ctx, x, y, s) { // a green drinking glass, tipped on its side, mouth to the left
+  const cy = y - .5 * s; ctx.fillStyle = 'rgba(128,160,112,.2)'; ctx.strokeStyle = 'rgba(176,206,170,.7)'; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.ellipse(x - .45 * s, cy, .66 * s, .5 * s, 0, 0, TAU); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.ellipse(x - 1.02 * s, cy, .13 * s, .4 * s, 0, 0, TAU); ctx.stroke();
+  ctx.fillStyle = 'rgba(128,160,112,.3)'; ctx.fillRect(x + .16 * s, cy - .2 * s, .78 * s, .4 * s); ctx.strokeRect(x + .16 * s, cy - .2 * s, .78 * s, .4 * s); for (let i = 0; i < 3; i++) ell(ctx, x + (.3 + i * .24) * s, cy, .07 * s, .07 * s, 'rgba(190,220,180,.55)');
+  ctx.beginPath(); ctx.ellipse(x + 1.0 * s, cy, .1 * s, .5 * s, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.beginPath(); ctx.moveTo(x - .78 * s, cy - .3 * s); ctx.lineTo(x - .58 * s, cy - .36 * s); ctx.lineTo(x - .56 * s, cy - .2 * s); ctx.lineTo(x - .8 * s, cy - .14 * s); ctx.closePath(); ctx.fill();
+}
+function coins(ctx, x, y, s) { for (const [dx, dy, r] of [[-.9, 0, .34], [-.3, -.08, .36], [.5, .02, .32], [.05, .1, .3]]) { ell(ctx, x + dx * s, y + dy * s, r * s, r * s * .34, '#8a6a22'); ell(ctx, x + dx * s, y + dy * s - .05 * s, r * s, r * s * .34, '#d8b24a'); ell(ctx, x + dx * s - r * s * .3, y + dy * s - .09 * s, r * s * .4, r * s * .1, 'rgba(255,240,190,.6)'); } }
+function peel(ctx, x, y, s, len, turns = 3) { // a spiral seen from the side: x = r cos t, y = k t. The side facing us is yellow, the far side pale
+  const n = Math.ceil(turns * 30); ctx.lineCap = 'round'; ctx.lineWidth = Math.max(2, .2 * s);
+  for (const front of [false, true]) for (let i = 0; i < n; i++) { const t0 = i / n * turns * TAU, t1 = (i + 1) / n * turns * TAU; if ((Math.sin((t0 + t1) / 2) > 0) !== front) continue; const r0 = .3 * s * (1 - .25 * i / n), r1 = .3 * s * (1 - .25 * (i + 1) / n);
+    ctx.strokeStyle = front ? '#e2b938' : '#b9ad7a'; ctx.beginPath(); ctx.moveTo(x + r0 * Math.cos(t0) - .3 * s, y + i / n * len); ctx.lineTo(x + r1 * Math.cos(t1) - .3 * s, y + (i + 1) / n * len); ctx.stroke(); }
+  ctx.lineCap = 'butt';
+}
+function lemon(ctx, x, y, s) { const g = ctx.createRadialGradient(x - .25 * s, y - .25 * s, 0, x, y, .9 * s); g.addColorStop(0, '#f6e27a'); g.addColorStop(.6, '#d9ae2e'); g.addColorStop(1, '#6f5512'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x, y, .72 * s, .5 * s, 0, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.ellipse(x - .74 * s, y, .12 * s, .1 * s, 0, 0, TAU); ctx.fill(); }
+function plateLemon(ctx, x, yEdge, s, hang) { // a pewter plate pushed over the front edge, a lemon, and its peel hanging down
+  ell(ctx, x, yEdge + .34 * s, 1.5 * s, .2 * s, 'rgba(0,0,0,.45)');
+  const g = ctx.createLinearGradient(x - 1.5 * s, 0, x + 1.5 * s, 0); g.addColorStop(0, '#c9d2d6'); g.addColorStop(.5, '#7d898e'); g.addColorStop(1, '#3a4246'); ell(ctx, x, yEdge - .02 * s, 1.5 * s, .3 * s, g); ell(ctx, x, yEdge - .05 * s, 1.1 * s, .18 * s, 'rgba(40,46,50,.55)');
+  lemon(ctx, x - .25 * s, yEdge - .52 * s, s);
+  ctx.strokeStyle = '#e2b938'; ctx.lineWidth = Math.max(2, .2 * s); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x + .4 * s, yEdge - .62 * s); ctx.quadraticCurveTo(x + 1.1 * s, yEdge - .7 * s, x + 1.2 * s, yEdge + .1 * s); ctx.stroke(); ctx.lineCap = 'butt';
+  if (hang > 0) peel(ctx, x + 1.5 * s, yEdge + .1 * s, s, hang);
+}
+function phone(ctx, x, y, s) { // leaning back, screen dark except for the battery
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-.14); const w = 1.5 * s, h = 3 * s;
+  rr(ctx, -w / 2, -h, w, h, .2 * s); ctx.fillStyle = '#090a0d'; ctx.fill(); ctx.strokeStyle = '#59606b'; ctx.lineWidth = Math.max(1, .06 * s); ctx.stroke();
+  const g = ctx.createRadialGradient(0, -h * .55, 0, 0, -h * .55, h * .5); g.addColorStop(0, 'rgba(229,72,77,.16)'); g.addColorStop(1, 'rgba(229,72,77,0)'); ctx.fillStyle = g; ctx.fillRect(-w / 2, -h, w, h);
+  ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = Math.max(1, .05 * s); ctx.strokeRect(-.38 * s, -h * .62, .7 * s, .34 * s); ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(.34 * s, -h * .62 + .1 * s, .06 * s, .14 * s); ctx.fillStyle = REDN; ctx.fillRect(-.34 * s, -h * .62 + .04 * s, .08 * s, .26 * s);
+  mono(ctx, '3%', 0, -h * .4, 'rgba(255,255,255,.85)', 'center', Math.max(7, .36 * s)); ctx.restore();
+}
+function badge(ctx, x, y, r) { const g = ctx.createRadialGradient(x, y, 0, x, y, r * 2.6); g.addColorStop(0, 'rgba(229,72,77,.45)'); g.addColorStop(1, 'rgba(229,72,77,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 2.6, 0, TAU); ctx.fill(); ell(ctx, x, y, r, r, REDN); ell(ctx, x - r * .3, y - r * .4, r * .4, r * .22, 'rgba(255,255,255,.25)', -.5); ctx.font = `600 ${r * 1.25}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff'; ctx.fillText('1', x, y + r * .06); }
+const catA = (half, sag) => { let lo = half * .05, hi = half * 60; for (let i = 0; i < 40; i++) { const a = (lo + hi) / 2; if (a * (Math.cosh(half / a) - 1) > sag) lo = a; else hi = a; } return (lo + hi) / 2; };
+function cable(ctx, x1, x2, y, sag, s) { // y = a cosh(x / a): a hanging cable between two points at the table's edge
+  const half = (x2 - x1) / 2, xm = (x1 + x2) / 2, a = catA(half, sag), top = a * (Math.cosh(half / a) - 1);
+  ctx.strokeStyle = '#d9dce2'; ctx.lineWidth = Math.max(1.5, .13 * s); ctx.lineCap = 'round'; ctx.beginPath(); for (let i = 0; i <= 60; i++) { const xx = x1 + (x2 - x1) * i / 60, yy = y + top - a * (Math.cosh((xx - xm) / a) - 1); i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); ctx.lineCap = 'butt';
+}
+function adapter(ctx, x, y, s) { rr(ctx, x - .5 * s, y - .95 * s, s, .95 * s, .14 * s); const g = ctx.createLinearGradient(x - .5 * s, 0, x + .5 * s, 0); g.addColorStop(0, '#f1f2f4'); g.addColorStop(1, '#8d9299'); ctx.fillStyle = g; ctx.fill(); ctx.fillStyle = '#9aa0a8'; ctx.fillRect(x - .22 * s, y - 1.2 * s, .1 * s, .26 * s); ctx.fillRect(x + .12 * s, y - 1.2 * s, .1 * s, .26 * s); }
+function lanyard(ctx, x, y, s) { // a ribbon in a loose loop and a name badge
+  ctx.strokeStyle = '#3f7fd0'; ctx.lineWidth = Math.max(2, .17 * s); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x + .5 * s, y - .25 * s); ctx.bezierCurveTo(x - 1.6 * s, y - .9 * s, x - 2.4 * s, y + .1 * s, x - 1.0 * s, y + .12 * s); ctx.bezierCurveTo(x - .2 * s, y + .14 * s, x + .1 * s, y - .1 * s, x + .5 * s, y - .25 * s); ctx.stroke(); ctx.lineCap = 'butt';
+  ctx.save(); ctx.translate(x + .95 * s, y - .12 * s); ctx.rotate(-.2); ctx.fillStyle = '#eceae4'; ctx.fillRect(-.55 * s, -.7 * s, 1.1 * s, .82 * s); ctx.fillStyle = '#3f7fd0'; ctx.fillRect(-.55 * s, -.7 * s, 1.1 * s, .22 * s); ctx.fillStyle = '#6b6b6b'; ctx.fillRect(-.4 * s, -.36 * s, .7 * s, .08 * s); ctx.fillRect(-.4 * s, -.2 * s, .45 * s, .06 * s); ctx.restore();
+}
+function cup(ctx, x, y, s) { // a paper cup on its side, mouth to the left, lid beside it
+  const cy = y - .5 * s; ell(ctx, x - 1.5 * s, y + .02 * s, .5 * s, .1 * s, 'rgba(60,36,18,.8)');
+  const g = ctx.createLinearGradient(0, cy - .5 * s, 0, cy + .5 * s); g.addColorStop(0, '#f4f0e6'); g.addColorStop(1, '#8c8679'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x - 1.0 * s, cy - .5 * s); ctx.lineTo(x + .95 * s, cy - .36 * s); ctx.lineTo(x + .95 * s, cy + .36 * s); ctx.lineTo(x - 1.0 * s, cy + .5 * s); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#8a5a2e'; ctx.beginPath(); ctx.moveTo(x - .45 * s, cy - .46 * s); ctx.lineTo(x + .45 * s, cy - .4 * s); ctx.lineTo(x + .45 * s, cy + .4 * s); ctx.lineTo(x - .45 * s, cy + .46 * s); ctx.closePath(); ctx.fill();
+  ell(ctx, x - 1.0 * s, cy, .14 * s, .5 * s, '#efeadd'); ell(ctx, x - 1.0 * s, cy, .09 * s, .42 * s, '#2a1a0e'); ell(ctx, x + .95 * s, cy, .08 * s, .36 * s, '#77716a');
+  ell(ctx, x + 1.9 * s, y - .1 * s, .58 * s, .13 * s, '#d9d6cf'); ell(ctx, x + 1.9 * s, y - .16 * s, .44 * s, .09 * s, '#f3f1ec');
+}
+
+/* ---------- THE BUBBLE. Colour from thickness: light off the front and back of the film adds or cancels. ---------- */
+const NF = 1.33, LUT = (() => { const n = 3400, a = new Uint8ClampedArray(n * 3), bands = [[600, 625, 650, 675], [510, 530, 550, 570], [430, 448, 466, 484]]; for (let p = 0; p < n; p++) for (let c = 0; c < 3; c++) { let s = 0; for (const l of bands[c]) s += Math.sin(Math.PI * p / l) ** 2; a[p * 3 + c] = 255 * Math.pow(s / 4, .8); } return a; })(); // index: the extra path 2·n·d·cos, in nanometers
+const BB = 220, bc = document.createElement('canvas'); bc.width = bc.height = BB; const bk = bc.getContext('2d'), bim = bk.createImageData(BB, BB);
+const filmOf = age => { const a = age / 100; return [Math.max(0, 620 * (1 - a * 1.12)), 1150 - 500 * a]; }; // thickness at the top and at the bottom, nm
+let bKey = null;
+function bubbleImage(age) {
+  if (age === bKey) return bc; bKey = age; const [dT, dB] = filmOf(age), d = bim.data;
+  for (let j = 0; j < BB; j++) for (let i = 0; i < BB; i++) { const x = (i + .5) / BB * 2 - 1, y = (j + .5) / BB * 2 - 1, r2 = x * x + y * y, o = (j * BB + i) * 4; if (r2 >= 1) { d[o + 3] = 0; continue; }
+    const nz = Math.sqrt(1 - r2), th = dT + (dB - dT) * Math.pow((y + 1) / 2, 1.25), ct = Math.sqrt(1 - r2 / (NF * NF)), p = Math.min(3399, 2 * NF * th * ct) | 0, e = .3 + .7 * Math.pow(1 - nz, 1.1);
+    const R = LUT[p * 3], G = LUT[p * 3 + 1], B = LUT[p * 3 + 2]; d[o] = R; d[o + 1] = G; d[o + 2] = B; d[o + 3] = Math.max(R, G, B) * e * clamp((1 - r2) * 30, 0, 1); }
+  bk.putImageData(bim, 0, 0); return bc;
+}
+function bubble(ctx, x, y, R, age) {
+  ctx.drawImage(bubbleImage(age), x - R, y - R, R * 2, R * 2); ctx.strokeStyle = 'rgba(235,240,245,.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, R - .5, 0, TAU); ctx.stroke();
+  ctx.save(); ctx.translate(x - R * .42, y - R * .46); ctx.rotate(-.5); ctx.fillStyle = 'rgba(255,255,255,.6)'; for (const [a, b] of [[0, 0], [1, 0], [0, 1], [1, 1]]) ctx.fillRect(a * R * .16 - R * .15, b * R * .2 - R * .19, R * .13, R * .17); ctx.restore(); // the window, reflected
+  ctx.save(); ctx.translate(x + R * .46, y + R * .5); ctx.rotate(-.5); ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fillRect(-R * .09, -R * .11, R * .18, R * .22); ctx.restore();
+}
+
+/* ---------- the whole table, in a 200 x 128 design space; n objects have been swapped for today's ---------- */
+function tableScene(ctx, ox, oy, k, n, t, hang = 1) {
+  const X = v => ox + v * k, Y = v => oy + v * k, yE = Y(104);
+  ledge(ctx, X(-600), X(800), yE, 22 * k, 24 * k);
+  candle(ctx, X(171), Y(99), 8.6 * k, .5, false, t);
+  if (n >= 1) phone(ctx, X(143), Y(100), 9.6 * k); else hourglass(ctx, X(143), Y(100), 10.2 * k, .38);
+  ell(ctx, X(104), Y(101), 30 * k, 3 * k, 'rgba(0,0,0,.4)'); book(ctx, X(97), Y(100), 46 * k, 6.4 * k); book(ctx, X(94), Y(93.6), 37 * k, 5.2 * k, '#4a2620'); skull(ctx, X(94), Y(88.6), 12.4 * k, -45);
+  const by = reduce ? 0 : Math.sin(t * .0011) * 1.2 * k; if (n >= 2) badge(ctx, X(124), Y(37) + by, 6.2 * k); else bubble(ctx, X(124), Y(36) + by, 13 * k, 34);
+  if (n >= 5) cup(ctx, X(30), Y(101.5), 8.4 * k); else roemer(ctx, X(31), Y(101.5), 9 * k);
+  if (n >= 4) lanyard(ctx, X(119), Y(102), 6.4 * k); else coins(ctx, X(123), Y(102.2), 5.6 * k);
+  if (n >= 3) { adapter(ctx, X(60), Y(103.4), 7 * k); const px = X(141.6); ctx.strokeStyle = '#d9dce2'; ctx.lineWidth = Math.max(1.5, .9 * k); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(X(63.4), Y(102.6)); ctx.lineTo(X(66), yE); ctx.moveTo(px, Y(100.4)); ctx.quadraticCurveTo(px - 2 * k, Y(103), px - 5 * k, yE); ctx.stroke(); cable(ctx, X(66), px - 5 * k, yE, 19 * k * hang, 7 * k); }
+  else plateLemon(ctx, X(60), yE, 7.6 * k, 20 * k * hang);
+}
+
+/* ---------- hero: the table as set around 1640, low in the frame ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC); ground(ctx, w, h); const k = Math.min(w / 215, h * .4 / 128); ctx.globalAlpha = fade * (w < 700 ? .42 : .6); tableScene(ctx, w / 2 - 100 * k, h - 120 * k, k, 0, t); ctx.globalAlpha = 1;
+  const g = ctx.createLinearGradient(0, h * .2, 0, h * .7); g.addColorStop(0, 'rgba(18,16,12,.75)'); g.addColorStop(1, 'rgba(18,16,12,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h * .7);
+}
+
+/* ---------- I · the window: brightness = cos(angle to the light) ---------- */
+const c1 = document.querySelector('#s1 canvas'), sunBar = document.getElementById('sunBar'), sunIn = document.getElementById('sun'), sunOut = document.getElementById('sunOut');
+let userSun = false; sunBar.inert = true; sunIn.addEventListener('input', () => { userSun = true; });
+const PN = (() => { const a = -25 * D2R; return [Math.sin(a) * Math.cos(BETA), Math.cos(a) * Math.cos(BETA), Math.sin(BETA)]; })(); // the direction the marked point on the forehead faces
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(0, p); ground(ctx, w, h);
+  bar(sunBar, p > .12 && p < .94);
+  if (!userSun) sunIn.value = String(Math.round(p < .54 ? lerp(-45, 80, ease(p, .22, .5)) : lerp(80, -45, ease(p, .58, .82))));
+  const phi = +sunIn.value, side = phi < -8 ? 'left' : phi > 8 ? 'right' : 'overhead', lab = side === 'overhead' ? 'overhead' : `${side} ${Math.abs(phi)}°`; txt(sunOut, lab); if (sunIn._v !== lab) { sunIn._v = lab; sunIn.setAttribute('aria-valuetext', side === 'overhead' ? 'light from overhead' : `light from the upper ${side}, ${Math.abs(phi)} degrees`); }
+  const L = lightOf(phi), yE = D.y1 - fs * .6, s = Math.min(D.h * .27, Z.zw * .2), x = Z.cx, bw = 3.5 * s, bh = .42 * s, yS = yE - fs * .5 - bh;
+  ledge(ctx, Z.x0 - 30, Z.x1 + 30, yE, fs * 2.4, fs * 2);
+  const R = Math.min(D.h * .82, Z.zw * .46), ax = x, ay = yS - 1.3 * s; ctx.strokeStyle = 'rgba(224,194,90,.22)'; ctx.setLineDash([3, 5]); ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(ax, ay, R, -Math.PI / 2 - 80 * D2R, -Math.PI / 2 + 80 * D2R); ctx.stroke(); ctx.setLineDash([]);
+  const wx = ax + R * Math.sin(phi * D2R), wy = ay - R * Math.cos(phi * D2R), g = ctx.createRadialGradient(wx, wy, 0, wx, wy, fs * 4); g.addColorStop(0, 'rgba(255,236,180,.5)'); g.addColorStop(1, 'rgba(255,236,180,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(wx, wy, fs * 4, 0, TAU); ctx.fill();
+  ctx.save(); ctx.translate(wx, wy); ctx.rotate(phi * D2R); ctx.fillStyle = '#fff1c4'; for (const [a, b] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) ctx.fillRect(a * fs * .62 + fs * .04, b * fs * .62 + fs * .04, fs * .54, fs * .54); ctx.restore();
+  ell(ctx, x - L[0] * s * 1.5, yE - fs * .2, 1.7 * s, .17 * s, 'rgba(0,0,0,.55)'); book(ctx, x - .1 * s, yE - fs * .5, bw, bh); skull(ctx, x, yS, s, phi);
+  // the marked point: the way it faces (white), the way to the light (yellow), and the angle between them
+  const m = Math.hypot(PN[0], .95 * PN[1], PN[2]), px = x + PN[0] / m * s, py = yS - (.3 + .95 * .95 * PN[1] / m + 1.12) * s, dot = PN[0] * L[0] + PN[1] * L[1] + PN[2] * L[2], th = Math.round(Math.acos(clamp(dot, -1, 1)) / D2R), al = .62 * s;
+  const arrow = (dx, dy, col) => { const q = Math.hypot(dx, dy) || 1, ex = px + dx / q * al, ey = py - dy / q * al, an = Math.atan2(-dy, dx); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(ex, ey); ctx.stroke(); ctx.beginPath(); ctx.moveTo(ex + Math.cos(an) * 7, ey + Math.sin(an) * 7); ctx.lineTo(ex + Math.cos(an + 2.5) * 6, ey + Math.sin(an + 2.5) * 6); ctx.lineTo(ex + Math.cos(an - 2.5) * 6, ey + Math.sin(an - 2.5) * 6); ctx.closePath(); ctx.fill(); };
+  arrow(PN[0], PN[1], 'rgba(255,255,255,.9)'); arrow(L[0], L[1], LEMON); ell(ctx, px, py, 3.5, 3.5, '#fff');
+  mono(ctx, `the marked point is ${th}° from the light`, Z.cx, D.a, BONE, 'center', fs); mono(ctx, `brightness = cos ${th}° = ${Math.max(0, Math.cos(th * D2R)).toFixed(2)}`, Z.cx, D.b, LEMON, 'center', fs + 1);
+}
+
+/* ---------- II · the bubble: bright when 2 n d = (m + 1/2) wavelength ---------- */
+const c2 = document.querySelector('#s2 canvas'), filmBar = document.getElementById('filmBar'), filmIn = document.getElementById('film'), filmOut = document.getElementById('filmOut');
+let userFilm = false; filmBar.inert = true; filmIn.addEventListener('input', () => { userFilm = true; });
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(1, p); ground(ctx, w, h);
+  bar(filmBar, p > .12 && p < .94);
+  if (!userFilm) filmIn.value = String(Math.round(lerp(0, 100, ease(p, .3, .84))));
+  const age = +filmIn.value, [dT, dB] = filmOf(age), gone = age >= 97, lab = gone ? 'gone' : dT < 50 ? 'under 50 nm' : `${Math.round(dT)} nm`; txt(filmOut, lab);
+  if (filmIn._v !== lab) { filmIn._v = lab; filmIn.setAttribute('aria-valuetext', gone ? 'the bubble has burst' : dT < 50 ? 'old: the top of the film is black' : `thinnest point ${Math.round(dT)} nanometers`); }
+  const R = Math.min(D.h * .4, Z.zw * .3), x = Z.x0 + Z.zw * .4, y = D.cy + (reduce ? 0 : Math.sin(t * .001) * 4);
+  if (gone) { ctx.strokeStyle = 'rgba(235,240,245,.4)'; ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.beginPath(); for (let i = 0; i < 14; i++) { const a = i / 14 * TAU + .2; ctx.moveTo(x + Math.cos(a) * R * 1.04, y + Math.sin(a) * R * 1.04); ctx.lineTo(x + Math.cos(a) * R * 1.14, y + Math.sin(a) * R * 1.14); } ctx.stroke(); ctx.lineCap = 'butt'; }
+  else bubble(ctx, x, y, R, age);
+  // the ruler: which colour each thickness gives, seen straight on
+  const bx = Z.x0 + Z.zw * .84, bw = fs * 1.5, by = D.cy - R * .95, bh = R * 1.9, Yd = d => by + d / 1200 * bh;
+  for (let i = 0; i < bh; i++) { const pp = Math.min(3399, 2 * NF * (i / bh * 1200)) | 0; ctx.fillStyle = `rgb(${LUT[pp * 3]},${LUT[pp * 3 + 1]},${LUT[pp * 3 + 2]})`; ctx.fillRect(bx, by + i, bw, 1.5); }
+  ctx.strokeStyle = 'rgba(233,225,207,.5)'; ctx.lineWidth = 1; ctx.strokeRect(bx - .5, by - .5, bw + 1, bh + 1);
+  for (const d of [0, 300, 600, 900, 1200]) mono(ctx, String(d), bx + bw + fs * .5, Yd(d), MUTE, 'left', fs - 1); mono(ctx, 'nm', bx + bw / 2, by - fs, MUTE, 'center', fs - 1);
+  if (!gone) { ctx.strokeStyle = LEMON; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx - fs * .7, Yd(dT)); ctx.lineTo(bx - fs * .2, Yd(dT)); ctx.lineTo(bx - fs * .2, Yd(dB)); ctx.lineTo(bx - fs * .7, Yd(dB)); ctx.stroke(); mono(ctx, 'top', bx - fs, Yd(dT), LEMON, 'right', fs - 1); mono(ctx, 'bottom', bx - fs, Yd(dB), LEMON, 'right', fs - 1); }
+  mono(ctx, gone ? 'the film broke' : dT < 50 ? 'thinnest point: under 50 nm' : `thinnest point: ${Math.round(dT)} nm`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, gone ? 'gone' : age < 45 ? 'thin at the top, thick at the bottom' : age < 76 ? 'the bands slide down as the film drains' : 'the top is black: too thin for any colour', Z.cx, D.b, LEMON, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- III · the glass: sand left = full - rate x time ---------- */
+const c3 = document.querySelector('#s3 canvas'), clockBar = document.getElementById('clockBar'), clockIn = document.getElementById('clock'), clockOut = document.getElementById('clockOut');
+let userClock = false; clockBar.inert = true; clockIn.addEventListener('input', () => { userClock = true; });
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(2, p); ground(ctx, w, h);
+  bar(clockBar, p > .12 && p < .94);
+  if (!userClock) clockIn.value = String(Math.round(lerp(0, 60, ease(p, .24, .8))));
+  const min = +clockIn.value, f = 1 - min / 60, wat = f * f, lab = min + ' min'; txt(clockOut, lab);
+  if (clockIn._v !== min) { clockIn._v = min; clockIn.setAttribute('aria-valuetext', `${min} minutes: ${Math.round(f * 100)} percent of the sand left`); }
+  const yE = D.y1 - fs * .8, s = Math.min(D.h * .21, Z.zw * .085); ledge(ctx, Z.x0 - 30, Z.x0 + Z.zw * .52, yE, fs * 2, fs * 1.8);
+  candle(ctx, Z.x0 + Z.zw * .09, yE - 2, s * .92, .28 + .72 * f, min < 60, t); hourglass(ctx, Z.x0 + Z.zw * .32, yE - 2, s, f);
+  // the chart: how much is left, against time
+  const cx0 = Z.x0 + Z.zw * .6, cw = Z.zw * .36, ch = Math.min(D.h * .56, cw * 1.05), cy0 = yE - ch - fs * 1.9, PX = m => cx0 + m / 60 * cw, PY = v => cy0 + (1 - v) * ch;
+  ctx.strokeStyle = 'rgba(233,225,207,.45)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx0, cy0); ctx.lineTo(cx0, cy0 + ch); ctx.lineTo(cx0 + cw, cy0 + ch); ctx.stroke();
+  ctx.strokeStyle = 'rgba(233,225,207,.12)'; ctx.beginPath(); for (const m of [15, 30, 45, 60]) { ctx.moveTo(PX(m), cy0); ctx.lineTo(PX(m), cy0 + ch); } ctx.moveTo(cx0, PY(.5)); ctx.lineTo(cx0 + cw, PY(.5)); ctx.stroke();
+  ctx.lineWidth = 2; ctx.strokeStyle = PEWTER; ctx.beginPath(); for (let m = 0; m <= 60; m++) { const v = (1 - m / 60) ** 2; m ? ctx.lineTo(PX(m), PY(v)) : ctx.moveTo(PX(m), PY(v)); } ctx.stroke();
+  ctx.strokeStyle = LEMON; ctx.beginPath(); ctx.moveTo(PX(0), PY(1)); ctx.lineTo(PX(60), PY(0)); ctx.stroke();
+  ell(ctx, PX(min), PY(wat), 4.5, 4.5, PEWTER); ell(ctx, PX(min), PY(f), 4.5, 4.5, LEMON);
+  mono(ctx, 'sand', PX(34), PY(.43) - fs * 1.1, LEMON, 'left', fs); mono(ctx, 'water', PX(16), PY(.54) + fs * 1.1, PEWTER, 'right', fs);
+  for (const m of [0, 30, 60]) mono(ctx, String(m), PX(m), cy0 + ch + fs, MUTE, 'center', fs - 1); mono(ctx, 'min', cx0 + cw + fs * .4, cy0 + ch + fs, MUTE, 'left', fs - 1); mono(ctx, 'left', cx0, cy0 - fs, MUTE, 'center', fs - 1);
+  mono(ctx, `${min} min: ${Math.round(f * 100)}% of the sand left, ${Math.round(wat * 100)}% of the water`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, min >= 60 ? 'out' : 'sand keeps one pace; water slows as it empties', Z.cx, D.b, LEMON, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- IV · the edge: tips when the middle passes the edge ---------- */
+const c4 = document.querySelector('#s4 canvas'), pushBar = document.getElementById('pushBar'), pushIn = document.getElementById('push'), pushOut = document.getElementById('pushOut');
+let userPush = false; pushBar.inert = true; pushIn.addEventListener('input', () => { userPush = true; });
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(3, p); ground(ctx, w, h);
+  bar(pushBar, p > .12 && p < .94);
+  if (!userPush) pushIn.value = String(Math.round(p < .76 ? lerp(15, 48, ease(p, .46, .7)) : lerp(48, 60, ease(p, .8, .92))));
+  const pct = +pushIn.value, over = pct / 100, tips = over > .5, lab = `${pct}% over`; txt(pushOut, lab); if (pushIn._v !== pct) { pushIn._v = pct; pushIn.setAttribute('aria-valuetext', `${pct} percent over the edge: ${tips ? 'it tips' : 'it holds'}`); }
+  const eX = Z.x0 + Z.zw * .54, tY = D.y0 + D.h * .4, Wp = Math.min(Z.zw * .38, D.h * .7), ang = tips ? Math.min(62, (over - .5) * 330) * D2R : 0;
+  // the table, seen from the side
+  const g = ctx.createLinearGradient(0, tY, 0, tY + fs * 2.2); g.addColorStop(0, '#5b4a31'); g.addColorStop(1, '#2a2217'); ctx.fillStyle = g; ctx.fillRect(0, tY, eX, fs * 2.2); ctx.fillStyle = 'rgba(190,165,115,.7)'; ctx.fillRect(0, tY, eX, 1.5);
+  const lg = ctx.createLinearGradient(0, tY + fs * 2.2, 0, D.y1); lg.addColorStop(0, 'rgba(42,34,23,.9)'); lg.addColorStop(1, 'rgba(42,34,23,0)'); ctx.fillStyle = lg; ctx.fillRect(eX - fs * 3.4, tY + fs * 2.2, fs * 1.6, D.y1 - tY - fs * 2.2);
+  ctx.strokeStyle = 'rgba(233,225,207,.4)'; ctx.setLineDash([3, 4]); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(eX, tY - Wp * .5); ctx.lineTo(eX, D.y1 - fs); ctx.stroke(); ctx.setLineDash([]); mono(ctx, 'edge', eX, tY - Wp * .5 - fs * .8, MUTE, 'center', fs - 1);
+  // the plate, its lemon, and where its middle is
+  const dx = (over - .5) * Wp, cs = Math.cos(ang), sn = Math.sin(ang), W = (lx, ly) => [eX + lx * cs - ly * sn, tY + lx * sn + ly * cs];
+  ctx.save(); ctx.translate(eX, tY); ctx.rotate(ang); ctx.translate(dx, 0);
+  ctx.strokeStyle = '#aab6bb'; ctx.lineWidth = Math.max(3, Wp * .022); ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-Wp / 2, -Wp * .07); ctx.lineTo(-Wp * .3, -ctx.lineWidth / 2); ctx.lineTo(Wp * .3, -ctx.lineWidth / 2); ctx.lineTo(Wp / 2, -Wp * .07); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-Wp / 2, -Wp * .07 - 2); ctx.lineTo(-Wp * .3, -Wp * .022 - 2); ctx.stroke(); ctx.lineCap = 'butt';
+  lemon(ctx, 0, -Wp * .105, Wp * .15); ctx.strokeStyle = '#e2b938'; ctx.lineWidth = Math.max(3, Wp * .034); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(Wp * .08, -Wp * .15); ctx.quadraticCurveTo(Wp * .4, -Wp * .22, Wp / 2 + 3, -Wp * .07); ctx.stroke(); ctx.lineCap = 'butt';
+  ctx.restore();
+  const [rx, ry] = W(dx + Wp / 2 + 3, -Wp * .07), [mx, my] = W(dx, -Wp * .03), reveal = ease(p, .2, .44);
+  peel(ctx, rx + Wp * .05, ry, Wp * .17, Math.max(0, Math.min(D.y1 - ry - fs * 1.2, Wp * .95)) * reveal, 3.2);
+  ctx.strokeStyle = tips ? REDN : LEMON; ctx.setLineDash([2, 4]); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(mx, my + fs * 4.2); ctx.stroke(); ctx.setLineDash([]); ell(ctx, mx, my, 5, 5, tips ? REDN : LEMON); mono(ctx, 'middle', mx, my + fs * 5, tips ? REDN : LEMON, 'center', fs - 1);
+  mono(ctx, `${pct}% of the plate is past the edge`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, tips ? 'it tips: the middle is over empty air' : 'it holds: the middle is still over the table', Z.cx, D.b, tips ? REDN : LEMON, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- V · the table: the same grammar, new nouns ---------- */
+const c5 = document.querySelector('#s5 canvas'), swapBar = document.getElementById('swapBar'), swapIn = document.getElementById('swap'), swapOut = document.getElementById('swapOut');
+let userSwap = false; swapBar.inert = true; swapIn.addEventListener('input', () => { userSwap = true; });
+const SWAPS = [['hourglass', 'phone at 3%', 'time running out'], ['bubble', 'notification', 'here, then gone'], ['lemon peel', 'charging cable', 'over the edge'], ['coins', 'lanyard and badge', 'rank and money'], ['tipped glass', 'tipped paper cup', 'pleasure, finished']];
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(4, p); ground(ctx, w, h);
+  bar(swapBar, p > .1 && p < .95);
+  if (!userSwap) swapIn.value = String([.32, .42, .52, .62, .72].filter(v => p >= v).length);
+  const n = +swapIn.value, lab = n === 0 ? '1640' : n === 5 ? 'today' : `${n} of 5`; txt(swapOut, lab);
+  if (swapIn._v !== n) { swapIn._v = n; swapIn.setAttribute('aria-valuetext', n === 0 ? '1640: nothing swapped' : `${n} of 5 swapped: ${SWAPS.slice(0, n).map(s => s[1]).join(', ')}`); }
+  const k = Math.min(Z.zw / 172, D.h / 110), ox = Z.cx - 100 * k, oy = D.y0 - 20 * k + (D.h - 108 * k) * .5;
+  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, D.y1 + fs * .3); ctx.clip(); tableScene(ctx, ox, oy, k, n, t, ease(p, .04, .2)); ctx.restore();
+  mono(ctx, n === 0 ? 'seven objects, one window' : `${SWAPS[n - 1][0]} → ${SWAPS[n - 1][1]}: ${SWAPS[n - 1][2]}`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, n === 0 ? 'the table as set around 1640' : n === 5 ? 'the table as set today' : `${n} of 5 swapped`, Z.cx, D.b, LEMON, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- exhibit mode and the loop ---------- */
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Mask Is the Method</title>
+<meta name="description" content="How pictures get past the censor: a king who turns into a pear, a mask that fits a dozen faces, one swap on a poster, one cut-out on three grounds, and the gap between getting it and proving it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#131110; --bone:#efe7d6; --copper:#4fa3a0; --copper-hi:#ffb9a3; --acid:#4fa3a0; --ink:#ee6a4d; --gold:#ee6a4d; --muted:#9c958a; --paper:#efe7d6;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#131110;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#cfc6b2;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(24,21,19,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(238,106,77,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#fff3dc}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#fff3dc}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(19,17,16,.72);border:1px solid rgba(238,106,77,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(19,17,16,.82);border:1px solid rgba(238,106,77,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(238,106,77,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#cfc6b2;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(238,106,77,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#cfc6b2}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#cfc6b2;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(238,106,77,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#131110;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#131110;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+
+/* additions for this piece: function panel and controls */
+.fx{position:absolute;left:12px;top:46px;font-family:var(--mono);font-size:11px;line-height:1.75;color:var(--bone);background:rgba(19,17,16,.88);border:1px solid rgba(238,106,77,.32);padding:6px 10px;max-width:min(calc(100% - 24px),560px);pointer-events:none}
+.fx div{opacity:.3;transition:opacity .5s}
+.fx div.on{opacity:1}
+.fx b{font-weight:500;color:var(--gold)}
+.fx .g{color:#b9b1a3;font-style:italic;margin-left:.7em}
+.palette{top:12px}
+.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(38vw,220px);height:44px;accent-color:#ee6a4d}
+.palette output{font-family:var(--mono);font-size:11px;min-width:5.6em;color:var(--bone)}
+.palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#131110}
+.obj i{font-style:italic}
+@media (max-width:899px){ .palette{top:100px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+@media (max-width:520px){ .palette input[type=range]{width:32vw} }
+@media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:150px} }
+.exhibit .tag{font-size:13px}
+.exhibit .fx{font-size:15px;max-width:min(calc(100% - 24px),780px)}
+.exhibit .palette label,.exhibit .palette .pl{font-size:13px}
+.exhibit .palette button{font-size:15px}
+.exhibit .palette output{font-size:14px}
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .palette{left:35%;top:auto;bottom:26px} .palette .pl{display:inline} }
+@media (prefers-reduced-motion:reduce){ .fx div{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#find">Skip to the list of works and sources</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">Seen · No. 15 · A scrolly on pears, masks, swaps and the reader</div>
+    <h1>The Mask Is the Method</h1>
+    <p class="sub">When a thing cannot be said, it gets drawn as something else. Four moves that have carried pictures past the censor since 1799, and the reason they work.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · the line -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A pen drawing of a man's head on a sheet of paper. As a slider moves, the head changes shape by small steps until it is a pear." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">Paris, 1831 · the king and the pear</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>shape = (1 − s) · head + s · pear</b><span class="g">every point slides from one outline to the other</span></div><div data-at="0.5"><b>likeness = 1 − s</b><span class="g">the law needs a line. the drawing has none</span></div></div>
+    <div class="palette" id="morphBar">
+      <label for="morph">Pear</label>
+      <input type="range" id="morph" min="0" max="100" value="0" step="1" aria-valuetext="0 percent pear: the head of a king">
+      <output id="morphOut" for="morph">0%</output>
+    </div>
+    <p class="sr-only" id="s1d">A slider changes a drawn head into a pear. At 0 it is a round-jawed head with a tuft of hair. At 33 percent the top has narrowed. At 67 percent the face is a few faint marks and the tuft is nearly a stem. At 100 it is a pear with a stem and a leaf. A mark at 50 percent shows where a court might draw its line. Four small copies below show the four stages on one sheet.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The line</h2><p>Paris, November 14, 1831. Charles Philipon, editor of a satirical weekly, is on trial for a cartoon of the king.</p></div></div>
+    <div class="step"><div class="card"><p>His defense is a drawing. Four heads on one sheet: the first is the king, the last is a pear, and no step between them is large. Which one, he asks the court, is the crime? Slide it.</p></div></div>
+    <div class="step"><div class="card"><p>He was fined and jailed all the same. The pear went free. Soon it was being drawn on walls across Paris.</p></div></div>
+    <div class="step"><div class="card"><p>The first move: a likeness is a slider. A law has to mark a line somewhere along it, and the artist can always stand one step past the line.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the mask -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="A dark print of a cloaked figure in a pale mask. Behind it stand several people in different hats, each joined to the mask by a thin line." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true">Madrid, 1799 · nobody knows anybody</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>mask(a) = mask(b) = mask(c)</b><span class="g">many faces in, one face out</span></div><div data-at="0.5"><b>odds it is you = 1 ÷ faces that fit</b><span class="g">a function with no way back</span></div></div>
+    <div class="palette" id="fitsBar">
+      <label for="fits">Faces that fit</label>
+      <input type="range" id="fits" min="1" max="12" value="1" step="1" aria-valuetext="1 face fits: a portrait">
+      <output id="fitsOut" for="fits">1</output>
+    </div>
+    <p class="sr-only" id="s2d">A slider sets how many people the masked figure could be, from 1 to 12. Each appears as a small figure in a different hat with a line to the mask. With one, the picture is a portrait of that person. With twelve, the odds that it shows any one of them are 1 in 12.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The mask</h2><p>Goya, 1799. Plate 6 of his <i>Caprichos</i> shows masked figures in costume over the caption <i>Nadie se conoce</i>. Nobody knows anybody.</p></div></div>
+    <div class="step"><div class="card"><p>A mask is a function with no way back. Put any face in and the same face comes out. From outside, nobody can work out who went in.</p></div></div>
+    <div class="step"><div class="card"><p>So a masked figure accuses a type, and each viewer decides who fits. Slide the number of faces that fit and watch the odds that it means you.</p></div></div>
+    <div class="step"><div class="card"><p>The commentary thought to be Goya's own stays general: the world is a masquerade. Another from his time points at a general. One picture, two keys.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the swap -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="A flat, bold poster of a figure in a suit. One part at a time is replaced by something else: the head by an open birdcage, the tie by a fish." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true">Warsaw, 1950s on · one thing for another</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>picture = scene − one thing + another</b><span class="g">the viewer supplies the reason</span></div><div data-at="0.5"><b>signal ≈ 1 ÷ number of swaps</b><span class="g">more surprises, less message</span></div></div>
+    <div class="palette" id="swapsBar">
+      <label for="swaps">Swaps</label>
+      <input type="range" id="swaps" min="0" max="4" value="0" step="1" aria-valuetext="no swaps: a figure in a suit">
+      <output id="swapsOut" for="swaps">0</output>
+    </div>
+    <p class="sr-only" id="s3d">A slider adds swaps to a poster, from none to four. With none it is a plain figure in a suit. With one, the head is an open birdcage. With two, the tie is also a fish. With three, the pocket square is a paper boat. With four, the flat background is a brick wall. One swap reads at a glance. Four compete with each other.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The swap</h2><p>Warsaw, from the 1950s. The state pays for film and theatre posters, and its censors check them.</p></div></div>
+    <div class="step"><div class="card"><p>The designers answer with metaphor. Take a plain picture, remove one thing, put another in its place. The poster never states what it means. The viewer works it out on the walk home.</p></div></div>
+    <div class="step"><div class="card"><p>One swap is enough. Slide the number of swaps and watch the picture get louder and say less.</p></div></div>
+    <div class="step"><div class="card"><p>Henryk Tomaszewski, Jan Lenica, Roman Cieślewicz and others made the street their gallery. In 1968 Warsaw opened the world's first poster museum to keep the work.</p></div></div>
+    <div class="step"><div class="card"><p>Rafał Olbiński took the method to New York in 1981. He calls it poetic surrealism. His posters are in copyright, so they are linked below and none is redrawn here.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · the cut -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="A paper cut-out of a person in a yellow raincoat with a blank expression, pasted onto a background. The background changes: a party, a flood, a queue. The cut-out never changes." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true">Moscow, c. 1918 · same face, new ground</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>meaning = figure × ground</b><span class="g">the face stays put. the reading moves</span></div><div data-at="0.5"><b>1 figure × 3 grounds = 3 readings</b><span class="g">the viewer does the multiplying</span></div></div>
+    <div class="palette" id="grounds" role="group" aria-label="Choose a background">
+      <span class="pl">Ground</span>
+      <button type="button" data-ground="party" aria-pressed="true">Party</button>
+      <button type="button" data-ground="flood" aria-pressed="false">Flood</button>
+      <button type="button" data-ground="queue" aria-pressed="false">Queue</button>
+    </div>
+    <p class="sr-only" id="s4d">Three buttons change the background behind one cut-out figure with a blank face. At a party, under bunting and balloons, the figure reads as left out. In a flood, with water to the waist and rain falling, the figure reads as resigned. In a queue of grey figures, it reads as patient. The cut-out is identical each time.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · The cut</h2><p>Around 1918 the Russian filmmaker Lev Kuleshov spliced one shot of an actor's blank face between a bowl of soup, a coffin and a woman on a couch. By the usual account, audiences saw hunger, grief and desire.</p></div></div>
+    <div class="step"><div class="card"><p>The face never changed. The meaning came from what stood next to it. Pick a ground and read one figure three ways.</p></div></div>
+    <div class="step"><div class="card"><p>Collage runs on this. Since 2016 Christopher Spencer, who works as Cold War Steve, has pasted one weary soap-opera character into scene after scene of British public life. The bystander never changes. The scene carries the joke.</p></div></div>
+    <div class="step"><div class="card"><p>His collages are built from press photographs of real people, so they are described here and linked below.</p></div></div>
+  </div>
+</section>
+
+<!-- V · the gap -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="A chart with two falling curves. One shows how many readers understand a picture as it becomes more coded. The other shows how easily a censor can prove what it means. Between them is a wide gap." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true">The gap · getting it and proving it</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>gap = readers who get it − what a censor can prove</b><span class="g">the four moves all widen this</span></div><div data-at="0.5"><b>screen + marker</b><span class="g">one part hides it. one part tells you it is there</span></div></div>
+    <div class="palette" id="codeBar">
+      <label for="code">Coded</label>
+      <input type="range" id="code" min="0" max="100" value="0" step="1" aria-valuetext="said plainly: readers and censor both get it">
+      <output id="codeOut" for="code">plain</output>
+    </div>
+    <p class="sr-only" id="s5d">A slider moves from saying a thing plainly to hiding it completely. Said plainly, nearly all readers get it and the censor can prove it. In the middle, nearly all readers still get it and the censor can prove almost nothing: the gap is widest, about 90 points. Hidden completely, nobody gets it. The curves are a sketch of the idea and were not measured.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · The gap</h2><p>All four moves do one job. They open a gap between two readers: the public, who only has to get it, and the censor, who has to prove it.</p></div></div>
+    <div class="step"><div class="card"><p>Say it plainly and both get it. Bury it too deep and neither does. Slide the dial and find the range where the public still reads it and the charge will not stick.</p></div></div>
+    <div class="step"><div class="card"><p>To ban the picture, the censor must say out loud what it means. That is usually the last thing a censor wants said.</p></div></div>
+    <div class="step"><div class="card"><p>Lev Loseff wrote this way in Soviet Leningrad before he studied it. He named the two parts: a screen that hides the message from the censor, and a marker that tells the reader it is there.</p></div></div>
+    <div class="step"><div class="card"><p>The curves on this chart are a sketch of the idea. Nobody has measured them.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>The mask does the hiding.<br>You do the reading.</h2>
+  <p class="lede">A coded picture is left unfinished on purpose. The last step is the viewer's, and that step cannot be seized, fined or jailed.</p>
+  <p class="lede">Next time a poster shows you one thing where another should be, ask what it is trusting you to finish.</p>
+
+  <h3 id="find">See the real thing</h3>
+  <ul class="objs">
+    <li class="obj"><b>Charles Philipon, <i>The Metamorphosis of King Louis-Philippe into a Pear</i>, 1831</b><span>Pen and brown ink. The four heads he drew for the court.</span><span class="who">Bibliothèque nationale de France, Paris · Part I</span></li>
+    <li class="obj"><b>Francisco Goya, <i>Nadie se conoce</i>, plate 6 of <i>Los Caprichos</i>, published 1799</b><span>Etching and burnished aquatint. Impressions are also held by the Metropolitan Museum of Art and the Museum of Fine Arts, Boston.</span><span class="who">National Gallery of Art, Washington · Rosenwald Collection (1943.3.4711.f) · Part II</span></li>
+    <li class="obj"><b>The Polish School of Posters</b><span>Tomaszewski, Lenica, Cieślewicz, Świerzy, Starowieyski and others. The museum was founded in 1968 and holds the largest state-owned collection of Polish posters.</span><span class="who">Poster Museum at Wilanów, Warsaw · Part III</span></li>
+    <li class="obj"><b>Rafał Olbiński, posters and paintings</b><span>Born 1943. In the United States since 1981.</span><span class="who"><a href="https://en.wikipedia.org/wiki/Rafa%C5%82_Olbi%C5%84ski">About the artist</a> · Part III</span></li>
+    <li class="obj"><b>Cold War Steve (Christopher Spencer), <i>How Britain Went Bonkers</i>, 2019</b><span>A collage made for the cover of <i>Time</i>.</span><span class="who">National Portrait Gallery, London (NPG D48909) · <a href="https://www.coldwarsteve.com">the artist's site</a> · Part IV</span></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>The pear: The Public Domain Review, <a href="https://publicdomainreview.org/essay/of-pears-and-kings/">&ldquo;Of Pears and Kings&rdquo;</a>; <a href="https://en.wikipedia.org/wiki/Pear_(caricature)">Wikipedia, &ldquo;Pear (caricature)&rdquo;</a>.</li>
+    <li>Goya's plate and the two commentaries: <a href="https://fundaciongoyaenaragon.es/eng/obra/nadie-se-conoce/874">Fundación Goya en Aragón</a>; the National Gallery of Victoria's essay <a href="https://www.ngv.vic.gov.au/essay/goyas-caprichos/">&ldquo;Goya's Caprichos&rdquo;</a>.</li>
+    <li>The posters: <a href="https://en.wikipedia.org/wiki/Polish_School_of_Posters">Wikipedia, &ldquo;Polish School of Posters&rdquo;</a>; Culture.pl on <a href="https://culture.pl/en/article/painter-rafal-olbinski-in-soho">Rafał Olbiński</a>.</li>
+    <li>The cut: <a href="https://en.wikipedia.org/wiki/Kuleshov_effect">Wikipedia, &ldquo;Kuleshov effect&rdquo;</a>; David Bordwell, <a href="https://www.davidbordwell.net/blog/?p=1861">&ldquo;What happens between shots happens between your ears&rdquo;</a>; <a href="https://en.wikipedia.org/wiki/Cold_War_Steve">Wikipedia, &ldquo;Cold War Steve&rdquo;</a>.</li>
+    <li>Screens and markers: Lev Loseff, <i>On the Beneficence of Censorship: Aesopian Language in Modern Russian Literature</i>, 1984.</li>
+    <li>Every drawing on this page is original and generic. The head in Part I is no one's portrait. No poster, collage or photograph by another artist is reproduced. The accounts of Kuleshov's experiment differ in their details.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false">Exhibit mode</button>
+  </div>
+  <div class="colophon">
+    Seen, No. 15. Drawn in code, one function at a time. No photographs and no image generators.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.<br>
+    Previous: <i>Living Vanitas</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span>Exhibit mode · touch to explore</span><button type="button" id="exitExhibit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+
+/* ---------- palette and small tools ---------- */
+const RED = '#ee6a4d', BONE = '#efe7d6', MUTE = '#9c958a', DARK = '#131110', TEAL = '#2f7f7b', PAPER = '#eadfc6', SEPIA = '#3a2a1c', MUSTARD = '#d9b44a', D2R = Math.PI / 180;
+const SERIF = "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
+const FX = [...document.querySelectorAll('.fx')].map(el => [...el.children]);
+function fx(i, p) { let last = FX[i][0]; for (const d of FX[i]) { const on = p >= +d.dataset.at; d.classList.toggle('on', on); d.classList.remove('cur'); if (on) last = d; } last.classList.add('cur'); }
+function ground(ctx, w, h) { ctx.fillStyle = DARK; ctx.fillRect(0, 0, w, h); const g = ctx.createRadialGradient(w * .5, h * .4, 0, w * .5, h * .4, Math.max(w, h) * .7); g.addColorStop(0, 'rgba(238,106,77,.07)'); g.addColorStop(1, 'rgba(19,17,16,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); }
+function zone(F, w, h) { // where a drawing can sit without touching the labels, the controls or the text cards
+  const y0 = F.wide ? (exhibit ? 158 : 134) : w >= 900 ? 224 : 166, y1 = F.wide ? h - 92 : Math.max(y0 + 220, h * .665), x0 = F.cx - F.aw / 2;
+  return { x0, x1: x0 + F.aw, y0, y1, cx: F.cx, cy: (y0 + y1) / 2, zw: F.aw, zh: y1 - y0 };
+}
+const area = (Z, fs) => { const y1 = Z.y1 - fs * 4; return { y0: Z.y0, y1, h: y1 - Z.y0, cy: (Z.y0 + y1) / 2, a: Z.y1 - fs * 2.6, b: Z.y1 - fs * .95 }; }; // the picture, then two lines of readout under it
+const fsOf = (F, w) => (F.wide ? clamp(w / 125, 11, 14) : clamp(w / 40, 9.5, 15)) * (exhibit ? 1.25 : 1);
+function bar(el, on) { if (el._on !== on) { el._on = on; el.classList.toggle('on', on); el.inert = !on; } }
+function txt(el, s) { if (el._s !== s) { el._s = s; el.textContent = s; } }
+function ell(k, x, y, rx, ry, c, rot = 0) { k.fillStyle = c; k.beginPath(); k.ellipse(x, y, rx, ry, rot, 0, TAU); k.fill(); }
+function sheet(ctx, x, y, w, h, col = PAPER) { ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(x + 5, y + 7, w, h); ctx.fillStyle = col; ctx.fillRect(x, y, w, h); }
+function fit(Z, D, ar, wMax = .96) { const W = Math.min(Z.zw * wMax, D.h * ar), H = W / ar; return { x: Z.cx - W / 2, y: D.y0 + (D.h - H) / 2, W, H }; } // the biggest sheet of a given shape that fits
+
+/* ---------- THE HEAD AND THE PEAR. Two outlines; every point slides from one to the other. ---------- */
+const NP = 84, gHead = y => .76 * Math.pow(Math.max(1e-4, 1 - y * y), -.1) * (1 + .2 * y), gPear = y => .6 + .37 * y;
+function outline(s) { const pts = []; for (let i = 0; i < NP; i++) { const t = i / NP * TAU, y = -Math.cos(t), sx = Math.sin(t); pts.push([sx * lerp(gHead(y), gPear(y), s), y * lerp(1, 1.04, s)]); } return pts; }
+function pearHead(ctx, cx, cy, R, s, ink = SEPIA) { // s = 0: a heavy-jawed head. s = 1: a pear
+  const P = outline(s), X = u => cx + u * R, Y = v => cy + v * R, lw = Math.max(1.3, R * .03);
+  ctx.beginPath(); P.forEach(([u, v], i) => i ? ctx.lineTo(X(u), Y(v)) : ctx.moveTo(X(u), Y(v))); ctx.closePath();
+  ctx.fillStyle = `rgba(${Math.round(lerp(214, 196, s))},${Math.round(lerp(168, 186, s))},${Math.round(lerp(128, 70, s))},${lerp(.4, .55, s)})`; ctx.fill(); ctx.strokeStyle = ink; ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.stroke();
+  // the tuft of hair that becomes a stem
+  ctx.lineCap = 'round'; ctx.lineWidth = lerp(R * .1, R * .04, s); ctx.beginPath(); ctx.moveTo(X(lerp(-.3, 0, s)), Y(lerp(-.97, -1.0, s))); ctx.quadraticCurveTo(X(lerp(.05, .0, s)), Y(lerp(-1.3, -1.2, s)), X(lerp(.34, .07, s)), Y(lerp(-.93, -1.36, s))); ctx.stroke();
+  const leaf = ramp(s, .62, 1); if (leaf > 0) { ctx.globalAlpha *= leaf; ctx.fillStyle = '#6f8a3a'; ctx.beginPath(); ctx.ellipse(X(.24), Y(-1.24), R * .2, R * .08, -.5, 0, TAU); ctx.fill(); ctx.strokeStyle = ink; ctx.lineWidth = lw * .7; ctx.stroke(); ctx.globalAlpha /= leaf; }
+  // the face, which shrinks and fades
+  const a = 1 - ramp(s, .2, .92), f = 1 - .45 * s; if (a > 0) { ctx.save(); ctx.globalAlpha *= a; ctx.strokeStyle = ink; ctx.fillStyle = ink; ctx.lineWidth = lw * .85;
+    for (const m of [-1, 1]) { ell(ctx, X(m * .27 * f), Y(-.12), R * .05 * f, R * .035 * f, ink); ctx.beginPath(); ctx.moveTo(X(m * .16 * f), Y(-.27)); ctx.quadraticCurveTo(X(m * .28 * f), Y(-.34 * f - .02), X(m * .42 * f), Y(-.25)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(X(m * .52), Y(.2)); ctx.quadraticCurveTo(X(m * .62), Y(.5), X(m * .44), Y(.74)); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(X(-.02), Y(-.1)); ctx.quadraticCurveTo(X(.1 * f), Y(.16), X(-.02), Y(.2)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(X(-.2 * f), Y(.44)); ctx.quadraticCurveTo(X(0), Y(.5), X(.2 * f), Y(.44)); ctx.stroke(); ctx.restore(); }
+  ctx.lineCap = 'butt';
+}
+
+/* ---------- figures ---------- */
+function maskOn(ctx, x, y, w, col = PAPER) { // a half-mask: band, nose, two holes
+  ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - w, y - w * .34); ctx.quadraticCurveTo(x, y - w * .5, x + w, y - w * .34); ctx.quadraticCurveTo(x + w * 1.06, y + w * .2, x + w * .5, y + w * .3); ctx.quadraticCurveTo(x + w * .2, y + w * .32, x + w * .06, y + w * .95); ctx.quadraticCurveTo(x - w * .2, y + w * .32, x - w * .5, y + w * .3); ctx.quadraticCurveTo(x - w * 1.06, y + w * .2, x - w, y - w * .34); ctx.closePath(); ctx.fill();
+  ell(ctx, x - w * .46, y - w * .05, w * .24, w * .13, '#1a1410', .12); ell(ctx, x + w * .46, y - w * .05, w * .24, w * .13, '#1a1410', -.12);
+}
+function hat(ctx, x, y, s, kind) { // y: the crown of the head
+  ctx.beginPath();
+  if (kind === 0) { ctx.moveTo(x - 1.25 * s, y + .1 * s); ctx.quadraticCurveTo(x, y - 1.3 * s, x + 1.25 * s, y + .1 * s); ctx.quadraticCurveTo(x, y - .25 * s, x - 1.25 * s, y + .1 * s); } // bicorne
+  else if (kind === 1) { for (const [dx, dy, r] of [[-.6, .25, .5], [-.35, -.3, .55], [.3, -.35, .55], [.62, .22, .5], [0, -.1, .7]]) { ctx.moveTo(x + (dx + r) * s, y + dy * s); ctx.arc(x + dx * s, y + dy * s, r * s, 0, TAU); } } // wig
+  else if (kind === 2) { ctx.moveTo(x - .95 * s, y + 1.5 * s); ctx.quadraticCurveTo(x - 1.1 * s, y - .5 * s, x + .1 * s, y - .85 * s); ctx.quadraticCurveTo(x + 1.1 * s, y - .4 * s, x + .95 * s, y + 1.5 * s); ctx.lineTo(x + .6 * s, y + 1.5 * s); ctx.quadraticCurveTo(x + .7 * s, y, x, y + .05 * s); ctx.quadraticCurveTo(x - .7 * s, y, x - .6 * s, y + 1.5 * s); } // hood
+  else if (kind === 3) { ctx.ellipse(x, y + .12 * s, 1.35 * s, .26 * s, 0, 0, TAU); ctx.rect(x - .62 * s, y - .75 * s, 1.24 * s, .85 * s); } // broad brim
+  else if (kind === 4) { ctx.rect(x - .32 * s, y - 1.05 * s, .64 * s, 1.1 * s); ctx.moveTo(x - .32 * s, y - .9 * s); ctx.quadraticCurveTo(x - 1.3 * s, y + .2 * s, x - 1.0 * s, y + 1.7 * s); ctx.lineTo(x - .7 * s, y + 1.7 * s); ctx.quadraticCurveTo(x - .8 * s, y + .2 * s, x - .1 * s, y - .1 * s); } // comb and veil
+  else { ctx.arc(x, y + .15 * s, .78 * s, Math.PI, 0); ctx.rect(x - .78 * s, y + .1 * s, 1.56 * s, .14 * s); } // cap
+  ctx.fill();
+}
+function bust(ctx, x, y, s, kind, col, face) { // y: the bottom of the shoulders
+  ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - 1.5 * s, y); ctx.quadraticCurveTo(x - 1.4 * s, y - 1.25 * s, x - .3 * s, y - 1.4 * s); ctx.lineTo(x + .3 * s, y - 1.4 * s); ctx.quadraticCurveTo(x + 1.4 * s, y - 1.25 * s, x + 1.5 * s, y); ctx.closePath(); ctx.fill();
+  ell(ctx, x, y - 2.15 * s, .68 * s, .85 * s, face); ctx.fillStyle = col; hat(ctx, x, y - 2.95 * s, s, kind);
+}
+
+/* ---------- hero: a row of heads turning to pears and back ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC); ground(ctx, w, h); const n = w < 700 ? 5 : 9, R = Math.min(w / (n * 2.9), h * .07);
+  ctx.globalAlpha = fade * .7; for (let i = 0; i < n; i++) pearHead(ctx, w * (i + .5) / n, h - R * 2.1, R, reduce ? i / (n - 1) : .5 + .5 * Math.sin(t * .0006 - i * .7), '#e9dcc0'); ctx.globalAlpha = 1;
+}
+
+/* ---------- I · the line: shape = (1 - s) head + s pear ---------- */
+const c1 = document.querySelector('#s1 canvas'), morphBar = document.getElementById('morphBar'), morphIn = document.getElementById('morph'), morphOut = document.getElementById('morphOut');
+let userMorph = false; morphBar.inert = true; morphIn.addEventListener('input', () => { userMorph = true; });
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(0, p); ground(ctx, w, h);
+  bar(morphBar, p > .12 && p < .94);
+  if (!userMorph) morphIn.value = String(Math.round(100 * ease(p, .26, .7)));
+  const pct = +morphIn.value, s = pct / 100, past = s > .5, lab = pct + '%'; txt(morphOut, lab);
+  if (morphIn._v !== pct) { morphIn._v = pct; morphIn.setAttribute('aria-valuetext', `${pct} percent pear: ${past ? 'past the line' : 'on the wrong side of the line'}`); }
+  const G = fit(Z, D, 1.18); sheet(ctx, G.x, G.y, G.W, G.H);
+  const R = Math.min(G.H * .25, G.W * .2); pearHead(ctx, G.x + G.W / 2, G.y + G.H * .37, R, s);
+  // the four heads on one sheet, and the place a court might draw its line
+  const ax = G.x + G.W * .12, bx = G.x + G.W * .88, ry = G.y + G.H * .83, r = Math.min(G.H * .07, G.W * .055), XS = v => lerp(ax, bx, v);
+  ctx.strokeStyle = 'rgba(58,42,28,.45)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ry + r * 1.9); ctx.lineTo(bx, ry + r * 1.9); ctx.stroke();
+  for (let i = 0; i < 4; i++) { const v = i / 3; ctx.globalAlpha = Math.abs(v - s) < .17 ? 1 : .5; pearHead(ctx, XS(v), ry, r, v); ctx.globalAlpha = 1; }
+  ctx.strokeStyle = '#b3402a'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(XS(.5), ry - r * 1.9); ctx.lineTo(XS(.5), ry + r * 2.5); ctx.stroke(); ctx.setLineDash([]);
+  ctx.font = `italic 600 ${Math.max(14, fs * 1.5)}px ${SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#b3402a'; ctx.fillText("the court's line", XS(.5), ry - r * 2.6);
+  ctx.fillStyle = SEPIA; ctx.beginPath(); ctx.moveTo(XS(s), ry + r * 1.9); ctx.lineTo(XS(s) - 6, ry + r * 1.9 + 10); ctx.lineTo(XS(s) + 6, ry + r * 1.9 + 10); ctx.closePath(); ctx.fill();
+  mono(ctx, `${100 - pct}% king · ${pct}% pear`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, past ? 'past the line: a pear. Everyone still sees the king' : 'on this side of the line: the king, and a crime', Z.cx, D.b, RED, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- II · the mask: many faces in, one face out ---------- */
+const c2 = document.querySelector('#s2 canvas'), fitsBar = document.getElementById('fitsBar'), fitsIn = document.getElementById('fits'), fitsOut = document.getElementById('fitsOut');
+let userFits = false; fitsBar.inert = true; fitsIn.addEventListener('input', () => { userFits = true; });
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(1, p); ground(ctx, w, h);
+  bar(fitsBar, p > .12 && p < .94);
+  if (!userFits) fitsIn.value = String(Math.round(lerp(1, 12, ease(p, .3, .72))));
+  const n = +fitsIn.value; txt(fitsOut, String(n)); if (fitsIn._v !== n) { fitsIn._v = n; fitsIn.setAttribute('aria-valuetext', n === 1 ? '1 face fits: a portrait' : `${n} faces fit: odds 1 in ${n}`); }
+  const G = fit(Z, D, .86), m = G.W * .05, px = G.x + m, py = G.y + m, pw = G.W - m * 2, ph = G.H - m * 2 - fs * 2.4; sheet(ctx, G.x, G.y, G.W, G.H);
+  const g = ctx.createLinearGradient(0, py, 0, py + ph); g.addColorStop(0, '#8a7758'); g.addColorStop(1, '#4d3f2d'); ctx.fillStyle = g; ctx.fillRect(px, py, pw, ph); // the plate: an even brown tone, as aquatint gives
+  ctx.font = `italic 600 ${Math.max(15, fs * 1.7)}px ${SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = SEPIA; ctx.fillText('Nadie se conoce.', G.x + G.W / 2, py + ph + fs * 1.5);
+  ctx.save(); ctx.beginPath(); ctx.rect(px, py, pw, ph); ctx.clip();
+  // the masked figure, and the place on its face where every line arrives
+  const cx = px + pw / 2, by = py + ph, S = Math.min(pw * .115, ph * .084), mx = cx, my = by - S * 5.15;
+  // the people it could be
+  const who = []; for (let i = 0; i < n; i++) { const row = i < 7 ? 0 : 1, k = row ? i - 7 : i, cnt = row ? n - 7 : Math.min(n, 7), u = cnt === 1 ? .5 : k / (cnt - 1), s2 = S * (row ? .5 : .6); who.push([px + pw * lerp(.1, .9, cnt === 1 ? .5 : u), py + ph * (row ? .17 : .345) - Math.sin(u * Math.PI) * ph * .04, s2, i % 6]); }
+  ctx.strokeStyle = 'rgba(234,223,198,.55)'; ctx.lineWidth = 1; ctx.beginPath(); for (const [x, y, s2] of who) { ctx.moveTo(x, y - s2 * .4); ctx.lineTo(mx, my); } ctx.stroke();
+  for (const [x, y, s2, kind] of who) bust(ctx, x, y, s2, kind, '#2b221a', '#b7a07c');
+  for (const [dx, sc, kind] of [[-2.9, .7, 3], [2.9, .7, 4]]) { ctx.fillStyle = '#3b2f22'; ctx.beginPath(); ctx.moveTo(cx + dx * S - 1.5 * S * sc, by); ctx.lineTo(cx + dx * S - .45 * S * sc, by - 4.3 * S * sc); ctx.lineTo(cx + dx * S + .45 * S * sc, by - 4.3 * S * sc); ctx.lineTo(cx + dx * S + 1.5 * S * sc, by); ctx.closePath(); ctx.fill(); ell(ctx, cx + dx * S, by - 5 * S * sc, .62 * S * sc, .8 * S * sc, '#9c8866'); ctx.fillStyle = '#3b2f22'; hat(ctx, cx + dx * S, by - 5.75 * S * sc, S * sc * .95, kind); maskOn(ctx, cx + dx * S, by - 5.1 * S * sc, .5 * S * sc, '#d5c7a6'); }
+  ctx.fillStyle = '#1c1611'; ctx.beginPath(); ctx.moveTo(cx - 2.3 * S, by); ctx.quadraticCurveTo(cx - 1.6 * S, by - 3.6 * S, cx - .5 * S, by - 4.4 * S); ctx.lineTo(cx + .5 * S, by - 4.4 * S); ctx.quadraticCurveTo(cx + 1.6 * S, by - 3.6 * S, cx + 2.3 * S, by); ctx.closePath(); ctx.fill();
+  ell(ctx, cx, by - 5.05 * S, .72 * S, .92 * S, '#c2ab84'); ctx.fillStyle = '#1c1611'; hat(ctx, cx, by - 5.9 * S, S * 1.05, 0); maskOn(ctx, mx, my, .62 * S);
+  ctx.restore();
+  mono(ctx, n === 1 ? 'one face fits: this is a portrait' : `${n} faces fit the mask`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, `odds it is about you: 1 in ${n}`, Z.cx, D.b, RED, 'center', fs + 1);
+}
+
+/* ---------- III · the swap: picture = scene - one thing + another ---------- */
+const c3 = document.querySelector('#s3 canvas'), swapsBar = document.getElementById('swapsBar'), swapsIn = document.getElementById('swaps'), swapsOut = document.getElementById('swapsOut');
+let userSwaps = false; swapsBar.inert = true; swapsIn.addEventListener('input', () => { userSwaps = true; });
+const SW = ['head → open birdcage', 'tie → fish', 'pocket square → paper boat', 'flat ground → brick wall'];
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(2, p); ground(ctx, w, h);
+  bar(swapsBar, p > .12 && p < .94);
+  if (!userSwaps) swapsIn.value = String(p < .3 ? 0 : p < .5 ? 1 : p < .58 ? 2 : p < .64 ? 3 : p < .72 ? 4 : 1);
+  const n = +swapsIn.value; txt(swapsOut, String(n)); if (swapsIn._v !== n) { swapsIn._v = n; swapsIn.setAttribute('aria-valuetext', n === 0 ? 'no swaps: a figure in a suit' : `${n} ${n === 1 ? 'swap' : 'swaps'}: ${SW.slice(0, n).join(', ')}`); }
+  const G = fit(Z, D, .72), X = v => G.x + v * G.W, Y = v => G.y + v * G.H, u = G.W; sheet(ctx, G.x, G.y, G.W, G.H, TEAL);
+  ctx.save(); ctx.beginPath(); ctx.rect(G.x, G.y, G.W, G.H); ctx.clip();
+  if (n >= 4) { ctx.strokeStyle = 'rgba(19,17,16,.45)'; ctx.lineWidth = Math.max(1, u * .006); ctx.beginPath(); const bh = G.H / 16; for (let r = 0; r <= 16; r++) { ctx.moveTo(G.x, G.y + r * bh); ctx.lineTo(G.x + G.W, G.y + r * bh); for (let c = 0; c <= 6; c++) { const xx = G.x + (c + (r % 2 ? .5 : 0)) * G.W / 5.5; ctx.moveTo(xx, G.y + r * bh); ctx.lineTo(xx, G.y + (r + 1) * bh); } } ctx.stroke(); }
+  // the suit
+  ctx.fillStyle = '#16181d'; ctx.beginPath(); ctx.moveTo(X(.04), Y(.86)); ctx.quadraticCurveTo(X(.08), Y(.56), X(.36), Y(.5)); ctx.lineTo(X(.64), Y(.5)); ctx.quadraticCurveTo(X(.92), Y(.56), X(.96), Y(.86)); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = BONE; ctx.beginPath(); ctx.moveTo(X(.39), Y(.5)); ctx.lineTo(X(.5), Y(.66)); ctx.lineTo(X(.61), Y(.5)); ctx.closePath(); ctx.fill();
+  if (n >= 2) { ctx.save(); ctx.translate(X(.5), Y(.66)); ell(ctx, 0, 0, u * .05, u * .12, '#c9d2d6'); ctx.fillStyle = '#c9d2d6'; ctx.beginPath(); ctx.moveTo(0, -u * .1); ctx.lineTo(-u * .06, -u * .17); ctx.lineTo(u * .06, -u * .17); ctx.closePath(); ctx.fill(); ell(ctx, -u * .015, u * .07, u * .01, u * .01, '#16181d'); ctx.restore(); } // a fish, nose down
+  else { ctx.fillStyle = RED; ctx.beginPath(); ctx.moveTo(X(.47), Y(.535)); ctx.lineTo(X(.53), Y(.535)); ctx.lineTo(X(.55), Y(.76)); ctx.lineTo(X(.5), Y(.8)); ctx.lineTo(X(.45), Y(.76)); ctx.closePath(); ctx.fill(); }
+  if (n >= 3) { ctx.fillStyle = BONE; ctx.beginPath(); ctx.moveTo(X(.66), Y(.7)); ctx.lineTo(X(.84), Y(.7)); ctx.lineTo(X(.8), Y(.735)); ctx.lineTo(X(.7), Y(.735)); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(X(.75), Y(.63)); ctx.lineTo(X(.8), Y(.695)); ctx.lineTo(X(.7), Y(.695)); ctx.closePath(); ctx.fill(); } // a paper boat
+  else { ctx.fillStyle = BONE; ctx.fillRect(X(.69), Y(.69), u * .12, u * .025); }
+  // the head, or what stands where it should be
+  const hx = X(.5), hy = Y(.3), hr = u * .17;
+  if (n >= 1) { ctx.strokeStyle = MUSTARD; ctx.lineCap = 'round'; ctx.lineWidth = Math.max(2, u * .014); ctx.beginPath(); for (let i = -3; i <= 3; i++) { const bxp = hx + i * hr * .3; ctx.moveTo(bxp, hy + hr * 1.05); ctx.quadraticCurveTo(bxp, hy - hr * .5, hx + i * hr * .04, hy - hr * 1.02); } ctx.stroke();
+    ctx.lineWidth = Math.max(2.5, u * .02); ctx.beginPath(); ctx.ellipse(hx, hy + hr * 1.05, hr, hr * .16, 0, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.arc(hx, hy - hr * 1.14, hr * .12, 0, TAU); ctx.stroke(); ctx.fillStyle = TEAL; if (n < 4) ctx.fillRect(hx + hr * .04, hy + hr * .2, hr * .52, hr * .8);
+    ctx.lineWidth = Math.max(2, u * .014); ctx.beginPath(); ctx.moveTo(hx + hr * .6, hy + hr * .2); ctx.lineTo(hx + hr * 1.15, hy + hr * .05); ctx.lineTo(hx + hr * 1.15, hy + hr * .85); ctx.lineTo(hx + hr * .6, hy + hr * 1.0); ctx.stroke(); ctx.fillStyle = '#16181d'; ctx.fillRect(hx - hr * .2, hy + hr * 1.18, hr * .4, Y(.5) - hy - hr * 1.18); ctx.lineCap = 'butt'; }
+  else { ctx.fillStyle = '#16181d'; ctx.fillRect(hx - hr * .2, hy + hr * .8, hr * .4, Y(.5) - hy - hr * .8); ell(ctx, hx, hy, hr * .8, hr, BONE); }
+  // the block of lettering every poster carries, here as bars
+  ctx.fillStyle = BONE; ctx.fillRect(X(.08), Y(.895), u * .5, u * .034); ctx.fillStyle = 'rgba(239,231,214,.65)'; ctx.fillRect(X(.08), Y(.94), u * .32, u * .016); ctx.fillStyle = RED; ctx.fillRect(X(.8), Y(.895), u * .12, u * .06);
+  ctx.restore();
+  mono(ctx, n === 0 ? 'a figure in a suit' : n === 1 ? SW[0] : `${n} swaps: head, tie${n > 2 ? ', pocket' : ''}${n > 3 ? ', wall' : ''}`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, n === 0 ? 'no swap: nothing for the viewer to finish' : n === 1 ? 'one swap: the eye goes straight to it' : n === 2 ? 'two swaps: the eye is split' : 'louder, and it says less', Z.cx, D.b, RED, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- IV · the cut: meaning = figure x ground ---------- */
+const c4 = document.querySelector('#s4 canvas'), grounds = document.getElementById('grounds');
+let gnd = 'party', userGnd = false; grounds.inert = true;
+function setGnd(m) { if (m === gnd) return; gnd = m; for (const b of grounds.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.ground === m)); }
+grounds.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { userGnd = true; setGnd(b.dataset.ground); } });
+function cutout(ctx, x, y, s) { // one paper figure, blank-faced, with the white edge scissors leave. y: the feet
+  const parts = k => { k.beginPath(); k.rect(x - .55 * s, y - 1.7 * s, .46 * s, 1.7 * s); k.rect(x + .09 * s, y - 1.7 * s, .46 * s, 1.7 * s); k.moveTo(x - .62 * s, y - 3.95 * s); k.lineTo(x + .62 * s, y - 3.95 * s); k.lineTo(x + .98 * s, y - 1.5 * s); k.lineTo(x - .98 * s, y - 1.5 * s); k.closePath(); k.rect(x - 1.22 * s, y - 3.8 * s, .34 * s, 1.9 * s); k.rect(x + .88 * s, y - 3.8 * s, .34 * s, 1.9 * s); k.moveTo(x + .6 * s, y - 4.5 * s); k.arc(x, y - 4.5 * s, .6 * s, 0, TAU); };
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-.035); ctx.translate(-x, -y); ctx.lineJoin = 'round';
+  ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = .36 * s; ctx.save(); ctx.translate(.1 * s, .12 * s); parts(ctx); ctx.stroke(); ctx.restore(); ctx.strokeStyle = '#fbf8f0'; ctx.lineWidth = .3 * s; parts(ctx); ctx.stroke(); ctx.fillStyle = '#fbf8f0'; ctx.fill();
+  ctx.fillStyle = '#2b3442'; ctx.fillRect(x - .55 * s, y - 1.7 * s, .46 * s, 1.7 * s); ctx.fillRect(x + .09 * s, y - 1.7 * s, .46 * s, 1.7 * s);
+  ctx.fillStyle = '#e2b62f'; ctx.beginPath(); ctx.moveTo(x - .62 * s, y - 3.95 * s); ctx.lineTo(x + .62 * s, y - 3.95 * s); ctx.lineTo(x + .98 * s, y - 1.5 * s); ctx.lineTo(x - .98 * s, y - 1.5 * s); ctx.closePath(); ctx.fill(); ctx.fillRect(x - 1.22 * s, y - 3.8 * s, .34 * s, 1.9 * s); ctx.fillRect(x + .88 * s, y - 3.8 * s, .34 * s, 1.9 * s);
+  ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = Math.max(1, .03 * s); ctx.beginPath(); ctx.moveTo(x, y - 3.95 * s); ctx.lineTo(x, y - 1.5 * s); ctx.stroke(); for (let i = 0; i < 3; i++) ell(ctx, x + .12 * s, y - (3.5 - i * .7) * s, .06 * s, .06 * s, 'rgba(0,0,0,.4)');
+  ell(ctx, x - 1.05 * s, y - 1.8 * s, .19 * s, .19 * s, '#d9b08c'); ell(ctx, x + 1.05 * s, y - 1.8 * s, .19 * s, .19 * s, '#d9b08c'); ell(ctx, x, y - 4.5 * s, .6 * s, .6 * s, '#d9b08c');
+  ctx.fillStyle = '#3a2a1c'; ctx.beginPath(); ctx.arc(x, y - 4.56 * s, .62 * s, Math.PI * 1.04, Math.PI * 1.96); ctx.closePath(); ctx.fill();
+  ell(ctx, x - .2 * s, y - 4.45 * s, .055 * s, .055 * s, '#1a1410'); ell(ctx, x + .2 * s, y - 4.45 * s, .055 * s, .055 * s, '#1a1410'); ctx.strokeStyle = '#1a1410'; ctx.lineWidth = Math.max(1, .045 * s); ctx.beginPath(); ctx.moveTo(x - .16 * s, y - 4.2 * s); ctx.lineTo(x + .16 * s, y - 4.2 * s); ctx.stroke();
+  ctx.restore();
+}
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(3, p); ground(ctx, w, h);
+  bar(grounds, p > .1 && p < .95);
+  if (!userGnd) setGnd(p < .42 ? 'party' : p < .62 ? 'flood' : 'queue');
+  const G = fit(Z, D, 1.25), s = G.H * .14, fx0 = G.x + G.W / 2, fy = G.y + G.H * .93, R = rng(gnd === 'party' ? 11 : gnd === 'flood' ? 12 : 13), tt = reduce ? 0 : t;
+  ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(G.x + 5, G.y + 7, G.W, G.H); ctx.save(); ctx.beginPath(); ctx.rect(G.x, G.y, G.W, G.H); ctx.clip();
+  if (gnd === 'party') { ctx.fillStyle = '#7a2f3a'; ctx.fillRect(G.x, G.y, G.W, G.H); ctx.fillStyle = '#56202a'; ctx.fillRect(G.x, G.y + G.H * .8, G.W, G.H * .2);
+    for (let i = 0; i < 70; i++) ell(ctx, G.x + R() * G.W, G.y + ((R() * G.H + tt * .02 * (.5 + R())) % G.H), s * .07, s * .04, [MUSTARD, '#efe7d6', '#4fa3a0', RED][i % 4], R() * 3);
+    for (const [bxp, col] of [[.14, RED], [.3, MUSTARD], [.72, '#4fa3a0'], [.88, '#efe7d6']]) { const yy = G.y + G.H * (.3 + .1 * R()) + Math.sin(tt * .001 + bxp * 9) * 3; ctx.strokeStyle = 'rgba(239,231,214,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(G.x + G.W * bxp, yy + s * .7); ctx.lineTo(G.x + G.W * bxp + s * .1, G.y + G.H); ctx.stroke(); ell(ctx, G.x + G.W * bxp, yy, s * .5, s * .62, col); }
+    ctx.strokeStyle = '#efe7d6'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(G.x, G.y + G.H * .06); ctx.quadraticCurveTo(G.x + G.W / 2, G.y + G.H * .24, G.x + G.W, G.y + G.H * .06); ctx.stroke(); for (let i = 0; i < 13; i++) { const u = (i + .5) / 13, bxp = G.x + u * G.W, yy = G.y + G.H * (.06 + .36 * u * (1 - u)); ctx.fillStyle = [RED, MUSTARD, '#4fa3a0', '#efe7d6'][i % 4]; ctx.beginPath(); ctx.moveTo(bxp - s * .22, yy); ctx.lineTo(bxp + s * .22, yy); ctx.lineTo(bxp, yy + s * .5); ctx.closePath(); ctx.fill(); }
+    for (const [dx, hgt] of [[-3.6, .9], [-2.3, 1], [2.4, .95], [3.7, 1.02]]) { const bx2 = fx0 + dx * s, sc = s * hgt * .92, by2 = fy + s * .1, up = Math.sin(tt * .004 + dx) * .15; ctx.fillStyle = 'rgba(30,12,16,.75)'; ctx.fillRect(bx2 - .5 * sc, by2 - 3.9 * sc, sc, 3.9 * sc); ell(ctx, bx2, by2 - 4.4 * sc, .5 * sc, .5 * sc, 'rgba(30,12,16,.75)'); ctx.strokeStyle = 'rgba(30,12,16,.75)'; ctx.lineWidth = .3 * sc; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(bx2 - .5 * sc, by2 - 3.6 * sc); ctx.lineTo(bx2 - 1.1 * sc, by2 - (5 + up) * sc); ctx.moveTo(bx2 + .5 * sc, by2 - 3.6 * sc); ctx.lineTo(bx2 + 1.1 * sc, by2 - (5 - up) * sc); ctx.stroke(); ctx.lineCap = 'butt'; } }
+  else if (gnd === 'flood') { const g = ctx.createLinearGradient(0, G.y, 0, G.y + G.H); g.addColorStop(0, '#59646c'); g.addColorStop(1, '#3d474f'); ctx.fillStyle = g; ctx.fillRect(G.x, G.y, G.W, G.H);
+    ctx.fillStyle = '#333c44'; for (const [u, hh, ww] of [[.1, .3, .16], [.3, .22, .12], [.74, .34, .15], [.92, .2, .12]]) { ctx.fillRect(G.x + G.W * (u - ww / 2), G.y + G.H * (.62 - hh), G.W * ww, G.H * hh); ctx.beginPath(); ctx.moveTo(G.x + G.W * (u - ww / 2 - .01), G.y + G.H * (.62 - hh)); ctx.lineTo(G.x + G.W * u, G.y + G.H * (.62 - hh - .08)); ctx.lineTo(G.x + G.W * (u + ww / 2 + .01), G.y + G.H * (.62 - hh)); ctx.closePath(); ctx.fill(); }
+    ctx.strokeStyle = 'rgba(210,225,235,.35)'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 0; i < 90; i++) { const xx = G.x + R() * G.W * 1.2, yy = G.y + ((R() * G.H + tt * .5) % G.H); ctx.moveTo(xx, yy); ctx.lineTo(xx - s * .12, yy + s * .5); } ctx.stroke(); }
+  else { const g = ctx.createLinearGradient(0, G.y, 0, G.y + G.H); g.addColorStop(0, '#8d8a82'); g.addColorStop(1, '#6b6861'); ctx.fillStyle = g; ctx.fillRect(G.x, G.y, G.W, G.H); ctx.fillStyle = '#56534d'; ctx.fillRect(G.x, G.y + G.H * .86, G.W, G.H * .14);
+    for (const dx of [-7.5, -5, -2.5, 2.5, 5, 7.5]) { const bx2 = fx0 + dx * s, c = '#4a4843'; ctx.fillStyle = c; ctx.fillRect(bx2 - .55 * s, fy - 1.7 * s, .46 * s, 1.7 * s); ctx.fillRect(bx2 + .09 * s, fy - 1.7 * s, .46 * s, 1.7 * s); ctx.beginPath(); ctx.moveTo(bx2 - .62 * s, fy - 3.95 * s); ctx.lineTo(bx2 + .62 * s, fy - 3.95 * s); ctx.lineTo(bx2 + .98 * s, fy - 1.5 * s); ctx.lineTo(bx2 - .98 * s, fy - 1.5 * s); ctx.closePath(); ctx.fill(); ctx.fillRect(bx2 - 1.22 * s, fy - 3.8 * s, .34 * s, 1.9 * s); ctx.fillRect(bx2 + .88 * s, fy - 3.8 * s, .34 * s, 1.9 * s); ell(ctx, bx2, fy - 4.5 * s, .6 * s, .6 * s, c); } }
+  cutout(ctx, fx0, fy, s);
+  if (gnd === 'flood') { const wy = fy - 2.3 * s; ctx.fillStyle = 'rgba(52,84,104,.86)'; ctx.beginPath(); ctx.moveTo(G.x, wy); for (let i = 0; i <= 40; i++) ctx.lineTo(G.x + i / 40 * G.W, wy + Math.sin(i * .9 + tt * .002) * s * .07); ctx.lineTo(G.x + G.W, G.y + G.H); ctx.lineTo(G.x, G.y + G.H); ctx.closePath(); ctx.fill(); ctx.strokeStyle = 'rgba(220,235,245,.5)'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let i = 0; i <= 40; i++) { const xx = G.x + i / 40 * G.W, yy = wy + Math.sin(i * .9 + tt * .002) * s * .07; i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); }
+  ctx.restore();
+  mono(ctx, 'the cut-out is the same in all three', Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, gnd === 'party' ? 'at a party, most people read: left out' : gnd === 'flood' ? 'in a flood, most people read: resigned' : 'in a queue, most people read: patient', Z.cx, D.b, RED, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- V · the gap: readers who get it - what a censor can prove ---------- */
+const c5 = document.querySelector('#s5 canvas'), codeBar = document.getElementById('codeBar'), codeIn = document.getElementById('code'), codeOut = document.getElementById('codeOut');
+let userCode = false; codeBar.inert = true; codeIn.addEventListener('input', () => { userCode = true; });
+const READ = c => 1 / (1 + Math.exp(14 * (c - .76))), PROVE = c => 1 / (1 + Math.exp(14 * (c - .3))); // a sketch of the idea, not a measurement
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), D = area(Z, fs); fx(4, p); ground(ctx, w, h);
+  bar(codeBar, p > .1 && p < .95);
+  if (!userCode) codeIn.value = String(Math.round(p < .6 ? lerp(0, 100, ease(p, .22, .5)) : lerp(100, 53, ease(p, .62, .78))));
+  const c = +codeIn.value / 100, r = READ(c), q = PROVE(c), lab = c < .22 ? 'plain' : c > .86 ? 'private' : 'coded'; txt(codeOut, lab);
+  if (codeIn._v !== codeIn.value) { codeIn._v = codeIn.value; codeIn.setAttribute('aria-valuetext', `${lab}: ${Math.round(r * 100)} percent of readers get it, the censor can prove ${Math.round(q * 100)} percent`); }
+  const x0 = Z.x0 + fs * 3.2, x1 = Z.x1 - fs * 1.2, y0 = D.y0 + fs * 1.6, y1 = D.y1 - fs * 2.6, PX = v => lerp(x0, x1, v), PY = v => lerp(y1, y0, v);
+  ctx.fillStyle = 'rgba(238,106,77,.16)'; ctx.beginPath(); for (let i = 0; i <= 100; i++) ctx.lineTo(PX(i / 100), PY(READ(i / 100))); for (let i = 100; i >= 0; i--) ctx.lineTo(PX(i / 100), PY(PROVE(i / 100))); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(239,231,214,.45)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+  for (const [f, col] of [[READ, BONE], [PROVE, RED]]) { ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.beginPath(); for (let i = 0; i <= 100; i++) { const xx = PX(i / 100), yy = PY(f(i / 100)); i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); }
+  mono(ctx, 'readers who get it', PX(.6), PY(1) - fs * .9, BONE, 'center', fs); mono(ctx, 'what a censor can prove', PX(.02), PY(.5) + fs * 2.4, RED, 'left', fs);
+  ctx.strokeStyle = 'rgba(239,231,214,.6)'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(PX(c), y0); ctx.lineTo(PX(c), y1); ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle = MUSTARD; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(PX(c), PY(r)); ctx.lineTo(PX(c), PY(q)); ctx.stroke(); ell(ctx, PX(c), PY(r), 5, 5, BONE); ell(ctx, PX(c), PY(q), 5, 5, RED);
+  mono(ctx, 'plain', x0, y1 + fs * 1.2, MUTE, 'left', fs - 1); mono(ctx, 'coded', (x0 + x1) / 2, y1 + fs * 1.2, MUTE, 'center', fs - 1); mono(ctx, 'private', x1, y1 + fs * 1.2, MUTE, 'right', fs - 1); mono(ctx, '100%', x0 - fs * .5, y0, MUTE, 'right', fs - 1); mono(ctx, '0', x0 - fs * .5, y1, MUTE, 'right', fs - 1);
+  mono(ctx, `readers ${Math.round(r * 100)}%  −  censor ${Math.round(q * 100)}%  =  gap ${Math.round((r - q) * 100)}`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, c < .22 ? 'said plainly: everyone gets it, and it can be charged' : c > .86 ? 'a private joke: safe, and nobody gets it' : r - q > .8 ? 'the working range: read by many, provable by none' : 'the gap is opening', Z.cx, D.b, RED, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- exhibit mode and the loop ---------- */
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
