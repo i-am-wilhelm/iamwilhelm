@@ -1,0 +1,12 @@
+---
+/**
+ * Living Vanitas: mounted as delivered from its approved source file,
+ * _incoming/art-scrollies/living-vanitas.html. The page is the file; src/lib/seen.ts
+ * documents the few changes made on the way (self-hosted fonts, share and
+ * schema meta, the colophon's series links).
+ */
+import { seenDocument } from '../../lib/seen';
+const html = await seenDocument('living-vanitas');
+---
+
+<Fragment set:html={html} />
