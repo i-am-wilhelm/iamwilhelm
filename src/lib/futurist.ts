@@ -16,9 +16,15 @@
  *   - LINKS holds the two cross-links between Face Forward and The
  *     Receipts, each one a named, exact replacement;
  *   - FIXES holds the repairs made since the files were approved, each one
- *     a named, exact replacement (the source files stay as approved).
+ *     a named, exact replacement (the source files stay as approved);
+ *   - the links back, as Everyone, Searchable carries them: the series label
+ *     (to the series index), the byline (to the foyer) and the way back to
+ *     the Gallery, set in a line of the page's own masthead (`back`);
+ *   - the shared foot (ScrollFoot). The document comes back in two halves,
+ *     split where the foot goes, and the page file renders the component
+ *     between them; FOOT_CSS dresses it for each page.
  *
- * Nothing is added around the page: no wrapper element, no site navigation, no foot.
+ * No wrapper element is added around the page.
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
  */
@@ -107,6 +113,58 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
   ],
 };
 
+/**
+ * Where the shared foot goes, and how it sits on each page. The foot
+ * inherits the page's colour and face; these rules give it what each page
+ * needs beyond that.
+ *
+ * Face Forward: inside <main>, after the page's own footer, so it rides
+ * above the sky canvas like every card. The sky is bright morning by then,
+ * so the foot takes the cards' dark panel.
+ *
+ * The Receipts: after <main>, on the counter below the tape, in the paper
+ * colour. It gives up ScrollFoot's z-index so the register bar (fixed,
+ * later in the page) always rides above it, and it ends with the same
+ * clearance the page leaves for the bar under the tape.
+ */
+/* The source text the foot follows: [what, the exact text]. */
+const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
+  'face-forward': ["the page's own footer", '</footer>\n'],
+  'the-receipts': ['the end of <main>', '</main>\n'],
+};
+const FOOT_CSS: Record<FuturistSlug, string> = {
+  'face-forward':
+    '.scroll-foot.site-foot{--log:var(--body);width:calc(100% - 32px);max-width:66rem;margin:0 auto 56px;padding-left:20px;padding-right:20px;' +
+    'background:rgba(9,13,26,0.92);border:1px solid rgba(236,230,216,0.14);border-radius:4px;color:var(--bone)}',
+  'the-receipts':
+    '.scroll-foot.site-foot{--log:var(--body);z-index:auto;max-width:30rem;margin-top:0;padding-bottom:104px;color:var(--paper)}',
+};
+const FOOT_MARK = '<!--futurist:foot-->';
+
+/**
+ * The links back, in the page's own masthead: [what, the exact source
+ * text, its replacement]. The Gallery link is hidden in the share image
+ * (data-og-hide), like Everyone, Searchable's, and left out of the twin.
+ */
+const back = (slug: FuturistSlug, label: string, href: string): [string, string, string] => {
+  const a = 'style="color:inherit;white-space:nowrap"';
+  if (slug === 'face-forward') {
+    return [
+      'the byline',
+      '<p class="by">By Michael Wilhelm</p>',
+      `<p class="by">By <a href="/" rel="author" ${a}>Michael Wilhelm</a> · <a href="${href}" ${a}>${esc(label)}</a>` +
+        `<span data-og-hide data-twin-skip> · <a href="/gallery/" ${a}>The Gallery</a></span></p>`,
+    ];
+  }
+  return [
+    'the printed line',
+    '<p class="sub">PRINTED 11/10/2026 · 14 ITEMS</p>\n',
+    '<p class="sub">PRINTED 11/10/2026 · 14 ITEMS</p>\n' +
+      `      <p class="sub"><a href="${href}" ${a}>${esc(label.toUpperCase())}</a> · <span style="white-space:nowrap">BY <a href="/" rel="author" ${a}>MICHAEL WILHELM</a></span>` +
+      `<span data-og-hide data-twin-skip> · <a href="/gallery/" ${a}>THE GALLERY</a></span></p>\n`,
+  ];
+};
+
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** Replace exactly one occurrence, or stop the build. */
@@ -125,7 +183,8 @@ export function futuristSource(slug: FuturistSlug): string {
   return bytes.toString('utf8');
 }
 
-export async function futuristDocument(slug: FuturistSlug): Promise<string> {
+/** The page in two halves: everything before the shared foot, and everything after it. */
+export async function futuristDocument(slug: FuturistSlug): Promise<[string, string]> {
   let html = futuristSource(slug);
   const { night, preload } = FUTURIST_SOURCES[slug];
   const piece = await getPiece(slug);
@@ -144,7 +203,13 @@ export async function futuristDocument(slug: FuturistSlug): Promise<string> {
     return first ? '<!--futurist-fonts-->' : '';
   });
   if (/fonts\.g(oogleapis|static)\.com/.test(html)) throw new Error(`futurist: ${slug}: a Google Fonts reference was left in the page.`);
-  html = swap(html, '<!--futurist-fonts-->', `<style>\n${faces.join('\n')}\n</style>\n`, 'the Google Fonts stylesheet links', slug);
+  html = swap(
+    html,
+    '<!--futurist-fonts-->',
+    `<style>\n${faces.join('\n')}\n/* site: the shared foot on this page (src/lib/futurist.ts) */\n${FOOT_CSS[slug]}\n</style>\n`,
+    'the Google Fonts stylesheet links',
+    slug,
+  );
 
   /* Head: where the page lives, how it shares, what it is (as Poem.astro). */
   const canonical = new URL(piece.path, SITE_URL).href;
@@ -215,6 +280,12 @@ export async function futuristDocument(slug: FuturistSlug): Promise<string> {
   const [what, find, put] = LINKS[slug];
   html = swap(html, find, put, what, slug);
   for (const [fixed, from, to] of FIXES[slug]) html = swap(html, from, to, fixed, slug);
+  if (!piece.label) throw new Error(`futurist: ${slug}: the gallery entry needs a series number.`);
+  const [backWhat, backFrom, backTo] = back(slug, piece.label, s.href);
+  html = swap(html, backFrom, backTo, backWhat, slug);
 
-  return html.replace(/^<!DOCTYPE html>\n/i, '');
+  const [footWhat, footAfter] = FOOT_AFTER[slug];
+  html = swap(html, footAfter, `${footAfter}${FOOT_MARK}`, footWhat, slug);
+  const halves = html.replace(/^<!DOCTYPE html>\n/i, '').split(FOOT_MARK);
+  return [halves[0], halves[1]];
 }

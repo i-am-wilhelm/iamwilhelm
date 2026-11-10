@@ -3,11 +3,13 @@
  * Face Forward: mounted as delivered from its approved source file,
  * _incoming/futurist-essays/face-forward.html. The page is the file; src/lib/futurist.ts
  * documents the few changes made on the way (self-hosted fonts, the title,
- * share and schema meta, the one cross-link to the other page, and the
- * named display repairs).
+ * share and schema meta, the one cross-link to the other page, the named
+ * display repairs, and the links back). The shared foot (ScrollFoot) is
+ * rendered here, between the two halves of the document.
  */
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import { futuristDocument } from '../../lib/futurist';
-const html = await futuristDocument('face-forward');
+const [before, after] = await futuristDocument('face-forward');
 ---
 
-<Fragment set:html={html} />
+<Fragment set:html={before} /><ScrollFoot id="face-forward" class="site-foot" /><Fragment set:html={after} />
