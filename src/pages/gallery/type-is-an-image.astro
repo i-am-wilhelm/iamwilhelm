@@ -1,0 +1,12 @@
+---
+/**
+ * Type Is an Image: mounted as delivered from its approved source file,
+ * _incoming/art-scrollies/type-is-an-image.html. The page is the file; src/lib/seen.ts
+ * documents the few changes made on the way (self-hosted fonts, share and
+ * schema meta, the colophon's series links).
+ */
+import { seenDocument } from '../../lib/seen';
+const html = await seenDocument('type-is-an-image');
+---
+
+<Fragment set:html={html} />

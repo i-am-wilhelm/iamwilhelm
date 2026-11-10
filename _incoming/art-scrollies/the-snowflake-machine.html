@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Snowflake Machine</title>
+<meta name="description" content="Draw one line and the mirrors draw the rest. A touch-first symmetry toy: one mirror makes a butterfly, five make a starfish, six make a snowflake.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one screen. header strip, drawing stage that takes all spare height, toolbar of big round controls */
+  --bg:#0d1228; --deep:#070a18; --ice:#e8f4ff; --line:rgba(232,244,255,.28); --gold:#f2c14e; --muted:#93a0c2;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --hit:52px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--deep);color:var(--ice);overflow:hidden}
+body{display:flex;flex-direction:column;font-family:var(--mono);font-size:13px;-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px 8px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:500;font-size:clamp(22px,4.2vmin,44px);line-height:1;margin:0;letter-spacing:-.01em}
+.cap{font-size:clamp(11px,1.5vmin,17px);letter-spacing:.12em;text-transform:uppercase;color:var(--gold);flex:1;min-width:14ch}
+.lang{display:flex;border:1px solid var(--line)}
+.lang button{font:inherit;font-size:11px;letter-spacing:.14em;color:var(--ice);background:transparent;border:0;padding:0 12px;min-height:40px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ice);color:var(--deep)}
+#stage{position:relative;flex:1;min-height:0;background:radial-gradient(circle at 50% 50%,#1b2550 0%,var(--bg) 55%,var(--deep) 100%)}
+#stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#over{touch-action:none;cursor:crosshair}
+.hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;font-family:var(--display);font-style:italic;font-size:clamp(22px,4.5vmin,46px);color:var(--ice);text-shadow:0 0 18px var(--deep),0 0 6px var(--deep);opacity:.92;transition:opacity .5s;text-align:center;white-space:nowrap}
+.hint.off{opacity:0}
+#wall{position:absolute;left:12px;top:10px;display:flex;gap:8px}
+#wall button{width:var(--hit);height:var(--hit);padding:0;border:1px solid var(--line);background:rgba(7,10,24,.6);border-radius:8px;cursor:pointer;overflow:hidden}
+#wall canvas{position:static;width:100%;height:100%}
+.how{position:absolute;right:12px;top:10px;max-width:min(calc(100% - 24px),360px);background:rgba(7,10,24,.86);border:1px solid var(--line);padding:9px 12px;line-height:1.75;font-size:12px;pointer-events:none;display:none}
+.how.on{display:block}
+.how b{font-weight:500;color:var(--gold)}
+.how p{margin:.5em 0 0;font-family:var(--display);font-size:18px;line-height:1.25;font-style:italic}
+.bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:center;padding:10px 12px 12px;background:var(--deep);border-top:1px solid var(--line)}
+.grp{display:flex;gap:8px;align-items:center}
+.bar button{font:inherit;color:var(--ice);background:transparent;border:1.5px solid var(--line);min-width:var(--hit);height:var(--hit);border-radius:calc(var(--hit) / 2);cursor:pointer;padding:0 16px;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.bar .num{padding:0;font-family:var(--display);font-size:calc(var(--hit) * .5);letter-spacing:0}
+.bar button[aria-pressed="true"]{border-color:var(--gold);background:rgba(242,193,78,.18);color:#fff}
+.bar .sw{padding:0;width:calc(var(--hit) * .84);min-width:0;height:calc(var(--hit) * .84);border-radius:50%;border:3px solid transparent;background:var(--c)}
+.bar .sw[aria-pressed="true"]{border-color:#fff;background:var(--c);box-shadow:0 0 0 2px var(--deep),0 0 14px var(--c)}
+.foot{font-size:10px;letter-spacing:.04em;color:var(--muted);text-align:center;padding:0 12px 8px;background:var(--deep);line-height:1.6}
+.foot button{font:inherit;color:var(--muted);background:none;border:0;text-decoration:underline;cursor:pointer;padding:6px 4px}
+.exhibit{--hit:72px}
+.exhibit .foot span{display:none}
+@media (max-width:520px){ :root{--hit:46px} .bar{gap:8px 12px;padding:8px 8px 10px} .bar button{padding:0 12px;font-size:12px} header{padding:8px 12px 6px;gap:8px} }
+@media (prefers-reduced-motion:reduce){ .hint{transition:none} }
+</style>
+</head>
+<body>
+<header>
+  <h1 data-k="title">The Snowflake Machine</h1>
+  <div class="cap" id="cap" aria-hidden="true">6 mirrors: a snowflake</div>
+  <div class="lang" role="group" aria-label="Language / Idioma"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="es" aria-pressed="false" lang="es">ES</button></div>
+</header>
+
+<main id="stage">
+  <canvas id="ink" aria-hidden="true"></canvas>
+  <canvas id="over" tabindex="0" role="application" aria-label="Drawing area. Drag to draw. With the keyboard: arrow keys move the pen, Space puts it down and lifts it." data-ka="area" aria-describedby="status"></canvas>
+  <div class="hint" id="hint" data-k="hint">Draw here</div>
+  <div id="wall" role="group" aria-label="Earlier drawings" data-ka="wall"></div>
+  <div class="how" id="how" aria-hidden="true">
+    <div><b>turn:</b> rotate by k · 360° / <span id="hn">6</span></div>
+    <div><b>flip:</b> (x, y) → (−x, y)</div>
+    <div><b>copies</b> = 2 × <span id="hn2">6</span> = <span id="hc">12</span></div>
+    <p data-k="howp">You drew the bright line. The machine made the faint ones.</p>
+  </div>
+</main>
+
+<div class="bar">
+  <div class="grp" role="group" aria-label="Mirrors" data-ka="mirrors" id="mirrors">
+    <button type="button" class="num" data-n="1" aria-pressed="false" aria-label="1 mirror">1</button>
+    <button type="button" class="num" data-n="3" aria-pressed="false" aria-label="3 mirrors">3</button>
+    <button type="button" class="num" data-n="5" aria-pressed="false" aria-label="5 mirrors">5</button>
+    <button type="button" class="num" data-n="6" aria-pressed="true" aria-label="6 mirrors">6</button>
+    <button type="button" class="num" data-n="8" aria-pressed="false" aria-label="8 mirrors">8</button>
+  </div>
+  <div class="grp" role="group" aria-label="Color" id="colors">
+    <button type="button" class="sw" style="--c:#e8f4ff" data-c="#e8f4ff" aria-pressed="true" aria-label="Ice white"></button>
+    <button type="button" class="sw" style="--c:#6fe3d6" data-c="#6fe3d6" aria-pressed="false" aria-label="Aqua"></button>
+    <button type="button" class="sw" style="--c:#ff9ecb" data-c="#ff9ecb" aria-pressed="false" aria-label="Pink"></button>
+    <button type="button" class="sw" style="--c:#f2c14e" data-c="#f2c14e" aria-pressed="false" aria-label="Gold"></button>
+    <button type="button" class="sw" style="--c:#b79cff" data-c="#b79cff" aria-pressed="false" aria-label="Violet"></button>
+    <button type="button" class="sw" style="--c:#a6e86b" data-c="#a6e86b" aria-pressed="false" aria-label="Green"></button>
+  </div>
+  <div class="grp">
+    <button type="button" id="undo" data-k="undo">Undo</button>
+    <button type="button" id="fresh" data-k="fresh">New</button>
+    <button type="button" id="show" aria-pressed="false" data-k="show">Show the mirrors</button>
+  </div>
+</div>
+<div class="foot"><span data-k="foot">Seen · Play. Drawn in code, with AI assistance. Nothing you draw is saved or sent anywhere.</span> <button type="button" id="exhibitBtn" aria-pressed="false" data-k="ex">Exhibit mode</button></div>
+<div class="sr-only" id="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2, $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ink = $('ink'), over = $('over'), stage = $('stage'), ictx = ink.getContext('2d'), octx = over.getContext('2d');
+
+/* ---------- words ---------- */
+const TXT = {
+  en: { title: 'The Snowflake Machine', hint: 'Draw here', undo: 'Undo', fresh: 'New', show: 'Show the mirrors', ex: 'Exhibit mode', howp: 'You drew the bright line. The machine made the faint ones.',
+        foot: 'Seen · Play. Drawn in code, with AI assistance. Nothing you draw is saved or sent anywhere.', mirrors: 'Mirrors', wall: 'Earlier drawings',
+        area: 'Drawing area. Drag to draw. With the keyboard: arrow keys move the pen, Space puts it down and lifts it.',
+        cap: { 1: '1 mirror: a butterfly', 3: '3 mirrors: a clover', 5: '5 mirrors: a starfish', 6: '6 mirrors: a snowflake', 8: '8 mirrors: an octopus’s arms' },
+        say: (n, s) => `${n} ${n === 1 ? 'mirror' : 'mirrors'}. ${2 * n} copies of every line. ${s} ${s === 1 ? 'line' : 'lines'} drawn.`, down: 'Pen down.', up: 'Pen up.', back: 'Drawing ' },
+  es: { title: 'La máquina de copos de nieve', hint: 'Dibuja aquí', undo: 'Deshacer', fresh: 'Nuevo', show: 'Ver los espejos', ex: 'Modo exhibición', howp: 'Tú dibujaste la línea brillante. La máquina hizo las tenues.',
+        foot: 'Seen · Juego. Dibujado con código, con ayuda de IA. Nada de lo que dibujas se guarda ni se envía.', mirrors: 'Espejos', wall: 'Dibujos anteriores',
+        area: 'Área de dibujo. Arrastra para dibujar. Con el teclado: las flechas mueven el lápiz, Espacio lo apoya y lo levanta.',
+        cap: { 1: '1 espejo: una mariposa', 3: '3 espejos: un trébol', 5: '5 espejos: una estrella de mar', 6: '6 espejos: un copo de nieve', 8: '8 espejos: los brazos de un pulpo' },
+        say: (n, s) => `${n} ${n === 1 ? 'espejo' : 'espejos'}. ${2 * n} copias de cada línea. ${s} ${s === 1 ? 'línea dibujada' : 'líneas dibujadas'}.`, down: 'Lápiz abajo.', up: 'Lápiz arriba.', back: 'Dibujo ' },
+};
+let lang = 'en';
+const t = k => TXT[lang][k];
+function setLang(l) {
+  lang = l; document.documentElement.lang = l;
+  document.querySelectorAll('[data-k]').forEach(el => { el.textContent = t(el.dataset.k); });
+  document.querySelectorAll('[data-ka]').forEach(el => el.setAttribute('aria-label', t(el.dataset.ka)));
+  document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
+  document.querySelectorAll('#mirrors button').forEach(b => b.setAttribute('aria-label', t('cap')[b.dataset.n]));
+  document.title = t('title'); sync();
+}
+document.querySelector('.lang').addEventListener('click', e => { const b = e.target.closest('button[data-lang]'); if (b) setLang(b.dataset.lang); });
+
+/* ---------- state ---------- */
+let W = 0, H = 0, dpr = 1, n = 6, color = '#e8f4ff', show = false, strokes = [], wall = [], touched = false;
+const G = { cx: 0, cy: 0, R: 1 }, live = new Map();
+const say = msg => { $('status').textContent = msg; };
+function sync() {
+  $('cap').textContent = t('cap')[n]; $('hn').textContent = n; $('hn2').textContent = n; $('hc').textContent = 2 * n;
+  document.querySelectorAll('#mirrors button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.n === n)));
+  $('how').classList.toggle('on', show); $('show').setAttribute('aria-pressed', String(show));
+}
+
+/* ---------- the function: every mark is drawn 2 x n times ----------
+   turn: rotate by k * 360 / n      flip: (x, y) -> (-x, y)            */
+function copies(ctx, g, count, fn) {
+  for (let k = 0; k < count; k++) for (const m of [1, -1]) {
+    ctx.save(); ctx.translate(g.cx, g.cy); ctx.rotate(k * TAU / count); ctx.scale(m * g.R, g.R);
+    fn(k === 0 && m === 1); ctx.restore();
+  }
+}
+/* one piece of a stroke: a smooth curve through the midpoints of the last three points */
+function piece(ctx, g, count, s, i, faint, glow) {
+  const p = s.pts; ctx.strokeStyle = ctx.fillStyle = s.color; ctx.lineWidth = s.w; ctx.lineCap = ctx.lineJoin = 'round'; ctx.shadowColor = s.color; ctx.shadowBlur = glow;
+  copies(ctx, g, count, orig => {
+    ctx.globalAlpha = faint && !orig ? 0.38 : 1; ctx.beginPath();
+    if (i === 0) { ctx.arc(p[0][0], p[0][1], s.w * 0.5, 0, TAU); ctx.fill(); return; }
+    if (i === 1) { ctx.moveTo(p[0][0], p[0][1]); ctx.lineTo((p[0][0] + p[1][0]) / 2, (p[0][1] + p[1][1]) / 2); }
+    else { const a = p[i - 2], b = p[i - 1], c = p[i]; ctx.moveTo((a[0] + b[0]) / 2, (a[1] + b[1]) / 2); ctx.quadraticCurveTo(b[0], b[1], (b[0] + c[0]) / 2, (b[1] + c[1]) / 2); }
+    ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+}
+function tail(ctx, g, count, s, faint, glow) { // the last half-step, to the final point
+  const p = s.pts, L = p.length; if (L < 2) return;
+  ctx.strokeStyle = s.color; ctx.lineWidth = s.w; ctx.lineCap = 'round'; ctx.shadowColor = s.color; ctx.shadowBlur = glow;
+  copies(ctx, g, count, orig => { ctx.globalAlpha = faint && !orig ? 0.38 : 1; ctx.beginPath(); ctx.moveTo((p[L - 2][0] + p[L - 1][0]) / 2, (p[L - 2][1] + p[L - 1][1]) / 2); ctx.lineTo(p[L - 1][0], p[L - 1][1]); ctx.stroke(); });
+  ctx.globalAlpha = 1;
+}
+function paint(ctx, g, count, list, faint, glow) { for (const s of list) { for (let i = 0; i < s.pts.length; i++) piece(ctx, g, count, s, i, faint, glow); tail(ctx, g, count, s, faint, glow); } }
+function redraw() { ictx.setTransform(dpr, 0, 0, dpr, 0, 0); ictx.clearRect(0, 0, W, H); paint(ictx, G, n, strokes, show, 7 * dpr); }
+function size() {
+  dpr = Math.min(2, window.devicePixelRatio || 1); W = stage.clientWidth; H = stage.clientHeight;
+  for (const c of [ink, over]) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+  G.cx = W / 2; G.cy = H / 2; G.R = Math.min(W, H) * 0.47; redraw();
+}
+addEventListener('resize', size);
+if (window.ResizeObserver) new ResizeObserver(() => { if (stage.clientWidth !== W || stage.clientHeight !== H) size(); }).observe(stage);
+
+/* ---------- drawing with fingers, mouse or pen; several at once ---------- */
+const at = e => { const r = over.getBoundingClientRect(); return [(e.clientX - r.left - G.cx) / G.R, (e.clientY - r.top - G.cy) / G.R]; };
+function begin(id, p) {
+  if (!touched || strokes.some(s => s.demo)) { stopDemo(); strokes = []; redraw(); touched = true; $('hint').classList.add('off'); }
+  const s = { color, w: 0.02, pts: [p] }; strokes.push(s); live.set(id, s); piece(ictx, G, n, s, 0, show, 7 * dpr);
+}
+function extend(id, p) {
+  const s = live.get(id); if (!s) return; const q = s.pts[s.pts.length - 1];
+  if (Math.hypot(p[0] - q[0], p[1] - q[1]) < 0.006) return;
+  s.pts.push(p); piece(ictx, G, n, s, s.pts.length - 1, show, 7 * dpr);
+}
+function finish(id) { const s = live.get(id); if (!s) return; tail(ictx, G, n, s, show, 7 * dpr); live.delete(id); say(t('say')(n, strokes.length)); }
+over.addEventListener('pointerdown', e => { e.preventDefault(); woke(); try { over.setPointerCapture(e.pointerId); } catch (x) {} begin(e.pointerId, at(e)); });
+over.addEventListener('pointermove', e => { if (live.has(e.pointerId)) { woke(); extend(e.pointerId, at(e)); } });
+for (const ev of ['pointerup', 'pointercancel']) over.addEventListener(ev, e => finish(e.pointerId));
+
+/* keyboard: arrows move the pen, Space or Enter puts it down and lifts it */
+const kb = { x: 0.2, y: -0.3, down: false, on: false };
+over.addEventListener('focus', () => { kb.on = over.matches(':focus-visible'); });
+over.addEventListener('blur', () => { if (kb.down) { finish('kb'); kb.down = false; } kb.on = false; });
+over.addEventListener('keydown', e => {
+  const step = e.shiftKey ? 0.01 : 0.04, mv = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+  if (mv) { e.preventDefault(); woke(); kb.on = true; kb.x = Math.max(-1, Math.min(1, kb.x + mv[0])); kb.y = Math.max(-1, Math.min(1, kb.y + mv[1])); if (kb.down) extend('kb', [kb.x, kb.y]); }
+  else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); woke(); kb.on = true; kb.down = !kb.down; if (kb.down) { begin('kb', [kb.x, kb.y]); say(t('down')); } else { finish('kb'); say(t('up')); } }
+});
+
+/* ---------- controls ---------- */
+$('mirrors').addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (!b) return; woke(); n = +b.dataset.n; sync(); redraw(); say(t('say')(n, strokes.length)); });
+$('colors').addEventListener('click', e => { const b = e.target.closest('button[data-c]'); if (!b) return; woke(); color = b.dataset.c; document.querySelectorAll('#colors button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); });
+$('undo').addEventListener('click', () => { woke(); strokes.pop(); redraw(); say(t('say')(n, strokes.length)); });
+$('show').addEventListener('click', () => { woke(); show = !show; sync(); redraw(); });
+function keep() { // move the finished drawing to the wall and start clean
+  const mine = strokes.filter(s => !s.demo); if (mine.length) { wall.unshift({ n, strokes: mine }); wall = wall.slice(0, 5); hang(); }
+  strokes = []; redraw();
+}
+$('fresh').addEventListener('click', () => { woke(); stopDemo(); keep(); touched = true; $('hint').classList.add('off'); say(t('say')(n, 0)); });
+function hang() {
+  const box = $('wall'); box.textContent = '';
+  wall.forEach((it, i) => {
+    const b = document.createElement('button'), c = document.createElement('canvas'), px = 120; b.type = 'button'; b.setAttribute('aria-label', t('back') + (i + 1)); c.width = c.height = px; b.appendChild(c);
+    paint(c.getContext('2d'), { cx: px / 2, cy: px / 2, R: px * 0.47 }, it.n, it.strokes, false, 3);
+    b.addEventListener('click', () => { woke(); stopDemo(); const cur = strokes.filter(s => !s.demo), curN = n; wall.splice(i, 1); if (cur.length) wall.unshift({ n: curN, strokes: cur }); n = it.n; strokes = it.strokes; touched = true; $('hint').classList.add('off'); sync(); redraw(); hang(); });
+    box.appendChild(b);
+  });
+}
+
+/* ---------- the machine draws by itself until someone takes over ---------- */
+const DEMOS = [
+  { n: 6, color: '#e8f4ff', paths: [[[.02, -.08], [.03, -.3], [.05, -.56], [.06, -.84]], [[.035, -.38], [.12, -.47], [.21, -.58]], [[.05, -.6], [.11, -.67], [.17, -.76]]] },
+  { n: 1, color: '#ff9ecb', paths: [[[.03, -.12], [.3, -.5], [.62, -.56], [.74, -.3], [.6, -.06], [.3, .02], [.5, .22], [.52, .48], [.3, .56], [.04, .22]], [[.03, -.14], [.1, -.4], [.2, -.62]]] },
+  { n: 5, color: '#f2c14e', paths: [[[.0, -.16], [.1, -.3], [.09, -.56], [.03, -.86]], [[.03, -.3], [.035, -.52]]] },
+];
+function dense(path) { const out = []; for (let i = 0; i < path.length - 1; i++) { const a = path[i], b = path[i + 1], steps = Math.max(2, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 0.012)); for (let k = 0; k < steps; k++) out.push([a[0] + (b[0] - a[0]) * k / steps, a[1] + (b[1] - a[1]) * k / steps]); } out.push(path[path.length - 1]); return out; }
+// round the corners of the guide paths with one pass of corner cutting
+function soften(path) { let p = path; for (let r = 0; r < 2; r++) { const q = [p[0]]; for (let i = 0; i < p.length - 1; i++) { q.push([p[i][0] * .75 + p[i + 1][0] * .25, p[i][1] * .75 + p[i + 1][1] * .25], [p[i][0] * .25 + p[i + 1][0] * .75, p[i][1] * .25 + p[i + 1][1] * .75]); } q.push(p[p.length - 1]); p = q; } return p; }
+let demo = null, lastInput = 0, exhibit = false, finger = null;
+function startDemo(which) {
+  const d = DEMOS[which % DEMOS.length]; strokes = []; n = d.n; sync(); redraw();
+  demo = { which, d, paths: d.paths.map(p => dense(soften(p))), pi: 0, i: 0, hold: 0, acc: 0 };
+  if (reduce) { for (const p of demo.paths) strokes.push({ color: d.color, w: 0.02, pts: p, demo: true }); redraw(); demo = null; }
+}
+function stopDemo() { if (demo) { live.delete('demo'); demo = null; finger = null; } }
+function stepDemo(dt) {
+  if (!demo) return;
+  if (demo.pi >= demo.paths.length) { finger = null; demo.hold += dt; if (demo.hold > 3600) startDemo(demo.which + 1); return; }
+  const path = demo.paths[demo.pi]; demo.acc += dt * 0.045; // points per millisecond
+  while (demo.acc >= 1 && demo) {
+    demo.acc -= 1;
+    if (demo.i === 0) { const s = { color: demo.d.color, w: 0.02, pts: [path[0]], demo: true }; strokes.push(s); live.set('demo', s); piece(ictx, G, n, s, 0, show, 7 * dpr); }
+    else extend('demo', path[demo.i]);
+    finger = path[demo.i]; demo.i++;
+    if (demo.i >= path.length) { const s = live.get('demo'); if (s) { tail(ictx, G, n, s, show, 7 * dpr); live.delete('demo'); } demo.pi++; demo.i = 0; break; }
+  }
+}
+function woke() { lastInput = performance.now(); }
+
+/* exhibit mode: bigger controls; after 45 s alone, hang the drawing on the wall and let the machine draw again */
+function setExhibit(on) {
+  exhibit = on; document.documentElement.classList.toggle('exhibit', on); $('exhibitBtn').setAttribute('aria-pressed', String(on)); woke();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  requestAnimationFrame(size);
+}
+$('exhibitBtn').addEventListener('click', () => setExhibit(!exhibit));
+
+/* ---------- overlay: mirror lines, the demo finger, the keyboard pen ---------- */
+let prev = 0;
+function frame(now) {
+  const dt = Math.min(64, now - prev); prev = now;
+  stepDemo(dt);
+  if (exhibit && !demo && !reduce && now - lastInput > 45000) { keep(); touched = false; $('hint').classList.remove('off'); startDemo(Math.floor(now / 1000)); }
+  octx.setTransform(dpr, 0, 0, dpr, 0, 0); octx.clearRect(0, 0, W, H);
+  if (show) { // the n mirror lines
+    octx.strokeStyle = 'rgba(242,193,78,.6)'; octx.lineWidth = 1.2; octx.setLineDash([6, 7]);
+    for (let k = 0; k < n; k++) { const a = -Math.PI / 2 + k * Math.PI / n, c = Math.cos(a) * G.R * 1.06, s = Math.sin(a) * G.R * 1.06; octx.beginPath(); octx.moveTo(G.cx - c, G.cy - s); octx.lineTo(G.cx + c, G.cy + s); octx.stroke(); }
+    octx.setLineDash([]);
+  }
+  const ring = (p, col) => { const x = G.cx + p[0] * G.R, y = G.cy + p[1] * G.R; octx.strokeStyle = col; octx.lineWidth = 2.5; octx.beginPath(); octx.arc(x, y, 15, 0, TAU); octx.stroke(); octx.fillStyle = 'rgba(255,255,255,.25)'; octx.beginPath(); octx.arc(x, y, 15, 0, TAU); octx.fill(); };
+  if (finger) ring(finger, '#fff');
+  if (kb.on) { ring([kb.x, kb.y], kb.down ? '#f2c14e' : '#fff'); }
+  requestAnimationFrame(frame);
+}
+
+size(); sync(); woke();
+if (location.hash === '#exhibit') setExhibit(true);
+startDemo(0);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redon's Turn</title>
+<meta name="description" content="Odilon Redon drew in black for twenty years, then turned to color. Charcoal, light, a slider from gray to hue, flowers made of one curve, and the black he kept.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#0e0d0c; --bone:#ece6da; --copper:#6f8fb8; --copper-hi:#bcd8f7; --acid:#5cc4b8; --ink:#9a4a22; --gold:#9cc3f0; --muted:#9a968c; --paper:#ece6da;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#0e0d0c;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#cfc6b2;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(18,17,16,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(156,195,240,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#fff3dc}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#fff3dc}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(16,15,14,.72);border:1px solid rgba(156,195,240,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(16,15,14,.82);border:1px solid rgba(156,195,240,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(156,195,240,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#cfc6b2;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(156,195,240,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#cfc6b2}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#cfc6b2;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(156,195,240,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#0e0d0c;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#0e0d0c;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+
+/* additions for this piece: function panel and controls */
+.fx{position:absolute;left:12px;top:46px;font-family:var(--mono);font-size:11px;line-height:1.75;color:var(--bone);background:rgba(16,15,14,.84);border:1px solid rgba(156,195,240,.25);padding:6px 10px;max-width:min(calc(100% - 24px),560px);pointer-events:none}
+.fx div{opacity:.3;transition:opacity .5s}
+.fx div.on{opacity:1}
+.fx b{font-weight:500;color:var(--gold)}
+.fx .g{color:#b3aea2;font-style:italic;margin-left:.7em}
+.palette{top:12px}
+.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(38vw,220px);height:44px;accent-color:#9cc3f0}
+.palette output{font-family:var(--mono);font-size:11px;min-width:5.6em;color:var(--bone)}
+.palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0e0d0c}
+.obj i{font-style:italic}
+@media (max-width:899px){ .palette{top:100px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+@media (max-width:520px){ .palette input[type=range]{width:32vw} }
+@media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:150px} }
+.exhibit .tag{font-size:13px}
+.exhibit .fx{font-size:15px;max-width:min(calc(100% - 24px),780px)}
+.exhibit .palette label,.exhibit .palette .pl{font-size:13px}
+.exhibit .palette button{font-size:15px}
+.exhibit .palette output{font-size:14px}
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .palette{left:35%;top:auto;bottom:26px} .palette .pl{display:inline} }
+@media (prefers-reduced-motion:reduce){ .fx div{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#find">Skip to the list of works and sources</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">Seen · No. 12 · A scrolly on charcoal, pastel and coming back up</div>
+    <h1>Redon's Turn</h1>
+    <p class="sub">For about twenty years Odilon Redon worked in black: charcoal, and prints the color of soot. Then, in his fifties, he opened a box of pastels.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · the black -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A charcoal drawing of a round, furry spider with ten legs and a wide grin. It starts as a faint mist of specks and darkens to deep black." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">Charcoal · burnt wood on rough paper</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>mark where pressure × darkness &gt; tooth(x, y)</b><span class="g">the paper's bumps decide where dust sticks</span></div><div data-at="0.4"><b>gray = share of the paper marked</b><span class="g">specks too small to see, added up</span></div></div>
+    <div class="palette" id="pressBar">
+      <label for="press">Pressure</label>
+      <input type="range" id="press" min="10" max="130" value="15" step="1" aria-valuetext="light">
+      <output id="pressOut" for="press">0.15</output>
+    </div>
+    <p class="sr-only" id="s1d">A slider sets the pressure on the charcoal. At light pressure only scattered specks appear where the drawing is darkest. At full pressure the spider's body is solid black, its legs are sharp lines, and its eyes and grin stay the color of the paper. A readout gives the share of the sheet that is marked.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The black</h2><p>Odilon Redon was born in Bordeaux in 1840. From 1871 into the 1890s nearly everything he made was black: charcoal drawings and prints. He called them his <i>noirs</i>.</p></div></div>
+    <div class="step"><div class="card"><p>Charcoal is burnt wood. Drag it across paper and the paper's bumps scrape off dust. Press lightly and only the peaks catch. Press hard and the valleys fill too.</p></div></div>
+    <div class="step"><div class="card"><p>Slide the pressure. One stick and one sheet give every gray from mist to pitch.</p></div></div>
+    <div class="step"><div class="card"><p>His black pictures are full of creatures: a spider with a grin, an eye that floats like a balloon.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the light -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="A giant eye, drawn in charcoal as a hot-air balloon, rises over dark water with a small gondola hanging below it. A pale glow surrounds it." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true">Light · the paper left bare</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>light = e<sup>−r² / 2σ²</sup></b><span class="g">brightest at the center, fading with distance r</span></div><div data-at="0.4"><b>σ sets how far the glow spreads</b><span class="g">small: a spark. large: a dawn</span></div><div data-at="0.7"><b>y = y₀ − v·t</b><span class="g">and the eye keeps rising</span></div></div>
+    <div class="palette" id="glowBar">
+      <label for="glow">Glow</label>
+      <input type="range" id="glow" min="5" max="26" value="8" step="1" aria-valuetext="narrow">
+      <output id="glowOut" for="glow">σ = 8</output>
+    </div>
+    <p class="sr-only" id="s2d">The eye looks upward. Its iris sits near the top of the ball and lashes fringe its upper edge. A slider widens the glow around it from a thin halo to a light that fills half the sky. As the page scrolls the balloon climbs from just above the horizon toward the top of the sheet.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The light</h2><p>In a charcoal drawing, the brightest thing is the paper. Light is made by leaving it bare, or by lifting the black back off.</p></div></div>
+    <div class="step"><div class="card"><p>This is his eye-balloon, from a print of 1882: a giant eye drifting up over dark water, with a small gondola hanging beneath.</p></div></div>
+    <div class="step"><div class="card"><p>The glow around it follows a bell curve: brightest at the center, fading fast, never quite reaching zero. Slide the glow.</p></div></div>
+    <div class="step"><div class="card"><p>One historian says Redon wanted his pictures to show light winning over darkness.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the turn -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="A bouquet in a vase, first in grays, then filling with color: orange, yellow, pink, blue and violet flowers against a dark ground." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true">The 1890s · pastel and oil</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>gray = 0.3·R + 0.59·G + 0.11·B</b><span class="g">how bright a color is, as one number</span></div><div data-at="0.3"><b>color = (1 − s)·gray + s·hue</b><span class="g">s runs from 0, all gray, to 1, full color</span></div></div>
+    <div class="palette" id="satBar">
+      <label for="sat">Color</label>
+      <input type="range" id="sat" min="0" max="100" value="0" step="1" aria-valuetext="all gray">
+      <output id="satOut" for="sat">s = 0.00</output>
+    </div>
+    <p class="sr-only" id="s3d">A slider marked Color runs from all gray to full color. The drawing does not change shape. At zero it could be one of the black pictures. At one, fifteen flowers show in pairs of opposite colors above a blue vase.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The turn</h2><p>In the 1890s Redon took up pastel and oil paint, and they became his favorite materials. After 1900 he made no more <i>noirs</i>.</p></div></div>
+    <div class="step"><div class="card"><p>Pastel is close kin to charcoal: a stick of dust dragged over rough paper. His hand already knew the motion. The dust was new.</p></div></div>
+    <div class="step"><div class="card"><p>Slide the color. The picture underneath stays the same. Each gray gives way to the hue it was standing in for.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · the flowers -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="The bouquet in full color. Every flower is the same looping curve, and the number of petals changes with a slider." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true">Flowers · one curve, many petals</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>r = cos(k·θ)</b><span class="g">distance from the center, as you go around</span></div><div data-at="0.36"><b>petals: k if k is odd, 2k if k is even</b><span class="g">the curve retraces itself when k is odd</span></div><div data-at="0.66"><b>opposite = hue + 180°</b><span class="g">yellow by violet, red by green</span></div></div>
+    <div class="palette" id="petalBar">
+      <label for="petal">k</label>
+      <input type="range" id="petal" min="2" max="9" value="5" step="1" aria-valuetext="k equals 5, 5 petals">
+      <output id="petalOut" for="petal">k = 5</output>
+    </div>
+    <p class="sr-only" id="s4d">A slider sets a number k from 2 to 9. Beside the bouquet one large flower is traced slowly as a single line. With k at 3 it has three petals, at 4 it has eight, at 5 it has five. All fifteen flowers in the vase change with it.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · The flowers</h2><p>From then on he drew flowers again and again: bouquets in vases, some real and some invented.</p></div></div>
+    <div class="step"><div class="card"><p>A flower is a curve that keeps coming home. Let the distance from the center rise and fall as you go around, and petals appear. Slide k.</p></div></div>
+    <div class="step"><div class="card"><p>Odd values of k give k petals. Even values give twice as many. Nobody expects that the first time.</p></div></div>
+    <div class="step"><div class="card"><p>He set opposite colors side by side, yellow against violet and red against green, so that each makes the other glow.</p></div></div>
+  </div>
+</section>
+
+<!-- V · what he kept -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="The bouquet again. As the black is taken out, the ground turns pale gray, the outlines vanish and the picture flattens. As the black returns, the flowers glow." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true">Black · the bottom of the scale</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>range = lightest − darkest</b><span class="g">how far a picture reaches</span></div><div data-at="0.4"><b>color left = e<sup>−k·depth</sup></b><span class="g">the rule from the sea piece: down, colors go</span></div><div data-at="0.7"><b>depth → 0, black stays</b><span class="g">he came back up and kept the dark</span></div></div>
+    <div class="palette" id="blackBar">
+      <label for="black">Black</label>
+      <input type="range" id="black" min="0" max="100" value="100" step="1" aria-valuetext="all of it">
+      <output id="blackOut" for="black">range 0.85</output>
+    </div>
+    <p class="sr-only" id="s5d">A slider marked Black runs from none to all. With none, the darkest thing in the picture is a middle gray and a readout gives the range from lightest to darkest as about 0.5. With all of it, the ground is nearly black, the vase casts a shadow, and the range is about 0.85.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · What he kept</h2><p>The easy story is that he left black behind. Take the black out of the bouquet and see what happens.</p></div></div>
+    <div class="step"><div class="card"><p>The flowers are still bright, and the picture goes flat. The darks were holding the lights up.</p></div></div>
+    <div class="step"><div class="card"><p>A picture's reach is the distance from its lightest light to its darkest dark. Twenty years of charcoal had taught him the bottom of that scale.</p></div></div>
+    <div class="step"><div class="card"><p>In the sea piece of this series, colors vanish as you sink and return as you rise. Redon's working life can be read the same way, with one addition. He brought the dark back up with him.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>Down into black,<br>and back with color.</h2>
+  <p class="lede">The hand that had learned every gray picked up color and already knew where the shadows go.</p>
+  <p class="lede">Next time a bright picture holds your eye, look for the dark that is doing the work.</p>
+
+  <h3 id="find">See the real thing</h3>
+  <ul class="objs">
+    <li class="obj"><b>The Eye, Like a Strange Balloon Moves Towards Infinity</b><span>Plate one from <i>To Edgar Poe</i>, 1882. Lithograph in black on ivory China paper.</span><span class="who">Art Institute of Chicago · The Stickney Collection · Public Domain · Part II</span></li>
+    <li class="obj"><b>The Eye, Like a Strange Balloon Moves Towards Infinity</b><span>1882. Lithograph. Another impression of the same print.</span><span class="who">Harvard Art Museums/Fogg Museum · Gift of Philip Hofer · M4250</span><a href="https://hvrd.art/o/272934">See the print</a></li>
+    <li class="obj"><b>Bouquet of Flowers</b><span>About 1900&ndash;1905. Pastel on paper. 80.3 &times; 64.1 cm.</span><span class="who">The Metropolitan Museum of Art, New York · Gift of Mrs. George B. Post, 1956 · 56.50 · Open Access · Parts III to V</span><a href="https://metmuseum.org/art/collection/search/437379">See the pastel</a></li>
+    <li class="obj"><b>Wildflowers</b><span>About 1905. Pastel on brown wove paper.</span><span class="who">National Gallery of Art, Washington · Gift of Loula D. Lasker · Open Access</span><a href="https://www.nga.gov/artworks/46299-wildflowers">See the pastel</a></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>Redon's dates, the <i>noirs</i>, the turn to pastel and oil, and the historian's remark: <a href="https://en.wikipedia.org/wiki/Odilon_Redon">Wikipedia, &ldquo;Odilon Redon&rdquo;</a>.</li>
+    <li>The eye-balloon print: <a href="https://en.wikipedia.org/wiki/The_Eye,_Like_a_Strange_Balloon,_Mounts_Towards_Infinity">Wikipedia</a>; the record at the <a href="https://collections.lacma.org/object/75354">Los Angeles County Museum of Art</a>.</li>
+    <li>Color after a career in black and white: the <a href="https://opencollection.brooklynmuseum.org/objects/4740">Brooklyn Museum</a> on <i>Anemones and Tulips</i>; the <a href="https://www.clevelandart.org/art/1926.1976">Cleveland Museum of Art</a> on <i>Violette Heymann</i>.</li>
+    <li>Opposite colors set side by side: the <a href="https://www.mfa.org/collections/object/large-green-vase-with-mixed-flowers-33320">Museum of Fine Arts, Boston</a> on <i>Large Green Vase with Mixed Flowers</i>.</li>
+    <li>The reading of his career as a descent and a return is this piece's own. The flowers are drawn with a rose curve because it teaches well. Redon used his eye.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false">Exhibit mode</button>
+  </div>
+  <div class="colophon">
+    Seen, No. 12. Drawn in code. No photographs and no image generators. The spider, the eye-balloon and the bouquet are diagrams after Redon's subjects.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.<br>
+    Previous: <i>Why Klimt Went to Ravenna</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span>Exhibit mode · touch to explore</span><button type="button" id="exitExhibit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+
+/* ---------- palette and small tools ---------- */
+const BLUE = '#9cc3f0', BONE = '#ece6da', MUTE = '#9a968c', DARK = '#0e0d0c';
+const FX = [...document.querySelectorAll('.fx')].map(el => [...el.children]);
+function fx(i, p) { let last = FX[i][0]; for (const d of FX[i]) { const on = p >= +d.dataset.at; d.classList.toggle('on', on); d.classList.remove('cur'); if (on) last = d; } last.classList.add('cur'); }
+function ground(ctx, w, h, cx, cy) {
+  ctx.fillStyle = DARK; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * .7); g.addColorStop(0, 'rgba(156,195,240,.09)'); g.addColorStop(1, 'rgba(14,13,12,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+function zone(F, w, h) { // where a drawing can sit without touching the labels, the controls or the text cards
+  const y0 = F.wide ? (exhibit ? 158 : 134) : w >= 900 ? 224 : 166, y1 = F.wide ? h - 92 : Math.max(y0 + 220, h * .665), x0 = F.cx - F.aw / 2;
+  return { x0, x1: x0 + F.aw, y0, y1, cx: F.cx, cy: (y0 + y1) / 2, zw: F.aw, zh: y1 - y0 };
+}
+const fsOf = (F, w) => (F.wide ? clamp(w / 125, 11, 14) : clamp(w / 40, 9.5, 15)) * (exhibit ? 1.25 : 1);
+function bar(el, on) { if (el._on !== on) { el._on = on; el.classList.toggle('on', on); el.inert = !on; } }
+function txt(el, s) { if (el._s !== s) { el._s = s; el.textContent = s; } }
+function layout(Z, fs, col) { // the picture on the left, a column of notes on the right
+  const W = Math.min((Z.zw - (col ? Z.zw * .26 : 0)) * .96, (Z.zh - fs * 2.8) / 1.25), H = W * 1.25, colW = col ? Math.min(Z.zw - W - 16, W * .7) : 0;
+  return { W, H, colW, x: Z.cx - (W + (col ? colW + 16 : 0)) / 2, y: Z.y0 + Math.max(0, (Z.zh - fs * 2.8 - H) / 2) };
+}
+function oval(k, x, y, rx, ry, c, rot = 0) { k.fillStyle = c; k.beginPath(); k.ellipse(x, y, rx, ry, rot, 0, TAU); k.fill(); }
+const hash = (i, j) => frac(Math.sin(i * 127.1 + j * 311.7) * 43758.5453);
+function noise(x, y) { const i = Math.floor(x), j = Math.floor(y), u = sstep(x - i), v = sstep(y - j); return lerp(lerp(hash(i, j), hash(i + 1, j), u), lerp(hash(i, j + 1), hash(i + 1, j + 1), u), v); }
+const border = (ctx, G) => { ctx.strokeStyle = 'rgba(156,195,240,.4)'; ctx.lineWidth = 1; ctx.strokeRect(G.x - .5, G.y - .5, G.W + 1, G.H + 1); };
+
+/* ---------- CHARCOAL. A tone picture is drawn small, then every pixel asks one question:
+   is pressure x darkness greater than the paper's tooth here? If so, it takes the dust. ---------- */
+const TW = 150, TH = 188;
+const TOOTH = (() => { const R = rng(1871), a = new Float32Array(TW * TH); for (let y = 0; y < TH; y++) for (let x = 0; x < TW; x++) a[y * TW + x] = .55 * R() + .3 * noise(x / 5, y / 5) + .15 * (.5 + .5 * Math.sin(y * 1.7)); return a; })();
+const tc = document.createElement('canvas'); tc.width = TW; tc.height = TH; const tk = tc.getContext('2d', { willReadFrequently: true });
+const oc = document.createElement('canvas'); oc.width = TW; oc.height = TH; const ok = oc.getContext('2d'), oim = ok.createImageData(TW, TH);
+let marked = 0;
+function charcoal(draw, press) { // draw(k) paints in a 100 x 125 space: white is bare paper, black is as dark as it goes
+  tk.setTransform(TW / 100, 0, 0, TW / 100, 0, 0); tk.fillStyle = '#fff'; tk.fillRect(0, 0, 100, 126); draw(tk);
+  const d = tk.getImageData(0, 0, TW, TH).data, o = oim.data; let n = 0;
+  for (let i = 0; i < TW * TH; i++) { const a = clamp(((255 - d[i * 4]) / 255 * press - TOOTH[i]) * 5 + .5, 0, 1); n += a; o[i * 4] = lerp(233, 30, a); o[i * 4 + 1] = lerp(225, 27, a); o[i * 4 + 2] = lerp(208, 25, a); o[i * 4 + 3] = 255; }
+  ok.putImageData(oim, 0, 0); marked = n / (TW * TH); return oc;
+}
+function spiderTone(k) { // a round spider with ten legs and a grin
+  const g = k.createLinearGradient(0, 0, 0, 125); g.addColorStop(0, '#dcdcdc'); g.addColorStop(1, '#c2c2c2'); k.fillStyle = g; k.fillRect(0, 0, 100, 126);
+  k.fillStyle = '#8c8c8c'; k.fillRect(0, 105, 100, 21); oval(k, 50, 106, 24, 3.2, 'rgba(0,0,0,.55)');
+  k.strokeStyle = '#0c0c0c'; k.lineWidth = 1.5; k.lineCap = 'round';
+  for (let i = 0; i < 10; i++) { const m = i < 5 ? -1 : 1, j = i % 5, kx = 50 + m * (17 + j * 5.6), ky = 38 + j * 9, fx2 = 50 + m * (20 + j * 6.8); k.beginPath(); k.moveTo(50 + m * 10, 62); k.quadraticCurveTo(kx - m * 4, ky - 12, kx + m * 2, ky + 4); k.quadraticCurveTo(fx2 + m * 4, (ky + 105) / 2, fx2, 105); k.stroke(); }
+  const rg = k.createRadialGradient(50, 64, 5, 50, 64, 22); rg.addColorStop(0, '#000'); rg.addColorStop(.78, '#080808'); rg.addColorStop(1, 'rgba(8,8,8,0)'); k.fillStyle = rg; k.beginPath(); k.arc(50, 64, 22, 0, TAU); k.fill();
+  for (const m of [-1, 1]) { oval(k, 50 + m * 6.5, 59.5, 3.1, 2.3, '#ececec'); oval(k, 50 + m * 6.2, 59.8, 1.15, 1.15, '#000'); }
+  k.strokeStyle = '#e2e2e2'; k.lineWidth = 1.7; k.beginPath(); k.arc(50, 63, 10, .14 * Math.PI, .86 * Math.PI); k.stroke();
+}
+function balloonTone(k, by, sig) { // the eye-balloon over dark water; its glow falls off as e^(-r^2 / 2 sigma^2)
+  k.fillStyle = '#1b1b1b'; k.fillRect(0, 0, 100, 126);
+  const lg = k.createLinearGradient(0, 66, 0, 106); lg.addColorStop(0, 'rgba(150,150,150,0)'); lg.addColorStop(1, 'rgba(165,165,165,.7)'); k.fillStyle = lg; k.fillRect(0, 66, 100, 40);
+  const rg = k.createRadialGradient(50, by, 0, 50, by, sig * 3); for (let i = 0; i <= 9; i++) { const r = i / 9 * 3; rg.addColorStop(i / 9, `rgba(255,255,255,${(.97 * Math.exp(-r * r / 2)).toFixed(3)})`); } k.fillStyle = rg; k.fillRect(0, 0, 100, 126);
+  k.fillStyle = '#0b0b0b'; k.fillRect(0, 106, 100, 20); k.strokeStyle = '#0b0b0b'; k.lineWidth = 1; k.lineCap = 'round';
+  for (let i = 0; i < 9; i++) { k.beginPath(); k.moveTo(4 + i * 3.4, 108); k.quadraticCurveTo(3 + i * 3.6, 100 - (i % 3) * 3, 1 + i * 4.4, 93 - (i % 4) * 2.5); k.stroke(); }
+  k.strokeStyle = '#1a1a1a'; k.lineWidth = .55; for (const dx of [-13, -5, 5, 13]) { k.beginPath(); k.moveTo(50 + dx * 1.25, by + 13.5); k.lineTo(50 + dx * .42, by + 35); k.stroke(); }
+  oval(k, 50, by + 36.5, 7.2, 2.3, '#101010'); oval(k, 50, by + 33.2, 3.1, 3.4, '#191919');
+  oval(k, 50, by, 19, 19, '#f6f6f6'); const sh = k.createLinearGradient(0, by - 4, 0, by + 19); sh.addColorStop(0, 'rgba(0,0,0,0)'); sh.addColorStop(1, 'rgba(0,0,0,.6)'); k.fillStyle = sh; k.beginPath(); k.arc(50, by, 19, 0, TAU); k.fill();
+  oval(k, 50, by - 9.5, 9.6, 7, '#3c3c3c'); oval(k, 50, by - 11, 4.7, 3.6, '#000'); oval(k, 52.4, by - 12.6, 1.2, .9, '#fff');
+  k.strokeStyle = '#0d0d0d'; k.lineWidth = 1.3; k.beginPath(); k.arc(50, by, 19, 1.07 * Math.PI, 1.93 * Math.PI); k.stroke(); k.lineWidth = .7;
+  for (let i = 0; i < 11; i++) { const a = Math.PI * (1.12 + i * .076); k.beginPath(); k.moveTo(50 + 19 * Math.cos(a), by + 19 * Math.sin(a)); k.lineTo(50 + 22.5 * Math.cos(a), by + 22.5 * Math.sin(a)); k.stroke(); }
+}
+
+/* ---------- COLOR. Every hue passes through two small functions before it is used. ---------- */
+const rgbOf = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const lum = c => (.3 * c[0] + .59 * c[1] + .11 * c[2]) / 255;
+const mixRGB = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+const cssOf = c => `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
+const turn = (c, s) => { const g = lum(c) * 255; return mixRGB([g, g, g], c, s); }; // color = (1 - s) gray + s hue
+const PAL = ['#f3d36b', '#8b6fd0', '#e8674a', '#62b58a', '#f0a04b', '#6fa4e6', '#e889a8', '#f2efe6', '#d0434f'].map(rgbOf); // neighbors are near-opposites
+const FLW = (() => { const R = rng(1905), a = []; for (let i = 0; i < 15; i++) { const an = -Math.PI * (.06 + .88 * (i + R() * .5) / 15), rr = 12 + R() * 22; a.push([50 + Math.cos(an) * rr * 1.18, 61 + Math.sin(an) * rr, 7.5 + R() * 5, i % PAL.length, R() * TAU]); } return a.sort((p, q) => q[2] - p[2]); })();
+const DUSTC = (() => { const c = document.createElement('canvas'); c.width = 200; c.height = 250; const k = c.getContext('2d'), R = rng(12); for (let i = 0; i < 9000; i++) { k.fillStyle = R() < .5 ? `rgba(20,16,12,${.05 + R() * .2})` : `rgba(255,250,240,${.04 + R() * .14})`; k.fillRect(R() * 200, R() * 250, 1 + R(), 1 + R()); } return c; })();
+function rose(k, x, y, R, n, rot, upto = 1) { k.beginPath(); const N = Math.round(200 * upto); for (let i = 0; i <= N; i++) { const th = i / 200 * TAU, r = R * Math.cos(n * th), px = x + r * Math.cos(th + rot), py = y + r * Math.sin(th + rot); i ? k.lineTo(px, py) : k.moveTo(px, py); } }
+function bouquet(k, o) { // design units 100 x 125. o.k = the petal number, o.sat and o.black run 0 to 1
+  const C = (c, a) => cssOf(turn(c, o.sat)), B = (pale, dark) => C(mixRGB(rgbOf(pale), rgbOf(dark), o.black));
+  k.fillStyle = B('#b9aeb4', '#1b1613'); k.fillRect(0, 0, 100, 125);
+  const gl = turn(mixRGB(rgbOf('#d9cdbd'), rgbOf('#5e4838'), o.black), o.sat), rg = k.createRadialGradient(50, 56, 4, 50, 56, 52); rg.addColorStop(0, cssOf(gl)); rg.addColorStop(1, `rgba(${gl[0] | 0},${gl[1] | 0},${gl[2] | 0},0)`); k.globalAlpha = .7; k.fillStyle = rg; k.fillRect(0, 0, 100, 125); k.globalAlpha = 1;
+  k.fillStyle = B('#a89c90', '#2b221c'); k.fillRect(0, 109, 100, 16);
+  k.strokeStyle = C(rgbOf('#5f8f5a')); k.lineWidth = .8; k.lineCap = 'round'; for (const f of FLW) { k.beginPath(); k.moveTo(50, 86); k.quadraticCurveTo((50 + f[0]) / 2, f[1] + 12, f[0], f[1]); k.stroke(); }
+  k.fillStyle = C(rgbOf('#4f8a57')); for (let i = 0; i < 7; i++) { const a = -Math.PI * (.1 + i * .135); k.beginPath(); k.ellipse(50 + Math.cos(a) * 17, 80 + Math.sin(a) * 12, 6.5, 2.2, a, 0, TAU); k.fill(); }
+  oval(k, 53, 111, 15, 2.6, `rgba(0,0,0,${.5 * o.black})`);
+  k.fillStyle = C(rgbOf('#5f72b0')); k.beginPath(); k.moveTo(41.5, 85); k.bezierCurveTo(35, 93, 35.5, 105, 42.5, 111); k.lineTo(57.5, 111); k.bezierCurveTo(64.5, 105, 65, 93, 58.5, 85); k.closePath(); k.fill();
+  k.fillStyle = C(rgbOf('#a9b8e4')); k.beginPath(); k.ellipse(44.5, 97, 2, 8, .12, 0, TAU); k.fill(); k.fillStyle = `rgba(10,8,6,${.42 * o.black})`; k.beginPath(); k.ellipse(60, 98, 3.4, 10, -.1, 0, TAU); k.fill();
+  for (const f of FLW) { rose(k, f[0], f[1], f[2], o.k, f[4]); k.fillStyle = C(PAL[f[3]]); k.fill(); if (o.black > 0) { k.strokeStyle = `rgba(18,14,11,${.6 * o.black})`; k.lineWidth = .32; k.stroke(); } rose(k, f[0], f[1], f[2] * .58, o.k, f[4] + Math.PI / (2 * o.k)); k.fillStyle = C(mixRGB(PAL[f[3]], [255, 250, 238], .45)); k.fill(); oval(k, f[0], f[1], f[2] * .15, f[2] * .15, C(mixRGB(PAL[(f[3] + 1) % PAL.length], [40, 28, 18], .35))); }
+}
+function picture(ctx, G, o) { ctx.save(); ctx.beginPath(); ctx.rect(G.x, G.y, G.W, G.H); ctx.clip(); ctx.translate(G.x, G.y); ctx.scale(G.W / 100, G.W / 100); bouquet(ctx, o); ctx.restore(); ctx.globalAlpha = .55; ctx.drawImage(DUSTC, G.x, G.y, G.W, G.H); ctx.globalAlpha = 1; border(ctx, G); }
+
+/* ---------- hero: dust that is gray on the left and colored on the right ---------- */
+const heroC = document.getElementById('heroCanvas');
+const MOTES = (() => { const R = rng(1840), a = []; for (let i = 0; i < 380; i++) a.push([R(), R(), 1 + R() * 2.6, Math.floor(R() * PAL.length), R()]); return a; })();
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC), T2 = reduce ? 0 : t; ground(ctx, w, h, w * .5, h * .45);
+  for (const m of MOTES) { const x = frac(m[0] + T2 * .000008 * (1 + m[4])), y = m[1] + Math.sin(T2 * .0004 + m[4] * 9) * .01; ctx.globalAlpha = fade * (.3 + .6 * m[4]) * (.5 + .5 * x); ctx.fillStyle = cssOf(turn(PAL[m[3]], sstep(ramp(x, .3, .8)))); ctx.fillRect(x * w, y * h, m[2], m[2]); }
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- I · the black: mark where pressure x darkness > tooth ---------- */
+const c1 = document.querySelector('#s1 canvas'), pressBar = document.getElementById('pressBar'), pressIn = document.getElementById('press'), pressOut = document.getElementById('pressOut');
+let userPress = false; pressBar.inert = true; pressIn.addEventListener('input', () => { userPress = true; });
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(0, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(pressBar, p > .12 && p < .94);
+  if (!userPress) pressIn.value = String(Math.round(lerp(15, 115, ease(p, .1, .62))));
+  const pr = +pressIn.value / 100, lab = pr.toFixed(2); txt(pressOut, lab); if (pressIn._v !== lab) { pressIn._v = lab; pressIn.setAttribute('aria-valuetext', pr < .4 ? 'light' : pr < .9 ? 'medium' : 'heavy'); }
+  const G = layout(Z, fs, true); ctx.drawImage(charcoal(spiderTone, pr), G.x, G.y, G.W, G.H); border(ctx, G);
+  const ix = G.x + G.W + 16; mono(ctx, `pressure ${lab}`, ix, G.y + fs, BONE, 'left', fs + 2); mono(ctx, `${Math.round(marked * 100)}% of the`, ix, G.y + fs * 3, BLUE, 'left', fs); mono(ctx, 'sheet marked', ix, G.y + fs * 4.6, BLUE, 'left', fs);
+  const sw = Math.min(G.colW, 90), sy = G.y + fs * 7; if (G.colW > 50) { for (let i = 0; i < 5; i++) { ctx.fillStyle = `rgb(${lerp(233, 30, i / 4) | 0},${lerp(225, 27, i / 4) | 0},${lerp(208, 25, i / 4) | 0})`; ctx.fillRect(ix + i * sw / 5, sy, sw / 5, sw / 5); } const mx = ix + clamp(marked, 0, 1) * sw; ctx.strokeStyle = BLUE; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(mx, sy - 4); ctx.lineTo(mx, sy + sw / 5 + 4); ctx.stroke(); mono(ctx, 'mist → pitch', ix, sy + sw / 5 + fs * 1.4, MUTE, 'left', fs - 1); }
+}
+
+/* ---------- II · the light: light = e^(-r^2 / 2 sigma^2) ---------- */
+const c2 = document.querySelector('#s2 canvas'), glowBar = document.getElementById('glowBar'), glowIn = document.getElementById('glow'), glowOut = document.getElementById('glowOut');
+let userGlow = false; glowBar.inert = true; glowIn.addEventListener('input', () => { userGlow = true; });
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(1, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(glowBar, p > .12 && p < .94);
+  if (!userGlow) glowIn.value = String(Math.round(lerp(8, 20, ease(p, .3, .66))));
+  const sig = +glowIn.value, by = lerp(80, 40, ease(p, .06, .9)); txt(glowOut, 'σ = ' + sig); if (glowIn._v !== sig) { glowIn._v = sig; glowIn.setAttribute('aria-valuetext', sig < 11 ? 'narrow' : sig < 19 ? 'medium' : 'wide'); }
+  const G = layout(Z, fs, true); ctx.drawImage(charcoal(k => balloonTone(k, by, sig), 1.05), G.x, G.y, G.W, G.H); border(ctx, G);
+  if (G.colW > 50) { // the bell curve itself
+    const gx = G.x + G.W + 16, gw = G.colW - 4, gh = Math.min(G.H * .3, gw * .8), gy = G.y + fs * 1.5, fsm = Math.max(8.5, fs - 1);
+    ctx.strokeStyle = 'rgba(236,230,218,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(gx, gy + gh); ctx.lineTo(gx + gw, gy + gh); ctx.stroke();
+    ctx.strokeStyle = BLUE; ctx.lineWidth = 2; ctx.beginPath(); for (let i = 0; i <= 50; i++) { const r = (i / 50 - .5) * 100, v = Math.exp(-r * r / (2 * sig * sig)); i ? ctx.lineTo(gx + gw * i / 50, gy + gh * (1 - v)) : ctx.moveTo(gx, gy + gh * (1 - v)); } ctx.stroke();
+    mono(ctx, 'light', gx, gy - fsm * .9, MUTE, 'left', fsm); mono(ctx, 'distance r →', gx + gw, gy + gh + fsm * 1.3, MUTE, 'right', fsm);
+    mono(ctx, `σ = ${sig}`, gx, gy + gh + fsm * 3.4, BONE, 'left', fs + 2); mono(ctx, `half as bright`, gx, gy + gh + fsm * 3.4 + fs * 1.9, BLUE, 'left', fs); mono(ctx, `at r = ${(1.177 * sig).toFixed(0)}`, gx, gy + gh + fsm * 3.4 + fs * 3.5, BLUE, 'left', fs);
+  }
+}
+
+/* ---------- III · the turn: color = (1 - s) gray + s hue ---------- */
+const c3 = document.querySelector('#s3 canvas'), satBar = document.getElementById('satBar'), satIn = document.getElementById('sat'), satOut = document.getElementById('satOut');
+let userSat = false; satBar.inert = true; satIn.addEventListener('input', () => { userSat = true; });
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(2, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(satBar, p > .1 && p < .95);
+  if (!userSat) satIn.value = String(Math.round(100 * ease(p, .28, .78)));
+  const s = +satIn.value / 100, lab = 's = ' + s.toFixed(2); txt(satOut, lab); if (satIn._v !== lab) { satIn._v = lab; satIn.setAttribute('aria-valuetext', s < .05 ? 'all gray' : s > .95 ? 'full color' : Math.round(s * 100) + ' percent color'); }
+  const G = layout(Z, fs, true); picture(ctx, G, { k: 5, sat: s, black: 1 });
+  const ix = G.x + G.W + 16, sw = Math.min(G.colW, 110) / 3, fsm = Math.max(8.5, fs - 1); mono(ctx, lab, ix, G.y + fs, BONE, 'left', fs + 2);
+  mono(ctx, s < .12 ? '1871 into the 1890s' : s > .88 ? 'after 1900' : 'the 1890s', ix, G.y + fs * 3, BLUE, 'left', fs); mono(ctx, s < .12 ? 'the noirs' : s > .88 ? 'no more noirs' : 'pastel and oil', ix, G.y + fs * 4.6, BLUE, 'left', fs);
+  if (G.colW > 50) [0, 2, 5].forEach((pi, i) => { const c = PAL[pi], y = G.y + fs * 7 + i * (sw + 6), g = lum(c) * 255; // three hues: gray, now, full
+    [[g, g, g], turn(c, s), c].forEach((cc, j) => { ctx.fillStyle = cssOf(cc); ctx.fillRect(ix + j * sw, y, sw - 3, sw - 3); }); if (i === 0) ['gray', 'now', 'hue'].forEach((n, j) => mono(ctx, n, ix + j * sw, y - fsm * .9, MUTE, 'left', fsm)); });
+}
+
+/* ---------- IV · the flowers: r = cos(k theta) ---------- */
+const c4 = document.querySelector('#s4 canvas'), petalBar = document.getElementById('petalBar'), petalIn = document.getElementById('petal'), petalOut = document.getElementById('petalOut');
+let userPetal = false; petalBar.inert = true; petalIn.addEventListener('input', () => { userPetal = true; });
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(3, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(petalBar, p > .1 && p < .95);
+  if (!userPetal) petalIn.value = String([5, 3, 4, 7, 2, 6, 5][Math.min(6, Math.floor(ramp(p, .22, .86) * 7))]);
+  const k = +petalIn.value, petals = k % 2 ? k : 2 * k; txt(petalOut, 'k = ' + k); if (petalIn._v !== k) { petalIn._v = k; petalIn.setAttribute('aria-valuetext', `k equals ${k}, ${petals} petals`); }
+  const G = layout(Z, fs, true); picture(ctx, G, { k, sat: 1, black: 1 });
+  const ix = G.x + G.W + 16, R = Math.min(G.colW * .46, G.H * .2), ox = ix + R + 2, oy = G.y + R + fs * 1.2, u = reduce ? 1 : frac(t * .00012);
+  if (G.colW > 50) { ctx.strokeStyle = 'rgba(236,230,218,.25)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(ox, oy, R, 0, TAU); ctx.stroke(); rose(ctx, ox, oy, R, k, -Math.PI / 2); ctx.strokeStyle = 'rgba(156,195,240,.35)'; ctx.lineWidth = 1.2; ctx.stroke(); rose(ctx, ox, oy, R, k, -Math.PI / 2, u); ctx.strokeStyle = BLUE; ctx.lineWidth = 2.2; ctx.stroke();
+    const th = u * TAU, r = R * Math.cos(k * th); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ox + r * Math.cos(th - Math.PI / 2), oy + r * Math.sin(th - Math.PI / 2), 3.5, 0, TAU); ctx.fill(); }
+  const ty = oy + R + fs * 1.8; mono(ctx, `k = ${k}`, ix, ty, BONE, 'left', fs + 2); mono(ctx, `${petals} petals`, ix, ty + fs * 1.9, BLUE, 'left', fs); mono(ctx, k % 2 ? 'odd: k' : 'even: 2k', ix, ty + fs * 3.5, MUTE, 'left', fs - .5);
+}
+
+/* ---------- V · what he kept: range = lightest - darkest ---------- */
+const c5 = document.querySelector('#s5 canvas'), blackBar = document.getElementById('blackBar'), blackIn = document.getElementById('black'), blackOut = document.getElementById('blackOut');
+let userBlack = false; blackBar.inert = true; blackIn.addEventListener('input', () => { userBlack = true; });
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(4, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(blackBar, p > .1 && p < .95);
+  if (!userBlack) blackIn.value = String(Math.round(100 * (p < .5 ? 1 - ease(p, .16, .4) : ease(p, .56, .8))));
+  const b = +blackIn.value / 100, dark = Math.min(.43, lum(mixRGB(rgbOf('#b9aeb4'), rgbOf('#1b1613'), b))), range = lum(PAL[7]) - dark, lab = 'range ' + range.toFixed(2); txt(blackOut, lab); if (blackIn._v !== lab) { blackIn._v = lab; blackIn.setAttribute('aria-valuetext', b < .1 ? 'none' : b > .9 ? 'all of it' : Math.round(b * 100) + ' percent'); }
+  const G = layout(Z, fs, true); picture(ctx, G, { k: 5, sat: 1, black: b });
+  const ix = G.x + G.W + 16, bw = Math.min(G.colW * .32, 30), bh = Math.min(G.H * .5, 170), by = G.y + fs * 3.4; mono(ctx, lab, ix, G.y + fs, BONE, 'left', fs + 2);
+  if (G.colW > 50) { // a ruler from white to black, with the picture's reach marked on it
+    const gr = ctx.createLinearGradient(0, by, 0, by + bh); gr.addColorStop(0, '#f4f1ea'); gr.addColorStop(1, '#0c0b0a'); ctx.fillStyle = gr; ctx.fillRect(ix, by, bw, bh); ctx.strokeStyle = 'rgba(236,230,218,.35)'; ctx.lineWidth = 1; ctx.strokeRect(ix + .5, by + .5, bw - 1, bh - 1);
+    const y0 = by + bh * (1 - lum(PAL[7])), y1 = by + bh * (1 - dark); ctx.strokeStyle = BLUE; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(ix + bw + 7, y0); ctx.lineTo(ix + bw + 12, y0); ctx.lineTo(ix + bw + 12, y1); ctx.lineTo(ix + bw + 7, y1); ctx.stroke();
+    mono(ctx, 'lightest', ix + bw + 18, y0, BLUE, 'left', fs - 1); mono(ctx, 'darkest', ix + bw + 18, y1, BLUE, 'left', fs - 1);
+  }
+}
+
+/* ---------- exhibit mode and the loop ---------- */
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

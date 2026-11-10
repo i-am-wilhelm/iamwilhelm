@@ -116,7 +116,7 @@ served by the Worker (`worker/index.ts`, plus its entry in
 `run_worker_first` in both wrangler configs), not from `public/`. Keep it
 permanently: Google re-checks the file and verification lapses if it goes.
 
-Branch previews: pushes to `museum-homepage`, `scrolly/**`, `facelift/**`, `services/**` and `geo/**` deploy to the
+Branch previews: pushes to `museum-homepage`, `scrolly/**`, `facelift/**`, `services/**`, `geo/**` and `feat/**` deploy to the
 `iamwilhelm-preview` worker on workers.dev (`.github/workflows/preview.yml`,
 `wrangler.preview.jsonc`). Production deploys only from `main`.
 

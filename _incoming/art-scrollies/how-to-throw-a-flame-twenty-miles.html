@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Throw a Flame Twenty Miles</title>
+<meta name="description" content="A lamp shines in every direction. A lens cut into rings gathers it into a beam a ship can see from twenty miles out. Five functions, drawn on graph paper: the inverse square, the bend, the rings, the horizon and the flash.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#0a1220; --bone:#e9edf2; --copper:#7f9fc0; --copper-hi:#ffe2a8; --acid:#9fd8e8; --ink:#e2584a; --gold:#f2c46d; --muted:#8d9bb0; --paper:#e9edf2;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#0a1220;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#cfc6b2;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(11,19,33,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(242,196,109,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#fff3dc}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#fff3dc}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(10,18,32,.72);border:1px solid rgba(242,196,109,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(10,18,32,.82);border:1px solid rgba(242,196,109,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(242,196,109,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#cfc6b2;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(242,196,109,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#cfc6b2}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#cfc6b2;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(242,196,109,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#0a1220;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#0a1220;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+
+/* additions for this piece: function panel and controls */
+.fx{position:absolute;left:12px;top:46px;font-family:var(--mono);font-size:11px;line-height:1.75;color:var(--bone);background:rgba(10,18,32,.86);border:1px solid rgba(242,196,109,.28);padding:6px 10px;max-width:min(calc(100% - 24px),560px);pointer-events:none}
+.fx div{opacity:.3;transition:opacity .5s}
+.fx div.on{opacity:1}
+.fx b{font-weight:500;color:var(--gold)}
+.fx .g{color:#a9b6c8;font-style:italic;margin-left:.7em}
+.palette{top:12px}
+.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(38vw,220px);height:44px;accent-color:#f2c46d}
+.palette output{font-family:var(--mono);font-size:11px;min-width:5.6em;color:var(--bone)}
+.palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0a1220}
+.obj i{font-style:italic}
+@media (max-width:899px){ .palette{top:100px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+@media (max-width:520px){ .palette input[type=range]{width:32vw} #lights{gap:5px;flex-wrap:nowrap} #lights button{font-size:10.5px;letter-spacing:0;padding-left:7px;padding-right:7px;white-space:nowrap} }
+@media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:150px} }
+.exhibit .tag{font-size:13px}
+.exhibit .fx{font-size:15px;max-width:min(calc(100% - 24px),780px)}
+.exhibit .palette label,.exhibit .palette .pl{font-size:13px}
+.exhibit .palette button{font-size:15px}
+.exhibit .palette output{font-size:14px}
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .palette{left:35%;top:auto;bottom:26px} .palette .pl{display:inline} }
+@media (prefers-reduced-motion:reduce){ .fx div{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#find">Skip to the list of lights, lenses and sources</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">Seen · No. 13 · A scrolly on lamps, lenses and the curve of the sea</div>
+    <h1>How to Throw a Flame Twenty Miles</h1>
+    <p class="sub">A lamp shines in every direction, and most of that light never reaches a ship. In 1823 a French engineer cut a lens into rings, and one flame could be seen from twenty miles out.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · the flame -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A lamp on graph paper sends rays in every direction. A small ship moves away from it and the light reaching the ship fades." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">A bare lamp · light in every direction</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>brightness = 1 ÷ distance²</b><span class="g">twice as far, a quarter as bright</span></div><div data-at="0.5"><b>area lit = distance²</b><span class="g">the same light, spread over more squares</span></div></div>
+    <div class="palette" id="distBar">
+      <label for="dist">Ship</label>
+      <input type="range" id="dist" min="10" max="60" value="10" step="1" aria-valuetext="1 mile out">
+      <output id="distOut" for="dist">1.0 mi</output>
+    </div>
+    <p class="sr-only" id="s1d">A slider moves the ship from one mile out to six. A cone of light from the lamp widens as it travels. At one mile it covers one square, at two miles four squares, at three miles nine. A readout gives the brightness at the ship: one at one mile, a quarter at two, about three hundredths at six.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The flame</h2><p>A lamp throws light in every direction: up at the clouds, down at the rocks, back at the land. A ship gets the thin slice that happens to point its way.</p></div></div>
+    <div class="step"><div class="card"><p>And light thins as it travels. Twice as far away, the same light covers four times the area, so it looks a quarter as bright. Slide the ship out.</p></div></div>
+    <div class="step"><div class="card"><p>Before 1823, lighthouses put curved mirrors behind their lamps. The mirrors sent back only about half of what struck them.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the bend -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="A lamp sits behind a thick glass lens. Its rays bend as they pass through and leave the lens side by side when the lamp is in the right place." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true">A solid lens · the lamp at the focus</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>n₁ · sin θ₁ = n₂ · sin θ₂</b><span class="g">Snell's law, from the sea piece</span></div><div data-at="0.3"><b>slope out = h/s − h/f</b><span class="g">h: where the ray hits. s: lamp to lens. f: the focus</span></div><div data-at="0.6"><b>s = f → every slope is 0</b><span class="g">a beam</span></div></div>
+    <div class="palette" id="lampBar">
+      <label for="lamp">Lamp</label>
+      <input type="range" id="lamp" min="50" max="200" value="180" step="1" aria-valuetext="too far back">
+      <output id="lampOut" for="lamp">s = 1.80 f</output>
+    </div>
+    <p class="sr-only" id="s2d">A slider moves the lamp toward or away from the lens. Too far back, the rays cross after the lens and scatter. Too close, they fan out. At one exact distance, marked f, all eleven rays leave parallel and the readout says beam.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The bend</h2><p>Glass bends light. The rule is the one that squeezed the whole sky into a fish's window in the sea piece.</p></div></div>
+    <div class="step"><div class="card"><p>Shape the glass into a lens and put the lamp at one exact spot, called the focus. Every ray that hits the lens leaves it side by side with the others. Slide the lamp and find the spot.</p></div></div>
+    <div class="step"><div class="card"><p>People had tried solid lenses. A lens big enough for a lighthouse is a boulder of glass, and thick glass swallows much of the light it is meant to pass.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the rings -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="Two lenses in cross-section. One is a thick solid dome. The other keeps the same curved face cut into rings on a thin plate. Both send out the same parallel beam." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true">Fresnel's lens · one curve cut into rings</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>thickness = profile(h) mod t</b><span class="g">keep the slope, drop the bulk</span></div><div data-at="0.4"><b>glass used = area of rings ÷ area of dome</b><span class="g">more rings, less glass</span></div><div data-at="0.66"><b>sin θ = 1 ÷ 1.5 → θ ≈ 41.8°</b><span class="g">past this slant, glass acts as a mirror</span></div></div>
+    <div class="palette" id="ringBar">
+      <label for="ring">Rings</label>
+      <input type="range" id="ring" min="1" max="12" value="1" step="1" aria-valuetext="1 ring">
+      <output id="ringOut" for="ring">1</output>
+    </div>
+    <p class="sr-only" id="s3d">A slider sets the number of rings from 1 to 12. With one ring the second lens is the solid dome. With twelve it is a thin plate with a sawtooth face that uses about a sixth of the glass. Above and below the plate, small prisms catch steep rays from the lamp and turn them level.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The rings</h2><p>Augustin Fresnel, a French engineer, saw that only the curved face of a lens does the bending. The glass behind it is along for the ride.</p></div></div>
+    <div class="step"><div class="card"><p>So he sliced the curve into rings and slid each ring back toward the flat side. The slopes stay the same and most of the glass is gone. Slide the rings.</p></div></div>
+    <div class="step"><div class="card"><p>Past the edge of the lens he added prisms. Light that meets the inside of a glass face at a steep enough slant cannot get out, and bounces. The prisms catch stray rays and turn them into the beam.</p></div></div>
+    <div class="step"><div class="card"><p>His first lighthouse lens was lit on July 25, 1823, at Cordouan in France. It could be seen from more than twenty miles out.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · the reach -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="A lighthouse on a cliff beside a curved sea. A straight line of light from the lamp grazes the water at the horizon and reaches a boat beyond it." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true">The horizon · light goes straight</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>d = √(2 · R · h)</b><span class="g">R: the Earth's radius. h: height of the lamp</span></div><div data-at="0.36"><b>d ≈ 3.57 · √h</b><span class="g">kilometers, with h in meters</span></div><div data-at="0.66"><b>4 × the height → 2 × the distance</b><span class="g">a square root grows slowly</span></div></div>
+    <div class="palette" id="highBar">
+      <label for="high">Lamp height</label>
+      <input type="range" id="high" min="5" max="100" value="16" step="1" aria-valuetext="16 meters">
+      <output id="highOut" for="high">16 m</output>
+    </div>
+    <p class="sr-only" id="s4d">A slider raises the lamp from 5 to 100 meters above the sea. At 16 meters, the height of the Cape Disappointment tower alone, the horizon is about 14 kilometers away. At 67 meters, the height of its lamp on the cliff, it is about 29 kilometers. A boat with a lookout 5 meters up can see the light from 8 kilometers farther still. The drawing exaggerates the curve of the sea.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · The reach</h2><p>A perfect beam still meets one limit. The sea curves away, and light goes straight.</p></div></div>
+    <div class="step"><div class="card"><p>The higher the lamp, the farther its horizon. At the mouth of the Columbia River, the Cape Disappointment tower is 16 meters tall. The cliff under it lifts the lamp to 67.</p></div></div>
+    <div class="step"><div class="card"><p>Slide the height. Four times the height buys twice the distance.</p></div></div>
+    <div class="step"><div class="card"><p>Height cannot see around a headland. Ships coming from the north could not see the Cape Disappointment light, so in 1898 a second light was built at North Head.</p></div></div>
+  </div>
+</section>
+
+<!-- V · the signature -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="Seen from above, a lens turns and sweeps beams of light across dark water. A strip below shows the flashes a sailor would count." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true">The characteristic · each light keeps time</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>flash every (turn time ÷ panels)</b><span class="g">one beam for each panel of the lens</span></div><div data-at="0.4"><b>30 s ÷ 2 = 15 s</b><span class="g">Cape Disappointment: white, then red</span></div><div data-at="0.7"><b>480 s ÷ 8 = 60 s</b><span class="g">Fresnel's first lens: one flash a minute</span></div></div>
+    <div class="palette" id="lights" role="group" aria-label="Choose a light">
+      <span class="pl">Light</span>
+      <button type="button" data-light="capeD" aria-pressed="true">Cape Disappointment</button>
+      <button type="button" data-light="north" aria-pressed="false">North Head</button>
+      <button type="button" data-light="cord" aria-pressed="false">Cordouan 1823</button>
+    </div>
+    <p class="sr-only" id="s5d">Three buttons choose a light. Cape Disappointment sends one white beam and one red beam from opposite sides of a lens that turns once in 30 seconds, so a sailor sees white, then red 15 seconds later. North Head sends two white beams a quarter turn apart: two flashes seven and a half seconds apart, every 30 seconds. Cordouan's first lens had eight panels and turned once in eight minutes: one flash a minute. The animation runs faster than life.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · The signature</h2><p>At night every light is a dot. So each one is given a rhythm, and sailors tell them apart by counting.</p></div></div>
+    <div class="step"><div class="card"><p>The rhythm comes from the lens. Each panel throws its own beam, the whole lens turns, and every beam that sweeps past is a flash.</p></div></div>
+    <div class="step"><div class="card"><p>Cape Disappointment shows white, then red, in a 30-second cycle. North Head shows two white flashes every 30 seconds. Pick a light and count.</p></div></div>
+    <div class="step"><div class="card"><p>Fresnel planned it that way from the start: eight panels, one flash a minute.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>One flame,<br>twenty miles.</h2>
+  <p class="lede">Bend it, fold the glass, lift it high and give it a rhythm. The flame is as small as it ever was. All the gain is geometry.</p>
+  <p class="lede">Next time you stand in front of a lighthouse lens, count its rings. Each one is a slice of a lens too heavy to build.</p>
+
+  <h3 id="find">See the real thing</h3>
+  <ul class="objs">
+    <li class="obj"><b>First-order Fresnel lens from the Cape Mendocino Lighthouse</b><span>Built in Paris in 1876. Sixteen panels. First order is the largest class: a focal length of 92 centimeters and a lens about 2.6 meters tall.</span><span class="who">Columbia River Maritime Museum, Astoria, Oregon · Part III</span></li>
+    <li class="obj"><b>The first-order lens of Cape Disappointment and North Head</b><span>Proved too large for the first tower at Cape Disappointment, which had to be rebuilt around it. Moved to North Head when that light opened.</span><span class="who">Lewis and Clark Interpretive Center, Cape Disappointment State Park, Ilwaco, Washington · Parts IV and V</span></li>
+    <li class="obj"><b>Cape Disappointment Light and North Head Light</b><span>First lit October 15, 1856, and in 1898. Both stand near Ilwaco, Washington, at the mouth of the Columbia River.</span><span class="who">Cape Disappointment State Park · Parts IV and V</span></li>
+    <li class="obj"><b>Lightship <i>Columbia</i> (WLV-604)</b><span>A floating lighthouse that marked the river's entrance. Retired in 1979, the last lightship to serve on the West Coast.</span><span class="who">Columbia River Maritime Museum, Astoria, Oregon</span></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>Fresnel, Cordouan, mirrors before lenses, rings, prisms, the orders and the eight-panel plan: <a href="https://en.wikipedia.org/wiki/Fresnel_lens">Wikipedia, &ldquo;Fresnel lens&rdquo;</a>.</li>
+    <li>The two lights at the river mouth: Wikipedia, <a href="https://en.wikipedia.org/wiki/Cape_Disappointment_Light">&ldquo;Cape Disappointment Light&rdquo;</a> and <a href="https://en.wikipedia.org/wiki/North_Head_Light">&ldquo;North Head Light&rdquo;</a>.</li>
+    <li>The Cape Mendocino lens in Astoria: <a href="https://traveloregon.com/things-to-do/oregon-attractions/museums/how-to-visit-astorias-new-maritime-museum-hall/">Travel Oregon</a> and the museum's own announcement in <a href="https://www.pdxmonthly.com/sponsored/2026/08/columbia-river-maritime-museum-s-new-warnock-building">Portland Monthly</a>.</li>
+    <li>The lightship: <a href="https://thelighthousehunters.com/oregon-lightship-columbia.htm">The Lighthouse Hunters</a>.</li>
+    <li>Part II uses the thin-lens rule, which is accurate near the middle of a lens. Part IV leaves out the slight bending of light by air, which adds a few percent to the real distance. The curve of the sea is drawn far steeper than life.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false">Exhibit mode</button>
+  </div>
+  <div class="colophon">
+    Seen, No. 13. Drawn in code on graph paper, one function at a time. No photographs and no image generators.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.<br>
+    Previous: <i>Redon's Turn</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span>Exhibit mode · touch to explore</span><button type="button" id="exitExhibit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+
+/* ---------- palette and small tools ---------- */
+const AMBER = '#f2c46d', GLASS = '#9fd8e8', BONE = '#e9edf2', MUTE = '#8d9bb0', NAVY = '#0a1220', REDL = '#e2584a', WHITE = '#fff4d6', D2R = Math.PI / 180;
+const FX = [...document.querySelectorAll('.fx')].map(el => [...el.children]);
+function fx(i, p) { let last = FX[i][0]; for (const d of FX[i]) { const on = p >= +d.dataset.at; d.classList.toggle('on', on); d.classList.remove('cur'); if (on) last = d; } last.classList.add('cur'); }
+function paper(ctx, w, h) { // graph paper at night
+  ctx.fillStyle = NAVY; ctx.fillRect(0, 0, w, h); const s = w < 700 ? 18 : 24; ctx.lineWidth = 1;
+  for (const [st, c] of [[s, 'rgba(150,180,220,.075)'], [s * 5, 'rgba(150,180,220,.16)']]) { ctx.strokeStyle = c; ctx.beginPath(); for (let x = .5; x < w; x += st) { ctx.moveTo(x, 0); ctx.lineTo(x, h); } for (let y = .5; y < h; y += st) { ctx.moveTo(0, y); ctx.lineTo(w, y); } ctx.stroke(); }
+}
+function zone(F, w, h) { // where a drawing can sit without touching the labels, the controls or the text cards
+  const y0 = F.wide ? (exhibit ? 158 : 134) : w >= 900 ? 224 : 166, y1 = F.wide ? h - 92 : Math.max(y0 + 220, h * .665), x0 = F.cx - F.aw / 2;
+  return { x0, x1: x0 + F.aw, y0, y1, cx: F.cx, cy: (y0 + y1) / 2, zw: F.aw, zh: y1 - y0 };
+}
+const area = (Z, fs) => { const y1 = Z.y1 - fs * 4; return { y0: Z.y0, y1, h: y1 - Z.y0, cy: (Z.y0 + y1) / 2, a: Z.y1 - fs * 2.6, b: Z.y1 - fs * .95 }; }; // the picture, then two lines of readout under it
+const fsOf = (F, w) => (F.wide ? clamp(w / 125, 11, 14) : clamp(w / 40, 9.5, 15)) * (exhibit ? 1.25 : 1);
+function bar(el, on) { if (el._on !== on) { el._on = on; el.classList.toggle('on', on); el.inert = !on; } }
+function txt(el, s) { if (el._s !== s) { el._s = s; el.textContent = s; } }
+function lampAt(ctx, x, y, r) { // a small flame and its glow
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r * 5); g.addColorStop(0, 'rgba(255,214,130,.55)'); g.addColorStop(1, 'rgba(255,214,130,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 5, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#ffe9b0'; ctx.beginPath(); ctx.moveTo(x, y - r * 1.9); ctx.quadraticCurveTo(x + r * 1.1, y - r * .2, x, y + r); ctx.quadraticCurveTo(x - r * 1.1, y - r * .2, x, y - r * 1.9); ctx.fill();
+}
+function boat(ctx, x, y, s, lit, col = WHITE) { // hull, mast and one sail; lit is how much light reaches it
+  if (lit > 0) { const g = ctx.createRadialGradient(x, y - s * .5, 0, x, y - s * .5, s * 2.2); g.addColorStop(0, col); g.addColorStop(1, 'rgba(255,244,214,0)'); ctx.save(); ctx.globalAlpha *= clamp(lit, 0, 1) * .8; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y - s * .5, s * 2.2, 0, TAU); ctx.fill(); ctx.restore(); }
+  ctx.fillStyle = BONE; ctx.beginPath(); ctx.moveTo(x - s, y - s * .28); ctx.lineTo(x + s, y - s * .28); ctx.lineTo(x + s * .62, y); ctx.lineTo(x - s * .72, y); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = BONE; ctx.lineWidth = Math.max(1, s * .1); ctx.beginPath(); ctx.moveTo(x, y - s * .28); ctx.lineTo(x, y - s * 1.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x + s * .12, y - s * 1.45); ctx.lineTo(x + s * .8, y - s * .45); ctx.lineTo(x + s * .12, y - s * .45); ctx.closePath(); ctx.fill();
+}
+function clipZone(ctx, Z) { ctx.beginPath(); ctx.rect(Z.x0 - 8, Z.y0 - 10, Z.zw + 16, Z.zh + 20); ctx.clip(); }
+
+/* ---------- hero: one slow beam over the graph paper ---------- */
+const heroC = document.getElementById('heroCanvas');
+function sweep(ctx, x, y, R, ang, half, col, a) { // a wedge of light from x, y
+  const g = ctx.createRadialGradient(x, y, 0, x, y, R); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, R, ang - half, ang + half); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC), a = reduce ? -.5 : t * .00022; paper(ctx, w, h);
+  for (let i = 0; i < 2; i++) sweep(ctx, w * .5, h * .5, Math.max(w, h) * .8, a + i * Math.PI, 5 * D2R, i ? 'rgba(226,88,74,.5)' : 'rgba(255,236,190,.5)', fade * .55);
+}
+
+/* ---------- I · the flame: brightness = 1 / distance^2 ---------- */
+const c1 = document.querySelector('#s1 canvas'), distBar = document.getElementById('distBar'), distIn = document.getElementById('dist'), distOut = document.getElementById('distOut');
+let userDist = false; distBar.inert = true; distIn.addEventListener('input', () => { userDist = true; });
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(0, p); paper(ctx, w, h);
+  bar(distBar, p > .12 && p < .94);
+  if (!userDist) distIn.value = String(Math.round(lerp(10, 60, ease(p, .22, .74))));
+  const d = +distIn.value / 10, lab = d.toFixed(1) + ' mi'; txt(distOut, lab); if (distIn._v !== lab) { distIn._v = lab; distIn.setAttribute('aria-valuetext', d.toFixed(1) + ' miles out'); }
+  const D = area(Z, fs), lx = Z.x0 + Z.zw * .08, cy = D.cy - fs, u = Z.zw * .84 / 6.6, xs = lx + d * u, cell = Math.min(u * .5, (D.h - fs * 5) / 6), size = cell * d, b = 1 / (d * d), ty = D.y1 - fs * 1.4;
+  ctx.save(); clipZone(ctx, Z);
+  ctx.strokeStyle = 'rgba(255,214,130,.2)'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 0; i < 28; i++) { const a = i / 28 * TAU + .11; ctx.moveTo(lx, cy); ctx.lineTo(lx + Math.cos(a) * Z.zw, cy + Math.sin(a) * Z.zw); } ctx.stroke();
+  ctx.fillStyle = 'rgba(255,214,130,.13)'; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(xs, cy - size / 2); ctx.lineTo(xs, cy + size / 2); ctx.closePath(); ctx.fill(); // the cone that reaches the ship
+  ctx.fillStyle = `rgba(255,214,130,${.08 + .5 * b})`; ctx.fillRect(xs - size, cy - size / 2, size, size); // its cross-section, turned to face you
+  ctx.strokeStyle = 'rgba(255,214,130,.55)'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 0; i <= Math.ceil(d); i++) { const o = Math.min(i * cell, size); ctx.moveTo(xs - size + o, cy - size / 2); ctx.lineTo(xs - size + o, cy + size / 2); ctx.moveTo(xs - size, cy - size / 2 + o); ctx.lineTo(xs, cy - size / 2 + o); } ctx.stroke();
+  ctx.strokeStyle = 'rgba(150,180,220,.35)'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(xs, cy + size / 2); ctx.lineTo(xs, ty - fs * .6); ctx.stroke(); ctx.setLineDash([]);
+  ctx.restore(); lampAt(ctx, lx, cy, 6); boat(ctx, xs + fs * 1.5, cy + fs * .4, fs * .95, b * 1.2);
+  ctx.strokeStyle = MUTE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(lx, ty - fs * .6); ctx.lineTo(lx + 6.3 * u, ty - fs * .6); for (let i = 0; i <= 6; i++) { ctx.moveTo(lx + i * u, ty - fs); ctx.lineTo(lx + i * u, ty - fs * .2); } ctx.stroke();
+  for (let i = 0; i <= 6; i++) mono(ctx, i === 0 ? '0' : String(i), lx + i * u, ty + fs * .7, MUTE, 'center', fs - 1); mono(ctx, 'mi', lx + 6.3 * u + fs * .6, ty - fs * .6, MUTE, 'left', fs - 1);
+  mono(ctx, d === 1 ? 'at 1 mile the light fills 1 square' : `at ${d.toFixed(1)} miles it is spread over ${(d * d).toFixed(1)} squares`, Z.cx, D.a, BONE, 'center', fs); mono(ctx, `brightness = 1 ÷ ${d.toFixed(1)}² = ${b.toFixed(2)}`, Z.cx, D.b, AMBER, 'center', fs + 1);
+}
+
+/* ---------- II · the bend: slope out = h/s - h/f ---------- */
+const c2 = document.querySelector('#s2 canvas'), lampBar = document.getElementById('lampBar'), lampIn = document.getElementById('lamp'), lampOut = document.getElementById('lampOut');
+let userLamp = false; lampBar.inert = true; lampIn.addEventListener('input', () => { userLamp = true; });
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(1, p); paper(ctx, w, h);
+  bar(lampBar, p > .12 && p < .94);
+  if (!userLamp) lampIn.value = String(Math.round(100 * (p < .46 ? lerp(1.8, .6, ease(p, .18, .44)) : lerp(.6, 1, ease(p, .5, .7)))));
+  const s = +lampIn.value / 100, lab = `s = ${s.toFixed(2)} f`, verdict = s < .96 ? 'too close: the rays fan out' : s > 1.04 ? 'too far back: the rays cross' : 'at the focus: a beam';
+  txt(lampOut, lab); if (lampIn._v !== lab) { lampIn._v = lab; lampIn.setAttribute('aria-valuetext', verdict); }
+  const D = area(Z, fs), xl = Z.x0 + Z.zw * .44, cy = D.cy, f = Z.zw * .2, H = D.h * .36, lx = xl - s * f;
+  ctx.save(); clipZone(ctx, Z);
+  ctx.strokeStyle = 'rgba(150,180,220,.3)'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(Z.x0, cy); ctx.lineTo(Z.x1, cy); ctx.stroke(); ctx.setLineDash([]);
+  for (let i = -5; i <= 5; i++) { const hh = i / 5 * H * .92, m = hh / (s * f) - hh / f, xe = Z.x1 + 10; // y up: the ray climbs hh on the way in, then leaves with slope m
+    ctx.strokeStyle = `rgba(255,214,130,${Math.abs(s - 1) < .04 ? .95 : .6})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(xl, cy - hh); ctx.lineTo(xe, cy - (hh + m * (xe - xl))); ctx.stroke(); }
+  ctx.fillStyle = 'rgba(159,216,232,.3)'; ctx.strokeStyle = GLASS; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xl, cy - H); ctx.quadraticCurveTo(xl + Z.zw * .11, cy, xl, cy + H); ctx.lineTo(xl - 7, cy + H); ctx.lineTo(xl - 7, cy - H); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  ctx.strokeStyle = GLASS; ctx.beginPath(); ctx.lineWidth = 1.5; ctx.moveTo(xl - f, cy - 9); ctx.lineTo(xl - f, cy + 9); ctx.stroke(); mono(ctx, 'f', xl - f, cy + fs * 1.9, GLASS, 'center', fs + 3); lampAt(ctx, lx, cy, 5);
+  mono(ctx, `lamp to lens: ${lab}`, Z.cx, D.a, BONE, 'center', fs); mono(ctx, verdict, Z.cx, D.b, AMBER, 'center', fs + 1);
+}
+
+/* ---------- III · the rings: thickness = profile(h) mod t ---------- */
+const c3 = document.querySelector('#s3 canvas'), ringBar = document.getElementById('ringBar'), ringIn = document.getElementById('ring'), ringOut = document.getElementById('ringOut');
+let userRing = false; ringBar.inert = true; ringIn.addEventListener('input', () => { userRing = true; });
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(2, p); paper(ctx, w, h);
+  bar(ringBar, p > .12 && p < .94);
+  if (!userRing) ringIn.value = String(Math.round(lerp(1, 12, ease(p, .2, .52))));
+  const n = +ringIn.value; txt(ringOut, String(n)); if (ringIn._v !== n) { ringIn._v = n; ringIn.setAttribute('aria-valuetext', n + (n === 1 ? ' ring' : ' rings')); }
+  const D = area(Z, fs), cy = D.cy, H = D.h * .29, T0 = Z.zw * .075, base = Math.max(2, T0 * .07), fpx = Z.zw * .15, prisms = ease(p, .56, .66);
+  const prof = hh => T0 * (1 - (hh / H) ** 2), ring = (hh, k) => base + (k === 1 ? prof(hh) : (prof(hh) - 1e-4) % (T0 / k));
+  let aFull = 0, aRing = 0; for (let i = 0; i <= 600; i++) { const q = 1 - (i / 300 - 1) ** 2; aFull += .07 + q; aRing += .07 + (n === 1 ? q : (q - 1e-6) % (1 / n)); } // the share of glass, measured on the ideal profile so every screen agrees
+  const share = Math.round(100 * aRing / aFull);
+  ctx.save(); clipZone(ctx, Z);
+  [[Z.x0 + Z.zw * .27, 1, 'a solid lens', '100% of the glass'], [Z.x0 + Z.zw * .73, n, n === 1 ? 'one ring: the same lens' : `${n} rings`, `${share}% of the glass`]].forEach(([x, k, name, note], side) => {
+    const lx = x - fpx;
+    ctx.strokeStyle = 'rgba(255,214,130,.8)'; ctx.lineWidth = 1.3; for (let i = -3; i <= 3; i++) { const hh = i / 3 * H * .9; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(x, cy - hh); ctx.lineTo(x + Z.zw * .2, cy - hh); ctx.stroke(); }
+    if (side && prisms > 0) { ctx.globalAlpha = prisms; for (const m of [-1, 1]) for (let j = 0; j < 3; j++) { const hh = m * H * (1.14 + j * .17), px = x - j * fpx * .16, sz = H * .12; // prisms that catch the steep rays
+      ctx.strokeStyle = 'rgba(255,214,130,.8)'; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(px, cy - hh); ctx.lineTo(x + Z.zw * .2, cy - hh); ctx.stroke();
+      ctx.fillStyle = 'rgba(159,216,232,.35)'; ctx.strokeStyle = GLASS; ctx.beginPath(); ctx.moveTo(px - sz * .5, cy - hh + m * sz * .6); ctx.lineTo(px + sz * .6, cy - hh + m * sz * .1); ctx.lineTo(px - sz * .1, cy - hh - m * sz * .7); ctx.closePath(); ctx.fill(); ctx.stroke(); } ctx.globalAlpha = 1; }
+    ctx.fillStyle = 'rgba(159,216,232,.32)'; ctx.strokeStyle = GLASS; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(x, cy - H); for (let hh = -H; hh <= H; hh += 1) ctx.lineTo(x + ring(hh, k), cy + hh); ctx.lineTo(x, cy + H); ctx.closePath(); ctx.fill(); ctx.stroke();
+    lampAt(ctx, lx, cy, 4); mono(ctx, name, x, D.a, BONE, 'center', fs); mono(ctx, note, x, D.b, side ? AMBER : MUTE, 'center', fs + (side ? 1 : 0));
+  });
+  ctx.restore();
+}
+
+/* ---------- IV · the reach: d = sqrt(2 R h) ---------- */
+const c4 = document.querySelector('#s4 canvas'), highBar = document.getElementById('highBar'), highIn = document.getElementById('high'), highOut = document.getElementById('highOut');
+let userHigh = false; highBar.inert = true; highIn.addEventListener('input', () => { userHigh = true; });
+const km = m => 3.57 * Math.sqrt(m);
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(3, p); paper(ctx, w, h);
+  bar(highBar, p > .12 && p < .94);
+  if (!userHigh) highIn.value = String(Math.round(lerp(16, 67, ease(p, .26, .6))));
+  const hm = +highIn.value, lab = hm + ' m'; txt(highOut, lab); if (highIn._v !== hm) { highIn._v = hm; highIn.setAttribute('aria-valuetext', hm + ' meters'); }
+  // one consistent picture: the sea is a circle of radius Rs, and the sight line is its true tangent from the lamp
+  const D = area(Z, fs), Hm = Math.min(D.h * .27, Z.zw * .2), k = Hm / 100, e5 = 5 * k, Rs = (Z.zw * .8 / (Math.sqrt(Hm) + Math.sqrt(e5))) ** 2 / 2;
+  const pe = Math.acos(Rs / (Rs + e5)), dropMax = Rs * (1 - Math.cos(Math.acos(Rs / (Rs + Hm)) + pe)), ex = Z.x0 + Z.zw * .1, by = D.y0 + fs + Hm + Math.max(0, (D.h - fs * 2 - Hm - dropMax) / 2), ey = by + Rs, hs = hm * k;
+  const P = (phi, up = 0) => [ex + (Rs + up) * Math.sin(phi), ey - (Rs + up) * Math.cos(phi)], ph = Math.acos(Rs / (Rs + hs)), L = P(0, hs), T = P(ph), E = P(ph + pe, e5), B = P(ph + pe);
+  ctx.save(); ctx.beginPath(); ctx.rect(0, Z.y0 - 10, Z.x1 + 8, D.y1 - Z.y0 + 10); ctx.clip(); // the sea runs off the left edge of the stage
+  const sea = ctx.createLinearGradient(0, by, 0, by + dropMax + fs * 4); sea.addColorStop(0, 'rgba(24,70,104,.75)'); sea.addColorStop(1, 'rgba(24,70,104,.08)');
+  ctx.fillStyle = sea; ctx.beginPath(); ctx.moveTo(...P(-.6)); for (let a = -.6; a <= 1.2; a += .01) ctx.lineTo(...P(a)); ctx.lineTo(Z.x1 + 20, D.y1 + 40); ctx.lineTo(-20, D.y1 + 40); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(159,216,232,.8)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(...P(-.6)); for (let a = -.6; a <= 1.2; a += .01) ctx.lineTo(...P(a)); ctx.stroke();
+  const tw = Math.min(16, hm) * k, cl = hs - tw, bw = Math.max(4, 16 * k * .2); // the cliff, then the tower on top of it
+  if (cl > 0) { ctx.fillStyle = '#2a3648'; ctx.strokeStyle = 'rgba(150,180,220,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ex - bw * 5, by + 6); ctx.lineTo(ex - bw * 3.6, by - cl * .86); ctx.lineTo(ex - bw * 1.6, by - cl); ctx.lineTo(ex + bw * 1.9, by - cl); ctx.lineTo(ex + bw * 2.7, by - cl * .62); ctx.lineTo(ex + bw * 3.4, by - cl * .5); ctx.lineTo(ex + bw * 4.4, by + 6); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle = BONE; ctx.beginPath(); ctx.moveTo(ex - bw, by - cl); ctx.lineTo(ex - bw * .6, by - hs + bw * .5); ctx.lineTo(ex + bw * .6, by - hs + bw * .5); ctx.lineTo(ex + bw, by - cl); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,214,130,.95)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L[0], L[1]); ctx.lineTo(E[0], E[1]); ctx.stroke();
+  ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,214,130,.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(E[0], E[1]); ctx.lineTo(E[0] + (E[0] - L[0]), E[1] + (E[1] - L[1])); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = AMBER; ctx.beginPath(); ctx.arc(T[0], T[1], 3.5, 0, TAU); ctx.fill(); ctx.save(); ctx.translate(B[0], B[1]); ctx.rotate(ph + pe); boat(ctx, 0, 0, Math.max(6, e5 * 1.1), 1); ctx.restore();
+  const sl = Math.atan2(E[1] - L[1], E[0] - L[0]), nx = Math.sin(sl) * fs * 1.1, ny = -Math.cos(sl) * fs * 1.1; // labels ride just above the line
+  for (const [A1, A2, s1] of [[L, T, km(hm).toFixed(1) + ' km'], [T, E, km(5).toFixed(1) + ' km']]) { ctx.save(); ctx.translate((A1[0] + A2[0]) / 2 + nx, (A1[1] + A2[1]) / 2 + ny); ctx.rotate(sl); mono(ctx, s1, 0, 0, AMBER, 'center', fs - 1); ctx.restore(); }
+  ctx.save(); ctx.translate(T[0] - nx * 1.3, T[1] - ny * 1.3); ctx.rotate(sl); mono(ctx, 'horizon', 0, 0, GLASS, 'center', fs - 1); ctx.restore();
+  ctx.restore(); lampAt(ctx, L[0], L[1], 4);
+  const named = hm === 16 ? 'the Cape Disappointment tower alone: 16 m' : hm === 67 ? "Cape Disappointment's lamp, on its cliff: 67 m" : hm === 59 ? "North Head's lamp: 59 m" : `a lamp ${hm} m above the sea`;
+  mono(ctx, named, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, `horizon ${km(hm).toFixed(1)} km  +  boat ${km(5).toFixed(1)} km  =  ${(km(hm) + km(5)).toFixed(1)} km`, Z.cx, D.b, AMBER, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- V · the signature: flash every (turn time / panels) ---------- */
+const c5 = document.querySelector('#s5 canvas'), lights = document.getElementById('lights');
+const LIGHTS = { capeD: { turn: 30, speed: 5, beams: [[0, WHITE], [180, REDL]], note: 'white, 15 s, red, 15 s' }, north: { turn: 30, speed: 5, beams: [[0, WHITE], [90, WHITE]], note: 'flash, 7.5 s, flash, 22.5 s' }, cord: { turn: 480, speed: 40, beams: [0, 1, 2, 3, 4, 5, 6, 7].map(i => [i * 45, WHITE]), note: 'one flash every 60 s' } };
+let light = 'capeD', userLight = false; lights.inert = true;
+function setLight(m) { if (m === light) return; light = m; for (const b of lights.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.light === m)); }
+lights.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { userLight = true; setLight(b.dataset.light); } });
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(4, p); paper(ctx, w, h);
+  bar(lights, p > .1 && p < .95);
+  if (!userLight) setLight(p < .46 ? 'capeD' : p < .7 ? 'north' : 'cord');
+  const Lt = LIGHTS[light], now = (reduce ? 0 : t / 1000 * Lt.speed), rot = now / Lt.turn * TAU, D = area(Z, fs), sy = D.y1 - fs * 2.2, top = Z.y0 + fs * .5, bot = sy - fs * 3.6, R = Math.min(Z.zw * .42, (bot - top) * .5), ox = Z.x0 + Z.zw * .38, oy = (top + bot) / 2, bx = ox + R * .92;
+  ctx.save(); clipZone(ctx, Z); let lit = 0, litCol = WHITE;
+  for (const [deg, col] of Lt.beams) { const a = deg * D2R + rot; sweep(ctx, ox, oy, R * 1.25, a, 4.5 * D2R, col === REDL ? 'rgba(226,88,74,.95)' : 'rgba(255,240,200,.95)', .9); const dlt = Math.atan2(Math.sin(a), Math.cos(a)), v = Math.exp(-((dlt / (5 * D2R)) ** 2)); if (v > lit) { lit = v; litCol = col; } }
+  ctx.strokeStyle = GLASS; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ox, oy, R * .09, 0, TAU); ctx.stroke(); ctx.fillStyle = '#ffe9b0'; ctx.beginPath(); ctx.arc(ox, oy, R * .035, 0, TAU); ctx.fill();
+  ctx.restore(); boat(ctx, bx + fs, oy + fs * .5, fs, lit, litCol === REDL ? 'rgba(226,88,74,.9)' : WHITE);
+  // what the sailor sees: a strip of time, flashes marked, the present moment as a line
+  const sx = Z.x0, sw = Z.zw, win = Lt.turn * (Lt.turn > 100 ? .5 : 2), t0 = now - win * .75, X = tt => sx + (tt - t0) / win * sw;
+  ctx.strokeStyle = 'rgba(150,180,220,.4)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(sx, sy + fs); ctx.lineTo(sx + sw, sy + fs); ctx.stroke();
+  for (const [deg, col] of Lt.beams) { const first = ((360 - deg) % 360) / 360 * Lt.turn; for (let kx = Math.floor((t0 - first) / Lt.turn); kx <= Math.ceil((t0 + win - first) / Lt.turn); kx++) { const ft = first + kx * Lt.turn, x = X(ft); if (x < sx || x > sx + sw) continue; ctx.fillStyle = col; ctx.globalAlpha = ft <= now ? 1 : .35; ctx.fillRect(x - 2.5, sy - fs * .9, 5, fs * 1.9); } }
+  ctx.globalAlpha = 1; ctx.strokeStyle = AMBER; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(now), sy - fs * 1.5); ctx.lineTo(X(now), sy + fs * 1.5); ctx.stroke(); mono(ctx, 'now', X(now), sy - fs * 2.2, AMBER, 'center', fs - 1);
+  mono(ctx, `${Lt.turn} s a turn ÷ ${Lt.beams.length} beams:  ${Lt.note}`, Z.cx, D.a, AMBER, 'center', fs + (F.wide ? 1 : 0)); mono(ctx, reduce ? 'a still frame: one beam is on the boat' : `running ${Lt.speed} times faster than life`, Z.cx, D.b, MUTE, 'center', fs - 1);
+}
+
+/* ---------- exhibit mode and the loop ---------- */
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

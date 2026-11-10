@@ -30,6 +30,8 @@ interface Props {
   hero?: boolean;
   /** Only these pieces, in this order. */
   ids?: string[];
+  /** Leave these pieces off this wall (the homepage, for pieces hung in the Gallery only). */
+  exclude?: string[];
   /** Show each piece's share image in the frame instead of the plate. */
   thumbs?: boolean;
   /** Hang the wall by series. */
@@ -37,14 +39,15 @@ interface Props {
   /** Grouped only: hang this series' wall last, as a pair, under this statement. */
   pair?: { series: SeriesId; statement: string };
 }
-const { level = 3, hero = false, ids, thumbs = false, grouped = false, pair } = Astro.props;
+const { level = 3, hero = false, ids, exclude, thumbs = false, grouped = false, pair } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 const tileLevel = (grouped ? level + 1 : level) as 2 | 3 | 4;
 
 /* Every frame, on view or forthcoming, in wall order; the pieces view
    carries the series and verb for the ones on view. */
 const all = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
-const frames = ids ? ids.map((id) => all.find((f) => f.id === id)).filter((f) => !!f) : all;
+const hung = exclude ? all.filter((f) => !exclude.includes(f.id)) : all;
+const frames = ids ? ids.map((id) => hung.find((f) => f.id === id)).filter((f) => !!f) : hung;
 const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
 
 type Group = { id?: SeriesId; name: string; href?: string; statement?: string; accent?: string; frames: typeof frames; pair?: boolean };

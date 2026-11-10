@@ -1,6 +1,6 @@
 Self-hosted webfonts, latin subsets, all under the SIL Open Font License 1.1.
 
-- Cormorant Garamond (300, 400, 500, 600; 400 and 600 italic): display and the gallery pieces. From @fontsource/cormorant-garamond.
+- Cormorant Garamond (300, 400, 500, 600; 400, 500 and 600 italic; the 500 italic is for the Seen pages mounted from their source files, src/lib/seen.ts): display and the gallery pieces. From @fontsource/cormorant-garamond.
 - EB Garamond (variable, normal and italic): text. From @fontsource-variable/eb-garamond.
 - EB Garamond, greek and greek-ext subsets (variable, normal): the Greek in the gallery essays (Poem.astro declares them as 'EB Garamond Greek' with unicode-range). Same package.
 - JetBrains Mono (variable): catalog numbers. Copied from advancing-liberty-media2.
