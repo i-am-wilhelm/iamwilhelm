@@ -12,7 +12,12 @@
  *   - the colophon's "Previous: <i>Title</i>" becomes a link, with a
  *     matching "Next" where a next piece is hung (src/config/seen.ts) and
  *     the link back to the Gallery that the hung essays end on;
- *   - the making-of line is printed from src/config/seen.ts.
+ *   - the making-of line is printed from src/config/seen.ts;
+ *   - each scene's control bar is lifted out of the stage into a layer above
+ *     the text cards (liftControls), so a card scrolling past on a phone
+ *     passes under the bar instead of covering it;
+ *   - FIXES holds the few per-page repairs made since the files were
+ *     approved, each one a named, exact replacement.
  *
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
@@ -60,6 +65,71 @@ function swap(html: string, find: string | RegExp, put: string | ((...m: string[
   if (!hit) throw new Error(`seen: ${slug}: expected ${what} in the source file.`);
   return html.replace(find as never, put as never);
 }
+
+/**
+ * The control bars (.palette) sit inside the sticky stage, and the text
+ * cards scroll over the stage, so on a narrow screen a card on its way out
+ * covered the bar. Each scene's bars move, unchanged, into a second sticky
+ * layer at the head of the scene's steps, stacked above the cards. The
+ * layer is the size and position of the stage, so every bar keeps its
+ * place; the scripts find the bars by id and are untouched.
+ */
+const CTL_CSS =
+  '/* site: the control bars ride above the text cards (src/lib/seen.ts) */\n' +
+  '.ctl{position:sticky;top:0;height:100vh;height:100dvh;margin-bottom:-100vh;margin-bottom:-100dvh;z-index:1;pointer-events:none}\n' +
+  '.ctl .palette{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}\n' +
+  /* On the stacked layout (cards below the picture, bars near the top) a
+     card fades out over 44px as its top climbs past a line 262px down, so
+     it is gone by 218px, just under the lowest bar measured (216px), and no
+     text shows through a bar. The tallest card is 250px, so even on a
+     320 x 568 screen every card is whole and fully opaque before it starts
+     to fade. Where scroll-driven animation is not supported the card
+     simply passes under the bar. */
+  '@keyframes ctl-pass{to{opacity:0}}\n' +
+  '@supports (animation-timeline:view()){@media not all and (min-width:900px) and (min-aspect-ratio:5/4){' +
+  '.ctl~.step .card{animation:ctl-pass linear both;animation-timeline:view(block 262px 0px);animation-range:exit 0px exit 44px}}}\n';
+function liftControls(html: string, slug: string): string {
+  const out: string[] = [];
+  let rest = html;
+  let scenes = 0;
+  for (;;) {
+    const at = rest.indexOf('<div class="stage">');
+    if (at < 0) break;
+    const stepsAt = rest.indexOf('<div class="steps">', at);
+    if (stepsAt < 0) throw new Error(`seen: ${slug}: a stage with no steps after it.`);
+    let stage = rest.slice(at, stepsAt);
+    const bars: string[] = [];
+    stage = stage.replace(/[ \t]*<div class="palette"[^>]*>[\s\S]*?<\/div>\n/g, (bar) => {
+      if ((bar.match(/<div\b/g) ?? []).length !== 1) throw new Error(`seen: ${slug}: a control bar with a nested div.`);
+      bars.push(bar);
+      return '';
+    });
+    out.push(rest.slice(0, at), stage, '<div class="steps">\n');
+    if (bars.length) out.push('    <div class="ctl">\n', ...bars, '    </div>\n');
+    rest = rest.slice(stepsAt + '<div class="steps">\n'.length);
+    scenes++;
+  }
+  if (!scenes) return html;
+  return swap(out.join('') + rest, '</style>\n</head>', `${CTL_CSS}</style>\n</head>`, 'the end of the stylesheet', slug);
+}
+
+/** Repairs to single pages: [what, the exact source text, its replacement]. */
+const FIXES: Record<string, [string, string, string][]> = {
+  'nobody-sees-the-same-sea': [
+    /* The belly-lights slider had no aria-valuetext. It now reads the
+       contrast the scene is about, in the page's language. */
+    [
+      'the belly slider',
+      '<input type="range" id="belly" min="0" max="100" value="0" step="1">',
+      '<input type="range" id="belly" min="0" max="100" value="0" step="1" aria-valuetext="contrast 1.00">',
+    ],
+    [
+      'the belly slider reading',
+      'const b = +bellyIn.value / 62.5, contrast = Math.abs(1 - b);',
+      "const b = +bellyIn.value / 62.5, contrast = Math.abs(1 - b); { const vt = (lang === 'es' ? 'contraste ' : 'contrast ') + contrast.toFixed(2); if (bellyIn._vt !== vt) { bellyIn._vt = vt; bellyIn.setAttribute('aria-valuetext', vt); } }",
+    ],
+  ],
+};
 
 export function seenSource(slug: string): string {
   return readFileSync(resolve(process.cwd(), '_incoming/art-scrollies', `${slug}.html`), 'utf8').replace(/\r\n/g, '\n');
@@ -179,6 +249,9 @@ export async function seenDocument(slug: string): Promise<string> {
   } else if (/Previous: <i>/.test(html)) {
     throw new Error(`seen: ${slug}: the page names a previous piece but is not in SEEN_CHAIN.`);
   }
+
+  for (const [what, find, put] of FIXES[slug] ?? []) html = swap(html, find, () => put, what, slug);
+  html = liftControls(html, slug);
 
   return html.replace(/^<!DOCTYPE html>\n/i, '');
 }
