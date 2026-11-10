@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nobody Sees the Same Sea</title>
+<meta name="description" content="Five ways the sea changes what seeing means: light that fades by color, a colorblind animal that matches any floor, twelve color sensors, a split eye, and a red light nobody else can see.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#06101c; --bone:#e6eef0; --copper:#2f8ea0; --copper-hi:#8fe3da; --acid:#5cc4b8; --ink:#ff6b5a; --gold:#8fd6d0; --muted:#8a9aa0; --paper:#e6eef0;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#06101c;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#c3d2d6;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(6,14,26,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(127,214,208,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#f2fbfb}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#f2fbfb}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(6,14,26,.72);border:1px solid rgba(127,214,208,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(6,14,26,.82);border:1px solid rgba(127,214,208,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(127,214,208,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#c3d2d6;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(127,214,208,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#c3d2d6}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#c3d2d6;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(127,214,208,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#06101c;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#06101c;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+
+/* additions for this piece: language switch, function panel, controls */
+.lang{position:fixed;right:12px;top:12px;z-index:6;display:flex;border:1px solid rgba(127,214,208,.45);background:rgba(6,14,26,.85)}
+.lang button{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--bone);background:transparent;border:0;padding:10px 12px;min-height:40px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--gold);color:#06101c}
+.fx{position:absolute;left:12px;top:46px;font-family:var(--mono);font-size:11px;line-height:1.75;color:var(--bone);background:rgba(6,14,26,.8);border:1px solid rgba(127,214,208,.25);padding:6px 10px;max-width:min(calc(100% - 24px),430px);pointer-events:none}
+.fx div{opacity:.28;transition:opacity .5s}
+.fx div.on{opacity:1}
+.fx b{font-weight:500;color:var(--gold)}
+.fx .g{color:#a9bcc0;font-style:italic;margin-left:.7em}
+.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(46vw,230px);height:44px;accent-color:#8fd6d0}
+.palette{top:12px}
+.obj i{font-style:italic}
+@media (max-width:899px){ .palette{top:108px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .palette{left:35%;top:auto;bottom:26px} .palette .pl{display:inline} }
+@media (prefers-reduced-motion:reduce){ .fx div{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#find" data-k="skip">Skip to the animal list and sources</a>
+<div class="lang" role="group" aria-label="Language / Idioma"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="es" aria-pressed="false" lang="es">ES</button></div>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow" data-k="h_eb">Seen · No. 8 · A scrolly on light, water and other eyes</div>
+    <h1 data-k="h_t">Nobody Sees the Same Sea</h1>
+    <p class="sub" data-k="h_sub">A red fish is only red near the surface. A cuttlefish matches colors it cannot see. One deep-sea fish hunts with a light nobody else knows is on.</p>
+    <div class="hint" aria-hidden="true" data-k="h_hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · light in water -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" data-ka="s1_al" aria-label="A fish with six colored stripes sinks into the sea. The stripes lose their color one at a time, red first." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true" data-k="s1_tag">Sinking · clear open ocean</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.05"><b>I(z) = I₀ · e<sup>−k·z</sup></b><span class="g" data-k="g11">light left at depth z</span></div><div data-at="0.3"><b>k: .36 · .24 · .09 · .04 · .02 · .03</b><span class="g" data-k="g12">per meter, red to violet</span></div><div data-at="0.55"><b>z<sub>1%</sub> = ln(100) / k</b><span class="g" data-k="g13">depth where 1% is left</span></div></div>
+    <p class="sr-only" id="s1d" data-k="s1_d">On the right, a ruler marks depth from 0 to 200 meters. Under the fish, six bars show how much light of each color is left. The red bar empties at about 13 meters, orange at 20, yellow at 52, green at 110 and violet at 164. Blue still has some left at 200 meters.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card" data-k="s1_c1"><h2 class="n" id="s1h">I · The water eats the colors</h2><p>Sunlight is every color at once. Water takes the colors back one at a time. Watch the striped fish as we sink.</p></div></div>
+    <div class="step"><div class="card" data-k="s1_c2"><p>Red goes first. About thirteen meters down, in the clearest water, one part in a hundred of the red light is left. A red fish looks gray-brown, even at noon.</p></div></div>
+    <div class="step"><div class="card" data-k="s1_c3"><p>Orange and yellow go next. Blue travels deepest. The open sea looks blue because blue is the light still on its way down.</p></div></div>
+    <div class="step"><div class="card" data-k="s1_c4"><p>Each meter of water takes the same share of what is left. That rule is called exponential decay, and it explains why the dark arrives so fast. Below about 200 meters there is too little light for plants. Below 1,000 meters there is none.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the cuttlefish -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" data-ka="s2_al" aria-label="A cuttlefish made of dots rests on the seabed. The dots grow and shrink until the animal almost disappears." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true" data-k="s2_tag">Cuttlefish · Sepia officinalis</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.05"><b>x = s·(i + ½·(j mod 2)) &nbsp; y = s·(√3/2)·j</b><span class="g" data-k="g21">dots on a honeycomb grid</span></div><div data-at="0.22"><b data-k="f22">r = r<sub>max</sub> · √darkness</b><span class="g" data-k="g22">bigger dot, darker patch</span></div><div data-at="0.86"><b data-k="f23">darkness += A · sin(k·x − ω·t)</b><span class="g" data-k="g23">the passing cloud</span></div></div>
+    <div class="palette" id="floors" role="group" aria-label="Change the floor" data-ka="fl_l">
+      <span class="pl" data-k="fl_l">Change the floor</span>
+      <button type="button" id="f-sand" data-floor="sand" aria-pressed="true" data-k="fl_s">Sand</button>
+      <button type="button" id="f-pebbles" data-floor="pebbles" aria-pressed="false" data-k="fl_p">Pebbles</button>
+      <button type="button" id="f-checker" data-floor="checker" aria-pressed="false" data-k="fl_c">Checkerboard</button>
+    </div>
+    <p class="sr-only" id="s2d" data-k="s2_d">The floor changes from sand to pebbles and then to a checkerboard. Each time, the dots in the skin readjust in under a second to copy the pattern. Only the eye, with its W-shaped pupil, stays in view. At the end, dark bands travel along the body like passing clouds.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card" data-k="s2_c1"><h2 class="n" id="s2h">II · The colorblind master of color</h2><p>A cuttlefish can copy sand, pebbles, even a checkerboard. Vision tests say it cannot see color at all.</p></div></div>
+    <div class="step"><div class="card" data-k="s2_c2"><p>Its skin holds up to 200 tiny bags of pigment in every square millimeter: yellow, red and brown. Muscles pull each bag open like a tent. Open bag, big dot. Closed bag, pale skin.</p></div></div>
+    <div class="step"><div class="card" data-k="s2_c3"><p>That makes the animal a living newspaper photo, redrawn in under a second. Pick a new floor with the buttons and watch it catch up.</p></div></div>
+    <div class="step"><div class="card" data-k="s2_c4"><p>How it gets the colors right is still an open question. One clue: scientists have found the light-catching molecules that eyes use in cuttlefish skin too.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the mantis shrimp -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" data-ka="s3_al" aria-label="A strip of every color from ultraviolet to red. Above it, three wide curves: a person's sensors. Below it, twelve narrow curves: a mantis shrimp's." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true" data-k="s3_tag">Color sensors · 300 to 720 nanometers</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.03"><b>S(λ) = e<sup>−(λ−μ)² / 2σ²</sup></b><span class="g" data-k="g31">one sensor: best at μ, fading either side</span></div><div data-at="0.5"><b>Δλ = |λ₁ − λ₂|</b><span class="g" data-k="g33">how far apart two colors are</span></div><div data-at="0.84"><b>bit<sub>i</sub> = S<sub>i</sub>(λ) &gt; ⅓</b><span class="g" data-k="g34">each sensor answers yes or no</span></div></div>
+    <p class="sr-only" id="s3d" data-k="s3_d">Then two nearly matching color circles appear. As they grow more alike, the person still tells them apart and the shrimp stops being able to. At the end, twelve boxes switch on and off as the color changes: the pattern the shrimp reads.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card" data-k="s3_c1"><h2 class="n" id="s3h">III · Twelve kinds of color sensor</h2><p>Your eye has three kinds of color sensor. Each one answers best to one color and less to its neighbors. Your brain compares the three and builds every color you know.</p></div></div>
+    <div class="step"><div class="card" data-k="s3_c2"><p>A mantis shrimp has twelve, reaching from ultraviolet to deep red. For years people assumed it saw a rainbow far richer than ours.</p></div></div>
+    <div class="step"><div class="card" data-k="s3_c3"><p>Then scientists tested it. People can tell two colors apart when they differ by 1 to 4 nanometers. The shrimp needed 12 to 25. Twelve sensors, and worse at the job.</p></div></div>
+    <div class="step"><div class="card" data-k="s3_c4"><p>The leading idea: it skips the comparing. Each sensor answers yes or no, and the pattern of answers names the color at once. Speed matters to an animal that hunts with a punch.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · refraction -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" data-ka="s4_al" aria-label="A waterline splits the picture. Rays of light from the sky bend as they enter the water and meet at the eye of a fish below." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true" data-k="s4_tag">Air n = 1.00 · water n = 1.33</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>n₁ · sin θ₁ = n₂ · sin θ₂</b><span class="g" data-k="g41">Snell's law: how much light bends</span></div><div data-at="0.3"><b>sin θ = 1 / 1.33 → θ ≈ 48.8°</b><span class="g" data-k="g42">the edge of the window</span></div><div data-at="0.36"><b>2θ ≈ 97°</b><span class="g" data-k="g43">the whole sky, squeezed</span></div></div>
+    <p class="sr-only" id="s4d" data-k="s4_d">Seen from below, the whole sky fits inside one bright circle about 97 degrees wide. A real bug is shown beside its apparent image, which the fish sees higher up. At the end, a four-eyed fish floats at the surface: each eye has one pupil above the water and one below.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card" data-k="s4_c1"><h2 class="n" id="s4h">IV · One eye, two worlds</h2><p>Light bends when it crosses from air into water. A straw in a glass looks broken for the same reason.</p></div></div>
+    <div class="step"><div class="card" data-k="s4_c2"><p>From below, the whole sky squeezes into one bright circle overhead. A fish looking up sees the bug higher than it really is.</p></div></div>
+    <div class="step"><div class="card" data-k="s4_c3"><p>The four-eyed fish has an answer. It floats with its eyes half out of the water. Each eye has two pupils: one above the waterline to watch for birds, one below for bigger fish. Two eyes doing the work of four.</p></div></div>
+  </div>
+</section>
+
+<!-- V · bioluminescence -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" data-ka="s5_al" aria-label="A blue glow seen from below. The shadow of a hatchetfish stands out against the light until it switches on its belly and disappears." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true" data-k="s5_tag">Twilight zone · 200 to 1,000 meters</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.16"><b data-k="f51">contrast = |light above − belly light|</b><span class="g" data-k="g51">zero means invisible</span></div><div data-at="0.46"><b data-k="f52">flash(t) = e<sup>−t/τ</sup></b><span class="g" data-k="g52">the same curve as part I</span></div><div data-at="0.72"><b data-k="f53">lit if |angle − aim| &lt; ½ · width</b><span class="g" data-k="g53">inside the red beam</span></div></div>
+    <div class="palette" id="bellyBar">
+      <label for="belly" data-k="bl">Belly lights</label>
+      <input type="range" id="belly" min="0" max="100" value="0" step="1">
+    </div>
+    <p class="sr-only" id="s5d" data-k="s5_d">A slider sets the belly lights. When they equal the glow from above, the contrast reaches zero. Then the dark fills with blue-green flashes. At the end, a dragonfish sweeps the water with a red beam that reveals three shrimp who cannot see it.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card" data-k="s5_c1"><h2 class="n" id="s5h">V · Bring your own light</h2><p>Two hundred meters down, the only sunlight is a faint blue glow from above. Anything swimming overhead shows up as a shadow.</p></div></div>
+    <div class="step"><div class="card" data-k="s5_c2"><p>So the hatchetfish lights its own belly to match the glow, and its shadow disappears. Try it with the slider.</p></div></div>
+    <div class="step"><div class="card" data-k="s5_c3"><p>Making light is normal down here. Scientists counted more than 350,000 animals in deep-sea video off California. Three out of four belonged to kinds that can glow.</p></div></div>
+    <div class="step"><div class="card" data-k="s5_c4"><p>Nearly all of that light is blue-green, the color that travels farthest. Remember the red the water ate? Most animals down here cannot see red at all.</p></div></div>
+    <div class="step"><div class="card" data-k="s5_c5"><p>One fish uses that. The stoplight loosejaw, a kind of dragonfish, makes its own red light and can see it. It hunts with a flashlight nobody else knows is on.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2 data-k="e_h">Nobody sees<br>the same sea.</h2>
+  <p class="lede" data-k="e_1">Every animal lives in the sea its own eyes can make. Yours is one version.</p>
+  <p class="lede" data-k="e_2">Next time you stand at a tank, ask what the animal inside is seeing. It may be looking at a different room.</p>
+
+  <h3 id="find" data-k="e_h3a">Meet the animals</h3>
+  <ul class="objs">
+    <li class="obj" data-k="a1"><b>Common cuttlefish</b><span><i>Sepia officinalis</i>. Colorblind by test. Skin with up to 200 pigment sacs per square millimeter, redrawn in under a second.</span><span class="who">Part II</span></li>
+    <li class="obj" data-k="a2"><b>Mantis shrimp</b><span>Order Stomatopoda. Twelve kinds of color sensor covering 300 to 720 nanometers, plus sensors for polarized light.</span><span class="who">Part III</span></li>
+    <li class="obj" data-k="a3"><b>Largescale four-eyes</b><span><i>Anableps anableps</i>. Up to 24.5 cm. Estuaries and mudflats from Trinidad and Venezuela to the mouth of the Amazon. Two pupils in each eye, one lens.</span><span class="who">Part IV</span></li>
+    <li class="obj" data-k="a4"><b>Marine hatchetfish</b><span>Family Sternoptychidae. Twilight zone. Light organs along the belly cancel its shadow, a trick called counter-illumination.</span><span class="who">Part V</span></li>
+    <li class="obj" data-k="a5"><b>Stoplight loosejaw</b><span><i>Malacosteus niger</i>. About 500 to 2,500 meters, in most oceans. Red light near 710 nanometers from an organ under the eye.</span><span class="who">Part V</span></li>
+  </ul>
+
+  <h3 data-k="e_h3b">On the record</h3>
+  <ul class="src">
+    <li>Light in water: rounded attenuation values for the clearest open-ocean water, after N. G. Jerlov, <i>Marine Optics</i> (1976). Coastal water is murkier and the colors go sooner.</li>
+    <li>Cuttlefish: Mäthger, Barbosa, Miner &amp; Hanlon (2006), <i>Vision Research</i>, on color blindness; Deravi et al. (2014) on the pigment sacs; Kingston et al. (2015), <i>Journal of Experimental Biology</i>, on light-catching molecules in the skin.</li>
+    <li>Mantis shrimp: Thoen, How, Chiou &amp; Marshall (2014), &ldquo;A Different Form of Color Vision in Mantis Shrimp,&rdquo; <i>Science</i> 343: 411&ndash;413.</li>
+    <li>Four-eyed fish: Schwab et al. (2001), &ldquo;Evolutionary attempts at 4 eyes in vertebrates&rdquo;; Perez et al. (2017).</li>
+    <li>Glowing animals: Martini &amp; Haddock (2017), <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5379559/"><i>Scientific Reports</i> 7: 45750</a>. Seventeen years of video, surface to 3,900 meters.</li>
+    <li>Red light: Douglas et al. (1999), <i>Vision Research</i> 39.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero" data-k="e_again">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false" data-k="e_ex">Exhibit mode</button>
+  </div>
+  <div class="colophon" data-k="e_col">
+    Seen, No. 8. Drawn in code. No photographs and no image generators. The animals are diagrams.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed. The Spanish text awaits review by a native speaker.<br>
+    Previous: <i>Blake Wrote It Backwards</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span data-k="chip">Exhibit mode · touch to explore</span><button type="button" id="exitExhibit" data-k="exit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+
+/* ---------- language ---------- */
+const ES = {
+  skip: 'Saltar a la lista de animales y fuentes',
+  h_eb: 'Seen · N.º 8 · Un scrolly sobre la luz, el agua y otros ojos',
+  h_t: 'Nadie ve el mismo mar',
+  h_sub: 'Un pez rojo solo es rojo cerca de la superficie. Una sepia imita colores que no puede ver. Un pez de las profundidades caza con una luz que nadie más sabe que está encendida.',
+  h_hint: 'DESLIZA &darr;',
+  s1_al: 'Un pez con seis franjas de colores se hunde en el mar. Las franjas pierden su color una a una, primero la roja.',
+  s1_d: 'A la derecha, una regla marca la profundidad de 0 a 200 metros. Bajo el pez, seis barras muestran cuánta luz de cada color queda. La barra roja se vacía a unos 13 metros, la naranja a 20, la amarilla a 52, la verde a 110 y la violeta a 164. La azul todavía conserva algo a 200 metros.',
+  s1_tag: 'Descenso · mar abierto y claro',
+  g11: 'luz que queda a la profundidad z', g12: 'por metro, del rojo al violeta', g13: 'profundidad donde queda el 1 %',
+  s1_c1: '<h2 class="n" id="s1h">I · El agua se come los colores</h2><p>La luz del sol es todos los colores a la vez. El agua se los va quedando uno por uno. Mira el pez de franjas mientras bajamos.</p>',
+  s1_c2: '<p>El rojo se va primero. A unos trece metros, en el agua más clara, queda solo una centésima parte de la luz roja. Un pez rojo se ve gris pardo, incluso a mediodía.</p>',
+  s1_c3: '<p>Luego se van el naranja y el amarillo. El azul llega más hondo. El mar abierto se ve azul porque el azul es la luz que sigue bajando.</p>',
+  s1_c4: '<p>Cada metro de agua se queda con la misma parte de lo que resta. Esa regla se llama decaimiento exponencial, y explica por qué la oscuridad llega tan pronto. Por debajo de unos 200 metros hay muy poca luz para las plantas. Por debajo de 1000 metros no hay ninguna.</p>',
+  s2_al: 'Una sepia hecha de puntos descansa sobre el fondo. Los puntos crecen y se encogen hasta que el animal casi desaparece.',
+  s2_d: 'El fondo cambia de arena a guijarros y luego a un tablero de ajedrez. Cada vez, los puntos de la piel se reajustan en menos de un segundo para copiar el dibujo. Solo el ojo, con su pupila en forma de W, sigue a la vista. Al final, bandas oscuras recorren el cuerpo como nubes que pasan.',
+  s2_tag: 'Sepia · Sepia officinalis',
+  g21: 'puntos en una red de panal', g22: 'punto más grande, mancha más oscura', g23: 'la nube que pasa',
+  s2_c1: '<h2 class="n" id="s2h">II · La maestra del color que no ve colores</h2><p>Una sepia puede copiar la arena, los guijarros y hasta un tablero de ajedrez. Las pruebas de visión dicen que no distingue ningún color.</p>',
+  s2_c2: '<p>Su piel guarda hasta 200 bolsitas de pigmento en cada milímetro cuadrado: amarillas, rojas y pardas. Unos músculos abren cada bolsita como una carpa. Bolsita abierta, punto grande. Bolsita cerrada, piel clara.</p>',
+  s2_c3: '<p>Eso convierte al animal en una foto de periódico viva, redibujada en menos de un segundo. Elige otro fondo con los botones y mira cómo se pone al día.</p>',
+  s2_c4: '<p>Cómo acierta con los colores sigue siendo una pregunta abierta. Una pista: en la piel de la sepia se han hallado las mismas moléculas que usan los ojos para captar la luz.</p>',
+  fl_l: 'Cambia el fondo', fl_s: 'Arena', fl_p: 'Guijarros', fl_c: 'Ajedrez',
+  s3_al: 'Una franja con todos los colores, del ultravioleta al rojo. Arriba, tres curvas anchas: los sensores de una persona. Abajo, doce curvas estrechas: los de un camarón mantis.',
+  s3_d: 'Después aparecen dos círculos de color casi iguales. A medida que se parecen más, la persona sigue distinguiéndolos y el camarón deja de hacerlo. Al final, doce casillas se encienden y se apagan según el color: el patrón que lee el camarón.',
+  s3_tag: 'Sensores de color · 300 a 720 nanómetros',
+  g31: 'un sensor: máximo en μ, menos a los lados', g33: 'qué tan separados están dos colores', g34: 'cada sensor responde sí o no',
+  s3_c1: '<h2 class="n" id="s3h">III · Doce tipos de sensor de color</h2><p>Tu ojo tiene tres tipos de sensor de color. Cada uno responde mejor a un color y menos a sus vecinos. Tu cerebro compara los tres y arma todos los colores que conoces.</p>',
+  s3_c2: '<p>Un camarón mantis tiene doce, del ultravioleta al rojo profundo. Durante años se pensó que veía un arcoíris mucho más rico que el nuestro.</p>',
+  s3_c3: '<p>Entonces lo pusieron a prueba. Una persona distingue dos colores que difieren en 1 a 4 nanómetros. El camarón necesitó de 12 a 25. Doce sensores, y peor resultado.</p>',
+  s3_c4: '<p>La idea principal: se salta la comparación. Cada sensor responde sí o no, y el patrón de respuestas nombra el color al instante. La rapidez importa para un animal que caza a puñetazos.</p>',
+  s4_al: 'Una línea de agua divide la imagen. Los rayos de luz del cielo se doblan al entrar en el agua y se juntan en el ojo de un pez.',
+  s4_d: 'Visto desde abajo, todo el cielo cabe en un círculo brillante de unos 97 grados. Un insecto real aparece junto a su imagen aparente, que el pez ve más arriba. Al final, un pez cuatro ojos flota en la superficie: cada ojo tiene una pupila sobre el agua y otra debajo.',
+  s4_tag: 'Aire n = 1.00 · agua n = 1.33',
+  g41: 'ley de Snell: cuánto se dobla la luz', g42: 'el borde de la ventana', g43: 'todo el cielo, comprimido',
+  s4_c1: '<h2 class="n" id="s4h">IV · Un ojo, dos mundos</h2><p>La luz se dobla al pasar del aire al agua. Por eso un popote en un vaso parece quebrado.</p>',
+  s4_c2: '<p>Desde abajo, todo el cielo se aprieta en un círculo brillante. Un pez que mira hacia arriba ve al insecto más alto de lo que está.</p>',
+  s4_c3: '<p>El pez cuatro ojos tiene una solución. Flota con los ojos a medio salir del agua. Cada ojo tiene dos pupilas: una sobre la línea del agua, para vigilar a las aves, y otra debajo, para los peces grandes. Dos ojos que trabajan como cuatro.</p>',
+  s5_al: 'Desde abajo se ve un resplandor azul. La sombra de un pez hacha se recorta contra la luz hasta que enciende su vientre y desaparece.',
+  s5_d: 'Un control deslizante ajusta las luces del vientre. Cuando igualan el resplandor, el contraste llega a cero. Después, la oscuridad se llena de destellos verdeazulados. Al final, un pez dragón barre el agua con un haz rojo que revela a tres camarones que no pueden verlo.',
+  s5_tag: 'Zona de penumbra · 200 a 1000 metros',
+  g51: 'cero significa invisible', g52: 'la misma curva de la parte I', g53: 'dentro del haz rojo',
+  s5_c1: '<h2 class="n" id="s5h">V · Trae tu propia luz</h2><p>A doscientos metros, la única luz del sol es un tenue resplandor azul que viene de arriba. Todo lo que nada por encima se ve como una sombra.</p>',
+  s5_c2: '<p>Por eso el pez hacha enciende su propio vientre hasta igualar el resplandor, y su sombra desaparece. Pruébalo con el control.</p>',
+  s5_c3: '<p>Aquí abajo, hacer luz es lo normal. Unos científicos contaron más de 350 000 animales en videos del mar profundo frente a California. Tres de cada cuatro eran de especies capaces de brillar.</p>',
+  s5_c4: '<p>Casi toda esa luz es verdeazulada, el color que más lejos viaja. ¿Recuerdas el rojo que se comió el agua? La mayoría de los animales de aquí no ve el rojo.</p>',
+  s5_c5: '<p>Un pez saca ventaja de eso. Un pez dragón, <i>Malacosteus niger</i>, fabrica su propia luz roja y puede verla. Caza con una linterna que nadie más sabe que está encendida.</p>',
+  bl: 'Luces del vientre',
+  f22: 'r = r<sub>max</sub> · √oscuridad', f23: 'oscuridad += A · sen(k·x − ω·t)', f51: 'contraste = |luz de arriba − luz del vientre|', f52: 'destello(t) = e<sup>−t/τ</sup>', f53: 'iluminado si |ángulo − puntería| &lt; ½ · ancho',
+  e_h: 'Nadie ve<br>el mismo mar.',
+  e_1: 'Cada animal vive en el mar que sus propios ojos pueden construir. El tuyo es una versión.',
+  e_2: 'La próxima vez que estés frente a un acuario, pregúntate qué está viendo el animal de adentro. Puede que esté mirando otro cuarto.',
+  e_h3a: 'Conoce a los animales', e_h3b: 'Fuentes',
+  a1: '<b>Sepia común</b><span><i>Sepia officinalis</i>. No distingue colores, según las pruebas. Piel con hasta 200 bolsitas de pigmento por milímetro cuadrado, redibujada en menos de un segundo.</span><span class="who">Parte II</span>',
+  a2: '<b>Camarón mantis</b><span>Orden Stomatopoda. Doce tipos de sensor de color, de 300 a 720 nanómetros, y sensores de luz polarizada.</span><span class="who">Parte III</span>',
+  a3: '<b>Pez cuatro ojos</b><span><i>Anableps anableps</i>. Hasta 24.5 cm. Estuarios y marismas desde Trinidad y Venezuela hasta la desembocadura del Amazonas. Dos pupilas en cada ojo, un solo cristalino.</span><span class="who">Parte IV</span>',
+  a4: '<b>Pez hacha</b><span>Familia Sternoptychidae. Zona de penumbra. Los órganos de luz del vientre borran su sombra, un truco llamado contrailuminación.</span><span class="who">Parte V</span>',
+  a5: '<b>Pez dragón de luz roja</b><span><i>Malacosteus niger</i>. De unos 500 a 2500 metros, en casi todos los océanos. Luz roja cercana a los 710 nanómetros, de un órgano bajo el ojo.</span><span class="who">Parte V</span>',
+  e_again: 'Leer otra vez &uarr;', e_ex: 'Modo exhibición',
+  e_col: 'Seen, n.º 8. Dibujado con código. Sin fotografías ni generadores de imágenes. Los animales son diagramas.<br>Investigación, texto y código hechos con ayuda de IA y cotejados con las fuentes citadas. El texto en español espera la revisión de un hablante nativo.<br>Anterior: <i>Blake Wrote It Backwards</i>',
+  chip: 'Modo exhibición · toca para explorar', exit: 'Salir',
+};
+const CV = {
+  en: { left: 'LIGHT LEFT AT', gone: 'gone', people: 'A PERSON · 3 SENSORS', shrimp: 'A MANTIS SHRIMP · 12 SENSORS', person: 'PERSON', shr: 'SHRIMP', apart: 'tells them apart', unsure: 'not sure', same: 'sees one color', pattern: 'THE PATTERN IT READS', mirror: 'PAST THE WINDOW, THE SURFACE IS A MIRROR', real: 'where it is', seen: 'where it looks', aireye: 'AIR PUPIL', watereye: 'WATER PUPIL', contrast: 'contrast', vanished: 'YOU VANISHED', three4: '3 OF 4 ANIMALS HERE CAN GLOW', redbeam: 'RED LIGHT · ONLY THE HUNTER SEES IT', sky: 'THE WHOLE SKY' },
+  es: { left: 'LUZ QUE QUEDA A', gone: 'se fue', people: 'UNA PERSONA · 3 SENSORES', shrimp: 'UN CAMARÓN MANTIS · 12 SENSORES', person: 'PERSONA', shr: 'CAMARÓN', apart: 'los distingue', unsure: 'duda', same: 've un solo color', pattern: 'EL PATRÓN QUE LEE', mirror: 'FUERA DE LA VENTANA, LA SUPERFICIE ES UN ESPEJO', real: 'donde está', seen: 'donde se ve', aireye: 'PUPILA DE AIRE', watereye: 'PUPILA DE AGUA', contrast: 'contraste', vanished: 'DESAPARECISTE', three4: '3 DE CADA 4 ANIMALES AQUÍ PUEDEN BRILLAR', redbeam: 'LUZ ROJA · SOLO LA VE EL CAZADOR', sky: 'TODO EL CIELO' },
+};
+let lang = 'en';
+const T = k => CV[lang][k];
+const enStore = new Map();
+function setLang(l) {
+  lang = l; document.documentElement.lang = l;
+  document.querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; if (!enStore.has(el)) enStore.set(el, el.innerHTML); el.innerHTML = l === 'es' && ES[k] !== undefined ? ES[k] : enStore.get(el); });
+  document.querySelectorAll('[data-ka]').forEach(el => { if (!el._en) el._en = el.getAttribute('aria-label'); el.setAttribute('aria-label', l === 'es' && ES[el.dataset.ka] ? ES[el.dataset.ka] : el._en); });
+  document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
+}
+document.querySelector('.lang').addEventListener('click', ev => { const b = ev.target.closest('button[data-lang]'); if (b) setLang(b.dataset.lang); });
+
+/* ---------- small tools ---------- */
+const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const css = (c, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+const hash = (i, j) => frac(Math.sin(i * 127.1 + j * 311.7) * 43758.5453);
+function noise(x, y) { const i = Math.floor(x), j = Math.floor(y), u = sstep(x - i), v = sstep(y - j); return lerp(lerp(hash(i, j), hash(i + 1, j), u), lerp(hash(i, j + 1), hash(i + 1, j + 1), u), v); }
+const FX = [...document.querySelectorAll('.fx')].map(el => [...el.children]);
+function fx(i, p) { let last = FX[i][0]; for (const d of FX[i]) { const on = p >= +d.dataset.at; d.classList.toggle('on', on); d.classList.remove('cur'); if (on) last = d; } last.classList.add('cur'); }
+function fishPath(ctx, cx, cy, L, H) { // a plain fish facing left
+  ctx.beginPath(); ctx.moveTo(cx - L * .5, cy);
+  ctx.bezierCurveTo(cx - L * .4, cy - H * .62, cx + L * .12, cy - H * .6, cx + L * .3, cy - H * .12);
+  ctx.lineTo(cx + L * .5, cy - H * .45); ctx.lineTo(cx + L * .45, cy); ctx.lineTo(cx + L * .5, cy + H * .45); ctx.lineTo(cx + L * .3, cy + H * .12);
+  ctx.bezierCurveTo(cx + L * .12, cy + H * .6, cx - L * .4, cy + H * .62, cx - L * .5, cy); ctx.closePath();
+}
+const SNOW = (() => { const R = rng(9), a = []; for (let i = 0; i < 80; i++) a.push([R(), R(), 0.3 + R() * 0.9]); return a; })();
+
+/* ---------- hero ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC), T2 = reduce ? 0 : t;
+  const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#0f4c66'); g.addColorStop(.55, '#082338'); g.addColorStop(1, '#040b16'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  for (let i = 0; i < 5; i++) { // shafts of light
+    const x = w * (0.12 + 0.19 * i) + Math.sin(T2 * 0.0002 + i) * 30, gg = ctx.createLinearGradient(x, 0, x + h * 0.25, h * 0.8);
+    gg.addColorStop(0, `rgba(140,220,230,${0.11 * fade})`); gg.addColorStop(1, 'rgba(140,220,230,0)'); ctx.fillStyle = gg;
+    ctx.beginPath(); ctx.moveTo(x - 20, 0); ctx.lineTo(x + 40, 0); ctx.lineTo(x + h * 0.25 + 90, h * 0.8); ctx.lineTo(x + h * 0.25 - 60, h * 0.8); ctx.closePath(); ctx.fill();
+  }
+  for (const b of SNOW) { const ph = frac(T2 * 0.00002 * b[2] + b[1]); ctx.fillStyle = `rgba(200,235,240,${0.4 * fade * b[2]})`; ctx.beginPath(); ctx.arc(b[0] * w + Math.sin(ph * 8 + b[1] * 9) * 10, ph * h * 1.1 - 10, 0.8 + b[2] * 1.4, 0, TAU); ctx.fill(); }
+}
+
+/* ---------- I · the water eats the colors: I(z) = I0 * e^(-k z) ---------- */
+const c1 = document.querySelector('#s1 canvas');
+const COLS = [[[226, 58, 46], .36], [[240, 138, 40], .235], [[244, 208, 58], .089], [[70, 180, 90], .042], [[58, 120, 220], .018], [[136, 84, 204], .028]];
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), T2 = reduce ? 0 : t; fx(0, p);
+  const z = 200 * Math.pow(ramp(p, .05, .9), 1.8), total = Math.exp(-0.018 * z);
+  const top = mix([4, 10, 22], [70, 170, 200], Math.exp(-0.022 * Math.max(0, z - 3))), bot = mix([3, 7, 16], [30, 110, 160], Math.exp(-0.03 * (z + 5)));
+  const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, css(top)); g.addColorStop(1, css(bot)); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  const sh = Math.exp(-z / 7);
+  if (sh > .02) for (let i = 0; i < 5; i++) { const x = w * (0.1 + 0.2 * i) + Math.sin(T2 * 0.0003 + i) * 24; const gg = ctx.createLinearGradient(x, 0, x + h * 0.2, h * 0.7); gg.addColorStop(0, `rgba(220,250,255,${0.16 * sh})`); gg.addColorStop(1, 'rgba(220,250,255,0)'); ctx.fillStyle = gg; ctx.beginPath(); ctx.moveTo(x - 16, 0); ctx.lineTo(x + 34, 0); ctx.lineTo(x + h * 0.2 + 70, h * 0.7); ctx.lineTo(x + h * 0.2 - 50, h * 0.7); ctx.closePath(); ctx.fill(); }
+  for (const b of SNOW) { const ph = frac(b[1] - z * 0.02 * b[2] - T2 * 0.000012); ctx.fillStyle = `rgba(210,235,240,${0.22 * b[2]})`; ctx.beginPath(); ctx.arc(b[0] * w, ph * h, 0.7 + b[2], 0, TAU); ctx.fill(); }
+  // the striped fish
+  const L = Math.min(F.aw * .7, F.ah * .95), H = L * .5, cx = F.cx - F.aw * .04, cy = F.cy - F.ah * .17;
+  ctx.save(); fishPath(ctx, cx, cy, L, H); ctx.clip();
+  ctx.fillStyle = css(mix([18, 30, 44], [200, 208, 210], total)); ctx.fillRect(cx - L, cy - H, L * 2, H * 2);
+  const sw = L * .62 / 6, x0 = cx - L * .36;
+  COLS.forEach((c, i) => { const f = Math.exp(-c[1] * z), lum = (c[0][0] * .3 + c[0][1] * .59 + c[0][2] * .11) / 255, k = 0.3 + 0.7 * total, dead = [(34 * lum + 8) * k, (64 * lum + 18) * k, (92 * lum + 30) * k]; ctx.fillStyle = css(mix(dead, c[0], f)); ctx.fillRect(x0 + i * sw, cy - H, sw + 1, H * 2); });
+  ctx.restore();
+  ctx.strokeStyle = `rgba(4,12,22,${0.5 + 0.3 * total})`; ctx.lineWidth = Math.max(1.5, L * .008); fishPath(ctx, cx, cy, L, H); ctx.stroke();
+  ctx.fillStyle = '#04101a'; ctx.beginPath(); ctx.arc(cx - L * .41, cy - H * .1, L * .022, 0, TAU); ctx.fill();
+  // six bars: how much of each color is left at this depth
+  const bw = L * .62 / 6, bh = Math.min(F.ah * .24, L * .34), by = cy + H * .62 + 30;
+  mono(ctx, `${T('left')} z = ${z < 10 ? z.toFixed(1) : Math.round(z)} m`, x0, by - 13, 'rgba(230,238,240,.92)', 'left', 10);
+  COLS.forEach((c, i) => {
+    const f = Math.exp(-c[1] * z), x = x0 + i * bw;
+    ctx.strokeStyle = css(c[0], .55); ctx.lineWidth = 1; ctx.strokeRect(x + 2.5, by + .5, bw - 5, bh);
+    ctx.fillStyle = css(c[0]); ctx.fillRect(x + 2.5, by + bh * (1 - f), bw - 5, bh * f);
+    mono(ctx, f < .01 ? T('gone') : Math.round(f * 100) + '%', x + bw / 2, by + bh + 12, f < .01 ? 'rgba(230,238,240,.5)' : 'rgba(230,238,240,.92)', 'center', bw < 34 ? 8.5 : 10);
+  });
+  // the depth ruler, with a tick where each color falls to 1%: z = ln(100) / k
+  const rx = F.wide ? F.cx + F.aw * .47 : w - 30, r0 = F.cy - F.ah * .44, r1 = F.cy + F.ah * .44, Y = d => r0 + (r1 - r0) * d / 200;
+  ctx.strokeStyle = 'rgba(230,238,240,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(rx, r0); ctx.lineTo(rx, r1); ctx.stroke();
+  for (let d = 0; d <= 200; d += 50) { ctx.beginPath(); ctx.moveTo(rx - 5, Y(d)); ctx.lineTo(rx, Y(d)); ctx.stroke(); mono(ctx, String(d), rx - 8, Y(d), 'rgba(230,238,240,.7)', 'right', 9); }
+  COLS.forEach(c => { const d = Math.log(100) / c[1]; if (d > 200) return; ctx.fillStyle = css(c[0], z >= d ? .35 : 1); ctx.fillRect(rx + 2, Y(d) - 1.5, 9, 3); });
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(rx, Y(z), 4.5, 0, TAU); ctx.fill();
+}
+
+/* ---------- II · the cuttlefish: a halftone that redraws itself ---------- */
+const c2 = document.querySelector('#s2 canvas'), floors = document.getElementById('floors');
+const LIGHT = [214, 198, 160], DARK = [84, 70, 56];
+let floor = 'sand', prevFloor = 'sand', floorAt = -1e9, userFloor = false; floors.inert = true;
+function setFloor(kind, t) { if (kind === floor) return; prevFloor = floor; floor = kind; floorAt = t; floors.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.floor === kind))); }
+floors.addEventListener('click', ev => { const b = ev.target.closest('button[data-floor]'); if (!b) return; userFloor = true; setFloor(b.dataset.floor, performance.now()); });
+function pat(kind, x, y, u) { // 0 = light, 1 = dark
+  if (kind === 'checker') { const s = u * 7; return ((Math.floor(x / s) + Math.floor(y / s)) & 1) ? .9 : .1; }
+  if (kind === 'pebbles') {
+    const s = u * 6, gx = x / s, gy = y / s, i0 = Math.floor(gx), j0 = Math.floor(gy); let d1 = 9, tone = 0;
+    for (let j = j0 - 1; j <= j0 + 1; j++) for (let i = i0 - 1; i <= i0 + 1; i++) { const d = Math.hypot(gx - (i + .15 + .7 * hash(i, j)), gy - (j + .15 + .7 * hash(j + 31, i + 17))); if (d < d1) { d1 = d; tone = hash(i + 7, j + 3); } }
+    return d1 > .46 ? .92 : .12 + .5 * tone;
+  }
+  return clamp(.16 + .42 * noise(x / (u * 2.2), y / (u * 2.2)) + .3 * noise(x / (u * .7), y / (u * .7)), 0, 1) * .85;
+}
+const floorCache = {};
+function floorCanvas(kind, w, h, u) {
+  const key = kind + '|' + w + '|' + h + '|' + Math.round(u * 10); if (floorCache[key]) return floorCache[key];
+  if (Object.keys(floorCache).length > 8) for (const k in floorCache) delete floorCache[k];
+  const cs = Math.max(3, Math.round(u * .5)), c = document.createElement('canvas'); c.width = Math.ceil(w / cs); c.height = Math.ceil(h / cs);
+  const k = c.getContext('2d'), im = k.createImageData(c.width, c.height), d = im.data;
+  for (let j = 0; j < c.height; j++) for (let i = 0; i < c.width; i++) { const col = mix(LIGHT, DARK, pat(kind, (i + .5) * cs, (j + .5) * cs, u)), q = (j * c.width + i) * 4; d[q] = col[0]; d[q + 1] = col[1]; d[q + 2] = col[2]; d[q + 3] = 255; }
+  k.putImageData(im, 0, 0); return floorCache[key] = c;
+}
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), T2 = reduce ? 0 : t; fx(1, p);
+  const Lb = Math.min(F.aw * .94, F.ah * 1.45), u = Lb / 46, cx = F.cx + Lb * .07, cy = F.cy;
+  if (!userFloor) setFloor(p > .7 ? 'checker' : p > .5 ? 'pebbles' : 'sand', t);
+  const on = p > .4 && p < .99; floors.classList.toggle('on', on); floors.inert = !on;
+  const k = reduce ? 1 : ease((t - floorAt) / 900, 0, 1);
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(floorCanvas(floor, w, h, u), 0, 0, w, h);
+  if (k < 1) { ctx.globalAlpha = 1 - k; ctx.drawImage(floorCanvas(prevFloor, w, h, u), 0, 0, w, h); ctx.globalAlpha = 1; }
+  ctx.fillStyle = 'rgba(20,60,80,.18)'; ctx.fillRect(0, 0, w, h); // a little water over the floor
+  const match = ease(p, .2, .42), clouds = ease(p, .86, .93);
+  const hx = cx - Lb * .37, armX = cx - Lb * .45, armL = Lb * .17;
+  const inBody = (x, y) => {
+    const mx = (x - cx) / (Lb * .33), my = (y - cy) / (Lb * .17); if (mx * mx + my * my < 1) return true;
+    const qx = (x - hx) / (Lb * .11), qy = (y - cy) / (Lb * .1); if (qx * qx + qy * qy < 1) return true;
+    const ax = armX - x; return ax > 0 && ax < armL && Math.abs(y - cy) < Lb * .085 * (1 - ax / armL) * (.72 + .28 * Math.sin(y / u * 1.4));
+  };
+  // pale skin under the dots, then the fin that ripples round the mantle
+  const edge = 1 - match * .82;
+  ctx.fillStyle = css(LIGHT);
+  ctx.beginPath(); ctx.ellipse(cx, cy, Lb * .33, Lb * .17, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(hx, cy, Lb * .11, Lb * .1, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(armX, cy - Lb * .085); ctx.lineTo(armX - armL, cy); ctx.lineTo(armX, cy + Lb * .085); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = `rgba(40,30,24,${0.55 * edge})`; ctx.lineWidth = Math.max(1, u * .22); ctx.beginPath();
+  for (let a = 0; a <= 120; a++) { const th = a / 120 * TAU, r = 1.05 + .045 * Math.sin(th * 15 + T2 * .004), x = cx + Math.cos(th) * Lb * .33 * r, y = cy + Math.sin(th) * Lb * .17 * r; a ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+  ctx.stroke();
+  // the dots: one pigment sac each, radius = r_max * sqrt(darkness)
+  const rmax = u * .64, TONE = [[78, 62, 48], [128, 74, 50], [176, 142, 86]];
+  for (let j = -15; j <= 15; j++) {
+    const y = cy + j * u * .866;
+    for (let i = -36; i <= 26; i++) {
+      const x = cx + (i + .5 * (j & 1)) * u; if (!inBody(x, y)) continue;
+      let d = lerp(.4, lerp(pat(prevFloor, x, y, u), pat(floor, x, y, u), k), match);
+      if (clouds > 0) d = clamp(d + clouds * .4 * Math.sin(x / u * .45 - T2 * .004), 0, 1);
+      const hh = hash(i, j), tone = TONE[hh < .64 ? 0 : hh < .88 ? 1 : 2];
+      ctx.fillStyle = css(tone, .92); ctx.beginPath(); ctx.arc(x, y, rmax * Math.sqrt(d), 0, TAU); ctx.fill();
+    }
+  }
+  // the eye and its W-shaped pupil never hide
+  const ex = hx + Lb * .01, ey = cy - Lb * .048, es = u * 1.25;
+  ctx.fillStyle = '#ece4c6'; ctx.beginPath(); ctx.ellipse(ex, ey, es * 1.7, es * 1.25, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = '#17110c'; ctx.lineWidth = es * .5; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(ex - es * 1.1, ey - es * .3); ctx.lineTo(ex - es * .55, ey + es * .35); ctx.lineTo(ex, ey - es * .1); ctx.lineTo(ex + es * .55, ey + es * .35); ctx.lineTo(ex + es * 1.1, ey - es * .3); ctx.stroke();
+}
+
+/* ---------- III · the mantis shrimp: twelve bell curves ---------- */
+const c3 = document.querySelector('#s3 canvas');
+function wl2rgb(l) { // a rough map from wavelength to screen color
+  if (l < 380) return [84, 70, 110];
+  let r = 0, g = 0, b = 0;
+  if (l < 440) { r = (440 - l) / 60; b = 1; } else if (l < 490) { g = (l - 440) / 50; b = 1; } else if (l < 510) { g = 1; b = (510 - l) / 20; } else if (l < 580) { r = (l - 510) / 70; g = 1; } else if (l < 645) { r = 1; g = (645 - l) / 65; } else r = 1;
+  const f = l < 420 ? .35 + .65 * (l - 380) / 40 : l > 690 ? Math.max(.4, 1 - (l - 690) / 60) : 1;
+  return [255 * r * f, 255 * g * f, 255 * b * f];
+}
+const bell = (l, mu, sg) => Math.exp(-((l - mu) * (l - mu)) / (2 * sg * sg));
+const HUM = [[420, 24, [110, 140, 255]], [534, 36, [110, 220, 140]], [564, 40, [255, 130, 110]]];
+const SHR = Array.from({ length: 12 }, (_, i) => 315 + i * 35);
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h); fx(2, p);
+  ctx.fillStyle = '#06101c'; ctx.fillRect(0, 0, w, h);
+  const bgd = ctx.createRadialGradient(F.cx, F.cy, 0, F.cx, F.cy, Math.max(w, h) * .7); bgd.addColorStop(0, 'rgba(47,142,160,.16)'); bgd.addColorStop(1, 'rgba(6,16,28,0)'); ctx.fillStyle = bgd; ctx.fillRect(0, 0, w, h);
+  const x0 = F.cx - F.aw * .48, x1 = F.cx + F.aw * .48, ay = F.cy - F.ah * .03, Hc = F.ah * .22, X = l => x0 + (l - 300) / 420 * (x1 - x0), fs = F.wide ? 10.5 : 9;
+  for (let l = 300; l < 720; l += 2) { ctx.fillStyle = css(wl2rgb(l)); ctx.fillRect(X(l), ay - 6, (x1 - x0) / 210 + 1, 12); }
+  for (const l of [300, 400, 500, 600, 700]) mono(ctx, String(l), X(l) + (l === 300 ? 2 : 0), ay, l < 380 ? 'rgba(255,255,255,.85)' : 'rgba(4,10,20,.85)', l === 300 ? 'left' : 'center', 8.5);
+  mono(ctx, 'UV', X(345), ay, 'rgba(255,255,255,.85)', 'center', 8.5);
+  const hg = ease(p, .03, .2), sg = ramp(p, .26, .46);
+  HUM.forEach(c => {
+    ctx.beginPath(); ctx.moveTo(X(300), ay - 9); for (let l = 300; l <= 720; l += 3) ctx.lineTo(X(l), ay - 9 - Hc * hg * bell(l, c[0], c[1])); ctx.lineTo(X(720), ay - 9); ctx.closePath();
+    ctx.fillStyle = css(c[2], .26); ctx.fill(); ctx.strokeStyle = css(c[2], .95); ctx.lineWidth = 1.8; ctx.stroke();
+  });
+  if (hg > .3) mono(ctx, T('people'), x0, ay - Hc - 22, `rgba(230,238,240,${hg})`, 'left', fs);
+  SHR.forEach((mu, i) => {
+    const f = sstep(clamp(sg * 5 - i * .34, 0, 1)); if (f <= 0) return; const col = wl2rgb(mu);
+    ctx.beginPath(); ctx.moveTo(X(Math.max(300, mu - 40)), ay + 9); for (let l = Math.max(300, mu - 40); l <= Math.min(720, mu + 40); l += 2) ctx.lineTo(X(l), ay + 9 + Hc * f * bell(l, mu, 11)); ctx.lineTo(X(Math.min(720, mu + 40)), ay + 9); ctx.closePath();
+    ctx.fillStyle = css(col, .4); ctx.fill(); ctx.strokeStyle = css(mix(col, [255, 255, 255], .35), .95); ctx.lineWidth = 1.5; ctx.stroke();
+  });
+  if (sg > .1) mono(ctx, T('shrimp'), x0, ay + Hc + 24, `rgba(230,238,240,${Math.min(1, sg * 3)})`, 'left', fs);
+  // the test: two colors Δλ apart
+  const test = ease(p, .5, .56) * (1 - ease(p, .8, .84)), top = ay - Hc - 22, bot = ay + Hc + 24;
+  if (test > 0) {
+    const d = lerp(30, 2, ramp(p, .57, .78)), lA = 560, lB = 560 + d, r = Math.min(F.ah * .055, F.aw * .07), yy = top - r - 22;
+    ctx.globalAlpha = test;
+    for (const [l, s] of [[lA, -1], [lB, 1]]) { ctx.fillStyle = css(wl2rgb(l)); ctx.beginPath(); ctx.arc(F.cx + s * r * 1.25, yy, r, 0, TAU); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(l), ay - 14); ctx.lineTo(X(l), ay + 14); ctx.stroke(); }
+    mono(ctx, `Δλ = ${d.toFixed(0)} nm`, F.cx, yy + r + 14, 'rgba(230,238,240,1)', 'center', fs + 1);
+    const sv = d >= 25 ? 'apart' : d >= 12 ? 'unsure' : 'same', vy = bot + 26;
+    mono(ctx, `${T('person')}  ✓  ${T('apart')}`, F.cx, vy, '#9be7a8', 'center', fs + 1);
+    mono(ctx, `${T('shr')}  ${sv === 'apart' ? '✓' : sv === 'unsure' ? '?' : '✗'}  ${T(sv)}`, F.cx, vy + 20, sv === 'apart' ? '#9be7a8' : sv === 'unsure' ? '#f2d27a' : '#ff8a7a', 'center', fs + 1);
+    ctx.globalAlpha = 1;
+  }
+  // the pattern: each sensor says yes or no
+  const bc = ease(p, .84, .9);
+  if (bc > 0) {
+    const lS = lerp(330, 690, ramp(p, .87, .99)), n = 12, cell = Math.min((x1 - x0) / 14, F.ah * .07), bx = F.cx - n * cell * .6 + cell * .1, yy = bot + 22;
+    ctx.globalAlpha = bc; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(lS), ay - Hc * .5); ctx.lineTo(X(lS), ay + Hc + 12); ctx.stroke();
+    SHR.forEach((mu, i) => { const hit = bell(lS, mu, 11) > 1 / 3; ctx.fillStyle = hit ? css(wl2rgb(mu)) : 'rgba(230,238,240,.1)'; ctx.fillRect(bx + i * cell * 1.2, yy, cell, cell); ctx.strokeStyle = 'rgba(230,238,240,.45)'; ctx.lineWidth = 1; ctx.strokeRect(bx + i * cell * 1.2 + .5, yy + .5, cell - 1, cell - 1); });
+    mono(ctx, T('pattern'), F.cx, yy + cell + 14, 'rgba(143,214,208,1)', 'center', fs);
+    ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- IV · refraction: n1 sin(a) = n2 sin(b) ---------- */
+const c4 = document.querySelector('#s4 canvas');
+function bugAt(ctx, x, y, s, ghost) {
+  ctx.save(); ctx.translate(x, y);
+  if (ghost) { ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(20,40,60,.8)'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.ellipse(0, 0, s, s * .6, 0, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.ellipse(-s * .5, -s * .7, s * .7, s * .35, -.5, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.ellipse(s * .5, -s * .7, s * .7, s * .35, .5, 0, TAU); ctx.stroke(); }
+  else { ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.beginPath(); ctx.ellipse(-s * .5, -s * .7, s * .7, s * .35, -.5, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.ellipse(s * .5, -s * .7, s * .7, s * .35, .5, 0, TAU); ctx.fill(); ctx.fillStyle = '#1a2a38'; ctx.beginPath(); ctx.ellipse(0, 0, s, s * .6, 0, 0, TAU); ctx.fill(); }
+  ctx.restore();
+}
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), T2 = reduce ? 0 : t; fx(3, p);
+  const wy = F.cy - F.ah * .1, n = 1.33, thc = Math.asin(1 / n), fs = F.wide ? 10.5 : 9;
+  let g = ctx.createLinearGradient(0, 0, 0, wy); g.addColorStop(0, '#bcdcea'); g.addColorStop(1, '#eef6f2'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, wy);
+  g = ctx.createLinearGradient(0, wy, 0, h); g.addColorStop(0, '#2f8ea0'); g.addColorStop(1, '#0b3348'); ctx.fillStyle = g; ctx.fillRect(0, wy, w, h - wy);
+  ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let x = 0; x <= w; x += 8) { const y = wy + Math.sin(x * .035 + T2 * .002) * 1.6; x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke();
+  const E = [F.cx, wy + F.ah * .42], dep = E[1] - wy, an = ease(p, .66, .76), fan = 1 - an * .88;
+  const open = ease(p, .06, .32), N = 23, Lr = Math.max(F.ah * .7, w * .5);
+  ctx.lineCap = 'round';
+  for (let i = 0; i < N; i++) {
+    const a = lerp(-88, 88, i / (N - 1)) * Math.PI / 180; if (Math.abs(a) > 88 * Math.PI / 180 * open + .001) continue;
+    const b = Math.asin(Math.sin(a) / n), sx = E[0] + dep * Math.tan(b);
+    ctx.strokeStyle = `rgba(255,255,255,${0.42 * fan})`; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(E[0], E[1]); ctx.lineTo(sx, wy); ctx.stroke();
+    ctx.strokeStyle = `rgba(214,150,40,${0.6 * fan})`; ctx.beginPath(); ctx.moveTo(sx, wy); ctx.lineTo(sx + Math.sin(a) * Lr, wy - Math.cos(a) * Lr); ctx.stroke();
+  }
+  const win = ease(p, .3, .38) * fan;
+  if (win > 0) {
+    const half = dep * Math.tan(thc);
+    ctx.strokeStyle = `rgba(255,255,255,${0.95 * win})`; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(E[0] - half, wy); ctx.lineTo(E[0] + half, wy); ctx.stroke();
+    ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(E[0], E[1], dep * .3, -Math.PI / 2 - thc, -Math.PI / 2 + thc); ctx.stroke();
+    mono(ctx, '≈ 97°', E[0], E[1] - dep * .38, `rgba(255,255,255,${win})`, 'center', fs + 1);
+    mono(ctx, T('sky'), E[0], wy + 14, `rgba(255,255,255,${win})`, 'center', fs);
+  }
+  const tir = ease(p, .38, .46) * fan;
+  if (tir > 0) { // total internal reflection
+    const a = 64 * Math.PI / 180, sx = E[0] - dep * Math.tan(a);
+    ctx.setLineDash([5, 5]); ctx.strokeStyle = `rgba(255,255,255,${0.7 * tir})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(E[0], E[1]); ctx.lineTo(sx, wy); ctx.lineTo(sx - dep * Math.tan(a) * .7, wy + dep * .7); ctx.stroke(); ctx.setLineDash([]);
+    mono(ctx, T('mirror'), Math.max(8, F.cx - F.aw * .5), E[1] + 30, `rgba(255,255,255,${0.9 * tir})`, 'left', fs - .5);
+  }
+  const bug = ease(p, .3, .36) * (1 - ease(p, .62, .68));
+  if (bug > 0) { // the bug rides one ray; its ghost sits where the fish thinks it is
+    const a = lerp(72, 28, ease(p, .34, .62)) * Math.PI / 180, b = Math.asin(Math.sin(a) / n), sx = E[0] + dep * Math.tan(b), bl = F.ah * .3, s = Math.max(6, F.ah * .022);
+    const rx = sx + Math.sin(a) * bl, ry = wy - Math.cos(a) * bl, gx = sx + Math.sin(b) * bl, gy = wy - Math.cos(b) * bl;
+    ctx.globalAlpha = bug;
+    ctx.strokeStyle = 'rgba(214,120,20,1)'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(sx, wy); ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.beginPath(); ctx.moveTo(sx, wy); ctx.lineTo(E[0], E[1]); ctx.stroke();
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(20,40,60,.7)'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(sx, wy); ctx.lineTo(gx, gy); ctx.stroke(); ctx.setLineDash([]);
+    bugAt(ctx, rx, ry, s, false); bugAt(ctx, gx, gy, s, true);
+    mono(ctx, T('real'), rx + s * 1.6, ry + s * .2, 'rgba(20,40,60,1)', 'left', fs); mono(ctx, T('seen'), gx - s * 1.6, gy - s * 1.6, 'rgba(20,40,60,1)', 'right', fs);
+    ctx.globalAlpha = 1;
+  }
+  ctx.globalAlpha = fan; ctx.fillStyle = '#082030'; fishPath(ctx, E[0], E[1] + F.ah * .025, F.ah * .13, F.ah * .06); ctx.fill(); ctx.globalAlpha = 1;
+  if (an > 0) { // the four-eyed fish at the waterline
+    const bl = Math.min(F.aw * .78, F.ah * 1.2), ex = F.cx - bl * .3, er = bl * .075;
+    ctx.globalAlpha = an;
+    // what each pupil watches
+    let cg = ctx.createLinearGradient(ex, wy, ex - bl * .3, wy - bl * .34); cg.addColorStop(0, 'rgba(214,150,40,.5)'); cg.addColorStop(1, 'rgba(214,150,40,0)'); ctx.fillStyle = cg; ctx.beginPath(); ctx.moveTo(ex, wy - er * .45); ctx.lineTo(ex - bl * .42, wy - bl * .2); ctx.lineTo(ex - bl * .12, wy - bl * .42); ctx.closePath(); ctx.fill();
+    cg = ctx.createLinearGradient(ex, wy, ex - bl * .3, wy + bl * .34); cg.addColorStop(0, 'rgba(255,255,255,.45)'); cg.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = cg; ctx.beginPath(); ctx.moveTo(ex, wy + er * .45); ctx.lineTo(ex - bl * .42, wy + bl * .2); ctx.lineTo(ex - bl * .12, wy + bl * .42); ctx.closePath(); ctx.fill();
+    // body just under the surface
+    ctx.fillStyle = '#5b6a52'; ctx.beginPath(); ctx.moveTo(ex - bl * .12, wy + er * .5); ctx.quadraticCurveTo(ex + bl * .1, wy + er * .1, ex + bl * .62, wy + er * .9); ctx.lineTo(ex + bl * .76, wy + er * .2); ctx.lineTo(ex + bl * .74, wy + er * 2.3); ctx.lineTo(ex + bl * .62, wy + er * 1.5); ctx.quadraticCurveTo(ex + bl * .2, wy + er * 2.9, ex - bl * .1, wy + er * 1.7); ctx.closePath(); ctx.fill();
+    // the eye: one ball, a band at the waterline, a pupil each side
+    ctx.fillStyle = '#d8d2b4'; ctx.strokeStyle = '#2a3326'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(ex, wy, er, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#10140e'; ctx.beginPath(); ctx.ellipse(ex, wy - er * .47, er * .5, er * .33, 0, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.ellipse(ex, wy + er * .47, er * .4, er * .27, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#6b6a48'; ctx.fillRect(ex - er, wy - er * .1, er * 2, er * .2);
+    mono(ctx, T('aireye'), ex + er * 1.5, wy - er * 1.5, 'rgba(20,40,60,1)', 'left', fs); mono(ctx, T('watereye'), ex + er * 1.5, wy + er * 3.6, 'rgba(255,255,255,.95)', 'left', fs);
+    ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- V · bring your own light ---------- */
+const c5 = document.querySelector('#s5 canvas'), bellyBar = document.getElementById('bellyBar'), bellyIn = document.getElementById('belly');
+let userBelly = false; bellyBar.inert = true;
+bellyIn.addEventListener('input', () => { userBelly = true; });
+const FLASH = (() => { const R = rng(41), a = []; for (let i = 0; i < 150; i++) a.push([R(), R(), R(), R()]); return a; })();
+function hatchet(ctx, cx, cy, S) { // side view, facing left: deep body, thin tail
+  ctx.beginPath(); ctx.moveTo(cx - S * .5, cy - S * .05); ctx.quadraticCurveTo(cx - S * .35, cy - S * .42, cx - S * .02, cy - S * .36);
+  ctx.lineTo(cx + S * .12, cy - S * .2); ctx.lineTo(cx + S * .42, cy - S * .12); ctx.lineTo(cx + S * .58, cy - S * .26); ctx.lineTo(cx + S * .54, cy - S * .02); ctx.lineTo(cx + S * .58, cy + S * .14); ctx.lineTo(cx + S * .4, cy + S * .04); ctx.lineTo(cx + S * .1, cy + S * .1);
+  ctx.quadraticCurveTo(cx - S * .1, cy + S * .5, cx - S * .36, cy + S * .34); ctx.quadraticCurveTo(cx - S * .52, cy + S * .2, cx - S * .5, cy - S * .05); ctx.closePath();
+}
+function shrimpAt(ctx, x, y, s, a) {
+  ctx.save(); ctx.translate(x, y); ctx.strokeStyle = `rgba(255,96,80,${a})`; ctx.fillStyle = `rgba(255,96,80,${a * .8})`; ctx.lineWidth = s * .16; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-s, 0); ctx.quadraticCurveTo(-s * .2, -s * .9, s * .7, -s * .1); ctx.quadraticCurveTo(s * .2, s * .1, -s, 0); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-s, 0); ctx.lineTo(-s * 1.9, -s * .5); ctx.moveTo(-s, 0); ctx.lineTo(-s * 1.9, s * .1); ctx.moveTo(s * .7, -s * .1); ctx.lineTo(s * 1.2, s * .35); ctx.stroke(); ctx.restore();
+}
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), T2 = reduce ? 0 : t; fx(4, p);
+  ctx.fillStyle = '#020812'; ctx.fillRect(0, 0, w, h);
+  const A = 0.6 * (1 - ease(p, .44, .58) * .8);
+  const g = ctx.createRadialGradient(F.cx, -h * .25, 0, F.cx, -h * .25, h * 1.3); g.addColorStop(0, `rgba(80,160,220,${A})`); g.addColorStop(.6, `rgba(30,84,150,${A * .5})`); g.addColorStop(1, 'rgba(2,8,18,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  const fs = F.wide ? 10.5 : 9, on = p > .16 && p < .45; bellyBar.classList.toggle('on', on); bellyBar.inert = !on;
+  const hf = 1 - ease(p, .44, .52);
+  if (hf > 0) { // the hatchetfish and its belly lights
+    const S = Math.min(F.aw * .55, F.ah * .62), hx = F.cx, hy = F.cy - F.ah * .13;
+    if (!userBelly) bellyIn.value = String(Math.round(62.5 * ease(p, .2, .36)));
+    const b = +bellyIn.value / 62.5, contrast = Math.abs(1 - b);
+    ctx.save(); ctx.globalAlpha = hf * clamp(b <= 1 ? contrast : contrast * .55, 0, 1); hatchet(ctx, hx, hy, S); ctx.fillStyle = b <= 1 ? '#01040a' : '#9fd8f4'; ctx.fill(); ctx.restore();
+    ctx.save(); ctx.globalAlpha = hf * .1; hatchet(ctx, hx, hy, S); ctx.strokeStyle = '#9fd8f4'; ctx.lineWidth = 1; ctx.stroke(); ctx.restore();
+    for (let i = 0; i < 9; i++) { // lights along the belly curve
+      const q = .08 + i * .105, m = 1 - q, x = m * m * (hx + S * .1) + 2 * m * q * (hx - S * .1) + q * q * (hx - S * .36), y = m * m * (hy + S * .1) + 2 * m * q * (hy + S * .5) + q * q * (hy + S * .34), r = S * .03;
+      const gg = ctx.createRadialGradient(x, y, 0, x, y, r * 2.6); gg.addColorStop(0, `rgba(150,215,255,${hf * Math.min(1, b)})`); gg.addColorStop(1, 'rgba(150,215,255,0)'); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(x, y, r * 2.6, 0, TAU); ctx.fill();
+    }
+    ctx.fillStyle = `rgba(180,225,250,${hf * .5})`; ctx.beginPath(); ctx.arc(hx - S * .33, hy - S * .1, S * .035, 0, TAU); ctx.fill();
+    if (p > .16) { mono(ctx, `${T('contrast')} = ${contrast.toFixed(2)}`, hx, hy + S * .62, `rgba(230,238,240,${hf})`, 'center', fs + 1); if (contrast < .07) mono(ctx, T('vanished'), hx, hy + S * .62 + 20, `rgba(143,214,208,${hf})`, 'center', fs + 1); }
+  }
+  const fl = ease(p, .46, .56) * (1 - ease(p, .74, .82) * .65);
+  if (fl > 0) { // flashes: each one decays as e^(-t / tau)
+    for (const s of FLASH) {
+      const period = 2400 + s[2] * 5200, tt = (T2 + s[3] * period) % period, b = Math.exp(-tt / (320 + s[2] * 520)); if (b < .03) continue;
+      const x = s[0] * w, y = s[1] * h, r = (5 + 12 * s[2]) * (.5 + b), gg = ctx.createRadialGradient(x, y, 0, x, y, r);
+      gg.addColorStop(0, `rgba(130,240,215,${b * fl})`); gg.addColorStop(1, 'rgba(130,240,215,0)'); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+    }
+    if (p < .74) mono(ctx, T('three4'), F.cx, F.cy - F.ah * .44, `rgba(143,214,208,${fl})`, 'center', fs + 1);
+  }
+  const dr = ease(p, .72, .8);
+  if (dr > 0) { // the dragonfish and a red beam only it can see
+    const ex = F.cx - F.aw * .3, ey = F.cy + F.ah * .12, aim = lerp(-.62, .3, ease(p, .78, .98)), wd = .36, BL = Math.max(F.aw, F.ah) * 1.1;
+    const bg = ctx.createRadialGradient(ex, ey, 0, ex, ey, BL); bg.addColorStop(0, `rgba(255,50,40,${0.5 * dr})`); bg.addColorStop(.6, `rgba(255,50,40,${0.14 * dr})`); bg.addColorStop(1, 'rgba(255,50,40,0)');
+    ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(ex, ey); ctx.arc(ex, ey, BL, aim - wd / 2, aim + wd / 2); ctx.closePath(); ctx.fill();
+    for (const q of [[.62, -.3], [.8, -.06], [.66, .16]]) { // prey: lit if |angle - aim| < width / 2
+      const x = ex + q[0] * F.aw * .78, y = ey + q[1] * F.ah, off = Math.abs(Math.atan2(y - ey, x - ex) - aim), a = clamp(1 - off / (wd / 2), 0, 1);
+      if (a > 0) shrimpAt(ctx, x, y, Math.max(7, F.ah * .028), dr * Math.min(1, a * 2.2));
+    }
+    const DL = F.aw * .52;
+    ctx.fillStyle = `rgba(6,10,16,${dr})`; ctx.strokeStyle = `rgba(150,170,190,${0.3 * dr})`; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ex + DL * .1, ey - DL * .01); ctx.quadraticCurveTo(ex + DL * .02, ey - DL * .09, ex - DL * .12, ey - DL * .075); ctx.quadraticCurveTo(ex - DL * .6, ey - DL * .05, ex - DL * 1.1, ey + DL * .01); ctx.quadraticCurveTo(ex - DL * .6, ey + DL * .06, ex - DL * .1, ey + DL * .07); ctx.lineTo(ex + DL * .09, ey + DL * .1); ctx.lineTo(ex - DL * .02, ey + DL * .03); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = `rgba(200,220,235,${0.8 * dr})`; ctx.beginPath(); ctx.arc(ex - DL * .02, ey - DL * .035, DL * .014, 0, TAU); ctx.fill();
+    const rg = ctx.createRadialGradient(ex, ey, 0, ex, ey, DL * .05); rg.addColorStop(0, `rgba(255,90,70,${dr})`); rg.addColorStop(1, 'rgba(255,90,70,0)'); ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(ex, ey, DL * .05, 0, TAU); ctx.fill();
+    mono(ctx, T('redbeam'), F.cx, F.cy + F.ah * .44, `rgba(255,150,135,${dr})`, 'center', fs + .5);
+  }
+}
+
+/* ---------- exhibit mode and the loop ---------- */
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

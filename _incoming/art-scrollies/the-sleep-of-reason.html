@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Sleep of Reason</title>
+<meta name="description" content="How Goya made gray from dust, acid and a clock, and how one Spanish word gives his most famous print two meanings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#12100c; --bone:#eadfc9; --copper:#b8703b; --copper-hi:#f2c58f; --acid:#5cc4b8; --ink:#9a4a22; --gold:#dba14a; --muted:#9a8f7b; --paper:#eadfc8;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#12100c;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#cfc6b2;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(22,19,14,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(219,161,74,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#fff3dc}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#fff3dc}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(18,16,12,.72);border:1px solid rgba(219,161,74,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(18,16,12,.82);border:1px solid rgba(219,161,74,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(219,161,74,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#cfc6b2;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(219,161,74,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#cfc6b2}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#cfc6b2;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(219,161,74,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#12100c;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#12100c;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+
+/* additions for this piece: function panel and controls */
+.fx{position:absolute;left:12px;top:46px;font-family:var(--mono);font-size:11px;line-height:1.75;color:var(--bone);background:rgba(18,16,12,.82);border:1px solid rgba(219,161,74,.25);padding:6px 10px;max-width:min(calc(100% - 24px),560px);pointer-events:none}
+.fx div{opacity:.3;transition:opacity .5s}
+.fx div.on{opacity:1}
+.fx b{font-weight:500;color:var(--gold)}
+.fx .g{color:#b7ab95;font-style:italic;margin-left:.7em}
+.palette{top:12px}
+.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(38vw,220px);height:44px;accent-color:#dba14a}
+.palette output{font-family:var(--mono);font-size:11px;min-width:5.6em;color:var(--bone)}
+.palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#12100c}
+.obj i{font-style:italic}
+@media (max-width:899px){ .palette{top:100px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+@media (max-width:520px){ .palette input[type=range]{width:32vw} }
+@media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:150px} }
+.exhibit .tag{font-size:13px}
+.exhibit .fx{font-size:15px;max-width:min(calc(100% - 24px),780px)}
+.exhibit .palette label,.exhibit .palette .pl{font-size:13px}
+.exhibit .palette button{font-size:15px}
+.exhibit .palette output{font-size:14px}
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .palette{left:35%;top:auto;bottom:26px} .palette .pl{display:inline} }
+@media (prefers-reduced-motion:reduce){ .fx div{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#find">Skip to the list of prints and sources</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">Seen · No. 10 · A scrolly on dust, acid and a double meaning</div>
+    <h1>The Sleep of Reason</h1>
+    <p class="sub">In 1799 Francisco Goya needed gray, and an etched line can only print black. So he let dust fall on a sheet of copper, let acid keep the time, and wrote four words that still mean two things.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · the line -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A dark, wax-coated copper plate. Bright lines appear as a needle scratches a drawing of a man asleep at a desk with owls and bats behind him." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">Etching · needle, wax, acid</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>ink = 1 on a line, 0 off it</b><span class="g">a line is all or nothing</span></div><div data-at="0.5"><b>gray ≈ line width ÷ spacing</b><span class="g">pack lines closer to fake a tone</span></div><div data-at="0.8"><b>x → −x</b><span class="g">the print is the plate in a mirror</span></div></div>
+    <p class="sr-only" id="s1d">The drawing on the plate is a mirror image: the desk sits on the right. Beside the plate, five small squares are filled with parallel lines that sit closer and closer together, and from a distance they read as five grays. At the end the plate turns over and becomes a print in black line on cream paper, with the desk now on the left.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The line</h2><p>An etching starts with a copper plate coated in wax. The artist scratches a drawing through the wax with a needle. Acid bites the bare lines into the metal.</p></div></div>
+    <div class="step"><div class="card"><p>Ink sits in the bitten lines and prints black. Everything else prints white. A line is all or nothing.</p></div></div>
+    <div class="step"><div class="card"><p>To get gray, you pack lines side by side. Closer lines, darker gray. It works, and it always looks like lines.</p></div></div>
+    <div class="step"><div class="card"><p>The picture Goya had in mind needed more: flat, soft tone, the kind a brush gives. Copper could give him that, with the help of some dust.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the dust -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="A close view of a copper plate. Amber grains of resin fall and settle on it at random until about half the copper is covered." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true">Aquatint · resin dust on copper</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>covered = 1 − e<sup>−n·a</sup></b><span class="g">n grains, each of area a, landing at random</span></div><div data-at="0.5"><b>dark = bare copper, bitten</b><span class="g">acid only reaches the gaps</span></div><div data-at="0.68"><b>print = mirror of the plate, grains → white</b><span class="g">thousands of specks read as gray</span></div></div>
+    <div class="palette" id="dustBar">
+      <label for="dust">Dust</label>
+      <input type="range" id="dust" min="0" max="900" value="0" step="10" aria-valuetext="0 grains">
+      <output id="dustOut" for="dust">0 grains</output>
+    </div>
+    <p class="sr-only" id="s2d">A slider sets the number of grains from 0 to 900. A readout compares the share of the plate the formula predicts will be covered with the share actually counted, and the two stay within a few percent. Then acid darkens the copper between the grains. A second square appears: the print, where every grain is a white speck in a dark field.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The dust</h2><p>The trick is called aquatint. Powdered tree resin is blown into the air inside a box and left to settle on the plate like fine snow.</p></div></div>
+    <div class="step"><div class="card"><p>Heat melts every grain onto the copper. Acid cannot reach the metal under a grain. Slide the dust and watch how much of the plate gets covered.</p></div></div>
+    <div class="step"><div class="card"><p>Nobody places the grains. They land at random, and the total still obeys a rule: more dust means more cover, with a little less gained each time.</p></div></div>
+    <div class="step"><div class="card"><p>Then the plate goes into the acid. On paper each grain prints as a white speck, and the bitten copper between the grains prints dark. The specks are too small to pick out. Together they read as gray.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the clock -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="The whole print, drawn as a diagram. As a clock runs from zero to thirty minutes, its parts darken together and then stop one at a time." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true">Stopping out · minutes in the acid</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.05"><b>tone = k · ln(1 + t)</b><span class="g">longer in the acid, darker on paper</span></div><div data-at="0.3"><b>t = min(clock, stop)</b><span class="g">varnish stops the clock for that part</span></div><div data-at="0.7"><b>stop: 0 · 1 · 6 · 30 minutes</b><span class="g">words · coat · desk · night</span></div></div>
+    <div class="palette" id="clockBar">
+      <label for="clock">Minutes in acid</label>
+      <input type="range" id="clock" min="0" max="100" value="0" step="1" aria-valuetext="0 minutes">
+      <output id="clockOut" for="clock">0 min</output>
+    </div>
+    <p class="sr-only" id="s3d">A slider sets the minutes. At zero the picture is only line. The four words on the desk, the man's sleeves and the animals' eyes stay white throughout. The man's coat and the floor stop darkening after about one minute, the desk and the wall behind after about six, and the night sky keeps going to thirty. A small chart shows the curve of tone against time with a dot where each part stopped.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The clock</h2><p>How dark? That depends on time. A bath of a minute prints pale. Half an hour prints close to black.</p></div></div>
+    <div class="step"><div class="card"><p>So the work is done with varnish and a clock. Before the first bath, everything that should stay white gets painted over. That includes the four words on the desk.</p></div></div>
+    <div class="step"><div class="card"><p>After each bath, the parts that are dark enough get varnished too, and the plate goes back in. Each tone in the picture is a different length of time.</p></div></div>
+    <div class="step"><div class="card"><p>Drag the clock. Every part darkens together until its varnish goes on. Then it stops, and the rest keep going.</p></div></div>
+    <div class="step"><div class="card"><p>The words had to be painted backwards, the way Blake wrote his. A plate is always the mirror of its print.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · the monsters -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="The finished print. A man sleeps with his head on his desk while owls and bats gather in the dark air behind him and a cat stares out." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true">Los Caprichos · plate 43 of 80 · 1799</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.05"><b>monsters = N · (1 − reason)</b><span class="g">reason runs from 1, awake, to 0, asleep</span></div><div data-at="0.3"><b>y = A · sin(ω·t + φ)</b><span class="g">each one bobs on its own wave</span></div><div data-at="0.6"><b>wing = sin(2π·f·t)</b><span class="g">and flaps on a faster one</span></div></div>
+    <div class="palette" id="reasonBar">
+      <label for="reason">Reason</label>
+      <input type="range" id="reason" min="0" max="100" value="100" step="1" aria-valuetext="wide awake">
+      <output id="reasonOut" for="reason">awake</output>
+    </div>
+    <p class="sr-only" id="s4d">A slider marked Reason runs from wide awake to sound asleep. Awake, the air is empty. As reason sleeps, up to twenty-six owls and bats fly in, the nearest ones large and pale, the farthest small and nearly lost in the dark.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · The monsters</h2><p>A man has fallen asleep at his desk, among his drawing tools. Behind him the air fills with owls and bats.</p></div></div>
+    <div class="step"><div class="card"><p>They rise out of the darkest tone on the plate, the one that sat longest in the acid.</p></div></div>
+    <div class="step"><div class="card"><p>Use the slider. The more soundly reason sleeps, the more of them come.</p></div></div>
+    <div class="step"><div class="card"><p>This is plate 43 of the 80 prints Goya published in 1799 as <i>Los Caprichos</i>. He first thought of putting it at the front of the book.</p></div></div>
+  </div>
+</section>
+
+<!-- V · the word -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="The print again. The creatures either stream in from the dark toward the sleeping man or stream out of his head into the dark, depending on which reading is chosen." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true">El sueño · sleep, or dream</div>
+    <div class="fx" aria-hidden="true"><div data-at="0.05"><b>p(s) = (1 − s)·A + s·B</b><span class="g">a path from A to B as s runs 0 to 1</span></div><div data-at="0.25"><b>sleep: A = the dark, B = the sleeper</b><span class="g">they come to him</span></div><div data-at="0.5"><b>dream: A = his head, B = the dark</b><span class="g">swap two letters and the meaning turns over</span></div></div>
+    <div class="palette" id="reads" role="group" aria-label="Read sueño as">
+      <span class="pl">Read sueño as</span>
+      <button type="button" data-read="sleep" aria-pressed="true">Sleep</button>
+      <button type="button" data-read="dream" aria-pressed="false">Dream</button>
+    </div>
+    <p class="sr-only" id="s5d">Two buttons choose the reading. With Sleep, the caption under the print reads The sleep of reason produces monsters, and the owls and bats fly in from the dark corner and settle around the man. With Dream, the caption reads The dream of reason produces monsters, and the same creatures start small at his head and fly outward.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · The word</h2><p>The desk says <i>El sueño de la razon produce monstruos.</i> In Spanish, <i>sueño</i> means sleep. It also means dream.</p></div></div>
+    <div class="step"><div class="card"><p>Read it as sleep, and the monsters arrive when thinking stops. Choose Sleep and watch where they come from.</p></div></div>
+    <div class="step"><div class="card"><p>Read it as dream, and the monsters are what thinking makes when nothing checks it. Choose Dream.</p></div></div>
+    <div class="step"><div class="card"><p>Goya's own caption takes neither side. Imagination left alone by reason makes impossible monsters, he wrote. Joined with reason, it is the mother of the arts.</p></div></div>
+    <div class="step"><div class="card"><p>A picture that holds two readings lets each viewer finish it. Satire has leaned on that ever since.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>The sleep,<br>or the dream.</h2>
+  <p class="lede">Dust, acid and a clock made the grays. One word made the meaning double.</p>
+  <p class="lede">Next time a picture seems to say two things at once, ask whether that was the plan.</p>
+
+  <h3 id="find">See the real thing</h3>
+  <ul class="objs">
+    <li class="obj"><b>Plate 43 from &ldquo;Los Caprichos&rdquo;: The sleep of reason produces monsters</b><span>Francisco de Goya, 1799. Etching and aquatint. Plate 21.2 &times; 15.1 cm.</span><span class="who">The Metropolitan Museum of Art, New York · Gift of M. Knoedler &amp; Co., 1918 · 18.64(43) · Open Access</span><a href="https://www.metmuseum.org/art/collection/search/338473">See the print</a></li>
+    <li class="obj"><b>The Sleep of Reason Produces Monsters</b><span>1797&ndash;1798. Etching and aquatint on laid paper.</span><span class="who">Brooklyn Museum · A. Augustus Healy Fund, Frank L. Babbott Fund, and Carll H. de Silver Fund · 37.33.43</span><a href="https://brooklynmuseum.org/objects/47187">See the print</a></li>
+    <li class="obj"><b>The Sleep of Reason Produces Monsters, Plate 43 from the series Los Caprichos</b><span>1797&ndash;1798, published 1799. Etching and aquatint.</span><span class="who">Philadelphia Museum of Art · Purchased with the SmithKline Beckman Corporation Fund, 1949 · 1949-97-9</span><a href="https://philamuseum.org/collection/object/50875">See the print</a></li>
+    <li class="obj"><b>El sueño de la razon produce monstruos</b><span>1799. Etching, aquatint and burnishing on laid paper, from the first published edition.</span><span class="who">The Museum of Fine Arts, Houston</span><a href="https://emuseum.mfah.org/objects/154988/el-sueno-de-la-razon-produce-monstruos-the-sleep-of-reason">See the print</a></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>The print, its place in the series and the two meanings of <i>sueño</i>: <a href="https://en.wikipedia.org/wiki/The_Sleep_of_Reason_Produces_Monsters">Wikipedia, &ldquo;The Sleep of Reason Produces Monsters&rdquo;</a>; the Brooklyn Museum and Philadelphia Museum of Art records above.</li>
+    <li>Aquatint, the dust box, stopping out and bath times: <a href="https://en.wikipedia.org/wiki/Aquatint">Wikipedia, &ldquo;Aquatint&rdquo;</a>.</li>
+    <li>The words on the desk, made with stop-out varnish: the record for an impression at the <a href="https://collections.mfa.org/objects/130165">Museum of Fine Arts, Boston</a>.</li>
+    <li>Goya's caption: as given by the <a href="https://worcester.emuseum.com/objects/10483/the-sleep-of-reason-produces-monsters-el-sueno-de-la-razon">Worcester Art Museum</a>.</li>
+    <li>The tone curve in Part III is a simple model of diminishing returns. The four stop times are chosen to teach the method and are not measurements of Goya's plate.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false">Exhibit mode</button>
+  </div>
+  <div class="colophon">
+    Seen, No. 10. Drawn in code. No photographs and no image generators. The picture is a diagram after Goya's composition, built from the functions shown beside it.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.<br>
+    Previous: <i>Type Is an Image</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span>Exhibit mode · touch to explore</span><button type="button" id="exitExhibit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+
+/* ---------- palette and small tools ---------- */
+const PAPERC = '#eadfc8', INKC = '#1b1611', AMBER = '#dba14a', COPPERC = '#b8703b', BRIGHT = '#f2b57c', MUTE = '#9a8f7b', BONE = '#eadfc9';
+const SERIF = `'Newsreader', Georgia, serif`;
+const FX = [...document.querySelectorAll('.fx')].map(el => [...el.children]);
+function fx(i, p) { let last = FX[i][0]; for (const d of FX[i]) { const on = p >= +d.dataset.at; d.classList.toggle('on', on); d.classList.remove('cur'); if (on) last = d; } last.classList.add('cur'); }
+function ground(ctx, w, h, cx, cy) {
+  ctx.fillStyle = '#12100c'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * .7); g.addColorStop(0, 'rgba(184,112,59,.17)'); g.addColorStop(1, 'rgba(18,16,12,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+/* where a drawing can sit without touching the labels, the controls or the text cards */
+function zone(F, w, h) {
+  const y0 = F.wide ? (exhibit ? 158 : 134) : w >= 900 ? 224 : 166, y1 = F.wide ? h - 92 : Math.max(y0 + 220, h * .665), x0 = F.cx - F.aw / 2;
+  return { x0, x1: x0 + F.aw, y0, y1, cx: F.cx, cy: (y0 + y1) / 2, zw: F.aw, zh: y1 - y0 };
+}
+const fsOf = (F, w) => (F.wide ? clamp(w / 125, 11, 14) : clamp(w / 40, 9.5, 15)) * (exhibit ? 1.25 : 1);
+function bar(el, on) { if (el._on !== on) { el._on = on; el.classList.toggle('on', on); el.inert = !on; } }
+function txt(el, s) { if (el._s !== s) { el._s = s; el.textContent = s; } }
+const mix2 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t)];
+
+/* THE TONE MODEL. Paper to ink by a number from 0 to 1.
+   tone = k * ln(1 + minutes in acid), and each part of the picture stops when its varnish goes on. */
+const shade = t => { t = clamp(t, 0, 1); return `rgb(${Math.round(lerp(234, 27, t))},${Math.round(lerp(223, 22, t))},${Math.round(lerp(200, 17, t))})`; };
+const toneAt = m => Math.min(1, .26 * Math.log(1 + m));
+const WORDS = 0, COAT = toneAt(1), MID = toneAt(6), NIGHT = toneAt(30); // the four stops: 0, 1, 6 and 30 minutes
+
+/* ---------- the picture, in a 100 x 140 design space (after Goya's composition; every figure is a diagram) ---------- */
+const DW = 100, DH = 140;
+const PA = {
+  dark: new Path2D('M0,0 L100,0 L100,34 C82,50 64,38 52,54 C40,70 18,66 0,82 Z'),
+  floor: new Path2D('M0,122 L100,118 L100,140 L0,140 Z'),
+  deskFront: new Path2D('M6,96 L38,96 L38,135 L6,135 Z'),
+  deskTop: new Path2D('M6,96 L38,96 L44,90 L12,90 Z'),
+  deskSide: new Path2D('M38,96 L44,90 L44,129 L38,135 Z'),
+  chairBack: new Path2D('M73,80 L76.5,80 L77.5,116 L74,116 Z'),
+  chairSeat: new Path2D('M55,114 L77,114 L77,118.5 L55,118.5 Z M72.5,118 L76.5,118 L77.5,137 L73.5,137 Z'),
+  coat: new Path2D('M38,87 C42,81 52,77.5 60,80 C68,84 73,99 72,114 L55,114 C56,105 53,98 48,94 C43,93 39,91 38,87 Z'),
+  sleeves: new Path2D('M16,90 C19,85 28,83 37,84.5 C43,85.5 47,88 46,92 C40,94.5 27,95 18,94 C15,93 15,91.5 16,90 Z'),
+  head: (() => { const p = new Path2D(); p.ellipse(33, 84.5, 7.2, 5.7, -.2, 0, TAU); return p; })(),
+  thigh: new Path2D('M70,104 C62,102 52,103 46,106.5 C43,109.5 43.5,113.5 46,116 C54,116.5 62,116.5 70,116.5 Z'),
+  shins: new Path2D('M45,113.5 L52,113.5 C52.5,120 52,127 51,132 L45.5,132 C46,126 45.5,119 45,113.5 Z M54,116 L60.5,116 C60,123 58.5,129 57,133.5 L51.5,133.5 C53,128 54,121 54,116 Z'),
+  shoes: new Path2D('M51.5,131.5 L45,131.5 L40,136.5 L52,136.5 Z M57.5,133 L51,133 L46.5,138 L58,138 Z'),
+  cat: (() => { const p = new Path2D(); p.ellipse(91, 126, 8.5, 5.6, 0, 0, TAU); p.moveTo(91.5, 117); p.arc(86, 117, 5.5, 0, TAU); p.moveTo(81.6, 113.6); p.lineTo(82.8, 107.5); p.lineTo(86, 111.6); p.closePath(); p.moveTo(87, 111.6); p.lineTo(90.2, 107.5); p.lineTo(91, 114); p.closePath(); return p; })(),
+};
+const OUTLINE = ['deskFront', 'deskTop', 'deskSide', 'chairBack', 'chairSeat', 'coat', 'thigh', 'shins', 'shoes', 'sleeves', 'head', 'cat'];
+function wingPair(p, f) { // two wings for the owl: f = 0 folded, 1 spread
+  for (const m of [-1, 1]) { p.moveTo(m * .3, -.15); p.quadraticCurveTo(m * (.8 + f * .9), -.55 - f * .55, m * (.95 + f * 1.25), .05 - f * .3); p.quadraticCurveTo(m * (.8 + f * .7), .3, m * (.62 + f * .35), .42); p.quadraticCurveTo(m * .5, .6, m * .3, .7); p.closePath(); }
+}
+function owl(ctx, x, y, s, flap, fill, line, lc, eye) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); const p = new Path2D(); wingPair(p, flap);
+  p.moveTo(.46, .22); p.ellipse(0, .22, .46, .7, 0, 0, TAU); p.moveTo(.44, -.5); p.arc(0, -.5, .44, 0, TAU);
+  for (const m of [-1, 1]) { p.moveTo(m * .42, -.62); p.lineTo(m * .36, -1.08); p.lineTo(m * .1, -.86); p.closePath(); }
+  if (fill) { ctx.fillStyle = fill; ctx.fill(p); }
+  if (line > 0) { ctx.save(); ctx.globalAlpha *= line; ctx.strokeStyle = lc; ctx.lineWidth = .42 / s; ctx.stroke(p); ctx.restore(); }
+  if (eye) { for (const m of [-1, 1]) { ctx.fillStyle = eye; ctx.beginPath(); ctx.arc(m * .19, -.52, .155, 0, TAU); ctx.fill(); ctx.fillStyle = INKC; ctx.beginPath(); ctx.arc(m * .19, -.52, .065, 0, TAU); ctx.fill(); } }
+  ctx.restore();
+}
+function bat(ctx, x, y, s, flap, fill, line, lc, eye) { // scalloped wings; flap lifts the tips
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); const p = new Path2D(), up = lerp(.2, -.5, flap);
+  for (const m of [-1, 1]) {
+    p.moveTo(0, -.14); p.quadraticCurveTo(m * .5, -.5 + up * .3, m * 1.15, up); p.quadraticCurveTo(m * .98, up + .26, m * .82, up + .48);
+    p.quadraticCurveTo(m * .68, up * .6 + .2, m * .52, up * .5 + .44); p.quadraticCurveTo(m * .36, .14, m * .17, .34); p.lineTo(0, .22); p.closePath();
+  }
+  p.moveTo(.13, 0); p.ellipse(0, 0, .13, .26, 0, 0, TAU);
+  for (const m of [-1, 1]) { p.moveTo(m * .03, -.22); p.lineTo(m * .13, -.44); p.lineTo(m * .15, -.18); p.closePath(); }
+  if (fill) { ctx.fillStyle = fill; ctx.fill(p); }
+  if (line > 0) { ctx.save(); ctx.globalAlpha *= line; ctx.strokeStyle = lc; ctx.lineWidth = .42 / s; ctx.stroke(p); ctx.restore(); }
+  if (eye) { ctx.fillStyle = eye; for (const m of [-1, 1]) { ctx.beginPath(); ctx.arc(m * .055, -.12, .034, 0, TAU); ctx.fill(); } }
+  ctx.restore();
+}
+/* the creatures that are always in the picture: kind, x, y, size, wing, final tone */
+const FIXED = [['b', 56, 17, 15, .6, 1], ['b', 85, 21, 9, .3, 1], ['b', 15, 14, 8, .8, 1], ['b', 35, 27, 6, .45, 1], ['o', 23, 37, 6, 1, .78], ['o', 75, 37, 7, .8, .7], ['o', 39, 50, 8, .9, .6], ['o', 89, 63, 6, .5, .62], ['o', 63, 60, 10, .55, .42], ['o', 14, 81, 7, .1, .3]];
+function creature(ctx, c, T, line, lc) {
+  if (c[0] === 'b') bat(ctx, c[1], c[2], c[3], c[4], T ? T(c[5]) : null, line, lc, T ? PAPERC : null);
+  else owl(ctx, c[1], c[2], c[3], c[4], T ? T(c[5]) : null, line, lc, T ? PAPERC : null);
+}
+function hatchDark(ctx, color, alpha) { // before aquatint, a dark sky meant rows of lines
+  if (alpha <= 0) return; ctx.save(); ctx.clip(PA.dark); ctx.globalAlpha *= alpha; ctx.strokeStyle = color; ctx.lineWidth = .3; ctx.beginPath();
+  for (let i = -140; i < 100; i += 1.9) { ctx.moveTo(i, 0); ctx.lineTo(i + 140, 140); } ctx.stroke(); ctx.restore();
+}
+function strokeAll(ctx, lc, alpha) { // every etched line
+  if (alpha <= 0) return; ctx.save(); ctx.globalAlpha *= alpha; ctx.strokeStyle = lc; ctx.lineWidth = .42; ctx.lineJoin = 'round';
+  for (const k of OUTLINE) ctx.stroke(PA[k]); ctx.restore();
+  for (const c of FIXED) creature(ctx, c, null, alpha, lc);
+}
+/* the print: o.clock in minutes, o.lines and o.hatch from 0 to 1, o.air = a function that draws the creatures instead of the fixed ones */
+function plate43(ctx, o) {
+  const now = toneAt(o.clock), T = f => shade(Math.min(f, now));
+  ctx.fillStyle = T(MID); ctx.fillRect(0, 0, DW, DH); ctx.fillStyle = T(NIGHT); ctx.fill(PA.dark); ctx.fillStyle = T(COAT); ctx.fill(PA.floor);
+  hatchDark(ctx, INKC, o.hatch || 0);
+  if (o.air) o.air(ctx, T); else for (const c of FIXED) creature(ctx, c, c[0] === 'b' ? (f => shade(f * o.lines)) : T, o.lines, INKC);
+  ctx.fillStyle = T(.72); ctx.fill(PA.chairBack); ctx.fill(PA.chairSeat);
+  ctx.fillStyle = T(MID * 1.05); ctx.fill(PA.deskFront); ctx.fillStyle = T(COAT * .7); ctx.fill(PA.deskTop); ctx.fillStyle = T(.68); ctx.fill(PA.deskSide);
+  ctx.fillStyle = T(COAT * 1.3); ctx.fill(PA.coat); ctx.fill(PA.thigh);
+  ctx.fillStyle = T(WORDS); ctx.fill(PA.shins); ctx.fill(PA.sleeves);
+  ctx.fillStyle = shade(Math.max(.25, .92 * Math.max(o.lines, now))); ctx.fill(PA.head); ctx.fill(PA.shoes);
+  ctx.fillStyle = T(MID * 1.25); ctx.fill(PA.cat);
+  for (const ex of [83.6, 88.2]) { ctx.fillStyle = PAPERC; ctx.beginPath(); ctx.ellipse(ex, 116.4, 1.35, 1.05, 0, 0, TAU); ctx.fill(); ctx.fillStyle = INKC; ctx.beginPath(); ctx.ellipse(ex, 116.4, .32, .95, 0, 0, TAU); ctx.fill(); }
+  ctx.fillStyle = PAPERC; ctx.font = `italic 500 4.5px 'Cormorant Garamond', Georgia, serif`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; // the words: never bitten, so the paper shows
+  ['El sueño', 'de la razon', 'produce', 'monstruos.'].forEach((s, i) => ctx.fillText(s, 9, 105 + i * 7.7));
+  ctx.save(); ctx.globalAlpha = o.lines; ctx.strokeStyle = INKC; ctx.lineWidth = .42; ctx.lineJoin = 'round'; for (const k of OUTLINE) ctx.stroke(PA[k]); ctx.restore();
+}
+const grains = new Map();
+function grainFor(W) { // the aquatint grain: pale specks, one pixel each, scattered at random over the whole image
+  const w = Math.max(8, Math.round(W)), h = Math.round(w * 1.4); let c = grains.get(w); if (c) return c;
+  c = document.createElement('canvas'); c.width = w; c.height = h; const k = c.getContext('2d'), im = k.createImageData(w, h), R = rng(43);
+  for (let i = 0; i < w * h; i++) if (R() < .42) { im.data[i * 4] = 234; im.data[i * 4 + 1] = 223; im.data[i * 4 + 2] = 200; im.data[i * 4 + 3] = 40 + R() * 50; }
+  k.putImageData(im, 0, 0); if (grains.size > 6) grains.clear(); grains.set(w, c); return c;
+}
+function printAt(ctx, x, y, W, o) { // the sheet of paper with the image on it; x, y is the image's top left corner
+  const H = W * 1.4, m = W * .06;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 6; ctx.fillStyle = PAPERC; ctx.fillRect(x - m, y - m, W + 2 * m, H + m + W * .1); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, W, H); ctx.clip(); ctx.translate(x, y); ctx.scale(W / DW, W / DW); plate43(ctx, o); ctx.restore();
+  if (o.grain > 0) { ctx.save(); ctx.globalAlpha = o.grain; ctx.imageSmoothingEnabled = false; ctx.drawImage(grainFor(W), x, y, W, H); ctx.restore(); }
+  ctx.strokeStyle = 'rgba(27,22,17,.4)'; ctx.lineWidth = 1; ctx.strokeRect(x + .5, y + .5, W - 1, H - 1);
+  mono(ctx, '43.', x + W, y - m * .48, 'rgba(27,22,17,.75)', 'right', Math.max(7, W * .03));
+  if (o.caption) { ctx.font = `italic 400 ${Math.max(10, W * .052)}px ${SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = 'rgba(27,22,17,.85)'; ctx.fillText(o.caption, x + W / 2, y + H + W * .052); }
+}
+const sheetW = (Z, fs) => Math.min(Z.zw * .8 / 1.12, (Z.zh - fs * 2.8) / 1.56); // image width that lets the sheet and one line of notes fit the zone
+const sheetY = (Z, W, fs) => Z.y0 + W * .06 + Math.max(0, (Z.zh - fs * 2.8 - W * 1.56) / 2); // top of the image
+
+/* ---------- hero: grain settling in the dark ---------- */
+const heroC = document.getElementById('heroCanvas');
+const DUST = (() => { const R = rng(1799), a = []; for (let i = 0; i < 260; i++) a.push([R(), R(), .4 + R() * 1.1, R()]); return a; })();
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC), T2 = reduce ? 0 : t; ground(ctx, w, h, w * .5, h * .45);
+  for (const d of DUST) { const ph = frac(T2 * .000018 * d[2] + d[1]); ctx.fillStyle = `rgba(219,161,74,${.5 * fade * d[2] * (.35 + .65 * d[3])})`; ctx.beginPath(); ctx.arc(d[0] * w + Math.sin(ph * 9 + d[3] * 7) * 12, ph * h * 1.08 - 8, .7 + d[2] * 1.5, 0, TAU); ctx.fill(); }
+}
+
+/* ---------- I · the line: ink = 1 on a line, 0 off it ---------- */
+const c1 = document.querySelector('#s1 canvas');
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(0, p); ground(ctx, w, h, Z.cx, Z.cy);
+  const W = sheetW(Z, fs), H = W * 1.4, colW = Math.min(Z.zw - W * 1.12 - 10, W * .5), x = Z.cx - (W * 1.12 + colW + 18) / 2 + W * .06, y = sheetY(Z, W, fs);
+  const wipe = ease(p, .08, .46), hat = ease(p, .5, .62), flip = ease(p, .78, .93), sx = Math.cos(Math.PI * flip);
+  ctx.save(); ctx.translate(x + W / 2, 0); ctx.scale(Math.max(.02, Math.abs(sx)), 1); ctx.translate(-W / 2, 0);
+  if (sx >= 0) { // the plate: wax over copper, the drawing in reverse
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6; ctx.fillStyle = COPPERC; ctx.fillRect(-3, y - 3, W + 6, H + 6); ctx.restore();
+    ctx.fillStyle = '#2b221a'; ctx.fillRect(0, y, W, H);
+    ctx.save(); ctx.beginPath(); ctx.rect(0, y, W, H * wipe); ctx.clip(); ctx.translate(W, y); ctx.scale(-W / DW, W / DW); strokeAll(ctx, BRIGHT, 1); hatchDark(ctx, BRIGHT, hat * .8); ctx.restore();
+    if (wipe > 0 && wipe < 1) { const ny = y + H * wipe, nx = W * (.5 + .4 * Math.sin(p * 60)); ctx.strokeStyle = '#d9d2c4'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(nx, ny); ctx.lineTo(nx + W * .16, ny - W * .28); ctx.stroke(); ctx.fillStyle = BRIGHT; ctx.beginPath(); ctx.arc(nx, ny, 2.5, 0, TAU); ctx.fill(); }
+  } else printAt(ctx, 0, y, W, { clock: 0, lines: 1, hatch: 1, grain: 0 });
+  ctx.restore();
+  mono(ctx, sx >= 0 ? 'the plate · a mirror image' : 'the print · black line only', x + W / 2, y + H + W * .1 + fs * 1.4, sx >= 0 ? AMBER : BONE, 'center', fs);
+  const aH = ease(p, .5, .58); // five squares of lines that read as five grays
+  if (aH > 0 && colW > 40) {
+    const hx = x + W * 1.06 + 18, sq = Math.min(colW * .52, (H - 4 * 8) / 5), fsm = Math.max(8.5, fs - 1); ctx.globalAlpha = aH;
+    [.12, .25, .4, .6, .85].forEach((g, i) => { const sy = y + i * (sq + 8), a = ramp(p, .52 + i * .04, .58 + i * .04); if (a <= 0) return;
+      ctx.globalAlpha = aH * a; ctx.fillStyle = PAPERC; ctx.fillRect(hx, sy, sq, sq); const lw = 1.3, d = lw / g; ctx.save(); ctx.beginPath(); ctx.rect(hx, sy, sq, sq); ctx.clip(); ctx.strokeStyle = INKC; ctx.lineWidth = lw; ctx.beginPath();
+      for (let k = -sq; k < sq; k += d) { ctx.moveTo(hx + k, sy); ctx.lineTo(hx + k + sq, sy + sq); } ctx.stroke(); ctx.restore();
+      mono(ctx, `${Math.round(g * 100)}%`, hx + sq + 8, sy + sq * .36, BONE, 'left', fsm); mono(ctx, `d = ${(d).toFixed(1)}`, hx + sq + 8, sy + sq * .36 + fsm * 1.5, MUTE, 'left', fsm); });
+    ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- II · the dust: covered = 1 - e^(-n a) ---------- */
+const c2 = document.querySelector('#s2 canvas'), dustBar = document.getElementById('dustBar'), dustIn = document.getElementById('dust'), dustOut = document.getElementById('dustOut');
+let userDust = false; dustBar.inert = true; dustIn.addEventListener('input', () => { userDust = true; });
+const GR = .0165, GA = Math.PI * GR * GR; // one grain: radius and area, on a plate of side 1
+const GRAINS = (() => { const R = rng(1797), a = []; for (let i = 0; i < 900; i++) a.push([R(), R(), .8 + R() * .4]); return a; })();
+const FIRST = (() => { // for 600 test points: which grain covers each one first. Counting these is the "measured" number.
+  const R = rng(5), a = []; for (let s = 0; s < 600; s++) { const x = R(), y = R(); let f = 9999; for (let i = 0; i < 900 && f === 9999; i++) { const g = GRAINS[i], r = GR * g[2]; if ((g[0] - x) ** 2 + (g[1] - y) ** 2 < r * r) f = i; } a.push(f); } return a; })();
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(1, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(dustBar, p > .1 && p < .5);
+  if (!userDust) dustIn.value = String(Math.round(90 * ease(p, .06, .42)) * 10);
+  const n = +dustIn.value; txt(dustOut, n + ' grains'); if (dustIn._v !== n) { dustIn._v = n; dustIn.setAttribute('aria-valuetext', n + ' grains'); }
+  const bite = ease(p, .5, .64), pr = ease(p, .68, .8), S = Math.min(Z.zw * .47, Z.zh * .66), gap = Z.zw - 2 * S, x1 = lerp(Z.cx - S / 2, Z.x0, pr), x2 = Z.x0 + S + gap, y = Z.cy - S / 2 - fs * 2;
+  const land = userDust ? 1e9 : 900 * ramp(p, .06, .42);
+  // the plate, seen close: copper, then grains, then acid darkening the bare metal
+  ctx.fillStyle = `rgb(${Math.round(lerp(196, 70, bite))},${Math.round(lerp(122, 42, bite))},${Math.round(lerp(70, 26, bite))})`; ctx.fillRect(x1, y, S, S);
+  ctx.save(); ctx.beginPath(); ctx.rect(x1, y, S, S); ctx.clip();
+  for (let i = 0; i < n; i++) { const g = GRAINS[i], u = clamp(land - i, 0, 1), r = GR * g[2] * S; if (u <= 0) continue;
+    ctx.globalAlpha = u; ctx.fillStyle = 'rgba(40,24,10,.35)'; ctx.beginPath(); ctx.arc(x1 + g[0] * S + 1, y + g[1] * S + 1.5 - (1 - u) * 26, r, 0, TAU); ctx.fill();
+    ctx.fillStyle = i % 3 ? AMBER : '#e9b866'; ctx.beginPath(); ctx.arc(x1 + g[0] * S, y + g[1] * S - (1 - u) * 26, r, 0, TAU); ctx.fill(); }
+  ctx.restore(); ctx.globalAlpha = 1; ctx.strokeStyle = 'rgba(234,223,200,.35)'; ctx.lineWidth = 1; ctx.strokeRect(x1 + .5, y + .5, S - 1, S - 1);
+  mono(ctx, bite > .5 ? 'plate · after the acid' : 'plate · close up', x1 + S / 2, y - fs * 1.1, AMBER, 'center', fs);
+  const pred = 1 - Math.exp(-n * GA * 1.013), meas = FIRST.reduce((a, f) => a + (f < n ? 1 : 0), 0) / FIRST.length, ry = y + S + fs * 1.6;
+  mono(ctx, `rule says ${Math.round(pred * 100)}% covered`, x1 + S / 2, ry, BONE, 'center', fs); mono(ctx, `counted ${Math.round(meas * 100)}%`, x1 + S / 2, ry + fs * 1.7, AMBER, 'center', fs);
+  if (pr > 0) { // the print of that patch: mirror image, grains white, bitten copper dark
+    ctx.globalAlpha = pr; ctx.fillStyle = PAPERC; ctx.fillRect(x2, y, S, S); ctx.fillStyle = shade(.86); ctx.fillRect(x2, y, S, S);
+    ctx.save(); ctx.beginPath(); ctx.rect(x2, y, S, S); ctx.clip(); ctx.fillStyle = PAPERC; ctx.beginPath();
+    for (let i = 0; i < n; i++) { const g = GRAINS[i], gx = x2 + (1 - g[0]) * S, gy = y + g[1] * S, r = GR * g[2] * S * .93; ctx.moveTo(gx + r, gy); ctx.arc(gx, gy, r, 0, TAU); }
+    ctx.fill(); ctx.restore(); ctx.strokeStyle = 'rgba(234,223,200,.35)'; ctx.strokeRect(x2 + .5, y + .5, S - 1, S - 1);
+    mono(ctx, 'print · close up', x2 + S / 2, y - fs * 1.1, BONE, 'center', fs);
+    const far = Math.min(S * .3, 54), fy = ry - fs * .4; ctx.fillStyle = shade(.86 * (1 - meas)); ctx.fillRect(x2 + S / 2 - far - 6, fy, far, far * .62); // the same patch from across the room
+    mono(ctx, 'from across', x2 + S / 2 + 2, fy + fs * .5, BONE, 'left', fs - .5); mono(ctx, 'the room', x2 + S / 2 + 2, fy + fs * 1.9, BONE, 'left', fs - .5); ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- III · the clock: tone = k ln(1 + t), t = min(clock, stop) ---------- */
+const c3 = document.querySelector('#s3 canvas'), clockBar = document.getElementById('clockBar'), clockIn = document.getElementById('clock'), clockOut = document.getElementById('clockOut');
+let userClock = false; clockBar.inert = true; clockIn.addEventListener('input', () => { userClock = true; });
+const minutesOf = v => 30 * Math.pow(v / 100, 2.2); // the slider is stretched so the first minutes get room
+const STOPS = [['words', 0], ['coat', 1], ['desk', 6], ['night', 30]];
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(2, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(clockBar, p > .08 && p < .92);
+  if (!userClock) clockIn.value = String(Math.round(100 * ease(p, .1, .78)));
+  const m = minutesOf(+clockIn.value), label = m < 1 ? `${Math.round(m * 60)} sec` : `${m.toFixed(m < 10 ? 1 : 0)} min`; txt(clockOut, label);
+  if (clockIn._v !== label) { clockIn._v = label; clockIn.setAttribute('aria-valuetext', label); }
+  const W = sheetW(Z, fs), H = W * 1.4, colW = Math.min(Z.zw - W * 1.12 - 10, W * .62), x = Z.cx - (W * 1.12 + colW + 16) / 2 + W * .06, y = sheetY(Z, W, fs);
+  printAt(ctx, x, y, W, { clock: m, lines: 1, hatch: 0, grain: Math.min(1, toneAt(m) * 3) });
+  if (colW > 44) { // tone against time, with a dot where each part stopped
+    const gx = x + W * 1.06 + 20, gw = colW - 8, gh = Math.min(H * .5, gw * 1.5), gy = y + H * .1, X = mm => gx + gw * mm / 30, Y = tn => gy + gh * (1 - tn), fsm = Math.max(8.5, fs - 1);
+    ctx.strokeStyle = 'rgba(234,223,200,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(gx, gy + gh); ctx.lineTo(gx + gw, gy + gh); ctx.stroke();
+    ctx.strokeStyle = AMBER; ctx.lineWidth = 2; ctx.beginPath(); for (let i = 0; i <= 60; i++) { const mm = 30 * (i / 60) ** 2; i ? ctx.lineTo(X(mm), Y(toneAt(mm))) : ctx.moveTo(X(mm), Y(toneAt(mm))); } ctx.stroke();
+    ctx.strokeStyle = BONE; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(X(m), gy); ctx.lineTo(X(m), gy + gh); ctx.stroke(); ctx.setLineDash([]);
+    for (const [name, st] of STOPS) { const done = m >= st, cx = X(st), cy = Y(toneAt(st)); ctx.fillStyle = done ? shade(toneAt(st)) : 'rgba(0,0,0,0)'; ctx.strokeStyle = done ? BONE : MUTE; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy, 5, 0, TAU); ctx.fill(); ctx.stroke();
+      mono(ctx, name, cx + (st === 30 ? -9 : 9), cy + (st === 0 ? -fsm * 1.1 : 0), done ? BONE : MUTE, st === 30 ? 'right' : 'left', fsm); }
+    mono(ctx, 'tone', gx, gy - fsm * 1.1, MUTE, 'left', fsm); mono(ctx, 'minutes →', gx + gw, gy + gh + fsm * 1.3, MUTE, 'right', fsm);
+    mono(ctx, label, gx, gy + gh + fsm * 3.4, AMBER, 'left', fs + 2); mono(ctx, `tone ${toneAt(m).toFixed(2)}`, gx, gy + gh + fsm * 3.4 + fs * 1.8, BONE, 'left', fs);
+  }
+}
+
+/* ---------- IV · the monsters: monsters = N (1 - reason) ---------- */
+const c4 = document.querySelector('#s4 canvas'), reasonBar = document.getElementById('reasonBar'), reasonIn = document.getElementById('reason'), reasonOut = document.getElementById('reasonOut');
+let userReason = false; reasonBar.inert = true; reasonIn.addEventListener('input', () => { userReason = true; });
+const NF = 26;
+const FLY = (() => { // each flyer: kind, home x and y, size, depth (0 near, 1 far), wave sizes, speeds and phases
+  const R = rng(4343), a = []; for (let i = 0; i < NF; i++) { const d = R(); a.push({ k: R() < .42 ? 'b' : 'o', x: 8 + R() * 86, y: 8 + R() * 56, s: lerp(11, 5, d) * (.85 + R() * .3), d, ax: 3 + R() * 6, ay: 2 + R() * 5, wx: .25 + R() * .4, wy: .3 + R() * .5, wf: 2.2 + R() * 2.4, ph: R() * TAU, src: [R() < .6 ? R() * 60 : -6, R() < .6 ? -8 : R() * 50], dst: [22 + R() * 60, 48 + R() * 24], v: .05 + R() * .05 }); }
+  return a.sort((p, q) => q.d - p.d); })();
+function flyer(ctx, f, x, y, s, a, T, tm) { // far ones dark and small, near ones pale and large
+  if (a <= 0) return; const flap = .5 + .5 * Math.sin(tm * f.wf + f.ph), fill = T(lerp(.3, .97, f.d)); ctx.save(); ctx.globalAlpha *= a;
+  if (f.k === 'b') bat(ctx, x, y, s * 1.25, flap, fill, .8, INKC, PAPERC); else owl(ctx, x, y, s, .35 + .65 * flap, fill, .8, INKC, PAPERC); ctx.restore();
+}
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), tm = (reduce ? 0 : t) / 1000; fx(3, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(reasonBar, p > .1 && p < .92);
+  if (!userReason) reasonIn.value = String(Math.round(100 * (1 - ease(p, .16, .62))));
+  const reason = +reasonIn.value / 100, count = NF * (1 - reason), word = reason > .85 ? 'awake' : reason > .5 ? 'drowsy' : reason > .12 ? 'dozing' : 'asleep'; txt(reasonOut, word);
+  if (reasonIn._v !== word) { reasonIn._v = word; reasonIn.setAttribute('aria-valuetext', word); }
+  const W = sheetW(Z, fs), H = W * 1.4, x = Z.cx - W / 2, y = sheetY(Z, W, fs);
+  printAt(ctx, x, y, W, { clock: 30, lines: 1, grain: 1, air: (c, T) => FLY.forEach((f, i) => flyer(c, f, f.x + f.ax * Math.sin(tm * f.wx + f.ph), f.y + f.ay * Math.sin(tm * f.wy + f.ph * 1.7), f.s, clamp(count - i, 0, 1), T, tm)) });
+  mono(ctx, `reason = ${reason.toFixed(2)}   monsters = ${NF} × ${(1 - reason).toFixed(2)} = ${Math.round(count)}`, Z.cx, y + H + W * .1 + fs * 1.5, AMBER, 'center', fs);
+}
+
+/* ---------- V · the word: p(s) = (1 - s) A + s B, and which end is which ---------- */
+const c5 = document.querySelector('#s5 canvas'), reads = document.getElementById('reads');
+let reading = 'sleep', userRead = false; reads.inert = true;
+function setRead(r) { if (r === reading) return; reading = r; for (const b of reads.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.read === r)); }
+reads.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { userRead = true; setRead(b.dataset.read); } });
+const HEAD = [33, 82];
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w), tm = (reduce ? 0 : t) / 1000; fx(4, p); ground(ctx, w, h, Z.cx, Z.cy);
+  bar(reads, p > .1 && p < .95);
+  if (!userRead) setRead(p > .44 ? 'dream' : 'sleep');
+  const W = sheetW(Z, fs), H = W * 1.4, x = Z.cx - W / 2, y = sheetY(Z, W, fs), dream = reading === 'dream';
+  printAt(ctx, x, y, W, { clock: 30, lines: 1, grain: 1, caption: dream ? 'The dream of reason produces monsters' : 'The sleep of reason produces monsters',
+    air: (c, T) => FLY.forEach(f => { const s = frac((reduce ? 0 : tm * f.v) + f.ph / TAU), e = sstep(s), A = dream ? HEAD : f.src, B = dream ? f.src : f.dst, q = mix2(A, B, e);
+      const size = dream ? lerp(1.5, f.s * 1.15, e) : lerp(f.s * .5, f.s, e), a = Math.min(1, s * 6, (1 - s) * (dream ? 3 : 5));
+      flyer(c, f, q[0] + 2 * Math.sin(tm * f.wx * 3 + f.ph), q[1] + 2 * Math.sin(tm * f.wy * 3 + f.ph), size, a, T, tm); }) });
+  mono(ctx, dream ? 'A = his head   B = the dark' : 'A = the dark   B = the sleeper', Z.cx, y + H + W * .1 + fs * 1.5, AMBER, 'center', fs);
+}
+
+/* ---------- exhibit mode and the loop ---------- */
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
