@@ -13,6 +13,8 @@ date: 2026-10-28
 verb: "six movements · you tip the vial"
 series: poems
 seriesNo: 1
+subject: feminine
+case: "286.08"
 ---
 
 The poem's subtitle serves as the epigraph. Ported from the owner's Claude

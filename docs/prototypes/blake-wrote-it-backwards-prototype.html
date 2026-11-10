@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blake Wrote It Backwards</title>
+<meta name="description" content="How William Blake made a page: mirror writing on copper, an acid bath, a hand press, a paintbrush, and the theory of sight behind all four.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#0c0e19; --bone:#ece4d2; --copper:#c47d42; --copper-hi:#f2bb8a; --acid:#5cc4b8; --ink:#9a4a22; --gold:#d6ab52; --muted:#948f80; --paper:#efe5cf;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--copper-hi)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#14121c;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance;cursor:default}
+h1 .mirror{display:inline-block;font-style:italic;color:var(--copper-hi);transform:scaleX(-1);animation:unflip 1.1s 2.4s cubic-bezier(.6,0,.2,1) forwards}
+h1 .mirror.again{animation:none;transform:scaleX(-1)}
+@keyframes unflip{to{transform:scaleX(1)}}
+.sub{max-width:40ch;margin:0 auto;font-size:19px;color:#cfc6b2;font-style:italic}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(14,16,28,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(214,171,82,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.card blockquote{margin:0 0 .5em;font-family:var(--display);font-size:29px;line-height:1.12;font-style:italic;color:#fff3dc}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .verse{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.25;color:#fff3dc}
+.tag,.strata{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(12,14,25,.72);border:1px solid rgba(214,171,82,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+.strata span{opacity:.38;margin-right:.9em;transition:opacity .4s}
+.strata span.on{opacity:1}
+.strata span:last-child{margin-right:0}
+.palette{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(12,14,25,.82);border:1px solid rgba(214,171,82,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:2px}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px 9px 10px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.palette button i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.palette button[aria-pressed="true"]{border-color:var(--gold);background:rgba(214,171,82,.16)}
+
+@media (max-width:520px){ .palette{top:44px;gap:6px;padding:6px} .palette .pl{display:none} .palette button{padding:8px 9px 8px 8px;font-size:11.5px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step,.step.mid{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:#cfc6b2;max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(214,171,82,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:15.5px;color:#cfc6b2}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.obj a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;justify-self:start;margin-top:4px}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:#cfc6b2;display:grid;gap:8px}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:9vh;line-height:1.8}
+.btn{display:inline-block;margin:3vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(214,171,82,.45);padding:12px 16px;text-decoration:none;cursor:pointer}
+.chip{position:fixed;left:12px;bottom:12px;z-index:5;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#14121c;background:var(--gold);padding:8px 8px 8px 12px}
+.chip button{font:inherit;letter-spacing:inherit;text-transform:inherit;background:#14121c;color:var(--gold);border:0;padding:8px 10px;cursor:pointer}
+
+/* exhibit mode: gallery screens. Larger type, no outbound links, slow self-running tour when idle. */
+.exhibit .chip{display:flex}
+.exhibit .card{font-size:clamp(21px,calc(14px + 1.1vmin),34px);max-width:34ch}
+.exhibit .card blockquote{font-size:34px}
+.exhibit .end a[href^="http"]{pointer-events:none;text-decoration:none;color:inherit}
+.exhibit .obj a{display:none}
+.exhibit .skip{display:none}
+
+@media (prefers-reduced-motion:reduce){ h1 .mirror{animation:none;transform:none} .palette,.strata span{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#objects">Skip to the object list and sources</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">Seen · No. 7 · A scrolly on copper, acid and four ways of seeing</div>
+    <h1 id="title">Blake Wrote It <span class="mirror" id="mirror">Backwards</span></h1>
+    <p class="sub">Every page William Blake printed began as mirror writing on copper. Acid, a hand press and a paintbrush did the rest. He called it the infernal method, and it carried his whole theory of sight.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · The plate -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A polished copper plate seen from above. A quill writes a poem on it in dark varnish, in mirror image, from right to left." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">Copper plate · 11.1 × 6.4 cm · seen from above</div>
+    <p class="sr-only" id="s1d">The plate is upright, about the size of a playing card. A tree grows up its left edge and sends three branches across. The title The Tyger and eight lines of the poem appear letter by letter, reversed, as in a mirror. A tiger is drawn at the foot of the plate, facing right.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The plate</h2><p>Start with a sheet of copper a little taller than a playing card, hammered flat and polished until it shines like a mirror.</p></div></div>
+    <div class="step"><div class="card"><p>Blake draws straight onto the metal with a quill and a fine brush. His ink is stop-out varnish, the acid-proof liquid etchers use to protect parts of a plate. Nothing is traced. He designs the page as he writes it.</p></div></div>
+    <div class="step"><div class="card"><p>And he writes it backwards. Every letter runs right to left, so the printed page will read left to right. His friend John Linnell wrote that he had attained &ldquo;the most extraordinary facility&rdquo; at it.</p></div></div>
+    <div class="step"><div class="card"><p>In 1788 a book of poems with pictures took two workshops: one to set the type, one to engrave the plates. Blake had found a way to be both, alone, on one piece of copper. He was thirty.</p></div></div>
+  </div>
+</section>
+
+<!-- II · The bite -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="The plate sits in a tray of wax and acid. Bubbles rise from the bare copper. Below it, a cross-section shows the acid eating the metal down around the varnished letters." aria-describedby="s2d"></canvas>
+    <div class="tag" id="t2" aria-hidden="true">Wax dike</div>
+    <p class="sr-only" id="s2d">Acid floods the tray and turns blue-green. A feather sweeps the bubbles away. In the cross-section, the copper under each varnished letter stays at full height while the copper between the letters sinks, in two stages. At the end the varnish is cleaned off and the poem stands up from the plate in bright metal.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The bite</h2><p>Wall the plate with strips of wax to make a shallow tray. Pour in diluted nitric acid, about a quarter inch deep. The bare copper starts to fizz.</p></div></div>
+    <div class="step"><div class="card"><p>Bubbles can lift the varnish, so Blake strokes them away with a feather. The first bite takes forty-five minutes to an hour and a half. He pours off the acid, paints over the words to protect them, and bites the plate again, deeper.</p></div></div>
+    <div class="step"><div class="card"><p>Other etchers bite their lines into the metal and print from the grooves. Blake dissolves everything around his lines. When the acid is done, the poem is the only part of the plate still standing.</p></div></div>
+    <div class="step mid"><div class="card"><blockquote>&ldquo;&hellip;melting apparent surfaces away, and displaying the infinite which was hid.&rdquo;</blockquote><cite>The Marriage of Heaven and Hell, plate 14</cite><p>He called this printing in the infernal method. The chemistry doubled as his creed: clear away the surface and the hidden thing shows.</p></div></div>
+  </div>
+</section>
+
+<!-- III · The pull -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="The plate is inked, covered with a sheet of paper and rolled. The sheet lifts, turns over, and lands beside the plate with the poem now readable." aria-describedby="s3d"></canvas>
+    <div class="tag" id="t3" aria-hidden="true">Inking</div>
+    <p class="sr-only" id="s3d">A round linen dabber pats orange-brown ink onto the raised letters. A cream sheet comes down over the plate and a roller passes across it. The sheet lifts and flips. At rest, the mirrored plate is on the left and the printed impression is on the right, reading Tyger Tyger, burning bright. A row of twelve small sheets appears beneath: an hour of work.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The pull</h2><p>Ink goes on with a linen dabber, touching only what stands up. Yellow ochre and raw sienna in the early years, reds and oranges late in life.</p></div></div>
+    <div class="step"><div class="card"><p>Catherine Blake lays a damp sheet over the plate, adds the blankets, and turns the handle of the rolling press. They have raised the roller, because a relief plate wants light pressure.</p></div></div>
+    <div class="step"><div class="card"><p>Peel the sheet and turn it over. The backwards plate reads forwards.</p></div></div>
+    <div class="step"><div class="card"><p>Working together, William and Catherine could pull about a dozen impressions an hour.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · Every copy an original -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="Watercolor washes bloom across the printed page: a sky, a green bank, a golden tiger. Then four copies of the same page appear, each colored differently." aria-describedby="s4d"></canvas>
+    <div class="tag" id="t4" aria-hidden="true">Hand coloring</div>
+    <div class="palette" id="palette" role="group" aria-label="Color your own copy">
+      <span class="pl">Color your copy</span>
+      <button type="button" id="w-dawn" data-way="dawn" aria-pressed="true"><i style="background:#f2b6a0"></i>Dawn</button>
+      <button type="button" id="w-noon" data-way="noon" aria-pressed="false"><i style="background:#9cc7e0"></i>Noon</button>
+      <button type="button" id="w-dusk" data-way="dusk" aria-pressed="false"><i style="background:#8a6fc0"></i>Dusk</button>
+      <button type="button" id="w-night" data-way="night" aria-pressed="false"><i style="background:#3d55a8"></i>Night</button>
+    </div>
+    <p class="sr-only" id="s4d">The four colorings are named Dawn, Noon, Dusk and Night. They are illustrations made for this page and copy no single surviving book. Four buttons let you recolor the page yourself. At the end, a grid of fifty-four small copper plates fades away and one small broken fragment is left.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · Every copy an original</h2><p>When the sheets dry, the Blakes color them by hand. He grinds his own watercolors and they share the brushwork. Some late copies carry touches of shell gold.</p></div></div>
+    <div class="step"><div class="card"><p>So there is no single Tyger. Blake printed the Songs to order for more than thirty years, and the Met describes each copy as &ldquo;visually distinct.&rdquo; The four here illustrate the idea. They were drawn for this page.</p></div></div>
+    <div class="step"><div class="card"><p>Try it. Choose a sky for your own copy with the buttons at the top of the screen.</p></div></div>
+    <div class="step"><div class="card"><p>Joseph Viscomi counts 168 surviving copies of the illuminated books. The copper did not survive. After Blake died the plates passed to a friend and then vanished, reputedly sold for scrap. One fragment remains, smaller than a playing card, at the National Gallery of Art in Washington.</p></div></div>
+  </div>
+</section>
+
+<!-- V · Fourfold -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="One sunrise drawn four ways: a measured circle on graph paper, a great eye, a crescent moon over a night sea, and a sun made of hundreds of tiny figures with raised arms." aria-describedby="s5d"></canvas>
+    <div class="strata" id="strata" aria-hidden="true"><span>1 Single</span><span>2 Twofold</span><span>3 Threefold</span><span>4 Fourfold</span></div>
+    <p class="sr-only" id="s5d">First the sun is a blue circle on a grid, spanned by a pair of dividers, with a gold guinea coin beside it for comparison. Second, the circle fills with fire and two lids open around it, making the sun the iris of an eye on the horizon. Third, night falls: the disk becomes a crescent moon among stars, reflected in the water. Fourth, the sun returns as a spiral of more than a thousand small radiant figures spreading across the whole sky.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · Fourfold</h2><p>All that copper served one idea. Blake believed sight comes in four grades. He numbered them in a verse letter to his patron Thomas Butts in November 1802.</p></div></div>
+    <div class="step"><div class="card"><p>Single vision is the eye alone: the world as measurement. The rising sun is a round disk of fire, &ldquo;somewhat like a Guinea.&rdquo; Blake prayed to be kept from &ldquo;Single vision &amp; Newtons sleep.&rdquo;</p></div></div>
+    <div class="step"><div class="card"><p>Twofold sees the thing and its meaning at once. On a walk he meets a thistle:</p><p class="verse">&ldquo;With my inward Eye &rsquo;tis an old Man grey;<br>With my outward a Thistle across my way.&rdquo;</p></div></div>
+    <div class="step"><div class="card"><p>Threefold he called Beulah: a soft, moonlit country of love and dreaming, where poems begin.</p></div></div>
+    <div class="step"><div class="card"><p>Fourfold is the summit, his &ldquo;supreme delight.&rdquo; The same sunrise, seen whole:</p><p class="verse">&ldquo;O no no I see an Innumerable company of the Heavenly host crying Holy Holy Holy&hellip;&rdquo;</p></div></div>
+    <div class="step mid"><div class="card"><blockquote>&ldquo;I question not my Corporeal or Vegetative Eye any more than I would Question a Window concerning a Sight. I look thro it &amp; not with it.&rdquo;</blockquote><cite>A Vision of the Last Judgment, 1810</cite></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>Look<br>through.</h2>
+  <p class="lede">He wrote backwards so the page would read forwards. He let acid take the copper so the poem would stand. Then he asked his readers for the same labor with their eyes.</p>
+  <p class="lede">The surviving copies are spread across museums and libraries, and each one is different. The best way to finish this page is to go and see one.</p>
+
+  <h3 id="objects">See the real ones</h3>
+  <ul class="objs">
+    <li class="obj"><b>Songs of Experience: The Tyger</b><span>William Blake. Etched 1794, printed about 1825 (copy Y). Relief etching printed in orange-brown ink, hand-colored with watercolor and gold. Sheet 15.7 × 14.1 cm.</span><span class="who">The Metropolitan Museum of Art, New York · Rogers Fund, 1917 · 17.10.42 · Open Access</span><a href="https://www.metmuseum.org/art/collection/search/347983">Object record</a></li>
+    <li class="obj"><b>Songs of Innocence and of Experience, plate 42, &ldquo;The Tyger&rdquo;</b><span>William Blake. 1794 (copy F). Color-printed relief etching with watercolor. Plate 11.1 × 6.4 cm.</span><span class="who">Yale Center for British Art, Paul Mellon Collection · B1978.43.1573 · Public domain</span><a href="https://collections.britishart.yale.edu/catalog/tms:2519">Object record</a></li>
+    <li class="obj"><b>Songs of Innocence and of Experience</b><span>William Blake. London, 1794. The whole book, page by page.</span><span class="who">Library of Congress, Lessing J. Rosenwald Collection</span><a href="https://www.loc.gov/item/48031329/">Object record</a></li>
+    <li class="obj"><b>Fragment of a cancelled plate for America: A Prophecy</b><span>William Blake. About 1793. Relief-etched copper, 8.1 × 5.87 cm. The one piece of his relief-etched copper known to survive.</span><span class="who">National Gallery of Art, Washington · Rosenwald Collection · 1943.3.1848.a</span><a href="https://www.nga.gov/artworks/5006-fragment-cancelled-plate-prophecy-recto">Object record</a></li>
+    <li class="obj"><b>The Ancient of Days, frontispiece to Europe. A Prophecy</b><span>William Blake. 1794 (copy A). Color-printed relief and white-line etching with oil, watercolor, and pen and black ink. Plate 23.2 × 16.8 cm. The dividers in part V are a nod to this sheet.</span><span class="who">Yale Center for British Art, Paul Mellon Collection · B1992.8.4(1) · Public domain</span><a href="https://collections.britishart.yale.edu/catalog/tms:3878">Object record</a></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>The process follows Joseph Viscomi, <a href="https://viscomi.sites.oasis.unc.edu/viscomi/illuminated.htm">&ldquo;William Blake&rsquo;s Illuminated Printing&rdquo;</a>: the wax dike, the feather, the timings, the dabber, the raised roller, the dozen pulls an hour, the count of 168 copies and the fate of the plates.</li>
+    <li>John Linnell&rsquo;s remark on writing backwards is quoted from Michael Phillips, <a href="https://preo.ube.fr/interfaces/index.php?id=489">&ldquo;&lsquo;Printing in the infernal method&rsquo;&rdquo;</a>, <i>Interfaces</i>.</li>
+    <li>Blake&rsquo;s words: <i>The Marriage of Heaven and Hell</i>, plate 14; the verse letter to Thomas Butts, 22 November 1802; <i>A Vision of the Last Judgment</i>, 1810. Text after David V. Erdman, <i>The Complete Poetry and Prose of William Blake</i>.</li>
+    <li>The lines on the plate are the first two stanzas of &ldquo;The Tyger&rdquo; (1794) in Blake&rsquo;s spelling.</li>
+    <li>Dates, media, dimensions and credit lines come from each institution&rsquo;s object record, linked above.</li>
+  </ul>
+
+  <div>
+    <a class="btn" href="#hero">Read it again &uarr;</a>
+    <button class="btn" type="button" id="exhibitBtn" aria-pressed="false">Exhibit mode</button>
+  </div>
+  <div class="colophon">
+    Seen, No. 7. Drawn in code. No photographs and no image generators. The page layout, tree and tyger are new drawings after Blake&rsquo;s design. The four colorways are illustrative.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.<br>
+    Previous: <i>The Paranoiac-Critical Method, Applied</i>
+  </div>
+</section>
+
+<div class="chip" id="chip"><span>Exhibit mode · touch to explore</span><button type="button" id="exitExhibit">Exit</button></div>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+const HAND = `'Cormorant Garamond', Georgia, serif`;
+const VARNISH = '#1d130c', INK = '#8e431d', COPPER_HI = '#f2bb8a';
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+const AR = 6.4 / 11.1; // the Tyger plate, width over height
+function plateSize(F, k = 1) { const PH = Math.min(F.ah, F.aw / AR) * k; return { PW: PH * AR, PH }; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function setTag(el, txt) { if (el._t !== txt) { el._t = txt; el.textContent = txt; } }
+function backdrop(ctx, w, h, cx, cy, tint) {
+  ctx.fillStyle = '#0c0e19'; ctx.fillRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  g.addColorStop(0, tint || 'rgba(196,125,66,.17)'); g.addColorStop(1, 'rgba(12,14,25,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+}
+
+/* ---------- the page design, in print orientation, inside a PW x PH box ---------- */
+const TITLE = 'The Tyger.';
+const LINES = ['Tyger Tyger, burning bright,', 'In the forests of the night;', 'What immortal hand or eye,', 'Could frame thy fearful symmetry?',
+               'In what distant deeps or skies.', 'Burnt the fire of thine eyes?', 'On what wings dare he aspire?', 'What the hand, dare sieze the fire?'];
+const LY = [0.180, 0.227, 0.274, 0.321, 0.400, 0.447, 0.494, 0.541];
+const trunkPt = t => [0.905 + 0.022 * Math.sin(t * 2.4) + 0.012 * t, 0.985 - 0.965 * t];
+const BR = [
+  { t: 0.885, e: [0.66, 0.044], c: [0.83, 0.016], w: 0.022 },
+  { t: 0.665, e: [0.17, 0.364], c: [0.60, 0.346], w: 0.020 },
+  { t: 0.435, e: [0.09, 0.600], c: [0.55, 0.574], w: 0.018 },
+];
+let metrics = null;
+function lineMetrics(ctx) {
+  if (metrics) return metrics;
+  ctx.font = `italic 600 100px ${HAND}`;
+  const ws = LINES.map(s => ctx.measureText(s).width);
+  metrics = { ws, max: Math.max(...ws), tw: ctx.measureText(TITLE).width };
+  return metrics;
+}
+const tigerCache = new Map();
+function tigerGeom(PW, PH) {
+  const key = Math.round(PW * 4);
+  if (tigerCache.has(key)) return tigerCache.get(key);
+  if (tigerCache.size > 60) tigerCache.clear();
+  const x0 = 0.085 * PW, y0 = 0.652 * PH, BW = 0.74 * PW, BH = 0.25 * PH;
+  const X = u => x0 + u * BW, Y = v => y0 + v * BH;
+  const body = new Path2D();
+  body.moveTo(X(.045), Y(.40));
+  body.bezierCurveTo(X(.05), Y(.31), X(.09), Y(.24), X(.14), Y(.21));
+  body.lineTo(X(.15), Y(.14)); body.quadraticCurveTo(X(.18), Y(.085), X(.207), Y(.165));
+  body.bezierCurveTo(X(.25), Y(.19), X(.30), Y(.20), X(.36), Y(.21));
+  body.bezierCurveTo(X(.44), Y(.165), X(.52), Y(.22), X(.62), Y(.22));
+  body.bezierCurveTo(X(.72), Y(.22), X(.82), Y(.22), X(.88), Y(.30));
+  body.bezierCurveTo(X(.935), Y(.37), X(.935), Y(.50), X(.90), Y(.58));
+  body.lineTo(X(.917), Y(.74)); body.lineTo(X(.89), Y(.90)); body.quadraticCurveTo(X(.905), Y(.955), X(.86), Y(.955)); body.lineTo(X(.80), Y(.955));
+  body.lineTo(X(.818), Y(.76));
+  body.bezierCurveTo(X(.80), Y(.68), X(.78), Y(.64), X(.74), Y(.63));
+  body.bezierCurveTo(X(.64), Y(.695), X(.52), Y(.695), X(.43), Y(.64));
+  body.lineTo(X(.427), Y(.78)); body.lineTo(X(.415), Y(.90)); body.quadraticCurveTo(X(.43), Y(.955), X(.385), Y(.955)); body.lineTo(X(.32), Y(.955));
+  body.lineTo(X(.337), Y(.78)); body.lineTo(X(.33), Y(.60));
+  body.bezierCurveTo(X(.28), Y(.58), X(.22), Y(.54), X(.19), Y(.49));
+  body.bezierCurveTo(X(.15), Y(.515), X(.09), Y(.50), X(.06), Y(.46));
+  body.closePath();
+  const marks = new Path2D();
+  // far legs
+  marks.moveTo(X(.455), Y(.675)); marks.lineTo(X(.468), Y(.92)); marks.lineTo(X(.39), Y(.92));
+  marks.moveTo(X(.745), Y(.655)); marks.lineTo(X(.718), Y(.80)); marks.lineTo(X(.735), Y(.92)); marks.lineTo(X(.665), Y(.92)); marks.lineTo(X(.672), Y(.70));
+  // tail
+  marks.moveTo(X(.905), Y(.34)); marks.bezierCurveTo(X(1.00), Y(.36), X(1.045), Y(.62), X(.985), Y(.80)); marks.bezierCurveTo(X(.965), Y(.87), X(.99), Y(.935), X(1.035), Y(.89));
+  // stripes: down from the spine, up from the belly
+  [.30, .36, .42, .48, .54, .60, .66, .72, .78, .84].forEach((u, i) => {
+    const top = u < .4 ? .225 : u > .8 ? .265 : .225, len = .17 + (i % 3) * .035;
+    marks.moveTo(X(u), Y(top)); marks.quadraticCurveTo(X(u + .028), Y(top + len * .55), X(u - .006), Y(top + len));
+  });
+  [.47, .53, .59, .65, .71].forEach((u, i) => { marks.moveTo(X(u), Y(.675)); marks.quadraticCurveTo(X(u + .02), Y(.60), X(u - .004), Y(.535 + (i % 2) * .03)); });
+  for (const v of [.72, .80, .88]) { marks.moveTo(X(.335), Y(v)); marks.lineTo(X(.40), Y(v - .02)); marks.moveTo(X(.817), Y(v)); marks.lineTo(X(.885), Y(v - .02)); }
+  for (const u of [.345, .37, .825, .85]) { marks.moveTo(X(u), Y(.955)); marks.lineTo(X(u), Y(.925)); }
+  // head: far ear, brow, cheek ruff, mouth, forehead marks
+  marks.moveTo(X(.118), Y(.222)); marks.quadraticCurveTo(X(.132), Y(.14), X(.15), Y(.145));
+  marks.moveTo(X(.085), Y(.272)); marks.lineTo(X(.14), Y(.262));
+  marks.moveTo(X(.205), Y(.27)); marks.quadraticCurveTo(X(.235), Y(.40), X(.19), Y(.49));
+  marks.moveTo(X(.052), Y(.43)); marks.quadraticCurveTo(X(.09), Y(.455), X(.135), Y(.45));
+  marks.moveTo(X(.165), Y(.205)); marks.lineTo(X(.175), Y(.255)); marks.moveTo(X(.19), Y(.20)); marks.lineTo(X(.195), Y(.245));
+  const g = { body, marks, x0, y0, BW, BH, eye: [X(.115), Y(.308), BW * .012], nose: [X(.045), Y(.40), X(.062), Y(.375), X(.066), Y(.415)] };
+  tigerCache.set(key, g); return g;
+}
+/* o: {color, title 0..1, tree 0..1, lines 0..8, tiger 0..1, quill?} ; returns the pen position while writing */
+function drawDesign(ctx, PW, PH, o) {
+  ctx.fillStyle = o.color; ctx.strokeStyle = o.color; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  let pen = null;
+  // tree: trunk up the outer margin, three branches reaching in between the stanzas
+  if (o.tree > 0) {
+    const g = o.tree * 1.15, N = 40, upto = Math.floor(N * Math.min(1, g));
+    for (let i = 0; i < upto; i++) { const a = trunkPt(i / N), b = trunkPt((i + 1) / N); ctx.lineWidth = PW * (0.052 - 0.032 * (i / N)); ctx.beginPath(); ctx.moveTo(a[0] * PW, a[1] * PH); ctx.lineTo(b[0] * PW, b[1] * PH); ctx.stroke(); }
+    for (const b of BR) {
+      const f = clamp((g - b.t) / 0.25, 0, 1); if (f <= 0) continue;
+      const s = trunkPt(b.t), M = 22, m = Math.floor(M * f);
+      const q = u => [(1 - u) * (1 - u) * s[0] + 2 * (1 - u) * u * b.c[0] + u * u * b.e[0], (1 - u) * (1 - u) * s[1] + 2 * (1 - u) * u * b.c[1] + u * u * b.e[1]];
+      for (let i = 0; i < m; i++) { const A = q(i / M), B = q((i + 1) / M); ctx.lineWidth = PW * b.w * (1 - 0.78 * (i / M)); ctx.beginPath(); ctx.moveTo(A[0] * PW, A[1] * PH); ctx.lineTo(B[0] * PW, B[1] * PH); ctx.stroke(); }
+      if (f >= 1) { // leaves at the tip
+        ctx.lineWidth = PW * 0.006;
+        for (let k = 0; k < 3; k++) { const A = q(1 - k * 0.16), L = PW * 0.035; ctx.beginPath(); ctx.moveTo(A[0] * PW, A[1] * PH); ctx.quadraticCurveTo(A[0] * PW - L * 0.2, A[1] * PH - L * (k % 2 ? 1 : -1), A[0] * PW - L, A[1] * PH - L * 0.5 * (k % 2 ? 1 : -1)); ctx.stroke(); }
+      }
+    }
+  }
+  const m = lineMetrics(ctx);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  // title
+  if (o.title > 0) {
+    const ts = PW * 0.116, tw = m.tw * ts / 100, tx = PW * 0.44 - tw / 2, ty = PH * 0.108;
+    ctx.font = `italic 600 ${ts}px ${HAND}`;
+    ctx.save(); ctx.beginPath(); ctx.rect(tx - 2, ty - ts, (tw + 4) * o.title, ts * 1.4); ctx.clip(); ctx.fillText(TITLE, tx, ty); ctx.restore();
+    if (o.title < 1) pen = [tx + tw * o.title, ty];
+  }
+  // the lines of the poem
+  if (o.lines > 0) {
+    const fs = 0.70 * PW / (m.max / 100), x0 = PW * 0.085;
+    ctx.font = `italic 600 ${fs}px ${HAND}`;
+    for (let i = 0; i < LINES.length; i++) {
+      const r = clamp(o.lines - i, 0, 1); if (r <= 0) break;
+      const wI = m.ws[i] * fs / 100, y = LY[i] * PH;
+      ctx.save(); ctx.beginPath(); ctx.rect(x0 - 2, y - fs, (wI + 4) * r, fs * 1.45); ctx.clip(); ctx.fillText(LINES[i], x0, y); ctx.restore();
+      if (r < 1) pen = [x0 + wI * r, y];
+    }
+  }
+  // the tyger and the ground it stands on
+  if (o.tiger > 0) {
+    const T = tigerGeom(PW, PH);
+    ctx.save(); ctx.beginPath(); ctx.rect(T.x0 - PW * 0.05, T.y0 - PH * 0.02, (T.BW * 1.12 + PW * 0.05) * o.tiger, T.BH * 1.2); ctx.clip();
+    ctx.lineWidth = PW * 0.0105; ctx.stroke(T.body);
+    ctx.lineWidth = PW * 0.0078; ctx.stroke(T.marks);
+    ctx.beginPath(); ctx.ellipse(T.eye[0], T.eye[1], T.eye[2] * 1.5, T.eye[2], -0.2, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(T.nose[0], T.nose[1]); ctx.lineTo(T.nose[2], T.nose[3]); ctx.lineTo(T.nose[4], T.nose[5]); ctx.closePath(); ctx.fill();
+    ctx.lineWidth = PW * 0.007; ctx.beginPath(); ctx.moveTo(PW * 0.04, PH * 0.887); ctx.quadraticCurveTo(PW * 0.4, PH * 0.897, PW * 0.87, PH * 0.887); ctx.stroke();
+    for (const u of [.08, .22, .5, .63]) { ctx.beginPath(); ctx.moveTo(PW * u, PH * 0.889); ctx.lineTo(PW * (u - .012), PH * 0.872); ctx.moveTo(PW * u, PH * 0.889); ctx.lineTo(PW * (u + .014), PH * 0.874); ctx.stroke(); }
+    ctx.restore();
+    if (o.tiger < 1) pen = [T.x0 + T.BW * 1.1 * o.tiger, T.y0 + T.BH * 0.5];
+  }
+  return pen;
+}
+const FULL = { title: 1, tree: 1, lines: 8, tiger: 1 };
+function mirrored(ctx, x, y, PW, fn) { ctx.save(); ctx.translate(x + PW, y); ctx.scale(-1, 1); fn(); ctx.restore(); }
+function placed(ctx, x, y, fn) { ctx.save(); ctx.translate(x, y); fn(); ctx.restore(); }
+
+/* ---------- objects ---------- */
+function drawPlate(ctx, x, y, PW, PH, sheen, alpha = 1) {
+  ctx.save(); ctx.globalAlpha = alpha;
+  ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = PW * 0.12; ctx.shadowOffsetY = PW * 0.05;
+  const s = clamp(sheen, 0.25, 0.75), g = ctx.createLinearGradient(x, y, x + PW, y + PH);
+  g.addColorStop(0, '#70401f'); g.addColorStop(s - 0.22, '#b46f3a'); g.addColorStop(s, '#f3c193'); g.addColorStop(s + 0.2, '#bd783f'); g.addColorStop(1, '#6e3d1d');
+  ctx.fillStyle = g; rr(ctx, x, y, PW, PH, PW * 0.012); ctx.fill();
+  ctx.restore();
+  ctx.save(); ctx.globalAlpha = alpha * 0.5; ctx.strokeStyle = 'rgba(255,224,190,.55)'; ctx.lineWidth = 1; rr(ctx, x + .5, y + .5, PW - 1, PH - 1, PW * 0.012); ctx.stroke(); ctx.restore();
+}
+let speckP = null;
+function speck(ctx) {
+  if (speckP) return speckP;
+  const c = document.createElement('canvas'); c.width = c.height = 96; const k = c.getContext('2d'), R = rng(3);
+  for (let i = 0; i < 900; i++) { k.fillStyle = R() < .55 ? 'rgba(0,0,0,.35)' : 'rgba(255,200,150,.18)'; k.fillRect(R() * 96, R() * 96, 1 + R() * 1.5, 1 + R() * 1.5); }
+  speckP = ctx.createPattern(c, 'repeat'); return speckP;
+}
+function etchedGround(ctx, x, y, PW, PH, e, alpha = 1) {
+  if (e <= 0) return;
+  ctx.save(); rr(ctx, x, y, PW, PH, PW * 0.012); ctx.clip();
+  ctx.globalAlpha = alpha; ctx.fillStyle = `rgba(52,26,12,${0.64 * e})`; ctx.fillRect(x, y, PW, PH);
+  ctx.globalAlpha = alpha * 0.55 * e; ctx.fillStyle = speck(ctx); ctx.fillRect(x, y, PW, PH);
+  ctx.restore();
+}
+/* a finished relief plate; inkTo 0..1 inks it from the top down */
+function drawRelief(ctx, x, y, PW, PH, sheen, alpha, inkTo) {
+  drawPlate(ctx, x, y, PW, PH, sheen, alpha); etchedGround(ctx, x, y, PW, PH, 1, alpha);
+  ctx.save(); ctx.globalAlpha = alpha * 0.5; mirrored(ctx, x + PW * 0.004, y + PW * 0.007, PW, () => drawDesign(ctx, PW, PH, { color: 'rgb(15,8,4)', ...FULL })); ctx.restore();
+  ctx.save(); ctx.globalAlpha = alpha; mirrored(ctx, x, y, PW, () => drawDesign(ctx, PW, PH, { color: COPPER_HI, ...FULL }));
+  if (inkTo > 0) { ctx.beginPath(); ctx.rect(x - 2, y - 2, PW + 4, (PH + 4) * inkTo); ctx.clip(); mirrored(ctx, x, y, PW, () => drawDesign(ctx, PW, PH, { color: '#c9581a', ...FULL })); }
+  ctx.restore();
+}
+function quill(ctx, x, y, s, color, rot = -0.95) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineCap = 'round';
+  ctx.lineWidth = Math.max(1, s * 0.03); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s, 0); ctx.stroke();
+  ctx.globalAlpha *= 0.8; ctx.beginPath(); ctx.moveTo(s * 0.3, 0); ctx.quadraticCurveTo(s * 0.6, -s * 0.2, s * 1.03, -s * 0.03); ctx.quadraticCurveTo(s * 0.7, s * 0.14, s * 0.3, 0); ctx.fill();
+  ctx.restore();
+}
+function dabber(ctx, x, y, r) {
+  ctx.save(); ctx.strokeStyle = '#6a5a44'; ctx.lineWidth = r * .36; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x + r * .5, y - r * .5); ctx.lineTo(x + r * 1.55, y - r * 1.55); ctx.stroke();
+  ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = r * .5; ctx.shadowOffsetY = r * .2;
+  const g = ctx.createRadialGradient(x - r * .3, y - r * .3, r * .1, x, y, r); g.addColorStop(0, '#e9dfc4'); g.addColorStop(.65, '#b9a984'); g.addColorStop(1, '#7c3f1e');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore();
+}
+
+/* ---------- hand coloring ---------- */
+const WAYS = {
+  dawn:  { name: 'Dawn',  sky: ['#f0a994', '#f6dc9c'], ground: '#9aa35a', tiger: '#e6a43a', tree: '#8a6a44', text: '#fdf0cf' },
+  noon:  { name: 'Noon',  sky: ['#8fc0de', '#e3eed6'], ground: '#7fae5c', tiger: '#f2892a', tree: '#6a8444', text: '#fdf7de' },
+  dusk:  { name: 'Dusk',  sky: ['#7a64b4', '#f0905a'], ground: '#77614c', tiger: '#cf5a30', tree: '#5a3a5a', text: '#f8dcc4' },
+  night: { name: 'Night', sky: ['#22327a', '#5266b4'], ground: '#34504e', tiger: '#ecc866', tree: '#27305a', text: '#cdd7f0', stars: true },
+};
+const WSTARS = (() => { const R = rng(21), a = []; for (let i = 0; i < 46; i++) a.push([R(), R(), R()]); return a; })();
+function washes(ctx, px, py, PW, PH, W, wp, T) {
+  const a1 = ease(wp, 0, .4), a2 = ease(wp, .2, .6), a3 = ease(wp, .4, .8), a4 = ease(wp, .6, 1);
+  const tx = px + PW * 0.045, ty = py + PH * 0.135, tw = PW * 0.80, th = PH * 0.44, gy = py + PH * 0.886;
+  ctx.save(); ctx.beginPath(); ctx.rect(px, py, PW, PH); ctx.clip(); ctx.globalCompositeOperation = 'multiply';
+  // sky, held back from the text block
+  ctx.save(); ctx.beginPath(); ctx.rect(px, py, PW, gy - py); rr2(ctx, tx, ty, tw, th, PW * 0.05); ctx.clip('evenodd');
+  const g = ctx.createLinearGradient(0, py, 0, gy); g.addColorStop(0, W.sky[0]); g.addColorStop(1, W.sky[1]);
+  ctx.globalAlpha = 0.9 * a1; ctx.fillStyle = g; ctx.fillRect(px, py, PW, gy - py);
+  const R = rng(5); ctx.fillStyle = W.sky[0];
+  for (let i = 0; i < 9; i++) { const bx = px + R() * PW, by = py + R() * (gy - py), br = PW * (0.16 + R() * 0.2) * (0.4 + 0.6 * a1); const bg = ctx.createRadialGradient(bx, by, 0, bx, by, br); bg.addColorStop(0, W.sky[0]); bg.addColorStop(1, 'rgba(255,255,255,1)'); ctx.globalAlpha = 0.3 * a1; ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fill(); }
+  ctx.restore();
+  // a pale veil behind the words
+  ctx.globalAlpha = 0.75 * a1; ctx.fillStyle = W.text; rr(ctx, tx, ty, tw, th, PW * 0.05); ctx.fill();
+  // the bank
+  ctx.globalAlpha = 0.85 * a2; ctx.fillStyle = W.ground; ctx.beginPath(); ctx.moveTo(px, gy); ctx.quadraticCurveTo(px + PW * 0.4, gy + PH * 0.012, px + PW, gy - PH * 0.004); ctx.lineTo(px + PW, py + PH); ctx.lineTo(px, py + PH); ctx.closePath(); ctx.fill();
+  // the tyger
+  ctx.save(); ctx.translate(px, py); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = a3; ctx.fillStyle = '#f3ead6'; ctx.fill(tigerGeom(PW, PH).body);
+  ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = 0.92 * a3; ctx.fillStyle = W.tiger; ctx.fill(tigerGeom(PW, PH).body); ctx.restore();
+  // the tree
+  ctx.save(); ctx.translate(px, py); ctx.globalAlpha = 0.6 * a4; drawDesign(ctx, PW, PH, { color: W.tree, title: 0, tree: 1, lines: 0, tiger: 0 }); ctx.restore();
+  ctx.restore();
+  // shell gold: stars on the night copy, a glint on every title
+  const tw2 = reduce ? 0 : T;
+  ctx.save(); ctx.beginPath(); ctx.rect(px, py, PW, PH); ctx.clip();
+  if (W.stars) for (const s of WSTARS) { const x = px + s[0] * PW, y = py + s[1] * (gy - py); if (x > tx && x < tx + tw && y > ty && y < ty + th) continue; ctx.globalAlpha = a4 * (0.55 + 0.45 * Math.sin(tw2 * 0.003 + s[2] * 20)); ctx.fillStyle = '#f0d488'; ctx.beginPath(); ctx.arc(x, y, PW * (0.004 + s[2] * 0.005), 0, TAU); ctx.fill(); }
+  ctx.translate(px, py); ctx.globalAlpha = a4 * (0.3 + 0.2 * Math.sin(tw2 * 0.002));
+  drawDesign(ctx, PW, PH, { color: '#e6c064', title: 1, tree: 0, lines: 0, tiger: 0 });
+  ctx.restore();
+}
+function rr2(ctx, x, y, w, h, r) { ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+/* a printed sheet, centered at cx,cy; o: {PW, PH, wash, wp, T, face} ; the design box sits centered on the sheet */
+function drawImpression(ctx, cx, cy, SW, SH, o) {
+  const x = cx - SW / 2, y = cy - SH / 2;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = SW * 0.08; ctx.shadowOffsetY = SW * 0.03; ctx.fillStyle = '#efe5cf'; ctx.fillRect(x, y, SW, SH); ctx.restore();
+  const g = ctx.createLinearGradient(x, y, x + SW, y + SH); g.addColorStop(0, 'rgba(255,251,238,.55)'); g.addColorStop(1, 'rgba(196,174,134,.2)'); ctx.fillStyle = g; ctx.fillRect(x, y, SW, SH);
+  if (o.face === false) return;
+  const px = cx - o.PW / 2, py = cy - o.PH / 2;
+  if (o.wash) washes(ctx, px, py, o.PW, o.PH, o.wash, o.wp, o.T);
+  placed(ctx, px, py, () => drawDesign(ctx, o.PW, o.PH, { color: INK, ...FULL }));
+}
+
+/* ---------- hero ---------- */
+const heroC = document.getElementById('heroCanvas');
+const HB = (() => { const R = rng(9), a = []; for (let i = 0; i < 70; i++) a.push([R(), R(), 0.4 + R()]); return a; })();
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC), T = reduce ? 0 : t;
+  backdrop(ctx, w, h, w * 0.5, h * 0.66, 'rgba(196,125,66,.3)');
+  ctx.lineWidth = 1;
+  for (const b of HB) {
+    const ph = frac(T * 0.00003 * b[2] + b[1]), x = b[0] * w + Math.sin(ph * 9 + b[1] * 7) * 8, y = h * (1.05 - ph * 1.1), r = 1.5 + b[2] * 4;
+    ctx.strokeStyle = `rgba(242,187,138,${0.28 * fade * Math.sin(ph * Math.PI)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke();
+  }
+}
+
+/* ---------- I · the plate ---------- */
+const s1 = document.querySelector('#s1 canvas');
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(s1), F = frameOf(w, h), { PW, PH } = plateSize(F), x = F.cx - PW / 2, y = F.cy - PH / 2;
+  backdrop(ctx, w, h, F.cx, F.cy);
+  const appear = ease(p, 0, 0.07), tri = 1 - Math.abs(((p * 3) % 2) - 1);
+  drawPlate(ctx, x, y + (1 - appear) * 24, PW, PH, 0.25 + 0.5 * tri, appear);
+  const o = { color: VARNISH, title: ease(p, .09, .17), tree: ease(p, .10, .30), lines: 8 * ramp(p, .24, .80), tiger: ease(p, .81, .97) };
+  mirrored(ctx, x, y, PW, () => {
+    const pen = drawDesign(ctx, PW, PH, o);
+    if (pen && appear >= 1) quill(ctx, pen[0], pen[1], PW * 0.42, '#ece4d2');
+  });
+  const lab = ease(p, .3, .36) * (1 - ease(p, .78, .82));
+  if (lab > 0) mono(ctx, '← HE WRITES THIS WAY', x + PW / 2, y - 16, `rgba(214,171,82,${lab})`, 'center', 10);
+}
+
+/* ---------- mask of the design: where the varnish protects the copper ---------- */
+let mask = null; const MW = 220, MH = Math.round(MW / AR);
+function getMask() {
+  if (mask) return mask;
+  const c = document.createElement('canvas'); c.width = MW; c.height = MH; const k = c.getContext('2d');
+  mirrored(k, 0, 0, MW, () => drawDesign(k, MW, MH, { color: '#000', ...FULL }));
+  const d = k.getImageData(0, 0, MW, MH).data, m = new Uint8Array(MW * MH);
+  for (let i = 0; i < m.length; i++) m[i] = d[i * 4 + 3] > 50 ? 1 : 0;
+  const R = rng(7), sites = []; let guard = 0;
+  while (sites.length < 150 && guard++ < 5000) { const u = R(), v = R(); if (!m[Math.floor(v * MH) * MW + Math.floor(u * MW)]) sites.push([u, v, R(), 0.5 + R()]); }
+  const row = Math.round(LY[1] * MH - MH * 0.011), prot = [];
+  for (let i = 0; i < MW; i++) { let hit = 0; for (let dy = -2; dy <= 2; dy++) hit |= m[(row + dy) * MW + i]; prot.push(hit); }
+  mask = { m, sites, prot }; return mask;
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { metrics = null; mask = null; });
+
+/* ---------- II · the bite ---------- */
+const s2 = document.querySelector('#s2 canvas'), t2 = document.getElementById('t2');
+function crossSection(ctx, bx, by, bw, bh, M, e, acid, clean) {
+  const y0 = by + bh * 0.52, depth = bh * 0.34 * e, base = by + bh, n = M.prot.length;
+  mono(ctx, 'CROSS-SECTION THROUGH ONE LINE · DEPTH EXAGGERATED', bx, by + 5, 'rgba(214,171,82,.9)', 'left', bw < 300 ? 8 : 9.5);
+  if (acid > 0) { ctx.fillStyle = `rgba(92,196,184,${0.30 * acid})`; ctx.fillRect(bx, by + bh * 0.24, bw, base - (by + bh * 0.24)); }
+  ctx.beginPath(); ctx.moveTo(bx, base); let prev = null;
+  for (let i = 0; i <= n; i++) { const yy = M.prot[Math.min(i, n - 1)] ? y0 : y0 + depth, xx = bx + bw * i / n; if (prev !== null && prev !== yy) ctx.lineTo(xx, prev); ctx.lineTo(xx, yy); prev = yy; }
+  ctx.lineTo(bx + bw, base); ctx.closePath();
+  const g = ctx.createLinearGradient(0, y0, 0, base); g.addColorStop(0, '#d08b4e'); g.addColorStop(1, '#6e3d1d'); ctx.fillStyle = g; ctx.fill();
+  // varnish caps, then the bright standing faces once it is cleaned off
+  const cap = Math.max(2, bh * 0.045);
+  for (let i = 0; i < n; i++) if (M.prot[i]) {
+    let j = i; while (j < n && M.prot[j]) j++;
+    const xa = bx + bw * i / n, wa = bw * (j - i) / n;
+    if (clean < 1) { ctx.fillStyle = `rgba(29,19,12,${1 - clean})`; ctx.fillRect(xa, y0 - cap, wa, cap); }
+    if (clean > 0) { ctx.fillStyle = `rgba(255,226,190,${clean})`; ctx.fillRect(xa, y0 - 1, wa, 2); }
+    i = j;
+  }
+}
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(s2), F = frameOf(w, h), T = reduce ? 0 : t, { PW, PH } = plateSize(F, 0.74);
+  const top = F.cy - F.ah / 2, x = F.cx - PW / 2, y = top + PW * 0.09;
+  backdrop(ctx, w, h, F.cx, F.cy, 'rgba(92,196,184,.11)');
+  const M = getMask();
+  const dike = ease(p, 0, .07) * (1 - ease(p, .82, .87));
+  const bite1 = p > .2 && p < .5, bite2 = p > .64 && p < .8, biting = bite1 || bite2;
+  const acid = Math.max(ease(p, .09, .2) * (1 - ease(p, .5, .55)), ease(p, .6, .65) * (1 - ease(p, .8, .84)));
+  const e = 0.45 * ramp(p, .2, .5) + 0.55 * ramp(p, .64, .8), clean = ease(p, .85, .92);
+  setTag(t2, p < .09 ? 'Wax dike' : p < .2 ? 'Nitric acid, diluted · ¼ inch deep' : p < .5 ? 'First bite · 45 to 90 minutes' : p < .62 ? 'Pour off · stop out the words' : p < .8 ? 'Second bite · deeper' : 'In relief');
+  drawPlate(ctx, x, y, PW, PH, 0.5 + 0.2 * Math.sin(p * 9));
+  etchedGround(ctx, x, y, PW, PH, e);
+  if (e > 0.05) { ctx.save(); ctx.globalAlpha = 0.5 * e; mirrored(ctx, x + PW * 0.004, y + PW * 0.007, PW, () => drawDesign(ctx, PW, PH, { color: 'rgb(15,8,4)', ...FULL })); ctx.restore(); }
+  if (clean < 1) { ctx.save(); ctx.globalAlpha = 1 - clean; mirrored(ctx, x, y, PW, () => drawDesign(ctx, PW, PH, { color: VARNISH, ...FULL })); ctx.restore(); }
+  if (clean > 0) { ctx.save(); ctx.globalAlpha = clean; mirrored(ctx, x, y, PW, () => drawDesign(ctx, PW, PH, { color: COPPER_HI, ...FULL })); ctx.restore(); }
+  // the acid and its bubbles
+  const fx = x + PW * (0.5 + 0.4 * Math.sin(p * 46)), fy = y + PH * (0.2 + 0.6 * frac(p * 9));
+  if (acid > 0) {
+    ctx.save(); rr(ctx, x - PW * 0.02, y - PW * 0.02, PW * 1.04, PH + PW * 0.04, PW * 0.02); ctx.clip();
+    ctx.fillStyle = `rgba(92,196,184,${(0.10 + 0.22 * e) * acid})`; ctx.fillRect(x - PW * 0.02, y - PW * 0.02, PW * 1.04, PH + PW * 0.04);
+    ctx.strokeStyle = `rgba(255,255,255,${0.06 * acid})`; ctx.lineWidth = PW * 0.02;
+    for (let i = 0; i < 4; i++) { const yy = y + PH * (0.15 + 0.23 * i) + Math.sin(T * 0.0006 + i) * PH * 0.02; ctx.beginPath(); ctx.moveTo(x, yy); ctx.bezierCurveTo(x + PW * 0.3, yy - PH * 0.03, x + PW * 0.6, yy + PH * 0.03, x + PW, yy); ctx.stroke(); }
+    if (biting) {
+      ctx.lineWidth = 1;
+      for (const s of M.sites) {
+        const ph = frac(T * 0.00035 * s[3] + s[2]), bx = x + s[0] * PW, by = y + s[1] * PH;
+        let a = (1 - ph) * 0.8 * acid; if (Math.hypot(bx - fx, by - fy) < PW * 0.16) a *= 0.08;
+        ctx.strokeStyle = `rgba(235,255,250,${a})`; ctx.beginPath(); ctx.arc(bx, by, (0.5 + 2.6 * ph) * PW / 260, 0, TAU); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+  if (dike > 0) {
+    ctx.save(); ctx.globalAlpha = dike; const d = PW * 0.045;
+    ctx.strokeStyle = '#d9c693'; ctx.lineWidth = d; rr(ctx, x - d * 0.6, y - d * 0.6, PW + d * 1.2, PH + d * 1.2, d * 0.7); ctx.stroke();
+    ctx.strokeStyle = 'rgba(120,98,52,.7)'; ctx.lineWidth = 1.2; rr(ctx, x - d * 0.1, y - d * 0.1, PW + d * 0.2, PH + d * 0.2, d * 0.4); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,246,214,.6)'; ctx.lineWidth = 1; rr(ctx, x - d * 1.05, y - d * 1.05, PW + d * 2.1, PH + d * 2.1, d); ctx.stroke();
+    ctx.restore();
+  }
+  if (biting) {
+    quill(ctx, fx, fy, PW * 0.6, 'rgba(236,228,210,.92)', -1.15);
+    if (!reduce) for (let i = 0; i < 10; i++) { // fumes
+      const ph = frac(T * 0.00009 + i * 0.1), gx = x + PW * (0.1 + 0.8 * frac(i * 0.37)) + Math.sin(ph * 6 + i) * PW * 0.06, gy = y - ph * PH * 0.28, gr = PW * (0.08 + 0.12 * ph);
+      const gg = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr); gg.addColorStop(0, `rgba(196,120,60,${0.10 * (1 - ph)})`); gg.addColorStop(1, 'rgba(196,120,60,0)'); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(gx, gy, gr, 0, TAU); ctx.fill();
+    }
+  }
+  // cross-section under the plate
+  const bw = Math.min(F.aw, PW * 1.9), bx = F.cx - bw / 2, by = y + PH + PW * 0.17, bh = Math.min(F.ah * 0.2, top + F.ah - by);
+  if (bh > 30) { ctx.save(); ctx.globalAlpha = ease(p, .03, .1); crossSection(ctx, bx, by, bw, bh, M, e, acid, clean); ctx.restore(); }
+}
+
+/* ---------- III · the pull ---------- */
+const s3 = document.querySelector('#s3 canvas'), t3 = document.getElementById('t3');
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(s3), F = frameOf(w, h);
+  backdrop(ctx, w, h, F.cx, F.cy);
+  const big = plateSize(F, 0.86), PW2 = Math.min(F.aw * 0.92 / 2.36, F.ah * 0.70 * AR);
+  const sep = ease(p, .46, .70), PW = lerp(big.PW, PW2, sep), PH = PW / AR, SW = PW * 1.36, SH = PH * 1.2;
+  const gap = F.aw * 0.06, total = PW2 + gap + PW2 * 1.36, L = F.cx - total / 2;
+  const pcx = lerp(F.cx, L + PW2 / 2, sep), scxEnd = L + PW2 + gap + PW2 * 0.68, cy = lerp(F.cy, F.cy - F.ah * 0.06, sep);
+  const ink = ease(p, .02, .19), lay = ease(p, .20, .30), roll = ramp(p, .31, .44), flip = ease(p, .46, .68), strip = ramp(p, .74, .95);
+  setTag(t3, p < .2 ? 'Inking · linen dabber' : p < .31 ? 'Damp wove paper' : p < .46 ? 'Rolling press · light pressure' : p < .72 ? 'The pull' : 'About a dozen an hour');
+  drawRelief(ctx, pcx - PW / 2, cy - PH / 2, PW, PH, 0.5, 1, ink);
+  if (ink > 0 && ink < 1) dabber(ctx, pcx + PW * 0.34 * Math.sin(ink * 30), cy - PH / 2 + PH * ink, PW * 0.11);
+  if (lay > 0) {
+    const th = Math.PI * flip, c = Math.cos(th), sx = Math.max(0.02, Math.abs(c)), lift = 1 + 0.07 * Math.sin(th);
+    const scx = lerp(pcx, scxEnd, flip), scy = lerp(cy - h * 0.9, cy, lay);
+    ctx.save(); ctx.translate(scx, scy); ctx.scale(sx * lift, lift);
+    if (c > 0) { // the back of the sheet, with the plate showing through where the roller has passed
+      drawImpression(ctx, 0, 0, SW, SH, { face: false });
+      if (roll > 0) { ctx.save(); ctx.beginPath(); ctx.rect(-SW / 2, -SH / 2, SW, SH * roll); ctx.clip(); ctx.strokeStyle = 'rgba(120,96,60,.35)'; ctx.lineWidth = 1.2; ctx.strokeRect(-PW / 2, -PH / 2, PW, PH); ctx.globalAlpha = 0.09; mirrored(ctx, -PW / 2, -PH / 2, PW, () => drawDesign(ctx, PW, PH, { color: INK, ...FULL })); ctx.restore(); }
+    } else drawImpression(ctx, 0, 0, SW, SH, { PW, PH });
+    ctx.restore();
+    if (roll > 0 && roll < 1 && flip === 0) { // the roller
+      const ry = scy - SH / 2 + SH * roll, rh = PH * 0.085, rw = SW * 1.14;
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = rh; ctx.shadowOffsetY = rh * 0.4;
+      const g = ctx.createLinearGradient(0, ry - rh / 2, 0, ry + rh / 2); g.addColorStop(0, '#3a3530'); g.addColorStop(.35, '#b9b1a4'); g.addColorStop(.6, '#6f685e'); g.addColorStop(1, '#25211d');
+      ctx.fillStyle = g; rr(ctx, scx - rw / 2, ry - rh / 2, rw, rh, rh * 0.3); ctx.fill(); ctx.restore();
+    }
+  }
+  const cap = ease(p, .68, .74);
+  if (cap > 0) {
+    const yb = cy + SH / 2 + 16;
+    mono(ctx, 'THE PLATE', pcx, yb, `rgba(214,171,82,${cap})`, 'center', 9.5);
+    mono(ctx, 'THE IMPRESSION', scxEnd, yb, `rgba(214,171,82,${cap})`, 'center', 9.5);
+    const n = Math.floor(12 * strip + 0.001), mw = total / 14.5, mh = mw * 1.2, y0 = yb + 20;
+    for (let i = 0; i < n; i++) {
+      const mx = L + (total - 12 * mw * 1.2 + mw * 0.2) / 2 + i * mw * 1.2;
+      ctx.fillStyle = '#efe5cf'; ctx.fillRect(mx, y0, mw, mh);
+      ctx.fillStyle = INK; for (let k = 0; k < 4; k++) ctx.fillRect(mx + mw * 0.2, y0 + mh * (0.22 + k * 0.1), mw * (0.5 - (k % 2) * 0.12), 1);
+      ctx.fillRect(mx + mw * 0.25, y0 + mh * 0.72, mw * 0.45, mh * 0.1);
+    }
+  }
+}
+
+/* ---------- IV · every copy an original ---------- */
+const s4 = document.querySelector('#s4 canvas'), t4 = document.getElementById('t4'), palette = document.getElementById('palette');
+let way = 'dawn'; palette.inert = true;
+palette.addEventListener('click', ev => {
+  const b = ev.target.closest('button[data-way]'); if (!b) return;
+  way = b.dataset.way; palette.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+});
+const ORDER = (() => { const R = rng(31), a = []; for (let i = 0; i < 54; i++) a.push(R()); return a; })();
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(s4), F = frameOf(w, h), T = reduce ? 0 : t;
+  backdrop(ctx, w, h, F.cx, F.cy, 'rgba(214,171,82,.13)');
+  const grid = ease(p, .28, .36) * (1 - ease(p, .52, .60)), end = ease(p, .84, .89), solo = (1 - grid) * (1 - end);
+  const palOn = p > .58 && p < .84; palette.classList.toggle('on', palOn); palette.inert = !palOn;
+  setTag(t4, p < .28 ? 'Hand coloring · watercolor' : p < .58 ? 'One plate · four illustrative colorways' : p < .84 ? 'Color your own copy' : 'What happened to the copper');
+  if (solo > 0.01) {
+    const B = plateSize(F, 0.8);
+    ctx.save(); ctx.globalAlpha = solo; drawImpression(ctx, F.cx, F.cy, B.PW * 1.3, B.PH * 1.14, { PW: B.PW, PH: B.PH, wash: WAYS[way], wp: p < .3 ? ramp(p, .02, .25) : 1, T }); ctx.restore();
+  }
+  if (grid > 0.01) {
+    const cols = F.wide ? 4 : 2, rows = F.wide ? 1 : 2, gx = F.aw * 0.035, gy = F.ah * 0.07;
+    const cw = Math.min((F.aw - gx * (cols - 1)) / cols / 1.26, (F.ah - gy * rows) / rows / 1.14 * AR), ch = cw / AR;
+    const totW = cols * cw * 1.26 + gx * (cols - 1), totH = rows * (ch * 1.14 + gy);
+    Object.keys(WAYS).forEach((k, i) => {
+      const c = i % cols, r = Math.floor(i / cols), cx = F.cx - totW / 2 + cw * 0.63 + c * (cw * 1.26 + gx), cy = F.cy - totH / 2 + ch * 0.57 + r * (ch * 1.14 + gy);
+      ctx.save(); ctx.globalAlpha = grid; drawImpression(ctx, cx, cy, cw * 1.26, ch * 1.14, { PW: cw, PH: ch, wash: WAYS[k], wp: 1, T });
+      mono(ctx, WAYS[k].name.toUpperCase(), cx, cy + ch * 0.57 + 12, 'rgba(214,171,82,1)', 'center', 9.5); ctx.restore();
+    });
+  }
+  if (end > 0) { // fifty-four plates, then one fragment
+    const melt = ramp(p, .89, .96), frag = ease(p, .93, .99), cols = 9, rows = 6, cell = Math.min(F.aw / cols, F.ah * 0.8 / rows / 1.5), pw = cell * 0.72, ph = pw / AR;
+    for (let i = 0; i < 54; i++) {
+      const a = end * (1 - clamp((melt - ORDER[i] * 0.85) / 0.15, 0, 1)); if (a <= 0) continue;
+      const c = i % cols, r = Math.floor(i / cols), px = F.cx + (c - (cols - 1) / 2) * cell - pw / 2, py = F.cy + (r - (rows - 1) / 2) * cell * 1.5 - ph / 2 + (1 - a / end) * 14;
+      ctx.globalAlpha = a; const g = ctx.createLinearGradient(px, py, px + pw, py + ph); g.addColorStop(0, '#7a4521'); g.addColorStop(.5, '#e0a36b'); g.addColorStop(1, '#70401f'); ctx.fillStyle = g; ctx.fillRect(px, py, pw, ph);
+    }
+    ctx.globalAlpha = 1;
+    if (frag > 0) {
+      const fh = Math.min(F.ah * 0.24, F.aw * 0.4), fw = fh * 5.87 / 8.1, fx = F.cx - fw / 2, fy = F.cy - fh / 2 - 10;
+      ctx.save(); ctx.globalAlpha = frag; ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = fw * 0.2; ctx.shadowOffsetY = fw * 0.06;
+      ctx.beginPath(); ctx.moveTo(fx, fy + fh * 0.04); ctx.lineTo(fx + fw * 0.97, fy); ctx.lineTo(fx + fw, fy + fh * 0.93); ctx.lineTo(fx + fw * 0.06, fy + fh); ctx.closePath();
+      const g = ctx.createLinearGradient(fx, fy, fx + fw, fy + fh); g.addColorStop(0, '#6b3d1c'); g.addColorStop(.45, '#d99a62'); g.addColorStop(1, '#5f3518'); ctx.fillStyle = g; ctx.fill(); ctx.shadowColor = 'transparent';
+      ctx.clip(); ctx.strokeStyle = 'rgba(255,224,190,.75)'; ctx.lineWidth = Math.max(1, fw * 0.02); ctx.lineCap = 'round';
+      for (let k = 0; k < 7; k++) { const ly = fy + fh * (0.14 + k * 0.115); ctx.beginPath(); ctx.moveTo(fx + fw * 0.1, ly); ctx.lineTo(fx + fw * (0.6 + 0.3 * frac(k * 0.37)), ly + fh * 0.008); ctx.stroke(); }
+      ctx.restore();
+      mono(ctx, 'ONE FRAGMENT SURVIVES', F.cx, fy + fh + 22, `rgba(236,228,210,${frag})`, 'center', 10.5);
+      mono(ctx, '8.1 × 5.87 CM · NATIONAL GALLERY OF ART', F.cx, fy + fh + 40, `rgba(214,171,82,${frag})`, 'center', 9.5);
+    }
+  }
+}
+
+/* ---------- V · fourfold ---------- */
+const s5 = document.querySelector('#s5 canvas'), strata = [...document.querySelectorAll('#strata span')];
+const STARS = (() => { const R = rng(11), a = []; for (let i = 0; i < 150; i++) a.push([R(), R(), 0.5 + R() * 1.2, R() * TAU]); return a; })();
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(s5), F = frameOf(w, h), T = reduce ? 0 : t;
+  const sx = F.cx, sy = F.wide ? h * 0.42 : h * 0.31, R = Math.min(F.aw, h) * (F.wide ? 0.15 : 0.19), hz = sy + R * 1.5;
+  const a2 = ease(p, .27, .34), a3 = ease(p, .45, .52), a4 = ease(p, .62, .70);
+  const w1 = 1 - a2, w2 = a2 * (1 - a3), w3 = a3 * (1 - a4), w4 = a4;
+  const cur = w4 > .5 ? 3 : w3 > .5 ? 2 : w2 > .5 ? 1 : 0; strata.forEach((el, i) => el.classList.toggle('on', i === cur));
+  // 1 · graph paper
+  ctx.fillStyle = '#f3efe4'; ctx.fillRect(0, 0, w, h);
+  if (w1 > 0.01) {
+    const U = R / 2; ctx.lineWidth = 1;
+    for (let x = sx % U; x < w; x += U) { const major = Math.abs(Math.round((x - sx) / U)) % 2 === 0; ctx.strokeStyle = major ? 'rgba(42,39,64,.2)' : 'rgba(42,39,64,.07)'; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+    for (let y = hz % U; y < h; y += U) { const major = Math.abs(Math.round((y - hz) / U)) % 2 === 0; ctx.strokeStyle = major ? 'rgba(42,39,64,.2)' : 'rgba(42,39,64,.07)'; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(42,39,64,.6)'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(0, hz); ctx.lineTo(w, hz); ctx.moveTo(sx, 0); ctx.lineTo(sx, h); ctx.stroke();
+  }
+  const sky = (c0, c1, c2, a, sea) => { if (a <= 0) return; ctx.globalAlpha = a; const g = ctx.createLinearGradient(0, 0, 0, hz); g.addColorStop(0, c0); g.addColorStop(.72, c1); g.addColorStop(1, c2); ctx.fillStyle = g; ctx.fillRect(0, 0, w, hz + 1); ctx.fillStyle = sea; ctx.fillRect(0, hz, w, h - hz); ctx.globalAlpha = 1; };
+  sky('#241f3d', '#b9603f', '#f3c27a', a2, '#2c2540'); sky('#070b22', '#141c46', '#27306a', a3, '#080d28'); sky('#2a0a10', '#a3391a', '#f6c452', a4, '#4a160f');
+  const shimmer = (col, a) => { if (a <= 0) return; ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.lineCap = 'round'; for (let i = 0; i < 12; i++) { const yy = hz + 8 + i * (h - hz) / 14, ww = R * (0.9 - i * 0.05) * (0.8 + 0.2 * Math.sin(T * 0.002 + i * 1.3)); ctx.globalAlpha = a * (0.75 - i * 0.05); ctx.beginPath(); ctx.moveTo(sx - ww, yy); ctx.lineTo(sx + ww, yy); ctx.stroke(); } ctx.globalAlpha = 1; };
+  // 1 · single vision: the disk, the dividers, the guinea
+  if (w1 > 0.01) {
+    ctx.globalAlpha = w1; const k = ease(p, .02, .13), dm = ease(p, .08, .17), open = ease(p, .10, .22), coin = ease(p, .16, .24);
+    ctx.strokeStyle = '#2d70b3'; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(sx, sy, R, -Math.PI / 2, -Math.PI / 2 + TAU * k); ctx.stroke();
+    ctx.fillStyle = `rgba(45,112,179,${0.07 * k})`; ctx.beginPath(); ctx.arc(sx, sy, R, 0, TAU); ctx.fill();
+    ctx.strokeStyle = '#fa7e19'; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(sx - R * dm, sy); ctx.lineTo(sx + R * dm, sy); ctx.stroke(); ctx.setLineDash([]);
+    if (open > 0) { // dividers spanning the diameter
+      const px = sx, py = sy - R * 1.9; ctx.strokeStyle = '#2a2740'; ctx.lineWidth = Math.max(2, R * 0.035); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(sx - R * open, sy); ctx.moveTo(px, py); ctx.lineTo(sx + R * open, sy); ctx.stroke();
+      ctx.fillStyle = '#2a2740'; ctx.beginPath(); ctx.arc(px, py, R * 0.07, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.strokeStyle = '#fa7e19'; ctx.lineWidth = 2; for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(sx + s * R * open, sy, 4, 0, TAU); ctx.fill(); ctx.stroke(); }
+    }
+    const fsz = F.wide ? 12 : 10.5;
+    if (k > .5) mono(ctx, 'x² + y² = r²', sx - R * 1.12, sy - R * 0.95, `rgba(42,39,64,${(k - .5) * 2})`, 'right', fsz);
+    if (dm > .5) mono(ctx, 'd = 2r', sx, sy + 14, `rgba(42,39,64,${(dm - .5) * 2})`, 'center', fsz);
+    if (coin > 0) {
+      const cx = sx + R * 1.02, cy = sy + R * 1.02, cr = R * 0.3; ctx.globalAlpha = w1 * coin;
+      const g = ctx.createRadialGradient(cx - cr * .3, cy - cr * .3, cr * .1, cx, cy, cr); g.addColorStop(0, '#f6e3a0'); g.addColorStop(.7, '#d2a440'); g.addColorStop(1, '#8f6a1e');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, cr, 0, TAU); ctx.fill(); ctx.strokeStyle = 'rgba(110,80,20,.7)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, cr * .82, 0, TAU); ctx.stroke();
+      mono(ctx, '≈ A GUINEA', cx, cy + cr + 12, 'rgba(42,39,64,1)', 'center', fsz - 1);
+    }
+    ctx.globalAlpha = 1;
+  }
+  // 2 · twofold: the sun is also an eye
+  if (w2 > 0.01) {
+    ctx.globalAlpha = w2; const o = ease(p, .29, .42);
+    let g = ctx.createRadialGradient(sx, sy, R * .4, sx, sy, R * 3.2); g.addColorStop(0, 'rgba(255,233,168,.6)'); g.addColorStop(1, 'rgba(255,233,168,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, hz);
+    g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R); g.addColorStop(0, '#fff3c0'); g.addColorStop(.6, '#f6b23c'); g.addColorStop(1, '#d8641e'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sx, sy, R, 0, TAU); ctx.fill();
+    ctx.strokeStyle = `rgba(120,40,10,${0.4 * o})`; ctx.lineWidth = 1.2; ctx.beginPath(); for (let i = 0; i < 36; i++) { const a = i / 36 * TAU; ctx.moveTo(sx + Math.cos(a) * R * .34, sy + Math.sin(a) * R * .34); ctx.lineTo(sx + Math.cos(a) * R * .92, sy + Math.sin(a) * R * .92); } ctx.stroke();
+    ctx.fillStyle = '#2a0d08'; ctx.beginPath(); ctx.arc(sx, sy, R * .3 * o, 0, TAU); ctx.fill();
+    ctx.fillStyle = 'rgba(255,250,230,.9)'; ctx.beginPath(); ctx.arc(sx - R * .12, sy - R * .12, R * .07 * o, 0, TAU); ctx.fill();
+    ctx.strokeStyle = '#1e1426'; ctx.lineWidth = Math.max(2.5, R * 0.04); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(sx - R * 2.3, sy); ctx.quadraticCurveTo(sx, sy - R * 2.5 * o, sx + R * 2.3, sy); ctx.moveTo(sx - R * 2.3, sy); ctx.quadraticCurveTo(sx, sy + R * 2.3 * o, sx + R * 2.3, sy); ctx.stroke();
+    ctx.globalAlpha = 1; shimmer('rgba(255,214,150,1)', w2 * .7);
+  }
+  // 3 · threefold: Beulah
+  if (w3 > 0.01) {
+    for (const s of STARS) { ctx.globalAlpha = w3 * (0.5 + 0.5 * Math.sin(T * 0.002 * s[2] + s[3])); ctx.fillStyle = '#e9ecff'; ctx.beginPath(); ctx.arc(s[0] * w, s[1] * hz * 0.96, s[2] * 0.9, 0, TAU); ctx.fill(); }
+    ctx.globalAlpha = w3;
+    const g = ctx.createRadialGradient(sx, sy, R * .5, sx, sy, R * 2.8); g.addColorStop(0, 'rgba(190,204,255,.38)'); g.addColorStop(1, 'rgba(190,204,255,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, hz);
+    ctx.fillStyle = '#eef0fb'; ctx.beginPath(); ctx.arc(sx, sy, R * .8, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#10173c'; ctx.beginPath(); ctx.arc(sx + R * .34, sy - R * .1, R * .74, 0, TAU); ctx.fill();
+    ctx.globalAlpha = 1; shimmer('rgba(214,222,255,1)', w3 * .6);
+  }
+  // 4 · fourfold: an innumerable company
+  if (w4 > 0.01) {
+    const f = ease(p, .64, .9); ctx.globalAlpha = w4;
+    const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * (2.2 + 2 * f)); g.addColorStop(0, 'rgba(255,246,207,.95)'); g.addColorStop(.35, 'rgba(255,176,74,.45)'); g.addColorStop(1, 'rgba(255,176,74,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    const N = 1300, shown = Math.floor(N * f), c = R * 3.4 / Math.sqrt(N), cols = ['#fffbe6', '#ffe19a', '#ffab58'], k = R / 90;
+    for (let b = 0; b < 3; b++) {
+      const lo = Math.floor(N * b / 3), hi = Math.min(shown, Math.floor(N * (b + 1) / 3)); if (hi <= lo) break;
+      const body = new Path2D(), heads = new Path2D();
+      for (let n = lo; n < hi; n++) {
+        const th = n * 2.39996323 + T * 0.00003, r = c * Math.sqrt(n) + R * 0.1, s = (2.4 + 3.4 * n / N) * k * (1 + 0.18 * Math.sin(T * 0.004 + n * 1.7));
+        const ux = Math.cos(th), uy = Math.sin(th), x0 = sx + ux * r, y0 = sy + uy * r, x1 = x0 + ux * s * 2.2, y1 = y0 + uy * s * 2.2, mx = x0 + ux * s * 1.35, my = y0 + uy * s * 1.35;
+        const ca = Math.cos(0.95), sa = Math.sin(0.95), L = s * 1.15;
+        body.moveTo(x0, y0); body.lineTo(x1, y1);
+        body.moveTo(mx, my); body.lineTo(mx + (ux * ca - uy * sa) * L, my + (uy * ca + ux * sa) * L);
+        body.moveTo(mx, my); body.lineTo(mx + (ux * ca + uy * sa) * L, my + (uy * ca - ux * sa) * L);
+        const hx = x1 + ux * s * 0.5, hy = y1 + uy * s * 0.5; heads.moveTo(hx + s * 0.45, hy); heads.arc(hx, hy, s * 0.45, 0, TAU);
+      }
+      ctx.strokeStyle = cols[b]; ctx.fillStyle = cols[b]; ctx.lineWidth = Math.max(1, k * 1.15); ctx.lineCap = 'round'; ctx.stroke(body); ctx.fill(heads);
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- title word, exhibit mode, loop ---------- */
+const mirrorEl = document.getElementById('mirror');
+document.getElementById('title').addEventListener('click', () => mirrorEl.classList.toggle('again'));
+
+const root = document.documentElement, exBtn = document.getElementById('exhibitBtn');
+let exhibit = false, lastInput = 0, lastT = 0, endHold = 0;
+function setExhibit(on) {
+  exhibit = on; root.classList.toggle('exhibit', on); exBtn.setAttribute('aria-pressed', String(on)); lastInput = performance.now();
+  try { if (on) location.hash = 'exhibit'; else if (location.hash === '#exhibit') history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (on) window.scrollTo(0, 0);
+}
+exBtn.addEventListener('click', () => setExhibit(!exhibit));
+document.getElementById('exitExhibit').addEventListener('click', () => setExhibit(false));
+for (const ev of ['pointerdown', 'wheel', 'keydown', 'touchstart']) addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true });
+if (location.hash === '#exhibit') setExhibit(true);
+
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 }, { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 }, { el: document.getElementById('s4'), render: renderS4 },
+  { el: document.getElementById('s5'), render: renderS5 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight, dt = Math.min(64, t - lastT); lastT = t;
+  // exhibit mode: after 20 s without a touch, tour the page slowly; at the end, rest, then start over
+  if (exhibit && !reduce && t - lastInput > 20000) {
+    const max = document.documentElement.scrollHeight - vh;
+    if (window.scrollY >= max - 2) { endHold += dt; if (endHold > 9000) { endHold = 0; window.scrollTo(0, 0); } }
+    else window.scrollBy(0, Math.max(1, dt * 0.07));
+  }
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

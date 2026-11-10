@@ -13,10 +13,15 @@
  * of asphodel, the seat-mirror, and the return. The island itself lives in
  * src/scripts/unseen/ and is mounted by boot.ts.
  *
+ * After the text, the Bureau of Coincidence's stamp, which renders only
+ * for a piece whose gallery entry carries `subject` and `case`
+ * (scroll/BureauStamp.astro).
+ *
  * One red thing on the whole page: the seeds.
  */
 import SeriesMark from '../scroll/SeriesMark.astro';
 import Byline from '../scroll/Byline.astro';
+import BureauStamp from '../scroll/BureauStamp.astro';
 
 interface Props {
   /** The piece's id, for its series label. */
@@ -41,6 +46,9 @@ const { id, title, dateLabel, dedication } = Astro.props;
   </header>
   <div class="descent__text">
     <slot />
+  </div>
+  <div class="descent__stamp">
+    <BureauStamp id={id} />
   </div>
   <p class="descent__back">
     <a href="/gallery/">The Gallery</a>
@@ -336,6 +344,15 @@ const { id, title, dateLabel, dedication } = Astro.props;
     text-transform: uppercase;
     color: var(--descent-faint);
     line-height: 2;
+  }
+  .descent__stamp {
+    max-width: var(--descent-measure);
+    margin: 0 auto;
+    padding-inline: max(16px, 8vw);
+    color: var(--descent-fg);
+  }
+  .descent__stamp:empty {
+    display: none;
   }
   .descent__back {
     max-width: var(--descent-measure);

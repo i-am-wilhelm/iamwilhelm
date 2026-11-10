@@ -13,6 +13,8 @@ date: 2026-11-03
 verb: "five movements · you take six seeds"
 series: poems
 seriesNo: 4
+subject: feminine
+case: "263.52"
 ---
 
 The poem itself lives in src/content/writings/the-unseen-one.md and is

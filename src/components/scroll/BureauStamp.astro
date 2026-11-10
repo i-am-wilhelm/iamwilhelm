@@ -1,0 +1,167 @@
+---
+/**
+ * The Bureau of Coincidence's stamp: a small seal, two concentric gilt
+ * circles with the Bureau's name on the ring, and four lines beside it,
+ *
+ *   BUREAU OF COINCIDENCE
+ *   CERTIFIED COINCIDENTAL
+ *   Case No. {case}
+ *   Read the minutes →
+ *
+ * linking to the hearing that certified the poem, Ladies, Ladies
+ * (/gallery/ladies-ladies/). It renders only for a piece whose gallery
+ * entry carries `subject: feminine` and a `case` (src/content.config.ts),
+ * and nothing otherwise, so a page may mount it unconditionally. Mount it
+ * at the foot of the poem, above the colophon; the descent layout
+ * (components/writings/Descent.astro) mounts it after the poem's text.
+ *
+ * Drawn on the poem's own ground: no fill, the type inherits the page's
+ * colour, and the gilt is --stamp-gilt (a page may set its own). The whole
+ * stamp is one link whose name is its text; the seal is decorative and
+ * aria-hidden.
+ */
+import { getPiece } from '../../lib/pieces';
+
+interface Props {
+  id: string;
+  class?: string;
+}
+const { id, class: cls } = Astro.props;
+const piece = await getPiece(id);
+const g = piece.gallery?.data;
+const caseNo = g?.subject === 'feminine' ? g.case : undefined;
+const HEARING = '/gallery/ladies-ladies/';
+const ringId = `bureau-ring-${id}`;
+/* Ring text on a circle of radius 45 in a 120 box, fitted to its circumference. */
+const ringLength = (2 * Math.PI * 45 * 0.985).toFixed(2);
+---
+
+{
+  caseNo && (
+    <a class:list={['bureau-stamp', cls]} href={HEARING}>
+      <svg class="bureau-stamp__seal" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+        <defs>
+          <path id={ringId} d="M 15 60 a 45 45 0 1 1 90 0 a 45 45 0 1 1 -90 0" />
+        </defs>
+        <circle cx="60" cy="60" r="56" class="bureau-stamp__ring" />
+        <circle cx="60" cy="60" r="39" class="bureau-stamp__ring bureau-stamp__ring--thin" />
+        <text class="bureau-stamp__ringtext">
+          <textPath href={`#${ringId}`} textLength={ringLength} lengthAdjust="spacing">BUREAU OF COINCIDENCE · CERTIFIED COINCIDENTAL · </textPath>
+        </text>
+        <text x="60" y="56" text-anchor="middle" class="bureau-stamp__mid">CASE</text>
+        <text x="60" y="71" text-anchor="middle" class="bureau-stamp__no">{caseNo}</text>
+      </svg>
+      <span class="bureau-stamp__text">
+        <span class="bureau-stamp__k">Bureau of Coincidence</span>
+        <span class="bureau-stamp__t">Certified coincidental</span>
+        <span class="bureau-stamp__case">Case No. {caseNo}</span>
+        <span class="bureau-stamp__go">Read the minutes <span aria-hidden="true">&rarr;</span></span>
+      </span>
+    </a>
+  )
+}
+
+<style is:global>
+  .bureau-stamp {
+    --stamp-gilt: #c9a453;
+    --stamp-mono: var(--font-mono, var(--log, var(--descent-mono, ui-monospace, Menlo, monospace)));
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+    max-width: 100%;
+    margin: 3rem 0 0;
+    padding: 0.4rem 0.4rem 0.4rem 0;
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--stamp-mono);
+    font-size: 1rem;
+    line-height: 1.35;
+    letter-spacing: 0;
+    opacity: 1;
+    transform: none;
+  }
+  .bureau-stamp__seal {
+    flex: none;
+    width: 5.5rem;
+    height: 5.5rem;
+    overflow: visible;
+    transform: rotate(-8deg);
+    transition: transform 0.6s cubic-bezier(0.2, 1.2, 0.3, 1);
+  }
+  .bureau-stamp:hover .bureau-stamp__seal,
+  .bureau-stamp:focus-visible .bureau-stamp__seal {
+    transform: rotate(0deg) scale(1.04);
+  }
+  .bureau-stamp__ring {
+    fill: none;
+    stroke: var(--stamp-gilt);
+    stroke-width: 2;
+  }
+  .bureau-stamp__ring--thin {
+    stroke-width: 1;
+    opacity: 0.8;
+  }
+  .bureau-stamp__ringtext,
+  .bureau-stamp__mid,
+  .bureau-stamp__no {
+    fill: var(--stamp-gilt);
+    font-family: var(--stamp-mono);
+  }
+  .bureau-stamp__ringtext {
+    font-size: 8.4px;
+    letter-spacing: 0.04em;
+  }
+  .bureau-stamp__mid {
+    font-size: 8px;
+    letter-spacing: 0.3em;
+  }
+  .bureau-stamp__no {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .bureau-stamp__text {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .bureau-stamp__k,
+  .bureau-stamp__t,
+  .bureau-stamp__case {
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .bureau-stamp__k,
+  .bureau-stamp__case {
+    opacity: 0.78;
+  }
+  .bureau-stamp__t {
+    color: var(--stamp-gilt);
+  }
+  .bureau-stamp__go {
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--stamp-gilt);
+    border-bottom: 1px solid color-mix(in srgb, var(--stamp-gilt) 40%, transparent);
+    justify-self: start;
+    transition: border-color 0.3s ease;
+  }
+  .bureau-stamp:hover .bureau-stamp__go,
+  .bureau-stamp:focus-visible .bureau-stamp__go {
+    border-bottom-color: var(--stamp-gilt);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bureau-stamp__seal {
+      transition: none;
+    }
+  }
+  @media print {
+    .bureau-stamp__seal {
+      transform: none;
+    }
+  }
+</style>
