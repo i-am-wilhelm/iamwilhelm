@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Receipts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: one 80mm register tape, 48 columns wide, lying on a dark counter.
+     A register display rides the bottom edge and tallies items as they scroll past. */
+  --counter: #22262b;
+  --paper: #f2f3ee;
+  --ink: #1a1d22;
+  --faint: #5d636c;
+  --stripe: #d9486e;
+  --led: #ffb648;
+  --display: "Doto", "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --body: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--counter); }
+body {
+  margin: 0;
+  background: var(--counter);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+main {
+  display: flex;
+  justify-content: center;
+  padding: 30px 16px 104px;
+}
+.tape {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  background-color: var(--paper);
+  background-image: linear-gradient(rgba(26, 29, 34, 0.022) 1px, transparent 1px);
+  background-size: 100% 3px;
+  padding: 30px 22px 28px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+.tape::before,
+.tape::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background-size: 10px 10px;
+  background-repeat: repeat-x;
+}
+.tape::before {
+  top: -5px;
+  background-image:
+    linear-gradient(45deg, var(--paper) 25%, transparent 25%),
+    linear-gradient(315deg, var(--paper) 25%, transparent 25%);
+  background-position: 0 100%;
+}
+.tape::after {
+  bottom: -5px;
+  background-image:
+    linear-gradient(135deg, var(--paper) 25%, transparent 25%),
+    linear-gradient(225deg, var(--paper) 25%, transparent 25%);
+  background-position: 0 0;
+}
+
+/* Header */
+.head { display: grid; gap: 6px; text-align: center; }
+h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2.7rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-wrap: balance;
+}
+.head .sub {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+}
+.lead { margin: 10px 0 0; text-align: left; }
+.rule {
+  border: 0;
+  border-top: 1px dashed var(--ink);
+  opacity: 0.55;
+  margin: 18px 0;
+}
+
+/* Departments */
+section { display: grid; gap: 0; margin-top: 26px; }
+.dept {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-size: 0.86rem;
+}
+.dept h2 { margin: 0; font: inherit; }
+.deptnote { margin: 8px 0 0; color: var(--faint); font-size: 0.86rem; }
+
+/* Line items */
+.item {
+  display: grid;
+  gap: 6px;
+  padding: 16px 0;
+  border-bottom: 1px dashed rgba(26, 29, 34, 0.45);
+}
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+.item h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.amt {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2.1rem;
+  line-height: 1.1;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  transform-origin: right center;
+}
+.amt small {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.desc { margin: 0; max-width: 46ch; }
+.src { margin: 2px 0 0; font-size: 0.8rem; color: var(--faint); }
+.src b { font-weight: 600; letter-spacing: 0.1em; color: var(--ink); }
+a {
+  color: var(--ink);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+a:hover { text-decoration-style: solid; }
+a:focus-visible { outline: 2px solid var(--stripe); outline-offset: 2px; }
+
+/* End of roll */
+.end {
+  margin: 26px -22px 0;
+  padding: 4px 22px 0;
+  box-shadow: inset 7px 0 0 var(--stripe), inset -7px 0 0 var(--stripe);
+  display: grid;
+  gap: 14px;
+}
+.end h2 {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+.end p { margin: 0; max-width: 46ch; }
+.totals { margin: 4px 0 0; display: grid; gap: 8px; }
+.totals div { display: flex; align-items: baseline; gap: 8px; }
+.totals dt { letter-spacing: 0.06em; font-size: 0.86rem; white-space: nowrap; }
+.totals .dots {
+  flex: 1;
+  min-width: 12px;
+  border-bottom: 1px dotted var(--faint);
+  transform: translateY(-4px);
+}
+.totals dd { margin: 0; font-weight: 600; text-align: right; max-width: 62%; }
+.fine { font-size: 0.8rem; color: var(--faint); }
+.barcode {
+  height: 54px;
+  width: 78%;
+  margin: 6px auto 0;
+  background: repeating-linear-gradient(90deg,
+    var(--ink) 0 2px, transparent 2px 4px,
+    var(--ink) 4px 5px, transparent 5px 8px,
+    var(--ink) 8px 11px, transparent 11px 12px,
+    var(--ink) 12px 13px, transparent 13px 17px);
+}
+.bye {
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  padding-bottom: 4px;
+}
+.copy { text-align: center; font-size: 0.74rem; letter-spacing: 0.14em; color: var(--faint); }
+
+/* Register display */
+.register {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 16px 12px;
+  background: var(--ink);
+  border-top: 1px solid rgba(255, 182, 72, 0.35);
+  color: var(--led);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.07em;
+  font-variant-numeric: tabular-nums;
+}
+.register span:last-child { text-align: right; }
+
+@media (max-width: 400px) {
+  body { font-size: 14px; }
+  h1 { font-size: 2.2rem; }
+  .amt { font-size: 1.8rem; }
+  .tape { padding-left: 18px; padding-right: 18px; }
+  .end { margin-left: -18px; margin-right: -18px; padding-left: 20px; padding-right: 20px; }
+  .register { font-size: 0.92rem; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tape { animation: feed 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .item.rung .amt { animation: stamp 0.4s ease-out; }
+}
+@keyframes feed { from { transform: translateY(-18px); } to { transform: none; } }
+@keyframes stamp { from { transform: scale(1.14); } to { transform: scale(1); } }
+</style>
+</head>
+<body>
+<main>
+  <div class="tape">
+
+    <header class="head">
+      <h1>THE RECEIPTS</h1>
+      <p class="sub">FACE FORWARD · REGISTER 01</p>
+      <p class="sub">PRINTED 11/10/2026 · 14 ITEMS</p>
+      <hr class="rule">
+      <p class="lead">Fourteen line items. All on the record. Each one links to its source, so read it there.</p>
+    </header>
+
+    <section data-dept="THE VAULT">
+      <div class="dept"><h2>DEPT 01</h2><span>THE VAULT</span></div>
+      <p class="deptnote">What went into the black books.</p>
+
+      <article class="item">
+        <div class="meta"><span>1951 TO NOW</span><span>#01</span></div>
+        <h3>INVENTION SECRECY ACT</h3>
+        <p class="amt">6,471 <small>secrecy orders standing</small></p>
+        <p class="desc">A 1951 law lets federal agencies seal a patent application and bar the inventor from disclosing it. At the end of fiscal 2024, 6,471 orders were in force. That year added 356, nearly triple the year before.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://sgp.fas.org/othergov/invention/stats.html" rel="noopener">Patent Office figures, hosted by FAS</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>1971</span><span>#02</span></div>
+        <h3>THE SCREENING LIST</h3>
+        <p class="amt">20% <small>solar efficiency that triggered review</small></p>
+        <p class="desc">A 1971 screening list marked solar cells for possible secrecy once they passed 20 percent efficiency, and energy conversion systems past 70 to 80 percent. A 2010 request for the current list was denied.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://fas.org/publication/invention_secrecy_2010/" rel="noopener">FAS Secrecy News, 2010</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>1973 TO 1997</span><span>#03</span></div>
+        <h3>THE SECRET MATH</h3>
+        <p class="amt">24 YRS <small>kept classified</small></p>
+        <p class="desc">Mathematicians at Britain's GCHQ worked out public-key cryptography in the early 1970s. It is the math that now secures online banking and shopping. Their work stayed classified until December 1997, long after Stanford and MIT researchers reinvented it in public and took the credit.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://nsa.gov/Press-Room/Digital-Media-Center/Biographies/Biography-View-Page/Article/3006218/clifford-cocks-james-ellis-and-malcolm-williamson" rel="noopener">NSA Cryptologic Hall of Honor</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>JAN 1943</span><span>#04</span></div>
+        <h3>TESLA'S PAPERS</h3>
+        <p class="amt">2 DAYS <small>from death to seizure</small></p>
+        <p class="desc">Two days after Nikola Tesla died in a New York hotel, the Office of Alien Property took everything in his rooms. An MIT engineer reviewed the papers for the government and judged them speculative. The FBI's file is public. Read it and judge for yourself.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://vault.fbi.gov/nikola-tesla" rel="noopener">FBI Vault, Nikola Tesla file</a> · <a href="https://www.pbs.org/tesla/ll/ll_mispapers.html" rel="noopener">PBS on the missing papers</a></p>
+      </article>
+    </section>
+
+    <section data-dept="THE CLEARED FIELD">
+      <div class="dept"><h2>DEPT 02</h2><span>THE CLEARED FIELD</span></div>
+      <p class="deptnote">Competitors managed. Product capped.</p>
+
+      <article class="item">
+        <div class="meta"><span>1924 TO 1939</span><span>#05</span></div>
+        <h3>THE PHOEBUS CARTEL</h3>
+        <p class="amt">1,000 HRS <small>agreed bulb life</small></p>
+        <p class="desc">Osram, Philips, General Electric's overseas arms and other bulb makers agreed to hold household bulbs to 1,000 hours. Bulbs of the day commonly ran 1,500 to 2,000. Members' bulbs were tested, and makers paid fines when theirs lasted too long.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://spectrum.ieee.org/the-great-lightbulb-conspiracy" rel="noopener">IEEE Spectrum, The Great Lightbulb Conspiracy</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>1949</span><span>#06</span></div>
+        <h3>NATIONAL CITY LINES</h3>
+        <p class="amt">$5,000 <small>General Motors' fine</small></p>
+        <p class="desc">A federal jury convicted General Motors, Firestone, Standard Oil of California and others of conspiring to monopolize bus and supply sales to National City Lines, a transit operator they had bankrolled. Corporate fines ran $5,000. Executives paid $1 apiece.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://en.wikipedia.org/wiki/General_Motors_streetcar_conspiracy" rel="noopener">Case history on Wikipedia, with court citations</a></p>
+      </article>
+    </section>
+
+    <section data-dept="THE WIRED HOUSE">
+      <div class="dept"><h2>DEPT 03</h2><span>THE WIRED HOUSE</span></div>
+      <p class="deptnote">Infrastructure first. Then the service.</p>
+
+      <article class="item">
+        <div class="meta"><span>OCT 1994</span><span>#07</span></div>
+        <h3>CALEA</h3>
+        <p class="amt">BY LAW <small>wiretap-ready networks</small></p>
+        <p class="desc">Congress required phone carriers to design their equipment and services so that a court-ordered intercept can be switched on. The listening capability ships with the network.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://oig.justice.gov/archives/reports/FBI/a0613/exec.htm" rel="noopener">Justice Dept. Inspector General report</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>NOV 2024</span><span>#08</span></div>
+        <h3>SALT TYPHOON</h3>
+        <p class="amt">MULTIPLE <small>U.S. carriers breached</small></p>
+        <p class="desc">The FBI and CISA confirmed that hackers tied to China's government broke into multiple telecom companies. They stole call records and copied information tied to court-ordered law enforcement requests. A door built for the warrant holds for exactly as long as its lock.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://content.govdelivery.com/accounts/USDHSCISA/bulletins/3c1b400" rel="noopener">FBI and CISA joint statement, Nov. 13, 2024</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>1970 TO 2018</span><span>#09</span></div>
+        <h3>CRYPTO AG</h3>
+        <p class="amt">120+ <small>countries sold rigged machines</small></p>
+        <p class="desc">A Swiss company sold encryption machines to more than 120 countries. The CIA and West German intelligence had secretly owned it since 1970 and could read the traffic. Reporters exposed it in 2020.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://www.adn.com/nation-world/2020/02/11/intelligence-coup-of-the-century-how-the-cia-was-able-to-read-encrypted-messages-of-allies-and-adversaries-for-decades/" rel="noopener">Washington Post investigation, ADN reprint</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>MAY 2023</span><span>#10</span></div>
+        <h3>THE DOORBELL</h3>
+        <p class="amt">$5.8M <small>Ring's FTC settlement</small></p>
+        <p class="desc">The FTC charged that Ring gave employees and contractors free access to customers' private camera videos. One employee watched thousands of recordings from at least 81 women. Ring paid $5.8 million and moved on.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://www.cbsnews.com/news/amazon-ring-ftc-lawsuit-customer-videos" rel="noopener">CBS News on the FTC complaint</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>JAN 2026</span><span>#11</span></div>
+        <h3>THE CAR</h3>
+        <p class="amt">3 SEC <small>between data pulls</small></p>
+        <p class="desc">The FTC finalized an order against General Motors and OnStar for collecting precise location and driving behavior from millions of vehicles, as often as every three seconds, and selling it to firms that feed insurers. The order bars that sharing for five years.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://www.ftc.gov/node/327916" rel="noopener">Federal Trade Commission announcement</a></p>
+      </article>
+    </section>
+
+    <section data-dept="THE 3 A.M. VISITOR">
+      <div class="dept"><h2>DEPT 04</h2><span>THE 3 A.M. VISITOR</span></div>
+      <p class="deptnote">The machine picks locks. The machine stands watch.</p>
+
+      <article class="item">
+        <div class="meta"><span>JAN 2024</span><span>#12</span></div>
+        <h3>THE FAKE CFO</h3>
+        <p class="amt">$25.6M <small>wired on a deepfake call</small></p>
+        <p class="desc">A finance worker at the engineering firm Arup joined a video call with his CFO and colleagues. Every other face on the call was a deepfake. He sent HK$200 million in 15 transfers.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://abc17news.com/money/cnn-business-consumer/2024/05/16/british-engineering-giant-arup-revealed-as-25-million-deepfake-scam-victim/" rel="noopener">CNN report, carried by ABC17</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>SEPT 2025</span><span>#13</span></div>
+        <h3>THE MACHINE BREAK-IN</h3>
+        <p class="amt">80–90% <small>of the campaign run by AI</small></p>
+        <p class="desc">Anthropic reported that a state-sponsored group turned its Claude Code tool on about 30 targets. By the company's account the AI ran 80 to 90 percent of the campaign, with people stepping in at a few decision points. Outside researchers have questioned that figure.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://anthropic.com/news/disrupting-AI-espionage" rel="noopener">Anthropic incident report</a></p>
+      </article>
+
+      <article class="item">
+        <div class="meta"><span>MAY 2026</span><span>#14</span></div>
+        <h3>THE MACHINE GUARD</h3>
+        <p class="amt">10,000+ <small>serious flaws found in a month</small></p>
+        <p class="desc">Anthropic and about 50 partners reported that a restricted AI model found more than 10,000 high or critical severity software flaws in its first month of defensive use. Mozilla fixed 271 in one Firefox release.</p>
+        <p class="src"><b>VERIFY</b> <a href="https://anthropic.com/research/glasswing-initial-update" rel="noopener">Anthropic, Project Glasswing update</a></p>
+      </article>
+    </section>
+
+    <div class="end">
+      <h2>WHAT THE TAPE SAYS</h2>
+      <p>Sealed first, released later. Field cleared, then the product. Wire laid, then the service. That is the world you wake up in, and it runs whether you approve of it.</p>
+      <p>So take inventory. The machine that picks the lock in item 13 is the same kind that stands guard in item 14. Put one on your side of the door.</p>
+
+      <dl class="totals">
+        <div><dt>ITEMS RUNG UP</dt><span class="dots"></span><dd>14</dd></div>
+        <div><dt>TOTAL DUE</dt><span class="dots"></span><dd>YOUR ATTENTION</dd></div>
+        <div><dt>TENDERED</dt><span class="dots"></span><dd>ONE AFTERNOON AT THE SOURCE</dd></div>
+        <div><dt>CHANGE</dt><span class="dots"></span><dd>A MIND OF YOUR OWN</dd></div>
+      </dl>
+
+      <hr class="rule" style="margin:4px 0">
+      <p class="fine">Fine print. Each line is one documented instance. Together they show a pattern that repeats. Items 13 and 14 rest on a company's own reporting, and item 13 has outside critics. Verify every line. A receipt you never checked is a rumor with a barcode.</p>
+
+      <div class="barcode" role="img" aria-label="Decorative barcode"></div>
+      <p class="bye">THANK YOU.<br>FACE FORWARD.</p>
+      <p class="copy">CUSTOMER COPY · KEEP FOR YOUR RECORDS</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="register" aria-hidden="true">
+  <span id="count">ITEM 00/14</span>
+  <span id="dept">SCROLL TO RING UP</span>
+</div>
+
+<script>
+(function () {
+  var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
+  var count = document.getElementById('count');
+  var dept = document.getElementById('dept');
+  var total = items.length;
+  var queued = false;
+
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+  function update() {
+    queued = false;
+    var line = window.innerHeight * 0.62;
+    var n = 0;
+    var name = '';
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].getBoundingClientRect().top < line) {
+        n = i + 1;
+        name = items[i].parentNode.getAttribute('data-dept') || '';
+        items[i].classList.add('rung');
+      }
+    }
+    count.textContent = 'ITEM ' + pad(n) + '/' + pad(total);
+    dept.textContent = n === 0 ? 'SCROLL TO RING UP' : (n === total ? 'TAPE COMPLETE' : name);
+  }
+
+  function request() {
+    if (!queued) {
+      queued = true;
+      (window.requestAnimationFrame || setTimeout)(update);
+    }
+  }
+
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', request);
+  update();
+})();
+</script>
+</body>
+</html>

@@ -49,7 +49,7 @@ export const series = {
     href: '/writings/futurist/',
     accent: '#c0281c',
     /* TODO(owner): the series' one-line statement, shown on /writings/futurist/ and in its feed. */
-    statement: 'Essays on what comes next, each staged as its own scrolling page.',
+    statement: 'The Futurist installments: essays on what comes next, each staged as its own scrolling page.',
   },
   mimics: {
     name: 'Mimics',

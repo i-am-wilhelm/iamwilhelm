@@ -38,6 +38,7 @@ export const NEWSLETTER_EMBED_HTML = '';
 export const NAV = [
   { label: 'BackGold', id: 'backgold' },
   { label: 'Gallery', id: 'gallery', page: '/gallery/' },
+  { label: 'Futurist', id: 'futurist', page: '/writings/futurist/' },
   { label: 'Writings', id: 'writings', page: '/writings/' },
   { label: 'Commissions', id: 'services', page: '/services/', room: false },
   { label: 'Earl', id: 'earl', page: '/earl/', room: false },

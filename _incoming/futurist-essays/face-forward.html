@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Face Forward</title>
+<meta name="description" content="Stop praying for the EMP. A field manual for the world you actually wake up in.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: one fixed canvas paints a sky that runs from night to morning as the reader scrolls.
+     Essay cards ride over it in a single column (left column on wide screens), each section with
+     its own drawn figure. A loud parody feed interrupts the first half, then goes quiet for good. */
+  --night: #070b16;
+  --panel: #090d1a;
+  --bone: #ece6d8;
+  --dim: #a0a6b3;
+  --hivis: #ff6a1a;
+  --lamp: #ffd27a;
+  --display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --yell: "Black Ops One", Impact, "Arial Black", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--night); }
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--bone);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.58;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+#sky { position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+main { position: relative; z-index: 1; }
+a { color: var(--lamp); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--hivis); outline-offset: 2px; }
+
+.fm {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hivis);
+}
+
+/* Hero */
+.hero {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 40px 16px 34px;
+  display: grid;
+  gap: 26px;
+}
+h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(3.6rem, 17.5vw, 9.5rem);
+  line-height: 0.86;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.deck { margin: 14px 0 0; font-size: 1.32rem; font-weight: 600; color: var(--lamp); }
+.by { margin: 6px 0 0; color: var(--dim); font-size: 0.95rem; }
+.hint {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hivis);
+}
+
+/* Parody livestream */
+.stream {
+  width: 100%;
+  max-width: 34rem;
+  border: 1px solid rgba(236, 230, 216, 0.18);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.screen {
+  position: relative;
+  padding: 14px 14px 12px;
+  background: radial-gradient(120% 90% at 50% 0%, #43180a 0%, #160b08 58%, #0b0705 100%);
+}
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; }
+.live { display: inline-flex; align-items: center; gap: 6px; background: #d81e06; color: #fff; padding: 2px 8px; border-radius: 3px; }
+.live i { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+.viewers { color: var(--dim); font-variant-numeric: tabular-nums; }
+.viewers b { color: var(--bone); }
+.st-title {
+  margin: 14px 0 0;
+  font-family: var(--yell);
+  font-size: clamp(1.7rem, 7.4vw, 2.5rem);
+  line-height: 1.02;
+  color: #fff;
+  text-transform: uppercase;
+}
+.st-sub { margin: 6px 0 0; font-family: var(--display); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--lamp); }
+.count { margin: 12px 0 0; display: flex; align-items: baseline; gap: 10px; font-family: var(--display); }
+.count small { font-size: 0.86rem; font-weight: 700; letter-spacing: 0.16em; color: var(--dim); }
+.count b { font-size: 2.9rem; font-weight: 900; line-height: 1; color: var(--hivis); font-variant-numeric: tabular-nums; }
+.stamp {
+  position: absolute;
+  right: 12px;
+  top: 46%;
+  transform: rotate(-8deg);
+  border: 3px solid var(--lamp);
+  color: var(--lamp);
+  background: rgba(11, 7, 5, 0.8);
+  font-family: var(--yell);
+  font-size: 1.15rem;
+  padding: 4px 10px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.stamp.show { opacity: 1; }
+.chat { margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(236, 230, 216, 0.14); display: grid; gap: 3px; font-size: 0.88rem; min-height: 4.7em; }
+.chat p { margin: 0; }
+.chat b { color: var(--lamp); font-weight: 600; margin-right: 6px; }
+.under { display: grid; gap: 4px; padding: 10px 14px 12px; font-size: 0.86rem; color: var(--dim); }
+.under b { color: var(--bone); }
+
+/* Scenes */
+.scene { position: relative; padding: 6vh 0 22vh; }
+.step {
+  min-height: 68vh;
+  min-height: 68svh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 16px 8vh;
+}
+.step.short { min-height: 56vh; min-height: 56svh; }
+.card {
+  width: 100%;
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 18px 18px 18px 17px;
+  background: rgba(9, 13, 26, 0.92);
+  border: 1px solid rgba(236, 230, 216, 0.14);
+  border-left: 3px solid rgba(236, 230, 216, 0.28);
+  border-radius: 4px;
+  transition: border-color 0.25s;
+}
+.card.on { border-left-color: var(--hivis); }
+.card p { margin: 0; }
+.card p + p { margin-top: 0.8em; }
+h2 {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.1rem, 9vw, 3.1rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+h3 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.65rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.grp {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hivis);
+  margin-bottom: 8px !important;
+}
+.chip {
+  display: inline-block;
+  margin: 0 0 10px !important;
+  padding: 3px 8px;
+  border: 1px solid rgba(255, 210, 122, 0.45);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--lamp);
+}
+.out { padding-top: 0.75em; border-top: 1px dashed rgba(236, 230, 216, 0.25); }
+.out b {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hivis);
+  margin-right: 6px;
+}
+.lede { font-size: 1.12rem; font-weight: 500; }
+.big { font-family: var(--display); font-weight: 900; font-size: clamp(2rem, 8.5vw, 2.8rem); line-height: 1; text-transform: uppercase; }
+
+/* Parody feed */
+.feed { max-width: 68rem; margin: 0 auto; padding: 0 16px 6vh; }
+.feed-h {
+  margin: 0 0 12px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.thumbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 14px; }
+.thumb { background: rgba(9, 13, 26, 0.94); border: 1px solid rgba(236, 230, 216, 0.14); border-radius: 6px; overflow: hidden; }
+.pic { position: relative; aspect-ratio: 16 / 9; display: flex; align-items: center; padding: 10px 12px; overflow: hidden; }
+.pic.a { background: linear-gradient(120deg, #2f3813, #69773a); }
+.pic.b { background: repeating-linear-gradient(135deg, #f2b705 0 18px, #151515 18px 36px); }
+.pic.c { background: linear-gradient(120deg, #ff6a1a, #a3230c); }
+.pic::after { content: ""; position: absolute; right: 9%; top: 14%; width: 23%; aspect-ratio: 1; border: 4px solid #ff2a12; border-radius: 50%; }
+.pic::before { content: ""; position: absolute; right: 35%; top: 27%; border-left: 22px solid #ff2a12; border-top: 11px solid transparent; border-bottom: 11px solid transparent; }
+.yell {
+  position: relative;
+  max-width: 66%;
+  font-family: var(--yell);
+  font-size: clamp(1.25rem, 5.2vw, 1.6rem);
+  line-height: 1;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 2px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 0 -2px 0 #000, 0 5px 12px rgba(0, 0, 0, 0.6);
+}
+.dur { position: absolute; right: 8px; bottom: 8px; background: #000; color: #fff; font-size: 0.72rem; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
+.vt { margin: 10px 12px 2px; font-weight: 600; }
+.ch { margin: 0 12px 12px; color: var(--dim); font-size: 0.86rem; }
+
+/* End */
+.end { max-width: 34rem; margin: 0 auto; padding: 0 16px 90px; display: grid; gap: 18px; }
+.end .stream .screen { background: #0b0d14; }
+.offline { margin: 0; font-family: var(--yell); font-size: 1.7rem; line-height: 1.05; text-transform: uppercase; color: var(--dim); }
+.end .fine { margin: 0; padding: 12px 14px; background: rgba(9, 13, 26, 0.92); border-radius: 4px; font-size: 0.86rem; color: var(--dim); }
+
+@media (min-width: 900px) {
+  .hero { grid-template-columns: 1fr 34rem; align-items: end; padding-top: 64px; column-gap: 40px; }
+  .hero .hint { grid-column: 1 / -1; }
+  .step { align-items: center; padding: 0 0 0 6vw; }
+  .card { margin: 0; max-width: 30rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .live i { animation: blink 1s steps(2) infinite; }
+}
+@keyframes blink { to { opacity: 0.2; } }
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main>
+
+<header class="hero">
+  <div>
+    <p class="fm">FM 00-1 · Field manual for the world you wake up in</p>
+    <h1>Face Forward</h1>
+    <p class="deck">Stop praying for the EMP.</p>
+    <p class="by">By Michael Wilhelm</p>
+  </div>
+
+  <div class="stream" role="img" aria-label="Parody of a prepper influencer livestream counting down to a grid collapse that keeps getting rescheduled">
+    <div class="screen">
+      <div class="topbar"><span class="live"><i></i>LIVE</span><span class="viewers"><b id="viewers">48,112</b> watching</span></div>
+      <p class="st-title">EMP tonight??</p>
+      <p class="st-sub">(not clickbait) · <span id="part">part 47</span></p>
+      <p class="count"><small>GRID DOWN IN</small><b id="clock">00:00:07</b></p>
+      <p class="stamp" id="stamp">RESCHEDULED</p>
+      <div class="chat" id="chat">
+        <p><b>bunkerdad_82</b>first</p>
+        <p><b>ricequeen</b>is the bucket food gluten free</p>
+        <p><b>gridwatcher</b>he said this last tuesday</p>
+      </div>
+    </div>
+    <div class="under">
+      <span>Sponsored by Bucket Throne Supply Co. · code <b>DOOM15</b> for 15% off the end</span>
+      <span>Days since last predicted collapse: <b>0</b></span>
+    </div>
+  </div>
+
+  <p class="hint">Scroll to close the app</p>
+</header>
+
+<section class="scene" data-scene="flash" id="stop-praying">
+  <div class="step"><div class="card">
+    <p class="fm">Section 1 of 7</p>
+    <h2>Stop Praying for the EMP</h2>
+    <p class="lede">Fear keeps preppers in a box. Then they stock the box and call it freedom.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>The EMP is the prepper's rapture. One flash and the world finally matches the pantry. Every bucket of rice becomes a throne.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>The rapture has sponsors now. A guy with a ring light counts down to it every night, discount code in the description. Fear is the product. The bucket is the upsell.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Look at what that prayer asks for. A world sent back to the dirt, where the hard part is over and the only skills that count are the ones you already have. That's a fantasy of relevance wearing camo.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Here's what the fantasy skips. Your power going down is a local event. Whoever's sniffing around your door kept theirs on. The drone over your tree line has a full battery, and your trail cam has been phoning home since the day you plugged it in.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>The ramshackle homestead needs cyberdefense. So does the Cold War bunker. Keep the dirt skills: grow the food, fix the pump, know your neighbors by name. Then add a firewall and you have a real plan.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Preppers and cyberpreppers are two cultures with two relationships to fear. One hides from the present inside a future disaster. The other stays in the present and deals with it.</p>
+  </div></div>
+</section>
+
+<aside class="feed" aria-label="Parody video recommendations">
+  <p class="feed-h">Meanwhile, on the feed</p>
+  <div class="thumbs">
+    <article class="thumb"><div class="pic a"><span class="yell">Bunker tour!!</span><span class="dur">47:12</span></div><p class="vt">(address in description)</p><p class="ch">Bunker Bro Outdoors · 1.2M views</p></article>
+    <article class="thumb"><div class="pic b"><span class="yell">I survived 72 hrs in my backyard</span><span class="dur">1:12:40</span></div><p class="vt">(emotional)</p><p class="ch">Homestead Hustle TV · 840K views</p></article>
+    <article class="thumb"><div class="pic c"><span class="yell">The EMP is this month</span><span class="dur">2:03:11</span></div><p class="vt">Part 47 of an ongoing series</p><p class="ch">Colonel Bucket · 2.1M views</p></article>
+  </div>
+</aside>
+
+<section class="scene" data-scene="meter" id="already-lost">
+  <div class="step" data-lit="0"><div class="card">
+    <p class="fm">Section 2 of 7</p>
+    <h2>You Already Lost. Start There.</h2>
+    <p class="lede">Cyberprepping is almost a funny word. Prepping assumes the bad thing is still on its way. On the cyber side it showed up decades ago, unpacked, and started charging rent.</p>
+  </div></div>
+  <div class="step" data-lit="0"><div class="card">
+    <p>Run the tape on the last hundred years and a pattern jumps out. The upgrade arrives with a meter attached.</p>
+  </div></div>
+  <div class="step short" data-lit="1"><div class="card">
+    <h3>Medicine</h3>
+    <p>In 1910 one report, bankrolled by Carnegie money, graded every medical school in the country. Within a generation about half were gone, and the herbal and homeopathic schools took the hardest hit.</p>
+  </div></div>
+  <div class="step short" data-lit="2"><div class="card">
+    <h3>Cooling</h3>
+    <p>Ammonia chilled the world cheap, and it was mean when it leaked. 1930 brought Freon: patented, branded, sold as the safe choice. Half a century later we found the hole in the sky.</p>
+  </div></div>
+  <div class="step short" data-lit="3"><div class="card">
+    <h3>Power</h3>
+    <p>Tesla pitched energy sent through the air. The money walked. The meter stayed.</p>
+  </div></div>
+  <div class="step short" data-lit="4"><div class="card">
+    <h3>Media</h3>
+    <p>Radio talked at you. TV sold to you. The phone listens back.</p>
+  </div></div>
+  <div class="step" data-lit="5"><div class="card">
+    <h3>The black books</h3>
+    <p>Some inventions go into a vault with a federal stamp on the door and come back out years later, if they come out at all. The Invention Secrecy Act has run that vault since 1951, and 6,471 secrecy orders were standing at the end of fiscal 2024 (<a href="https://sgp.fas.org/othergov/invention/stats.html" rel="noopener">Patent Office figures</a>). When Tesla died in 1943, the government had his papers in custody within days.</p>
+  </div></div>
+  <div class="step" data-lit="5"><div class="card">
+    <p>Here's the pattern I'll stump on all day. The public gets the technology after the infrastructure is laid and the competitors are cleared. By the time it reaches the shelf, the toll booth is already built.</p>
+  </div></div>
+  <div class="step" data-lit="5"><div class="card">
+    <p>Each trade bought something real. Each one also moved a piece of your life behind somebody's counter: a fee, a patent, a subscription, a file with your name on it.</p>
+  </div></div>
+  <div class="step" data-lit="5"><div class="card">
+    <p>So privacy as a factory setting is dead. Bury it. What's left is privacy as a craft, something you build on purpose, like a fence or a root cellar.</p>
+    <p>Starting from the bottom is honest ground. You already know the score, and that frees you up to play.</p>
+  </div></div>
+</section>
+
+<section class="scene" data-scene="meeting" id="negotiation">
+  <div class="step"><div class="card">
+    <p class="fm">Section 3 of 7</p>
+    <h2>The Negotiation</h2>
+    <p class="lede">The world turns regardless. It turned while you read that sentence.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Most lost time goes into a negotiation with yourself. Should I touch this thing. Is it cheating. Is it safe. What will it do to my soul. Round and round, year after year, and the meeting never adjourns.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Conscience belongs at the workbench. Bring it along and let it steer what you build and who it serves. Conscience performed from the sidelines is a hobby, and an expensive one, because the clock bills you either way.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Take the full inventory. What tools are on the table. What they can do today, in your hands. What's true about the world you wake up in. Then get to work.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>One line item on that inventory: the thing probing your accounts at 3 a.m. never sleeps and never gets bored. The only guard with that stamina is another one of it, working for you. AI defends against AI. Plan accordingly.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Your ceiling is your own imagination. That's a strange and generous deal. Take it.</p>
+  </div></div>
+</section>
+
+<aside class="feed" aria-label="Parody video recommendations">
+  <p class="feed-h">Recommended for you</p>
+  <div class="thumbs">
+    <article class="thumb"><div class="pic b"><span class="yell">10 things to panic-buy before Friday</span><span class="dur">18:04</span></div><p class="vt">Links below. All of them affiliate.</p><p class="ch">Colonel Bucket · 3.4M views</p></article>
+    <article class="thumb"><div class="pic c"><span class="yell">Unboxing 400 lbs of stroganoff</span><span class="dur">52:30</span></div><p class="vt">Shelf life: longer than this channel</p><p class="ch">Sgt. Stroganoff · 910K views</p></article>
+    <article class="thumb"><div class="pic a"><span class="yell">My $80 tactical spork</span><span class="dur">24:19</span></div><p class="vt">Honest review (sponsored)</p><p class="ch">Bunker Bro Outdoors · 1.7M views</p></article>
+  </div>
+</aside>
+
+<section class="scene" data-scene="holes" id="low-vibe-file">
+  <div class="step"><div class="card">
+    <p class="fm">Section 4 of 7 · Field guide</p>
+    <h2>The Low-Vibe File</h2>
+    <p class="lede">Every figure in this file is a black hole for your attention. Attention is the one currency you mint yourself, and each of these takes all of it and pays you back in heat.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Learn the faces. You'll spot most of them in the mirror at some point, and that's where the grace comes in.</p>
+    <p>The doomloops are the sneaky ones. The fear feels like vigilance and spends like time.</p>
+  </div></div>
+
+  <div class="step short" data-hole="0" data-name="THE DOOMLOOP RESIDENT"><div class="card">
+    <p class="grp">The doomloops</p>
+    <p class="chip">LIVE · hour 14 · something is definitely happening</p>
+    <h3>The Doomloop Resident</h3>
+    <p>Lives in the feed. Pulls to refresh like it's a slot machine that pays out in dread. Six hours in, he can name every catastrophe on Earth and zero things he did today.</p>
+    <p class="out"><b>Way out</b>Close the app. Pick one thing within arm's reach and finish it.</p>
+  </div></div>
+  <div class="step short" data-hole="1" data-name="THE REHEARSER"><div class="card">
+    <p class="chip">2:07 a.m. · can't sleep, running scenarios</p>
+    <h3>The Rehearser</h3>
+    <p>Stages the worst case every night at 2 a.m., full cast, full budget. Has survived a thousand collapses in his head and missed every Tuesday in between.</p>
+    <p class="out"><b>Way out</b>Write the fear down once. Under it, write the next physical step. Do that step.</p>
+  </div></div>
+  <div class="step short" data-hole="2" data-name="THE TAB PROPHET"><div class="card">
+    <p class="chip">47 tabs open · 0 projects open</p>
+    <h3>The Tab Prophet</h3>
+    <p>Forty open tabs of doom, zero open projects. Each tab is a warning he plans to deliver someday. The browser will crash before the sermon starts.</p>
+    <p class="out"><b>Way out</b>Keep one tab. Make it the thing you're building.</p>
+  </div></div>
+  <div class="step short" data-hole="3" data-name="THE COMMENT-SECTION GENERAL"><div class="card">
+    <p class="chip">Replying to everyone</p>
+    <h3>The Comment-Section General</h3>
+    <p>Wins wars in the replies every day and holds no territory. His enemies have never heard of him. His kitchen sink leaks.</p>
+    <p class="out"><b>Way out</b>Fix the sink. Then say your piece once, in your own space, under your own name.</p>
+  </div></div>
+  <div class="step short" data-hole="4" data-name="THE HORROR COLLECTOR"><div class="card">
+    <p class="chip">Thread · 1 of 94</p>
+    <h3>The Horror Collector</h3>
+    <p>Knows every sci-fi horror running in the real world right now and recites them at dinner. He's right about plenty of it, and that's the trap. A fact that only frightens is a fact half used.</p>
+    <p class="out"><b>Way out</b>Turn one horror into a story a twelve-year-old could follow. Now it's a tool.</p>
+  </div></div>
+
+  <div class="step short" data-hole="5" data-name="THE WATCH-LATER SCHOLAR"><div class="card">
+    <p class="grp">The stalls</p>
+    <p class="chip">Saved to Watch Later · 600 videos</p>
+    <h3>The Watch-Later Scholar</h3>
+    <p>Six hundred saved videos about the thing. Forty hours of watching strangers learn it. Has never opened the thing.</p>
+    <p class="out"><b>Way out</b>Go to the source: the book, the manual, the person who does it. Hands on by sundown.</p>
+  </div></div>
+  <div class="step short" data-hole="6" data-name="THE FOREVER PANEL"><div class="card">
+    <p class="chip">Panel recording · part 6 · no end scheduled</p>
+    <h3>The Forever Panel</h3>
+    <p>Year six of debating whether it's ethical to open the laptop. Minutes available on request. The people with no ethics at all opened theirs in year one.</p>
+    <p class="out"><b>Way out</b>Bring your conscience to the workbench and build the version you can stand behind.</p>
+  </div></div>
+  <div class="step short" data-hole="7" data-name="THE SETTLE-DOWN GUY"><div class="card">
+    <p class="chip">Remind me in 5 years</p>
+    <h3>The Settle-Down Guy</h3>
+    <p>"I'll learn it once things settle." Things settle never. He's on the platform with exact change, waiting for a train that only comes moving.</p>
+    <p class="out"><b>Way out</b>Board the moving train. Learn the version that exists today.</p>
+  </div></div>
+  <div class="step short" data-hole="8" data-name="THE GRUDGE ARCHAEOLOGIST"><div class="card">
+    <p class="chip">Est. 1913</p>
+    <h3>The Grudge Archaeologist</h3>
+    <p>Can recite every betrayal since 1913, with footnotes. Has built nothing since 2013. The dig site is real, and he has moved into the hole.</p>
+    <p class="out"><b>Way out</b>Study the map once. Fold it. Face forward.</p>
+  </div></div>
+
+  <div class="step short" data-hole="9" data-name="THE RAPTURE-READY" id="collapse-fantasies"><div class="card">
+    <p class="grp">The collapse fantasies</p>
+    <p class="chip">EMP update · rescheduled</p>
+    <h3>The Rapture-Ready</h3>
+    <p>Praying for the flash that turns his pantry into a kingdom. Every quiet year is a letdown. He has prepared for everything except the world continuing.</p>
+    <p class="out"><b>Way out</b>Keep the skills and drop the prayer. Add a firewall. Learn your neighbors' names.</p>
+  </div></div>
+  <div class="step short" data-hole="10" data-name="THE SMART BUNKER"><div class="card">
+    <p class="chip">Doorbell · motion detected at Front Hatch</p>
+    <h3>The Smart Bunker</h3>
+    <p>Two feet of concrete, and a cloud doorbell that reports to a server farm every time he steps outside. Hardened against the bomb, wide open to the app.</p>
+    <p class="out"><b>Way out</b>Ask every device in the house one question: who do you report to?</p>
+  </div></div>
+  <div class="step short" data-hole="11" data-name="THE OFF-GRID INFLUENCER"><div class="card">
+    <p class="chip">Location: Secret Homestead · posted 4 min ago</p>
+    <h3>The Off-Grid Influencer</h3>
+    <p>Lives off-grid. Posts daily. Geotag on.</p>
+    <p class="out"><b>Way out</b>Pick one.</p>
+  </div></div>
+
+  <div class="step"><div class="card">
+    <p>Add up the hours those twelve eat in a year.</p>
+    <p class="big">That's a trade learned. That's a book written. That's a business open.</p>
+  </div></div>
+</section>
+
+<aside class="feed" aria-label="Parody video recommendations">
+  <p class="feed-h">One more, then close the app</p>
+  <div class="thumbs">
+    <article class="thumb"><div class="pic a"><span class="yell">Going fully off-grid</span><span class="dur">33:08</span></div><p class="vt">Filmed in 4K. New video daily.</p><p class="ch">Homestead Hustle TV · 2.8M views</p></article>
+    <article class="thumb"><div class="pic c"><span class="yell">Secret location reveal</span><span class="dur">12:55</span></div><p class="vt">(geotagged)</p><p class="ch">Bunker Bro Outdoors · 4.1M views</p></article>
+    <article class="thumb"><div class="pic b"><span class="yell">Apology video</span><span class="dur">9:41</span></div><p class="vt">The EMP didn't happen. New date inside.</p><p class="ch">Colonel Bucket · 6.6M views</p></article>
+  </div>
+</aside>
+
+<section class="scene" data-scene="source" id="at-the-source">
+  <div class="step"><div class="card">
+    <p class="fm">Section 5 of 7</p>
+    <h2>At the Source</h2>
+    <p class="lede">Pull your attention back from the black holes and it has to land somewhere. Spend it on one question: what CAN I do?</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>The list runs longer than fear says. Near the top sits one word: learn.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>There has never been a better time to learn, and to learn properly. Off social media. The way we were taught before the internet. At the source.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Read the book, the whole one. Read the patent, the court filing, the study, the manual. Find the person who does the thing and watch their hands. Then put your own hands on it.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>A feed hands you somebody's reaction to a summary of a rumor. The source hands you the thing itself. Minds get built on the second one.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>The new tools belong inside that same discipline. Have the machine pull the original, walk it with you line by line, and then check its work. That's a library card with a tutor attached.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>It is a wild fucking time to be a human. The horrors are real and so is the reach. Tell it in stories people understand, and go learn something at the source before lunch.</p>
+  </div></div>
+</section>
+
+<section class="scene" data-scene="magic" id="more-magic">
+  <div class="step"><div class="card">
+    <p class="fm">Section 6 of 7</p>
+    <h2>Less Fear, More Magic</h2>
+    <p class="lede">The futurist mind runs on a different fuel. It sees how fast the world turns without it and gets curious.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Curiosity is the whole trick. Fear asks what could go wrong and sits down. Curiosity asks the same question and keeps walking.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>I have explosive ADHD brain matter. Ideas arrive forty at a time, and most of them used to die in the hallway. Now there's a tool that catches them, sorts them, and hands them back as something I can ship. Nothing with this kind of output existed for a mind like mine before.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>That's the magic. More time in flow. New avenues for hope and action in the world right in front of me.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Every one of us is a warehouse of knowledge and experience, with stories worth telling. Most of those stories go to the grave untold because the telling took too long. That excuse just expired.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>So build something beautiful. Build something useful. Better yet, make them the same thing.</p>
+  </div></div>
+</section>
+
+<section class="scene" data-scene="dawn" id="grace">
+  <div class="step"><div class="card">
+    <p class="fm">Section 7 of 7</p>
+    <h2>Grace, With the Lights On</h2>
+    <p class="lede">Getting your mind right starts with getting real about what's around you. How we got here is a map. Study it once, fold it up, and face forward.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p class="big">Face forward. Find grace. Know grace. Be grace.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Grace for the prepper, whose fear came from somewhere real. Grace for the skeptic still stuck in the negotiation. Grace for yourself, for every year you spent waiting on permission.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>And keep the lights on while you do it. Grace opens the door. Discernment checks who's walking through it.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Gullible comes in two flavors. One believes every promise in the brochure. The other believes every prophecy of doom. Both handed their thinking to somebody else.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p>Both systems have value, the dirt and the data. One of them is the world you wake up in every day.</p>
+  </div></div>
+  <div class="step"><div class="card">
+    <p class="big">Build in the one that's real.</p>
+    <p>Wake up, Neo.</p>
+  </div></div>
+</section>
+
+<footer class="end">
+  <div class="stream" role="img" aria-label="The parody livestream, now ended with nobody watching">
+    <div class="screen">
+      <div class="topbar"><span class="viewers"><b>0</b> watching</span><span class="viewers">Stream ended</span></div>
+      <p class="offline">The EMP has been rescheduled. Again.</p>
+      <p class="st-sub">You closed the app. Good.</p>
+    </div>
+    <div class="under"><span>Code <b>DOOM15</b> has expired. The morning has no promo code.</span></div>
+  </div>
+  <p class="fine">Secrecy-order count from Patent Office statistics hosted by the Federation of American Scientists, fiscal 2024. The channels, sponsors and videos on this page are invented.</p>
+</footer>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Parody livestream ---------- */
+  (function () {
+    var clock = document.getElementById('clock'), stamp = document.getElementById('stamp'),
+        viewers = document.getElementById('viewers'), chat = document.getElementById('chat'),
+        part = document.getElementById('part');
+    if (!clock || !chat) { return; }
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+    var secs = 7, partN = 47, v = 48112, li = 0;
+    var lines = [
+      ['tacticool_tim', 'use code DOOM15'],
+      ['ham_radio_hank', "can't wait for no internet. liking and subscribing"],
+      ['prepmom4', 'posting this from inside the bunker'],
+      ['ok_boomstick', "what's the wifi password down there"],
+      ['mod_bot', 'reminder: location sharing is ON'],
+      ['bunkerdad_82', 'first'],
+      ['ricequeen', 'is the bucket food gluten free'],
+      ['gridwatcher', 'he said this last tuesday']
+    ];
+    function fmt(s) { return '00:00:' + (s < 10 ? '0' + s : s); }
+    setInterval(function () {
+      if (secs > 0) {
+        secs--; clock.textContent = fmt(secs);
+        if (secs === 0) { stamp.classList.add('show'); }
+      } else {
+        stamp.classList.remove('show'); partN++; part.textContent = 'part ' + partN;
+        secs = 6 + Math.floor(Math.random() * 5); clock.textContent = fmt(secs);
+      }
+      v += Math.floor(Math.random() * 90) - 30; viewers.textContent = v.toLocaleString('en-US');
+    }, 1000);
+    setInterval(function () {
+      var L = lines[li++ % lines.length], p = document.createElement('p'), b = document.createElement('b');
+      b.textContent = L[0]; p.appendChild(b); p.appendChild(document.createTextNode(L[1]));
+      chat.appendChild(p);
+      while (chat.children.length > 3) { chat.removeChild(chat.firstChild); }
+    }, 2300);
+  })();
+
+  /* ---------- Sky and figures ---------- */
+  var cv = document.getElementById('sky');
+  if (!cv || !cv.getContext) { return; }
+  var ctx = cv.getContext('2d');
+  var W = 0, H = 0, wide = false, cx = 0, cy = 0, R = 0, SA = 1, SB = 1, HALO = false;
+  var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var C = { bone: '236,230,216', hivis: '255,106,26', lamp: '255,210,122', olive: '105,119,58', sil: '4,6,12' };
+  var FONT = '"Big Shoulders Display","Arial Narrow",sans-serif';
+  var DRAW = {};
+
+  function rgba(c, a) { return 'rgba(' + c + ',' + a + ')'; }
+  function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function ease(x) { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); }
+  function smooth(a, b, x) { return ease((x - a) / (b - a)); }
+  function fs(a, b) { return wide ? a : b; }
+  function rng(seed) {
+    return function () {
+      seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function al(x) { ctx.globalAlpha = clamp(SA * SB * x, 0, 1); }
+  function circle(x, y, r) { ctx.beginPath(); ctx.arc(x, y, Math.max(0.01, r), 0, 6.2832); }
+  function line(x1, y1, x2, y2) { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+  function text(s, x, y, size, align, color, weight) {
+    ctx.font = (weight || 700) + ' ' + size + 'px ' + FONT;
+    ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    if (HALO) { ctx.lineJoin = 'round'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(6,9,18,0.85)'; ctx.strokeText(s, x, y); }
+    ctx.fillStyle = color; ctx.fillText(s, x, y);
+  }
+  function fig(s) { al(0.62); text(s, cx, cy + R * (wide ? 1.24 : 1.16), fs(14, 11.5), 'center', rgba(C.bone, 1), 600); al(1); }
+  function ground(gy) {
+    ctx.fillStyle = rgba(C.sil, 1); ctx.fillRect(0, gy, W, H - gy);
+    var keep = ctx.globalAlpha, k;
+    ctx.strokeStyle = rgba(C.bone, 1); ctx.lineWidth = 1;
+    ctx.globalAlpha = keep * 0.22; line(0, gy, W, gy);
+    ctx.globalAlpha = keep * 0.09;
+    for (k = -7; k <= 7; k++) { line(cx + k * R * 0.12, gy, cx + k * W * 0.26, H); }
+    ctx.globalAlpha = keep;
+  }
+
+  function house(x, gy, s, lit, door) {
+    al(1); ctx.fillStyle = rgba(C.sil, 1); ctx.strokeStyle = rgba(C.bone, 0.3); ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - s * 0.5, gy); ctx.lineTo(x - s * 0.5, gy - s * 0.55); ctx.lineTo(x - s * 0.62, gy - s * 0.55);
+    ctx.lineTo(x, gy - s); ctx.lineTo(x + s * 0.62, gy - s * 0.55); ctx.lineTo(x + s * 0.5, gy - s * 0.55);
+    ctx.lineTo(x + s * 0.5, gy); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.07)';
+    ctx.fillRect(x - s * 0.34, gy - s * 0.42, s * 0.18, s * 0.16); ctx.fillRect(x + s * 0.16, gy - s * 0.42, s * 0.18, s * 0.16);
+    if (lit > 0.01) {
+      al(lit); ctx.fillStyle = rgba(C.lamp, 1);
+      ctx.fillRect(x - s * 0.34, gy - s * 0.42, s * 0.18, s * 0.16); ctx.fillRect(x + s * 0.16, gy - s * 0.42, s * 0.18, s * 0.16);
+    }
+    if (door > 0.01) {
+      al(door); ctx.fillStyle = rgba(C.lamp, 1); ctx.fillRect(x - s * 0.07, gy - s * 0.3, s * 0.14, s * 0.3);
+      al(door * 0.28); ctx.beginPath(); ctx.moveTo(x - s * 0.07, gy); ctx.lineTo(x + s * 0.07, gy);
+      ctx.lineTo(x + s * 0.32, gy + s * 0.38); ctx.lineTo(x - s * 0.32, gy + s * 0.38); ctx.closePath(); ctx.fill();
+    }
+    al(1);
+  }
+  function bucket(x, y, s) {
+    ctx.beginPath(); ctx.moveTo(x - s * 0.36, y); ctx.lineTo(x - s * 0.5, y - s * 0.9);
+    ctx.lineTo(x + s * 0.5, y - s * 0.9); ctx.lineTo(x + s * 0.36, y); ctx.closePath(); ctx.fill(); ctx.stroke();
+    line(x - s * 0.47, y - s * 0.7, x + s * 0.47, y - s * 0.7);
+  }
+  function buckets(x, gy, s) {
+    ctx.fillStyle = rgba(C.sil, 1); ctx.strokeStyle = rgba(C.bone, 0.75); ctx.lineWidth = 1.5;
+    bucket(x - s * 0.56, gy, s); bucket(x + s * 0.56, gy, s); bucket(x, gy - s * 0.9, s);
+    ctx.strokeStyle = rgba(C.lamp, 1); ctx.lineWidth = 2;
+    var y = gy - s * 1.92, w = s * 0.42;
+    ctx.beginPath(); ctx.moveTo(x - w, y); ctx.lineTo(x - w, y - s * 0.4); ctx.lineTo(x - w * 0.5, y - s * 0.18);
+    ctx.lineTo(x, y - s * 0.46); ctx.lineTo(x + w * 0.5, y - s * 0.18); ctx.lineTo(x + w, y - s * 0.4);
+    ctx.lineTo(x + w, y); ctx.closePath(); ctx.stroke();
+  }
+  function drone(x, y, s, blink) {
+    ctx.strokeStyle = rgba(C.bone, 0.95); ctx.lineWidth = 1.5;
+    line(x - s, y, x + s, y); line(x - s, y, x - s, y - s * 0.35); line(x + s, y, x + s, y - s * 0.35);
+    line(x - s * 1.45, y - s * 0.35, x - s * 0.55, y - s * 0.35); line(x + s * 0.55, y - s * 0.35, x + s * 1.45, y - s * 0.35);
+    ctx.fillStyle = rgba(C.bone, 0.95); ctx.fillRect(x - s * 0.3, y - s * 0.1, s * 0.6, s * 0.42);
+    if (blink) { ctx.fillStyle = '#ff3b2e'; circle(x, y + s * 0.55, Math.max(2, s * 0.18)); ctx.fill(); }
+  }
+
+  /* Sky */
+  var SKY = [
+    { g: 0, top: [5, 8, 18], bot: [20, 30, 60] },
+    { g: 0.5, top: [8, 12, 28], bot: [30, 36, 78] },
+    { g: 0.8, top: [22, 32, 74], bot: [120, 78, 104] },
+    { g: 1, top: [64, 104, 164], bot: [246, 184, 128] }
+  ];
+  var stars = [];
+  (function () { var r = rng(7); for (var i = 0; i < 150; i++) { stars.push([r(), r() * 0.85, 0.7 + r() * 1.3, r() * 6.28]); } })();
+  function mix3(a, b, t) { return 'rgb(' + Math.round(lerp(a[0], b[0], t)) + ',' + Math.round(lerp(a[1], b[1], t)) + ',' + Math.round(lerp(a[2], b[2], t)) + ')'; }
+  function drawSky(g, t) {
+    var i = 0; while (i < SKY.length - 2 && g > SKY[i + 1].g) { i++; }
+    var a = SKY[i], b = SKY[i + 1], k = clamp((g - a.g) / (b.g - a.g), 0, 1);
+    var gr = ctx.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, mix3(a.top, b.top, k)); gr.addColorStop(1, mix3(a.bot, b.bot, k));
+    ctx.globalAlpha = 1; ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    var sa = 1 - smooth(0.55, 0.92, g);
+    if (sa > 0.01) {
+      ctx.fillStyle = '#ffffff';
+      for (i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        ctx.globalAlpha = sa * (0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * 0.8 + s[3])));
+        ctx.fillRect(s[0] * W, s[1] * H, s[2], s[2]);
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  /* Fig. 1: the flash */
+  DRAW.flash = function (st, t) {
+    var p = st.p, gy = cy + R * 0.62, hx = cx - R * 0.38, hs = R * 0.56, f = fs(13, 11), k;
+    var rp = clamp((p - 0.2) / 0.26, 0, 1);
+    if (rp > 0 && rp < 1) {
+      al((1 - rp) * 0.9); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5 + 7 * (1 - rp);
+      circle(cx + R * 0.15, cy - R * 0.85, rp * R * 2.6); ctx.stroke();
+    }
+    al(1); ground(gy);
+    var lit = 1 - smooth(0.25, 0.3, p), px = cx - R * 1.0;
+    ctx.strokeStyle = rgba(C.bone, 0.38); ctx.lineWidth = 2;
+    line(px, gy, px, gy - R * 0.78); line(px - R * 0.1, gy - R * 0.7, px + R * 0.1, gy - R * 0.7);
+    ctx.lineWidth = 1; al(0.25 + 0.5 * lit);
+    ctx.beginPath(); ctx.moveTo(px, gy - R * 0.7); ctx.quadraticCurveTo((px + hx) / 2, gy - R * 0.48, hx - hs * 0.4, gy - hs * 0.68); ctx.stroke();
+    al(1);
+    var tx = cx + R * 0.86;
+    ctx.strokeStyle = rgba(C.bone, 0.38); ctx.lineWidth = 2; line(tx, gy, tx, gy - R * 0.3);
+    ctx.lineWidth = 1; ctx.fillStyle = rgba(C.sil, 1);
+    for (k = 0; k < 3; k++) {
+      var ty = gy - R * (0.25 + k * 0.2), tw = R * (0.26 - k * 0.06);
+      ctx.beginPath(); ctx.moveTo(tx - tw, ty); ctx.lineTo(tx, ty - R * 0.3); ctx.lineTo(tx + tw, ty); ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
+    ctx.fillStyle = rgba(C.bone, 0.85); ctx.fillRect(tx - 4, gy - R * 0.2, 8, 10);
+    house(hx, gy, hs, lit, 0);
+    var bt = smooth(0.13, 0.2, p);
+    if (bt > 0.01) { al(bt); buckets(cx + R * 0.3, gy, R * 0.2); al(1); }
+    var so = smooth(0.5, 0.6, p);
+    if (so > 0.01) {
+      al(so);
+      var dx = cx + Math.sin(t * 0.5) * R * 0.6, dy = cy - R * 0.5 + Math.cos(t * 0.9) * R * 0.05;
+      drone(dx, dy, R * 0.09, reduce || Math.sin(t * 7) > 0);
+      text('DRONE · FULL BATTERY', dx, dy - R * 0.16, f, 'center', rgba(C.bone, 1));
+      if (reduce || Math.sin(t * 5) > 0) { ctx.fillStyle = '#5dff8a'; circle(tx, gy - R * 0.2 + 4, 2.4); ctx.fill(); }
+      text('TRAIL CAM · UPLOADING', tx + 6, gy - R * 0.2 - 14, f, 'right', rgba(C.bone, 1));
+      ctx.strokeStyle = '#6ab8ff'; ctx.lineWidth = 1.5;
+      circle(hx, gy - hs * 0.2, 3 + (reduce ? 3 : ((t * 1.2) % 1) * 7)); ctx.stroke();
+      text('DOORBELL · REPORTING', hx, gy - hs * 1.14, f, 'center', rgba(C.bone, 1));
+      al(1);
+    }
+    var fw = smooth(0.74, 0.84, p);
+    if (fw > 0.01) {
+      al(fw); ctx.strokeStyle = rgba(C.hivis, 1); ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+      circle(hx, gy - hs * 0.42, hs * 0.92); ctx.stroke(); ctx.setLineDash([]);
+      text('FIREWALL', hx, gy - hs * 1.5, f, 'center', rgba(C.hivis, 1), 800);
+      al(1);
+    }
+    var fo = Math.max(0, 1 - Math.abs(p - 0.25) / 0.045);
+    if (fo > 0) { ctx.globalAlpha = clamp(SA * fo * 0.8, 0, 1); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H); al(1); }
+    fig('FIG. 1 · THE FLASH, AND WHAT STAYS ON');
+  };
+
+  /* Fig. 2: the meter */
+  DRAW.meter = function (st, t) {
+    var p = st.p, lit = st.step ? +(st.step.getAttribute('data-lit') || 0) : 0;
+    var r = R * 0.74, e = ease(clamp(p / 0.58, 0, 1)), a0 = Math.PI * 0.8, a1 = Math.PI * 2.2, k, ang;
+    al(1); ctx.fillStyle = 'rgba(6,9,18,0.55)'; circle(cx, cy, r); ctx.fill();
+    ctx.strokeStyle = rgba(C.bone, 0.9); ctx.lineWidth = 2; circle(cx, cy, r); ctx.stroke();
+    ctx.lineWidth = 1; ctx.strokeStyle = rgba(C.bone, 0.35); circle(cx, cy, r * 0.96); ctx.stroke();
+    for (k = 0; k <= 40; k++) {
+      ang = lerp(a0, a1, k / 40);
+      var major = k % 5 === 0, inner = major ? 0.78 : 0.84;
+      ctx.strokeStyle = rgba(C.bone, major ? 0.9 : 0.45); ctx.lineWidth = major ? 2 : 1;
+      line(cx + Math.cos(ang) * r * inner, cy + Math.sin(ang) * r * inner, cx + Math.cos(ang) * r * 0.9, cy + Math.sin(ang) * r * 0.9);
+    }
+    ang = lerp(a0, a1, e); ctx.strokeStyle = rgba(C.hivis, 1); ctx.lineWidth = 3;
+    line(cx, cy, cx + Math.cos(ang) * r * 0.72, cy + Math.sin(ang) * r * 0.72);
+    ctx.fillStyle = rgba(C.hivis, 1); circle(cx, cy, r * 0.05); ctx.fill();
+    var val = String(Math.round(e * 6471)); while (val.length < 5) { val = '0' + val; }
+    var bw = r * 0.19, bh = r * 0.27, oy = cy + r * 0.2, ox = cx - bw * 2.5;
+    for (k = 0; k < 5; k++) {
+      ctx.fillStyle = '#05070d'; ctx.fillRect(ox + k * bw + 1, oy, bw - 2, bh);
+      ctx.strokeStyle = rgba(C.bone, 0.5); ctx.lineWidth = 1; ctx.strokeRect(ox + k * bw + 1, oy, bw - 2, bh);
+      text(val.charAt(k), ox + k * bw + bw / 2, oy + bh / 2 + 1, bh * 0.74, 'center', rgba(C.lamp, 1), 800);
+    }
+    text(lit >= 5 ? 'SECRECY ORDERS IN FORCE' : 'UNITS BILLED TO YOU', cx, oy + bh + r * 0.11, fs(13, 10.5), 'center', rgba(C.bone, 0.88));
+    var sy = cy + r * 0.76, sw = r * 0.32;
+    ctx.strokeStyle = rgba(C.bone, 0.6); ctx.lineWidth = 3; line(cx - sw, sy, cx + sw, sy);
+    var mk = ((t * (0.2 + e * 1.8)) % 1) * sw * 2;
+    ctx.fillStyle = rgba(C.hivis, 1); ctx.fillRect(cx - sw + mk - 3, sy - 3, 6, 6);
+    var tags = ['MEDICINE 1910', 'COOLING 1930', 'POWER', 'MEDIA', 'BLACK BOOKS'], degs = [-162, -126, -90, -54, -18];
+    for (k = 0; k < 5; k++) {
+      ang = degs[k] * Math.PI / 180;
+      var on = k < lit;
+      ctx.strokeStyle = on ? rgba(C.lamp, 1) : rgba(C.bone, 0.3); ctx.lineWidth = on ? 2 : 1;
+      line(cx + Math.cos(ang) * r * 1.02, cy + Math.sin(ang) * r * 1.02, cx + Math.cos(ang) * r * 1.09, cy + Math.sin(ang) * r * 1.09);
+      text(tags[k], cx + Math.cos(ang) * r * 1.22, cy + Math.sin(ang) * r * 1.22, fs(14, 11.5), 'center', on ? rgba(C.lamp, 1) : rgba(C.bone, 0.38), on ? 800 : 600);
+    }
+    fig('FIG. 2 · THE UPGRADE ARRIVES WITH A METER ATTACHED');
+  };
+
+  /* Fig. 3: the meeting, then the guard */
+  DRAW.meeting = function (st, t) {
+    var p = st.p, m = smooth(0.62, 0.72, p), k, f = fs(13, 11);
+    if (m < 0.99) {
+      var r = R * 0.56, y0 = cy - R * 0.22;
+      SB = 1 - m; al(1);
+      ctx.fillStyle = 'rgba(6,9,18,0.5)'; circle(cx, y0, r); ctx.fill();
+      ctx.strokeStyle = rgba(C.bone, 0.9); ctx.lineWidth = 2; circle(cx, y0, r); ctx.stroke();
+      for (k = 0; k < 12; k++) {
+        var a = k / 12 * 6.2832;
+        line(cx + Math.cos(a) * r * 0.85, y0 + Math.sin(a) * r * 0.85, cx + Math.cos(a) * r * 0.95, y0 + Math.sin(a) * r * 0.95);
+      }
+      var ma = t * 2.2 + p * 400, ha = ma / 12;
+      ctx.lineWidth = 3.5; line(cx, y0, cx + Math.cos(ha - 1.5708) * r * 0.5, y0 + Math.sin(ha - 1.5708) * r * 0.5);
+      ctx.lineWidth = 2; line(cx, y0, cx + Math.cos(ma - 1.5708) * r * 0.78, y0 + Math.sin(ma - 1.5708) * r * 0.78);
+      ctx.fillStyle = rgba(C.hivis, 1); circle(cx, y0, 4); ctx.fill();
+      var yr = 2019 + Math.min(7, Math.floor(p / 0.62 * 7.99));
+      text('YEAR ' + yr + ' · STILL IN SESSION', cx, y0 + r + fs(28, 22), fs(19, 15), 'center', rgba(C.lamp, 1), 800);
+      text('AGENDA: ITEM 1 OF 1 · SHOULD I TOUCH THIS THING?', cx, y0 + r + fs(52, 42), f, 'center', rgba(C.bone, 0.9), 600);
+      if (reduce || Math.sin(t * 3) > -0.3) { text('MOTION TO ADJOURN: TABLED', cx, y0 + r + fs(72, 60), f, 'center', rgba(C.hivis, 1), 800); }
+      SB = 1;
+    }
+    if (m > 0.01) {
+      SB = m; al(1);
+      var pr = R * 0.6;
+      ctx.strokeStyle = rgba(C.bone, 0.55); ctx.lineWidth = 1.5; ctx.setLineDash([4, 6]); circle(cx, cy, pr); ctx.stroke(); ctx.setLineDash([]);
+      house(cx, cy + R * 0.17, R * 0.34, 1, 0);
+      for (k = 0; k < 9; k++) {
+        var an = k * 2.39996 + 0.4, ph = (t * 0.16 + k * 0.111) % 1;
+        var rad = lerp(R * 1.3, pr + 5, Math.min(1, ph / 0.9)), qx = cx + Math.cos(an) * rad, qy = cy + Math.sin(an) * rad;
+        if (ph < 0.9) {
+          al(0.95); ctx.fillStyle = rgba(C.hivis, 1); circle(qx, qy, 3); ctx.fill();
+          al(0.35); ctx.strokeStyle = rgba(C.hivis, 1); ctx.lineWidth = 1.5;
+          line(qx, qy, cx + Math.cos(an) * (rad + 16), cy + Math.sin(an) * (rad + 16));
+        } else {
+          var bb = (ph - 0.9) / 0.1;
+          al(1 - bb); ctx.strokeStyle = rgba(C.lamp, 1); ctx.lineWidth = 2; circle(qx, qy, 4 + bb * 13); ctx.stroke();
+        }
+      }
+      al(1);
+      var ga = t * 1.3;
+      ctx.strokeStyle = rgba(C.lamp, 0.9); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx, cy, pr, ga - 0.8, ga); ctx.stroke();
+      ctx.fillStyle = rgba(C.lamp, 1); circle(cx + Math.cos(ga) * pr, cy + Math.sin(ga) * pr, 5); ctx.fill();
+      text('3:00 A.M.', cx, cy - pr - fs(30, 22), fs(18, 14), 'center', rgba(C.bone, 0.95), 800);
+      text('PROBES TONIGHT: ' + (1200 + Math.floor(t * 1.4) % 800), cx, cy + pr + fs(30, 22), f, 'center', rgba(C.hivis, 1), 800);
+      SB = 1;
+    }
+    al(1);
+    fig(m < 0.5 ? 'FIG. 3A · THE MEETING THAT NEVER ADJOURNS' : 'FIG. 3B · THE 3 A.M. VISITOR, AND THE GUARD');
+  };
+
+  /* Fig. 4: twelve black holes */
+  var NP = 240, HX = [], HY = [], HV = [], HB = { x0: 0, x1: 1, y0: 0, y1: 1 }, HR = 10, eaten = 0;
+  var PX = new Float32Array(NP), PY = new Float32Array(NP), PVX = new Float32Array(NP), PVY = new Float32Array(NP);
+  (function () { for (var i = 0; i < 12; i++) { HV.push(1); HX.push(0); HY.push(0); } })();
+  function layoutHoles() {
+    var cols = wide ? 3 : 6, rows = wide ? 4 : 2, x0, x1, y0, y1, i;
+    if (wide) { x0 = cx - R * 1.05; x1 = cx + R * 1.05; y0 = cy - R * 1.2; y1 = cy + R * 1.2; }
+    else { x0 = W * 0.05; x1 = W * 0.95; y0 = H * 0.08; y1 = H * 0.27; }
+    HB = { x0: x0, x1: x1, y0: y0, y1: y1 };
+    var cw = (x1 - x0) / cols, ch = (y1 - y0) / rows;
+    HR = Math.min(cw, ch) * (wide ? 0.2 : 0.25);
+    for (i = 0; i < 12; i++) { HX[i] = x0 + cw * ((i % cols) + 0.5); HY[i] = y0 + ch * (Math.floor(i / cols) + 0.5); }
+    var r = rng(99);
+    for (i = 0; i < NP; i++) { PX[i] = lerp(x0, x1, r()); PY[i] = lerp(y0, y1, r()); PVX[i] = (r() - 0.5) * 24; PVY[i] = (r() - 0.5) * 24; }
+  }
+  DRAW.holes = function (st, t, dt) {
+    var act = -1, name = '', i, dx, dy, d, x0 = HB.x0, x1 = HB.x1, y0 = HB.y0, y1 = HB.y1;
+    if (st.step && st.step.hasAttribute('data-hole')) { act = +st.step.getAttribute('data-hole'); name = st.step.getAttribute('data-name') || ''; }
+    if (!reduce) {
+      for (i = 0; i < NP; i++) {
+        if (act >= 0) {
+          dx = HX[act] - PX[i]; dy = HY[act] - PY[i]; d = Math.sqrt(dx * dx + dy * dy) + 0.001;
+          var F = 5200 / (d + 40), S = 3400 / (d + 40);
+          PVX[i] += (dx / d * F - dy / d * S) * dt; PVY[i] += (dy / d * F + dx / d * S) * dt;
+          if (d < HR * HV[act] * 0.8) {
+            eaten++;
+            PX[i] = lerp(x0, x1, Math.random()); PY[i] = Math.random() < 0.5 ? y0 - 12 : y1 + 12;
+            PVX[i] = (Math.random() - 0.5) * 30; PVY[i] = (Math.random() - 0.5) * 30;
+            continue;
+          }
+        } else {
+          PVX[i] += Math.sin(t * 0.7 + i) * 14 * dt; PVY[i] += Math.cos(t * 0.9 + i * 1.7) * 14 * dt;
+        }
+        PVX[i] *= 0.985; PVY[i] *= 0.985;
+        PX[i] += PVX[i] * dt; PY[i] += PVY[i] * dt;
+        if (PX[i] < x0 - 24) { PX[i] = x1 + 12; } else if (PX[i] > x1 + 24) { PX[i] = x0 - 12; }
+        if (PY[i] < y0 - 24) { PY[i] = y1 + 12; } else if (PY[i] > y1 + 24) { PY[i] = y0 - 12; }
+      }
+    }
+    al(0.8); ctx.fillStyle = rgba(C.bone, 1);
+    for (i = 0; i < NP; i++) { ctx.fillRect(PX[i] - 1, PY[i] - 1, 2, 2); }
+    for (i = 0; i < 12; i++) {
+      var tgt = i === act ? 1.6 : 1;
+      HV[i] = reduce ? tgt : HV[i] + (tgt - HV[i]) * Math.min(1, dt * 8);
+      var r = HR * HV[i], x = HX[i], y = HY[i];
+      if (i === act) {
+        al(1);
+        var gr = ctx.createRadialGradient(x, y, r * 0.8, x, y, r * 2.4);
+        gr.addColorStop(0, rgba(C.hivis, 0.45)); gr.addColorStop(1, rgba(C.hivis, 0));
+        ctx.fillStyle = gr; circle(x, y, r * 2.4); ctx.fill();
+        ctx.fillStyle = '#000000'; circle(x, y, r); ctx.fill();
+        ctx.lineWidth = 2.5;
+        for (var j = 0; j < 3; j++) {
+          var sp = t * (2.2 - j * 0.5) + j * 2.09;
+          ctx.strokeStyle = j === 1 ? rgba(C.lamp, 1) : rgba(C.hivis, 1);
+          ctx.beginPath(); ctx.arc(x, y, r * (1.12 + j * 0.14), sp, sp + 1.5); ctx.stroke();
+        }
+      } else {
+        al(0.92); ctx.fillStyle = '#000000'; circle(x, y, r); ctx.fill();
+        ctx.strokeStyle = rgba(C.bone, 0.32); ctx.lineWidth = 1; circle(x, y, r * 1.08); ctx.stroke();
+      }
+      al(i === act ? 1 : 0.5);
+      text((i < 9 ? '0' : '') + (i + 1), x, y + 1, Math.max(9, HR * 0.72), 'center', rgba(C.bone, 1));
+    }
+    al(1);
+    if (!reduce) { text('HOURS EATEN: ' + eaten, x0, y0 - 16, fs(15, 12), 'left', rgba(C.hivis, 1), 800); }
+    if (name) { text(name, (x0 + x1) / 2, y1 + 14, fs(18, 14), 'center', rgba(C.lamp, 1), 800); }
+    else { al(0.62); text('FIG. 4 · TWELVE BLACK HOLES FOR YOUR ATTENTION', (x0 + x1) / 2, y1 + 14, fs(14, 11.5), 'center', rgba(C.bone, 1), 600); al(1); }
+  };
+
+  /* Fig. 5: the shelf */
+  var BOOKS = [], SHELF = { x0: 0, w: 1 };
+  function buildBooks() {
+    var r = rng(21), sw = wide ? R * 2.0 : W * 0.84, x0 = cx - sw / 2, ti = 0;
+    var titles = ['THE WHOLE BOOK', 'THE PATENT', 'THE FILING', 'THE STUDY', 'THE MANUAL'];
+    BOOKS = []; SHELF = { x0: x0, w: sw };
+    for (var s = 0; s < 3; s++) {
+      var x = x0 + 4, n = 0;
+      for (;;) {
+        var titled = s === 0 && ti < titles.length && n % 2 === 1;
+        var bw = titled ? sw * 0.085 : sw * (0.03 + r() * 0.035);
+        if (x + bw > x0 + sw - 4) { break; }
+        var bh = R * (0.34 + r() * 0.16), c = Math.floor(r() * 4);
+        BOOKS.push({ s: s, x: x, w: bw, h: titled ? R * 0.5 : bh, c: titled ? 1 : (c === 1 ? 0 : c), t: titled ? titles[ti++] : '' });
+        x += bw + 2; n++;
+      }
+    }
+  }
+  DRAW.source = function (st, t) {
+    var p = st.p, i, b, n = Math.floor(ease(p * 1.25) * BOOKS.length), x0 = SHELF.x0, sw = SHELF.w;
+    var pal = [rgba(C.olive, 0.96), rgba(C.bone, 0.9), rgba(C.hivis, 0.9), 'rgba(74,92,128,0.96)'];
+    var lx = x0 + sw * 0.86, ly = cy - R * 1.26;
+    al(0.14 + 0.12 * ease(p));
+    var gr = ctx.createLinearGradient(0, ly, 0, cy + R);
+    gr.addColorStop(0, rgba(C.lamp, 1)); gr.addColorStop(1, rgba(C.lamp, 0));
+    ctx.fillStyle = gr; ctx.beginPath(); ctx.moveTo(lx - R * 0.08, ly); ctx.lineTo(lx + R * 0.08, ly);
+    ctx.lineTo(lx + R * 0.5, cy + R); ctx.lineTo(lx - R * 1.3, cy + R); ctx.closePath(); ctx.fill();
+    al(1); ctx.fillStyle = rgba(C.lamp, 1);
+    ctx.beginPath(); ctx.moveTo(lx - R * 0.05, ly - R * 0.1); ctx.lineTo(lx + R * 0.05, ly - R * 0.1);
+    ctx.lineTo(lx + R * 0.12, ly); ctx.lineTo(lx - R * 0.12, ly); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = rgba(C.bone, 0.75); ctx.lineWidth = 2;
+    for (var s = 0; s < 3; s++) { var ys = cy - R * 0.25 + s * R * 0.6; line(x0, ys + 1, x0 + sw, ys + 1); }
+    for (i = 0; i < n; i++) {
+      b = BOOKS[i];
+      var by = cy - R * 0.25 + b.s * R * 0.6;
+      ctx.fillStyle = pal[b.c]; ctx.fillRect(b.x, by - b.h, b.w, b.h);
+      if (b.t) {
+        ctx.save(); ctx.translate(b.x + b.w / 2, by - b.h / 2); ctx.rotate(-Math.PI / 2);
+        text(b.t, 0, 1, Math.min(13, b.w * 0.56), 'center', '#10131c', 800); ctx.restore();
+      }
+    }
+    var lc = smooth(0.72, 0.8, p);
+    if (lc > 0.01) {
+      al(lc);
+      var cw = Math.min(sw * 0.56, 230), ch = Math.max(R * 0.36, 58);
+      ctx.save(); ctx.translate(x0 + cw / 2, cy - R * 1.02); ctx.rotate(-0.05);
+      ctx.fillStyle = rgba(C.bone, 0.97); ctx.fillRect(-cw / 2, -ch / 2, cw, ch);
+      text('LIBRARY CARD', -cw / 2 + 10, -ch * 0.27, fs(16, 13), 'left', '#10131c', 800);
+      text('ISSUED TO: YOU', -cw / 2 + 10, 0, fs(13, 11), 'left', '#10131c', 700);
+      text('TUTOR: ATTACHED', -cw / 2 + 10, ch * 0.27, fs(13, 11), 'left', 'rgb(186,66,8)', 800);
+      ctx.restore(); al(1);
+    }
+    fig('FIG. 5 · AT THE SOURCE');
+  };
+
+  /* Fig. 6: forty at a time, sorted */
+  var NM = 900, MA = new Float32Array(NM), MR = new Float32Array(NM), MW = new Float32Array(NM), TARGETS = [];
+  (function () {
+    var r = rng(5);
+    for (var i = 0; i < NM; i++) { MA[i] = r() * 6.2832; MR[i] = 0.12 + r() * 1.05; MW[i] = (r() < 0.5 ? -1 : 1) * (0.15 + r() * 0.9); }
+  })();
+  function buildTargets() {
+    var oc = document.createElement('canvas'), ow = 360, oh = 110, x, y, pts = [];
+    oc.width = ow; oc.height = oh;
+    var o = oc.getContext('2d');
+    o.fillStyle = '#000'; o.fillRect(0, 0, ow, oh);
+    o.fillStyle = '#fff'; o.font = '900 100px "Big Shoulders Display","Arial Black",Impact,sans-serif';
+    o.textAlign = 'center'; o.textBaseline = 'middle'; o.fillText('BUILD', ow / 2, oh / 2 + 6);
+    var data = o.getImageData(0, 0, ow, oh).data;
+    for (y = 0; y < oh; y += 3) { for (x = 0; x < ow; x += 3) { if (data[(y * ow + x) * 4] > 128) { pts.push([x / ow - 0.5, y / oh - 0.5]); } } }
+    TARGETS = pts;
+  }
+  DRAW.magic = function (st, t) {
+    var p = st.p, m = ease(clamp((p - 0.36) / 0.4, 0, 1)), tw = wide ? R * 2.1 : W * 0.86, th = tw * (110 / 360), i, n = TARGETS.length;
+    var step = n ? Math.max(1, Math.floor(n / NM)) : 1;
+    al(0.94); ctx.fillStyle = 'rgb(255,' + Math.round(lerp(106, 210, m)) + ',' + Math.round(lerp(26, 122, m)) + ')';
+    var sz = wide ? 2.6 : 2.1;
+    for (i = 0; i < NM; i++) {
+      var ang = MA[i] + t * MW[i], rad = MR[i] * R * (0.8 + 0.3 * Math.sin(t * 0.9 + i));
+      var x = cx + Math.cos(ang) * rad * (wide ? 1.15 : 1), y = cy + Math.sin(ang) * rad * 0.85;
+      if (m > 0 && n) { var tg = TARGETS[(i * step) % n]; x = lerp(x, cx + tg[0] * tw, m); y = lerp(y, cy + tg[1] * th, m); }
+      ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
+    }
+    if (m < 0.5) { al(1 - m * 2); text('IDEAS ARRIVING: FORTY AT A TIME', cx, cy - R * 1.12, fs(14, 11.5), 'center', rgba(C.bone, 1), 600); }
+    if (m > 0.85) { al((m - 0.85) / 0.15); text('BEAUTIFUL AND USEFUL. SAME THING.', cx, cy + th * 0.5 + fs(28, 20), fs(17, 13), 'center', rgba(C.lamp, 1), 800); }
+    al(1); fig('FIG. 6 · THE HALLWAY, SORTED');
+  };
+
+  /* Fig. 7: morning */
+  DRAW.dawn = function (st, t) {
+    var p = st.p, gy = cy + R * 0.62, hx = cx - R * 0.38, hs = R * 0.56, f = fs(13, 11);
+    var sx = cx + R * 0.3, sy = lerp(gy + R * 0.3, cy - R * 0.35, ease(p)), sr = R * 0.34;
+    al(1);
+    var gr = ctx.createRadialGradient(sx, sy, sr * 0.3, sx, sy, sr * 3.4);
+    gr.addColorStop(0, rgba(C.lamp, 0.6)); gr.addColorStop(1, rgba(C.lamp, 0));
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, gy);
+    ctx.fillStyle = 'rgb(255,238,196)'; circle(sx, sy, sr); ctx.fill();
+    ground(gy);
+    var n1x = cx + R * 0.66, n2x = cx - R * 1.02, ns = R * 0.36;
+    var l0 = smooth(0.08, 0.18, p), l1 = smooth(0.24, 0.34, p), l2 = smooth(0.34, 0.44, p), lk = smooth(0.38, 0.52, p), door = smooth(0.44, 0.56, p), dd = smooth(0.72, 0.8, p);
+    house(n2x, gy, ns, l2, 0); house(n1x, gy, ns, l1, 0); house(hx, gy, hs, l0, door);
+    HALO = true;
+    ctx.strokeStyle = rgba(C.hivis, 1); ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+    circle(hx, gy - hs * 0.42, hs * 0.92); ctx.stroke(); ctx.setLineDash([]);
+    text('FIREWALL', hx, gy - hs * 1.5, f, 'center', rgba(C.hivis, 1), 800);
+    if (lk > 0.01) {
+      al(lk * 0.9); ctx.strokeStyle = rgba(C.lamp, 1); ctx.lineWidth = 1.5; ctx.setLineDash([2, 6]);
+      ctx.beginPath(); ctx.moveTo(hx, gy - hs); ctx.quadraticCurveTo((hx + n1x) / 2, gy - hs * 1.75, n1x, gy - ns); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(hx, gy - hs); ctx.quadraticCurveTo((hx + n2x) / 2, gy - hs * 1.5, n2x, gy - ns); ctx.stroke();
+      ctx.setLineDash([]);
+      al(lk); text('NEIGHBORS, BY NAME', (hx + n1x) / 2 + R * 0.1, gy - hs * 1.92, f, 'center', rgba(C.bone, 1), 700);
+    }
+    if (dd > 0.01) {
+      al(dd); text('THE DATA', cx, cy - R * 0.98, fs(15, 12), 'center', rgba(C.bone, 1), 800);
+      text('THE DIRT', cx, gy + fs(22, 18), fs(15, 12), 'center', rgba(C.bone, 1), 800);
+    }
+    al(1); fig('FIG. 7 · MORNING, LIGHTS ON');
+    HALO = false;
+  };
+
+  /* Scroll state */
+  var states = [];
+  (function () {
+    var els = document.querySelectorAll('[data-scene]');
+    for (var i = 0; i < els.length; i++) {
+      var steps = Array.prototype.slice.call(els[i].querySelectorAll('.step')), cards = [];
+      for (var j = 0; j < steps.length; j++) { cards.push(steps[j].querySelector('.card')); }
+      states.push({ el: els[i], name: els[i].getAttribute('data-scene'), steps: steps, cards: cards, idx: -1, step: null, p: 0, a: 0 });
+    }
+  })();
+  function pickStep(st) {
+    var target = H * 0.5, best = -1, bd = 1e9;
+    for (var j = 0; j < st.cards.length; j++) {
+      var r = st.cards[j].getBoundingClientRect();
+      if (r.bottom < 0 || r.top > H) { continue; }
+      var d = Math.abs((r.top + r.bottom) / 2 - target);
+      if (d < bd) { bd = d; best = j; }
+    }
+    if (best !== st.idx) {
+      if (st.idx >= 0) { st.cards[st.idx].classList.remove('on'); }
+      if (best >= 0) { st.cards[best].classList.add('on'); }
+      st.idx = best; st.step = best >= 0 ? st.steps[best] : null;
+    }
+  }
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    wide = W >= 900;
+    if (wide) { cx = W * 0.72; cy = H * 0.5; R = Math.min(W * 0.23, H * 0.36); }
+    else { cx = W * 0.5; cy = H * 0.26; R = Math.min(W * 0.4, H * 0.2); }
+    layoutHoles(); buildBooks(); buildTargets();
+  }
+
+  var last = 0, pending = false, warned = {};
+  function frame(now) {
+    pending = false;
+    if (!reduce) { requestAnimationFrame(frame); }
+    var t = reduce ? 12.3 : now / 1000, dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+    last = now;
+    var doc = document.documentElement;
+    var g = clamp((window.pageYOffset || doc.scrollTop || 0) / Math.max(1, doc.scrollHeight - H), 0, 1);
+    SA = 1; SB = 1; HALO = false; ctx.setLineDash([]);
+    drawSky(g, t);
+    var mid = H * 0.5;
+    for (var i = 0; i < states.length; i++) {
+      var st = states[i], r = st.el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= H) { continue; }
+      var a = ease((H * 0.5 - r.top) / (H * 0.3)) * ease((r.bottom - H * 0.45) / (H * 0.35));
+      if (a < 0.01) { continue; }
+      st.p = clamp((mid - r.top) / r.height, 0, 1); st.a = a;
+      pickStep(st);
+      ctx.save(); SA = a; SB = 1; al(1);
+      try { DRAW[st.name](st, t, dt); }
+      catch (err) { if (!warned[st.name]) { warned[st.name] = true; if (window.console) { console.error('figure ' + st.name, err); } } }
+      ctx.restore(); ctx.setLineDash([]); HALO = false;
+    }
+    SA = 1; SB = 1; ctx.globalAlpha = 1;
+  }
+  function kick() { if (reduce && !pending) { pending = true; requestAnimationFrame(frame); } }
+
+  resize();
+  /* One pass over every figure at load, so a fault in any of them is reported instead of hiding until it scrolls in. */
+  (function () {
+    var ps = [0.1, 0.5, 0.9];
+    for (var i = 0; i < states.length; i++) {
+      var st = states[i];
+      for (var k = 0; k < ps.length; k++) {
+        st.p = ps[k];
+        st.step = st.steps[Math.min(st.steps.length - 1, Math.floor(ps[k] * st.steps.length))] || null;
+        ctx.save(); SA = 1; SB = 1;
+        try { DRAW[st.name](st, 3.7, 0.016); }
+        catch (err) { warned[st.name] = true; if (window.console) { console.error('figure ' + st.name + ' at ' + ps[k], err); } }
+        ctx.restore(); ctx.setLineDash([]); HALO = false;
+      }
+      st.step = null; st.idx = -1;
+    }
+    eaten = 0;
+  })();
+  window.addEventListener('resize', function () { resize(); kick(); });
+  window.addEventListener('scroll', kick, { passive: true });
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { buildTargets(); kick(); }); }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

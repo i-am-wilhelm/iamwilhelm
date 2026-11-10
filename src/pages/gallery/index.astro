@@ -3,7 +3,7 @@
  * /gallery: The Gallery on its own. The same framed tiles as the homepage's
  * Room II, hung by series (each wall headed by its series, linking to the
  * series index); new pieces drop in from src/content/gallery. The Futurist
- * essays hang last, as a pair of companion pieces under their own line.
+ * installments are featured: their wall hangs first, two frames across.
  */
 import Museum from '../../layouts/Museum.astro';
 import Placard from '../../components/museum/Placard.astro';
@@ -15,7 +15,7 @@ import { SITE_URL } from '../../config/site';
 
 <Museum
   title="The Gallery · Michael Wilhelm"
-  description="Visualized poems and essays by Michael Wilhelm, each framed and opening onto its own interactive page: Everyone, Searchable and Everyone, Serialized, the companion Futurist essays; Where It Was, the third Through the Lens essay; The Keeper and the Flame, PHARMAKON, Equal Volume, and Ladies, Ladies, the interlude between the poems; True Amazons, Mimics & Mythmakers, the in-the-original essays The Only Sighted One, The Dual Thing, and The Pretty Toy; the Seeing essays The Double Image, Varo's Workshop, Monet Invented the Dither, Blake Wrote It Backwards, Nobody Sees the Same Sea, Type Is an Image, The Sleep of Reason, Why Klimt Went to Ravenna, Redon's Turn, How to Throw a Flame Twenty Miles, Living Vanitas, and The Mask Is the Method; and The Snowflake Machine, a hands-on symmetry toy."
+  description="Visualized poems and essays by Michael Wilhelm, each framed and opening onto its own interactive page: the Futurist installments Everyone, Searchable, Everyone, Serialized, Face Forward, and The Receipts; Where It Was, the third Through the Lens essay; The Keeper and the Flame, PHARMAKON, Equal Volume, and Ladies, Ladies, the interlude between the poems; True Amazons, Mimics & Mythmakers, the in-the-original essays The Only Sighted One, The Dual Thing, and The Pretty Toy; the Seeing essays The Double Image, Varo's Workshop, Monet Invented the Dither, Blake Wrote It Backwards, Nobody Sees the Same Sea, Type Is an Image, The Sleep of Reason, Why Klimt Went to Ravenna, Redon's Turn, How to Throw a Flame Twenty Miles, Living Vanitas, and The Mask Is the Method; and The Snowflake Machine, a hands-on symmetry toy."
   current="gallery"
   schema={[
     {
@@ -49,11 +49,7 @@ import { SITE_URL } from '../../config/site';
       <PoemGallery
         level={2}
         grouped
-        pair={{
-          series: 'futurist',
-          statement:
-            'Companion essays on being known by machines. The first follows a search for your name, the second your body as it becomes a number, and both end with the people who know you.',
-        }}
+        feature="futurist"
       />
       <p class="page__more" data-reveal>
         Pieces like these are built to order. <a class="text-link" href="/services/">Commissions &rarr;</a>

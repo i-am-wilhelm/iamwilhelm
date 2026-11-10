@@ -14,9 +14,8 @@
  * hung by series, in the order of src/config/series.ts: each series gets a
  * heading that links to its index, its one-line statement, and its pieces
  * by number; a piece in no series hangs last, under "Elsewhere". With
- * `pair` as well (/gallery), one series hangs as companion pieces: its wall
- * moves to the foot of the series walls, its frames hang two-up across the
- * wall, and the pair's own statement stands in for the series statement.
+ * `feature` as well (/gallery), one series is featured: its wall moves to
+ * the head of the series walls and its frames hang two-up across the wall.
  */
 import PoemCard from './PoemCard.astro';
 import { series as registry, seriesAccent, seriesIds, type SeriesId } from '../../config/series';
@@ -36,10 +35,10 @@ interface Props {
   thumbs?: boolean;
   /** Hang the wall by series. */
   grouped?: boolean;
-  /** Grouped only: hang this series' wall last, as a pair, under this statement. */
-  pair?: { series: SeriesId; statement: string };
+  /** Grouped only: hang this series' wall first, its frames two-up. */
+  feature?: SeriesId;
 }
-const { level = 3, hero = false, ids, exclude, thumbs = false, grouped = false, pair } = Astro.props;
+const { level = 3, hero = false, ids, exclude, thumbs = false, grouped = false, feature } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 const tileLevel = (grouped ? level + 1 : level) as 2 | 3 | 4;
 
@@ -50,7 +49,7 @@ const hung = exclude ? all.filter((f) => !exclude.includes(f.id)) : all;
 const frames = ids ? ids.map((id) => hung.find((f) => f.id === id)).filter((f) => !!f) : hung;
 const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
 
-type Group = { id?: SeriesId; name: string; href?: string; statement?: string; accent?: string; frames: typeof frames; pair?: boolean };
+type Group = { id?: SeriesId; name: string; href?: string; statement?: string; accent?: string; frames: typeof frames; feature?: boolean };
 const groups: Group[] = [];
 if (grouped) {
   for (const id of seriesIds) {
@@ -60,11 +59,11 @@ if (grouped) {
       .sort((a, b) => (pieces.get(a.id)?.seriesNo ?? 0) - (pieces.get(b.id)?.seriesNo ?? 0));
     if (inSeries.length) groups.push({ id, name: s.name, href: s.href, statement: s.statement, accent: seriesAccent(id), frames: inSeries });
   }
-  if (pair) {
-    const i = groups.findIndex((g) => g.id === pair.series);
-    if (i < 0) throw new Error(`PoemGallery: no frames in the ${pair.series} series to hang as a pair.`);
+  if (feature) {
+    const i = groups.findIndex((g) => g.id === feature);
+    if (i < 0) throw new Error(`PoemGallery: no frames in the ${feature} series to feature.`);
     const [g] = groups.splice(i, 1);
-    groups.push({ ...g, statement: pair.statement, pair: true });
+    groups.unshift({ ...g, feature: true });
   }
   const loose = frames.filter((f) => !pieces.get(f.id)?.series);
   if (loose.length) groups.push({ name: 'Elsewhere', frames: loose });
@@ -77,7 +76,7 @@ const pieceFor = (id: string): Piece | undefined => pieces.get(id);
     <div class="walls">
       {groups.map((g) => (
         <section
-          class:list={['wall', g.pair && 'wall--pair']}
+          class:list={['wall', g.feature && 'wall--feature']}
           aria-labelledby={`wall-${g.id ?? 'elsewhere'}`}
           style={g.accent ? `--series-accent: ${g.accent}` : undefined}
         >
@@ -168,13 +167,13 @@ const pieceFor = (id: string): Piece | undefined => pieces.get(id);
     text-decoration: underline;
   }
 
-  /* Companion pieces: the pair hangs two-up across the wall, frames of one
-     size side by side; stacked on phones, like every wall. */
-  .wall--pair .poems {
+  /* The featured series hangs two-up across the wall, frames of one size
+     side by side; stacked on phones, like every wall. */
+  .wall--feature .poems {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   @media (max-width: 640px) {
-    .wall--pair .poems {
+    .wall--feature .poems {
       grid-template-columns: minmax(0, 1fr);
     }
   }
