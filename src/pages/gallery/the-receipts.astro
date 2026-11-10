@@ -1,0 +1,12 @@
+---
+/**
+ * The Receipts: mounted as delivered from its approved source file,
+ * _incoming/futurist-essays/the-receipts.html. The page is the file; src/lib/futurist.ts
+ * documents the few changes made on the way (self-hosted fonts, the title,
+ * share and schema meta, and the one cross-link to its companion page).
+ */
+import { futuristDocument } from '../../lib/futurist';
+const html = await futuristDocument('the-receipts');
+---
+
+<Fragment set:html={html} />
