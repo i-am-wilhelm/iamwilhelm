@@ -64,9 +64,23 @@ No WebGL, no dithering, no audio on these pages.
   `/support`; the "Plain text" link to the twin), `SeriesMark` (the series
   label in the header), `Byline` (the author's name linking to `/`, in
   every title block and signature), `MethodLink` (the line every source
-  ledger ends on, "How this was made", to `/method`), and `SplitText`
+  ledger ends on, "How this was made", to `/method`), `SplitText`
   (text shown twice for effect with one readable copy in the DOM; the
-  copies paint from `data-text`).
+  copies paint from `data-text`), and `BureauStamp` (below).
+- The Bureau of Coincidence: a poem whose gallery entry carries
+  `subject: feminine` and a `case` gets the Bureau's stamp at its foot,
+  above its colophon ("Certified coincidental · Case No. …", linking to the
+  hearing, `/gallery/ladies-ladies/`). The case number is the ecliptic
+  longitude of the natal placement that governs the poem, degrees.minutes
+  from 0° Aries, read from `src/scripts/natal/chart.michael.ts`: The Keeper
+  and the Flame is Venus, 9°01' Aries, `009.01`; PHARMAKON is Neptune,
+  16°08' Capricorn, `286.08`; The Unseen One is Black Moon Lilith, 23°52'
+  Sagittarius, `263.52`; the hearing itself is Saturn on the MC, 2°30'
+  Aquarius, `302.30`. The schema (`src/content.config.ts`) refuses one
+  field without the other. A Poem.astro page mounts
+  `<BureauStamp id="…" />` above its `poem-foot`; the descent layout
+  mounts it after the text. It renders nothing for an entry without the
+  fields, so the mount is safe anywhere.
 - The plain-text twin: every scroll page has one at `/gallery/<slug>/twin/`,
   the whole piece as semantic HTML in reading order with each exhibit
   described in a sentence (`src/pages/gallery/[slug]/twin.astro` renders

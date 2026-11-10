@@ -13,6 +13,8 @@ date: 2026-10-28
 verb: "one night to morning · you steer the beam"
 series: poems
 seriesNo: 2
+subject: feminine
+case: "009.01"
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/WM6K9TyMLupDHKB6fhYzCR).

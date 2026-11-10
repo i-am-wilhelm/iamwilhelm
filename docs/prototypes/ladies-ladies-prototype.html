@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ladies, Ladies</title>
+<meta name="description" content="Minutes of a hearing before the Bureau of Coincidence, drawn in eleven functions on graph paper. An interlude between the poems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Single visual world: graph paper laid on the museum's ivory. Figure pinned, minutes scroll past it. */
+  --ivory:#f4efe3;
+  --paper:#f8f4ea;
+  --ink:#221d17;
+  --mute:#7b7164;
+  --grid:#dcd3c1;
+  --axis:#b9ae98;
+  --gilt:#a8832f;
+  --ember:#c4552a;
+  --pome:#8b1e2d;
+  --rose:214,140,120;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:"EB Garamond",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ivory);color:var(--ink)}
+body{font-family:var(--body);font-size:1.0625rem;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--gilt)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.1;text-wrap:balance;margin:0}
+.label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+
+header.masthead{max-width:1180px;margin:0 auto;padding:clamp(2rem,6vw,4.5rem) 1.25rem 1.5rem;display:grid;gap:.9rem}
+header.masthead h1{font-size:clamp(2.6rem,7vw,4.6rem);font-weight:500;letter-spacing:-.01em}
+header.masthead .sub{font-family:var(--display);font-style:italic;font-size:clamp(1.15rem,2.4vw,1.5rem);color:var(--mute);max-width:34ch}
+header.masthead .case{display:flex;gap:1.25rem;flex-wrap:wrap}
+
+.stage{max-width:1180px;margin:0 auto;padding:0 1.25rem 4rem;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:2.5rem;align-items:start}
+.figure{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:.6rem;padding:1rem 0;z-index:1}
+.plotwrap{position:relative;flex:1 1 auto;min-height:0;border:1px solid var(--grid);background:var(--paper);overflow:hidden;border-radius:2px}
+.underglow{position:absolute;left:0;top:0;width:60%;aspect-ratio:1;pointer-events:none;border-radius:50%;
+  background:radial-gradient(circle,rgba(var(--rose),.62) 0%,rgba(var(--rose),.28) 32%,rgba(var(--rose),0) 68%);
+  transform:translate(-50%,-50%) scale(.6);opacity:0;transition:transform 1.4s cubic-bezier(.3,.7,.2,1),opacity 1.4s ease,left 1.4s cubic-bezier(.3,.7,.2,1),top 1.4s cubic-bezier(.3,.7,.2,1);filter:blur(6px)}
+.underglow.on{opacity:1}
+.underglow.full{transform:translate(-50%,-50%) scale(2.6);opacity:.85}
+svg#plot{position:relative;display:block;width:100%;height:100%}
+.panel{flex:0 0 auto;max-height:34%;overflow:auto;border:1px solid var(--grid);background:var(--paper);padding:.55rem .75rem;font-family:var(--mono);font-size:.72rem;line-height:1.5;border-radius:2px}
+.panel .ph{color:var(--mute);letter-spacing:.12em;text-transform:uppercase;font-size:.62rem;margin-bottom:.3rem}
+.panel ol{list-style:none;margin:0;padding:0;display:grid;gap:.12rem}
+.panel li{color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .5s}
+.panel li.cur{color:var(--ink)}
+.panel li .n{display:inline-block;width:1.7em;color:var(--axis)}
+.panel li.ember .eq{color:var(--ember)}
+.panel li.pome .eq{color:var(--pome)}
+.panel li.gilt .eq{color:var(--gilt)}
+.panel li.word{color:var(--ink);white-space:normal;margin-top:.3rem}
+.panel li.word b{font-weight:500;font-family:var(--display);font-size:1.15rem;letter-spacing:.02em}
+
+.minutes{padding-top:12vh}
+.step{min-height:72vh;display:flex;flex-direction:column;justify-content:center;padding:2.5rem 0}
+.step h2{font-size:clamp(1.45rem,2.6vw,1.9rem);font-weight:600;margin:.4rem 0 1.1rem}
+.step p{margin:0 0 .85rem;max-width:62ch}
+.step p .num{font-family:var(--mono);font-size:.72rem;color:var(--mute);margin-right:.6rem;letter-spacing:.05em}
+.step blockquote{margin:.6rem 0 1.1rem;padding:.2rem 0 .2rem 1.1rem;border-left:2px solid var(--gilt);font-family:var(--display);font-size:clamp(1.3rem,2.2vw,1.55rem);line-height:1.3;color:var(--ink);max-width:40ch}
+.step blockquote em{font-style:italic}
+.step .cue{font-family:var(--mono);font-size:.72rem;color:var(--gilt);margin:0 0 .9rem}
+.step.active h2{color:var(--gilt)}
+
+.cta{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem;align-items:center;margin-top:1.2rem}
+.btn{display:inline-block;font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--gilt);padding:.8rem 1.2rem;border-radius:2px;border:1px solid var(--gilt)}
+.btn:focus-visible,.pt:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.alt{font-family:var(--display);font-style:italic;color:var(--mute)}
+
+footer.colophon{max-width:1180px;margin:0 auto;padding:2rem 1.25rem 5rem;border-top:1px solid var(--grid);color:var(--mute);font-size:.95rem;display:grid;gap:.5rem}
+footer.colophon .label{color:var(--mute)}
+
+/* svg */
+.gridline{stroke:var(--grid);stroke-width:1;vector-effect:non-scaling-stroke}
+.axis{stroke:var(--axis);stroke-width:1.2;vector-effect:non-scaling-stroke}
+.tick{font-family:var(--mono);font-size:.3px;fill:var(--axis)}
+.fx{fill:none;stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.fx.gilt{stroke:var(--gilt)} .fx.ember{stroke:var(--ember)} .fx.pome{stroke:var(--pome)} .fx.ink{stroke:var(--ink)}
+.fx.thin{stroke-width:1.2;opacity:.75}
+.fx.hatch{stroke-width:1;opacity:.55}
+.fill{stroke:none}
+.fill.pome{fill:var(--pome);opacity:.14;transition:opacity .6s}
+g.ex{transition:opacity .6s}
+g.ex.in .fx{animation:bloom 1.1s ease-out both}
+g.ex.in .fx.d1{animation-delay:.18s} g.ex.in .fx.d2{animation-delay:.36s} g.ex.in .fx.d3{animation-delay:.54s} g.ex.in .fx.d4{animation-delay:.72s} g.ex.in .fx.d5{animation-delay:.9s} g.ex.in .fx.d6{animation-delay:1.08s}
+@keyframes bloom{0%{opacity:0;filter:drop-shadow(0 0 0 rgba(168,131,47,0))}40%{opacity:1;filter:drop-shadow(0 0 .35px rgba(168,131,47,.9))}100%{opacity:1;filter:drop-shadow(0 0 0 rgba(168,131,47,0))}}
+.pt{fill:var(--paper);stroke:var(--ink);stroke-width:1.6;vector-effect:non-scaling-stroke;cursor:grab;touch-action:none}
+.pt:active{cursor:grabbing}
+.pt.fixed{cursor:default}
+.flare{pointer-events:none}
+.flare .core{fill:var(--gilt)}
+.flare .halo{fill:none;stroke:var(--gilt);stroke-width:1.2;vector-effect:non-scaling-stroke}
+.flare.live .core{animation:corepulse 2.2s ease-in-out infinite}
+.flare.live .halo{animation:halo 2.2s ease-out infinite}
+.flare.after{opacity:.28}
+.flare.after .halo{display:none}
+.flare.bright{opacity:.9}
+.flare.bright .core{animation:corepulse 1.6s ease-in-out 2}
+.flare.off{opacity:0}
+@keyframes corepulse{0%,100%{r:.11px;filter:drop-shadow(0 0 .2px rgba(168,131,47,.9))}50%{r:.16px;filter:drop-shadow(0 0 .6px rgba(168,131,47,1))}}
+@keyframes halo{0%{r:.12px;opacity:.9}100%{r:.8px;opacity:0}}
+.ftxt{font-family:var(--mono);font-size:.3px;fill:var(--mute);letter-spacing:.03em}
+.ftxt.v{fill:var(--ink)}
+.sealtxt{font-family:var(--mono);font-size:.26px;fill:var(--gilt);letter-spacing:.14em}
+g.seal{transform-box:fill-box;transform-origin:center}
+g.seal.stamp{animation:stamp .7s cubic-bezier(.2,1.2,.3,1) both}
+@keyframes stamp{0%{transform:scale(1.7);opacity:0}60%{transform:scale(.96);opacity:1}100%{transform:scale(1);opacity:1}}
+.help{position:absolute;right:.6rem;bottom:.5rem;font-family:var(--mono);font-size:.62rem;color:var(--mute);background:rgba(248,244,234,.85);padding:.2rem .45rem;border-radius:2px;pointer-events:none;opacity:0;transition:opacity .5s}
+.help.on{opacity:1}
+
+@media (max-width:860px){
+  .stage{grid-template-columns:1fr;gap:0}
+  .figure{height:46vh;height:46dvh;padding:.5rem 0;background:var(--ivory)}
+  .panel{max-height:3.6rem;font-size:.66rem}
+  .minutes{padding-top:2rem}
+  .step{min-height:60vh;padding:2rem 0}
+  .underglow{width:90%}
+}
+@media (prefers-reduced-motion:reduce){
+  g.ex.in .fx,.flare.live .core,.flare.live .halo,g.seal.stamp,.flare.bright .core{animation:none !important}
+  .underglow,.panel li,g.ex,.fill.pome{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="case"><span class="label">Room II · Interlude</span><span class="label">Case No. 302.00</span><span class="label">Poems</span></div>
+  <h1>Ladies, Ladies</h1>
+  <p class="sub">Minutes of a hearing before the Bureau of Coincidence</p>
+  <p class="label" style="letter-spacing:.08em;text-transform:none">Drawn in eleven functions on graph paper. The points are yours to move.</p>
+</header>
+
+<div class="stage">
+  <aside class="figure" aria-label="Exhibit: the hearing room, drawn in functions">
+    <div class="plotwrap">
+      <div class="underglow" id="glow"></div>
+      <svg id="plot" viewBox="-9 -7 18 10" role="img" aria-labelledby="plotTitle">
+        <title id="plotTitle">Graph paper. Functions appear as the minutes proceed.</title>
+        <defs>
+          <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".08"/></filter>
+        </defs>
+        <g id="grid">
+          <line class="gridline" x1="-9" y1="-6" x2="9" y2="-6"/><line class="gridline" x1="-9" y1="-5" x2="9" y2="-5"/><line class="gridline" x1="-9" y1="-4" x2="9" y2="-4"/><line class="gridline" x1="-9" y1="-3" x2="9" y2="-3"/><line class="gridline" x1="-9" y1="-2" x2="9" y2="-2"/><line class="gridline" x1="-9" y1="-1" x2="9" y2="-1"/><line class="gridline" x1="-9" y1="1" x2="9" y2="1"/><line class="gridline" x1="-9" y1="2" x2="9" y2="2"/>
+          <line class="gridline" x1="-8" y1="-7" x2="-8" y2="3"/><line class="gridline" x1="-7" y1="-7" x2="-7" y2="3"/><line class="gridline" x1="-6" y1="-7" x2="-6" y2="3"/><line class="gridline" x1="-5" y1="-7" x2="-5" y2="3"/><line class="gridline" x1="-4" y1="-7" x2="-4" y2="3"/><line class="gridline" x1="-3" y1="-7" x2="-3" y2="3"/><line class="gridline" x1="-2" y1="-7" x2="-2" y2="3"/><line class="gridline" x1="-1" y1="-7" x2="-1" y2="3"/><line class="gridline" x1="1" y1="-7" x2="1" y2="3"/><line class="gridline" x1="2" y1="-7" x2="2" y2="3"/><line class="gridline" x1="3" y1="-7" x2="3" y2="3"/><line class="gridline" x1="4" y1="-7" x2="4" y2="3"/><line class="gridline" x1="5" y1="-7" x2="5" y2="3"/><line class="gridline" x1="6" y1="-7" x2="6" y2="3"/><line class="gridline" x1="7" y1="-7" x2="7" y2="3"/><line class="gridline" x1="8" y1="-7" x2="8" y2="3"/>
+          <line class="axis" x1="-9" y1="0" x2="9" y2="0"/><line class="axis" x1="0" y1="-7" x2="0" y2="3"/>
+          <text class="tick" x="-8.9" y=".38">0</text><text class="tick" x="-5.1" y=".38">-5</text><text class="tick" x="4.85" y=".38">5</text>
+          <text class="tick" x=".1" y="-4.85">5</text><text class="tick" x=".1" y="-1.85">2</text><text class="tick" x=".1" y="2.2">-2</text>
+        </g>
+        <g id="world" transform="scale(1,-1)"></g>
+        <g id="flares" transform="scale(1,-1)"></g>
+        <g id="labels"></g>
+      </svg>
+      <div class="help" id="help">drag the point</div>
+    </div>
+    <div class="panel" aria-live="polite">
+      <div class="ph">Functions on the record</div>
+      <ol id="eqs"></ol>
+    </div>
+  </aside>
+
+  <main class="minutes">
+
+    <section class="step" data-step="1" id="s1">
+      <p class="cue">§1 · y = 0</p>
+      <h2>Call to order</h2>
+      <p><span class="num">1.1</span>The Bureau of Coincidence convened at the hour of 2° Aquarius, the Presiding Officer taking the bench. The bench is a line. The Bureau notes for the record that it has always been a line.</p>
+      <p><span class="num">1.2</span>Present: the Clerk, recording. The Author, respondent, appearing on his own behalf, having declined counsel on the grounds that "counsel would only make it worse." Seven complainants, represented by their exhibits. One intervenor, who had not yet arrived and whose arrival the Bureau did not anticipate.</p>
+      <p><span class="num">1.3</span>The matter: whether the poems published by the Author under the headings <em>The Keeper and the Flame</em>, <em>Pharmakon</em>, and <em>The Unseen One Pleads His Case</em> bear resemblance to persons living, dead, or formerly dating the Author, and if so, whether said resemblance is, as his standard notice claims, purely coincidental.</p>
+      <p><span class="num">1.4</span>The Clerk read the standard notice into the record. The Author mouthed along.</p>
+    </section>
+
+    <section class="step" data-step="2" id="s2">
+      <p class="cue">§2 · a form, four hatched fields</p>
+      <h2>The standard notice</h2>
+      <p><span class="num">2.1</span>"The works in question are works of imagination. Any resemblance to actual persons, names, settings, hours of the night, windows, flames, fruit, or turns of phrase is purely coincidental."</p>
+      <p><span class="num">2.2</span>The Presiding Officer asked the Author whether he stood by the notice. The Author stated that he did.</p>
+      <p><span class="num">2.3</span>Asked whether he had written the notice himself, the Author stated that he had, "at about three in the morning, which I would like entered as a mitigating circumstance."</p>
+      <p><span class="num">2.4</span>Entered.</p>
+    </section>
+
+    <section class="step" data-step="3" id="s3">
+      <p class="cue">§3 · x = 3 · a beam strikes it at one point</p>
+      <h2>Testimony of the Window</h2>
+      <p><span class="num">3.1</span>The Window was sworn. The Window testified that it is a vertical line of restricted domain and has never been a window.</p>
+      <p><span class="num">3.2</span>Asked why a complainant recognized it as the window of a specific apartment in a specific city in a specific winter, the Window stated: "A line of light hit me at one point. One point. That is what a coincidence is. Two things that happen to share a coordinate."</p>
+      <p><span class="num">3.3</span>The Bureau asked the Author to respond.</p>
+      <blockquote>I love from the other side of a window. I've said it in verse and I'll say it under oath. The window in the poem is the one I've been standing at since before I knew her name, or anyone's. If a real window happened to be where I was standing, that is the window's business.</blockquote>
+      <p><span class="num">3.4</span>The Clerk notes that the Author's voice changed on the word <em>her</em> and resumed its normal register on the word <em>business</em>.</p>
+      <p><span class="num">3.5</span>The Presiding Officer invited the reader to drag the point. The flare went out. The Bureau entered the result: <em>resemblance terminated at the reader's hand.</em></p>
+    </section>
+
+    <section class="step" data-step="4" id="s4">
+      <p class="cue">§4 · a parabola, leading coefficient negative</p>
+      <h2>Testimony of the Flame</h2>
+      <p><span class="num">4.1</span>The Flame was sworn. The Flame stated that it is a parabola with a negative leading coefficient and declined to say more without a lamp present.</p>
+      <p><span class="num">4.2</span>A complainant alleges that the Flame went out at the exact hour a certain conversation ended. The Flame testified that it goes out at the vertex, that every parabola does, and that it cannot be held responsible for conversations that also have vertices.</p>
+      <p><span class="num">4.3</span>The Author, asked to respond:</p>
+      <blockquote>I kept that flame for a long time. Keepers don't choose the weather. The poem is about the keeping. If someone recognized the hour, it's because hours like that are more common than any of us were told.</blockquote>
+      <p><span class="num">4.4</span>The Presiding Officer asked whether the Keeper was himself. The Author said, "Your Honor, the Keeper is a man alone with a light he didn't make, waiting for a ship he can't signal. I'd prefer the Bureau not look into it."</p>
+      <p><span class="num">4.5</span>The Bureau did not look into it. The reader may move the vertex and watch the inner flame return.</p>
+    </section>
+
+    <section class="step" data-step="5" id="s5">
+      <p class="cue">§5 · a circle containing six points</p>
+      <h2>Testimony of the Pomegranate</h2>
+      <p><span class="num">5.1</span>The Pomegranate was sworn. It gave its name as an equation and asked that the record reflect it contains exactly six points, "which is a number, Your Honor, and numbers belong to everyone."</p>
+      <p><span class="num">5.2</span>A complainant alleges the six seeds correspond to six specific things said over six specific months. The Pomegranate testified that six is six; that it has no months; and that if a reader counted to six in their own life and arrived somewhere painful, "the counting was theirs."</p>
+      <p><span class="num">5.3</span>The Author asked permission to address the Pomegranate directly. Granted.</p>
+      <blockquote>You were the hardest one. I wrote the Unseen One pleading because I know the plea. Six seeds is the number you can eat and still be allowed to leave for half the year. I'm not sorry it landed. I'm sorry where.</blockquote>
+      <p><span class="num">5.4</span>The Pomegranate did not respond. The Clerk notes that the sixth seed remained lit for the remainder of the hearing. Move any seed and the fruit drains to graph paper.</p>
+    </section>
+
+    <section class="step" data-step="6" id="s6">
+      <p class="cue">§6 · the form returns, fields filled</p>
+      <h2>The Author's intake form</h2>
+      <p><span class="num">6.1</span>The Presiding Officer reviewed the Author's intake form and noted the entry under <em>Ruling Planet</em>.</p>
+      <p><span class="num">6.2</span>The Author confirmed the entry. "Venus. Twelfth house. In exile, if you want the technical word. She runs the chart from behind a wall and I write what comes through."</p>
+      <p><span class="num">6.3</span>Asked whether this was offered as a defense, the Author said it was offered as a description. "Fantasy is going to keep happening, Your Honor. I'd rather the Bureau know in advance."</p>
+      <p><span class="num">6.4</span>The Bureau entered the condition as pre-existing and noted that it did not, by itself, explain the window.</p>
+      <p><span class="num">6.5</span>At this point the light under the page left the exhibits and moved to the empty margin, and the Clerk records that the room became warmer by a degree no instrument present could measure.</p>
+    </section>
+
+    <section class="step" data-step="7" id="s7">
+      <p class="cue">§7 · a sine wave; a circle; a cross beneath it</p>
+      <h2>Intervenor</h2>
+      <p><span class="num">7.1</span>The intervenor entered without being announced. The Clerk records her as Aphrodite, appearing in her capacity as the Author's ruling planet, "and because she was in the area."</p>
+      <p><span class="num">7.2</span>Asked on what basis she intervened, she stated: "Every resemblance in this room is mine. I put the light on the pane. I set the hour of the flame. I counted the seeds. He wrote down what I did. You are trying a stenographer."</p>
+      <p><span class="num">7.3</span>Asked whether the resemblances were, then, intentional:</p>
+      <blockquote><em>Nothing I do is intentional. I am the goddess of things falling together. A face and a poem. A hand and a hand. He stood at a window because I stood him there. If a woman stood on the other side, that is what windows are for.</em></blockquote>
+      <p><span class="num">7.4</span>The Author asked to be heard.</p>
+      <blockquote>She's not wrong. But I'd like the record to show that I stood there willingly. Every time.</blockquote>
+      <p><span class="num">7.5</span>The Clerk notes that the intervenor looked at the Author for a period the minutes cannot record, and that the beam on the pane, the vertex of the flame, and the sixth seed were all lit at once, the only time in the Bureau's history that every exhibit has flared together.</p>
+      <p><span class="num">7.6</span>The Presiding Officer asked the intervenor to state, for the record, the Greek for coincidence.</p>
+    </section>
+
+    <section class="step" data-step="8" id="s8">
+      <p class="cue">§8 · two curves cross the page and meet twice</p>
+      <h2>The word</h2>
+      <p><span class="num">8.1</span>The intervenor stated: "σύμπτωμα. That which falls together. Aristotle uses it for a chance meeting. The physicians use it for what the body shows when something is wrong underneath."</p>
+      <p><span class="num">8.2</span>The Presiding Officer asked whether the Bureau understood her correctly: that the Greek word for <em>coincidence</em> is the Greek word for <em>symptom</em>.</p>
+      <p><span class="num">8.3</span>"You have understood me. When he writes that a resemblance is purely coincidental, he is writing, in the older language, that it is purely symptomatic. Of what, I leave to the Bureau."</p>
+      <p><span class="num">8.4</span>The Author, asked whether he wished to amend his standard notice in light of this testimony, stated that he did not. "It's accurate either way, Your Honor. That's the trouble with it."</p>
+    </section>
+
+    <section class="step" data-step="9" id="s9">
+      <p class="cue">§9 · two concentric circles, stamped</p>
+      <h2>Findings and order</h2>
+      <p><span class="num">9.1</span>The Bureau finds that the works bear resemblance to persons living, dead, and formerly dating the Author.</p>
+      <p><span class="num">9.2</span>The Bureau finds that every such resemblance consists of two things sharing a coordinate, that the reader was able to terminate each resemblance by moving a single point, and that the resemblances were therefore coincidental within the meaning of the standard notice.</p>
+      <p><span class="num">9.3</span>The Bureau further finds, on the intervenor's testimony, that the resemblances were also symptomatic, and that the two findings do not conflict.</p>
+      <p><span class="num">9.4</span>The Author is <strong>certified coincidental</strong> and released into the custody of his ruling planet, who indicated she had him already.</p>
+      <p><span class="num">9.5</span>The Bureau notes that the Author's condition is pre-existing and recurring, that further works are anticipated, and that each will be stamped on arrival.</p>
+    </section>
+
+    <section class="step" data-step="10" id="s10">
+      <p class="cue">§10 · one point remains</p>
+      <h2>The Bureau takes commissions</h2>
+      <p><span class="num">10.1</span>The Bureau wishes it known that coincidences may also be arranged on purpose.</p>
+      <p><span class="num">10.2</span>If you would like a poem that is about you, with your window, your hour, and your name on the intake form, the Author takes commissions. The resemblance will be intentional, certified as such, and yours to keep. Half to start, half at launch.</p>
+      <p><span class="num">10.3</span>The intervenor asked to be listed as a reference. Granted.</p>
+      <div class="cta">
+        <a class="btn" href="https://app.backgold.com/book/backgold/web-design-consultation">Arrange a coincidence</a>
+        <span class="alt">or write: wilhelm@backgold.com</span>
+      </div>
+      <p class="alt" style="margin-top:1rem">Or drag the point and see what falls together.</p>
+    </section>
+
+  </main>
+</div>
+
+<footer class="colophon">
+  <span class="label">Colophon</span>
+  <p>Room II · Interlude · Poems · Case No. 302.00. Drawn in eleven functions on graph paper; the equations are real and the points are yours to move. Reads complete with scripts off. No women were named in the making of this hearing.</p>
+  <noscript><p>Scripts are off, so the exhibits stay as graph paper. Each section's cue line names the function it would draw.</p></noscript>
+</footer>
+
+<script>
+(function(){
+  const svg=document.getElementById('plot');
+  const world=document.getElementById('world');
+  const flaresG=document.getElementById('flares');
+  const labels=document.getElementById('labels');
+  const glow=document.getElementById('glow');
+  const eqs=document.getElementById('eqs');
+  const help=document.getElementById('help');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NS='http://www.w3.org/2000/svg';
+
+  function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+  function pathFn(f,x0,x1,cls,parent,n,lo){n=n||120;lo=(lo===undefined)?-3.2:lo;let d='';let pen=false;for(let i=0;i<=n;i++){const x=x0+(x1-x0)*i/n;const y=f(x);if(!isFinite(y)||y<lo||y>7.4){pen=false;continue;}d+=(pen?'L':'M')+x.toFixed(3)+' '+y.toFixed(3)+' ';pen=true;}return el('path',{d:d.trim(),class:'fx '+cls},parent);}
+  function seg(x1,y1,x2,y2,cls,parent){return el('line',{x1,y1,x2,y2,class:'fx '+cls},parent);}
+  function circ(cx,cy,r,cls,parent){return el('circle',{cx,cy,r,class:cls},parent);}
+  let owner='';
+  function txt(x,y,s,cls,parent){const t=el('text',{x,y:-y,class:cls,'data-owner':owner},parent||labels);t.textContent=s;return t;}
+
+  // graph <-> percent for the underglow
+  function pct(x,y){return {l:((x+9)/18*100),t:((7-y)/10*100)};}
+  function glowTo(x,y,mode){const p=pct(x,y);glow.style.left=p.l+'%';glow.style.top=p.t+'%';glow.classList.toggle('full',mode==='full');glow.classList.toggle('on',mode!=='off');}
+
+  // pointer -> graph coords (world group is flipped)
+  function toGraph(ev){const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const m=world.getScreenCTM().inverse();const p=pt.matrixTransform(m);return {x:p.x,y:p.y};}
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+  function draggable(node,onMove,opts){
+    opts=opts||{};node.setAttribute('tabindex','0');node.setAttribute('role','slider');node.setAttribute('aria-label',opts.label||'draggable point');
+    let active=false;
+    node.addEventListener('pointerdown',e=>{active=true;node.setPointerCapture(e.pointerId);e.preventDefault();});
+    node.addEventListener('pointermove',e=>{if(!active)return;const g=toGraph(e);onMove(g.x,g.y);});
+    const up=e=>{active=false;};
+    node.addEventListener('pointerup',up);node.addEventListener('pointercancel',up);
+    node.addEventListener('keydown',e=>{const cx=parseFloat(node.getAttribute('cx')),cy=parseFloat(node.getAttribute('cy'));const s=e.shiftKey?.5:.1;let x=cx,y=cy;
+      if(e.key==='ArrowLeft')x-=s;else if(e.key==='ArrowRight')x+=s;else if(e.key==='ArrowUp')y+=s;else if(e.key==='ArrowDown')y-=s;else return;e.preventDefault();onMove(x,y);});
+  }
+
+  // ---------- flares (coincidences) ----------
+  const flares={};
+  function flare(id,x,y){
+    let f=flares[id];
+    if(!f){f=el('g',{class:'flare live'},flaresG);el('circle',{cx:x,cy:y,r:.12,class:'core'},f);el('circle',{cx:x,cy:y,r:.12,class:'halo'},f);flares[id]=f;}
+    f.querySelectorAll('circle').forEach(c=>{c.setAttribute('cx',x);c.setAttribute('cy',y);});
+    return f;
+  }
+  function setFlare(id,state){const f=flares[id];if(!f)return;f.setAttribute('class','flare '+state);}
+  function killFlare(id){const f=flares[id];if(f){f.remove();delete flares[id];}}
+
+  // ---------- exhibits ----------
+  const state={windowY:3,flameH:6,seedsMoved:false,origin:{x:0,y:0}};
+  const EX=[
+    {id:'bench',from:1,eq:[{t:'y = 0 {-9 < x < 9}',c:'gilt'}],
+      draw(g){seg(-9,0,9,0,'gilt',g);}},
+    {id:'form',from:2,until:9,eq:[{t:'x = -8.5 {0.5 < y < 6.5}',c:'ink'},{t:'x = -2.5 {0.5 < y < 6.5}',c:'ink'},{t:'y = 0.5 {-8.5 < x < -2.5}',c:'ink'},{t:'y = 6.5 {-8.5 < x < -2.5}',c:'ink'}],
+      draw(g){seg(-8.5,.5,-8.5,6.5,'ink',g);seg(-2.5,.5,-2.5,6.5,'ink d1',g);seg(-8.5,.5,-2.5,.5,'ink d2',g);seg(-8.5,6.5,-2.5,6.5,'ink d3',g);
+        [5.7,4.9,4.1,3.3].forEach((y,i)=>{seg(-8,y,-3,y,'ink hatch d'+(i+3),g);});
+        txt(-8.2,6.0,'BUREAU OF COINCIDENCE · FORM 302','ftxt');}},
+    {id:'window',from:3,eq:[{t:'x = 3 {1 < y < 5}',c:'gilt'},{t:'y = -x + 6 {-1 < x < 3}',c:'gilt'}],
+      draw(g){seg(3,1,3,5,'gilt',g);seg(-1,7,3,3,'gilt thin d1',g);
+        const p=circ(3,state.windowY,.14,'pt',g);
+        flare('win',3,3);setFlare('win',Math.abs(state.windowY-3)<.09?'live':'off');
+        draggable(p,(x,y)=>{state.windowY=clamp(y,1,5);p.setAttribute('cy',state.windowY);setFlare('win',Math.abs(state.windowY-3)<.09?'live':'off');},{label:'Point on the window pane. Arrow keys move it.'});
+        this.pt=p;}},
+    {id:'flame',from:4,eq:[{t:'y = -2(x - 6)² + 4 {y > 0}',c:'ember'},{t:'y = -4(x - 6)² + 1 {y > 0}',c:'ember'}],
+      draw(g){const fo=x=>-2*(x-state.flameH)**2+4, fi=x=>-4*(x-state.flameH)**2+1;
+        let outer=pathFn(fo,2,9,'ember',g,160,0), inner=pathFn(fi,2,9,'ember thin d2',g,160,0);
+        const dim=()=>{inner.style.strokeOpacity=Math.min(1,Math.abs(state.flameH-6)*1.6).toString();};dim();
+        const p=circ(state.flameH,4,.14,'pt',g);
+        flare('flame',6,4);setFlare('flame',Math.abs(state.flameH-6)<.09?'live':'off');
+        draggable(p,(x,y)=>{state.flameH=clamp(x,4.4,8.4);p.setAttribute('cx',state.flameH);outer.remove();inner.remove();outer=pathFn(fo,2,9,'ember',g,160,0);inner=pathFn(fi,2,9,'ember thin',g,160,0);dim();g.insertBefore(outer,p);g.insertBefore(inner,p);setFlare('flame',Math.abs(state.flameH-6)<.09?'live':'off');},{label:'Vertex of the flame. Arrow keys move it.'});}},
+    {id:'pome',from:5,eq:[{t:'(x - 0.5)² + (y - 3.2)² = 2.56',c:'pome'},{t:'(x - a)² + (y - b)² = 0.09  × 6',c:'pome'}],
+      draw(g){const fill=circ(.5,3.2,1.6,'fill pome',g);circ(.5,3.2,1.6,'fx pome',g);
+        const seeds=[];for(let i=0;i<6;i++){const a=Math.PI/2+i*Math.PI*2/6;const sx=.5+.9*Math.cos(a),sy=3.2+.9*Math.sin(a);const s=circ(sx,sy,.3,'fx pome thin d'+Math.min(6,i+1),g);s.classList.add('pt');s.style.fill='var(--paper)';s.style.stroke='var(--pome)';seeds.push({s,home:{x:sx,y:sy}});
+          draggable(s,(x,y)=>{const dx=x-.5,dy=y-3.2;const d=Math.hypot(dx,dy);const r=1.28;let nx=x,ny=y;if(d>r){nx=.5+dx/d*r;ny=3.2+dy/d*r;}s.setAttribute('cx',nx);s.setAttribute('cy',ny);const moved=seeds.some(o=>Math.hypot(parseFloat(o.s.getAttribute('cx'))-o.home.x,parseFloat(o.s.getAttribute('cy'))-o.home.y)>.15);state.seedsMoved=moved;fill.style.opacity=moved?'0':'';setFlare('seed',moved?'off':'live');},{label:'A seed. Arrow keys move it.'});}
+        const six=seeds[5].home;flare('seed',six.x,six.y);setFlare('seed',state.seedsMoved?'off':'live');
+        if(state.seedsMoved)fill.style.opacity='0';}},
+    {id:'intake',from:6,until:9,eq:[{t:'RULING PLANET = Venus',c:'ink'},{t:'HOUSE = 12 · SIGN = Aries',c:'ink'},{t:'CONDITION = pre-existing',c:'ink'}],
+      draw(g){txt(-8.1,5.3,'RULING PLANET','ftxt');txt(-5.2,5.3,'Venus','ftxt v');txt(-8.1,4.5,'HOUSE','ftxt');txt(-5.2,4.5,'Twelfth','ftxt v');txt(-8.1,3.7,'SIGN','ftxt');txt(-5.2,3.7,'Aries','ftxt v');txt(-8.1,2.9,'CONDITION','ftxt');txt(-5.2,2.9,'Pre-existing','ftxt v');}},
+    {id:'venus',from:7,eq:[{t:'y = 0.4·sin(2x) - 2.4 {4 < x < 9}',c:'gilt'},{t:'(x - 7)² + (y + 0.4)² = 0.64',c:'gilt'},{t:'x = 7 {-2.6 < y < -1.2}',c:'gilt'},{t:'y = -1.9 {6.5 < x < 7.5}',c:'gilt'}],
+      draw(g){pathFn(x=>.4*Math.sin(2*x)-2.4,4,9,'gilt thin',g,160);circ(7,-.4,.8,'fx gilt d2',g);seg(7,-2.6,7,-1.2,'gilt d4',g);seg(6.5,-1.9,7.5,-1.9,'gilt d5',g);}},
+    {id:'word',from:8,eq:[{t:'y = 0.3x² - 2',c:'ink'},{t:'y = -0.5x + 3',c:'ink'},{t:'σύμπτωμα',word:true}],
+      draw(g){pathFn(x=>.3*x*x-2,-9,9,'ink thin',g);pathFn(x=>-.5*x+3,-9,9,'ink thin d2',g);flare('w1',-5,5.5);flare('w2',3.333,1.333);}},
+    {id:'seal',from:9,until:10,eq:[{t:'x² + y² = 1.5² · x² + y² = 1.2²',c:'gilt'}],
+      draw(g){g.classList.add('seal');if(!reduced)g.classList.add('stamp');const cx=-5.5,cy=3.5;circ(cx,cy,1.5,'fx gilt',g);circ(cx,cy,1.2,'fx gilt thin',g);
+        // ring text in the unflipped labels group
+        const id='ring'+Date.now();const defs=svg.querySelector('defs');const p=el('path',{id,d:`M ${cx-1.35} ${-cy} a 1.35 1.35 0 1 1 2.7 0 a 1.35 1.35 0 1 1 -2.7 0`},defs);
+        const t=el('text',{class:'sealtxt','data-owner':'seal'},labels);const tp=el('textPath',{href:'#'+id,startOffset:'2%'},t);tp.textContent='BUREAU OF COINCIDENCE · CERTIFIED · CASE 302.00 ·';
+        const c=txt(cx-.95,cy+.05,'COINCIDENTAL','sealtxt');c.style.fontSize='.22px';}},
+    {id:'origin',from:10,eq:[{t:'x = a · y = b',c:'gilt'}],
+      draw(g){let h=seg(-9,state.origin.y,9,state.origin.y,'gilt hatch',g),v=seg(state.origin.x,-3,state.origin.x,7,'gilt hatch d1',g);const p=circ(state.origin.x,state.origin.y,.16,'pt',g);flare('origin',state.origin.x,state.origin.y);
+        draggable(p,(x,y)=>{state.origin={x:clamp(x,-8.8,8.8),y:clamp(y,-2.9,6.9)};p.setAttribute('cx',state.origin.x);p.setAttribute('cy',state.origin.y);h.setAttribute('y1',state.origin.y);h.setAttribute('y2',state.origin.y);v.setAttribute('x1',state.origin.x);v.setAttribute('x2',state.origin.x);flare('origin',state.origin.x,state.origin.y);},{label:'A free point. Arrow keys move it.'});}}
+  ];
+  const mounted={};
+  const glowPlan={1:[0,0,'small'],2:[-5.5,3.5,'on'],3:[3,3,'on'],4:[6,4,'on'],5:[.5,3.2,'on'],6:[7,-1.2,'on'],7:[0,2,'full'],8:[0,2,'full'],9:[-5.5,3.5,'full'],10:[0,0,'on']};
+  const flarePlan={win:3,flame:4,seed:5,w1:8,w2:8};
+
+  function render(step){
+    EX.forEach(ex=>{
+      const present=ex.from<=step&&(ex.until===undefined||step<ex.until);
+      if(present&&!mounted[ex.id]){const g=el('g',{class:'ex in','data-ex':ex.id},world);owner=ex.id;ex.draw(g);owner='';mounted[ex.id]=g;}
+      else if(!present&&mounted[ex.id]){mounted[ex.id].remove();delete mounted[ex.id];labels.querySelectorAll('[data-owner="'+ex.id+'"]').forEach(t=>t.remove());}
+    });
+    // flares: live at their step and at 7; afterimages between; bright at 9; cleared at 10
+    Object.keys(flarePlan).forEach(id=>{
+      const s=flarePlan[id];if(!flares[id])return;
+      if(step===10){killFlare(id);return;}
+      if(step<s){killFlare(id);return;}
+      let st;
+      if(step===s){st=(id==='win'&&Math.abs(state.windowY-3)>=.09)||(id==='flame'&&Math.abs(state.flameH-6)>=.09)||(id==='seed'&&state.seedsMoved)?'off':'live';}
+      else if(step===7)st='live';
+      else if(step===9)st='bright';
+      else st='after';
+      setFlare(id,st);
+    });
+    if(step<10&&flares.origin)killFlare('origin');
+    // underglow
+    const gp=glowPlan[step]||[0,0,'off'];glowTo(gp[0],gp[1],gp[2]==='small'?'on':gp[2]);
+    if(gp[2]==='small'){glow.style.transform='translate(-50%,-50%) scale(.45)';}else if(gp[2]!=='full'){glow.style.transform='translate(-50%,-50%) scale(.75)';}else{glow.style.transform='';}
+    // help
+    help.classList.toggle('on',[3,4,5,10].includes(step));
+    renderPanel(step);
+  }
+
+  // ---------- equation panel ----------
+  const typed={};
+  function renderPanel(step){
+    eqs.innerHTML='';let n=0;
+    EX.forEach(ex=>{
+      const present=ex.from<=step&&(ex.until===undefined||step<ex.until);
+      if(!present)return;
+      ex.eq.forEach((q,i)=>{
+        n++;const li=document.createElement('li');
+        if(q.word){li.className='word cur';li.innerHTML='<b>σύμπτωμα</b> · σύν + πίπτω · <span style="color:var(--mute)">that which falls together</span> · <b style="font-size:.95rem">SYMPTOM</b>';eqs.appendChild(li);return;}
+        li.className=(ex.from===step?'cur ':'')+(q.c||'');
+        const key=ex.id+':'+i;
+        li.innerHTML='<span class="n">'+String(n).padStart(2,'0')+'</span><span class="eq"></span>';
+        const span=li.querySelector('.eq');
+        if(ex.from===step&&!typed[key]&&!reduced){typed[key]=true;let k=0;const s=q.t;const tick=()=>{k++;span.textContent=s.slice(0,k);if(k<s.length)setTimeout(tick,18+Math.random()*22);};setTimeout(tick,220+i*260);}
+        else{span.textContent=q.t;typed[key]=true;}
+        eqs.appendChild(li);
+      });
+    });
+    const cur=eqs.querySelector('li.cur');if(cur&&eqs.scrollHeight>eqs.clientHeight)cur.scrollIntoView({block:'nearest'});
+  }
+
+  // ---------- scroll ----------
+  const steps=Array.from(document.querySelectorAll('.step'));
+  let current=0;
+  function activate(n){if(n===current)return;current=n;steps.forEach(s=>s.classList.toggle('active',+s.dataset.step===n));render(n);}
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)activate(+e.target.dataset.step);});},{rootMargin:'-42% 0px -48% 0px',threshold:0});
+    steps.forEach(s=>io.observe(s));
+  }
+  // initial: complete at rest
+  activate(1);
+  // if the page loads scrolled, pick the nearest step
+  requestAnimationFrame(()=>{const mid=window.innerHeight*.5;let best=1,bd=1e9;steps.forEach(s=>{const r=s.getBoundingClientRect();const d=Math.abs((r.top+r.bottom)/2-mid);if(d<bd){bd=d;best=+s.dataset.step;}});activate(best);});
+})();
+</script>
+</body>
+</html>
