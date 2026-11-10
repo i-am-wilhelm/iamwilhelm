@@ -18,9 +18,8 @@ seriesNo: 4
 
 Mounted as delivered from the owner's approved source file
 (_incoming/futurist-essays/the-receipts.html) by src/lib/futurist.ts. The
-companion to Face Forward (No. 3): the sources behind its second section,
-set as a register tape. It hangs directly after Face Forward. Gallery
-only: the homepage wall leaves it out (src/config/futurist.ts). The time
+fourth Futurist installment: the sources behind Face Forward's second
+section, set as a register tape. It hangs directly after Face Forward. The time
 on `date` only orders it after Face Forward in the newest-first lists. The
 plate is the page's counter. Chosen, not the owner's: the `verb` line and
 the zodiac `sign` (Libra, the scales, for a tally).

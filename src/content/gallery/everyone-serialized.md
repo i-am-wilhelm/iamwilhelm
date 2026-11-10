@@ -15,11 +15,10 @@ series: futurist
 seriesNo: 2
 ---
 
-The second Futurist essay, the companion to Everyone, Searchable; on
-/gallery/ the two hang together as a pair near the foot of the wall
-(src/pages/gallery/index.astro). Its series label comes from
-src/content/writings/everyone-serialized.md. `order` hangs it after the
-frames already on the homepage wall, so the hero frame there stays
-Everyone, Searchable (15, since 14 is taken by an open branch). Taurus for
+The second Futurist installment; on /gallery/ the Futurist installments
+hang together as the featured series at the head of the wall
+(src/pages/gallery/index.astro), and on the homepage in their own section
+(FeatureFuturist). Its series label comes from
+src/content/writings/everyone-serialized.md. `order` is 15, after the frames that were on the wall when it was hung. Taurus for
 the body: the sign of the senses and of money, for a heartbeat that becomes
 a token. The plate is the coda's iris dark.

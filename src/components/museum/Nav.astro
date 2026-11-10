@@ -2,7 +2,7 @@
 /**
  * Sticky minimal nav. On the homepage every item is an in-page anchor to its
  * room (museum.ts marks the room in view with aria-current); elsewhere,
- * Gallery and Writings go to their own routes and the rest return to the
+ * Gallery, Futurist (the series index) and Writings go to their own routes and the rest return to the
  * homepage rooms. An item with `room: false` (Earl) has no room: it goes to
  * its route from every page and stays out of the scroll-spy. At the right
  * end, one quiet gilt button books a call (the BackGold scheduler).
@@ -12,7 +12,7 @@ import { NAV, SCHEDULER_URL } from '../../config/site';
 interface Props {
   home?: boolean;
   /** Route key for aria-current="page" on standalone pages. */
-  current?: 'gallery' | 'writings' | 'method' | 'support' | 'services';
+  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services';
 }
 const { home = false, current } = Astro.props;
 

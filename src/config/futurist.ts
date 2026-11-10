@@ -1,7 +1,7 @@
 /**
  * The Futurist pages mounted exactly as their approved source files (in
- * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward and its
- * companion, The Receipts.
+ * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward and
+ * The Receipts, the third and fourth Futurist installments.
  *
  * `sha256` is the approved file's hash: the build stops if the file on
  * record is not the file that was approved. `night` is the page's own
@@ -22,9 +22,3 @@ export const FUTURIST_SOURCES = {
 } as const;
 
 export type FuturistSlug = keyof typeof FUTURIST_SOURCES;
-
-/**
- * Both hang in the Gallery only: the homepage wall (RoomGallery) leaves
- * these frames out. Remove a slug to hang it on the homepage too.
- */
-export const FUTURIST_GALLERY_ONLY: string[] = ['face-forward', 'the-receipts'];

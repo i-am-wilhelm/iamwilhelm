@@ -19,9 +19,8 @@ seriesNo: 3
 Mounted as delivered from the owner's approved source file
 (_incoming/futurist-essays/face-forward.html) by src/lib/futurist.ts; the
 title and the card text are the file's own <title> and meta description.
-The third Futurist essay and the newest; The Receipts (No. 4) is its
-companion and hangs directly after it. Gallery only: the homepage wall
-leaves it out (src/config/futurist.ts). The time on `date` only orders it
+The third Futurist installment; The Receipts (No. 4) hangs directly after
+it. On the homepage both hang in the Futurist section (FeatureFuturist). The time on `date` only orders it
 ahead of The Receipts and Everyone, Serialized, published the same day, in
 the newest-first lists. The plate is the page's night. Chosen, not the
 owner's: the `verb` line and the zodiac `sign` (Leo, the sun's sign, for a

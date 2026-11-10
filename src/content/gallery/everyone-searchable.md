@@ -15,8 +15,9 @@ series: futurist
 seriesNo: 1
 ---
 
-The first Futurist essay, and the hero frame of the homepage wall (the
-first entry by `order` takes the hero frame there). Its series label comes
+The first Futurist installment. On the homepage it hangs with the other
+Futurist installments in their own section (FeatureFuturist), not on the
+Room II wall. Its series label comes
 from src/content/writings/everyone-searchable.md. Aquarius for the ending:
 the water-bearer's vessel tips and the page floods. The plate is the coda's
 water taken down to a dark plate.

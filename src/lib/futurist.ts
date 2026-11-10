@@ -14,9 +14,11 @@
  *     the link to the plain-text twin, the share card (the page's own
  *     render, public/og/<slug>.jpg) and the Article schema;
  *   - LINKS holds the two cross-links between Face Forward and The
- *     Receipts, each one a named, exact replacement.
+ *     Receipts, each one a named, exact replacement;
+ *   - FIXES holds the repairs made since the files were approved, each one
+ *     a named, exact replacement (the source files stay as approved).
  *
- * Nothing else is added: no wrapper element, no site navigation, no foot.
+ * Nothing is added around the page: no wrapper element, no site navigation, no foot.
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
  */
@@ -61,6 +63,47 @@ const LINKS: Record<FuturistSlug, [string, string, string]> = {
     'the header line',
     '<p class="sub">FACE FORWARD · REGISTER 01</p>',
     '<p class="sub"><a href="/gallery/face-forward/" style="color:inherit;text-decoration:none">FACE FORWARD</a> · REGISTER 01</p>',
+  ],
+};
+
+/**
+ * Repairs to single pages: [what, the exact source text, its replacement].
+ *
+ * Face Forward: the hero's two columns were the headline's full width plus
+ * a fixed 34rem panel, which is wider than the hero's own 68rem box, so the
+ * livestream panel ran past the right edge of any window under about 1220px
+ * and sat off-centre above that. The panel column now takes the room that
+ * is left, and the two columns start only where both fit (1088px, the
+ * hero's full width); below that the hero stacks as it does on a phone.
+ *
+ * The Receipts: the register counted the first item as rung up on load,
+ * before any scrolling, so it never showed "ITEM 00/14 · SCROLL TO RING
+ * UP". Items now ring up only once the reader has scrolled.
+ */
+const FIXES: Record<FuturistSlug, [string, string, string][]> = {
+  'face-forward': [
+    [
+      "the hero's two-column rule",
+      '  .hero { grid-template-columns: 1fr 34rem; align-items: end; padding-top: 64px; column-gap: 40px; }\n  .hero .hint { grid-column: 1 / -1; }\n',
+      '  .hero { padding-top: 64px; }\n',
+    ],
+    [
+      'the end of the wide-screen rules',
+      '  .card { margin: 0; max-width: 30rem; }\n}\n',
+      '  .card { margin: 0; max-width: 30rem; }\n}\n' +
+        '/* site: the hero goes two-up only where both columns fit (src/lib/futurist.ts) */\n' +
+        '@media (min-width: 1088px) {\n' +
+        '  .hero { grid-template-columns: min-content minmax(0, 1fr); align-items: end; column-gap: 40px; }\n' +
+        '  .hero .hint { grid-column: 1 / -1; }\n' +
+        '}\n',
+    ],
+  ],
+  'the-receipts': [
+    [
+      "the register's ring-up test",
+      '      if (items[i].getBoundingClientRect().top < line) {',
+      '      if ((window.pageYOffset || document.documentElement.scrollTop || 0) > 0 && items[i].getBoundingClientRect().top < line) {',
+    ],
   ],
 };
 
@@ -171,6 +214,7 @@ export async function futuristDocument(slug: FuturistSlug): Promise<string> {
 
   const [what, find, put] = LINKS[slug];
   html = swap(html, find, put, what, slug);
+  for (const [fixed, from, to] of FIXES[slug]) html = swap(html, from, to, fixed, slug);
 
   return html.replace(/^<!DOCTYPE html>\n/i, '');
 }

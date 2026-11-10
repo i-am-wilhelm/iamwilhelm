@@ -27,7 +27,7 @@ const feed = seriesFeed(id);
 <Museum
   title={`${s.title} · Writings · ${SITE_NAME}`}
   description={`${s.title} by ${SITE_NAME}. ${s.statement}`}
-  current="writings"
+  current={id === 'futurist' ? 'futurist' : 'writings'}
   schema={[
     {
       '@type': ['CollectionPage', 'CreativeWorkSeries'],
