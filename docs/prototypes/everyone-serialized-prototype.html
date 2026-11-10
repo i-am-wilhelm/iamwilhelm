@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everyone, Serialized</title>
+<meta name="description" content="Your heartbeat, your walk, the shadow you cast in a radio wave. Each one is becoming a number that travels without you. How deep it goes, where the method came from, and where the hope is.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&amp;display=swap">
+<style>
+:root{
+  /* Layout: an instrument readout that descends. Step text on the left, the pinned exhibit on the right, drawn live. The page darkens level by level to the floor, surfaces for the hope, and ends in the only color in the piece. One visual world, single theme by choice: ECG paper, ink, serial red. */
+  --paper:#ebe7e1;
+  --ink:#16181b;
+  --ink-soft:#5b5f66;
+  --serial:#c0281c;
+  --proof:#0f6b5c;
+  --floor:#090a0d;
+  --display:"Big Shoulders Stencil Display","Big Shoulders Stencil","Avenir Next Condensed","Roboto Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Newsreader","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --typed:"Courier Prime","Courier New",Courier,monospace;
+  --bar:44px;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth}
+body{
+  --bg:var(--paper);--fg:var(--ink);--fg-soft:var(--ink-soft);--acc:var(--serial);--ok:var(--proof);--sheet:#f7f4ef;
+  --rule:color-mix(in srgb,var(--fg) 16%,transparent);
+  --grid:color-mix(in srgb,var(--acc) 7%,transparent);
+  margin:0;background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  color:var(--fg);font-family:var(--body);font-size:clamp(18px,1rem + .35vw,21px);line-height:1.55;text-rendering:optimizeLegibility;
+  transition:background-color .9s ease,color .9s ease;
+}
+body[data-depth="1"]{--bg:#e4e0d9}
+body[data-depth="2"]{--bg:#d8d4cc}
+body[data-depth="3"]{--bg:#1a1d22;--fg:#e9e5de;--fg-soft:#a5a5a1;--acc:#ff5b42;--ok:#46c8aa;--sheet:#24282e;color-scheme:dark}
+body[data-depth="4"]{--bg:var(--floor);--fg:#e9e5de;--fg-soft:#9c9c98;--acc:#ff5b42;--ok:#46c8aa;--sheet:#15181c;color-scheme:dark}
+body[data-depth="5"]{--bg:#14100b;--fg:#f1e9dc;--fg-soft:#b3a895;--acc:#e3a13a;--ok:#46c8aa;--sheet:#221a12;color-scheme:dark}
+h1,h2,h3{margin:0;font-weight:800;text-wrap:balance}
+p{margin:0}
+a{color:inherit;text-underline-offset:.18em}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:2px}
+
+/* top bar */
+.bar{position:fixed;inset:0 0 auto;height:var(--bar);z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 max(16px,4vw);background:color-mix(in srgb,var(--bg) 92%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);font-family:var(--typed);font-size:13px;letter-spacing:.06em;color:var(--fg);transition:background-color .9s ease,color .9s ease}
+.bar-title{text-transform:uppercase;letter-spacing:.14em;color:var(--fg-soft)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--acc)}
+.toc{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 0;text-transform:uppercase;letter-spacing:.12em}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary{white-space:nowrap}
+#now{display:block;min-width:0;max-width:60vw;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:899px){.gauge b{display:none}}
+.chev{width:8px;height:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
+.toc[open] .chev{transform:translateY(2px) rotate(-135deg)}
+.toc ol{position:absolute;top:calc(100% + 6px);left:0;margin:0;padding:8px;list-style:none;min-width:290px;background:var(--bg);color:var(--fg);border:1px solid var(--rule);box-shadow:0 14px 34px rgba(12,13,15,.22)}
+.toc a{display:grid;grid-template-columns:44px 1fr;padding:8px 10px;text-decoration:none;text-transform:none;letter-spacing:.02em;font-size:14px}
+.toc a:hover,.toc a:focus-visible{background:color-mix(in srgb,var(--fg) 8%,transparent)}
+.toc a span:first-child{color:var(--acc);font-weight:700}
+.gauge{display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-soft);font-size:12px}
+.gauge b{font-weight:400;margin-right:6px}
+.gauge i{display:block;width:16px;height:9px;border:1px solid currentColor;transition:background-color .4s ease,border-color .4s ease}
+.gauge i.on{background:var(--acc);border-color:var(--acc)}
+
+/* hero */
+.hero{max-width:1240px;margin:0 auto;padding:calc(var(--bar) + clamp(48px,9vh,110px)) max(24px,4vw) clamp(40px,7vh,80px)}
+.kicker{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--typed);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-soft)}
+.title{font-family:var(--display);font-size:clamp(52px,12.5vw,200px);line-height:.84;letter-spacing:.01em;text-transform:uppercase;margin:.2em 0 .26em;overflow-wrap:break-word;hyphens:auto}
+.title span{display:block}
+.title .second{color:var(--acc)}
+.dek{font-size:clamp(21px,1.1rem + .9vw,30px);line-height:1.32;max-width:33ch}
+.pulse{display:block;width:100%;height:112px;margin-top:clamp(24px,4vh,40px);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.pulse-cap{margin-top:8px;display:flex;justify-content:space-between;gap:16px;font-family:var(--typed);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft)}
+.epigraph{margin:clamp(28px,5vh,48px) 0 0;max-width:44ch;padding-left:18px;border-left:2px solid var(--acc);font-style:italic;color:var(--fg-soft);font-size:clamp(17px,1rem + .2vw,19px)}
+.epigraph cite{display:block;margin-top:6px;font-style:normal;font-family:var(--typed);font-size:13px;letter-spacing:.08em}
+.cue{margin-top:clamp(28px,5vh,44px);display:flex;align-items:center;gap:12px;font-family:var(--typed);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft)}
+.cue::before{content:"";width:1px;height:32px;background:currentColor;transform-origin:top;animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+
+/* chapters */
+.chapter{scroll-margin-top:var(--bar)}
+.chap{max-width:1240px;margin:0 auto;padding:clamp(80px,15vh,170px) max(24px,4vw) clamp(12px,2vh,24px);display:grid;grid-template-columns:auto 1fr;align-items:end;gap:0 clamp(16px,2vw,28px)}
+.chap-n{font-family:var(--display);font-weight:800;font-size:clamp(70px,10vw,150px);line-height:.8;color:var(--acc)}
+.chap h2{font-family:var(--display);font-size:clamp(40px,5.6vw,86px);line-height:.88;text-transform:uppercase;letter-spacing:.01em;overflow-wrap:break-word;hyphens:auto}
+@media (max-width:520px){.chap{grid-template-columns:minmax(0,1fr)}.chap-n{margin-bottom:10px}}
+.chap-of{grid-column:1 / -1;margin-top:14px;padding-top:10px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:4px 22px;font-family:var(--typed);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft)}
+.chap-of b{font-weight:700;color:var(--acc)}
+
+/* scenes */
+.scene{position:relative;padding:0 max(24px,4vw)}
+.scene-in{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(300px,410px) minmax(0,1fr);gap:clamp(32px,5vw,80px)}
+.graphic{grid-column:2;grid-row:1;align-self:start;position:sticky;top:var(--bar);height:calc(100vh - var(--bar));--gh:calc(100vh - var(--bar));display:flex;align-items:center;justify-content:center}
+.steps{grid-column:1;grid-row:1;padding:6vh 0 32vh}
+.step{min-height:74vh;display:flex;align-items:center}
+.card{max-width:36ch;font-size:clamp(19px,1rem + .4vw,22px);line-height:1.5;transition:opacity .4s ease}
+.card p+p{margin-top:.75em}
+.card .yr{display:block;margin-bottom:8px;font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.js .step:not(.is-active) .card{opacity:.3}
+.exhibit{margin:0;position:relative;width:min(100%,700px,calc(var(--gh) - 48px));aspect-ratio:1}
+.exhibit canvas{display:block;width:100%;height:100%}
+
+@media (max-width:899px){
+  .scene-in{display:block}
+  .graphic{height:calc(100svh - var(--bar));--gh:calc(60svh - var(--bar));align-items:flex-start;padding-top:2svh}
+  .steps{position:relative;z-index:2;margin-top:calc(-100svh + var(--bar));padding:0 0 34svh;pointer-events:none}
+  .step{min-height:92svh;align-items:flex-end;padding-bottom:5svh}
+  .card{pointer-events:auto;max-width:none;width:100%;font-size:18px;background:var(--bg);border:1px solid var(--rule);box-shadow:0 10px 28px rgba(12,13,15,.2);padding:16px 18px;transition:background-color .9s ease}
+  .js .step:not(.is-active) .card{opacity:1}
+  .bar-title{display:none}
+}
+
+/* moves */
+.moves{max-width:1240px;margin:0 auto;padding:clamp(40px,8vh,96px) max(24px,4vw) clamp(24px,4vh,48px);display:grid;grid-template-columns:minmax(220px,410px) minmax(0,1fr);gap:clamp(24px,5vw,80px)}
+.moves h3{font-family:var(--display);font-size:clamp(42px,5vw,76px);line-height:.88;text-transform:uppercase}
+.moves h3 small{display:block;margin-top:14px;font-family:var(--typed);font-size:13px;font-weight:400;letter-spacing:.14em;color:var(--fg-soft)}
+.moves ol{list-style:none;margin:0;padding:0;border-top:2px solid var(--fg)}
+.moves li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule);max-width:62ch}
+.moves .mn{font-family:var(--display);font-weight:800;font-size:42px;line-height:.9;color:var(--acc)}
+.moves li b{font-weight:600}
+@media (max-width:899px){
+  .moves{grid-template-columns:minmax(0,1fr)}
+  .moves li{grid-template-columns:52px minmax(0,1fr)}
+  .moves .mn{font-size:34px}
+}
+
+/* coda */
+.coda{position:relative;overflow:hidden;background:#14100b;color:#f1e9dc;padding:clamp(80px,16vh,180px) max(24px,4vw) 64px}
+.coda-eye{position:absolute;inset:0;width:100%;height:100%;opacity:.92;pointer-events:none}
+.coda-in{position:relative;max-width:1240px;margin:0 auto;min-height:min(70vh,640px);display:flex;flex-direction:column;justify-content:center}
+.coda-line{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(56px,10vw,150px);line-height:.86;letter-spacing:.01em;max-width:9ch;text-wrap:balance;text-shadow:0 2px 30px #14100b}
+.coda-by{margin-top:28px;font-family:var(--typed);font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+.sources{position:relative;max-width:1240px;margin:clamp(64px,10vh,120px) auto 0;padding-top:28px;border-top:1px solid rgba(241,233,220,.28);display:grid;grid-template-columns:minmax(160px,240px) minmax(0,1fr);gap:24px;scroll-margin-top:var(--bar)}
+.sources h2{font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.sources ol{margin:0;padding-left:1.5em;display:grid;gap:10px;font-size:16px;line-height:1.4}
+.sources a{color:#f1e9dc}
+.sources .note{grid-column:2;font-size:15px;line-height:1.5;opacity:.85}
+.coda :focus-visible{outline-color:#e3a13a}
+@media (max-width:700px){.sources{grid-template-columns:minmax(0,1fr)}.sources .note{grid-column:1}.coda-eye{opacity:.5}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.01ms!important;transition-delay:0s!important;animation:none!important}
+}
+</style>
+</head>
+<body data-depth="0">
+
+<div class="bar">
+  <details class="toc">
+    <summary><span class="chev" aria-hidden="true"></span><span id="now">Contents</span></summary>
+    <ol>
+      <li><a href="#the-signature"><span>I</span><span>The Signature</span></a></li>
+      <li><a href="#demonstrated"><span>II</span><span>Demonstrated</span></a></li>
+      <li><a href="#standardized"><span>III</span><span>Standardized</span></a></li>
+      <li><a href="#patented"><span>IV</span><span>Patented</span></a></li>
+      <li><a href="#imagined"><span>V</span><span>Imagined</span></a></li>
+      <li><a href="#the-method"><span>VI</span><span>The Method</span></a></li>
+      <li><a href="#the-missing-because"><span>VII</span><span>The Missing Because</span></a></li>
+      <li><a href="#the-hope"><span>VIII</span><span>Where the Hope Is</span></a></li>
+      <li><a href="#their-eyes"><span>IX</span><span>The Color of Their Eyes</span></a></li>
+      <li><a href="#sources"><span>&#183;</span><span>Sources</span></a></li>
+    </ol>
+  </details>
+  <span class="bar-title">Everyone, Serialized</span>
+  <span class="gauge" aria-hidden="true"><b>Depth</b><i></i><i></i><i></i><i></i></span>
+  <span class="progress" aria-hidden="true"></span>
+</div>
+
+<header class="hero" id="top">
+  <p class="kicker"><span>By Michael Wilhelm</span><span>November 2026</span></p>
+  <h1 class="title"><span>Everyone,</span><span class="second">Serialized</span></h1>
+  <p class="dek">Your heartbeat, your walk, the shadow you cast in a radio wave. Each one is becoming a number that travels without you. How deep that goes, where the method came from, and where the hope is.</p>
+  <canvas class="pulse" id="pulse" role="img" aria-label="A heartbeat trace runs left to right and turns into a barcode."></canvas>
+  <p class="pulse-cap" aria-hidden="true"><span>Signal</span><span>Serial</span></p>
+  <blockquote class="epigraph"><p>And David&#8217;s heart smote him after that he had numbered the people.</p><cite>2 Samuel 24:10</cite></blockquote>
+  <p class="cue">Scroll to start the descent</p>
+</header>
+
+<main>
+
+<!-- I -->
+<section class="chapter" id="the-signature" data-chapter data-num="I" data-title="The Signature" data-depth="0">
+  <header class="chap"><span class="chap-n">I</span><h2>The Signature</h2><p class="chap-of"><span>Chapter I of IX</span><span>Surface</span></p></header>
+  <div class="scene" data-scene="sig" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="Three traces on ECG paper: a heartbeat, a walking gait and a radio shadow. They are sampled into a barcode and a serial number. Then a ladder of four levels appears: demonstrated, standardized, patented, imagined."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Everyone is about to be serialized. The body already issues the number.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>Your heartbeat has a shape. So does your walk, and so does the shadow you cast in a radio wave. Each one holds steady enough to tell you from the next person.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>A serial number is a fact built to travel. It goes places you never go and gets read by people you will never meet.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>This one goes down four levels: what has been demonstrated, what is being standardized, what has been patented, and what has only been imagined.</p><p>Every claim wears its depth.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- II -->
+<section class="chapter" id="demonstrated" data-chapter data-num="II" data-title="Demonstrated" data-depth="1" data-level="1">
+  <header class="chap"><span class="chap-n">II</span><h2>Demonstrated</h2><p class="chap-of"><span>Chapter II of IX</span><b>Level 1 of 4</b></p></header>
+  <div class="scene" data-scene="wifi" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="A room seen from above. A Wi-Fi access point sends waves past a person and reads a heart rate of 72 from the distortion. Two access points match the same body at 95.5 percent. A laser reads a heartbeat from 200 meters. The fine print: one person per room, fourteen subjects, thirty seconds of sitting still. The result is stamped same body, with the name left blank."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><span class="yr">2025 &#183; Santa Cruz</span><p>A Wi-Fi chip that costs five to ten dollars reads a heart rate from across the room. Five seconds of signal. Clinical-grade accuracy.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><span class="yr">2025 &#183; Rome</span><p>Researchers at Sapienza train a network to recognize people by the way their bodies distort Wi-Fi. No camera, no phone in your pocket. It scores 95.5 percent on its benchmark.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><span class="yr">2019 &#183; The Pentagon</span><p>A laser called Jetson reads a cardiac signature through a shirt from 200 meters.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>Now the fine print. One person in the room at a time. A benchmark of fourteen people. Thirty seconds of sitting still, plus a library of heartbeats to match against.</p><p>The demos are real, and they are small.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><p>Every one of them also stops at the same sentence. Same body as before.</p><p>Hold on to that. It matters later.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- III -->
+<section class="chapter" id="standardized" data-chapter data-num="III" data-title="Standardized" data-depth="2" data-level="2">
+  <header class="chap"><span class="chap-n">III</span><h2>Standardized</h2><p class="chap-of"><span>Chapter III of IX</span><b>Level 2 of 4</b></p></header>
+  <div class="scene" data-scene="isac" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="A cell tower sweeps a beam across a skyline. The same signal connects and senses. A drone is bracketed as target one, then people on the street. A storefront is labeled Shopping Experience Tracker, with three carriers feeding one outside firm. A cost meter fills and the scene is stamped draft."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Level two. The next cellular network is being designed to sense the world as well as connect it. The industry calls this integrated sensing and communication.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><span class="yr">Early 2026</span><p>The standards body finishes its 6G requirements study. A network that can perceive its physical surroundings is on the list of core use cases.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>The first target written into the standard is drones. In surveys of the same work, one of the four use-case families is called human-centric sensing.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>One European research project lists a use case called the Shopping Experience Tracker. An outside company pools sensing results from several carriers at once.</p><p>Nobody leaked that. It is in the paper.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><p>The fine print here is money. Sensing all the time costs compute all the time, and analysts already see the consumer pitch losing its business case.</p><p>The privacy rules are still in draft.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IV -->
+<section class="chapter" id="patented" data-chapter data-num="IV" data-title="Patented" data-depth="3" data-level="3">
+  <header class="chap"><span class="chap-n">IV</span><h2>Patented</h2><p class="chap-of"><span>Chapter IV of IX</span><b>Level 3 of 4</b></p></header>
+  <div class="scene" data-scene="token" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="An illustration of a patent application, WO 2020/060606, Cryptocurrency System Using Body Activity Data, with its loop of server, device and sensor, verify and award. It is annotated wearables and phones, no implants in the text, US filing abandoned, and stamped blueprint. Then five stages show how a body becomes a token: capture, template, bind, attest, settle. Then an iris scanner issuing a credential and paying tokens. Then a password that rotates beside a heartbeat that never does."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><span class="yr">2020</span><p>Level three. Microsoft publishes a patent application titled <em>Cryptocurrency System Using Body Activity Data</em>.</p><p>Its filing number, WO2020060606, did most of the marketing.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>Read the text. A server hands you a task. A sensor in your device reads your body&#8217;s response. If the reading passes, you get paid.</p><p>The sensing is done by wearables and phones. Implants never appear, and the US filing is listed as abandoned.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>So file it correctly. It is a blueprint. Someone drew the loop: task, body, verification, payout.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>Here is how a body becomes a token. Capture a trait. Boil it down to a compact code. Bind the code to a key.</p><p>From then on every interaction can emit a signed claim, and rules can pay or charge on the claims.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><p>A live version exists. World scans an iris, issues a credential, and pays its holders in tokens on a schedule.</p><p>More than twelve million people have looked into the Orb.</p></div></div>
+        <div class="step" data-step="6"><div class="card"><p>Carry one fact up from this level. A password can be rotated.</p><p>A heartbeat can&#8217;t.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- V -->
+<section class="chapter" id="imagined" data-chapter data-num="V" data-title="Imagined" data-depth="4" data-level="4">
+  <header class="chap"><span class="chap-n">V</span><h2>Imagined</h2><p class="chap-of"><span>Chapter V of IX</span><b>Level 4 of 4</b></p></header>
+  <div class="scene" data-scene="dust" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="Hundreds of drifting motes in the dark, with a one millimeter scale bar. A wireframe cube one cubic millimeter in size is labeled 1997, Berkeley to DARPA. Each mote gets a tiny halo for its radio range, and meters for power and range sit nearly empty. Then three tenses: can, is being designed to, has been imagined, with the last one underlined."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Level four, the floor. Smart dust: sensors the size of a grain of sand, scattered by the thousand.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><span class="yr">1997</span><p>The idea is older than the smartphone. A Berkeley team pitches DARPA on sensor nodes one cubic millimeter in size.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Nearly thirty years on, the walls are the same two. Power, and antennas. At dust scale a radio reaches a few millimeters.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>&#8220;Everything you touch will carry your signature&#8221; lives down here. It has been imagined, and it has been funded.</p><p>Keep the tense honest on the way back up: can, is being designed to, has been imagined.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VI -->
+<section class="chapter" id="the-method" data-chapter data-num="VI" data-title="The Method" data-depth="3">
+  <header class="chap"><span class="chap-n">VI</span><h2>The Method</h2><p class="chap-of"><span>Chapter VI of IX</span><span>How it was done before</span></p></header>
+  <div class="scene" data-scene="card" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="A blank punch card. Fields are punched into it one at a time: surname, census, body, print. A deck of cards stacks up behind it under the years 1890, 1933 and 1939. A number field is punched, and the legend For Social Security Purposes, Not For Identification is struck through, dated 1946 to 1972."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>The sensor is new. The method is old, and it has four steps.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><span class="yr">Step one</span><p>Make people legible. Surnames imposed for the tax roll. The census. Paris police filing people by the measurements of their bodies in the 1880s.</p><p>A British magistrate in Bengal taking a handprint on a contract in 1858, then fingerprints from pensioners.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><span class="yr">Step two</span><p>Mechanize the count. Hollerith&#8217;s punch cards tabulated the American census of 1890. Hollerith machines from IBM&#8217;s German subsidiary processed the German censuses of 1933 and 1939.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><span class="yr">Step three</span><p>Promise a narrow purpose. From 1946 to 1972, Social Security cards carried the words &#8220;not for identification.&#8221;</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="scene" data-scene="loop" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="A loop with four stations: sense, compare, reward, behave. A reading circles it, faster at each step. Older versions are named below: scrip, stopwatch, lever, points, dongle. The loop tightens around a person in the middle, and a door marked care opens onto it."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><span class="yr">Step four</span><p>Close the loop with rewards. Company scrip, good only at the company store. The foreman&#8217;s stopwatch. The lever and the pellet. Loyalty points. The safe-driver discount from the dongle in your car.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><span class="yr">1948</span><p>Norbert Wiener gives the loop a name, cybernetics, and a logic: sense, compare, correct.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Attach the sensor to a body and the payout to the reading, and the loop closes around a person. The system measures you, pays you to change, and measures again.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>The door it comes in through is always care. Pensions. Retirement. Fraud prevention.</p><p>The Wi-Fi heartbeat paper is pitched for elder care.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VII -->
+<section class="chapter" id="the-missing-because" data-chapter data-num="VII" data-title="The Missing Because" data-depth="3">
+  <header class="chap"><span class="chap-n">VII</span><h2>The Missing Because</h2><p class="chap-of"><span>Chapter VII of IX</span><span>Data without context</span></p></header>
+  <div class="scene" data-scene="because" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="A heart-rate chart spikes to 124. The what is filled in and the why is blank. Five possible reasons take turns: fear, a first kiss, grief, coffee, the stairs. The number gains decimals. A polygraph chart is stamped deception indicated. Three case cards compare data, story and truth. Four beats follow: an accurate data point, a missing because, a confident story, a real penalty. A bell curve shows the tails charged first."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>A sensor records what happened. It has no field for why.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>A heart rate of 124 reads the same for fear, a first kiss, grief, coffee, and a flight of stairs.</p><p>The reason stays in the room.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>Precision raises the stakes. An exact number lends its authority to whatever story gets built on top of it.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>We have a century of practice. The polygraph measures breath, sweat and pulse, and gets read as lying.</p><p>In 1988 Congress barred most private employers from using it.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><span class="yr">2020</span><p>Gainesville, Florida. Zachary McCoy tracks his bike rides with a fitness app. His loops pass a house that gets burgled, and a location warrant makes him a suspect.</p><p>Detroit. Robert Williams is arrested in front of his wife and daughters on a face match that was wrong.</p></div></div>
+        <div class="step" data-step="6"><div class="card"><span class="yr">2021</span><p>The Netherlands. The tax office&#8217;s fraud hunt brands more than 20,000 families as cheats over childcare benefits, often for errors as small as a missing signature.</p><p>The cabinet resigns.</p></div></div>
+        <div class="step" data-step="7"><div class="card"><p>Same four beats every time. An accurate data point, a missing because, a confident story, a real penalty.</p><p>A token is data with the context stripped out on purpose. That is what lets it travel.</p></div></div>
+        <div class="step" data-step="8"><div class="card"><p>And a loop that rewards the reading charges unusual lives first. The sick. The grieving. The night shift. Anyone whose normal sits outside the model&#8217;s.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIII -->
+<section class="chapter" id="the-hope" data-chapter data-num="VIII" data-title="Where the Hope Is" data-depth="0">
+  <header class="chap"><span class="chap-n">VIII</span><h2>Where the Hope Is</h2><p class="chap-of"><span>Chapter VIII of IX</span><span>Surfacing</span></p></header>
+  <div class="scene" data-scene="hope" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="Two sightings match as the same body, but the line to the registry stops at a gate marked enrollment. The gate closes and is stamped declined: no registry, no name. A histogram bunches up just past the line where a reward starts. Two columns compare serialized, where one ID threads through every site, with attested, where each site gets a different one-time proof. A draft privacy study sits beside a calendar page for February 2, 2025. A crowded room turns the signal to noise."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>Now the hope, and there is a real amount of it. Start with the sentence every demo stopped at.</p><p>Same body as before.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>A signature needs a registry to become a name. Somebody has to enroll you, and enrollment is a decision.</p><p>It can be declined, limited, and outlawed.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>The loop also poisons itself. Economists call it Goodhart&#8217;s law. Put a reward on a measurement and people perform for the sensor, until the reading describes the game and stops describing them.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>The proof can travel while the identifier stays home. The same math that tokenizes a body can prove &#8220;one real human&#8221; or &#8220;over 21&#8221; and leave nothing behind to link.</p><p>Serialized or attested is a wiring choice, and people can still demand the second.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><p>The window is open. The 6G privacy study is still in draft. Europe has banned social scoring, and emotion recognition at work and school, since February 2025.</p><p>Its ban is built on context. The offense is a score that follows you out of the setting where the data was gathered.</p></div></div>
+        <div class="step" data-step="6"><div class="card"><p>And the physics is on your side more than the brochures admit. Bodies are noisy, rooms are crowded, and watching everything all the time is expensive.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <section class="moves" aria-labelledby="moves-h">
+    <h3 id="moves-h">Seven moves<small>While the rules are in draft</small></h3>
+    <ol>
+      <li><span class="mn">01</span><p><b>Ask where the registry is.</b> Every time someone wants your face, finger, iris or pulse, ask who keeps the list and for how long.</p></li>
+      <li><span class="mn">02</span><p><b>Decline the enrollment you don&#8217;t need.</b> Convenience is the price being offered. Check whether it&#8217;s enough.</p></li>
+      <li><span class="mn">03</span><p><b>Take the proof, keep the identifier.</b> Favor systems that confirm one fact about you and forget the rest.</p></li>
+      <li><span class="mn">04</span><p><b>Answer the record.</b> When a number gets a say in your life, insist on a person with authority and a way to supply the because.</p></li>
+      <li><span class="mn">05</span><p><b>Keep data where it was given.</b> What you told your doctor belongs with your doctor. The scholar Helen Nissenbaum calls this contextual integrity.</p></li>
+      <li><span class="mn">06</span><p><b>Watch the door marked care.</b> The benefit is usually real. Read what else comes through with it.</p></li>
+      <li><span class="mn">07</span><p><b>Extend the grace you&#8217;ll need.</b> Hold a data point about someone without finishing their story.</p></li>
+    </ol>
+  </section>
+</section>
+
+<!-- IX -->
+<section class="chapter" id="their-eyes" data-chapter data-num="IX" data-title="The Color of Their Eyes" data-depth="0">
+  <header class="chap"><span class="chap-n">IX</span><h2>The Color of Their Eyes</h2><p class="chap-of"><span>Chapter IX of IX</span><span>Unserialized</span></p></header>
+  <div class="scene" data-scene="eyes" data-step="1">
+    <div class="scene-in">
+      <div class="graphic"><figure class="exhibit"><canvas role="img" aria-label="An iris drawn as rings of black and white code, with a scanning line. The code gives way to a hazel eye in full color. Eight more eyes appear around it, each a different color, and each is labeled with who it belongs to: mom, the barber, coach, your brother, you, next door, the new guy, an old friend, your kid."></canvas></figure></div>
+      <div class="steps">
+        <div class="step is-active" data-step="1"><div class="card"><p>A machine can read your iris and return a code. It was built to prove you&#8217;re human.</p></div></div>
+        <div class="step" data-step="2"><div class="card"><p>Your neighbor knows the color of your eyes.</p></div></div>
+        <div class="step" data-step="3"><div class="card"><p>A serial number indexes a body. The person is everything the index leaves out: what you pay attention to, what you mean, who you would show up for.</p></div></div>
+        <div class="step" data-step="4"><div class="card"><p>Everyone already runs a context-free reader in their own head. We finish each other&#8217;s stories from a glimpse.</p><p>The machine does at scale what we do to each other daily.</p></div></div>
+        <div class="step" data-step="5"><div class="card"><p>So practice the reverse while it still counts as practice. Hold the data point. Ask for the because. Extend the grace you will need.</p></div></div>
+        <div class="step" data-step="6"><div class="card"><p>Know your people by name before a network knows them by number.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<section class="coda" id="coda">
+  <canvas class="coda-eye" id="coda-eye" aria-hidden="true"></canvas>
+  <div class="coda-in">
+    <p class="coda-line">Know the color of their eyes.</p>
+    <p class="coda-by">Michael Wilhelm &#183; November 2026</p>
+  </div>
+  <footer class="sources" id="sources">
+    <h2>Sources</h2>
+    <ol>
+      <li><a href="https://news.ucsc.edu/2025/09/pulse-fi-wifi-heart-rate/">WiFi signals can measure heart rate, no wearables needed</a>, UC Santa Cruz News</li>
+      <li><a href="https://spectrum.ieee.org/amp/wi-fi-signal-heartbeat-detection-2674047343">How Wi-Fi Signals Can Be Used to Detect Your Heartbeat</a>, IEEE Spectrum</li>
+      <li><a href="https://www.theregister.com/2025/07/22/whofi_wifi_identifier/">Humans can be tracked with a unique fingerprint based on how their bodies block Wi-Fi signals</a>, The Register</li>
+      <li><a href="https://www.technologyreview.com/2019/06/27/238884/the-pentagon-has-a-laser-that-can-identify-people-from-a-distanceby-their-heartbeat/">The Pentagon has a laser that can identify people from a distance, by their heartbeat</a>, MIT Technology Review</li>
+      <li><a href="https://www.3gpp.org/technologies/sa1-use-cases-6g">6G Use Cases and Service Requirements</a>, 3GPP</li>
+      <li><a href="https://arxiv.org/pdf/2506.11828">A Tale of Two Mobile Generations: 5G-Advanced and 6G in 3GPP Release 20</a>, arXiv</li>
+      <li><a href="https://arxiv.org/pdf/2608.11606">Integrated Sensing and Communication in 3GPP: Evolution from 5G-Advanced to 6G</a>, arXiv</li>
+      <li><a href="https://arxiv.org/html/2508.13736v1">Architecture Considerations for ISAC in 6G</a>, arXiv</li>
+      <li><a href="https://www.abiresearch.com/market-research/insight/7788061-isac-moves-into-formal-6g-standardization-">ISAC Moves into Formal 6G Standardization, but the Commercial Reality Is Becoming More Focused</a>, ABI Research</li>
+      <li><a href="https://patents.google.com/patent/WO2020060606A1/en">WO2020060606A1, Cryptocurrency system using body activity data</a>, and its US counterpart <a href="https://patents.google.com/patent/US20200097951A1/en">US20200097951A1</a>, Google Patents</li>
+      <li><a href="https://wnep.com/article/news/verify/verify-microsoft-patent-refers-to-devices-like-smart-watches-not-microchips/507-fecd1bf4-aeb4-4f03-87f7-272dd6dbf86e">Verify: Microsoft patent refers to devices like smart watches, not microchips</a>, WNEP</li>
+      <li><a href="https://axios.com/2026/04/17/worldcoin-zoom-shopify-retail-partnership">Sam Altman&#8217;s &#8220;proof of human&#8221; company pushes into mainstream services</a>, Axios, and <a href="https://www.freethink.com/the-digital-frontier/world-network-orbs?amp=1">How proof-of-human tech could save the internet</a>, Freethink</li>
+      <li><a href="https://web.eecs.umich.edu/~prabal/teaching/eecs598-w10/readings/CLP06.pdf">SoC Issues for RF Smart Dust</a>, Cook et al., and <a href="https://www.nanowerk.com/smartdust.php">What is smart dust and how is it used?</a>, Nanowerk</li>
+      <li><a href="https://www.gutenberg.org/files/34859/34859-h/34859-h.htm">The Origin of Finger-Printing</a>, Sir William J. Herschel, 1916</li>
+      <li><a href="https://collections.ushmm.org/search/catalog/irn521586">Dehomag D11 tabulating machine</a>, United States Holocaust Memorial Museum</li>
+      <li><a href="https://www.ssa.gov/history/ssn/ssnversions.html">Social Security card version history</a>, Social Security Administration</li>
+      <li><a href="https://webapps.dol.gov/elaws/elg/eppa.htm">Employee Polygraph Protection Act of 1988</a>, U.S. Department of Labor</li>
+      <li><a href="https://nbcnews.com/news/us-news/google-tracked-his-bike-ride-past-burglarized-home-made-him-n1151761">Google tracked his bike ride past a burglarized home. That made him a suspect.</a>, NBC News</li>
+      <li><a href="https://aclu.org/press-releases/man-wrongfully-arrested-because-face-recognition-cant-tell-black-people-apart">Man Wrongfully Arrested Because Face Recognition Can&#8217;t Tell Black People Apart</a>, ACLU</li>
+      <li><a href="https://www.dutchnews.nl/2021/01/dutch-government-collapses-in-fall-out-from-child-benefit-scandal/">Dutch government collapses in fall out from child benefit scandal</a>, DutchNews, and <a href="https://www.pressreader.com/usa/the-guardian-usa/20210116/281711207296255">Dutch government resigns over child benefits scandal</a>, The Guardian</li>
+      <li><a href="https://www.orrick.com/en/Insights/2025/04/EU-Commission-Publishes-Guidelines-on-the-Prohibited-AI-Practices-under-the-AI-Act">EU Commission Publishes Guidelines on the Prohibited AI Practices under the AI Act</a>, Orrick</li>
+    </ol>
+    <p class="note">Also drawn on: Norbert Wiener, <em>Cybernetics</em> (1948). James C. Scott, <em>Seeing Like a State</em> (1998). Helen Nissenbaum, <em>Privacy in Context</em> (2010). Goodhart&#8217;s law (1975). Scripture from the King James Version, 2 Samuel 24:10. The patent sheet, punch card and case cards are illustrations.</p>
+  </footer>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  root.classList.add('js');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var wide = window.matchMedia('(min-width: 900px)');
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var TAU = Math.PI * 2;
+  var MONO = '"Courier Prime","Courier New",Courier,monospace';
+  var DISP = '"Big Shoulders Stencil Display","Big Shoulders Stencil","Avenir Next Condensed","Roboto Condensed","Arial Narrow",Impact,sans-serif';
+
+  /* ---------- palette: the canvases follow the page as it descends ---------- */
+  var PAL = {
+    light: { ink: [22, 24, 27], soft: [91, 95, 102], acc: [192, 40, 28], ok: [15, 107, 92], sheet: [247, 244, 239], bg: [235, 231, 225] },
+    dark: { ink: [233, 229, 222], soft: [165, 165, 161], acc: [255, 91, 66], ok: [70, 200, 170], sheet: [36, 40, 46], bg: [26, 29, 34] },
+    floor: { ink: [233, 229, 222], soft: [156, 156, 152], acc: [255, 91, 66], ok: [70, 200, 170], sheet: [21, 24, 28], bg: [9, 10, 13] },
+    iris: { ink: [241, 233, 220], soft: [179, 168, 149], acc: [227, 161, 58], ok: [70, 200, 170], sheet: [34, 26, 18], bg: [20, 16, 11] }
+  };
+  var DEPTHS = [['light', [235, 231, 225]], ['light', [228, 224, 217]], ['light', [216, 212, 204]], ['dark'], ['floor'], ['iris']];
+  var KEYS = ['ink', 'soft', 'acc', 'ok', 'sheet', 'bg'];
+  var pal = {}, palT = {}, depth = -1;
+  KEYS.forEach(function (k) { pal[k] = PAL.light[k].slice(); palT[k] = PAL.light[k]; });
+  function C(n, a) { var c = pal[n]; return 'rgba(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ',' + (a == null ? 1 : a) + ')'; }
+  function stepPal(dt) { var f = Math.min(1, dt * 4.5); KEYS.forEach(function (k) { for (var i = 0; i < 3; i++) pal[k][i] += (palT[k][i] - pal[k][i]) * f; }); }
+  function snapPal() { KEYS.forEach(function (k) { pal[k] = palT[k].slice(); }); }
+
+  /* ---------- small helpers ---------- */
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function sub(v, a, b) { return clamp((v - a) / (b - a)); }
+  function ease(t) { t = clamp(t); return t * t * (3 - 2 * t); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function rnd(seed) { var x = Math.sin(seed * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+  function gs(u, m, s) { var d = (u - m) / s; return Math.exp(-d * d); }
+  function L(c, x1, y1, x2, y2) { c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); }
+  function tx(c, s, x, y, size, col, o) {
+    o = o || {};
+    c.font = (o.w || 400) + ' ' + size + 'px ' + (o.f || MONO);
+    c.fillStyle = col; c.textAlign = o.a || 'left'; c.textBaseline = 'alphabetic';
+    c.fillText(s, x, y);
+  }
+  function box(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r || 0); else c.rect(x, y, w, h); }
+  function stamp(c, s, x, y, size, rot, col, a) {
+    if (a <= .01) return;
+    c.save(); c.translate(x, y); c.rotate(rot);
+    var z = 1 + (1 - a) * .3; c.scale(z, z); c.globalAlpha = c.globalAlpha * a;
+    c.font = '800 ' + size + 'px ' + DISP; c.textAlign = 'center'; c.textBaseline = 'middle';
+    var w = c.measureText(s).width;
+    c.lineWidth = size * .075; c.strokeStyle = col; c.lineJoin = 'miter';
+    c.strokeRect(-w / 2 - size * .28, -size * .6, w + size * .56, size * 1.2);
+    c.fillStyle = col; c.fillText(s, 0, size * .05);
+    c.restore();
+  }
+  function paper(c, x, y, w, h, step) {
+    var i, p;
+    c.fillStyle = C('sheet'); c.fillRect(x, y, w, h);
+    c.save(); c.beginPath(); c.rect(x, y, w, h); c.clip(); c.lineWidth = 1;
+    for (i = 0, p = x; p <= x + w + .5; p += step, i++) { c.strokeStyle = C('acc', i % 5 ? .1 : .24); L(c, p, y, p, y + h); }
+    for (i = 0, p = y; p <= y + h + .5; p += step, i++) { c.strokeStyle = C('acc', i % 5 ? .1 : .24); L(c, x, p, x + w, p); }
+    c.restore();
+    c.strokeStyle = C('ink', .5); c.lineWidth = 2; c.strokeRect(x, y, w, h);
+  }
+  function tag(c, s, x, y, rot, a) {
+    if (a <= .01) return;
+    c.save(); c.translate(x, y); c.rotate(rot); c.globalAlpha = a;
+    c.font = '700 26px ' + MONO; var w = c.measureText(s).width;
+    c.fillStyle = C('bg'); c.fillRect(-w / 2 - 14, -24, w + 28, 46);
+    c.strokeStyle = C('soft'); c.lineWidth = 2; c.setLineDash([6, 5]); c.strokeRect(-w / 2 - 14, -24, w + 28, 46); c.setLineDash([]);
+    c.fillStyle = C('ink'); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(s, 0, 0);
+    c.restore();
+  }
+  function bracket(c, x, y, w, h, col) {
+    var q = Math.min(w, h) * .28; c.strokeStyle = col; c.lineWidth = 3; c.beginPath();
+    c.moveTo(x, y + q); c.lineTo(x, y); c.lineTo(x + q, y);
+    c.moveTo(x + w - q, y); c.lineTo(x + w, y); c.lineTo(x + w, y + q);
+    c.moveTo(x + w, y + h - q); c.lineTo(x + w, y + h); c.lineTo(x + w - q, y + h);
+    c.moveTo(x + q, y + h); c.lineTo(x, y + h); c.lineTo(x, y + h - q);
+    c.stroke();
+  }
+
+  /* ---------- signals ---------- */
+  function ecg(u) { u -= Math.floor(u); return .12 * gs(u, .2, .028) - .1 * gs(u, .345, .009) + gs(u, .37, .011) - .24 * gs(u, .398, .011) + .3 * gs(u, .62, .05); }
+  function gait(u) { return .55 * Math.sin(TAU * u) + .3 * Math.sin(2 * TAU * u + .6) + .15 * Math.sin(3 * TAU * u + 1.1); }
+  function rf(u) { return .5 * Math.sin(TAU * u * 1.7) + .3 * Math.sin(TAU * u * 4.3 + 1) + .2 * Math.sin(TAU * u * 9.1 + 2); }
+  function bpm(u) { return 68 + 3 * Math.sin(u * 40) + 2 * Math.sin(u * 91 + 1) + 56 * (u < .58 ? gs(u, .58, .03) : gs(u, .58, .09)); }
+  function trace(c, fn, x0, x1, y0, amp, beats, head, lw) {
+    var x, y, hx = x0 + (x1 - x0) * head;
+    c.lineWidth = lw; c.strokeStyle = C('ink', .22); c.beginPath();
+    for (x = x0; x <= x1; x += 2) { y = y0 - amp * fn((x - x0) / (x1 - x0) * beats); if (x === x0) c.moveTo(x, y); else c.lineTo(x, y); }
+    c.stroke();
+    c.strokeStyle = C('ink'); c.beginPath();
+    for (x = x0; x <= hx; x += 2) { y = y0 - amp * fn((x - x0) / (x1 - x0) * beats); if (x === x0) c.moveTo(x, y); else c.lineTo(x, y); }
+    c.stroke();
+    c.fillStyle = C('acc'); c.beginPath(); c.arc(hx, y0 - amp * fn(head * beats), lw * 2.2, 0, TAU); c.fill();
+  }
+  function mini(c, x, y, label) {
+    var i, yy;
+    box(c, x, y, 280, 140, 4); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2; c.stroke();
+    tx(c, label, x + 16, y + 36, 24, C('ink'), { w: 700 });
+    c.strokeStyle = C('ink'); c.lineWidth = 3; c.beginPath();
+    for (i = 0; i <= 248; i += 3) { yy = y + 94 - 24 * rf(i / 248 * 2.2 + .3); if (!i) c.moveTo(x + 16, yy); else c.lineTo(x + 16 + i, yy); }
+    c.stroke();
+  }
+
+  /* ---------- eyes ---------- */
+  var EYES = [
+    [[160, 98, 40], [110, 62, 24], [52, 28, 12]],
+    [[184, 190, 152], [120, 140, 106], [56, 74, 58]],
+    [[150, 172, 92], [86, 130, 80], [34, 70, 50]],
+    [[150, 190, 222], [80, 130, 182], [28, 58, 100]],
+    [[196, 150, 62], [120, 124, 60], [58, 70, 40]],
+    [[172, 182, 188], [118, 132, 144], [58, 68, 80]],
+    [[226, 162, 60], [182, 112, 30], [90, 50, 14]],
+    [[104, 62, 30], [68, 38, 16], [30, 16, 8]],
+    [[124, 192, 182], [60, 142, 142], [20, 70, 80]]
+  ];
+  var WHO = ['MOM', 'THE BARBER', 'COACH', 'YOUR BROTHER', 'YOU', 'NEXT DOOR', 'THE NEW GUY', 'AN OLD FRIEND', 'YOUR KID'];
+  function rgb(v) { return 'rgb(' + Math.round(v[0]) + ',' + Math.round(v[1]) + ',' + Math.round(v[2]) + ')'; }
+  function iris(c, x, y, R, col, seed, t) {
+    var g = c.createRadialGradient(x, y, R * .28, x, y, R), n = R > 250 ? 230 : R > 150 ? 150 : 60, i, a, a2, r0, r1, lt;
+    g.addColorStop(0, rgb(col[0])); g.addColorStop(.55, rgb(col[1])); g.addColorStop(.92, rgb(col[2])); g.addColorStop(1, 'rgb(14,12,10)');
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, R, 0, TAU); c.fill();
+    c.lineWidth = Math.max(1, R * .011); c.lineCap = 'round';
+    for (i = 0; i < n; i++) {
+      a = i / n * TAU + rnd(i + seed) * .05; a2 = a + (rnd(i + seed * 2) - .5) * .06;
+      r0 = R * (.33 + rnd(i * 3 + seed) * .12); r1 = R * (.68 + rnd(i * 5 + seed) * .27); lt = rnd(i * 7 + seed);
+      c.strokeStyle = lt > .5 ? 'rgba(255,240,210,' + (.1 + lt * .22).toFixed(3) + ')' : 'rgba(20,12,6,' + (.12 + lt * .3).toFixed(3) + ')';
+      c.beginPath(); c.moveTo(x + r0 * Math.cos(a), y + r0 * Math.sin(a)); c.lineTo(x + r1 * Math.cos(a2), y + r1 * Math.sin(a2)); c.stroke();
+    }
+    c.fillStyle = 'rgb(10,9,8)'; c.beginPath(); c.arc(x, y, R * (.3 + .022 * Math.sin(t * .9 + seed)), 0, TAU); c.fill();
+    c.fillStyle = 'rgba(255,255,255,.85)'; c.beginPath(); c.arc(x - R * .2, y - R * .24, R * .07, 0, TAU); c.fill();
+  }
+  function irisCode(c, x, y, r0, r1, nr, ns, seed) {
+    var th = (r1 - r0) / nr, i, j;
+    c.save(); c.lineCap = 'butt'; c.lineWidth = Math.max(1, th - 3); c.strokeStyle = C('ink');
+    for (i = 0; i < nr; i++) for (j = 0; j < ns; j++) if (rnd(i * 97 + j * 13 + seed) > .5) {
+      c.beginPath(); c.arc(x, y, r0 + th * (i + .5), j / ns * TAU + .012, (j + 1) / ns * TAU - .012); c.stroke();
+    }
+    c.restore();
+  }
+
+  /* ---------- exhibits ---------- */
+  var DRAW = {};
+
+  /* I. three traces, a barcode, the ladder */
+  DRAW.sig = function (c, s, t) {
+    var k2 = s.at(2), k3 = s.at(3), k4 = s.at(4), i, dim = 1 - .84 * k4, head = reduce ? 1 : (t * .16) % 1;
+    c.save(); c.globalAlpha = dim;
+    paper(c, 40, 60, 920, 620, 23);
+    tx(c, 'CARDIAC · 72 BPM', 64, 106, 30, C('ink'), { w: 700 });
+    tx(c, '25 mm/s · 10 mm/mV', 936, 106, 22, C('soft'), { a: 'right' });
+    trace(c, ecg, 64, 936, 296, 150, 3.4, head, 4);
+    tx(c, 'y = Σ a·e^−((x−m)/s)²   {0 ≤ x < 1}', 64, 356, 22, C('soft'));
+    if (k2 > .01) {
+      c.globalAlpha = dim * k2;
+      tx(c, 'GAIT · 1.8 Hz', 64, 420, 30, C('ink'), { w: 700 });
+      trace(c, gait, 64, 936, 484, 42, 5, head, 3.5);
+      tx(c, 'RADIO SHADOW · 5 GHz', 64, 576, 30, C('ink'), { w: 700 });
+      trace(c, rf, 64, 936, 632, 34, 3, head, 3.5);
+    }
+    c.restore();
+    if (k3 > .01) {
+      var n = 72, bw = 872 / n, raw = s.k[3], shown = Math.ceil(n * sub(raw, 0, .8)), id = 'ID 7F3A·91C2·0B5E·44D8', u, v;
+      c.save(); c.globalAlpha = dim * k3; c.fillStyle = C('ink');
+      for (i = 0; i < shown; i++) {
+        u = i / n; v = Math.abs(ecg(u * 3.4)) + .4 * Math.abs(gait(u * 5)) + .3 * Math.abs(rf(u * 3));
+        c.fillRect(64 + i * bw, 712, bw * (.22 + .6 * clamp(v)), 118);
+      }
+      tx(c, id.slice(0, Math.ceil(id.length * sub(raw, .25, 1))), 64, 892, 46, C('acc'), { w: 700 });
+      c.restore();
+    }
+    if (k4 > .01) {
+      var names = ['1 · DEMONSTRATED', '2 · STANDARDIZED', '3 · PATENTED', '4 · IMAGINED'], a, x, y;
+      c.save();
+      for (i = 0; i < 4; i++) {
+        a = ease(sub(s.k[4], i * .15, .5 + i * .15)); x = 90 + i * 112; y = 150 + i * 176;
+        c.globalAlpha = a;
+        box(c, x, y, 480, 124, 6); c.fillStyle = i === 3 ? C('acc') : C('ink'); c.fill();
+        tx(c, names[i], x + 28, y + 76, 40, C('bg'), { w: 700 });
+      }
+      c.restore();
+    }
+  };
+
+  /* II. a room from above */
+  DRAW.wifi = function (c, s, t) {
+    var k2 = s.at(2), k3 = s.at(3), k4 = s.at(4), k5 = s.at(5), dim = 1 - .62 * k5, i, x, y, u, r;
+    var ax = 170, ay = 360, px = 520, py = 360, beat = ecg(t * 1.2);
+    c.save(); c.globalAlpha = dim;
+    paper(c, 60, 110, 880, 500, 22);
+    c.save(); c.beginPath(); c.rect(60, 110, 880, 500); c.clip();
+    for (i = 0; i < 9; i++) {
+      r = (t * 70 + i * 100) % 900;
+      c.strokeStyle = C('ink', .36 * (1 - r / 900)); c.lineWidth = 2.5; c.beginPath(); c.arc(ax, ay, r, 0, TAU); c.stroke();
+    }
+    c.fillStyle = C('acc', .1 + .08 * beat);
+    c.beginPath(); c.moveTo(px + 20, py - 60); c.lineTo(940, py - 170); c.lineTo(940, py + 170); c.lineTo(px + 20, py + 60); c.closePath(); c.fill();
+    c.strokeStyle = C('acc', .75); c.lineWidth = 2.5;
+    for (i = -1; i <= 1; i++) {
+      c.beginPath();
+      for (x = px + 60; x <= 836; x += 4) {
+        u = (x - px - 60) / (776 - px);
+        y = py + i * (28 + 70 * u) + Math.sin(x * .09 - t * 6) * (4 + 11 * ecg(t * 1.2 - u * .35));
+        if (x === px + 60) c.moveTo(x, y); else c.lineTo(x, y);
+      }
+      c.stroke();
+    }
+    c.restore();
+    c.fillStyle = C('ink'); c.fillRect(ax - 16, ay - 16, 32, 32); c.fillRect(840, ay - 16, 32, 32);
+    tx(c, 'ACCESS POINT', ax - 16, ay + 56, 24, C('ink'), { w: 700 });
+    tx(c, '$5–10 chip', ax - 16, ay + 84, 22, C('soft'));
+    tx(c, 'RECEIVER', 872, ay + 56, 24, C('ink'), { w: 700, a: 'right' });
+    c.fillStyle = C('ink'); c.beginPath(); c.ellipse(px, py, 34, 66, 0, 0, TAU); c.fill();
+    c.fillStyle = C('sheet'); c.beginPath(); c.arc(px, py, 25, 0, TAU); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 4; c.stroke();
+    c.fillStyle = C('acc'); c.beginPath(); c.arc(px, py, 6 + 7 * beat, 0, TAU); c.fill();
+    box(c, 640, 132, 280, 118, 4); c.fillStyle = C('bg'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2; c.stroke();
+    tx(c, '72', 660, 228, 100, C('acc'), { f: DISP, w: 800 });
+    tx(c, 'BPM', 772, 190, 28, C('ink'), { w: 700 });
+    tx(c, '5 s of signal', 772, 224, 20, C('soft'));
+    if (k3 > .01) {
+      var e = ease(sub(s.k[3], 0, .7));
+      c.save(); c.globalAlpha = dim * k3;
+      c.strokeStyle = C('acc'); c.lineWidth = 3.5; c.setLineDash([14, 8]);
+      L(c, 0, 66, lerp(0, px - 8, e), lerp(66, py - 30, e)); c.setLineDash([]);
+      tx(c, 'LASER · 200 m', 16, 44, 28, C('acc'), { w: 700 });
+      c.restore();
+    }
+    if (k2 > .01) {
+      c.save(); c.globalAlpha = dim * k2;
+      mini(c, 60, 650, 'HALLWAY'); mini(c, 660, 650, 'LOBBY');
+      c.strokeStyle = C('acc'); c.lineWidth = 3; L(c, 340, 722, 660, 722);
+      tx(c, 'MATCH 95.5%', 500, 706, 30, C('acc'), { w: 700, a: 'center' });
+      tx(c, 'no camera, no phone', 500, 758, 20, C('soft'), { a: 'center' });
+      c.restore();
+    }
+    c.restore();
+    if (k4 > .01) {
+      tag(c, '1 PERSON PER ROOM', 772, 292, -.05, k4 * dim);
+      tag(c, '14 SUBJECTS', 500, 830, .04, k4 * dim);
+      tag(c, '30 s, SITTING STILL', 236, 196, -.06, k4 * dim);
+    }
+    if (k5 > .01) {
+      stamp(c, 'SAME BODY', 500, 392, 150, -.08, C('acc'), k5);
+      c.save(); c.globalAlpha = k5;
+      tx(c, 'NAME:', 236, 916, 54, C('ink'), { w: 700 });
+      c.strokeStyle = C('ink'); c.lineWidth = 4; L(c, 420, 922, 764, 922);
+      if (reduce || (t * 1.6) % 1 < .5) { c.fillStyle = C('acc'); c.fillRect(432, 874, 22, 42); }
+      c.restore();
+    }
+  };
+
+  /* III. one signal, two jobs */
+  var BLD = [[390, 150, 330], [550, 170, 250], [730, 110, 400], [850, 100, 300]];
+  function walker(c, x, g) { c.fillStyle = C('ink'); c.beginPath(); c.arc(x, g - 50, 8, 0, TAU); c.fill(); box(c, x - 8, g - 40, 16, 40, 6); c.fill(); }
+  DRAW.isac = function (c, s, t) {
+    var k2 = s.at(2), k3 = s.at(3), k4 = s.at(4), k5 = s.at(5), G = 760, i, j, b, wx, wy, r;
+    var TX = 170, TY = 250, bx = TX + 22, by = TY - 18, len = 900, a = reduce ? .2 : .16 + .3 * Math.sin(t * .5);
+    c.strokeStyle = C('ink'); c.lineWidth = 3; L(c, 40, G, 960, G);
+    for (i = 0; i < BLD.length; i++) {
+      b = BLD[i];
+      c.fillStyle = C('sheet'); c.fillRect(b[0], G - b[2], b[1], b[2]);
+      c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.strokeRect(b[0], G - b[2], b[1], b[2]);
+      c.fillStyle = C('ink', .16);
+      for (wy = G - b[2] + 24; wy < G - 110; wy += 46) for (wx = b[0] + 18; wx < b[0] + b[1] - 30; wx += 40) c.fillRect(wx, wy, 20, 24);
+    }
+    c.strokeStyle = C('ink'); c.lineWidth = 3;
+    L(c, TX - 34, G, TX - 6, TY); L(c, TX + 34, G, TX + 6, TY);
+    for (i = 0; i < 6; i++) {
+      var y1 = lerp(G, TY, i / 6), y2 = lerp(G, TY, (i + 1) / 6), w1 = lerp(34, 6, i / 6), w2 = lerp(34, 6, (i + 1) / 6);
+      L(c, TX - w1, y1, TX + w2, y2); L(c, TX + w1, y1, TX - w2, y2);
+    }
+    c.fillStyle = C('ink'); c.fillRect(TX - 22, TY - 40, 12, 46); c.fillRect(TX + 10, TY - 40, 12, 46);
+    c.fillStyle = C('acc', .12); c.beginPath(); c.moveTo(bx, by);
+    c.lineTo(bx + len * Math.cos(a - .09), by + len * Math.sin(a - .09)); c.lineTo(bx + len * Math.cos(a + .09), by + len * Math.sin(a + .09)); c.closePath(); c.fill();
+    c.lineWidth = 3;
+    for (i = 0; i < 6; i++) { r = (t * 140 + i * 150) % 900; c.strokeStyle = C('acc', .8 * (1 - r / 900)); c.beginPath(); c.arc(bx, by, r, a - .09, a + .09); c.stroke(); }
+    tx(c, 'ONE SIGNAL', 50, 112, 34, C('ink'), { w: 700 });
+    if (k2 > .01) {
+      c.save(); c.globalAlpha = k2;
+      tx(c, 'TWO JOBS', 50, 154, 34, C('acc'), { w: 700 });
+      tx(c, 'connect + sense', 50, 186, 22, C('soft'));
+      c.lineWidth = 2.5;
+      for (i = 0; i < BLD.length; i++) {
+        var ex = BLD[i][0], ey = G - BLD[i][2], ang = Math.atan2(by - ey, bx - ex);
+        for (j = 0; j < 3; j++) { r = (t * 60 + j * 50) % 150; c.strokeStyle = C('ink', .6 * (1 - r / 150)); c.beginPath(); c.arc(ex, ey, r, ang - .5, ang + .5); c.stroke(); }
+      }
+      c.restore();
+    }
+    if (k3 > .01) {
+      var dx = 560 + Math.sin(t * .7) * 30, dy = 190 + Math.cos(t * .9) * 14, e3 = ease(sub(s.k[3], .4, 1));
+      c.save(); c.globalAlpha = k3;
+      c.strokeStyle = C('ink'); c.lineWidth = 4; L(c, dx - 30, dy - 12, dx + 30, dy + 12); L(c, dx - 30, dy + 12, dx + 30, dy - 12);
+      c.fillStyle = C('ink');
+      [[-30, -12], [30, 12], [-30, 12], [30, -12]].forEach(function (p) { c.beginPath(); c.ellipse(dx + p[0], dy + p[1] - 4, 16, 4, 0, 0, TAU); c.fill(); });
+      bracket(c, dx - 60, dy - 44, 120, 84, C('acc'));
+      tx(c, 'TARGET 01 · DRONE', dx + 76, dy + 8, 24, C('acc'), { w: 700 });
+      for (i = 0; i < 5; i++) {
+        wx = 250 + ((i * 137 + t * (10 + i * 3)) % 680);
+        c.globalAlpha = k3; walker(c, wx, G);
+        if (e3 > .01) { c.globalAlpha = k3 * e3; bracket(c, wx - 17, G - 64, 34, 66, C('acc')); }
+      }
+      c.globalAlpha = k3 * e3; tx(c, 'HUMAN-CENTRIC SENSING', 250, G + 46, 24, C('acc'), { w: 700 });
+      c.restore();
+    }
+    if (k4 > .01) {
+      c.save(); c.globalAlpha = k4;
+      c.fillStyle = C('acc'); c.fillRect(550, G - 98, 170, 22);
+      c.fillStyle = C('bg'); c.fillRect(612, G - 72, 46, 72); c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.strokeRect(612, G - 72, 46, 72);
+      tx(c, 'SHOPPING EXPERIENCE TRACKER', 50, 862, 28, C('acc'), { w: 700 });
+      for (i = 0; i < 3; i++) {
+        box(c, 50 + i * 210, 882, 190, 52, 4); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2; c.stroke();
+        tx(c, 'CARRIER ' + 'ABC'.charAt(i), 145 + i * 210, 917, 24, C('ink'), { a: 'center', w: 700 });
+      }
+      c.strokeStyle = C('acc'); c.lineWidth = 3; L(c, 662, 908, 736, 908);
+      c.beginPath(); c.moveTo(724, 898); c.lineTo(738, 908); c.lineTo(724, 918); c.stroke();
+      box(c, 742, 882, 210, 52, 4); c.fillStyle = C('acc'); c.fill();
+      tx(c, 'OUTSIDE FIRM', 847, 917, 24, C('bg'), { a: 'center', w: 700 });
+      c.setLineDash([8, 7]); c.strokeStyle = C('acc'); L(c, 635, G + 4, 635, 878); c.setLineDash([]);
+      c.restore();
+    }
+    if (k5 > .01) {
+      c.save(); c.globalAlpha = k5;
+      tx(c, 'COST OF ALWAYS-ON SENSING', 950, 48, 20, C('soft'), { a: 'right' });
+      c.strokeStyle = C('ink'); c.lineWidth = 2; c.strokeRect(610, 60, 340, 26);
+      c.fillStyle = C('acc'); c.fillRect(613, 63, 334 * (.5 + .44 * ease(s.k[5])), 20);
+      stamp(c, 'DRAFT', 500, 480, 190, -.12, C('acc'), 1);
+      c.restore();
+    }
+  };
+
+  /* IV. the filing, the pipeline, the live version, the fact */
+  function icon(c, i, x, y) {
+    var j, yy;
+    c.save(); c.translate(x, y); c.strokeStyle = C('ink'); c.fillStyle = C('ink'); c.lineWidth = 3.5;
+    if (i === 0) { c.strokeStyle = C('acc'); c.beginPath(); for (j = -46; j <= 46; j += 2) { yy = 12 - 36 * ecg((j + 46) / 92); if (j === -46) c.moveTo(j, yy); else c.lineTo(j, yy); } c.stroke(); }
+    else if (i === 1) { for (j = 0; j < 16; j++) if (rnd(j + 3) > .45) c.fillRect(-31 + (j % 4) * 16, -31 + Math.floor(j / 4) * 16, 13, 13); }
+    else if (i === 2) { c.beginPath(); c.arc(-22, 0, 15, 0, TAU); c.stroke(); L(c, -7, 0, 38, 0); L(c, 22, 0, 22, 14); L(c, 34, 0, 34, 14); }
+    else if (i === 3) { c.beginPath(); c.moveTo(-30, 2); c.lineTo(-10, 22); c.lineTo(30, -24); c.stroke(); }
+    else { c.beginPath(); c.arc(0, 0, 30, 0, TAU); c.stroke(); c.beginPath(); c.arc(0, 0, 17, 0, TAU); c.stroke(); }
+    c.restore();
+  }
+  DRAW.token = function (c, s, t) {
+    var p1 = s.only(1, 3), k2 = s.at(2), k3 = s.at(3), p4 = s.only(4), p5 = s.only(5), p6 = s.only(6), i, x, y, a;
+    if (p1 > .01) {
+      var bxs = [[224, 420, 'SERVER'], [556, 420, 'DEVICE + SENSOR'], [556, 640, 'VERIFY'], [224, 640, 'AWARD']];
+      var pts = [[334, 465], [666, 465], [666, 685], [334, 685]], u = reduce ? .3 : (t * .22) % 1, sg = Math.floor(u * 4), f = u * 4 - sg, A = pts[sg], B = pts[(sg + 1) % 4];
+      c.save(); c.globalAlpha = p1;
+      c.fillStyle = C('sheet'); c.fillRect(170, 60, 660, 880); c.strokeStyle = C('ink', .6); c.lineWidth = 2; c.strokeRect(170, 60, 660, 880);
+      tx(c, 'PATENT APPLICATION', 204, 118, 22, C('soft'), { w: 700 });
+      tx(c, 'WO 2020/060606', 204, 172, 46, C('ink'), { w: 700 });
+      tx(c, 'PUBLISHED 26 MAR 2020', 204, 210, 20, C('soft'));
+      c.strokeStyle = C('ink', .4); c.lineWidth = 1.5; L(c, 204, 232, 796, 232);
+      tx(c, 'CRYPTOCURRENCY SYSTEM', 204, 292, 44, C('ink'), { f: DISP, w: 800 });
+      tx(c, 'USING BODY ACTIVITY DATA', 204, 340, 44, C('ink'), { f: DISP, w: 800 });
+      c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.strokeRect(334, 465, 332, 220);
+      for (i = 0; i < 4; i++) {
+        c.fillStyle = C('sheet'); c.fillRect(bxs[i][0], bxs[i][1], 220, 90); c.strokeRect(bxs[i][0], bxs[i][1], 220, 90);
+        tx(c, bxs[i][2], bxs[i][0] + 110, bxs[i][1] + 53, 22, C('ink'), { a: 'center', w: 700 });
+      }
+      tx(c, 'task', 500, 456, 20, C('soft'), { a: 'center' });
+      tx(c, 'body activity', 652, 584, 20, C('soft'), { a: 'right' });
+      tx(c, 'coin', 500, 676, 20, C('soft'), { a: 'center' });
+      c.fillStyle = C('acc'); c.beginPath(); c.arc(lerp(A[0], B[0], f), lerp(A[1], B[1], f), 10, 0, TAU); c.fill();
+      tx(c, 'The loop described in the filing (illustration)', 204, 790, 18, C('soft'));
+      if (k2 > .01) {
+        c.globalAlpha = p1 * k2;
+        tx(c, 'wearables, phones', 556, 404, 22, C('acc'), { w: 700 });
+        tx(c, 'no implants in the text', 204, 846, 24, C('acc'), { w: 700 });
+        c.globalAlpha = p1; stamp(c, 'US FILING: ABANDONED', 500, 896, 42, -.02, C('acc'), k2);
+      }
+      c.globalAlpha = p1; stamp(c, 'BLUEPRINT', 500, 575, 136, -.14, C('acc'), k3);
+      c.restore();
+    }
+    if (p4 > .01) {
+      var st = [['CAPTURE', 'a trait'], ['TEMPLATE', 'a code'], ['BIND', 'a key'], ['ATTEST', 'a claim'], ['SETTLE', 'a payout']], Y = 540, u2 = reduce ? .6 : (t * .18) % 1;
+      c.save(); c.globalAlpha = p4;
+      tx(c, 'HOW A BODY', 60, 190, 96, C('ink'), { f: DISP, w: 800 });
+      tx(c, 'BECOMES A TOKEN', 60, 286, 96, C('acc'), { f: DISP, w: 800 });
+      c.strokeStyle = C('ink', .5); c.lineWidth = 3; L(c, 110, Y, 890, Y);
+      for (i = 0; i < 5; i++) {
+        x = 110 + i * 195; a = ease(sub(s.k[4], i * .12, .4 + i * .12));
+        c.globalAlpha = p4 * a;
+        c.fillStyle = C('bg'); c.beginPath(); c.arc(x, Y, 72, 0, TAU); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 3; c.stroke();
+        icon(c, i, x, Y);
+        tx(c, st[i][0], x, Y + 124, 26, C('ink'), { a: 'center', w: 700 });
+        tx(c, st[i][1], x, Y + 156, 22, C('soft'), { a: 'center' });
+      }
+      c.globalAlpha = p4; c.fillStyle = C('acc'); c.beginPath(); c.arc(110 + u2 * 780, Y - 100, 10, 0, TAU); c.fill();
+      c.restore();
+    }
+    if (p5 > .01) {
+      var ox = 290, oy = 400, sa = reduce ? -.7 : t * 1.4, cu;
+      c.save(); c.globalAlpha = p5;
+      c.strokeStyle = C('ink'); c.lineWidth = 4; c.beginPath(); c.arc(ox, oy, 196, 0, TAU); c.stroke();
+      irisCode(c, ox, oy, 62, 160, 5, 40, 7);
+      c.strokeStyle = C('ink'); c.lineWidth = 3; c.beginPath(); c.arc(ox, oy, 56, 0, TAU); c.stroke();
+      c.strokeStyle = C('acc'); c.lineWidth = 4; L(c, ox + 56 * Math.cos(sa), oy + 56 * Math.sin(sa), ox + 160 * Math.cos(sa), oy + 160 * Math.sin(sa));
+      c.lineWidth = 3; L(c, 500, oy, 574, oy); c.beginPath(); c.moveTo(562, oy - 10); c.lineTo(576, oy); c.lineTo(562, oy + 10); c.stroke();
+      box(c, 590, 300, 350, 200, 10); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.stroke();
+      tx(c, 'CREDENTIAL', 614, 350, 28, C('ink'), { w: 700 });
+      tx(c, 'unique human: yes', 614, 394, 22, C('soft'));
+      tx(c, '0x7f3a91c20b5e', 614, 466, 22, C('soft'));
+      for (i = 0; i < 4; i++) {
+        cu = (t * .35 + i * .25) % 1;
+        c.strokeStyle = C('acc', 1 - cu); c.lineWidth = 3.5; c.beginPath(); c.arc(690 + i * 56, 530 + cu * 230, 20, 0, TAU); c.stroke();
+      }
+      tx(c, '12,000,000+', 60, 810, 112, C('ink'), { f: DISP, w: 800 });
+      tx(c, 'people scanned', 64, 856, 26, C('soft'));
+      tx(c, 'paid in tokens, on a schedule', 940, 856, 22, C('acc'), { a: 'right', w: 700 });
+      c.restore();
+    }
+    if (p6 > .01) {
+      var pw = ['k7-Lm2019', 'Qx-9v2021', 'r4T-w2024', 'Zp8-n2026'], pi = reduce ? 3 : Math.floor(t * .7) % 4, hx;
+      c.save(); c.globalAlpha = p6;
+      tx(c, 'PASSWORD', 80, 220, 32, C('soft'), { w: 700 });
+      tx(c, pw[pi], 80, 310, 78, C('ink'), { w: 700 });
+      tx(c, 'ROTATE: ANY TIME', 80, 366, 28, C('ok'), { w: 700 });
+      c.strokeStyle = C('ink', .3); c.lineWidth = 2; L(c, 80, 440, 920, 440);
+      tx(c, 'HEARTBEAT', 80, 530, 32, C('soft'), { w: 700 });
+      c.strokeStyle = C('acc'); c.lineWidth = 5; c.beginPath();
+      for (x = 80; x <= 920; x += 2) { y = 720 - 130 * ecg((x - 80) / 840 * 3); if (x === 80) c.moveTo(x, y); else c.lineTo(x, y); }
+      c.stroke();
+      if (!reduce) { hx = 80 + ((t * .2) % 1) * 840; c.fillStyle = C('ink'); c.beginPath(); c.arc(hx, 720 - 130 * ecg((hx - 80) / 840 * 3), 9, 0, TAU); c.fill(); }
+      tx(c, 'ROTATE: NEVER', 80, 820, 28, C('acc'), { w: 700 });
+      c.restore();
+    }
+  };
+
+  /* V. the floor */
+  var MOTES = [];
+  (function () { for (var i = 0; i < 240; i++) MOTES.push([rnd(i) * 1000, rnd(i + 500) * 1000, .9 + rnd(i + 900) * 2.3, rnd(i + 1300) * TAU, .3 + rnd(i + 1700)]); })();
+  function meter(c, x, y, label, f) {
+    tx(c, label, x, y + 22, 24, C('ink'), { w: 700 });
+    c.strokeStyle = C('ink'); c.lineWidth = 2; c.strokeRect(x + 110, y, 220, 28);
+    c.fillStyle = C('acc'); c.fillRect(x + 113, y + 3, 214 * f, 22);
+  }
+  DRAW.dust = function (c, s, t) {
+    var k2 = s.at(2), k3 = s.at(3), k4 = s.at(4), p2 = k2 * (1 - k4), p3 = k3 * (1 - k4), i, m, x, y, tw;
+    for (i = 0; i < MOTES.length; i++) {
+      m = MOTES[i];
+      x = (m[0] + Math.sin(t * .13 * m[4] + m[3]) * 40 + t * 4 * m[4]) % 1000;
+      y = (m[1] + Math.cos(t * .11 * m[4] + m[3]) * 30 + t * 2.2 * m[4]) % 1000;
+      tw = .35 + .65 * Math.abs(Math.sin(t * .8 * m[4] + m[3]));
+      c.fillStyle = C('ink', tw * (1 - .55 * k4)); c.beginPath(); c.arc(x, y, m[2], 0, TAU); c.fill();
+      if (k3 > .01 && i % 3 === 0) { c.strokeStyle = C('acc', .55 * k3 * (1 - .6 * k4)); c.lineWidth = 1.5; c.beginPath(); c.arc(x, y, 9 + m[2] * 2, 0, TAU); c.stroke(); }
+    }
+    c.strokeStyle = C('ink', .8); c.lineWidth = 2; L(c, 60, 930, 210, 930); L(c, 60, 920, 60, 940); L(c, 210, 920, 210, 940);
+    tx(c, '1 mm', 226, 938, 24, C('soft'));
+    if (p2 > .01) {
+      var cx = 500, cy = 480, a = 150, dx = a * .866, dy = a * .5;
+      c.save(); c.globalAlpha = p2;
+      c.fillStyle = C('bg', .82); c.beginPath(); c.moveTo(cx, cy - a); c.lineTo(cx + dx, cy - dy); c.lineTo(cx + dx, cy + dy); c.lineTo(cx, cy + a); c.lineTo(cx - dx, cy + dy); c.lineTo(cx - dx, cy - dy); c.closePath(); c.fill();
+      c.strokeStyle = C('ink'); c.lineWidth = 3; c.stroke();
+      L(c, cx, cy, cx + dx, cy - dy); L(c, cx, cy, cx - dx, cy - dy); L(c, cx, cy, cx, cy + a);
+      tx(c, '1997 · BERKELEY → DARPA', cx, cy - a - 36, 28, C('acc'), { a: 'center', w: 700 });
+      tx(c, '1 mm³', cx, cy + a + 58, 42, C('ink'), { a: 'center', w: 700 });
+      tx(c, 'sensor + radio + computer + power', cx, cy + a + 98, 22, C('soft'), { a: 'center' });
+      c.restore();
+    }
+    if (p3 > .01) {
+      c.save(); c.globalAlpha = p3;
+      meter(c, 610, 60, 'POWER', .06); meter(c, 610, 112, 'RANGE', .03);
+      tx(c, 'the same two walls', 940, 176, 22, C('soft'), { a: 'right' });
+      c.restore();
+    }
+    if (k4 > .01) {
+      var wd;
+      c.save(); c.globalAlpha = k4;
+      tx(c, 'CAN', 80, 350, 86, C('ink', .35), { f: DISP, w: 800 });
+      tx(c, 'IS BEING DESIGNED TO', 80, 460, 86, C('ink', .35), { f: DISP, w: 800 });
+      tx(c, 'HAS BEEN IMAGINED', 80, 570, 86, C('acc'), { f: DISP, w: 800 });
+      wd = c.measureText('HAS BEEN IMAGINED').width;
+      c.strokeStyle = C('acc'); c.lineWidth = 6; L(c, 80, 594, 80 + wd * ease(sub(s.k[4], .3, 1)), 594);
+      tx(c, 'you are here', 80, 640, 24, C('soft'));
+      c.restore();
+    }
+  };
+
+  /* VI. the punch card */
+  DRAW.card = function (c, s, t) {
+    var k3 = s.at(3), k4 = s.at(4), i, j, b, a, X = 50, Y = 250, W = 900, H = 460, CARD = '#e8dcc0', CI = '42,37,32';
+    var cw = 20.4, x0 = 83.1, y0 = 334, rh = 33, row;
+    var blocks = [[0, 9, 'SURNAME'], [11, 17, 'CENSUS'], [19, 25, 'BODY'], [27, 33, 'PRINT'], [35, 41, 'NUMBER']];
+    function cardPath(o) { c.beginPath(); c.moveTo(X + 44 + o, Y - o); c.lineTo(X + W + o, Y - o); c.lineTo(X + W + o, Y + H - o); c.lineTo(X + o, Y + H - o); c.lineTo(X + o, Y + 44 - o); c.closePath(); }
+    if (k3 > .01) for (i = 5; i >= 1; i--) {
+      a = ease(sub(s.k[3], (5 - i) * .1, .5 + (5 - i) * .1));
+      c.globalAlpha = a; cardPath(i * 9); c.fillStyle = CARD; c.fill(); c.strokeStyle = 'rgba(' + CI + ',.5)'; c.lineWidth = 1.5; c.stroke();
+    }
+    c.globalAlpha = 1;
+    cardPath(0); c.fillStyle = CARD; c.fill(); c.strokeStyle = 'rgba(' + CI + ',.6)'; c.lineWidth = 2; c.stroke();
+    c.font = '400 17px ' + MONO; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillStyle = 'rgba(' + CI + ',.34)';
+    for (j = 0; j < 10; j++) { row = ''; for (i = 0; i < 42; i++) row += j + (i < 41 ? ' ' : ''); c.fillText(row, 78, y0 + j * rh); }
+    for (b = 0; b < 5; b++) {
+      a = b < 4 ? ease(sub(s.k[2], b * .2, .4 + b * .2)) : k4;
+      if (a <= .01) continue;
+      var bl = blocks[b], bx = x0 + bl[0] * cw - 8;
+      c.globalAlpha = a;
+      c.font = '700 18px ' + MONO; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.fillStyle = 'rgba(' + CI + ',.92)'; c.fillText(bl[2], bx, 296);
+      c.strokeStyle = 'rgba(' + CI + ',.7)'; c.lineWidth = 1.5; L(c, bx, 304, x0 + bl[1] * cw + 8, 304);
+      c.fillStyle = C('bg');
+      for (i = bl[0]; i <= bl[1]; i++) {
+        if (a > (i - bl[0]) / (bl[1] - bl[0] + 1) * .8) c.fillRect(x0 + i * cw - 6, y0 + Math.floor(rnd(i * 7 + 2) * 10) * rh - 13, 12, 26);
+      }
+    }
+    c.globalAlpha = 1 - k3;
+    if (k3 < .99) tx(c, 'ONE CARD PER PERSON', 50, 170, 84, C('ink'), { f: DISP, w: 800 });
+    if (k3 > .01) {
+      c.globalAlpha = k3;
+      tx(c, '1890', 50, 150, 118, C('ink'), { f: DISP, w: 800 }); tx(c, 'U.S. census', 54, 190, 22, C('soft'));
+      tx(c, '1933 · 1939', 950, 150, 118, C('acc'), { f: DISP, w: 800, a: 'right' }); tx(c, 'German censuses', 946, 190, 22, C('soft'), { a: 'right' });
+    }
+    c.globalAlpha = 1;
+    if (k4 > .01) {
+      var lg = 'FOR SOCIAL SECURITY PURPOSES · NOT FOR IDENTIFICATION', lw, nf;
+      c.save(); c.globalAlpha = k4;
+      c.font = '700 21px ' + MONO; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.fillStyle = 'rgba(' + CI + ',.95)'; c.fillText(lg, 84, 694);
+      lw = c.measureText(lg).width; nf = c.measureText('FOR SOCIAL SECURITY PURPOSES · ').width;
+      c.strokeStyle = C('acc'); c.lineWidth = 4; L(c, 84 + nf, 687, 84 + nf + (lw - nf) * ease(sub(s.k[4], .45, 1)), 687);
+      tx(c, '1946–1972', 50, 860, 118, C('acc'), { f: DISP, w: 800 });
+      tx(c, 'printed on the card for 26 years', 54, 902, 22, C('soft'));
+      c.restore();
+    }
+  };
+
+  /* VI. the loop */
+  DRAW.loop = function (c, s, t) {
+    var k2 = s.at(2), k3 = s.at(3), k4 = s.at(4), i, cx = 500, cy = 500, R = lerp(300, 236, k3), names = ['SENSE', 'COMPARE', 'REWARD', 'BEHAVE'];
+    var words = ['SCRIP', 'STOPWATCH', 'LEVER', 'POINTS', 'DONGLE'], hi = reduce ? -1 : Math.floor(t * .9) % 5, x = 190, na, nx, ny, w, a2;
+    var dt = t - (s.lt == null ? t : s.lt); s.lt = t; s.ph = (s.ph || 0) + dt * (.6 + .5 * k2 + 1.1 * k3);
+    c.strokeStyle = C('ink', .55); c.lineWidth = 3; c.beginPath(); c.arc(cx, cy, R, 0, TAU); c.stroke();
+    for (i = 0; i < 14; i++) {
+      a2 = (reduce ? -1 : s.ph) - i * .06;
+      c.fillStyle = C('acc', (1 - i / 14) * .9); c.beginPath(); c.arc(cx + R * Math.cos(a2), cy + R * Math.sin(a2), 11 - i * .6, 0, TAU); c.fill();
+    }
+    for (i = 0; i < 4; i++) {
+      na = -Math.PI / 2 + i * Math.PI / 2; nx = cx + R * Math.cos(na); ny = cy + R * Math.sin(na);
+      c.font = '700 28px ' + MONO; w = c.measureText(names[i]).width + 36;
+      c.fillStyle = C('bg'); c.fillRect(nx - w / 2, ny - 26, w, 52); c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.strokeRect(nx - w / 2, ny - 26, w, 52);
+      tx(c, names[i], nx, ny + 9, 28, C('ink'), { a: 'center', w: 700 });
+    }
+    for (i = 0; i < 5; i++) { tx(c, words[i], x, 952, 26, i === hi ? C('acc') : C('soft'), { w: 700 }); x += c.measureText(words[i]).width + 34; }
+    if (k2 > .01 && k3 < .99) {
+      c.save(); c.globalAlpha = k2 * (1 - k3);
+      tx(c, 'SENSE.', cx, cy - 46, 66, C('ink'), { f: DISP, w: 800, a: 'center' });
+      tx(c, 'COMPARE.', cx, cy + 20, 66, C('ink'), { f: DISP, w: 800, a: 'center' });
+      tx(c, 'CORRECT.', cx, cy + 86, 66, C('acc'), { f: DISP, w: 800, a: 'center' });
+      tx(c, 'WIENER, 1948', cx, cy + 128, 22, C('soft'), { a: 'center' });
+      c.restore();
+    }
+    if (k3 > .01) {
+      c.save(); c.globalAlpha = k3;
+      c.fillStyle = C('ink'); c.beginPath(); c.arc(cx, cy - 50, 34, 0, TAU); c.fill(); box(c, cx - 46, cy - 8, 92, 124, 30); c.fill();
+      c.fillStyle = C('acc'); c.beginPath(); c.arc(cx, cy + 34, 9 + 7 * ecg(t * 1.2), 0, TAU); c.fill();
+      c.restore();
+    }
+    if (k4 > .01) {
+      var da = -Math.PI * .75, dx = cx + R * Math.cos(da), dy = cy + R * Math.sin(da);
+      c.save(); c.globalAlpha = k4;
+      c.fillStyle = C('bg'); c.fillRect(dx - 40, dy - 62, 80, 124); c.strokeStyle = C('acc'); c.lineWidth = 4; c.strokeRect(dx - 40, dy - 62, 80, 124);
+      c.fillStyle = C('acc'); c.beginPath(); c.arc(dx + 22, dy + 6, 6, 0, TAU); c.fill();
+      tx(c, 'CARE', dx, dy - 78, 44, C('acc'), { f: DISP, w: 800, a: 'center' });
+      tx(c, 'pensions · retirement · fraud · elder care', cx, 110, 22, C('soft'), { a: 'center' });
+      c.restore();
+    }
+  };
+
+  /* VII. the missing because */
+  DRAW.because = function (c, s, t) {
+    var p1 = s.only(1, 3), k2 = s.at(2), k3 = s.at(3), p2 = s.only(4), p3 = s.only(5, 6), k6 = s.at(6), p4 = s.only(7), p5 = s.only(8), i, x, y, a;
+    if (p1 > .01) {
+      var px = 60 + 880 * .58, py = 610 - 74 * 5, why = ['FEAR', 'A FIRST KISS', 'GRIEF', 'COFFEE', 'THE STAIRS'], hi = reduce ? 1 : Math.floor(t * .8) % 5, ww;
+      c.save(); c.globalAlpha = p1;
+      paper(c, 40, 150, 920, 500, 23);
+      c.strokeStyle = C('ink'); c.lineWidth = 4; c.beginPath();
+      for (x = 60; x <= 940; x += 3) { y = 610 - (bpm((x - 60) / 880) - 50) * 5; if (x === 60) c.moveTo(x, y); else c.lineTo(x, y); }
+      c.stroke();
+      c.strokeStyle = C('acc'); c.lineWidth = 3; c.beginPath(); c.arc(px, py, 16 + 8 * Math.abs(Math.sin(t * 2)), 0, TAU); c.stroke();
+      tx(c, 'BPM', 60, 192, 22, C('soft')); tx(c, '21:47', px, 638, 22, C('soft'), { a: 'center' });
+      if (k2 > .01) {
+        for (i = 0; i < 5; i++) {
+          c.globalAlpha = p1 * k2 * (i === hi ? 1 : .38);
+          tx(c, why[i], 96, 250 + i * 54, 34, i === hi ? C('acc') : C('ink'), { w: 700 });
+          if (i === hi) { ww = c.measureText(why[i]).width; c.strokeStyle = C('acc'); c.lineWidth = 2; L(c, 96 + ww + 14, 238 + i * 54, px - 24, py + 6); }
+        }
+        c.globalAlpha = p1;
+      }
+      tx(c, 'WHAT', 60, 726, 26, C('soft'), { w: 700 });
+      tx(c, k3 > .5 ? '124.0372' : '124', 60, 858, 128, C('acc'), { f: DISP, w: 800 });
+      if (k3 > .01) { c.globalAlpha = p1 * k3; tx(c, 'exact to four decimals', 64, 900, 22, C('soft')); c.globalAlpha = p1; }
+      tx(c, 'WHY', 620, 726, 26, C('soft'), { w: 700 });
+      c.strokeStyle = C('ink'); c.lineWidth = 3; c.setLineDash([10, 8]); c.strokeRect(620, 750, 320, 112); c.setLineDash([]);
+      if (reduce || (t * 1.5) % 1 < .5) { c.fillStyle = C('ink'); c.fillRect(640, 776, 20, 60); }
+      c.restore();
+    }
+    if (p2 > .01) {
+      var lab = ['BREATH', 'BREATH', 'SWEAT', 'PULSE'], ph = reduce ? 0 : t * .5, by, u, ar;
+      c.save(); c.globalAlpha = p2;
+      paper(c, 40, 170, 920, 520, 23);
+      for (i = 0; i < 4; i++) {
+        by = 250 + i * 120; c.strokeStyle = C('ink'); c.lineWidth = 3; c.beginPath();
+        for (x = 190; x <= 930; x += 3) {
+          u = x / 150 + ph; ar = 1 + 2.2 * gs((x / 740 + ph * .2) % 1, .55, .08);
+          y = by - (i < 2 ? 22 * Math.sin(u * 3 + i) * ar : i === 2 ? 14 * Math.sin(u * 1.3) * ar + 8 * Math.sin(u * 5) : 26 * ecg(u * 1.6) * ar);
+          if (x === 190) c.moveTo(x, y); else c.lineTo(x, y);
+        }
+        c.stroke();
+        tx(c, lab[i], 60, by + 8, 22, C('soft'), { w: 700 });
+      }
+      tx(c, 'what it measures: arousal', 60, 756, 28, C('ink'), { w: 700 });
+      stamp(c, 'DECEPTION INDICATED', 520, 440, 82, -.1, C('acc'), ease(sub(s.k[4], .3, 1)));
+      c.restore();
+    }
+    if (p3 > .01) {
+      var cases = [['GAINESVILLE, FL · 2020', 'bike rides past a house', 'burglar', 'exercise'], ['DETROIT · 2020', 'a face match', 'shoplifter', 'the wrong man'], ['NETHERLANDS · 20,000+ FAMILIES', 'a missing signature', 'fraud', 'paperwork']], cy;
+      for (i = 0; i < 3; i++) {
+        a = i === 0 ? 1 : i === 1 ? ease(sub(s.k[5], .35, 1)) : k6;
+        if (a <= .01) continue;
+        cy = 130 + i * 240;
+        c.save(); c.globalAlpha = p3 * a; c.translate(0, (1 - a) * 30);
+        box(c, 60, cy, 880, 196, 6); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink', .6); c.lineWidth = 2; c.stroke();
+        tx(c, cases[i][0], 84, cy + 50, 30, C('ink'), { w: 700 });
+        tx(c, 'DATA', 84, cy + 100, 20, C('soft'), { w: 700 }); tx(c, 'STORY', 480, cy + 100, 20, C('soft'), { w: 700 }); tx(c, 'TRUTH', 700, cy + 100, 20, C('soft'), { w: 700 });
+        tx(c, cases[i][1], 84, cy + 146, 24, C('ink')); tx(c, cases[i][2], 480, cy + 146, 24, C('acc'), { w: 700 }); tx(c, cases[i][3], 700, cy + 146, 24, C('ok'), { w: 700 });
+        c.restore();
+      }
+    }
+    if (p4 > .01) {
+      var beats = ['AN ACCURATE DATA POINT', 'A MISSING BECAUSE', 'A CONFIDENT STORY', 'A REAL PENALTY'], yy;
+      for (i = 0; i < 4; i++) {
+        a = ease(sub(s.k[7], i * .18, .45 + i * .18)); yy = 90 + i * 215;
+        c.save(); c.globalAlpha = p4 * a;
+        box(c, 110, yy, 780, 140, 6);
+        if (i === 3) { c.fillStyle = C('acc'); c.fill(); }
+        else { c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 3; if (i === 1) c.setLineDash([12, 9]); c.stroke(); c.setLineDash([]); }
+        tx(c, String(i + 1), 140, yy + 94, 66, i === 3 ? C('bg') : C('acc'), { f: DISP, w: 800 });
+        tx(c, beats[i], 200, yy + 92, 58, i === 3 ? C('bg') : C('ink'), { f: DISP, w: 800 });
+        if (i < 3) { c.strokeStyle = C('ink'); c.lineWidth = 3; L(c, 500, yy + 150, 500, yy + 200); c.beginPath(); c.moveTo(488, yy + 188); c.lineTo(500, yy + 202); c.lineTo(512, yy + 188); c.stroke(); }
+        c.restore();
+      }
+    }
+    if (p5 > .01) {
+      var bell = function (v) { return 720 - 430 * gs(v, 500, 190); };
+      c.save(); c.globalAlpha = p5;
+      c.fillStyle = C('acc', .9);
+      [[60, 270], [730, 940]].forEach(function (r) { c.beginPath(); c.moveTo(r[0], 720); for (var q = r[0]; q <= r[1]; q += 4) c.lineTo(q, bell(q)); c.lineTo(r[1], 720); c.closePath(); c.fill(); });
+      c.strokeStyle = C('ink'); c.lineWidth = 4; c.beginPath();
+      for (x = 60; x <= 940; x += 4) { if (x === 60) c.moveTo(x, bell(x)); else c.lineTo(x, bell(x)); }
+      c.stroke(); L(c, 60, 720, 940, 720);
+      tx(c, "THE MODEL'S NORMAL", 500, 560, 28, C('ink'), { a: 'center', w: 700 });
+      tx(c, 'THE SICK', 60, 770, 26, C('acc'), { w: 700 }); tx(c, 'THE GRIEVING', 60, 808, 26, C('acc'), { w: 700 });
+      tx(c, 'THE NIGHT SHIFT', 940, 770, 26, C('acc'), { w: 700, a: 'right' }); tx(c, 'THE UNUSUAL', 940, 808, 26, C('acc'), { w: 700, a: 'right' });
+      tx(c, 'CHARGED FIRST', 500, 190, 96, C('ink'), { f: DISP, w: 800, a: 'center' });
+      c.restore();
+    }
+  };
+
+  /* VIII. where the hope is */
+  DRAW.hope = function (c, s, t) {
+    var p1 = s.only(1, 2), k2 = s.at(2), p2 = s.only(3), p3 = s.only(4), p4 = s.only(5), p5 = s.only(6), i, j, x, y, a, r;
+    if (p1 > .01) {
+      var gy = 420;
+      c.save(); c.globalAlpha = p1;
+      mini(c, 60, 140, 'SIGHTING A'); mini(c, 60, 320, 'SIGHTING B');
+      stamp(c, 'SAME BODY', 200, 560, 62, -.06, C('acc'), 1);
+      box(c, 620, 140, 320, 560, 6); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.stroke();
+      tx(c, 'REGISTRY', 644, 190, 28, C('ink'), { w: 700 });
+      for (i = 0; i < 8; i++) {
+        y = 230 + i * 56; c.strokeStyle = C('ink', .3); c.lineWidth = 1.5; L(c, 636, y + 40, 924, y + 40);
+        if (i === 3) tx(c, 'NAME:', 644, y + 30, 24, C('acc'), { w: 700 });
+        else { c.fillStyle = C('ink', .72); c.fillRect(644, y + 8, 70 + rnd(i) * 40, 20); c.fillRect(760, y + 8, 90 + rnd(i + 9) * 60, 20); }
+      }
+      c.strokeStyle = C('acc'); c.lineWidth = 3; c.setLineDash([12, 9]); c.lineDashOffset = reduce ? 0 : -t * 30; L(c, 348, gy, 470, gy); c.setLineDash([]); c.lineDashOffset = 0;
+      c.fillStyle = C('ink'); c.fillRect(476, 250, 14, 70); c.fillRect(476, 520, 14, 70);
+      c.fillStyle = C('ok'); c.fillRect(476, 320, 14, 200 * k2);
+      tx(c, 'ENROLLMENT', 483, 228, 24, C('ink'), { a: 'center', w: 700 });
+      c.globalAlpha = p1 * (1 - k2); tx(c, 'SAME BODY AS BEFORE.', 60, 880, 80, C('ink'), { f: DISP, w: 800 });
+      c.globalAlpha = p1 * k2; tx(c, 'NO REGISTRY, NO NAME.', 60, 880, 80, C('ok'), { f: DISP, w: 800 });
+      c.globalAlpha = p1; stamp(c, 'DECLINED', 483, 652, 56, .05, C('ok'), k2);
+      c.restore();
+    }
+    if (p2 > .01) {
+      var e3 = ease(sub(s.k[3], .4, 1)), nat = [], gam = [], moved = 0, h, tx0 = 80 + 19 * 28;
+      for (i = 0; i < 30; i++) nat.push(380 * gs(i, 13, 6));
+      for (i = 0; i < 30; i++) { if (i >= 15 && i < 19) { gam.push(nat[i] * .55); moved += nat[i] * .45; } else gam.push(nat[i]); }
+      gam[19] += moved * .7; gam[20] += moved * .3;
+      c.save(); c.globalAlpha = p2;
+      for (i = 0; i < 30; i++) { h = lerp(nat[i], gam[i], e3); c.fillStyle = (i === 19 || i === 20) && e3 > .05 ? C('acc') : C('ink'); c.fillRect(80 + i * 28, 700 - h, 24, h); }
+      c.strokeStyle = C('ink'); c.lineWidth = 3; L(c, 60, 700, 940, 700);
+      c.strokeStyle = C('acc'); c.setLineDash([10, 8]); L(c, tx0 - 2, 150, tx0 - 2, 700); c.setLineDash([]);
+      tx(c, 'REWARD STARTS HERE', tx0 + 10, 172, 24, C('acc'), { w: 700 });
+      tx(c, 'the reading →', 80, 744, 22, C('soft'));
+      c.globalAlpha = p2 * (1 - e3); tx(c, 'BEFORE THE REWARD', 60, 880, 74, C('ink'), { f: DISP, w: 800 });
+      c.globalAlpha = p2 * e3; tx(c, 'NOW IT MEASURES THE GAME', 60, 880, 74, C('acc'), { f: DISP, w: 800 });
+      c.restore();
+    }
+    if (p3 > .01) {
+      var sites = ['BANK', 'CLINIC', 'STORE', 'EMPLOYER'], proofs = ['a81f', '5c0e', 'e7d2', '29b6'], e4 = s.k[4];
+      c.save(); c.globalAlpha = p3;
+      tx(c, 'SERIALIZED', 60, 160, 76, C('acc'), { f: DISP, w: 800 }); tx(c, 'ATTESTED', 540, 160, 76, C('ok'), { f: DISP, w: 800 });
+      for (i = 0; i < 4; i++) {
+        a = ease(sub(e4, i * .15, .5 + i * .15)); y = 210 + i * 130; c.globalAlpha = p3 * a;
+        box(c, 60, y, 380, 100, 6); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.stroke();
+        tx(c, sites[i], 80, y + 40, 22, C('soft'), { w: 700 }); tx(c, 'ID 7F3A·91C2', 80, y + 78, 28, C('acc'), { w: 700 });
+        box(c, 540, y, 380, 100, 6); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.stroke();
+        tx(c, sites[i], 560, y + 40, 22, C('soft'), { w: 700 }); tx(c, 'proof ' + proofs[i] + ' ✓', 560, y + 78, 28, C('ok'), { w: 700 });
+      }
+      c.globalAlpha = p3 * ease(sub(e4, .6, 1));
+      c.strokeStyle = C('acc'); c.lineWidth = 6; L(c, 472, 260, 472, 650); for (i = 0; i < 4; i++) L(c, 442, 260 + i * 130, 472, 260 + i * 130);
+      tx(c, 'one thread through all of it', 60, 772, 22, C('acc'), { w: 700 }); tx(c, 'nothing to link', 540, 772, 22, C('ok'), { w: 700 });
+      c.globalAlpha = p3; tx(c, 'A WIRING CHOICE', 60, 890, 80, C('ink'), { f: DISP, w: 800 });
+      c.restore();
+    }
+    if (p4 > .01) {
+      c.save(); c.globalAlpha = p4;
+      box(c, 60, 130, 400, 540, 4); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.stroke();
+      tx(c, '6G SENSING', 88, 190, 30, C('ink'), { w: 700 }); tx(c, 'privacy + security', 88, 226, 22, C('soft')); tx(c, 'study', 88, 254, 22, C('soft'));
+      for (i = 0; i < 9; i++) { c.fillStyle = C('ink', .16); c.fillRect(88, 300 + i * 36, 250 + rnd(i + 40) * 90, 12); }
+      stamp(c, 'DRAFT', 260, 470, 120, -.16, C('ok'), ease(sub(s.k[5], .2, .8)));
+      box(c, 540, 130, 380, 250, 6); c.fillStyle = C('sheet'); c.fill(); c.strokeStyle = C('ink'); c.lineWidth = 2.5; c.stroke();
+      c.fillStyle = C('ink'); c.fillRect(540, 130, 380, 56);
+      tx(c, 'FEBRUARY 2025', 730, 168, 26, C('bg'), { a: 'center', w: 700 }); tx(c, '2', 730, 356, 190, C('ink'), { f: DISP, w: 800, a: 'center' });
+      tx(c, 'BANNED IN THE EU', 540, 444, 26, C('ink'), { w: 700 });
+      tx(c, '× social scoring', 540, 490, 24, C('ok'), { w: 700 });
+      tx(c, '× emotion recognition', 540, 528, 24, C('ok'), { w: 700 });
+      tx(c, '  at work and school', 540, 566, 24, C('ok'), { w: 700 });
+      tx(c, 'THE WINDOW IS OPEN', 60, 890, 80, C('ink'), { f: DISP, w: 800 });
+      c.restore();
+    }
+    if (p5 > .01) {
+      c.save(); c.globalAlpha = p5;
+      paper(c, 60, 130, 880, 500, 22);
+      c.save(); c.beginPath(); c.rect(60, 130, 880, 500); c.clip();
+      for (i = 0; i < 16; i++) {
+        x = 130 + rnd(i + 60) * 740; y = 180 + rnd(i + 80) * 400;
+        for (j = 0; j < 3; j++) { r = (t * 40 + j * 45 + i * 17) % 135; c.strokeStyle = C('ink', .3 * (1 - r / 135)); c.lineWidth = 2; c.beginPath(); c.arc(x, y, r, 0, TAU); c.stroke(); }
+        c.fillStyle = C('ink'); c.beginPath(); c.arc(x, y, 11, 0, TAU); c.fill();
+      }
+      c.restore();
+      tx(c, 'SIGNAL', 60, 704, 24, C('ink'), { w: 700 }); c.strokeStyle = C('ink'); c.lineWidth = 2; c.strokeRect(170, 684, 290, 26); c.fillStyle = C('ok'); c.fillRect(173, 687, 284 * .14, 20);
+      tx(c, 'COST', 540, 704, 24, C('ink'), { w: 700 }); c.strokeRect(630, 684, 310, 26); c.fillStyle = C('acc'); c.fillRect(633, 687, 304 * .9, 20);
+      tx(c, 'BODIES ARE NOISY', 60, 890, 80, C('ink'), { f: DISP, w: 800 });
+      c.restore();
+    }
+  };
+
+  /* IX. the code, then the color */
+  DRAW.eyes = function (c, s, t) {
+    var k2 = s.at(2), k3 = s.at(3), k4 = s.at(4), i, a, gx, gy, sa, R = lerp(330, 118, k3), cx = 500, cy = lerp(450, 480, k3);
+    if (k3 > .01) {
+      for (i = 0; i < 9; i++) {
+        if (i === 4) continue;
+        gx = 180 + (i % 3) * 320; gy = 180 + Math.floor(i / 3) * 300; a = ease(sub(s.k[3], .2 + rnd(i) * .3, .75 + rnd(i) * .25));
+        if (a <= .01) continue;
+        c.globalAlpha = a; iris(c, gx, gy, 118 * (.85 + .15 * a), EYES[i], i * 11 + 1, t);
+      }
+      c.globalAlpha = 1;
+    }
+    if (k2 < .995) {
+      sa = reduce ? -.6 : t * 1.1;
+      c.save(); c.globalAlpha = 1 - k2;
+      c.strokeStyle = C('ink'); c.lineWidth = 3; c.beginPath(); c.arc(cx, cy, R, 0, TAU); c.stroke();
+      irisCode(c, cx, cy, R * .34, R * .96, 7, 56, 5);
+      c.fillStyle = C('ink'); c.beginPath(); c.arc(cx, cy, R * .3, 0, TAU); c.fill();
+      c.strokeStyle = C('acc'); c.lineWidth = 4; L(c, cx + R * .3 * Math.cos(sa), cy + R * .3 * Math.sin(sa), cx + R * Math.cos(sa), cy + R * Math.sin(sa));
+      tx(c, 'CODE 0110 1001 1101 0010 1011', 500, 872, 30, C('ink'), { a: 'center', w: 700 });
+      c.restore();
+    }
+    if (k2 > .01) {
+      c.save(); c.beginPath(); c.arc(cx, cy, R * (.3 + .7 * ease(sub(s.k[2], 0, .9))) + 1, 0, TAU); c.clip();
+      iris(c, cx, cy, R, EYES[4], 3, t); c.restore();
+      if (k3 < .99) { c.globalAlpha = k2 * (1 - k3); tx(c, 'HAZEL', 500, 912, 116, C('ink'), { f: DISP, w: 800, a: 'center' }); c.globalAlpha = 1; }
+    }
+    if (k4 > .01) {
+      for (i = 0; i < 9; i++) {
+        c.globalAlpha = ease(sub(s.k[4], i * .07, .4 + i * .07));
+        tx(c, WHO[i], 180 + (i % 3) * 320, 180 + Math.floor(i / 3) * 300 + 154, 26, i === 4 ? C('acc') : C('ink'), { a: 'center', w: 700 });
+      }
+      c.globalAlpha = 1;
+    }
+  };
+
+  /* ---------- scenes ---------- */
+  function Scene(el) {
+    this.el = el; el.__s = this;
+    this.name = el.getAttribute('data-scene');
+    this.canvas = el.querySelector('canvas'); this.ctx = this.canvas.getContext('2d');
+    this.n = el.querySelectorAll('.step').length;
+    this.step = +el.getAttribute('data-step') || 1;
+    this.k = []; for (var i = 0; i <= this.n + 1; i++) this.k.push(i >= 1 && i <= this.step ? 1 : 0);
+    this.vis = false;
+  }
+  Scene.prototype.at = function (i) { return ease(this.k[i] || 0); };
+  Scene.prototype.only = function (i, j) { j = j || i; return ease(this.k[i] || 0) * (1 - ease(this.k[j + 1] || 0)); };
+  Scene.prototype.advance = function (dt) {
+    for (var i = 1; i <= this.n; i++) {
+      var target = i <= this.step ? 1 : 0;
+      if (dt < 0) this.k[i] = target;
+      else if (this.k[i] < target) this.k[i] = Math.min(1, this.k[i] + dt * 1.2);
+      else if (this.k[i] > target) this.k[i] = Math.max(0, this.k[i] - dt * 1.8);
+    }
+  };
+  function fit(cv) { var w = Math.round(cv.clientWidth * DPR), h = Math.round(cv.clientHeight * DPR); if (w && h && (cv.width !== w || cv.height !== h)) { cv.width = w; cv.height = h; } return w && h; }
+  function draw(s, t) {
+    var cv = s.canvas, c = s.ctx, sc;
+    if (!fit(cv)) return;
+    sc = cv.width / 1000;
+    c.setTransform(sc, 0, 0, sc, 0, 0); c.clearRect(0, 0, 1000, 1000 * cv.height / cv.width);
+    c.globalAlpha = 1; c.lineJoin = 'round'; c.lineCap = 'round'; c.setLineDash([]);
+    try { DRAW[s.name](c, s, t); } catch (e) { if (!s.err) { s.err = true; if (window.console) console.error(s.name, e); } }
+  }
+  var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene')).map(function (el) { return new Scene(el); });
+  var eyes = null; scenes.forEach(function (s) { if (s.name === 'eyes') eyes = s; });
+
+  /* ---------- hero strip and coda eye ---------- */
+  var pulse = document.getElementById('pulse'), pctx = pulse.getContext('2d'), heroVis = true;
+  function drawPulse(t) {
+    var c = pctx, w = pulse.clientWidth, h = pulse.clientHeight, x, y, i, n, bx, v;
+    if (!fit(pulse)) return;
+    c.setTransform(DPR, 0, 0, DPR, 0, 0); c.clearRect(0, 0, w, h);
+    var split = w * .6, beats = Math.max(2, Math.round(split / 200)), head = reduce ? 1.2 : (t * .11 + 1) % 1.25, end = Math.min(split, w * head), base = h * .7, amp = h * .58, bw = 7;
+    c.lineJoin = 'round'; c.lineCap = 'round'; c.lineWidth = 2.5; c.strokeStyle = C('ink', .2); c.beginPath();
+    for (x = 0; x <= split; x += 2) { y = base - amp * ecg(x / split * beats); if (!x) c.moveTo(x, y); else c.lineTo(x, y); }
+    c.stroke();
+    c.strokeStyle = C('ink'); c.beginPath();
+    for (x = 0; x <= end; x += 2) { y = base - amp * ecg(x / split * beats); if (!x) c.moveTo(x, y); else c.lineTo(x, y); }
+    c.stroke();
+    n = Math.floor((w - split) / bw);
+    for (i = 0; i < n; i++) {
+      bx = split + i * bw;
+      v = Math.abs(ecg(i / n * beats + .12)) + .5 * rnd(i + 2);
+      c.fillStyle = C('ink', bx > w * head ? .2 : 1);
+      c.fillRect(bx, h * .16, Math.min(bw - 1.5, 1.5 + 4.5 * clamp(v)), h * .68);
+    }
+    if (!reduce && head < 1) {
+      x = w * head; c.fillStyle = C('acc'); c.beginPath();
+      c.arc(x, x < split ? base - amp * ecg(x / split * beats) : h * .5, 4.5, 0, TAU); c.fill();
+    }
+  }
+  var codaCv = document.getElementById('coda-eye'), cctx = codaCv.getContext('2d'), codaVis = false;
+  function drawCoda(t) {
+    var c = cctx, w = codaCv.clientWidth, h = codaCv.clientHeight;
+    if (!fit(codaCv)) return;
+    c.setTransform(DPR, 0, 0, DPR, 0, 0); c.clearRect(0, 0, w, h);
+    var R = Math.min(380, Math.min(w * .42, 520)), x = Math.max(w - R * .82, w * .62), y = Math.min(h * .5, R + 90);
+    var f = reduce ? 1.2 : t * .14, a = Math.floor(f) % EYES.length, b = (a + 1) % EYES.length, m = ease(sub(f - Math.floor(f), .5, 1));
+    var col = [0, 1, 2].map(function (i) { return EYES[a][i].map(function (v, j) { return lerp(v, EYES[b][i][j], m); }); });
+    iris(c, x, y, R, col, 3, t);
+  }
+
+  /* ---------- loop ---------- */
+  var last = 0, T = 0;
+  function renderAll() {
+    snapPal();
+    scenes.forEach(function (s) { s.advance(-1); draw(s, 3.3); });
+    drawPulse(3.3); drawCoda(3.3);
+  }
+  function tick(now) {
+    var dt = Math.min(.05, (now - last) / 1000 || 0); last = now; T += dt;
+    stepPal(dt);
+    for (var i = 0; i < scenes.length; i++) { if (scenes[i].vis) { scenes[i].advance(dt); draw(scenes[i], T); } }
+    if (heroVis) drawPulse(T);
+    if (codaVis) drawCoda(T);
+    window.requestAnimationFrame(tick);
+  }
+
+  /* ---------- steps ---------- */
+  function activate(step) {
+    var el = step.closest('.scene'), s = el.__s, n = +step.getAttribute('data-step');
+    el.querySelectorAll('.step').forEach(function (x) { x.classList.toggle('is-active', x === step); });
+    if (s.step === n) return;
+    s.step = n; el.setAttribute('data-step', n);
+    update();
+    if (reduce) renderAll();
+  }
+  var io;
+  function observe() {
+    if (io) io.disconnect();
+    io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) activate(e.target.closest('.step')); });
+    }, { rootMargin: wide.matches ? '-47% 0px -47% 0px' : '-58% 0px -36% 0px' });
+    document.querySelectorAll('.step .card').forEach(function (c) { io.observe(c); });
+  }
+  observe();
+  if (wide.addEventListener) wide.addEventListener('change', observe);
+
+  var visIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.target.__s) e.target.__s.vis = e.isIntersecting;
+      else if (e.target === pulse) heroVis = e.isIntersecting;
+      else if (e.target === codaCv) codaVis = e.isIntersecting;
+    });
+  }, { rootMargin: '15% 0px 15% 0px' });
+  scenes.forEach(function (s) { visIO.observe(s.el); });
+  visIO.observe(pulse); visIO.observe(codaCv);
+
+  /* ---------- chrome: progress, chapter label, depth ---------- */
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('[data-chapter]'));
+  var now = document.getElementById('now');
+  var prog = document.querySelector('.progress');
+  var coda = document.getElementById('coda');
+  var gauge = Array.prototype.slice.call(document.querySelectorAll('.gauge i'));
+  var ticking = false;
+  function setDepth(d) {
+    if (d === depth) return;
+    depth = d; document.body.setAttribute('data-depth', d);
+    var base = PAL[DEPTHS[d][0]];
+    KEYS.forEach(function (k) { palT[k] = base[k]; });
+    if (DEPTHS[d][1]) palT.bg = DEPTHS[d][1];
+    if (reduce) renderAll();
+  }
+  function update() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, window.scrollY / h) : 0) + ')';
+    var line = window.innerHeight * 0.35, cur = null;
+    chapters.forEach(function (c) { if (c.getBoundingClientRect().top <= line) cur = c; });
+    var inCoda = coda.getBoundingClientRect().top <= line;
+    var label = inCoda ? 'Sources' : cur ? cur.getAttribute('data-num') + ' · ' + cur.getAttribute('data-title') : 'Contents';
+    if (now.textContent !== label) now.textContent = label;
+    var d = cur ? +cur.getAttribute('data-depth') : 0, lv = cur && !inCoda ? +(cur.getAttribute('data-level') || 0) : 0;
+    if (inCoda || (eyes && eyes.step >= 6 && eyes.el.getBoundingClientRect().top < window.innerHeight * .5)) d = 5;
+    setDepth(d);
+    gauge.forEach(function (g, i) { g.classList.toggle('on', i < lv); });
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () { ticking = false; update(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { onScroll(); if (reduce) renderAll(); });
+
+  var toc = document.querySelector('.toc');
+  toc.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { toc.removeAttribute('open'); }); });
+  document.addEventListener('click', function (e) { if (toc.open && !toc.contains(e.target)) toc.removeAttribute('open'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && toc.open) { toc.removeAttribute('open'); toc.querySelector('summary').focus(); } });
+
+  /* ---------- go ---------- */
+  update();
+  renderAll();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (reduce) renderAll(); });
+  if (!reduce) window.requestAnimationFrame(function (n0) { last = n0; window.requestAnimationFrame(tick); });
+})();
+</script>
+</body>
+</html>
