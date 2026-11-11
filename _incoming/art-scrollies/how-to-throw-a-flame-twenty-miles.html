@@ -108,6 +108,8 @@ hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(24
 .palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0a1220}
 .obj i{font-style:italic}
 @media (max-width:899px){ .palette{top:100px} .fx{font-size:10px} .fx div{display:none} .fx div.cur{display:block} .fx .g{display:block;margin-left:0} }
+#lights .ls{display:none}
+@media (max-width:640px){ #lights .lf{display:none} #lights .ls{display:inline} }
 @media (max-width:520px){ .palette input[type=range]{width:32vw} #lights{gap:5px;flex-wrap:nowrap} #lights button{font-size:10.5px;letter-spacing:0;padding-left:7px;padding-right:7px;white-space:nowrap} }
 @media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:150px} }
 .exhibit .tag{font-size:13px}
@@ -219,20 +221,22 @@ hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(24
   <div class="stage">
     <canvas role="img" aria-label="Seen from above, a lens turns and sweeps beams of light across dark water. A strip below shows the flashes a sailor would count." aria-describedby="s5d"></canvas>
     <div class="tag" aria-hidden="true">The characteristic · each light keeps time</div>
-    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>flash every (turn time ÷ panels)</b><span class="g">one beam for each panel of the lens</span></div><div data-at="0.4"><b>30 s ÷ 2 = 15 s</b><span class="g">Cape Disappointment: white, then red</span></div><div data-at="0.7"><b>480 s ÷ 8 = 60 s</b><span class="g">Fresnel's first lens: one flash a minute</span></div></div>
+    <div class="fx" aria-hidden="true"><div data-at="0.06"><b>flash every (turn time ÷ panels)</b><span class="g">one beam for each panel of the lens</span></div><div data-at="0.32"><b>30 s ÷ 2 = 15 s</b><span class="g">Cape Disappointment: white, then red</span></div><div data-at="0.56"><b>480 s ÷ 8 = 60 s</b><span class="g">Fresnel's first lens: one flash a minute</span></div><div data-at="0.78"><b>480 s ÷ 16 = 30 s</b><span class="g">Cape Mendocino, in Astoria: twice the flashes</span></div></div>
     <div class="palette" id="lights" role="group" aria-label="Choose a light">
       <span class="pl">Light</span>
-      <button type="button" data-light="capeD" aria-pressed="true">Cape Disappointment</button>
+      <button type="button" data-light="capeD" aria-pressed="true" aria-label="Cape Disappointment"><span class="lf">Cape Disappointment</span><span class="ls">Cape D</span></button>
       <button type="button" data-light="north" aria-pressed="false">North Head</button>
-      <button type="button" data-light="cord" aria-pressed="false">Cordouan 1823</button>
+      <button type="button" data-light="cord" aria-pressed="false" aria-label="Cordouan 1823"><span class="lf">Cordouan 1823</span><span class="ls">Cordouan</span></button>
+      <button type="button" data-light="mend" aria-pressed="false" aria-label="Cape Mendocino"><span class="lf">Cape Mendocino</span><span class="ls">Mendocino</span></button>
     </div>
-    <p class="sr-only" id="s5d">Three buttons choose a light. Cape Disappointment sends one white beam and one red beam from opposite sides of a lens that turns once in 30 seconds, so a sailor sees white, then red 15 seconds later. North Head sends two white beams a quarter turn apart: two flashes seven and a half seconds apart, every 30 seconds. Cordouan's first lens had eight panels and turned once in eight minutes: one flash a minute. The animation runs faster than life.</p>
+    <p class="sr-only" id="s5d">Four buttons choose a light. Cape Disappointment sends one white beam and one red beam from opposite sides of a lens that turns once in 30 seconds, so a sailor sees white, then red 15 seconds later. North Head sends two white beams a quarter turn apart: two flashes seven and a half seconds apart, every 30 seconds. Cordouan's first lens had eight panels and turned once in eight minutes: one flash a minute. The Cape Mendocino lens, now in Astoria, has sixteen panels on the same eight-minute turn: one flash every 30 seconds. The animation runs faster than life.</p>
   </div>
   <div class="steps">
     <div class="step"><div class="card"><h2 class="n" id="s5h">V · The signature</h2><p>At night every light is a dot. So each one is given a rhythm, and sailors tell them apart by counting.</p></div></div>
     <div class="step"><div class="card"><p>The rhythm comes from the lens. Each panel throws its own beam, the whole lens turns, and every beam that sweeps past is a flash.</p></div></div>
     <div class="step"><div class="card"><p>Cape Disappointment shows white, then red, in a 30-second cycle. North Head shows two white flashes every 30 seconds. Pick a light and count.</p></div></div>
     <div class="step"><div class="card"><p>Fresnel planned it that way from the start: eight panels, one flash a minute.</p></div></div>
+    <div class="step"><div class="card"><p>Sixteen panels on the same eight-minute turn double the count. That is the Cape Mendocino lens, lit in 1868: one flash every thirty seconds. It stands in Astoria now.</p></div></div>
   </div>
 </section>
 
@@ -244,7 +248,7 @@ hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(24
 
   <h3 id="find">See the real thing</h3>
   <ul class="objs">
-    <li class="obj"><b>First-order Fresnel lens from the Cape Mendocino Lighthouse</b><span>Built in Paris in 1876. Sixteen panels. First order is the largest class: a focal length of 92 centimeters and a lens about 2.6 meters tall.</span><span class="who">Columbia River Maritime Museum, Astoria, Oregon · Part III</span></li>
+    <li class="obj"><b>First-order Fresnel lens from the Cape Mendocino Lighthouse</b><span>Built in Paris by L. Sautter in 1867 and first lit at Cape Mendocino, California, on December 1, 1868. Sixteen panels, one turn every eight minutes, a flash every thirty seconds. First order is the largest class: a focal length of 92 centimeters and a lens about 2.6 meters tall.</span><span class="who">Columbia River Maritime Museum, Astoria, Oregon · Parts III and V</span></li>
     <li class="obj"><b>The first-order lens of Cape Disappointment and North Head</b><span>Proved too large for the first tower at Cape Disappointment, which had to be rebuilt around it. Moved to North Head when that light opened.</span><span class="who">Lewis and Clark Interpretive Center, Cape Disappointment State Park, Ilwaco, Washington · Parts IV and V</span></li>
     <li class="obj"><b>Cape Disappointment Light and North Head Light</b><span>First lit October 15, 1856, and in 1898. Both stand near Ilwaco, Washington, at the mouth of the Columbia River.</span><span class="who">Cape Disappointment State Park · Parts IV and V</span></li>
     <li class="obj"><b>Lightship <i>Columbia</i> (WLV-604)</b><span>A floating lighthouse that marked the river's entrance. Retired in 1979, the last lightship to serve on the West Coast.</span><span class="who">Columbia River Maritime Museum, Astoria, Oregon</span></li>
@@ -254,7 +258,7 @@ hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(24
   <ul class="src">
     <li>Fresnel, Cordouan, mirrors before lenses, rings, prisms, the orders and the eight-panel plan: <a href="https://en.wikipedia.org/wiki/Fresnel_lens">Wikipedia, &ldquo;Fresnel lens&rdquo;</a>.</li>
     <li>The two lights at the river mouth: Wikipedia, <a href="https://en.wikipedia.org/wiki/Cape_Disappointment_Light">&ldquo;Cape Disappointment Light&rdquo;</a> and <a href="https://en.wikipedia.org/wiki/North_Head_Light">&ldquo;North Head Light&rdquo;</a>.</li>
-    <li>The Cape Mendocino lens in Astoria: <a href="https://traveloregon.com/things-to-do/oregon-attractions/museums/how-to-visit-astorias-new-maritime-museum-hall/">Travel Oregon</a> and the museum's own announcement in <a href="https://www.pdxmonthly.com/sponsored/2026/08/columbia-river-maritime-museum-s-new-warnock-building">Portland Monthly</a>.</li>
+    <li>The Cape Mendocino lens in Astoria: <a href="https://traveloregon.com/things-to-do/oregon-attractions/museums/how-to-visit-astorias-new-maritime-museum-hall/">Travel Oregon</a> and the museum's own announcement in <a href="https://www.pdxmonthly.com/sponsored/2026/08/columbia-river-maritime-museum-s-new-warnock-building">Portland Monthly</a>. Its maker, its sixteen panels, its first lighting and its thirty-second flash: <a href="https://uslhs.org/node/4322">U.S. Lighthouse Society</a>. Its 1867 build and eight-minute turn: <a href="https://www.northcoastjournal.com/life-outdoors/seeing-the-cape-mendocino-light-2131304/">North Coast Journal</a>. Travel Oregon dates the lens to 1876. The light was first lit in 1868, so this page follows the 1867 build date.</li>
     <li>The lightship: <a href="https://thelighthousehunters.com/oregon-lightship-columbia.htm">The Lighthouse Hunters</a>.</li>
     <li>Part II uses the thin-lens rule, which is accurate near the middle of a lens. Part IV leaves out the slight bending of light by air, which adds a few percent to the real distance. The curve of the sea is drawn far steeper than life.</li>
   </ul>
@@ -450,14 +454,14 @@ function renderS4(p, t) {
 
 /* ---------- V · the signature: flash every (turn time / panels) ---------- */
 const c5 = document.querySelector('#s5 canvas'), lights = document.getElementById('lights');
-const LIGHTS = { capeD: { turn: 30, speed: 5, beams: [[0, WHITE], [180, REDL]], note: 'white, 15 s, red, 15 s' }, north: { turn: 30, speed: 5, beams: [[0, WHITE], [90, WHITE]], note: 'flash, 7.5 s, flash, 22.5 s' }, cord: { turn: 480, speed: 40, beams: [0, 1, 2, 3, 4, 5, 6, 7].map(i => [i * 45, WHITE]), note: 'one flash every 60 s' } };
+const LIGHTS = { capeD: { turn: 30, speed: 5, beams: [[0, WHITE], [180, REDL]], note: 'white, 15 s, red, 15 s' }, north: { turn: 30, speed: 5, beams: [[0, WHITE], [90, WHITE]], note: 'flash, 7.5 s, flash, 22.5 s' }, cord: { turn: 480, speed: 40, beams: [0, 1, 2, 3, 4, 5, 6, 7].map(i => [i * 45, WHITE]), note: 'one flash every 60 s' }, mend: { turn: 480, speed: 40, beams: Array.from({ length: 16 }, (_, i) => [i * 22.5, WHITE]), note: 'one flash every 30 s' } };
 let light = 'capeD', userLight = false; lights.inert = true;
 function setLight(m) { if (m === light) return; light = m; for (const b of lights.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.light === m)); }
 lights.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { userLight = true; setLight(b.dataset.light); } });
 function renderS5(p, t) {
   const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); fx(4, p); paper(ctx, w, h);
   bar(lights, p > .1 && p < .95);
-  if (!userLight) setLight(p < .46 ? 'capeD' : p < .7 ? 'north' : 'cord');
+  if (!userLight) setLight(p < .37 ? 'capeD' : p < .56 ? 'north' : p < .78 ? 'cord' : 'mend');
   const Lt = LIGHTS[light], now = (reduce ? 0 : t / 1000 * Lt.speed), rot = now / Lt.turn * TAU, D = area(Z, fs), sy = D.y1 - fs * 2.2, top = Z.y0 + fs * .5, bot = sy - fs * 3.6, R = Math.min(Z.zw * .42, (bot - top) * .5), ox = Z.x0 + Z.zw * .38, oy = (top + bot) / 2, bx = ox + R * .92;
   ctx.save(); clipZone(ctx, Z); let lit = 0, litCol = WHITE;
   for (const [deg, col] of Lt.beams) { const a = deg * D2R + rot; sweep(ctx, ox, oy, R * 1.25, a, 4.5 * D2R, col === REDL ? 'rgba(226,88,74,.95)' : 'rgba(255,240,200,.95)', .9); const dlt = Math.atan2(Math.sin(a), Math.cos(a)), v = Math.exp(-((dlt / (5 * D2R)) ** 2)); if (v > lit) { lit = v; litCol = col; } }
