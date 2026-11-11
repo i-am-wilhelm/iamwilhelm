@@ -6,3 +6,8 @@
 /writings/the-unseen-one /gallery/the-unseen-one/ 301
 /writings/where-it-was/ /gallery/where-it-was/ 301
 /writings/where-it-was /gallery/where-it-was/ 301
+
+# The Seeing series was renamed Seen (November 2026). Its index and feed moved with it.
+/writings/seeing/ /writings/seen/ 301
+/writings/seeing /writings/seen/ 301
+/writings/seeing/rss.xml /writings/seen/rss.xml 301

@@ -10,7 +10,7 @@ order: 21
 status: on-view
 plate: "#0a1220"
 date: 2026-11-09
-series: seeing
+series: seen
 seriesNo: 13
 ---
 

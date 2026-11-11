@@ -12,12 +12,12 @@ sign: leo
 plate: "#1a1726"
 date: 2026-11-09
 verb: "four scenes · you tap to change the hour"
-series: seeing
+series: seen
 seriesNo: 3
 ---
 
 Ported from the owner's prototype (docs/prototypes/monet-invented-the-dither-prototype.html).
-Third essay of the Seeing series. The riverbank at seven times magnification
+Third essay of the Seen series. The riverbank at seven times magnification
 pulling back to the whole picture, the same dabs through a day, dab to dot to
 halftone to phosphor to glyph, and blended against broken. Leo, the Sun's
 sign, since the light is the subject; the plate is the night the series sits

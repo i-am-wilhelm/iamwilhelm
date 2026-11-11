@@ -12,7 +12,7 @@ sign: sagittarius
 plate: "#24160e"
 date: 2026-11-09
 verb: "five scenes · you color your own copy"
-series: seeing
+series: seen
 seriesNo: 7
 ---
 

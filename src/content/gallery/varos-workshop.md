@@ -12,12 +12,12 @@ sign: cancer
 plate: "#1e1710"
 date: 2026-11-09
 verb: "four scenes · you leave the candle burning"
-series: seeing
+series: seen
 seriesNo: 2
 ---
 
 Ported from the owner's prototype (docs/prototypes/varos-workshop-prototype.html).
-Second essay of the Seeing series. The room from one vanishing point, the
+Second essay of the Seen series. The room from one vanishing point, the
 candle as self-portrait, the thread of moonlight to the spool, and the figure
 dissolving into the floor. Cancer, the Moon's sign, for the small moon in the
 window and the Gurdjieff circle's "food for the moon"; the plate is the

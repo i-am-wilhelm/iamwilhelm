@@ -148,7 +148,7 @@ export async function getPiece(id: string, kind: PieceKind = 'scroll'): Promise<
 export async function nextInSeries(p: Piece): Promise<{ title: string; path: string; label: string; isIndex: boolean } | undefined> {
   if (!p.series || !p.seriesNo) return undefined;
   const s = registry[p.series];
-  /* The next number hung, which need not be the next integer: Seeing runs
+  /* The next number hung, which need not be the next integer: Seen runs
      No. 1 to 3, then No. 7 on, the numbers its pages print. */
   const next = (await getSeriesPieces(p.series))
     .filter((q) => (q.seriesNo ?? 0) > p.seriesNo!)
