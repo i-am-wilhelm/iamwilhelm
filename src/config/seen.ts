@@ -46,4 +46,15 @@ export const SEEN_GALLERY_ONLY: string[] = [
   'living-vanitas',
   'the-mask-is-the-method',
   'the-snowflake-machine',
+  'due-space',
 ];
+
+/**
+ * Pages built on the same system (hero, pinned stages, cards) that were
+ * delivered on their own, outside the batch folder: slug to source file.
+ * src/lib/seen.ts mounts them the same way. Such a file may carry no meta
+ * description; the gallery entry's `description` is printed in its place.
+ */
+export const SEEN_SOURCES: Record<string, string> = {
+  'due-space': '_incoming/due-space/due-space.html',
+};

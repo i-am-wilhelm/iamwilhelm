@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Due Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Plan: the scrolly system's graph paper and Desmos strokes, plus one honey accent.
+     Display Cormorant Garamond, body Newsreader, labels and equations IBM Plex Mono.
+     Layout: hero, six pinned graph-paper stages with cards scrolling over them, plain end section.
+     One visual world, single theme by choice. */
+  --bg:#f3efe4; --ink:#2a2740; --blue:#2d70b3; --orange:#fa7e19; --green:#388c46; --purple:#6042a6;
+  --gold:#8a6a1f; --honey:#d9a01e; --muted:#7a7568;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:760px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);max-width:34ch;margin:0 auto;line-height:1.7}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(64px,19vw,168px);line-height:.86;margin:.3em 0 .28em;letter-spacing:-.02em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--honey);-webkit-text-stroke:.6px rgba(42,39,64,.55)}
+.sub{max-width:34ch;margin:0 auto;font-size:19px;color:#4a4660;font-style:italic;text-wrap:balance}
+.hint{margin-top:9vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.card{pointer-events:auto;max-width:37ch;background:rgba(243,239,228,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(42,39,64,.16);padding:18px 20px 16px;font-size:17.5px;color:#1a1826}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin-bottom:9px;text-transform:uppercase}
+.panel{position:absolute;left:10px;top:10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:var(--ink);background:rgba(243,239,228,.9);border:1px solid rgba(42,39,64,.14);border-radius:3px;padding:7px 10px;max-width:min(94vw,400px);pointer-events:none}
+.panel div{opacity:0;transform:translateX(-5px);transition:opacity .5s ease,transform .5s ease;white-space:nowrap}
+.panel div.on{opacity:1;transform:none}
+.panel .lbl{color:var(--gold);margin-left:.7em;font-style:italic}
+.panel .sw{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:middle;background:var(--blue)}
+.panel .sw.o{background:var(--orange)} .panel .sw.g{background:var(--green)} .panel .sw.p{background:var(--purple)} .panel .sw.h{background:var(--honey)} .panel .sw.k{background:var(--ink)}
+.panel sup,.panel sub{font-size:8.5px;line-height:0}
+@media (max-width:420px){ .panel{font-size:9.8px;padding:6px 8px} .panel .lbl{margin-left:.5em} }
+
+.end{padding:16vh 22px 14vh;text-align:center;max-width:720px;margin:0 auto}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(40px,10vw,76px);line-height:.98;margin:10vh 0 .5em}
+.end h2 em{color:var(--honey);-webkit-text-stroke:.5px rgba(42,39,64,.55)}
+.end p{color:#3d3a52;max-width:46ch;margin:0 auto 1em;text-align:left}
+.end .last{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,6.4vw,40px);line-height:1.12;text-align:center;color:var(--ink);margin:7vh auto 0;max-width:20ch;text-wrap:balance}
+.end .next{display:inline-block;margin-top:6vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(138,106,31,.4);padding:10px 16px;text-decoration:none}
+.end .next:focus-visible,.srcs a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(42,39,64,.4),transparent);margin:0 auto;width:60%}
+.srcs{max-width:720px;margin:0 auto;padding:0 22px 16vh;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;color:var(--muted)}
+.srcs h3{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:500;margin:0 0 10px}
+.srcs ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.srcs a{color:var(--ink);text-decoration-color:rgba(42,39,64,.35);text-underline-offset:3px;overflow-wrap:anywhere}
+.srcs .colophon{margin-top:5vh;letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A scrolly on the honeybee Arizona never had, and the one it got</div>
+    <h1>Due <em>Space</em></h1>
+    <p class="sub">Arizona has no native honeybee. The one in the water-meter box flew up from Brazil at a hundred miles a year. She has earned her due, and she requires her space.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · No one here by that name -->
+<section class="scene" id="s1">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">I · No one here by that name</span><p>Arizona has roughly thirteen hundred native bee species, and the count of native honeybees among them is zero. The genus <i>Apis</i> belongs to Europe, Africa and Asia. Every honeybee on this continent descends from livestock.</p></div></div>
+    <div class="step"><div class="card"><p>The first recorded hives reached Virginia by ship in 1622. Jefferson wrote that the tribes called the newcomer the white man's fly, because swarms tended to arrive a little ahead of the settlers. The bee needed 231 years to reach the Pacific.</p></div></div>
+    <div class="step"><div class="card"><p>One asterisk, fourteen million years old. In 2009 a fossil from Stewart Valley, Nevada, was identified as a true honeybee, hairy eyes and barbed stinger included. They named her <i>Apis nearctica</i>. The continent had a honeybee, lost her, and carried on.</p></div></div>
+    <div class="step"><div class="card"><p>Far to the south the Maya kept stingless bees for honey, long before the ships. Up here in the Sonoran Desert, hive honey was nobody's job. Pollination was everybody's.</p></div></div>
+  </div>
+</section>
+
+<!-- II · The roster -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">II · The roster</span><p>One dot for every bee species native to Arizona. Most live alone, nest in bare dirt, and fly for a few weeks a year. A nine-year survey of one six-square-mile patch on the Sonora line logged 497 species, the densest bee count on record anywhere.</p></div></div>
+    <div class="step"><div class="card"><p>The specialists keep their own accounts. Cactus bees work the prickly pear and cholla. Digger bees work the palo verde. <i>Perdita minima</i>, the smallest bee on Earth, lives here. Now add one honey-colored dot for the import. In that survey she was 3.5 percent of the bees caught.</p></div></div>
+    <div class="step"><div class="card"><p>Sundown, and the second shift clocks in. Lesser long-nosed bats and Mexican long-tongued bats take the saguaro and the agave. Hawk moths take the datura. The yucca keeps a moth of its own and accepts no substitutes.</p></div></div>
+    <div class="step"><div class="card"><p>At dawn the white-winged dove is back on the saguaro, having timed her whole migration to the bloom. Add hummingbirds, butterflies, beetles, flies and wasps. This desert had a full roster long before the first hive box came over the pass.</p></div></div>
+  </div>
+</section>
+
+<!-- III · A good idea in Brazil -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">III · A good idea in Brazil</span><p>In 1956 the geneticist Warwick Kerr brought African queens to S&atilde;o Paulo state. European honeybees had never done well in the tropics, and these thrived in heat. The plan was a calm, productive cross for Brazilian beekeepers.</p></div></div>
+    <div class="step"><div class="card"><p>In October 1957 a visiting beekeeper noticed the queen excluders on Kerr's hives, decided they were in the workers' way, and pulled them. Twenty-six swarms left for the forest. Nobody has ever recalled a bee.</p></div></div>
+    <div class="step"><div class="card"><p>They bred with every European colony they met and kept moving, sixty miles at a hop, into any hollow log. The Amazon in the seventies, Central America in 1982, Mexico by 1985. Hollywood released the disaster movie in 1978, with the bees still in South America.</p></div></div>
+    <div class="step"><div class="card"><p>October 1990, a baited trap in Hidalgo, Texas. Thirty-three years and forty-eight degrees of latitude on their own wings. Averaged out, about a degree and a half a year, a hundred miles of due north every twelve months. Three summers later, Arizona.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · Arizona, 1993 -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">IV · Arizona, 1993</span><p>Summer of 1993. A swarm turns up in a state trap two miles north of Sasabe, and a colony is found already settled in a Tucson roof. The killer bee is an Arizonan.</p></div></div>
+    <div class="step"><div class="card"><p>Around Tucson, 15 percent of trapped swarms were Africanized in 1994. By 1997 it was 90. The curve is the standard shape of a takeover, drawn through those two numbers.</p></div></div>
+    <div class="step"><div class="card"><p>She won on habits. She swarms more often, she nests in anything (a water-meter box will do), and her swarms move into weak European hives, replace the queen and keep the furniture. Today every wild honeybee colony in Arizona is presumed Africanized.</p></div></div>
+  </div>
+</section>
+
+<!-- V · Her due / VI · Her space -->
+<section class="scene" id="s5">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">V · Her due</span><p>Start with what she is owed. Sting for sting, her venom is the same as any honeybee's, and she is a little smaller than the European. She stings in defense of a nest. Away from it, on a flower, she is a bee at work.</p></div></div>
+    <div class="step"><div class="card"><p>In Brazil her line carries the whole industry. Honey went from a few thousand tons a year in the 1950s to a record 74,000 in 2024, and beekeepers there have lived with the varroa mite since 1977 without treating for it. Arizona beekeepers catch her swarms, install a calmer queen and put them to work.</p></div></div>
+    <div class="step"><div class="card"><p>She pollinates, too. In a long study of Sonoran columnar cacti, honeybees accounted for 64 to 87 percent of the daytime fruit set on saguaro and organ pipe. The immigrant pulls a real share of the day shift.</p></div></div>
+    <div class="step"><div class="card"><span class="n">VI · Her space</span><p>Now the space. The name was earned. The Smithsonian counts about a thousand deaths since 1957, and Arizona's first came in October 1995. Disturb her nest and you take ten times the stings. The federal bee lab in Tucson sets the distance at one hundred feet, the width of a four-lane highway.</p></div></div>
+    <div class="step"><div class="card"><p>If it goes wrong, run. Straight line, face covered, into a car or a building, two football fields if there is no door. She tops out near fifteen miles an hour and follows for a quarter mile. Skip the swatting. Afterward, hire someone who removes bees for a living.</p></div></div>
+  </div>
+</section>
+
+<!-- VII · Meanwhile, in Washington -->
+<section class="scene" id="s6">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">VII · Meanwhile, in Washington</span><p>December 2019. A dead hornet close to two inches long turns up near Blaine, Washington. <i>Vespa mandarinia</i>, the northern giant hornet, the largest hornet alive. The press went with murder hornet.</p></div></div>
+    <div class="step"><div class="card"><p>Her prey is the honeybee, and a raiding party can empty a hive in ninety minutes. Japanese honeybees grew up with her and know the counter. They mob the scout in a ball of bodies and cook her at 46 degrees Celsius. The European honeybee has no such move.</p></div></div>
+    <div class="step"><div class="card"><p>Washington did the unusual thing and won. Residents phoned in sightings, entomologists fitted live hornets with radio tags and followed them home, and four nests came out of Whatcom County in 2020 and 2021. After three clean years the species was declared eradicated in December 2024.</p></div></div>
+    <div class="step"><div class="card"><p>April 30, 2026. A state grain inspector at the Port of Vancouver finds a live yellow-legged hornet on a ship in from South Korea, the first ever on the West Coast. He photographs it and kills it. Nobody can say whether it rode in or flew aboard at the dock. Searches of the area found nothing more.</p></div></div>
+    <div class="step"><div class="card"><p>There is the difference between a stowaway and a migration. One hornet on one ship can be met at the dock. The killer bee arrived as a front the width of a continent, and nobody meets weather at the dock. You learn its habits and you give it room.</p></div></div>
+  </div>
+</section>
+
+<section class="end">
+  <hr class="rule">
+  <h2>Her due.<br>Her <em>space.</em></h2>
+  <p>Tally it up. Arizona's own roster runs to thirteen hundred bees, two nectar bats, a dove that keeps the saguaro's calendar, and moths for the night flowers. The honeybee is a guest among them, and a useful one. Honeybee headlines are livestock news, and the desert reads them the way a mountain reads cattle prices.</p>
+  <p>The natives ask for little. Flowers that belong here, a patch of bare dirt to nest in, a shallow dish of water with stones in it. So rest easy about the pollination. It was handled before 1622 and it is handled now.</p>
+  <p>As for the bee who came up from Brazil, she lives here, she works for free, and her terms are short. A hundred feet. Give her that and she will keep setting saguaro fruit.</p>
+  <p class="last">Respect is a distance.</p>
+  <a class="next" href="#hero">Read it again &uarr;</a>
+</section>
+
+<footer class="srcs">
+  <h3>Sources</h3>
+  <ul>
+    <li><a href="https://ars.usda.gov/pacific-west-area/tucson-az/carl-hayden-bee-research-center/docs/africanized-honey-bees/africanized-honey-bees-overview">USDA Carl Hayden Bee Research Center, Tucson: Africanized honey bees</a></li>
+    <li><a href="https://cales.arizona.edu/pubs/insects/ahb/inf15.html">University of Arizona: Africanized Honey Bees, a historical perspective</a></li>
+    <li><a href="https://cales.arizona.edu/yavapai/anr/hort/byg/archive/feralhoneybees.html">University of Arizona Cooperative Extension: feral honeybees and what to do</a></li>
+    <li><a href="https://www.si.edu/spotlight/buginfo/killbee">Smithsonian BugInfo: Africanized bees</a></li>
+    <li><a href="https://doi.org/10.3897/jhr.82.60895">Minckley and Radke 2021: bee species density, San Bernardino Valley</a></li>
+    <li><a href="https://www.sciencenews.org/article/fossil-shows-first-all-american-honeybee">Science News on <i>Apis nearctica</i> (Engel et al. 2009)</a></li>
+    <li><a href="https://kjzz.org/content/1867516/there-are-1300-species-bees-arizona-group-wants-you-know-how-help-them">KJZZ: Arizona's 1,300 native bee species</a></li>
+    <li><a href="https://blog.desertmuseum.org/2022/06/24/the-pollinator-party/">Arizona-Sonora Desert Museum: the pollinator party</a></li>
+    <li>Fleming et al. 2001, Ecological Monographs: pollination of Sonoran columnar cacti</li>
+    <li><a href="https://agr.wa.gov/hornets">Washington State Department of Agriculture: hornets</a></li>
+    <li><a href="https://www.opb.org/article/2026/05/11/vancover-washington-yellow-legged-hornet/">OPB: the yellow-legged hornet at the Port of Vancouver</a></li>
+  </ul>
+  <div class="colophon">Drawn in functions on graph paper. No images loaded. The takeover curve is a logistic through two published data points, and the Washington outline is a schematic.</div>
+</footer>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2, R3 = Math.sqrt(3);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const ease = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C = { paper: '#f3efe4', night: '#14162b', ink: '#2a2740', blue: '#2d70b3', orange: '#fa7e19', green: '#388c46', purple: '#6042a6', gold: '#8a6a1f', honey: '#d9a01e', red: '#c74440', star: '#eef1ff' };
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`, DISP = `'Cormorant Garamond', Georgia, serif`;
+
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+const rgb = hex => { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+function mix(a, b, t, alpha = 1) { const A = rgb(a), B = rgb(b); return `rgba(${Math.round(lerp(A[0], B[0], t))},${Math.round(lerp(A[1], B[1], t))},${Math.round(lerp(A[2], B[2], t))},${alpha})`; }
+
+/* ---------- graph paper ---------- */
+function paper(ctx, w, h, nt = 0) {
+  ctx.fillStyle = mix(C.paper, C.night, nt); ctx.fillRect(0, 0, w, h);
+  const g = w < 520 ? 13 : 16, cx = w / 2, cy = Math.round(h * 0.37);
+  const nx = Math.ceil(cx / g), ny = Math.ceil(Math.max(cy, h - cy) / g);
+  ctx.lineWidth = 1;
+  for (const major of [false, true]) {
+    ctx.beginPath();
+    for (let k = -nx; k <= nx; k++) { if ((k % 5 === 0) !== major) continue; const x = Math.round(cx + k * g) + 0.5; ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+    for (let k = -ny; k <= ny; k++) { if ((k % 5 === 0) !== major) continue; const y = Math.round(cy + k * g) + 0.5; ctx.moveTo(0, y); ctx.lineTo(w, y); }
+    ctx.strokeStyle = mix(C.ink, '#dfe3ff', nt, major ? 0.17 : 0.06); ctx.stroke();
+  }
+}
+/* coordinate paper for the three plots: the grid is the scale */
+function grid(ctx, w, h, X, Y, xs, ys) {
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, w, h); ctx.lineWidth = 1;
+  const isMajor = (v, m) => Math.abs(v / m - Math.round(v / m)) < 1e-6;
+  for (const major of [false, true]) {
+    ctx.beginPath();
+    for (let v = xs.from; v <= xs.to + 1e-9; v += xs.minor) { if (isMajor(v, xs.major) !== major) continue; const x = Math.round(X(v)) + 0.5; if (x < -1 || x > w + 1) continue; ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+    for (let v = ys.from; v <= ys.to + 1e-9; v += ys.minor) { if (isMajor(v, ys.major) !== major) continue; const y = Math.round(Y(v)) + 0.5; if (y < -1 || y > h + 1) continue; ctx.moveTo(0, y); ctx.lineTo(w, y); }
+    ctx.strokeStyle = `rgba(42,39,64,${major ? 0.17 : 0.06})`; ctx.stroke();
+  }
+}
+function plotRect(w, h) {
+  const wide = w >= 820;
+  return { L: wide ? (w - 700) / 2 + 30 : 42, Rr: wide ? (w + 700) / 2 : w - 16, T: Math.max(138, h * 0.2), B: h * (wide ? 0.66 : 0.54) };
+}
+function focus(w, h) { const wide = w >= 820; return { fx: w / 2, fy: h * (wide ? 0.42 : 0.37), S: Math.min(w * 0.88, h * (wide ? 0.5 : 0.42), 560) }; }
+
+/* ---------- marks ---------- */
+function dot(ctx, x, y, color = C.orange, r = 4.2) { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = color; ctx.stroke(); }
+function seg(ctx, x0, y0, x1, y1, f, color, width = 2.2, dash) {
+  if (f <= 0) return; ctx.strokeStyle = color; ctx.lineWidth = width; if (dash) ctx.setLineDash(dash);
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(lerp(x0, x1, f), lerp(y0, y1, f)); ctx.stroke(); ctx.setLineDash([]);
+}
+function mono(ctx, text, x, y, color, align = 'left', size = 10.5) { ctx.font = `${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function tag(ctx, text, x, y, color, align = 'left', size = 10, nt = 0) {
+  ctx.font = `${size}px ${MONO}`; const tw = ctx.measureText(text).width, px = 4;
+  const x0 = align === 'left' ? x : align === 'right' ? x - tw : x - tw / 2;
+  ctx.fillStyle = mix(C.paper, C.night, nt, 0.88); ctx.fillRect(x0 - px, y - size * 0.78, tw + px * 2, size * 1.56);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x0, y + 0.5);
+}
+function hexPath(ctx, x, y, R) { ctx.beginPath(); for (let i = 0; i < 6; i++) { const a = i * TAU / 6, px = x + R * Math.cos(a), py = y + R * Math.sin(a); if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py); } ctx.closePath(); }
+/* a bee or hornet from four ellipses; glyph runs from -2.35 to 1.45 units, head toward +x */
+function insect(ctx, x, y, s, a, o = {}) {
+  const body = o.body || C.honey, stripe = o.stripe || C.ink, thorax = o.thorax || body, head = o.head || C.ink, ph = o.wing || 0;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.scale(s, s); ctx.lineWidth = 0.13;
+  ctx.fillStyle = 'rgba(45,112,179,.16)'; ctx.strokeStyle = 'rgba(45,112,179,.85)';
+  for (const k of [-1, 1]) { ctx.beginPath(); ctx.ellipse(-0.25, k * (0.72 + 0.12 * Math.sin(ph)), 0.95, 0.4, k * 0.45, 0, TAU); ctx.fill(); ctx.stroke(); }
+  ctx.strokeStyle = C.ink;
+  ctx.beginPath(); ctx.ellipse(-1.2, 0, 1.15, 0.66, 0, 0, TAU); ctx.fillStyle = body; ctx.fill();
+  ctx.save(); ctx.clip(); ctx.fillStyle = stripe; for (const sx of (o.bands || [-1.95, -1.35, -0.75])) ctx.fillRect(sx, -1, 0.3, 2); ctx.restore();
+  ctx.beginPath(); ctx.ellipse(-1.2, 0, 1.15, 0.66, 0, 0, TAU); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0.3, 0, 0.56, 0, TAU); ctx.fillStyle = thorax; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(1.05, 0, 0.4, 0, TAU); ctx.fillStyle = head; ctx.fill(); ctx.stroke();
+  if (o.legs) { ctx.strokeStyle = o.legs; ctx.lineWidth = 0.17; for (const lx of [-0.1, 0.3, 0.7]) for (const k of [-1, 1]) { ctx.beginPath(); ctx.moveTo(lx, k * 0.5); ctx.lineTo(lx - 0.25, k * 1.25); ctx.stroke(); } }
+  ctx.restore();
+}
+function bat(ctx, x, y, s, flap, col) {
+  const lift = flap * 0.5;
+  ctx.save(); ctx.translate(x, y); ctx.fillStyle = col; ctx.beginPath();
+  ctx.moveTo(-2.2 * s, -lift * s); ctx.quadraticCurveTo(-1.4 * s, -1.1 * s, -0.5 * s, -0.1 * s); ctx.quadraticCurveTo(0, -0.5 * s, 0.5 * s, -0.1 * s);
+  ctx.quadraticCurveTo(1.4 * s, -1.1 * s, 2.2 * s, -lift * s); ctx.quadraticCurveTo(1.2 * s, 0.2 * s, 0.4 * s, 0.45 * s); ctx.lineTo(0, 0.2 * s); ctx.lineTo(-0.4 * s, 0.45 * s);
+  ctx.quadraticCurveTo(-1.2 * s, 0.2 * s, -2.2 * s, -lift * s); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function makePanel(el, lines) { el.innerHTML = ''; return lines.map(html => { const d = document.createElement('div'); d.innerHTML = html; el.appendChild(d); return d; }); }
+const on = (d, v) => d.classList.toggle('on', !!v);
+
+/* ---------- hero: comb at the edges, one bee flying the waggle figure ---------- */
+const heroEl = document.getElementById('hero'), heroC = document.getElementById('heroCanvas');
+function renderHero(t) {
+  if (heroEl.getBoundingClientRect().bottom <= 0) return;
+  const { ctx, w, h } = prep(heroC);
+  paper(ctx, w, h);
+  const R = Math.max(22, Math.min(w, h) * 0.055), cols = Math.ceil(w / (1.5 * R)) + 2, rows = Math.ceil(h / (R3 * R)) + 2;
+  ctx.lineWidth = 1;
+  for (let q = -1; q < cols; q++) for (let r = -1; r < rows; r++) {
+    const x = q * 1.5 * R, y = (r + (q & 1 ? 0.5 : 0)) * R3 * R;
+    const d = Math.hypot((x - w / 2) / (w * 0.5), (y - h * 0.5) / (h * 0.5));
+    const a = clamp((d - 0.66) * 1.4, 0, 1); if (a <= 0.02) continue;
+    hexPath(ctx, x, y, R * 0.93);
+    const seed = Math.abs(Math.sin(q * 12.9898 + r * 78.233) * 43758.5453) % 1;
+    if (seed > 0.7) { ctx.fillStyle = `rgba(217,160,30,${0.26 * a})`; ctx.fill(); }
+    ctx.strokeStyle = `rgba(138,106,31,${0.45 * a})`; ctx.stroke();
+  }
+  const A = Math.min(w * 0.42, 330), B = Math.min(h * 0.2, 150), cx = w / 2, cy = h * 0.5;
+  const P = u => [cx + A * Math.sin(u), cy + B * Math.sin(2 * u)];
+  ctx.fillStyle = 'rgba(138,106,31,.38)';
+  for (let i = 0; i < 90; i++) { const [x, y] = P(i / 90 * TAU); ctx.beginPath(); ctx.arc(x, y, 1.1, 0, TAU); ctx.fill(); }
+  const u = reduce ? 0.9 : t * 0.00045, [bx, by] = P(u);
+  insect(ctx, bx, by, w < 520 ? 4.6 : 6, Math.atan2(2 * B * Math.cos(2 * u), A * Math.cos(u)), { wing: t * 0.03 });
+}
+
+/* ---------- scene plumbing ---------- */
+const scenes = [];
+function scene(id, lines, N, draw) { const el = document.getElementById(id); scenes.push({ el, c: el.querySelector('canvas'), P: makePanel(el.querySelector('.panel'), lines), N, draw }); }
+
+/* ---------- I · the comb with nobody home ---------- */
+const CELLS = [];
+for (let q = -2; q <= 2; q++) for (let r = -2; r <= 2; r++) { if (Math.abs(q + r) > 2) continue; CELLS.push({ q, r, ring: Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r)), ang: Math.atan2(r + q / 2, q * 0.866) }); }
+CELLS.sort((a, b) => a.ring - b.ring || a.ang - b.ang);
+scene('s1', [
+  '<i class="sw k"></i>|y| &le; &radic;3&frasl;2, |&radic;3x &plusmn; y| &le; &radic;3<span class="lbl">one cell</span>',
+  '<i class="sw"></i>native <i>Apis</i>, Arizona = 0',
+  '<i class="sw h"></i>1622 &rarr; 1853<span class="lbl">Virginia to the Pacific</span>',
+  '<i class="sw k"></i><i>A. nearctica</i>, t &asymp; &minus;1.4 &times; 10<sup>7</sup> yr<span class="lbl">Nevada</span>',
+  '<i class="sw g"></i><i>Melipona</i><span class="lbl">the Maya&rsquo;s honey, no sting</span>'
+], 4, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), R = S / 9.2, a0 = k(0), a1 = k(1), a2 = k(2), a3 = k(3);
+  paper(ctx, w, h);
+  const xy = c => [fx + R * 1.5 * c.q, fy + R * R3 * (c.r + c.q / 2)];
+  const front = lerp(fx + 4.4 * R, fx - 4.4 * R, a1);
+  CELLS.forEach((c, i) => {
+    const born = ramp(a0, i / CELLS.length * 0.8, i / CELLS.length * 0.8 + 0.2); if (born <= 0) return;
+    const [x, y] = xy(c), centre = c.ring === 0, fossil = c.q === -1 && c.r === -1, maya = c.q === 1 && c.r === 1;
+    ctx.globalAlpha = born;
+    hexPath(ctx, x, y, R * 0.93);
+    if (!centre && a1 > 0) { const f = ramp(x - front, -R, R * 0.6); if (f > 0) { ctx.fillStyle = `rgba(217,160,30,${0.5 * f})`; ctx.fill(); } }
+    if (fossil && a2 > 0) {
+      ctx.fillStyle = `rgba(158,153,141,${a2})`; ctx.fill();
+      ctx.save(); ctx.clip(); ctx.strokeStyle = `rgba(42,39,64,${0.2 * a2})`; ctx.lineWidth = 1; ctx.beginPath();
+      for (let d = -R * 2; d < R * 2; d += 5) { ctx.moveTo(x + d - R, y + R); ctx.lineTo(x + d + R, y - R); }
+      ctx.stroke(); ctx.restore(); hexPath(ctx, x, y, R * 0.93);
+    }
+    if (maya && a3 > 0) { ctx.fillStyle = `rgba(56,140,70,${0.3 * a3})`; ctx.fill(); }
+    if (centre) ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = 'rgba(42,39,64,.72)'; ctx.lineWidth = 1.4; ctx.stroke(); ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+  });
+  const lab = (q, r, txt, al, col = C.ink) => { if (al <= 0) return; const [x, y] = xy({ q, r }); ctx.globalAlpha = al; mono(ctx, txt, x, y, col, 'center', Math.max(9, R * 0.3)); ctx.globalAlpha = 1; };
+  if (a0 > 0.6) { const [x, y] = xy({ q: 0, r: 0 }); ctx.globalAlpha = ramp(a0, 0.6, 1); ctx.font = `italic 400 ${Math.round(R * 1.3)}px ${DISP}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = C.blue; ctx.fillText('0', x, y + R * 0.04); ctx.globalAlpha = 1; }
+  lab(2, -1, '1622', ramp(a1, 0.05, 0.25)); lab(-2, 1, '1853', ramp(a1, 0.8, 1)); lab(-1, -1, '14 Ma', ramp(a2, 0.4, 0.9));
+  if (a3 > 0) {
+    const [x, y] = xy({ q: 1, r: 1 }); ctx.globalAlpha = a3;
+    for (const [dx, dy] of [[-0.27, -0.14], [0.27, -0.14], [0, -0.46]]) { ctx.beginPath(); ctx.arc(x + dx * R, y + dy * R, R * 0.19 * a3, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = C.green; ctx.lineWidth = 1.6; ctx.stroke(); }
+    mono(ctx, 'Melipona', x, y + R * 0.4, C.green, 'center', Math.max(8, R * 0.25)); ctx.globalAlpha = 1;
+  }
+  if (a1 > 0 && a1 < 1) insect(ctx, front, fy + Math.sin(a1 * 14) * R * 0.4, Math.max(3.4, R * 0.14), Math.PI + Math.cos(a1 * 14) * 0.25, { wing: t * 0.03 });
+  on(P[0], a0 > 0.35); on(P[1], a0 > 0.8); on(P[2], a1 > 0.3); on(P[3], a2 > 0.3); on(P[4], a3 > 0.3);
+});
+
+/* ---------- II · thirteen hundred dots, then the night shift ---------- */
+scene('s2', [
+  '<i class="sw"></i>r = c&radic;n, &theta; = n &middot; 137.5&deg;<span class="lbl">one dot, one species</span>',
+  '<i class="sw"></i>1 &le; n &le; 1300<span class="lbl">Arizona&rsquo;s native bees</span>',
+  '<i class="sw h"></i>n = 1301<span class="lbl"><i>Apis mellifera</i>, the import</span>',
+  '<i class="sw p"></i>x = a sin u, y = b sin 2u<span class="lbl">one bat, one night</span>',
+  '<i class="sw o"></i><i>Zenaida asiatica</i><span class="lbl">arrives with the bloom</span>'
+], 4, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), a0 = k(0), a1 = k(1), a2 = k(2), a3 = k(3);
+  const nt = a2 * (1 - a3);
+  paper(ctx, w, h, nt);
+  const Rm = S * 0.5, c = Rm / Math.sqrt(1301), GA = 137.508 * Math.PI / 180, shown = Math.floor(1300 * a0);
+  const pos = n => { const r = c * Math.sqrt(n), th = n * GA; return [fx + r * Math.cos(th), fy + r * Math.sin(th)]; };
+  const dotR = lerp(Math.max(1.15, c * 0.4), Math.max(0.8, c * 0.26), nt);
+  if (nt <= 0) { ctx.fillStyle = 'rgba(45,112,179,.62)'; ctx.beginPath(); for (let n = 1; n <= shown; n++) { const [x, y] = pos(n); ctx.moveTo(x + dotR, y); ctx.arc(x, y, dotR, 0, TAU); } ctx.fill(); }
+  else for (let b = 0; b < 4; b++) {
+    const tw = 0.55 + 0.35 * Math.sin(t * 0.0022 + b * 1.9); ctx.fillStyle = mix(C.blue, C.star, nt, lerp(0.62, tw, nt)); ctx.beginPath();
+    for (let n = 1 + b; n <= shown; n += 4) { const [x, y] = pos(n); ctx.moveTo(x + dotR, y); ctx.arc(x, y, dotR, 0, TAU); } ctx.fill();
+  }
+  const day1 = 1 - ramp(a2, 0, 0.3);
+  if (a0 > 0 && day1 > 0) { ctx.globalAlpha = day1; mono(ctx, 'n = ' + shown.toLocaleString('en-US'), fx, fy + Rm + 15, C.blue, 'center', 10.5); ctx.globalAlpha = 1; }
+  [[300, 'cactus bee', C.orange, 0.08], [700, 'digger bee', C.green, 0.26], [900, 'Perdita minima', C.purple, 0.44]].forEach(([n, name, col, at]) => {
+    const al = ramp(a1, at, at + 0.2) * day1; if (al <= 0) return; const [x, y] = pos(n);
+    ctx.globalAlpha = al; dot(ctx, x, y, col, 4); tag(ctx, name, x + (x < fx ? 9 : -9), y, col, x < fx ? 'left' : 'right', 10); ctx.globalAlpha = 1;
+  });
+  const ai = ramp(a1, 0.62, 0.9);
+  if (ai > 0) {
+    const [x, y] = pos(1301); ctx.globalAlpha = ai; ctx.beginPath(); ctx.arc(x, y, 5.5, 0, TAU); ctx.fillStyle = C.honey; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = mix(C.ink, C.star, nt); ctx.stroke();
+    ctx.globalAlpha = ai * day1; tag(ctx, 'Apis mellifera', x - 10, y, C.gold, 'right', 10); ctx.globalAlpha = 1;
+  }
+  /* saguaro, drawn as three thick strokes with round caps */
+  const g = ramp(a2, 0, 0.8);
+  if (g > 0) {
+    const y0 = fy + S * 0.47, H = S * 0.82, wd = S * 0.085, ytop = y0 - H * g;
+    const out = mix(C.ink, '#dfe6ff', nt), fill = mix('#58a565', '#2f6e4f', nt);
+    const arms = [[-S * 0.17, 0.42, 0.72], [S * 0.16, 0.52, 0.86]], tips = [[fx, ytop, 1]];
+    const path = collect => {
+      ctx.beginPath(); ctx.moveTo(fx, y0 + wd); ctx.lineTo(fx, ytop);
+      for (const [dx, j, tp] of arms) {
+        const pa = ramp(g, j, 1); if (pa <= 0) continue; const yj = y0 - H * j, ax = ramp(pa, 0, 0.4), ay = ramp(pa, 0.4, 1), ty = lerp(yj, y0 - H * tp, ay);
+        ctx.moveTo(fx, yj); ctx.lineTo(fx + dx * ax, yj); if (ay > 0) ctx.lineTo(fx + dx, ty);
+        if (collect) tips.push([fx + dx, ty, ay]);
+      }
+    };
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, y0); ctx.clip();
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    path(true); ctx.strokeStyle = out; ctx.lineWidth = wd + 3; ctx.stroke();
+    path(false); ctx.strokeStyle = fill; ctx.lineWidth = wd; ctx.stroke();
+    ctx.lineCap = 'butt'; ctx.lineWidth = 1; ctx.strokeStyle = mix('#2d6b3c', '#1c4634', nt, 0.6); ctx.beginPath();
+    for (const o of [-0.26, 0, 0.26]) { ctx.moveTo(fx + o * wd, y0); ctx.lineTo(fx + o * wd, ytop + wd * 0.15); } ctx.stroke();
+    ctx.restore(); ctx.lineJoin = 'miter';
+    ctx.strokeStyle = out; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(fx - S * 0.44, y0); ctx.lineTo(fx + S * 0.44, y0); ctx.stroke();
+    const bl = ramp(a2, 0.8, 1);
+    if (bl > 0) for (const [bx, by, ready] of tips) { if (ready < 1) continue; for (const an of [-2.5, -1.57, -0.64]) {
+      const px = bx + Math.cos(an) * wd * 0.52, py = by + Math.sin(an) * wd * 0.52;
+      ctx.beginPath(); ctx.arc(px, py, S * 0.022 * bl, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = out; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(px, py, S * 0.008 * bl, 0, TAU); ctx.fillStyle = C.honey; ctx.fill();
+    } }
+    if (nt > 0) {
+      ctx.globalAlpha = nt; ctx.beginPath(); ctx.arc(fx + S * 0.34, fy - S * 0.31, S * 0.055, 0, TAU); ctx.fillStyle = '#f4f1e2'; ctx.fill();
+      const ba = ramp(a2, 0.7, 1); if (ba > 0) { ctx.globalAlpha = nt * ba; const u = reduce ? 1.1 : t * 0.0007; bat(ctx, fx + S * 0.36 * Math.sin(u), y0 - H - S * 0.03 + S * 0.08 * Math.sin(2 * u), S * 0.034, reduce ? 0.4 : Math.sin(t * 0.012), '#cfd3f5'); }
+      ctx.globalAlpha = 1;
+    }
+    if (a3 > 0) {
+      ctx.globalAlpha = a3;
+      const sx = fx - S * 0.36, sy = fy - S * 0.3 + (1 - a3) * S * 0.22, sr = S * 0.05;
+      ctx.strokeStyle = C.orange; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, TAU);
+      for (let i = 0; i < 8; i++) { const an = i * TAU / 8; ctx.moveTo(sx + Math.cos(an) * sr * 1.35, sy + Math.sin(an) * sr * 1.35); ctx.lineTo(sx + Math.cos(an) * sr * 1.8, sy + Math.sin(an) * sr * 1.8); } ctx.stroke();
+      /* the dove on the crown */
+      const dx = fx + wd * 0.05, dy = y0 - H - S * 0.062, ds = S * 0.05;
+      ctx.fillStyle = '#a39b93'; ctx.strokeStyle = C.ink; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(dx - ds * 0.8, dy); ctx.lineTo(dx - ds * 1.75, dy + ds * 0.35); ctx.lineTo(dx - ds * 0.7, dy + ds * 0.35); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(dx, dy, ds, ds * 0.56, -0.18, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(dx + ds * 0.92, dy - ds * 0.5, ds * 0.36, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(dx + ds * 1.26, dy - ds * 0.5); ctx.lineTo(dx + ds * 1.62, dy - ds * 0.42); ctx.stroke();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(dx - ds * 0.55, dy + ds * 0.3); ctx.quadraticCurveTo(dx, dy + ds * 0.5, dx + ds * 0.5, dy + ds * 0.12); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+  on(P[0], a0 > 0.3); on(P[1], a0 > 0.85); on(P[2], a1 > 0.65); on(P[3], a2 > 0.6); on(P[4], a3 > 0.5);
+});
+
+/* ---------- III · latitude against year ---------- */
+const PT = [[1957.8, -22.4, 'Rio Claro, 1957'], [1982, 9, 'C. America, 1982'], [1985, 15, 'Mexico, 1985'], [1990.8, 26.1, 'Hidalgo, Texas, 1990'], [1993.5, 31.5, 'Sasabe, Arizona, 1993']];
+scene('s3', [
+  '<i class="sw o"></i>(1957, &minus;22.4&deg;)<span class="lbl">Rio Claro, Brazil</span>',
+  '<i class="sw h"></i>n = 26<span class="lbl">swarms out, October 1957</span>',
+  '<i class="sw o"></i>(1982, 9&deg;), (1985, 15&deg;)<span class="lbl">isthmus, Mexico</span>',
+  '<i class="sw o"></i>(1990, 26.1&deg;)<span class="lbl">Hidalgo, Texas</span>',
+  '<i class="sw k"></i>&phi;(t) &asymp; &minus;22.4 + 1.47(t &minus; 1957)<span class="lbl">mean pace</span>',
+  '<i class="sw o"></i>(1993, 31.5&deg;)<span class="lbl">Sasabe, Arizona</span>'
+], 4, (ctx, w, h, k, t, P) => {
+  const { L, Rr, T, B } = plotRect(w, h), a0 = k(0), a1 = k(1), a2 = k(2), a3 = k(3), small = w < 520;
+  const X = yr => L + (yr - 1955) / 41 * (Rr - L), Y = la => B - (la + 28) / 64 * (B - T);
+  grid(ctx, w, h, X, Y, { from: 1930, to: 2020, minor: 1, major: 5 }, { from: -80, to: 80, minor: 2, major: 10 });
+  ctx.strokeStyle = 'rgba(42,39,64,.6)'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(w, Y(0)); ctx.moveTo(X(1955), 0); ctx.lineTo(X(1955), h); ctx.stroke();
+  for (const yr of [1960, 1970, 1980, 1990]) mono(ctx, String(yr), X(yr) + 3, Y(0) + 9, 'rgba(42,39,64,.6)', 'left', 9.5);
+  mono(ctx, '20°N', X(1955) + 4, Y(20) - 7, 'rgba(42,39,64,.6)', 'left', 9.5); mono(ctx, '20°S', X(1955) + 4, Y(-20) - 7, 'rgba(42,39,64,.6)', 'left', 9.5);
+  mono(ctx, 'equator', X(1955) + 4, Y(0) - 7, 'rgba(42,39,64,.6)', 'left', 9.5);
+  if (a3 > 0) { ctx.globalAlpha = ramp(a3, 0, 0.4); seg(ctx, X(1955), Y(26), Rr, Y(26), 1, 'rgba(45,112,179,.7)', 1.2, [5, 4]); mono(ctx, 'Rio Grande', X(1955) + 4, Y(26) - 8, C.blue, 'left', 9.5); ctx.globalAlpha = 1; }
+  const am = ramp(a3, 0.35, 0.9);
+  if (am > 0) { seg(ctx, X(PT[0][0]), Y(PT[0][1]), X(PT[3][0]), Y(PT[3][1]), am, 'rgba(42,39,64,.75)', 1.3, [5, 4]); if (am > 0.6) { ctx.globalAlpha = ramp(am, 0.6, 1); tag(ctx, '1.5° a year', X(1972) - 8, Y(-1.5) - 14, C.ink, 'right', 10); ctx.globalAlpha = 1; } }
+  const u = a2 * 2 + a3 * 2;
+  let hx = X(PT[0][0]), hy = Y(PT[0][1]), ha = -0.6;
+  ctx.strokeStyle = C.orange; ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(hx, hy);
+  for (let i = 0; i < 4; i++) { const f = clamp(u - i, 0, 1); if (f <= 0) break; const x0 = X(PT[i][0]), y0 = Y(PT[i][1]), x1 = X(PT[i + 1][0]), y1 = Y(PT[i + 1][1]); hx = lerp(x0, x1, f); hy = lerp(y0, y1, f); ha = Math.atan2(y1 - y0, x1 - x0); ctx.lineTo(hx, hy); }
+  ctx.stroke(); ctx.lineJoin = 'miter';
+  if (a1 > 0) {
+    const bx = X(PT[0][0]), by = Y(PT[0][1]), fade = 1 - ramp(a2, 0, 0.5);
+    if (fade > 0) { ctx.fillStyle = `rgba(217,160,30,${0.95 * fade})`; ctx.strokeStyle = `rgba(42,39,64,${0.5 * fade})`; ctx.lineWidth = 0.8;
+      for (let j = 0; j < 26; j++) { const an = j / 26 * TAU + j * 0.7, d = ease(a1) * (14 + (j % 5) * 7) * (small ? 1 : 1.5); ctx.beginPath(); ctx.arc(bx + Math.cos(an) * d, by + Math.sin(an) * d * 0.8, 2.3, 0, TAU); ctx.fill(); ctx.stroke(); } }
+  }
+  if (u > 0.62) { ctx.globalAlpha = ramp(u, 0.62, 0.8); tag(ctx, 'Amazon, 1970s', X(1972.4) + 10, Y(-3) + 6, C.gold, 'left', 10); ctx.globalAlpha = 1; }
+  PT.forEach((p, i) => {
+    const al = i === 0 ? ramp(a0, 0.4, 0.8) : ramp(u, i - 0.12, i - 0.01); if (al <= 0) return;
+    const x = X(p[0]), y = Y(p[1]); ctx.globalAlpha = al; dot(ctx, x, y, C.orange, 4.2);
+    if (i < 3) tag(ctx, p[2], x + 9, y + (i === 0 ? 1 : 2), C.ink, 'left', 10); else tag(ctx, p[2], x - 9, y - (i === 3 ? 10 : 3), C.ink, 'right', 10);
+    ctx.globalAlpha = 1;
+  });
+  if (u > 0 && u < 4) insect(ctx, hx, hy, small ? 4 : 5, ha, { wing: t * 0.03 });
+  on(P[0], a0 > 0.4); on(P[1], a1 > 0.3); on(P[2], a2 > 0.5); on(P[3], a3 > 0.4); on(P[4], a3 > 0.62); on(P[5], a3 > 0.95);
+});
+
+/* ---------- IV · the takeover curve ---------- */
+scene('s4', [
+  '<i class="sw p"></i>t<sub>0</sub> = 1993<span class="lbl">first swarm, a trap near Sasabe</span>',
+  '<i class="sw o"></i>p(1994) = 0.15, p(1997) = 0.90<span class="lbl">Tucson</span>',
+  '<i class="sw o"></i>p(t) = 1 / (1 + e<sup>&minus;1.31(t &minus; 1995.3)</sup>)',
+  '<i class="sw k"></i>p &rarr; 1<span class="lbl">presume every wild colony</span>'
+], 3, (ctx, w, h, k, t, P) => {
+  const { L, Rr, T, B } = plotRect(w, h), a0 = k(0), a1 = k(1), a2 = k(2);
+  const X = yr => L + (yr - 1992.6) / 6.6 * (Rr - L), Y = p => B - p / 112 * (B - T);
+  grid(ctx, w, h, X, Y, { from: 1985, to: 2006, minor: 0.5, major: 1 }, { from: -100, to: 300, minor: 10, major: 20 });
+  ctx.strokeStyle = 'rgba(42,39,64,.6)'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(w, Y(0)); ctx.moveTo(X(1992.6), 0); ctx.lineTo(X(1992.6), h); ctx.stroke();
+  for (let yr = 1993; yr <= 1999; yr++) mono(ctx, String(yr), X(yr), Y(0) + 10, 'rgba(42,39,64,.6)', 'center', 9.5);
+  for (const v of [20, 40, 60, 80, 100]) mono(ctx, v + '%', X(1992.6) + 4, Y(v) - 7, 'rgba(42,39,64,.6)', 'left', 9.5);
+  const p = yr => 100 / (1 + Math.exp(-1.3106 * (yr - 1995.3235)));
+  const head = a2 > 0 ? lerp(1997.6, 1999.1, a2) : lerp(1993.5, 1997.6, a1);
+  const stroke = (t0, t1, dash) => { if (t1 <= t0) return; ctx.beginPath(); ctx.moveTo(X(t0), Y(p(t0))); for (let tt = t0 + 0.04; tt < t1; tt += 0.04) ctx.lineTo(X(tt), Y(p(tt))); ctx.lineTo(X(t1), Y(p(t1))); ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); };
+  if (a2 > 0) { ctx.globalAlpha = a2; seg(ctx, X(1992.6), Y(100), Rr, Y(100), 1, 'rgba(42,39,64,.75)', 1.3, [5, 4]); tag(ctx, 'presumed: every wild colony', Rr - 4, Y(100) - 10, C.ink, 'right', 10); ctx.globalAlpha = 1; }
+  if (a1 > 0) { ctx.strokeStyle = C.orange; ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; stroke(1993.5, Math.min(head, 1994), [5, 4]); stroke(1994, Math.min(head, 1997)); stroke(1997, head, [5, 4]); ctx.lineJoin = 'miter'; }
+  if (a0 > 0.4) { ctx.globalAlpha = ramp(a0, 0.4, 0.8); dot(ctx, X(1993.5), Y(0), C.purple, 4.2); tag(ctx, 'first swarm', X(1993.5) + 9, Y(0) - 12, C.purple, 'left', 10); ctx.globalAlpha = 1; }
+  if (a1 > 0 && head >= 1994) { dot(ctx, X(1994), Y(15), C.orange, 4.2); tag(ctx, '15%', X(1994) + 9, Y(15) + 11, C.ink, 'left', 10); }
+  if (head >= 1997) { dot(ctx, X(1997), Y(90), C.orange, 4.2); tag(ctx, '90%', X(1997) - 9, Y(90) - 11, C.ink, 'right', 10); }
+  /* one hundred trapped swarms */
+  if (a0 > 0.5) {
+    const pitch = Math.min(11, (Rr - L) * 0.03 + 2), x0 = Rr - pitch * 10 - 2, y0 = Y(0) - pitch * 10 - 20, n = a1 > 0 ? Math.round(p(head)) : 0;
+    ctx.globalAlpha = ramp(a0, 0.5, 0.9);
+    for (let i = 0; i < 100; i++) { const cx = x0 + (i % 10 + 0.5) * pitch, cy = y0 + (9 - Math.floor(i / 10) + 0.5) * pitch; ctx.beginPath(); ctx.arc(cx, cy, pitch * 0.33, 0, TAU); if (i < n) { ctx.fillStyle = C.honey; ctx.fill(); } ctx.strokeStyle = 'rgba(42,39,64,.45)'; ctx.lineWidth = 0.9; ctx.stroke(); }
+    tag(ctx, n + ' of 100 swarms', x0 + pitch * 10, y0 - 10, C.gold, 'right', 10); ctx.globalAlpha = 1;
+  }
+  ['swarms more often', 'nests in anything', 'takes over weak hives'].forEach((s, i) => { const al = ramp(a2, i * 0.18, i * 0.18 + 0.25); if (al <= 0) return; ctx.globalAlpha = al; tag(ctx, s, X(1992.6) + 38, Y(100) + 26 + i * 19, C.ink, 'left', 10); ctx.globalAlpha = 1; });
+  on(P[0], a0 > 0.5); on(P[1], a1 > 0.2); on(P[2], a1 > 0.6); on(P[3], a2 > 0.5);
+});
+
+/* ---------- V and VI · one colony, then the distance, in feet ---------- */
+scene('s5', [
+  '<i class="sw h"></i>venom<sub>AHB</sub> = venom<sub>EHB</sub><span class="lbl">sting for sting</span>',
+  '<i class="sw h"></i>5,500 t &rarr; 74,000 t<span class="lbl">Brazil&rsquo;s honey, 1950s to 2024</span>',
+  '<i class="sw g"></i>0.64 &le; f &le; 0.87<span class="lbl">day fruit set, saguaro</span>',
+  '<i class="sw o"></i>x&sup2; + y&sup2; = 100&sup2;<span class="lbl">her space, in feet</span>',
+  '<i class="sw p"></i>v &asymp; 12 to 15 mph<span class="lbl">hers. run straight</span>',
+  '<i class="sw p"></i>d &asymp; 1320 ft<span class="lbl">how far she follows</span>'
+], 5, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), a0 = k(0), a1 = k(1), a2 = k(2), a3 = k(3), a4 = k(4);
+  paper(ctx, w, h);
+  const kk = Math.exp(lerp(lerp(Math.log(S / 26), Math.log(S / 250), a3), Math.log(S * 0.9 / 1450), a4));
+  const ox = lerp(lerp(fx - S * 0.12, fx, a3), fx - S * 0.43, a4), oy = fy, near = 1 - ramp(a3, 0, 0.45);
+  if (a3 > 0) {
+    const r = 100 * kk;
+    ctx.globalAlpha = ramp(a3, 0.3, 0.7) * (1 - ramp(a4, 0.1, 0.6));
+    ctx.fillStyle = 'rgba(42,39,64,.09)'; ctx.fillRect(ox, oy - r * 0.62, r, r * 1.24);
+    ctx.strokeStyle = 'rgba(42,39,64,.5)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(ox, oy - r * 0.62); ctx.lineTo(ox, oy + r * 0.62); ctx.moveTo(ox + r, oy - r * 0.62); ctx.lineTo(ox + r, oy + r * 0.62); ctx.stroke();
+    ctx.setLineDash([6, 6]); ctx.beginPath(); for (const f of [0.25, 0.5, 0.75]) { ctx.moveTo(ox + r * f, oy - r * 0.62); ctx.lineTo(ox + r * f, oy + r * 0.62); } ctx.stroke(); ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = C.orange; ctx.lineWidth = 2.2; ctx.setLineDash([7, 5]); ctx.beginPath(); ctx.arc(ox, oy, r, -Math.PI / 2, -Math.PI / 2 + TAU * ramp(a3, 0.15, 0.9)); ctx.stroke(); ctx.setLineDash([]);
+    const la = ramp(a3, 0.7, 1) * (1 - ramp(a4, 0, 0.4));
+    if (la > 0) { ctx.globalAlpha = la; seg(ctx, ox, oy, ox - r, oy, 1, C.orange, 1.3); tag(ctx, '100 ft', ox - r * 0.5, oy - 11, C.orange, 'center', 10.5); tag(ctx, 'four lanes', ox + r * 0.5, oy - r * 0.62 - 11, C.ink, 'center', 9.5); ctx.globalAlpha = 1; }
+  }
+  /* the run */
+  let xr = 0;
+  if (a4 > 0) {
+    const x1 = ox + 100 * kk, x2 = ox + 1320 * kk;
+    seg(ctx, x1, oy, x2, oy, ramp(a4, 0, 0.3), C.purple, 1.6, [4, 4]);
+    for (const [d, l1, l2, at] of [[600, '600 ft', 'two football fields', 0.3], [1320, '1,320 ft', 'quarter mile', 0.5]]) {
+      const al = ramp(a4, at, at + 0.25); if (al <= 0) continue; const x = ox + d * kk;
+      ctx.globalAlpha = al; seg(ctx, x, oy - 7, x, oy + 7, 1, C.purple, 1.6); tag(ctx, l1, x, oy - 19, C.purple, 'center', 10); tag(ctx, l2, x, oy + 20, C.ink, 'center', 9.5); ctx.globalAlpha = 1;
+    }
+    xr = lerp(100, 1320, ease(ramp(a4, 0.12, 0.95)));
+  }
+  /* comb */
+  const hr = Math.max(1.6 * kk, 1.7);
+  for (const [q, r] of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, -1], [-1, 1]]) {
+    hexPath(ctx, ox + hr * 1.5 * q, oy + hr * R3 * (r + q / 2), hr * 0.93); ctx.fillStyle = 'rgba(217,160,30,.75)'; ctx.fill();
+    if (hr > 4) { ctx.strokeStyle = 'rgba(42,39,64,.7)'; ctx.lineWidth = 1.2; ctx.stroke(); }
+  }
+  /* guards: orbit at home, then some give chase and give up one by one */
+  const size = kk * 0.36;
+  for (let i = 0; i < 14; i++) {
+    const dir = i % 2 ? 1 : -1, an = i * 2.4 + (reduce ? 0 : t * 0.0006 * dir * (1 + i * 0.05)), rad = (4 + (i % 5)) * kk;
+    let bx = ox + Math.cos(an) * rad, by = oy + Math.sin(an) * rad * 0.9, hd = an + dir * Math.PI / 2, al = 1;
+    if (a4 > 0 && i < 10) {
+      const c = ease(ramp(a4, 0.1 + i * 0.012, 0.3 + i * 0.02)), quit = 320 + i * 105;
+      const cx = ox + Math.max(60, xr - 30 - i * 24) * kk, cy = oy + Math.sin(i * 1.7 + (reduce ? 0 : t * 0.004)) * 5;
+      bx = lerp(bx, cx, c); by = lerp(by, cy, c); hd = lerp(hd, 0, c); al = 1 - ramp(xr, quit, quit + 90) * c;
+    }
+    if (al <= 0) continue; ctx.globalAlpha = al;
+    if (size > 1.7) insect(ctx, bx, by, size, hd, { wing: t * 0.03 + i });
+    else { ctx.beginPath(); ctx.arc(bx, by, 1.7, 0, TAU); ctx.fillStyle = '#b8830f'; ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+  if (a4 > 0) { const x = ox + xr * kk; dot(ctx, x, oy, C.purple, 4.6); ctx.globalAlpha = ramp(a4, 0.1, 0.3); tag(ctx, 'you', x, oy - 36, C.purple, 'center', 10); ctx.globalAlpha = 1; }
+  /* close-up ledger */
+  if (near > 0) {
+    const v = ramp(a0, 0.6, 1) * near; if (v > 0) { ctx.globalAlpha = v; tag(ctx, 'one colony', ox, oy - 9.4 * kk, C.gold, 'center', 10); ctx.globalAlpha = 1; }
+    if (a1 > 0) {
+      ctx.globalAlpha = a1 * near; const base = fy + S * 0.45, bw = S * 0.05, h2 = S * 0.6 * ease(a1), h1 = h2 * 5.5 / 74, xa = fx + S * 0.27, xb = fx + S * 0.39;
+      ctx.fillStyle = C.honey; ctx.strokeStyle = 'rgba(42,39,64,.75)'; ctx.lineWidth = 1.2;
+      ctx.fillRect(xa - bw / 2, base - h1, bw, h1); ctx.strokeRect(xa - bw / 2, base - h1, bw, h1); ctx.fillRect(xb - bw / 2, base - h2, bw, h2); ctx.strokeRect(xb - bw / 2, base - h2, bw, h2);
+      mono(ctx, '1950s', xa, base + 10, C.ink, 'center', 9.5); mono(ctx, '2024', xb, base + 10, C.ink, 'center', 9.5);
+      tag(ctx, '5,500 t', xa, base - h1 - 10, C.ink, 'center', 9.5); tag(ctx, '74,000 t', xb, base - h2 - 10, C.ink, 'center', 9.5); ctx.globalAlpha = 1;
+    }
+    if (a2 > 0) {
+      ctx.globalAlpha = a2 * near; const pitch = S * 0.058, x0 = fx - S * 0.47, y = fy + S * 0.37;
+      for (let i = 0; i < 10; i++) { const cx = x0 + (i + 0.5) * pitch; ctx.beginPath(); ctx.arc(cx, y, pitch * 0.38, 0, TAU); const f = i < 6 ? 0.9 : i < 9 ? 0.32 : 0; if (f) { ctx.fillStyle = `rgba(217,160,30,${f * ramp(a2, i * 0.06, i * 0.06 + 0.3)})`; ctx.fill(); } ctx.strokeStyle = 'rgba(56,140,70,.9)'; ctx.lineWidth = 1.3; ctx.stroke(); }
+      tag(ctx, 'of 10 daytime fruits: 6 to 9', x0, y + pitch * 0.38 + 13, C.green, 'left', 9.5); ctx.globalAlpha = 1;
+    }
+  }
+  on(P[0], a0 > 0.6); on(P[1], a1 > 0.4); on(P[2], a2 > 0.4); on(P[3], a3 > 0.4); on(P[4], a4 > 0.3); on(P[5], a4 > 0.7);
+});
+
+/* ---------- VII · Washington on a lat-long grid ---------- */
+const WA = [[-124.73, 48.38], [-123.9, 48.17], [-122.76, 48.12], [-122.62, 47.6], [-122.9, 47.05], [-122.42, 47.28], [-122.34, 47.6], [-122.22, 47.98], [-122.5, 48.75], [-122.75, 49.0], [-117.03, 49.0], [-117.04, 46.43], [-116.92, 45.99], [-118.98, 46.0], [-119.4, 45.92], [-120.5, 45.7], [-121.2, 45.61], [-121.9, 45.68], [-122.3, 45.56], [-122.75, 45.66], [-122.88, 46.1], [-123.4, 46.2], [-124.05, 46.27], [-124.1, 46.9], [-124.4, 47.55], [-124.73, 48.38]];
+const SHIP = [[-125.4, 46.12], [-124.05, 46.25], [-123.4, 46.18], [-122.9, 46.08], [-122.76, 45.68], [-122.69, 45.64]];
+const NESTS = [[-122.5, 48.88], [-122.15, 48.92], [-122.32, 48.7], [-121.95, 48.74]];
+scene('s6', [
+  '<i class="sw o"></i>(&minus;122.75, 48.99)<span class="lbl">Blaine, December 2019</span>',
+  '<i class="sw" style="background:#c74440"></i>T &asymp; 46 &deg;C<span class="lbl">the heat ball, Japan&rsquo;s answer</span>',
+  '<i class="sw g"></i>1 + 3 = 4 nests &rarr; 0<span class="lbl">eradicated 2024</span>',
+  '<i class="sw p"></i>(&minus;122.69, 45.64)<span class="lbl">Port of Vancouver, 2026</span>',
+  '<i class="sw p"></i>n = 1<span class="lbl">a stowaway, met at the dock</span>'
+], 5, (ctx, w, h, k, t, P) => {
+  const a0 = k(0), a1 = k(1), a2 = k(2), a3 = k(3), a4 = k(4);
+  const mw = Math.min(w * (w < 520 ? 0.8 : 0.92), 640), U = mw / 5.93, left = (w - mw) / 2, top = Math.max(118, h * 0.155), CL = Math.cos(47 * Math.PI / 180);
+  const X = lo => left + (lo + 125.2) * CL * U, Y = la => top + (49.45 - la) * U;
+  grid(ctx, w, h, X, Y, { from: -135, to: -105, minor: 0.5, major: 1 }, { from: 40, to: 55, minor: 0.5, major: 1 });
+  for (const la of [46, 47, 48, 49]) mono(ctx, la + '°N', 4, Y(la) - 7, 'rgba(42,39,64,.55)', 'left', 9);
+  const poly = (pts, f) => { const n = pts.length - 1, u = f * n; let hx = X(pts[0][0]), hy = Y(pts[0][1]); ctx.beginPath(); ctx.moveTo(hx, hy); for (let i = 0; i < n; i++) { const g = clamp(u - i, 0, 1); if (g <= 0) break; hx = lerp(X(pts[i][0]), X(pts[i + 1][0]), g); hy = lerp(Y(pts[i][1]), Y(pts[i + 1][1]), g); ctx.lineTo(hx, hy); } return [hx, hy]; };
+  if (a0 > 0) {
+    if (a0 >= 1) { poly(WA, 1); ctx.fillStyle = 'rgba(45,112,179,.07)'; ctx.fill(); }
+    poly(WA, a0); ctx.strokeStyle = C.blue; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke(); ctx.lineJoin = 'miter';
+  }
+  /* four nests in Whatcom County, found and removed */
+  NESTS.forEach(([lo, la], i) => {
+    const al = ramp(a2, i * 0.1, i * 0.1 + 0.15); if (al <= 0) return; const x = X(lo), y = Y(la), out = ramp(a2, 0.5 + i * 0.08, 0.62 + i * 0.08);
+    ctx.globalAlpha = al; ctx.strokeStyle = C.orange; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x - 3.5, y - 3.5); ctx.lineTo(x + 3.5, y + 3.5); ctx.moveTo(x + 3.5, y - 3.5); ctx.lineTo(x - 3.5, y + 3.5); ctx.stroke();
+    if (out > 0) { ctx.strokeStyle = C.green; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(x, y, 6.5, -Math.PI / 2, -Math.PI / 2 + TAU * out); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+  });
+  if (a2 > 0.45) { ctx.globalAlpha = ramp(a2, 0.45, 0.6); tag(ctx, '4 nests out, 2020 to 2021', X(-121.6), Y(48.9), C.orange, 'left', 10); ctx.globalAlpha = 1; }
+  if (a2 > 0.85) { ctx.globalAlpha = ramp(a2, 0.85, 1); tag(ctx, 'eradicated, Dec 2024', X(-121.6), Y(48.9) + 17, C.green, 'left', 10); ctx.globalAlpha = 1; }
+  if (a0 > 0.75) { ctx.globalAlpha = ramp(a0, 0.75, 1); const x = X(-122.75), y = Y(48.99); dot(ctx, x, y, C.orange, 4.4); tag(ctx, 'Blaine, Dec 2019', x + 9, y - 13, C.orange, 'left', 10); ctx.globalAlpha = 1; }
+  /* one ship up the Columbia */
+  if (a3 > 0) {
+    const [sx, sy] = poly(SHIP, ramp(a3, 0, 0.7)); ctx.strokeStyle = C.purple; ctx.lineWidth = 1.8; ctx.setLineDash([5, 4]); ctx.stroke(); ctx.setLineDash([]);
+    if (a3 < 0.72) { ctx.fillStyle = C.purple; ctx.beginPath(); ctx.moveTo(sx - 7, sy - 3); ctx.lineTo(sx + 7, sy - 3); ctx.lineTo(sx + 4, sy + 3); ctx.lineTo(sx - 4, sy + 3); ctx.closePath(); ctx.fill(); }
+    const ap = ramp(a3, 0.7, 0.95);
+    if (ap > 0) {
+      const x = X(-122.69), y = Y(45.64), pulse = reduce ? 0.4 : (t * 0.0006) % 1;
+      if (a4 > 0) { ctx.beginPath(); ctx.arc(x, y, 6 + pulse * 16, 0, TAU); ctx.strokeStyle = `rgba(96,66,166,${0.55 * (1 - pulse) * a4})`; ctx.lineWidth = 1.5; ctx.stroke(); }
+      ctx.globalAlpha = ap; dot(ctx, x, y, C.purple, 4.6); tag(ctx, 'Port of Vancouver', x + 9, y - 26, C.purple, 'left', 10); tag(ctx, 'Apr 30, 2026', x + 9, y - 11, C.purple, 'left', 10); ctx.globalAlpha = 1;
+    }
+  }
+  /* to scale: prey, stowaway, giant */
+  const al = ramp(a1, 0, 0.35);
+  if (al > 0) {
+    const I = Math.min(46, w * 0.105), gap = I * 0.6, yl = Y(45.2) + 16 + I * 0.55;
+    const items = [[0.75, 'honeybee', '¾ in', {}], [1, 'yellow-legged', '1 in', { body: '#2b2320', stripe: '#e9a11c', bands: [-2.1], thorax: '#2b2320', head: '#d9861a', legs: '#e3b81c' }], [2, 'northern giant', '2 in', { body: '#e08a1a', stripe: '#3a281c', thorax: '#3a281c', head: '#f0a81e' }]];
+    let x = w / 2 - (3.75 * I + gap * 2) / 2, gx = 0;
+    ctx.globalAlpha = al;
+    items.forEach((it, i) => {
+      const len = it[0] * I, s = len / 3.8, cx = x + len / 2;
+      insect(ctx, x + 2.35 * s, yl, s, 0, it[3]);
+      if (i === 1 && a3 > 0.7) { ctx.strokeStyle = `rgba(96,66,166,${ramp(a3, 0.7, 0.95)})`; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.ellipse(cx, yl, len * 0.66, I * 0.52, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]); }
+      mono(ctx, it[1], cx, yl + I * 0.62 + 9, C.ink, 'center', 9.5); mono(ctx, it[2], cx, yl + I * 0.62 + 21, C.gold, 'center', 9.5);
+      if (i === 2) gx = cx; x += len + gap;
+    });
+    ctx.globalAlpha = 1;
+    const hb = ramp(a1, 0.45, 1) * (1 - ramp(a2, 0, 0.35));
+    if (hb > 0) {
+      const e = ease(hb); ctx.fillStyle = mix(C.honey, '#d2452d', e, Math.min(1, hb * 2)); ctx.strokeStyle = `rgba(42,39,64,${0.45 * Math.min(1, hb * 2)})`; ctx.lineWidth = 0.8;
+      for (let j = 0; j < 40; j++) { const an = j * 2.399 + (reduce ? 0 : t * 0.0012), rr = lerp(I * 2.3, I * 0.82 * Math.sqrt((j + 0.5) / 40), e); ctx.beginPath(); ctx.arc(gx + Math.cos(an) * rr * 1.25, yl + Math.sin(an) * rr * 0.72, 3, 0, TAU); ctx.fill(); ctx.stroke(); }
+      if (hb > 0.6) { ctx.globalAlpha = ramp(hb, 0.6, 1); tag(ctx, '46 °C', gx, yl - I * 0.78, C.red, 'center', 10.5); ctx.globalAlpha = 1; }
+    }
+  }
+  on(P[0], a0 > 0.75); on(P[1], a1 > 0.6); on(P[2], a2 > 0.5); on(P[3], a3 > 0.7); on(P[4], a4 > 0.4);
+});
+
+/* ---------- loop ---------- */
+function frame(now) {
+  const t = reduce ? 0 : now, vh = window.innerHeight;
+  renderHero(t);
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect(); if (r.bottom <= 0 || r.top >= vh) continue;
+    const e = clamp(1 - r.top / vh, 0, 1), p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1), N = s.N;
+    const k = i => i === 0 ? ease(ramp(e, 0.3, 1)) : ease(ramp(p, (i - 0.6) / (N - 1), (i - 0.05) / (N - 1)));
+    const { ctx, w, h } = prep(s.c); if (!w || !h) continue;
+    s.draw(ctx, w, h, k, t, s.P);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
