@@ -1,47 +1,143 @@
 ---
 /**
- * Room I: BackGold. CEO copy in a plain, general-market voice. Every fact
- * here comes from the brief or the repos: the feature list, the email
- * pricing (also in advancing-liberty-media2 src/content/site.ts), the
- * organizations on the platform, and the DeFlock DFW quote.
+ * Room I: The Treasury (BackGold). The one dark room in the museum: a
+ * lamplit hall under Howard Carter's line at the sealed doorway, with the
+ * BackGold tablet standing in a glass vitrine on a plinth and the eight
+ * things the platform holds set into gilt niches. The copy is unchanged
+ * from the room it replaces: CEO copy in a plain, general-market voice,
+ * every fact from the brief or the repos (the feature list, the email
+ * pricing, the organizations on the platform, the DeFlock DFW quote).
+ *
+ * The vitrine is decoration (aria-hidden). With a fine pointer and motion
+ * allowed, it turns a few degrees toward the cursor; the script below sets
+ * --rx, --ry and --gx on it and nothing else.
  */
 import Room from '../Room.astro';
 import Placard from '../Placard.astro';
 import { BACKGOLD_URL } from '../../../config/site';
 
+/** Each niche: the capability and the 24-unit line icon in its alcove. */
 const capabilities = [
-  { title: 'Supporter CRM', body: 'Dynamic segments that update themselves as supporters act.' },
-  { title: 'Email and SMS', body: 'Outreach that reads from the same record it writes back to.' },
-  { title: 'Sites and petitions', body: 'A site and petition builder that files every signature into the CRM.' },
-  { title: 'Fundraising and store', body: 'Compliance-aware giving and merchandise on the same supporter record.' },
-  { title: 'Maps and turf', body: 'Geo maps and turf cutting for the field team.' },
-  { title: 'Events', body: 'Event pages and sign-ups that land with everything else.' },
-  { title: 'Volunteer marketplace', body: 'A place where the work meets the people ready to do it.' },
-  { title: 'Analytics and attribution', body: 'Source attribution that traces each result back to where it began.' },
+  {
+    title: 'Supporter CRM',
+    body: 'Dynamic segments that update themselves as supporters act.',
+    icon: 'M4 6.5h16v11H4zM9 12.2a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8zM5.8 16.2c.5-2.6 5.9-2.6 6.4 0M14.5 10h3.5M14.5 13h2.5',
+  },
+  {
+    title: 'Email and SMS',
+    body: 'Outreach that reads from the same record it writes back to.',
+    icon: 'M3.5 6.5h17v11h-17zM3.5 7l8.5 6.2L20.5 7',
+  },
+  {
+    title: 'Sites and petitions',
+    body: 'A site and petition builder that files every signature into the CRM.',
+    icon: 'M3 9.5L12 4l9 5.5zM5.5 9.5V18M10 9.5V18M14 9.5V18M18.5 9.5V18M3 20h18M4 18h16',
+  },
+  {
+    title: 'Fundraising and store',
+    body: 'Compliance-aware giving and merchandise on the same supporter record.',
+    icon: 'M12 4v16M5 7.5h14M8 20h8M5 7.5l-2.8 6a2.9 2.9 0 0 0 5.6 0zM19 7.5l-2.8 6a2.9 2.9 0 0 0 5.6 0z',
+  },
+  {
+    title: 'Maps and turf',
+    body: 'Geo maps and turf cutting for the field team.',
+    icon: 'M12 21s-6-5.6-6-10.2a6 6 0 0 1 12 0C18 15.4 12 21 12 21zM12 13a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z',
+  },
+  {
+    title: 'Events',
+    body: 'Event pages and sign-ups that land with everything else.',
+    icon: 'M4 5.5h16v14.5H4zM4 10h16M8 3.5v4M16 3.5v4M8 13.5h2M14 13.5h2M8 16.5h2',
+  },
+  {
+    title: 'Volunteer marketplace',
+    body: 'A place where the work meets the people ready to do it.',
+    icon: 'M8 10.5a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2zM16 10.5a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2zM2.5 19c.4-5 10.6-5 11 0M12.2 14.2c2.6-1.6 8.9-.9 9.3 4.8',
+  },
+  {
+    title: 'Analytics and attribution',
+    body: 'Source attribution that traces each result back to where it began.',
+    icon: 'M4 20h16M4 16l4.5-4.5 3 3L18 8M14.5 8H18v3.5',
+  },
 ];
 
 const organizations = ['LPWA', 'DeFlock DFW', 'Unlabeled', 'Mobility Independence Foundation'];
+
+/** Dust in the lamp beam: position, size, delay and period of each mote. */
+const motes = [
+  ['38%', '62%', '2px', '0s', '9s'],
+  ['58%', '70%', '3px', '-3.1s', '11s'],
+  ['47%', '48%', '2px', '-5.4s', '8s'],
+  ['64%', '54%', '2px', '-1.7s', '12s'],
+  ['31%', '74%', '3px', '-7.2s', '10s'],
+  ['53%', '36%', '2px', '-2.6s', '9s'],
+  ['43%', '80%', '2px', '-8.8s', '13s'],
+  ['69%', '78%', '2px', '-4.3s', '10s'],
+  ['49%', '22%', '2px', '-6.1s', '11s'],
+  ['35%', '44%', '2px', '-9.5s', '12s'],
+];
 ---
 
-<Room id="backgold" number={1} sign="taurus" accent="var(--room-i)" labelledby="backgold-title">
-  <div class="bg wrap">
-    <div class="bg__intro">
-      <Placard
-        id="backgold-title"
-        label="Room I · The Platform"
-        title="BackGold"
-        medium="Software platform for campaigns, causes, and organizations"
-        year="Ongoing"
-        catalog="Cat. I.01"
-      />
-      <div class="bg__statement">
-        <p class="bg__tagline display" data-reveal>Bring your movement forward.</p>
+<Room id="backgold" number={1} sign="taurus" accent="#d9b872" labelledby="backgold-title" class="treasury">
+  <div class="tr wrap">
+    <figure class="tr__epigraph" data-reveal>
+      <blockquote>
+        <p class="tr__ask">&ldquo;Can you see anything?&rdquo;</p>
+        <p class="tr__answer display">&ldquo;Yes, wonderful things.&rdquo;</p>
+      </blockquote>
+      <figcaption class="mono">Howard Carter at the sealed doorway &middot; 26 November 1922</figcaption>
+    </figure>
+
+    <div class="tr__hall">
+      <div class="tr__label">
+        <Placard
+          id="backgold-title"
+          label="Room I · The Treasury"
+          title="BackGold"
+          medium="Software platform for campaigns, causes, and organizations"
+          year="Ongoing"
+          catalog="Cat. I.01"
+        />
+        <p class="tr__tagline display" data-reveal>Bring your movement forward.</p>
+      </div>
+
+      <div class="tr__vitrine" aria-hidden="true" data-vitrine>
+        <span class="tr__beam"></span>
+        <span class="tr__motes">
+          {motes.map(([x, y, s, d, t]) => <i style={`--x:${x};--y:${y};--s:${s};--d:${d};--t:${t}`} />)}
+        </span>
+        <span class="tr__case">
+          <span class="tr__cap"></span>
+          <span class="tr__artifact">
+            <span class="tr__tablet">
+              <svg class="tr__torch" viewBox="0 0 64 64" focusable="false">
+                <path
+                  d="M32 7c5.6 7.4 11.4 12 11.4 19.4a11.4 11.4 0 0 1-22.8 0C20.6 21.6 26.4 17.2 32 7zm0 12.8c-2.4 3.4-4.6 5.3-4.6 8.2a4.6 4.6 0 0 0 9.2 0c0-2.9-2.2-4.8-4.6-8.2zM21.5 40.5h21l-2.6 5.4H24.1zM27.2 48.5h9.6L34.6 59h-5.2z"
+                  fill-rule="evenodd"></path>
+              </svg>
+              <span class="tr__sheen"></span>
+            </span>
+            <span class="tr__mount"></span>
+          </span>
+          <span class="tr__glass"></span>
+        </span>
+        <span class="tr__plinth">
+          <span class="tr__slab"></span>
+          <span class="tr__block">
+            <span class="tr__inlay"></span>
+            <span class="tr__brass">BackGold &middot; I.01</span>
+          </span>
+          <span class="tr__base"></span>
+        </span>
+        <span class="tr__pool"></span>
+      </div>
+
+      <div class="tr__statement">
         <p class="lede" data-reveal>
           BackGold is one connected platform for campaigns, causes, and organizations. Supporters, gifts,
           messages, events, and volunteers share a single record, so the people doing the work see the whole
           movement in one place.
         </p>
-        <p class="bg__body" data-reveal>
+        <p class="tr__body" data-reveal>
           It serves any cause and any organization that depends on people showing up. The CRM, the outreach, the
           fundraising, and the field operation draw from the same data, and every action a supporter takes makes
           their record richer.
@@ -49,31 +145,46 @@ const organizations = ['LPWA', 'DeFlock DFW', 'Unlabeled', 'Mobility Independenc
       </div>
     </div>
 
-    <h3 class="sr-only">What the platform holds</h3>
-    <ol class="bg__case" role="list">
+    <h3 class="tr__holds" data-reveal><span>What the platform holds</span></h3>
+    <ol class="tr__niches" role="list">
       {
         capabilities.map((c, i) => (
-          <li class="bg__item" data-reveal>
-            <span class="bg__num mono">I.{String(i + 1).padStart(2, '0')}</span>
-            <h4 class="bg__item-title">{c.title}</h4>
-            <p class="bg__item-body">{c.body}</p>
+          <li class="tr__niche" data-reveal>
+            <span class="tr__alcove" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                width="44"
+                height="44"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.15"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                focusable="false"
+              >
+                <path d={c.icon} />
+              </svg>
+            </span>
+            <span class="tr__num mono">I.{String(i + 1).padStart(2, '0')}</span>
+            <h4 class="tr__niche-title">{c.title}</h4>
+            <p class="tr__niche-body">{c.body}</p>
           </li>
         ))
       }
     </ol>
 
-    <div class="bg__walls">
-      <div class="bg__wall" data-reveal>
-        <p class="bg__wall-label smallcaps">Memory</p>
-        <h3 class="bg__wall-title display">Data that compounds</h3>
+    <div class="tr__walls">
+      <div class="tr__wall" data-reveal>
+        <p class="tr__wall-label smallcaps">Memory</p>
+        <h3 class="tr__wall-title display">Data that compounds</h3>
         <p>
           Every campaign adds to the record. Supporter history, giving, and relationships compound year over year
           and election over election, and the data stays with the organization through every handoff.
         </p>
       </div>
-      <div class="bg__wall" data-reveal>
-        <p class="bg__wall-label smallcaps">Pricing</p>
-        <h3 class="bg__wall-title display">Billed on what you send</h3>
+      <div class="tr__wall" data-reveal>
+        <p class="tr__wall-label smallcaps">Pricing</p>
+        <h3 class="tr__wall-title display">Billed on what you send</h3>
         <p>
           Email is billed on send volume only, at <strong>$1.50 per 1,000 sent</strong>. Stored contacts carry no
           charge, so a growing list stays a growing asset.
@@ -81,126 +192,589 @@ const organizations = ['LPWA', 'DeFlock DFW', 'Unlabeled', 'Mobility Independenc
       </div>
     </div>
 
-    <figure class="bg__quote" data-reveal>
+    <figure class="tr__quote" data-reveal>
       <blockquote>
         <p>&ldquo;I&rsquo;ve seen basically all the nonprofit and issue-advocacy CRMs&hellip; it looks freaking amazing&rdquo;</p>
       </blockquote>
       <figcaption class="smallcaps">DeFlock DFW</figcaption>
     </figure>
 
-    <div class="bg__foot" data-reveal>
-      <div class="bg__orgs">
-        <h3 class="bg__orgs-label smallcaps">On the platform</h3>
-        <ul class="bg__orgs-list" role="list">
+    <div class="tr__foot" data-reveal>
+      <div class="tr__orgs">
+        <h3 class="tr__orgs-label smallcaps">On the platform</h3>
+        <ul class="tr__orgs-list" role="list">
           {organizations.map((o) => <li>{o}</li>)}
         </ul>
       </div>
-      <a class="cta" href={BACKGOLD_URL} rel="noopener">Visit BackGold.com</a>
+      <a class="cta cta--gilt" href={BACKGOLD_URL} rel="noopener">Visit BackGold.com</a>
     </div>
   </div>
 </Room>
 
-<style>
-  .bg {
-    display: grid;
-    gap: clamp(3rem, 2rem + 4vw, 6rem);
+<script>
+  /* The vitrine turns a few degrees toward a fine pointer, eased. */
+  const vitrine = document.querySelector<HTMLElement>('[data-vitrine]');
+  if (
+    vitrine &&
+    matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    const hall = vitrine.closest<HTMLElement>('.tr__hall') ?? vitrine;
+    let frame = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let x = 0;
+    let y = 0;
+    const step = () => {
+      x += (targetX - x) * 0.07;
+      y += (targetY - y) * 0.07;
+      vitrine.style.setProperty('--ry', `${(-9 + x * 16).toFixed(2)}deg`);
+      vitrine.style.setProperty('--rx', `${(4 - y * 7).toFixed(2)}deg`);
+      vitrine.style.setProperty('--gx', `${(x * -7).toFixed(2)}%`);
+      frame = Math.abs(targetX - x) + Math.abs(targetY - y) > 0.002 ? requestAnimationFrame(step) : 0;
+    };
+    const aim = (nx: number, ny: number) => {
+      targetX = nx;
+      targetY = ny;
+      if (!frame) frame = requestAnimationFrame(step);
+    };
+    const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+    hall.addEventListener('pointermove', (e) => {
+      const r = vitrine.getBoundingClientRect();
+      aim(clamp((e.clientX - (r.left + r.width / 2)) / r.width), clamp((e.clientY - (r.top + r.height / 2)) / r.height));
+    });
+    hall.addEventListener('pointerleave', () => aim(0, 0));
   }
-  .bg__intro {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: clamp(2rem, 1rem + 4vw, 5rem);
-    align-items: start;
+</script>
+
+<style is:global>
+  .room.treasury {
+    --wall: #15120e;
+    --ink: #f3ead8;
+    --ink-soft: #d3c8b2;
+    --ink-faint: #a99f8b;
+    --gilt-ink: #d9b872;
+    --rule: rgba(243, 234, 216, 0.18);
+    --focus: #ecd292;
+    --lapis: #1f3f7d;
+    color: var(--ink);
+    background:
+      radial-gradient(
+        44rem 32rem at 50% 27rem,
+        rgba(214, 170, 84, 0.2),
+        transparent 72%
+      ),
+      radial-gradient(
+        120% 40rem at 50% 100%,
+        rgba(31, 63, 125, 0.2),
+        transparent 70%
+      ),
+      linear-gradient(180deg, #17130f, #0c0b09 26rem calc(100% - 26rem), #14110e);
+    padding-block: clamp(4rem, 3rem + 4.5vw, 6.5rem);
   }
-  .bg__statement {
-    display: grid;
-    gap: 1.4rem;
-    padding-top: 0.5rem;
+  .room.treasury:before,
+  .room.treasury:after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    height: 7px;
+    background: repeating-linear-gradient(
+      90deg,
+      #c9a45c 0 10px,
+      var(--lapis) 10px 34px
+    );
+    box-shadow:
+      0 -1px #c9a45c,
+      0 1px #c9a45c;
   }
-  .bg__tagline {
+  .room.treasury:before {
+    top: 0;
+  }
+  .room.treasury:after {
+    bottom: 0;
+  }
+  .room.treasury .placard {
+    background: linear-gradient(#211c16, #16130f);
+    border-color: #d6aa5457;
+    box-shadow: 0 22px 30px -20px #000;
+  }
+  .room.treasury ::selection {
+    background: #d6aa5466;
+    color: #fff;
+  }
+  .tr {
+    display: grid;
+    gap: clamp(2.5rem, 1.8rem + 3vw, 4.25rem);
+  }
+  .tr__epigraph {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    text-align: center;
+    margin-bottom: calc(-1 * clamp(1rem, 0.5rem + 2vw, 2.5rem));
+  }
+  .tr__ask {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+  .tr__answer {
     font-style: italic;
     font-weight: 400;
-    font-size: clamp(2rem, 1.3rem + 3vw, 3.6rem);
-    color: var(--room-accent);
+    font-size: clamp(1.9rem, 1.3rem + 2.6vw, 3.2rem);
+    color: #ecd292;
   }
-  .bg__body {
+  .tr__epigraph figcaption {
+    margin-top: 0.5rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+  }
+  .tr__hall {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 21rem) minmax(0, 1fr);
+    gap: clamp(1.5rem, 0.5rem + 3vw, 3.5rem);
+    align-items: center;
+  }
+  .tr__label,
+  .tr__statement {
+    position: relative;
+    z-index: 1;
+  }
+  .tr__label {
+    display: grid;
+    gap: 1.6rem;
+    justify-items: start;
+  }
+  .tr__tagline {
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.1rem);
+    color: #ecd292;
+  }
+  .tr__statement {
+    display: grid;
+    gap: 1.3rem;
+  }
+  .tr__statement .lede {
+    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.3rem);
+  }
+  .tr__body {
     max-width: var(--measure);
     color: var(--ink-soft);
   }
-
-  .bg__case {
+  .tr__vitrine {
+    --ry: -9deg;
+    --rx: 4deg;
+    --gx: 0%;
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    align-content: end;
+    font-size: clamp(13px, 0.62rem + 0.42vw, 16px);
+    padding-top: 3em;
+  }
+  .tr__beam {
+    position: absolute;
+    left: 50%;
+    bottom: 6em;
+    width: 31em;
+    height: 46em;
+    translate: -50% 0;
+    background: linear-gradient(
+      180deg,
+      #ffe8b400,
+      #ffe8b433 22%,
+      #ffe8b417 76%,
+      #ffe8b400
+    );
+    clip-path: polygon(47% 0, 53% 0, 88% 100%, 12% 100%);
+    filter: blur(0.55em);
+    pointer-events: none;
+    animation: tr-breathe 7s ease-in-out infinite;
+  }
+  @keyframes tr-breathe {
+    50% {
+      opacity: 0.72;
+    }
+  }
+  .tr__motes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .tr__motes i {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: #ffecbed9;
+    opacity: 0;
+    animation: tr-mote var(--t) linear var(--d) infinite;
+  }
+  @keyframes tr-mote {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 1.5em, 0);
+    }
+    18%,
+    70% {
+      opacity: 0.75;
+    }
+    to {
+      opacity: 0;
+      transform: translate3d(1.2em, -5em, 0);
+    }
+  }
+  .tr__case {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 15em;
+    height: 17.5em;
+    border: 1px solid rgba(255, 244, 214, 0.26);
+    border-bottom: 0;
+    background:
+      radial-gradient(
+        70% 46% at 50% 100%,
+        rgba(214, 170, 84, 0.26),
+        transparent 75%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05),
+        transparent 12%,
+        transparent 88%,
+        rgba(255, 255, 255, 0.07)
+      );
+  }
+  .tr__cap {
+    position: absolute;
+    inset: -0.5em -0.3em auto;
+    height: 0.5em;
+    background: linear-gradient(#4a4234, #1f1b15);
+    border-top: 1px solid rgba(236, 210, 146, 0.7);
+  }
+  .tr__glass {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .tr__glass:before {
+    content: "";
+    position: absolute;
+    inset: -10% -30%;
+    translate: var(--gx) 0;
+    background: linear-gradient(
+      112deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.1) 30% 37%,
+      transparent 37% 44%,
+      rgba(255, 255, 255, 0.05) 44% 47%,
+      transparent 47%
+    );
+  }
+  .tr__artifact {
+    display: grid;
+    justify-items: center;
+    align-self: end;
+    perspective: 42em;
+  }
+  .tr__tablet {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 8.4em;
+    height: 8.4em;
+    border-radius: 1.95em;
+    transform: rotateY(var(--ry)) rotateX(var(--rx));
+    background:
+      radial-gradient(120% 90% at 26% 16%, #fffae2f2, #fffae200 44%),
+      linear-gradient(
+        140deg,
+        #f3dc97,
+        #dcb55a 26%,
+        #b5893a 52%,
+        #e6c877 72%,
+        #9a7430
+      );
+    box-shadow:
+      inset 0 0.12em 0.1em #ffffffb3,
+      inset 0 -0.24em 0.32em #5c3c088c,
+      inset 0 0 0 0.08em #78541499,
+      0.5em 1.3em 1.6em -0.7em #000000e6,
+      0 0 4.5em #d6aa546b;
+  }
+  .tr__torch {
+    width: 62%;
+    height: 62%;
+    fill: #17130d;
+    filter: drop-shadow(0 0.07em 0 rgba(255, 244, 208, 0.55));
+  }
+  .tr__sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .tr__sheen:before {
+    content: "";
+    position: absolute;
+    inset: -20% 0;
+    width: 45%;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent
+    );
+    transform: translate(-160%) skew(-18deg);
+    animation: tr-sheen 7.5s cubic-bezier(0.4, 0, 0.2, 1) 1.2s infinite;
+  }
+  @keyframes tr-sheen {
+    0%,
+    62% {
+      transform: translate(-160%) skew(-18deg);
+    }
+    to {
+      transform: translate(340%) skew(-18deg);
+    }
+  }
+  .tr__mount {
+    position: relative;
+    width: 0.5em;
+    height: 2.3em;
+    background: linear-gradient(90deg, #6d5320, #e2c27a 45%, #7a5a1f);
+  }
+  .tr__mount:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 3.4em;
+    height: 0.4em;
+    translate: -50% 0;
+    border-radius: 0.2em 0.2em 0 0;
+    background: linear-gradient(#e2c27a, #7a5a1f);
+  }
+  .tr__plinth {
+    display: grid;
+    justify-items: center;
+  }
+  .tr__slab {
+    width: 17.6em;
+    height: 0.85em;
+    background: linear-gradient(#40392e, #1d1914);
+    border-top: 1px solid rgba(255, 236, 190, 0.4);
+  }
+  .tr__block {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 1.1em;
+    width: 15.6em;
+    height: 6.6em;
+    padding-top: 0.9em;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.45),
+        transparent 22%,
+        transparent 78%,
+        rgba(0, 0, 0, 0.5)
+      ),
+      linear-gradient(#262119, #0e0d0b);
+  }
+  .tr__inlay {
+    width: 100%;
+    height: 0.5em;
+    background: repeating-linear-gradient(
+      90deg,
+      #c9a45c 0 0.5em,
+      var(--lapis) 0.5em 1.7em
+    );
+    box-shadow:
+      0 -1px #c9a45ce6,
+      0 1px #c9a45ce6;
+    opacity: 0.9;
+  }
+  .tr__brass {
+    padding: 0.42em 1em 0.36em;
+    background: linear-gradient(#e6c98a, #a8843f);
+    border: 1px solid #6d5320;
+    box-shadow: 0 1px #ffffff59 inset;
+    color: #1d1810;
+    font-family: var(--font-mono);
+    font-size: 0.66em;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tr__base {
+    width: 19em;
+    height: 1em;
+    background: linear-gradient(#332d24, #100e0c);
+    border-top: 1px solid rgba(255, 236, 190, 0.22);
+  }
+  .tr__pool {
+    width: 27em;
+    height: 2.6em;
+    margin-top: -0.2em;
+    background: radial-gradient(
+      closest-side,
+      rgba(214, 170, 84, 0.3),
+      transparent
+    );
+  }
+  .tr__holds {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: calc(-1 * clamp(1rem, 0.5rem + 2vw, 2.5rem));
+    color: var(--gilt-ink);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.22em;
+    font-variant-caps: all-small-caps;
+    white-space: nowrap;
+  }
+  .tr__holds:before,
+  .tr__holds:after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 164, 92, 0.6));
+  }
+  .tr__holds:after {
+    transform: scaleX(-1);
+  }
+  .tr__niches {
     list-style: none;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    border-top: 1px solid var(--rule);
-    border-left: 1px solid var(--rule);
+    gap: clamp(1.6rem, 1rem + 2vw, 2.6rem) clamp(1rem, 0.5rem + 2vw, 2.2rem);
   }
-  .bg__item {
+  .tr__niche {
     display: grid;
     align-content: start;
-    gap: 0.45rem;
-    padding: 1.4rem 1.25rem 1.6rem;
-    border-right: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-    background: color-mix(in srgb, var(--wall) 70%, white);
+    gap: 0.35rem;
   }
-  .bg__num {
+  .tr__alcove {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 6.25rem;
+    margin-bottom: 0.55rem;
+    padding-top: 0.6rem;
+    border: 1px solid rgba(214, 170, 84, 0.3);
+    border-bottom: 2px solid #c9a45c;
+    border-radius: 5rem 5rem 0 0;
+    color: #ecd292;
+    background:
+      radial-gradient(70% 90% at 50% 0%, #ffe2a03d, #ffe2a000 72%),
+      radial-gradient(
+        60% 30% at 50% 100%,
+        rgba(214, 170, 84, 0.22),
+        transparent 75%
+      ),
+      linear-gradient(#1a1611, #0a0908);
+    box-shadow: inset 0 0 0 1px #0009;
+    transition: border-color calc(var(--beat) * 0.9) var(--ease-settle);
+  }
+  .tr__alcove:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      70% 90% at 50% 0%,
+      rgba(255, 226, 160, 0.22),
+      transparent 72%
+    );
+    opacity: 0;
+    transition: opacity calc(var(--beat) * 0.9) var(--ease-settle);
+  }
+  .tr__alcove svg {
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 0.5rem rgba(236, 210, 146, 0.45));
+    transition: transform calc(var(--beat) * 0.9) var(--ease-settle);
+  }
+  .tr__niche:hover .tr__alcove {
+    border-color: #ecd292b3;
+  }
+  .tr__niche:hover .tr__alcove:after {
+    opacity: 1;
+  }
+  .tr__niche:hover .tr__alcove svg {
+    transform: translateY(-3px);
+  }
+  .tr__num {
     color: var(--gilt-ink);
   }
-  .bg__item-title {
+  .tr__niche-title {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.4rem;
     line-height: 1.15;
   }
-  .bg__item-body {
+  .tr__niche-body {
     color: var(--ink-soft);
     font-size: 1rem;
     line-height: 1.5;
   }
-
-  .bg__walls {
+  .tr__walls {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(2rem, 1rem + 4vw, 5rem);
   }
-  .bg__wall {
+  .tr__wall {
     display: grid;
     gap: 0.6rem;
     padding-left: 1.4rem;
     border-left: 1px solid var(--gilt);
   }
-  .bg__wall p:last-child {
+  .tr__wall p:last-child {
     max-width: var(--measure);
     color: var(--ink-soft);
   }
-  .bg__wall strong {
-    color: var(--ink);
+  .tr__wall strong {
+    color: #ecd292;
     font-weight: 600;
   }
-  .bg__wall-label {
-    color: var(--room-accent);
+  .tr__wall-label {
+    color: var(--gilt-ink);
   }
-  .bg__wall-title {
+  .tr__wall-title {
     font-size: clamp(1.8rem, 1.3rem + 1.8vw, 2.6rem);
     font-weight: 400;
   }
-
-  .bg__quote {
+  .tr__quote {
     position: relative;
     max-width: 48rem;
     margin-inline: auto;
     text-align: center;
-    padding-block: 1rem;
+    padding-block: 0.5rem;
   }
-  .bg__quote::before {
-    content: '';
+  .tr__quote:before {
+    content: "";
     display: block;
     width: 3rem;
     height: 1px;
     margin: 0 auto 2rem;
     background: var(--gilt);
   }
-  .bg__quote blockquote p {
+  .tr__quote blockquote p {
     font-family: var(--font-display);
     font-style: italic;
     font-weight: 400;
@@ -208,13 +782,12 @@ const organizations = ['LPWA', 'DeFlock DFW', 'Unlabeled', 'Mobility Independenc
     line-height: 1.25;
     text-wrap: balance;
   }
-  .bg__quote figcaption {
+  .tr__quote figcaption {
     margin-top: 1.2rem;
-    color: var(--room-accent);
+    color: var(--gilt-ink);
     font-size: 1.05rem;
   }
-
-  .bg__foot {
+  .tr__foot {
     display: flex;
     flex-wrap: wrap;
     align-items: end;
@@ -223,16 +796,16 @@ const organizations = ['LPWA', 'DeFlock DFW', 'Unlabeled', 'Mobility Independenc
     padding-top: 2rem;
     border-top: 1px solid var(--rule);
   }
-  .bg__orgs {
+  .tr__orgs {
     display: grid;
     gap: 0.7rem;
   }
-  .bg__orgs-label {
-    color: var(--room-accent);
+  .tr__orgs-label {
+    color: var(--gilt-ink);
     font-weight: 400;
     font-size: 1rem;
   }
-  .bg__orgs-list {
+  .tr__orgs-list {
     list-style: none;
     display: flex;
     flex-wrap: wrap;
@@ -240,35 +813,53 @@ const organizations = ['LPWA', 'DeFlock DFW', 'Unlabeled', 'Mobility Independenc
     font-family: var(--font-display);
     font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
   }
-  /* A small gilt lozenge before each name, so wrapped rows never dangle. */
-  .bg__orgs-list li {
+  .tr__orgs-list li {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
   }
-  .bg__orgs-list li::before {
-    content: '';
+  .tr__orgs-list li:before {
+    content: "";
     width: 5px;
     height: 5px;
     background: var(--gilt);
     transform: rotate(45deg);
     flex: none;
   }
-
   @media (max-width: 1000px) {
-    .bg__case {
+    .tr__hall {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .tr__vitrine {
+      grid-row: span 2;
+      order: 2;
+    }
+    .tr__niches {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  @media (max-width: 820px) {
-    .bg__intro,
-    .bg__walls {
+  @media (max-width: 720px) {
+    .tr__hall,
+    .tr__walls {
       grid-template-columns: minmax(0, 1fr);
     }
+    .tr__vitrine {
+      grid-row: auto;
+      order: 0;
+    }
+    .tr__label {
+      justify-items: stretch;
+    }
+    .tr__niche-title {
+      font-size: 1.2rem;
+    }
+    .tr__niche-body {
+      font-size: 0.95rem;
+    }
   }
-  @media (max-width: 480px) {
-    .bg__case {
-      grid-template-columns: minmax(0, 1fr);
+  @media (prefers-reduced-motion: reduce) {
+    .tr__motes {
+      display: none;
     }
   }
 </style>

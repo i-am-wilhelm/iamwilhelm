@@ -1,0 +1,300 @@
+---
+/**
+ * The lens: a lighthouse lens seen from the front, cut into rings, one ring
+ * per beat of a case story, read from the rim to the centre. The picture is
+ * described once (role="img"); the beats are the list of buttons beside it.
+ * Pointing at, focusing or pressing a beat (or a ring) lights the lens up to
+ * that ring. Left alone and on screen, the light walks inward every few
+ * seconds; with reduced motion the whole lens is lit and stays still.
+ */
+interface Props {
+  beats: { name: string; gloss: string }[];
+}
+const { beats } = Astro.props;
+
+const STEP = 36;
+const n = beats.length;
+const outer = n * STEP;
+const f = (v: number) => v.toFixed(2);
+
+const rings = beats.map((_, i) => {
+  const R = outer - i * STEP;
+  const r = R - STEP;
+  const disc = `M${R} 0A${R} ${R} 0 1 0 -${R} 0A${R} ${R} 0 1 0 ${R} 0Z`;
+  const hole = r > 0 ? `M${r} 0A${r} ${r} 0 1 1 -${r} 0A${r} ${r} 0 1 1 ${r} 0Z` : '';
+  return { d: disc + hole, bevel: r > 0 ? r + 9 : 14, y: r > 0 ? -(R - 18) : 0 };
+});
+const bolts = Array.from({ length: 12 }, (_, i) => {
+  const a = (i * Math.PI) / 6;
+  return { cx: f(271 * Math.cos(a)), cy: f(271 * Math.sin(a)) };
+});
+const struts = [
+  [1, 1],
+  [-1, 1],
+  [-1, -1],
+  [1, -1],
+].map(
+  ([x, y]) =>
+    `M${f(x * STEP * Math.SQRT1_2)} ${f(y * STEP * Math.SQRT1_2)}L${f(x * 266 * Math.SQRT1_2)} ${f(y * 266 * Math.SQRT1_2)}`,
+);
+---
+
+<div class="lens" data-lens>
+  <svg
+    class="lens__svg"
+    viewBox="-300 -300 600 600"
+    role="img"
+    aria-label="A lighthouse lens seen from the front, cut into seven rings. Each ring is one beat of a case story, from the person at the rim to the ask at the centre."
+    focusable="false"
+  >
+    <defs>
+      <linearGradient id="lens-beam-a" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="330" y2="0">
+        <stop offset="0" stop-color="#c9a45c" stop-opacity="0.55"></stop>
+        <stop offset="1" stop-color="#c9a45c" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="lens-beam-b" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="-330" y2="0">
+        <stop offset="0" stop-color="#c9a45c" stop-opacity="0.55"></stop>
+        <stop offset="1" stop-color="#c9a45c" stop-opacity="0"></stop>
+      </linearGradient>
+    </defs>
+    <g class="lens__beam" aria-hidden="true">
+      <path d="M0 0L330 -34V34Z" fill="url(#lens-beam-a)"></path>
+      <path d="M0 0L-330 -34V34Z" fill="url(#lens-beam-b)"></path>
+    </g>
+    <g class="lens__frame" aria-hidden="true">
+      <circle r="276"></circle>
+      <circle r="266"></circle>
+      {struts.map((d) => <path d={d} />)}
+      {bolts.map((b) => <circle class="lens__bolt" cx={b.cx} cy={b.cy} r="2.2" />)}
+    </g>
+    {
+      rings.map((ring, i) => (
+        <g class="lens__ring" data-ring={i} aria-hidden="true">
+          <path class="lens__glass" d={ring.d} fill-rule="evenodd" />
+          <circle class="lens__bevel" r={ring.bevel} />
+          <text class="lens__n" y={ring.y}>
+            {i + 1}
+          </text>
+        </g>
+      ))
+    }
+  </svg>
+  <ol class="lens__beats" role="list">
+    {
+      beats.map((b, i) => (
+        <li>
+          <button class="lens__beat" type="button" data-beat={i} aria-pressed="false">
+            <span class="lens__beat-n mono" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="lens__beat-name">{b.name}</span>
+            <span class="lens__beat-gloss">{b.gloss}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<script>
+  const WALK_MS = 2400;
+
+  function initLens(lens: HTMLElement): void {
+    if (lens.dataset.lensReady) return;
+    lens.dataset.lensReady = '1';
+    const rings = Array.from(lens.querySelectorAll<SVGGElement>('[data-ring]'));
+    const beats = Array.from(lens.querySelectorAll<HTMLButtonElement>('[data-beat]'));
+    const last = rings.length - 1;
+    if (last < 0) return;
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+    let at = -1;
+    let timer = 0;
+    let taken = false;
+    let onScreen = false;
+
+    function light(i: number): void {
+      at = i;
+      rings.forEach((ring, n) => {
+        ring.classList.toggle('is-lit', n <= i);
+        ring.classList.toggle('is-on', n === i);
+      });
+      beats.forEach((beat, n) => beat.setAttribute('aria-pressed', String(n === i)));
+      lens.classList.toggle('is-full', i === last);
+    }
+    const stop = () => {
+      clearInterval(timer);
+      timer = 0;
+    };
+    /* The light walks inward until the reader takes hold of it. */
+    const walk = () => {
+      stop();
+      if (taken || !onScreen || still.matches || document.hidden) return;
+      timer = window.setInterval(() => light(at >= last ? 0 : at + 1), WALK_MS);
+    };
+    const take = (i: number) => {
+      taken = true;
+      stop();
+      light(i);
+    };
+
+    rings.forEach((ring, i) => ring.addEventListener('pointerenter', () => take(i)));
+    beats.forEach((beat, i) => {
+      beat.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && take(i));
+      beat.addEventListener('focus', () => take(i));
+      beat.addEventListener('click', () => take(i));
+    });
+
+    light(still.matches ? last : 0);
+    new IntersectionObserver(
+      (entries) => {
+        onScreen = entries.some((e) => e.isIntersecting);
+        walk();
+      },
+      { threshold: 0.35 },
+    ).observe(lens);
+    document.addEventListener('visibilitychange', walk);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-lens]').forEach(initLens);
+</script>
+
+<style is:global>
+  @keyframes lens-turn {
+    0% {
+      transform: rotate(-14deg);
+    }
+    to {
+      transform: rotate(346deg);
+    }
+  }
+  .lens {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+    align-items: center;
+  }
+  .lens__svg {
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+    justify-self: center;
+    overflow: visible;
+  }
+  .lens__frame {
+    fill: none;
+    stroke: var(--gilt);
+    stroke-width: 1;
+  }
+  .lens__frame *,
+  .lens__glass,
+  .lens__bevel {
+    vector-effect: non-scaling-stroke;
+  }
+  .lens__bolt {
+    fill: var(--gilt);
+    stroke: none;
+  }
+  .lens__beam {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    transform: rotate(-14deg);
+    opacity: 0.6;
+    transition: opacity calc(var(--beat) * 1.4) var(--ease-settle);
+    animation: lens-turn 28s linear infinite;
+  }
+  .lens.is-full .lens__beam {
+    opacity: 1;
+  }
+  .lens__glass {
+    fill: #c9a45c00;
+    stroke: var(--gilt);
+    stroke-width: 1;
+    transition:
+      fill calc(var(--beat) * 1.1) var(--ease-settle),
+      stroke calc(var(--beat) * 1.1) var(--ease-settle);
+  }
+  .lens__bevel {
+    fill: none;
+    stroke: var(--gilt);
+    stroke-width: 1;
+    opacity: 0.4;
+  }
+  .lens__n {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    fill: var(--ink-faint);
+    text-anchor: middle;
+    dominant-baseline: central;
+    transition: fill calc(var(--beat) * 0.8) var(--ease-settle);
+  }
+  .lens__ring.is-lit .lens__glass {
+    fill: #c9a45c24;
+  }
+  .lens__ring.is-on .lens__glass {
+    fill: #c9a45c6b;
+    stroke: var(--gilt-ink);
+  }
+  .lens__ring.is-on .lens__n {
+    fill: var(--ink);
+    font-weight: 600;
+  }
+  .lens__beats {
+    list-style: none;
+    display: grid;
+    border-top: 1px solid var(--rule);
+  }
+  .lens__beat {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+    row-gap: 0.1rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.8rem 0.75rem 0.85rem;
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color calc(var(--beat) * 0.8) var(--ease-settle);
+  }
+  .lens__beat-n {
+    grid-row: span 2;
+    padding-top: 0.45rem;
+    color: var(--gilt-ink);
+  }
+  .lens__beat-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.15;
+  }
+  .lens__beat-gloss {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+  .lens__beat:hover,
+  .lens__beat[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--gilt-bright) 16%, transparent);
+  }
+  .lens__beat[aria-pressed="true"] .lens__beat-n {
+    color: var(--room-accent);
+    font-weight: 600;
+  }
+  @media (max-width: 820px) {
+    .lens {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .lens__svg {
+      max-width: 22rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lens__beam {
+      animation: none;
+    }
+  }
+</style>
