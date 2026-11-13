@@ -17,6 +17,12 @@ export const MANIFESTO_URL = 'https://libertariantoolsuite.com/the-manifesto';
 /** Published in the manifesto's closing section (libertariantoolsuite MANIFESTO.md). */
 export const CONTACT_EMAIL = 'wilhelm@backgold.com';
 
+/** Scrollbrief, the litigation-support studio (Room V, /scrollbrief/). */
+export const SCROLLBRIEF_URL = 'https://scrollbrief.com';
+/** The Scrollbrief intake: a BackGold form, "Bring one case." */
+export const SCROLLBRIEF_INTAKE_URL =
+  'https://api.backgold.com/f/834246565e3527a7e2aea230d4402fd7/FormBlock-67ecbfa84894da4f1210140c8c2cc9b8';
+
 /** The BackGold scheduler: a web design consultation with Michael. */
 export const SCHEDULER_URL = 'https://app.backgold.com/book/backgold/web-design-consultation';
 export const SCHEDULER_IS_PLACEHOLDER = false;
@@ -38,7 +44,8 @@ export const NEWSLETTER_EMBED_HTML = '';
 export const NAV = [
   { label: 'BackGold', id: 'backgold' },
   { label: 'Gallery', id: 'gallery', page: '/gallery/' },
-  { label: 'Futurist', id: 'futurist', page: '/writings/futurist/' },
+  { label: 'Scrollbrief', id: 'scrollbrief', page: '/scrollbrief/', room: false },
+  { label: 'Futurist', id: 'futurist', page: '/writings/futurist/', room: false },
   { label: 'Writings', id: 'writings', page: '/writings/' },
   { label: 'Commissions', id: 'services', page: '/services/', room: false },
   { label: 'Earl', id: 'earl', page: '/earl/', room: false },

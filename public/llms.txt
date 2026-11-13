@@ -5,6 +5,7 @@
 ## Start here
 - [What is a scrolly?](https://iamwilhelm.com/what-is-a-scrolly): definition, parts, cost, examples
 - [Commissions](https://iamwilhelm.com/services): what I build, process, price, FAQ
+- [Scrollbrief](https://iamwilhelm.com/scrollbrief/): the litigation-support studio, interactive case stories for trial lawyers
 - [Futurist](https://iamwilhelm.com/writings/futurist/): the Futurist installments, a series of essays on what comes next
 - [Method](https://iamwilhelm.com/method): epistemic tagging, what is read in the original, what is machine-assisted
 

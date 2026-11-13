@@ -1,0 +1,848 @@
+---
+/**
+ * The Archive: Room II's collection on the homepage. Every scroll page on
+ * view is one archive box, shelved by series in a cabinet; beside it (a
+ * bottom sheet on a phone) is the reading table, where the chosen box opens
+ * as a card with a reel of stills from the piece, its label, its line and
+ * the door to the work.
+ *
+ * Each box is a plain link to its piece, so the shelves work with no
+ * script: the list of links is the collection. src/scripts/archive.ts adds
+ * the table behaviour and documents it. The boxes come from the one view of
+ * the collection (src/lib/pieces.ts), so a new gallery entry is shelved
+ * with no change here. It needs its reel: REEL_FRAMES stills at
+ * public/reel/<id>/1.jpg … (800×420 JPEG), which the build checks for.
+ */
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { series as registry, type SeriesId } from '../../config/series';
+import { getScrollPieces, type Piece } from '../../lib/pieces';
+
+/** Stills per piece on the reading table. */
+const REEL_FRAMES = 5;
+
+/**
+ * Shelf order. The Futurist bay leads; a piece in no series is shelved
+ * under "Elsewhere" (null); Seeing, the long shelf, closes the cabinet. A
+ * series not named here is shelved after these, in registry order.
+ */
+const SHELF: (SeriesId | null)[] = ['futurist', 'in-the-original', 'through-the-lens', 'mimics', 'poems', null, 'seeing'];
+const ELSEWHERE_ACCENT = '#7a5a1f';
+/** Titles this long are set a size down so they fit the box front. */
+const LONG_TITLE = 28;
+
+const pieces = await getScrollPieces();
+
+interface Bay {
+  name: string;
+  href?: string;
+  accent: string;
+  boxes: Piece[];
+}
+const order: (SeriesId | null)[] = [...SHELF, ...(Object.keys(registry) as SeriesId[]).filter((id) => !SHELF.includes(id))];
+const bays: Bay[] = [];
+for (const id of order) {
+  const boxes =
+    id === null
+      ? pieces.filter((p) => !p.series)
+      : pieces.filter((p) => p.series === id).sort((a, b) => (a.seriesNo ?? 0) - (b.seriesNo ?? 0));
+  if (!boxes.length) continue;
+  bays.push(
+    id === null
+      ? { name: 'Elsewhere', accent: ELSEWHERE_ACCENT, boxes }
+      : { name: registry[id].name, href: registry[id].href, accent: registry[id].accent, boxes },
+  );
+}
+
+const total = bays.reduce((n, b) => n + b.boxes.length, 0);
+const longest = Math.max(...bays.map((b) => b.boxes.length));
+
+/* Every shelved piece needs its reel, or the table would show a gap. */
+for (const p of bays.flatMap((b) => b.boxes)) {
+  for (let n = 1; n <= REEL_FRAMES; n++) {
+    const file = resolve(process.cwd(), `public/reel/${p.id}/${n}.jpg`);
+    if (!existsSync(file)) throw new Error(`Archive: ${p.id} is missing its reel frame public/reel/${p.id}/${n}.jpg.`);
+  }
+}
+
+const plateOf = (p: Piece) => p.gallery?.data.plate ?? '#2b2230';
+/** A pale plate (Type Is an Image) takes dark lettering. */
+function isLight(hex: string): boolean {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex);
+  if (!m) return false;
+  const v = parseInt(m[1], 16);
+  return (0.2126 * ((v >> 16) & 255) + 0.7152 * ((v >> 8) & 255) + 0.0722 * (v & 255)) / 255 > 0.6;
+}
+
+const first = bays[0].boxes[0];
+const firstBay = bays[0];
+---
+
+<div class="arc" data-arc data-frames={REEL_FRAMES} data-first={first.id}>
+  <script is:inline>
+    document.documentElement.classList.add('arc-js');
+  </script>
+
+  <div class="arc-cab" data-reveal>
+    <div class="arc-cab__in">
+      <p class="arc-cab__cornice" aria-hidden="true">
+        <span class="arc-cab__name">The Archive</span>
+        <span class="arc-cab__count">{total} works · shelved by series</span>
+      </p>
+      <div class="arc-bays" style={`--max:${longest}`}>
+        {
+          bays.map((bay) => (
+            <section
+              class="arc-bay"
+              aria-label={`${bay.name}, ${bay.boxes.length} ${bay.boxes.length === 1 ? 'piece' : 'pieces'}`}
+              style={`--n:${bay.boxes.length};--accent:${bay.accent}`}
+            >
+              <ol class="arc-bay__boxes" role="list">
+                {bay.boxes.map((p) => {
+                  const plate = plateOf(p);
+                  return (
+                    <li class="arc-slot">
+                      <a
+                        class:list={[
+                          'arc-box',
+                          p.title.length >= LONG_TITLE && 'arc-box--long',
+                          isLight(plate) && 'arc-box--light',
+                        ]}
+                        href={p.path}
+                        style={`--plate:${plate}`}
+                        data-arc-box
+                        data-id={p.id}
+                        data-title={p.title}
+                        data-label={p.label ?? bay.name}
+                        data-year={p.gallery?.data.year ?? String(p.date.getUTCFullYear())}
+                        data-line={p.line}
+                        data-verb={p.verb ?? ''}
+                        data-accent={bay.accent}
+                        data-plate={plate}
+                      >
+                        <span class="arc-box__band" aria-hidden="true" />
+                        <span class="arc-box__card" aria-hidden="true">
+                          {p.seriesNo ? <Fragment>No.&nbsp;{p.seriesNo}</Fragment> : <i class="arc-box__loz" />}
+                        </span>
+                        <span class="arc-box__title">
+                          <span class="sr-only">{p.label ?? bay.name}: </span>
+                          {p.title}
+                        </span>
+                        <span class="arc-box__pull" aria-hidden="true" />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ol>
+              <p class="arc-bay__plank">
+                {bay.href ? (
+                  <a class="arc-bay__label" href={bay.href}>
+                    <span class="arc-bay__name">{bay.name}</span>
+                    <span class="arc-bay__n" aria-hidden="true">
+                      {bay.boxes.length}
+                    </span>
+                    <span class="sr-only">: the series</span>
+                  </a>
+                ) : (
+                  <span class="arc-bay__label">
+                    <span class="arc-bay__name">{bay.name}</span>
+                    <span class="arc-bay__n" aria-hidden="true">
+                      {bay.boxes.length}
+                    </span>
+                  </span>
+                )}
+              </p>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <aside class="arc-table" data-arc-table aria-label="The reading table">
+    <div class="arc-card" data-arc-card style={`--accent:${firstBay.accent};--plate:${plateOf(first)}`}>
+      <p class="arc-card__where" aria-hidden="true"><span>On the table</span><i></i></p>
+      <a class="arc-card__frame" href={first.path} tabindex="-1" aria-hidden="true" data-arc-enter>
+        <span class="arc-card__mat">
+          <span class="arc-reel" data-arc-reel>
+            <img class="arc-reel__img is-on" src={`/reel/${first.id}/1.jpg`} alt="" width="800" height="420" decoding="async" />
+            <img class="arc-reel__img" alt="" width="800" height="420" decoding="async" />
+          </span>
+        </span>
+      </a>
+      <ol class="arc-card__ticks" aria-hidden="true" data-arc-ticks>
+        {Array.from({ length: REEL_FRAMES }, (_, i) => <li class:list={[i === 0 && 'is-on']} />)}
+      </ol>
+      <div class="arc-card__text" aria-live="polite">
+        <p class="arc-card__series mono">
+          <span data-arc-label>{first.label ?? firstBay.name}</span>
+          <span class="arc-card__year" data-arc-year>{first.gallery?.data.year ?? first.date.getUTCFullYear()}</span>
+        </p>
+        <h3 class="arc-card__title" data-arc-title>{first.title}</h3>
+        <p class="arc-card__line" data-arc-line>{first.line}</p>
+        <p class="arc-card__verb" data-arc-verb>{first.verb ?? ''}</p>
+      </div>
+      <p class="arc-card__actions">
+        <a class="cta" href={first.path} data-arc-enter>Enter the work</a>
+        <button class="arc-card__away" type="button" data-arc-away hidden>Return to shelf</button>
+      </p>
+    </div>
+    <div class="arc-table__clear" data-arc-clear hidden>
+      <p class="arc-card__where" aria-hidden="true"><span>On the table</span><i></i></p>
+      <div class="arc-card__frame arc-card__frame--clear">
+        <span class="arc-card__mat">
+          <span class="arc-reel arc-reel--clear"><span>The table is clear.</span></span>
+        </span>
+      </div>
+      <p class="arc-table__hint">Choose a box and it opens here.</p>
+    </div>
+  </aside>
+
+  <dialog class="arc-sheet" data-arc-sheet aria-label="The reading table">
+    <div class="arc-sheet__in" data-arc-sheet-in></div>
+  </dialog>
+</div>
+
+<script>
+  import '../../scripts/archive.ts';
+</script>
+
+<style is:global>
+  .arc,
+  .arc-sheet {
+    --moulding: linear-gradient(135deg, #2a2622, #1a1815 60%, #2a2622);
+    --spine-ink: #ead9b0;
+  }
+  .arc {
+    --box-w: 2.875rem;
+    --box-h: 13.25rem;
+    --box-gap: 4px;
+    --plank-h: 1.875rem;
+    --air: 1.375rem;
+    --bay-pad: 0.625rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    align-items: start;
+  }
+  @media (min-width: 980px) {
+    .arc {
+      grid-template-columns: minmax(0, 1fr) clamp(21rem, 36vw, 27.5rem);
+    }
+  }
+  .arc-cab {
+    padding: 10px;
+    background: var(--moulding);
+    box-shadow:
+      0 1px #fff6,
+      0 34px 50px -30px #281c0cb3;
+  }
+  .arc-cab__in {
+    position: relative;
+    background: #efe7d7;
+    outline: 1px solid var(--gilt);
+    outline-offset: -1px;
+  }
+  .arc-cab__cornice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.1rem 1rem;
+    padding: 0.55rem 0.9rem 0.6rem;
+    background: linear-gradient(#2e2a25, #1c1a17);
+    border-bottom: 1px solid var(--gilt);
+    color: var(--spine-ink);
+  }
+  .arc-cab__name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.22em;
+    font-variant-caps: all-small-caps;
+  }
+  .arc-cab__count {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #ead9b0b8;
+  }
+  .arc-cab__in {
+    container-type: inline-size;
+  }
+  .arc-bays {
+    --pitch: calc(var(--air) + var(--box-h) + var(--plank-h));
+    display: flex;
+    flex-wrap: wrap;
+    background-image:
+      linear-gradient(#281c0c38, #281c0c00 0.75rem),
+      linear-gradient(
+        to bottom,
+        transparent calc(var(--air) + var(--box-h)),
+        var(--gilt) calc(var(--air) + var(--box-h))
+          calc(var(--air) + var(--box-h) + 1px),
+        #34302b calc(var(--air) + var(--box-h) + 1px),
+        #1d1a17 calc(var(--pitch) - 2px),
+        #0f0e0c calc(var(--pitch) - 2px)
+      );
+    background-size: 100% var(--pitch);
+    background-repeat: repeat-y;
+  }
+  @supports (width: 1cqi) {
+    .arc-bays {
+      --box-w: clamp(
+        2.375rem,
+        calc(
+          (100cqi - 2 * var(--bay-pad) - (var(--max, 12) - 1) * var(--box-gap)) /
+            var(--max, 12)
+        ),
+        2.875rem
+      );
+    }
+  }
+  .arc-bay {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+      inset 1px 0 #1d1b1829,
+      inset -1px 0 #1d1b1829;
+  }
+  .arc-bay__boxes {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: calc(var(--plank-h) + var(--air)) var(--box-gap);
+    padding: var(--air) var(--bay-pad) 0;
+  }
+  .arc-slot {
+    position: relative;
+    flex: none;
+    width: var(--box-w);
+    height: var(--box-h);
+  }
+  .arc-box {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    justify-items: center;
+    color: var(--spine-ink);
+    text-decoration: none;
+    border-radius: 2px 2px 0 0;
+    background:
+      linear-gradient(90deg, #ffffff21, #fff0 16%, #0000 74%, #00000057),
+      linear-gradient(#ffffff0d, #0000001f), var(--plate, #2b2230);
+    box-shadow:
+      inset 0 0 0 1px #0006,
+      inset 0 1px #ffffff29,
+      3px 0 5px -3px #140e068c;
+    transform-origin: 50% 100%;
+    transition:
+      transform calc(var(--beat) * 0.7) var(--ease-settle),
+      box-shadow calc(var(--beat) * 0.7) var(--ease-settle);
+    outline-offset: 3px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .arc-box:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0.14 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .arc-box__band {
+    width: 100%;
+    height: 6px;
+    border-radius: 2px 2px 0 0;
+    background: color-mix(in srgb, var(--accent) 70%, #f4e6c4);
+    box-shadow: 0 1px #00000059;
+  }
+  .arc-box__card {
+    display: grid;
+    place-items: center;
+    width: calc(100% - 9px);
+    min-height: 1.25rem;
+    margin-top: 0.55rem;
+    padding: 1px 0 0;
+    background: #f6f0e3;
+    color: #1d1b18;
+    border: 1px solid #a8843f;
+    box-shadow:
+      0 0 0 1px #00000052,
+      0 1px 2px #0006;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .arc-box__loz {
+    width: 5px;
+    height: 5px;
+    background: var(--gilt-ink);
+    transform: rotate(45deg);
+  }
+  .arc-box__title {
+    writing-mode: vertical-rl;
+    justify-self: center;
+    align-self: start;
+    max-height: 100%;
+    max-width: calc(100% - 6px);
+    margin-top: 0.6rem;
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.72rem;
+    line-height: 1.16;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .arc-box--long .arc-box__title {
+    font-size: 0.66rem;
+    letter-spacing: 0.09em;
+  }
+  .arc-box__pull {
+    width: 13px;
+    height: 13px;
+    margin: 0.5rem 0 0.6rem;
+    border: 1.5px solid #c9a45c;
+    border-radius: 50%;
+    box-shadow:
+      0 1px #00000080,
+      inset 0 1px #0006;
+  }
+  .arc-box--light {
+    color: #2a2622;
+  }
+  .arc-box--light .arc-box__pull {
+    border-color: #8a6a2a;
+  }
+  .arc-box--soon {
+    opacity: 0.5;
+    filter: saturate(0.5);
+  }
+  a.arc-box:hover,
+  a.arc-box:focus-visible {
+    transform: translateY(-7px);
+    box-shadow:
+      inset 0 0 0 1px #0006,
+      inset 0 1px #ffffff29,
+      0 12px 14px -8px #140e06bf;
+  }
+  a.arc-box.is-out {
+    transform: translateY(-13px);
+    box-shadow:
+      inset 0 0 0 1px var(--gilt-bright),
+      0 0 0 1px #c9a45c80,
+      0 18px 18px -10px #140e06cc;
+  }
+  .arc-bay__plank {
+    display: flex;
+    align-items: center;
+    height: var(--plank-h);
+    padding-inline: var(--bay-pad);
+  }
+  .arc-bay__label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--spine-ink);
+    text-decoration: none;
+  }
+  .arc-bay__label:before {
+    content: "";
+    flex: none;
+    width: 6px;
+    height: 6px;
+    background: color-mix(in srgb, var(--accent) 70%, #f4e6c4);
+    transform: rotate(45deg);
+  }
+  a.arc-bay__label:after {
+    content: "";
+    position: absolute;
+    inset: -0.9rem -0.5rem;
+  }
+  .arc-bay__name {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size calc(var(--beat) * 0.9) var(--ease-settle);
+  }
+  a.arc-bay__label:hover .arc-bay__name,
+  a.arc-bay__label:focus-visible .arc-bay__name {
+    background-size: 100% 1px;
+  }
+  .arc-bay__n {
+    color: #ead9b099;
+  }
+  .arc-table {
+    position: sticky;
+    top: calc(var(--nav-h) + 1.25rem);
+  }
+  @media (max-width: 979.98px) {
+    .arc-js .arc-table {
+      display: none;
+    }
+  }
+  .arc-card,
+  .arc-table__clear {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .arc-card[hidden],
+  .arc-table__clear[hidden] {
+    display: none;
+  }
+  .arc-card__where {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--room-accent);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.22em;
+    font-variant-caps: all-small-caps;
+    white-space: nowrap;
+  }
+  .arc-card__where i {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gilt), transparent);
+    opacity: 0.7;
+  }
+  .arc-card__frame {
+    display: block;
+    padding: 10px;
+    background: var(--moulding);
+    box-shadow:
+      0 1px #fff6,
+      0 28px 40px -26px #281c0cb3;
+  }
+  .arc-card__mat {
+    display: block;
+    padding: clamp(0.6rem, 0.45rem + 0.6vw, 1rem);
+    background: #fbf8f1;
+    outline: 1px solid var(--gilt);
+    outline-offset: -5px;
+  }
+  .arc-reel {
+    position: relative;
+    display: block;
+    aspect-ratio: 800 / 420;
+    overflow: hidden;
+    background: var(--plate, #1d1b18);
+  }
+  .arc-reel__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .arc-reel__img:not([src]) {
+    visibility: hidden;
+  }
+  .arc-reel.is-cut .arc-reel__img {
+    transition: none;
+  }
+  .arc-reel__img.is-on {
+    opacity: 1;
+    animation: arc-drift 3.4s linear both;
+  }
+  .arc-reel__img.is-on:nth-child(2) {
+    animation-name: arc-drift-b;
+  }
+  @keyframes arc-drift {
+    0% {
+      transform: scale(1.001);
+    }
+    to {
+      transform: scale(1.07) translate3d(-0.8%, -0.6%, 0);
+    }
+  }
+  @keyframes arc-drift-b {
+    0% {
+      transform: scale(1.07) translate3d(0.8%, 0.5%, 0);
+    }
+    to {
+      transform: scale(1.001);
+    }
+  }
+  .arc-reel--clear {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(
+        90% 70% at 50% 35%,
+        rgba(255, 255, 255, 0.5),
+        transparent 75%
+      ),
+      var(--wall-shade);
+    color: var(--ink-faint);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.15rem;
+  }
+  .arc-card__ticks {
+    list-style: none;
+    display: flex;
+    gap: 5px;
+    margin-top: -0.2rem;
+  }
+  .arc-card__ticks li {
+    flex: 1;
+    height: 2px;
+    background: var(--rule);
+    transition: background-color 0.6s ease;
+  }
+  .arc-card__ticks li.is-on {
+    background: var(--gilt);
+  }
+  .arc-card__text {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .arc-card__series {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.2rem 1rem;
+    color: var(--accent, var(--gilt-ink));
+    letter-spacing: 0.06em;
+  }
+  .arc-card__year {
+    color: var(--ink-faint);
+    font-variant-numeric: oldstyle-nums;
+  }
+  .arc-card__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.7rem, 1.4rem + 1.1vw, 2.3rem);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+  .arc-card__line {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+  .arc-card__verb {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  .arc-card__verb:empty {
+    display: none;
+  }
+  .arc-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 1.4rem;
+    margin-top: 0.3rem;
+  }
+  .arc-card__away {
+    min-height: 44px;
+    padding: 0 0.2rem;
+    border: 0;
+    background: none;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 0.95rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.16em;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 0.3em;
+    cursor: pointer;
+  }
+  .arc-card__away:hover {
+    color: var(--ink);
+    text-decoration-color: currentColor;
+  }
+  .arc-table__hint {
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  @media (min-width: 980px) and (max-height: 720px) {
+    .arc-card,
+    .arc-table__clear {
+      gap: 0.6rem;
+    }
+    .arc-card__where {
+      display: none;
+    }
+    .arc-card__mat {
+      padding: 0.5rem;
+    }
+    .arc-card__line {
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+    .arc-card__title {
+      font-size: 1.6rem;
+    }
+  }
+  .arc-card.is-arriving .arc-card__frame {
+    animation: arc-open calc(var(--beat) * 0.95) var(--ease-settle) both;
+  }
+  .arc-card.is-arriving .arc-card__text > *,
+  .arc-card.is-arriving .arc-card__actions {
+    animation: arc-settle calc(var(--beat) * 1.1) var(--ease-settle) both;
+  }
+  .arc-card.is-arriving .arc-card__text > :nth-child(2) {
+    animation-delay: 70ms;
+  }
+  .arc-card.is-arriving .arc-card__text > :nth-child(3) {
+    animation-delay: 0.14s;
+  }
+  .arc-card.is-arriving .arc-card__text > :nth-child(4) {
+    animation-delay: 0.21s;
+  }
+  .arc-card.is-arriving .arc-card__actions {
+    animation-delay: 0.28s;
+  }
+  @keyframes arc-open {
+    0% {
+      clip-path: inset(44% 0 44% 0);
+      opacity: 0.2;
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      opacity: 1;
+    }
+  }
+  @keyframes arc-settle {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .arc-ghost {
+    position: fixed;
+    inset: auto;
+    z-index: 2147483000;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    pointer-events: none;
+    transform-origin: 0 0;
+    border-radius: 2px;
+    outline: 1px solid #c9a45c;
+    will-change: transform, opacity;
+  }
+  .arc-sheet {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: none;
+    max-height: 92dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-top: 2px solid var(--gilt);
+    background: var(--wall);
+    color: var(--ink);
+    overflow: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 -30px 60px -20px #140e068c;
+  }
+  .arc-sheet::backdrop {
+    background: #18120a99;
+  }
+  .arc-sheet[open] {
+    animation: arc-rise calc(var(--beat) * 0.8) var(--ease-settle) both;
+  }
+  .arc-sheet[open]::backdrop {
+    animation: arc-dim calc(var(--beat) * 0.8) ease both;
+  }
+  .arc-sheet.is-leaving {
+    animation: arc-sink 0.26s ease-in both;
+  }
+  .arc-sheet.is-leaving::backdrop {
+    animation: arc-dim 0.26s ease reverse both;
+  }
+  .arc-sheet__in {
+    max-width: 34rem;
+    margin-inline: auto;
+    padding: 0.55rem var(--gutter) calc(1.1rem + env(safe-area-inset-bottom, 0px));
+    --room-accent: var(--room-iv);
+  }
+  .arc-sheet__in:before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    margin: 0 auto 0.7rem;
+    border-radius: 2px;
+    background: var(--rule);
+  }
+  .arc-sheet .arc-card__actions {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .arc-sheet .arc-card__actions .cta {
+    padding-inline: 1rem;
+    white-space: nowrap;
+  }
+  .arc-sheet .arc-card__away {
+    white-space: nowrap;
+  }
+  @keyframes arc-rise {
+    0% {
+      transform: translate3d(0, 100%, 0);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes arc-sink {
+    to {
+      transform: translate3d(0, 100%, 0);
+    }
+  }
+  @keyframes arc-dim {
+    0% {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  html.arc-locked {
+    overflow: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .arc-reel__img.is-on {
+      animation: none;
+    }
+  }
+</style>
