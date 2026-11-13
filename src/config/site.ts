@@ -6,7 +6,7 @@
 export const SITE_URL = 'https://iamwilhelm.com';
 export const SITE_NAME = 'Michael Wilhelm';
 
-export const DEFAULT_TITLE = 'Michael Wilhelm · Devoted to something, but no one knows what.';
+export const DEFAULT_TITLE = 'Michael Wilhelm · Please touch the exhibits.';
 export const DEFAULT_DESCRIPTION =
   'Michael Wilhelm: CEO and cofounder of BackGold, founder of Advancing Liberty Media, and a writer of visualized poetry. A small museum of his work and writing.';
 
@@ -22,6 +22,15 @@ export const SCROLLBRIEF_URL = 'https://scrollbrief.com';
 /** The Scrollbrief intake: a BackGold form, "Bring one case." */
 export const SCROLLBRIEF_INTAKE_URL =
   'https://api.backgold.com/f/834246565e3527a7e2aea230d4402fd7/FormBlock-67ecbfa84894da4f1210140c8c2cc9b8';
+
+/**
+ * The scrolly commissions intake: a BackGold form, embedded in the close of
+ * /services (IV.06). PLACEHOLDER(owner): paste the hosted form's address
+ * (https://api.backgold.com/f/<page>/<FormBlock-id>) once the form exists in
+ * BackGold. While this is empty the page closes with the call and mail
+ * links only, and nothing is embedded.
+ */
+export const SCROLLY_INTAKE_URL = '';
 
 /** The BackGold scheduler: a web design consultation with Michael. */
 export const SCHEDULER_URL = 'https://app.backgold.com/book/backgold/web-design-consultation';

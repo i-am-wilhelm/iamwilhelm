@@ -61,7 +61,7 @@ const og = `<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="frame"></div>
   <div class="copy">
     <p class="kicker">iamwilhelm.com</p>
-    <h1>Devoted to something, but no one knows what.</h1>
+    <h1>Please touch the exhibits.</h1>
     <div class="rule"></div>
     <p class="name">Michael Wilhelm</p>
     <p class="roles">CEO &amp; Cofounder, BackGold<b>·</b>Founder, Advancing Liberty Media<b>·</b>Writer</p>

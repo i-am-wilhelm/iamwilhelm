@@ -5,14 +5,15 @@
  * museum's own parts: the placard, the Room I feature-list cells, the
  * Gallery cards (six live pieces, their own share images as thumbnails),
  * the meander and the colophon, and the ten questions (IV.05) whose answers
- * also feed the FAQPage JSON-LD. No script beyond what Museum.astro loads.
+ * also feed the FAQPage JSON-LD. The close (IV.06) embeds the BackGold intake
+ * form once SCROLLY_INTAKE_URL is set. No script beyond what Museum.astro loads.
  */
 import Museum from '../layouts/Museum.astro';
 import Placard from '../components/museum/Placard.astro';
 import PoemGallery from '../components/museum/PoemGallery.astro';
 import Meander from '../components/museum/Meander.astro';
 import Colophon from '../components/museum/Colophon.astro';
-import { CONTACT_EMAIL, SCHEDULER_URL, SITE_URL } from '../config/site';
+import { CONTACT_EMAIL, SCHEDULER_URL, SCROLLY_INTAKE_URL, SITE_URL } from '../config/site';
 
 const url = `${SITE_URL}/services/`;
 const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Commission')}`;
@@ -265,8 +266,26 @@ const schema = [
         </div>
         <div class="sect__body">
           <p class="lede">Thirty minutes. Leave with a chapter outline and a fixed quote.</p>
+          {
+            SCROLLY_INTAKE_URL && (
+              <div class="intake">
+                <iframe
+                  class="intake__frame"
+                  src={SCROLLY_INTAKE_URL}
+                  title="Commission intake form"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                />
+                <p class="intake__alt">
+                  <a class="text-link" href={SCROLLY_INTAKE_URL} rel="noopener">
+                    Open the form on its own page
+                  </a>
+                </p>
+              </div>
+            )
+          }
           <p class="actions">
-            <a class="cta cta--gilt" href={SCHEDULER_URL}>Book a call</a>
+            <a class:list={['cta', !SCROLLY_INTAKE_URL && 'cta--gilt']} href={SCHEDULER_URL}>Book a call</a>
             <a class="text-link actions__mail" href={mailto}>or write: {CONTACT_EMAIL}</a>
           </p>
         </div>
@@ -345,6 +364,28 @@ const schema = [
   }
   .sect--close .sect__body .lede {
     color: var(--ink);
+  }
+
+  /* IV.06: the BackGold intake form, framed. The form is BackGold's own
+     page, so it keeps its own type and colours inside the frame; it does
+     not report its height, so the frame is tall and scrolls if it must. */
+  .intake {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .intake__frame {
+    display: block;
+    height: clamp(40rem, 110vh, 62rem);
+    border: 1px solid var(--rule);
+    outline: 1px solid var(--gilt);
+    outline-offset: 5px;
+    margin: 6px;
+    width: calc(100% - 12px);
+    background: #fff;
+  }
+  .intake__alt {
+    font-size: 0.95rem;
+    color: var(--ink-faint);
   }
 
   /* IV.01: the Room I feature-list cells. */
