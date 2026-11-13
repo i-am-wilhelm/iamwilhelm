@@ -23,14 +23,9 @@ export const SCROLLBRIEF_URL = 'https://scrollbrief.com';
 export const SCROLLBRIEF_INTAKE_URL =
   'https://api.backgold.com/f/834246565e3527a7e2aea230d4402fd7/FormBlock-67ecbfa84894da4f1210140c8c2cc9b8';
 
-/**
- * The scrolly commissions intake: a BackGold form, embedded in the close of
- * /services (IV.06). PLACEHOLDER(owner): paste the hosted form's address
- * (https://api.backgold.com/f/<page>/<FormBlock-id>) once the form exists in
- * BackGold. While this is empty the page closes with the call and mail
- * links only, and nothing is embedded.
- */
-export const SCROLLY_INTAKE_URL = '';
+/** The scrolly commissions intake: a BackGold form ("Commission a scrolly."), embedded in the close of /services (IV.06). */
+export const SCROLLY_INTAKE_URL =
+  'https://api.backgold.com/f/f1e50bdd8eb2946c3154baf7db4e7f0d/FormBlock-c191f6d61f9800ef56127b0730e706b0';
 
 /** The BackGold scheduler: a web design consultation with Michael. */
 export const SCHEDULER_URL = 'https://app.backgold.com/book/backgold/web-design-consultation';

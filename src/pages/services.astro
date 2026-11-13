@@ -272,7 +272,7 @@ const schema = [
                 <iframe
                   class="intake__frame"
                   src={SCROLLY_INTAKE_URL}
-                  title="Commission intake form"
+                  title="Commission a scrolly."
                   loading="lazy"
                   referrerpolicy="strict-origin-when-cross-origin"
                 />
@@ -367,15 +367,17 @@ const schema = [
   }
 
   /* IV.06: the BackGold intake form, framed. The form is BackGold's own
-     page, so it keeps its own type and colours inside the frame; it does
-     not report its height, so the frame is tall and scrolls if it must. */
+     page, so it keeps its own type and colours inside the frame. It does
+     not report its height, so the frame is sized to the form as built
+     (eleven fields: about 1,370px here, 1,455px on a phone) with a little
+     room; if the form grows, raise these, or it scrolls inside the frame. */
   .intake {
     display: grid;
     gap: 0.6rem;
   }
   .intake__frame {
     display: block;
-    height: clamp(40rem, 110vh, 62rem);
+    height: 89rem;
     border: 1px solid var(--rule);
     outline: 1px solid var(--gilt);
     outline-offset: 5px;
@@ -386,6 +388,11 @@ const schema = [
   .intake__alt {
     font-size: 0.95rem;
     color: var(--ink-faint);
+  }
+  @media (max-width: 820px) {
+    .intake__frame {
+      height: 95rem;
+    }
   }
 
   /* IV.01: the Room I feature-list cells. */
