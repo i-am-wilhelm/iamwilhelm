@@ -369,7 +369,7 @@ const schema = [
   /* IV.06: the BackGold intake form, framed. The form is BackGold's own
      page, so it keeps its own type and colours inside the frame. It does
      not report its height, so the frame is sized to the form as built
-     (eleven fields: about 1,370px here, 1,455px on a phone) with a little
+     (eleven fields: about 1,370px to 1,390px, up to 1,490px on a narrow phone) with a little
      room; if the form grows, raise these, or it scrolls inside the frame. */
   .intake {
     display: grid;
@@ -389,7 +389,7 @@ const schema = [
     font-size: 0.95rem;
     color: var(--ink-faint);
   }
-  @media (max-width: 820px) {
+  @media (max-width: 480px) {
     .intake__frame {
       height: 95rem;
     }
