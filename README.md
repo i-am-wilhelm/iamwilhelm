@@ -22,7 +22,7 @@ custom domain in the Cloudflare dashboard.
 ## The museum (public homepage)
 
 The homepage is a walk through a small museum: a foyer, three numbered rooms
-(BackGold, the Gallery, Writings) divided by Greek meander keylines, and a
+(the Treasury, the Gallery, Writings) divided by Greek meander keylines, and a
 colophon. Warm ivory walls, charcoal
 ink, gilt as the one shared accent, paper grain from an SVG noise tile, and
 text that settles into place on scroll (same 7/8 meter as the poem pages).
@@ -31,8 +31,25 @@ No WebGL, no dithering, no audio on these pages.
 - `src/layouts/Museum.astro`: meta, Open Graph and Twitter cards, JSON-LD
   Person schema, nav, footer. Used by `/`, `/gallery`, `/writings`, `/writings/<slug>`,
   the series indexes, `/method`, `/support`, `/services` (Room IV, the
-  commissions page for scrollies), `/what-is-a-scrolly` (Room IV, the
-  glossary), the plain-text twins, and 404.
+  commissions page for scrollies), `/scrollbrief` (Room V, the studio page),
+  `/what-is-a-scrolly` (Room IV, the glossary), the plain-text twins, and 404.
+- Room I, the Treasury (`rooms/RoomBackGold.astro`): the one dark room. The
+  BackGold tablet stands in a glass vitrine on a plinth and the eight things
+  the platform holds sit in gilt niches. The vitrine is decoration; with a
+  fine pointer it turns a few degrees toward the cursor.
+- Room II on the homepage is the Archive (`Archive.astro`,
+  `src/scripts/archive.ts`): every scroll page on view is a box shelved by
+  series, and the chosen box opens on the reading table (a bottom sheet on a
+  phone) with a reel of stills. A new gallery entry is shelved
+  automatically; it needs five stills at `public/reel/<id>/1.jpg` to
+  `5.jpg` (800×420 JPEG) and the build fails with the missing path if they
+  are not there. The Futurist installments are the Archive's first bay, so
+  `rooms/FeatureFuturist.astro` is unmounted (kept, like the rooms below).
+- `/scrollbrief` (`src/pages/scrollbrief.astro`, with `Lens.astro` and
+  `ScrollbriefMark.astro`): Room V, the page for Scrollbrief, the
+  litigation-support studio. It links out to scrollbrief.com, the BackGold
+  intake form (`SCROLLBRIEF_INTAKE_URL` in `src/config/site.ts`) and the
+  scheduler.
 - `src/components/museum/`: Placard, Room, Meander, ZodiacRing, Glyph (SVG
   zodiac paths in `zodiac.ts`), PoemGallery (the wall; `grouped` hangs it by
   series, as `/gallery` does) and PoemCard (one frame), WritingsList,
@@ -49,7 +66,7 @@ No WebGL, no dithering, no audio on these pages.
   `series` and `seriesNo` place it in a series, `verb` is the card's verb
   line, `date` orders it in the feeds.
 - Series: declared once in `src/config/series.ts` (in-the-original,
-  through-the-lens, futurist, mimics, seeing, poems, readings); every live piece
+  through-the-lens, futurist, mythmaking, seen, poems, readings); every live piece
   names one on its collection entry. `src/lib/pieces.ts` is the one view of
   both collections (scroll pages and readings) that the cards, rows, series
   indexes (`/writings/<series>/`), the scroll-page foot and the feeds read.

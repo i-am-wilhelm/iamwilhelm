@@ -2,7 +2,7 @@
 /**
  * The footer: a quiet credit line, the typefaces, and the outbound links.
  */
-import { ALM_URL, BACKGOLD_URL, FEEDS } from '../../config/site';
+import { ALM_URL, BACKGOLD_URL, FEEDS, SCROLLBRIEF_URL } from '../../config/site';
 const year = new Date().getFullYear();
 ---
 
@@ -16,12 +16,14 @@ const year = new Date().getFullYear();
       <a href="/gallery/">Gallery</a>
       <a href="/writings/">Writings</a>
       <a href="/services/">Commissions</a>
+      <a href="/scrollbrief/">Scrollbrief</a>
       <a href="/what-is-a-scrolly/">What is a scrolly?</a>
       <a href="/method/">Method</a>
       <a href="/support/">Support</a>
       <a href={FEEDS[0].href} type={FEEDS[0].type}>RSS</a>
       <a href="/cats.txt" class="site-footer__cats">cats.txt</a>
       <a href={BACKGOLD_URL} rel="noopener">BackGold</a>
+      <a href={SCROLLBRIEF_URL} rel="noopener">Scrollbrief.com</a>
       <a href={ALM_URL} rel="noopener">Advancing Liberty Media</a>
     </nav>
     <p class="site-footer__type">Set in Cormorant Garamond, EB Garamond, and JetBrains Mono.</p>

@@ -2,8 +2,8 @@
 /**
  * Sticky minimal nav. On the homepage every item is an in-page anchor to its
  * room (museum.ts marks the room in view with aria-current); elsewhere,
- * Gallery, Futurist (the series index) and Writings go to their own routes and the rest return to the
- * homepage rooms. An item with `room: false` (Earl) has no room: it goes to
+ * Gallery and Writings go to their own routes and the rest return to the
+ * homepage rooms. An item with `room: false` (Scrollbrief, Futurist, Commissions, Earl) has no room: it goes to
  * its route from every page and stays out of the scroll-spy. At the right
  * end, one quiet gilt button books a call (the BackGold scheduler).
  */
@@ -12,7 +12,7 @@ import { NAV, SCHEDULER_URL } from '../../config/site';
 interface Props {
   home?: boolean;
   /** Route key for aria-current="page" on standalone pages. */
-  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services';
+  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services' | 'scrollbrief';
 }
 const { home = false, current } = Astro.props;
 
@@ -164,7 +164,8 @@ const items = NAV.map((item) => {
 
   /* Narrow screens: the brand keeps its monogram; the links ride one row
      that scrolls inside the nav, never the page. */
-  @media (max-width: 860px) {
+  /* Eight items: the name gives way first, then the list scrolls. */
+  @media (max-width: 1120px) {
     /* Visually hidden, still the link's accessible name. */
     .site-nav__name {
       position: absolute;
@@ -174,6 +175,8 @@ const items = NAV.map((item) => {
       clip: rect(0 0 0 0);
       white-space: nowrap;
     }
+  }
+  @media (max-width: 1000px) {
     .site-nav__inner {
       gap: 0.75rem;
     }

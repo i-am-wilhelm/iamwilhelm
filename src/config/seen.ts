@@ -33,17 +33,11 @@ export const SEEN_AI_LINE_SOURCE =
 export const SEEN_AI_LINE = SEEN_AI_LINE_SOURCE;
 
 /**
- * The batch hangs in the Gallery only: the homepage wall (RoomGallery)
- * leaves these frames out. Remove a slug to hang it on the homepage too.
+ * Pages built on the same system (hero, pinned stages, cards) that were
+ * delivered on their own, outside the batch folder: slug to source file.
+ * src/lib/seen.ts mounts them the same way. Such a file may carry no meta
+ * description; the gallery entry's `description` is printed in its place.
  */
-export const SEEN_GALLERY_ONLY: string[] = [
-  'nobody-sees-the-same-sea',
-  'type-is-an-image',
-  'the-sleep-of-reason',
-  'why-klimt-went-to-ravenna',
-  'redons-turn',
-  'how-to-throw-a-flame-twenty-miles',
-  'living-vanitas',
-  'the-mask-is-the-method',
-  'the-snowflake-machine',
-];
+export const SEEN_SOURCES: Record<string, string> = {
+  'due-space': '_incoming/due-space/due-space.html',
+};

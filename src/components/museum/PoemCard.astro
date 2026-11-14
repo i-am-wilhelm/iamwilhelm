@@ -53,7 +53,7 @@ const s = p?.series ? registry[p.series] : undefined;
           </div>
           <div class="poem__placard">
             <p class="poem__series mono" style={s && p?.series ? `--series-accent: ${seriesAccent(p.series)}` : undefined}>
-              {s && p?.label ? <span>{p.label}</span> : <span class="poem__series--none">Forthcoming</span>}
+              {s && p?.label ? <span>{p.label}</span> : <span class="poem__series--none">{onView ? '' : 'Forthcoming'}</span>}
               {d.year && <span class="poem__year">{d.year}</span>}
             </p>
             <H class="poem__title">{d.title}</H>

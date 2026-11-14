@@ -1,6 +1,7 @@
 /**
  * Mounts a Seen page from its approved source file. The source
- * (_incoming/art-scrollies/<slug>.html) is a whole document: its own
+ * (_incoming/art-scrollies/<slug>.html, or the file SEEN_SOURCES names for
+ * a page delivered on its own, such as Due Space) is a whole document: its own
  * palette, markup, stylesheet and one script. It ships as it is; this
  * function makes only the changes a page needs to live on the site:
  *
@@ -8,7 +9,8 @@
  *     under the same family names and weights;
  *   - the head gains the canonical URL, icons, the share card (the page's
  *     own render, public/og/<slug>.jpg), the Article schema and the link to
- *     the plain-text twin;
+ *     the plain-text twin; a source with no meta description of its own
+ *     takes the gallery entry's;
  *   - the colophon's "Previous: <i>Title</i>" becomes a link, with a
  *     matching "Next" where a next piece is hung (src/config/seen.ts) and
  *     the link back to the Gallery that the hung essays end on;
@@ -25,7 +27,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ogImage } from '../config/og';
-import { SEEN_AI_LINE, SEEN_AI_LINE_SOURCE, SEEN_CHAIN } from '../config/seen';
+import { SEEN_AI_LINE, SEEN_AI_LINE_SOURCE, SEEN_CHAIN, SEEN_SOURCES } from '../config/seen';
 import { series as registry } from '../config/series';
 import { SITE_NAME, SITE_URL } from '../config/site';
 import { getPieces, type Piece } from './pieces';
@@ -132,25 +134,29 @@ const FIXES: Record<string, [string, string, string][]> = {
 };
 
 export function seenSource(slug: string): string {
-  return readFileSync(resolve(process.cwd(), '_incoming/art-scrollies', `${slug}.html`), 'utf8').replace(/\r\n/g, '\n');
+  return readFileSync(resolve(process.cwd(), SEEN_SOURCES[slug] ?? `_incoming/art-scrollies/${slug}.html`), 'utf8').replace(/\r\n/g, '\n');
 }
 
-/** The source's own <title> and meta description, as plain text. */
-export function seenMeta(slug: string): { title: string; description: string } {
+/** The source's own <title> and meta description (when it carries one), as plain text. */
+export function seenMeta(slug: string): { title: string; description?: string } {
   const html = seenSource(slug);
   const title = html.match(/<title>([^<]*)<\/title>/)?.[1];
   const description = html.match(/<meta name="description" content="([^"]*)">/)?.[1];
-  if (!title || !description) throw new Error(`seen: ${slug}: the source file needs a <title> and a meta description.`);
-  return { title: unesc(title), description: unesc(description) };
+  if (!title) throw new Error(`seen: ${slug}: the source file needs a <title>.`);
+  /* Only a page named in SEEN_SOURCES may leave its description to the gallery entry. */
+  if (!description && !SEEN_SOURCES[slug]) throw new Error(`seen: ${slug}: the source file needs a meta description.`);
+  return { title: unesc(title), description: description ? unesc(description) : undefined };
 }
 
 export async function seenDocument(slug: string): Promise<string> {
   let html = seenSource(slug);
-  const { title, description } = seenMeta(slug);
+  const { title, description: own } = seenMeta(slug);
   const pieces = (await getPieces()).filter((p) => p.kind === 'scroll');
   const piece = pieces.find((p) => p.id === slug);
   if (!piece) throw new Error(`seen: ${slug}: no gallery entry (src/content/gallery/${slug}.md).`);
   if (piece.title !== title) throw new Error(`seen: ${slug}: the gallery entry's title differs from the source file's <title>.`);
+  const description = own ?? piece.description;
+  if (!description) throw new Error(`seen: ${slug}: no meta description in the source file or the gallery entry.`);
 
   /* Fonts: the site's copies, under the names the stylesheet already uses. */
   const fonts = html.match(/<link href="https:\/\/fonts\.googleapis\.com\/css2\?([^"]*)" rel="stylesheet">\n/);
@@ -211,7 +217,9 @@ export async function seenDocument(slug: string): Promise<string> {
     `<meta name="twitter:image" content="${esc(image)}">`,
     `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>`,
   ].join('\n');
-  html = swap(html, /(<meta name="description" content="[^"]*">\n)/, (m) => `${m}${head}\n`, 'the meta description', slug);
+  html = own
+    ? swap(html, /(<meta name="description" content="[^"]*">\n)/, (m) => `${m}${head}\n`, 'the meta description', slug)
+    : swap(html, /(<title>[^<]*<\/title>\n)/, (m) => `${m}<meta name="description" content="${esc(description)}">\n${head}\n`, 'the <title>', slug);
 
   /* Colophon: the series links and the making-of line. */
   const at = (SEEN_CHAIN as readonly string[]).indexOf(slug);

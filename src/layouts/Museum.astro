@@ -28,7 +28,7 @@ interface Props {
   image?: string;
   imageAlt?: string;
   home?: boolean;
-  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services';
+  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services' | 'scrollbrief';
   noindex?: boolean;
   /** Extra JSON-LD nodes for this page (merged into the @graph). */
   schema?: Record<string, unknown>[];
@@ -40,7 +40,7 @@ const {
   title = DEFAULT_TITLE,
   description = DEFAULT_DESCRIPTION,
   image = '/og.png',
-  imageAlt = 'Devoted to something, but no one knows what. Michael Wilhelm, set on ivory beneath a gilt zodiac ring.',
+  imageAlt = 'Please touch the exhibits. Michael Wilhelm, set on ivory beneath a gilt zodiac ring.',
   home = false,
   current,
   noindex = false,
