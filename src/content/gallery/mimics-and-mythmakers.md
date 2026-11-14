@@ -11,7 +11,7 @@ sign: gemini
 plate: "#0a2a39"
 date: 2026-11-07
 verb: "six depths and one ascent · you tap the dark"
-series: mimics
+series: mythmaking
 seriesNo: 1
 ---
 

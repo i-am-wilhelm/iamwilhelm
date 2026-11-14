@@ -51,12 +51,12 @@ export const series = {
     /* TODO(owner): the series' one-line statement, shown on /writings/futurist/ and in its feed. */
     statement: 'The Futurist installments: essays on what comes next, each staged as its own scrolling page.',
   },
-  mimics: {
-    name: 'Mimics',
-    title: 'Mimics',
-    href: '/writings/mimics/',
+  mythmaking: {
+    name: 'Mythmaking',
+    title: 'Mythmaking',
+    href: '/writings/mythmaking/',
     accent: '#1d6d84',
-    /* TODO(owner): the series' one-line statement, shown on /writings/mimics/ and in its feed. */
+    /* TODO(owner): the series' one-line statement, shown on /writings/mythmaking/ and in its feed. */
     statement: 'Essays on men, mirrors, and the stories they copy.',
   },
   poems: {
