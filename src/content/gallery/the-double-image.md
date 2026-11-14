@@ -12,12 +12,12 @@ sign: gemini
 plate: "#15131f"
 date: 2026-11-09
 verb: "four scenes · you tap to choose a side"
-series: seeing
+series: seen
 seriesNo: 1
 ---
 
 Ported from the owner's prototype (docs/prototypes/the-double-image-prototype.html).
-First essay of the Seeing series, the art blog line. Rubin's vase as a sum of
+First essay of the Seen series, the art blog line. Rubin's vase as a sum of
 bell curves on a Desmos-style graph, a murmuration that becomes a skull, the
 glyph field resolving into a Janus head, and the hinge the reader taps. Gemini
 for the twins: two faces from one line, two readings from one picture. The

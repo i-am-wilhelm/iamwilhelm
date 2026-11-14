@@ -10,7 +10,7 @@ order: 17
 status: on-view
 plate: "#f3eee3"
 date: 2026-11-09
-series: seeing
+series: seen
 seriesNo: 9
 ---
 
