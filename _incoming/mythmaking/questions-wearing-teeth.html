@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en" data-ink="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Questions Wearing Teeth</title>
+<meta name="description" content="Mythmaking No. 2 by Michael Wilhelm. A climb, a fall, three rooms and a sunrise: curiosity, the underworld where we bury what's too big to face, and the gold waiting down there.">
+<meta property="og:title" content="Questions Wearing Teeth">
+<meta property="og:description" content="Everything too big to face, we bury. Come dig it up. It's gold.">
+<meta name="theme-color" content="#2f6fc4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=GFS+Didot&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: a fixed painted world (mountain, cave, sunrise) behind one reading column of cards.
+   The scroll drives a story clock; each section owns one stretch of it. */
+:root{
+  --font-display:"Bodoni Moda","Bodoni 72",Didot,Georgia,serif;
+  --font-body:"Literata","Iowan Old Style",Georgia,serif;
+  --font-mono:"Martian Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --font-greek:"GFS Didot","Noto Serif","Times New Roman",serif;
+  --gold:#f2c46a;
+  --gold-deep:#c98a2b;
+  --ember:#ff6a3d;
+  --measure:31rem;
+  --gap:clamp(14rem,50vh,30rem);
+  --ink:#10202b; --card:rgba(250,248,242,.86); --card-line:rgba(16,32,43,.09); --line2:rgba(16,32,43,.28);
+  --head-ink:#0d1c26; --head-glow:0 1px 16px rgba(255,255,255,.9),0 0 3px rgba(255,255,255,.95);
+  --hud-bg:rgba(250,248,242,.62); --hud-ink:#10202b;
+  color-scheme:light;
+}
+html[data-ink="cave"]{
+  --ink:#ece5da; --card:rgba(10,8,12,.70); --card-line:rgba(236,229,218,.11); --line2:rgba(236,229,218,.32);
+  --head-ink:#f1eadf; --head-glow:0 2px 22px rgba(0,0,0,.95),0 0 4px rgba(0,0,0,.9);
+  --hud-bg:rgba(10,8,12,.55); --hud-ink:#ece5da;
+  color-scheme:dark;
+}
+html[data-ink="dawn"]{
+  --ink:#2a180c; --card:rgba(255,245,228,.86); --card-line:rgba(42,24,12,.10); --line2:rgba(42,24,12,.3);
+  --head-ink:#fff8ea; --head-glow:0 2px 26px rgba(90,24,8,.8),0 0 3px rgba(70,16,0,.85);
+  --hud-bg:rgba(255,245,228,.6); --hud-ink:#2a180c;
+}
+html[data-ink="morning"]{
+  --ink:#24160c; --card:rgba(255,249,238,.88); --card-line:rgba(36,22,12,.1); --line2:rgba(36,22,12,.3);
+  --head-ink:#2a1606; --head-glow:0 1px 18px rgba(255,251,242,.95),0 0 3px rgba(255,251,242,.9);
+  --hud-bg:rgba(255,249,238,.62); --hud-ink:#24160c;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:linear-gradient(180deg,#2266c4,#86c0ee 55%,#ffe7bf);background-attachment:fixed;color:var(--ink);font-family:var(--font-body);font-size:1.1rem;line-height:1.62;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
+#world{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+main{position:relative;z-index:2}
+.skip{position:absolute;left:-999px;top:.6rem;z-index:30;padding:.6rem .9rem;border-radius:.6rem;background:#10202b;color:#fff;font:600 .8rem/1 var(--font-mono)}
+.skip:focus{left:.6rem}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+p{text-wrap:pretty}
+i,em{font-style:italic}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* column */
+.sec{position:relative;padding:32vh 0 20vh}
+.col{position:relative;width:min(100% - 2.4rem,var(--measure));margin-inline:auto}
+@media (min-width:900px){
+  body{font-size:1.14rem}
+  .col{margin-left:clamp(2.2rem,6.5vw,7rem);margin-right:auto}
+}
+.col>*{margin:0}
+.col>*+*{margin-top:var(--gap)}
+.col>.sec-head+.card,.col>.sec-head+.growl,.col>.sec-head+.big-line{margin-top:calc(var(--gap) * .62)}
+
+/* type */
+.eyebrow{margin:0;font:600 .68rem/1.5 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.86}
+.lead{font-size:1.24rem;line-height:1.46}
+.pull{font-family:var(--font-display);font-style:italic;font-weight:540;font-variation-settings:"opsz" 14;font-size:clamp(1.42rem,5.4vw,1.95rem);line-height:1.2;text-wrap:balance}
+.gk{font-family:var(--font-greek);-webkit-text-stroke:.012em currentColor}
+
+/* section heads float over the world */
+.sec-head{display:grid;gap:.18rem;color:var(--head-ink);text-shadow:var(--head-glow)}
+.sec-head .eyebrow{opacity:.95}
+.glyph{margin:.35rem 0 0!important;font-family:var(--font-greek);font-size:clamp(3.1rem,15vw,6.6rem);line-height:1.06;letter-spacing:.01em;-webkit-text-stroke:.02em currentColor}
+.gloss{margin:0;font:400 .76rem/1.5 var(--font-mono);opacity:.92}
+.sec-head h2{margin:.85rem 0 0;font-family:var(--font-display);font-weight:560;font-variation-settings:"opsz" 18;font-size:clamp(2.3rem,10vw,4.1rem);line-height:1.03;letter-spacing:-.005em;text-wrap:balance;transform-origin:30% 60%}
+
+/* cards */
+.card{position:relative;padding:1.35rem 1.4rem 1.5rem;border-radius:1.15rem;background:var(--card);color:var(--ink);border:1px solid var(--card-line);box-shadow:0 22px 60px rgba(0,0,0,.18);-webkit-backdrop-filter:blur(8px) saturate(1.1);backdrop-filter:blur(8px) saturate(1.1);transition:background-color .9s,color .9s,border-color .9s}
+.card>*{margin:0}
+.card>*+*{margin-top:1em}
+.card .pull{margin-top:1.1em}
+.card .pull+*{margin-top:1.1em}
+.hint{display:inline-flex;align-items:center;gap:.6rem;font:600 .66rem/1.4 var(--font-mono);letter-spacing:.13em;text-transform:uppercase;opacity:.9}
+.hint::before{content:"";flex:none;width:.55rem;height:.55rem;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+
+/* cover */
+.cover{min-height:100vh;min-height:100svh;padding:17vh 0 30vh}
+.cover .col>*+*{margin-top:0}
+.title{margin:.7rem 0 0!important;font-family:var(--font-display);font-weight:600;font-variation-settings:"opsz" 22;font-size:clamp(3rem,13.5vw,7.4rem);line-height:.93;letter-spacing:-.012em;color:var(--head-ink);text-shadow:var(--head-glow)}
+.title span,.title em{display:block}
+.title em{font-style:italic;font-weight:500}
+.deck{margin-top:1.4rem!important;max-width:22rem;font-size:1.3rem;line-height:1.42;font-style:italic;color:var(--head-ink);text-shadow:var(--head-glow)}
+.byline{margin-top:1.3rem!important;font:600 .72rem/1.4 var(--font-mono);letter-spacing:.15em;text-transform:uppercase;color:var(--head-ink);text-shadow:var(--head-glow)}
+.cue{margin-top:2.3rem!important;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1.2rem;font:400 .7rem/1.4 var(--font-mono);letter-spacing:.1em;color:var(--head-ink);text-shadow:var(--head-glow)}
+.cue b{font-weight:600}
+.cue b::after{content:" ↓";display:inline-block;animation:nudge 1.8s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(4px)}}
+.cover .eyebrow{color:var(--head-ink);text-shadow:var(--head-glow)}
+
+/* big lines */
+.big-line{font-family:var(--font-display);font-weight:600;font-variation-settings:"opsz" 22;font-size:clamp(2.7rem,12.5vw,5.6rem);line-height:.98;letter-spacing:-.01em;color:var(--head-ink);text-shadow:var(--head-glow);text-wrap:balance}
+.growl{font-family:var(--font-display);font-style:italic;font-weight:600;font-variation-settings:"opsz" 18;font-size:clamp(2rem,8.6vw,3.7rem);line-height:1.08;color:#ffe0d4;text-shadow:0 0 22px rgba(255,58,28,.6),0 0 2px rgba(255,90,60,.9),0 3px 30px #000;text-wrap:balance}
+.growl.quiet{font-size:clamp(1.6rem,6.6vw,2.6rem);color:#e2dcff;text-shadow:0 0 22px rgba(130,100,255,.55),0 3px 30px #000;letter-spacing:.02em}
+.growl.is-on{animation:growl 2.6s steps(26,end) 1}
+@keyframes growl{
+  0%,100%{transform:translate(0,0)}
+  10%{transform:translate(-2px,1px)} 20%{transform:translate(2px,-1px)} 30%{transform:translate(-1px,2px)}
+  40%{transform:translate(1px,-2px)} 50%{transform:translate(-2px,0)} 60%{transform:translate(2px,1px)}
+  70%{transform:translate(-1px,-1px)} 80%{transform:translate(1px,1px)} 90%{transform:translate(0,-1px)}
+}
+
+/* the lintel */
+.lintel{margin-top:1.3em!important;padding:1rem 1rem .9rem;border-radius:.6rem;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.18));border:1px solid var(--card-line)}
+.lintel-text{margin:0;font-family:var(--font-display);font-weight:600;font-variation-settings:"opsz" 14;font-size:clamp(.82rem,3.3vw,1.02rem);letter-spacing:.22em;line-height:1.7;text-align:center;color:#e9dcc2;text-shadow:0 1px 0 rgba(0,0,0,.9),0 -1px 0 rgba(255,255,255,.12)}
+.lintel figcaption{margin-top:.75rem;font-size:.92rem;line-height:1.5;opacity:.9}
+
+/* asking */
+.asks{display:grid;gap:.6rem;margin-top:.85rem!important}
+.ask{display:block;width:100%;padding:.8rem 1rem;border-radius:.85rem;border:1px solid var(--line2);background:transparent;color:inherit;font:400 1.02rem/1.3 var(--font-body);text-align:left;cursor:pointer;transition:background-color .3s,border-color .3s,opacity .3s}
+.ask:hover:not(:disabled){background:rgba(255,255,255,.06)}
+.ask.chew::before{content:"↻ ";opacity:.6}
+.ask.seek{border-color:rgba(242,196,106,.7)}
+.ask.seek::before{content:"✦ ";color:var(--gold)}
+.ask.seek:hover:not(:disabled){background:rgba(242,196,106,.1)}
+.ask[aria-pressed="true"]{background:rgba(242,196,106,.12)}
+.ask.chew[aria-pressed="true"]{background:rgba(255,90,60,.1);border-color:rgba(255,110,80,.45)}
+.ask:disabled{cursor:default;opacity:.5}
+.ask.seek[aria-pressed="true"]:disabled{opacity:1}
+.answer{margin-top:1.15rem!important;padding-top:1.05rem;border-top:1px solid var(--card-line)}
+.answer>*{margin:0}
+.answer>*+*{margin-top:.9em}
+.answer:focus{outline:none}
+.answer.show{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.echo{font-family:var(--font-display);font-style:italic;font-weight:520;font-variation-settings:"opsz" 14;font-size:1.18rem;line-height:1.35}
+.echo span{display:inline}
+.echo span:nth-child(1){opacity:.6}
+.echo span:nth-child(2){opacity:.38}
+.echo span:nth-child(3){opacity:.2}
+.stamp{display:inline-flex!important;align-items:center;gap:.55rem;margin-top:1.2rem!important;padding:.45rem .85rem .45rem .5rem;border-radius:999px;background:linear-gradient(135deg,#fbe3a0,#d99a38 70%,#b87a22);color:#2a1806;font:600 .66rem/1 var(--font-mono);letter-spacing:.17em;text-transform:uppercase;box-shadow:0 0 26px rgba(242,196,106,.5),inset 0 1px 0 rgba(255,255,255,.6)}
+.stamp svg{width:1.15rem;height:1.15rem;flex:none}
+.stamp small{font-size:.86em;letter-spacing:.1em;opacity:.7;font-weight:400}
+.answer.show .stamp{animation:stamp .8s .55s cubic-bezier(.2,1.4,.3,1) both}
+@keyframes stamp{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:1;transform:none}}
+
+/* wanderers */
+.wanderers{display:grid;gap:1rem;margin-top:.9rem!important}
+.wanderer{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.45rem .9rem;padding-top:.85rem;border-top:1px solid var(--card-line)}
+.wanderer:first-child{border-top:0;padding-top:0}
+.w-name{margin:0;font-size:.98rem;font-style:italic}
+.w-said{grid-column:1/-1;margin:0;font-family:var(--font-display);font-style:italic;font-weight:520;font-variation-settings:"opsz" 14;font-size:1.08rem;line-height:1.35;color:inherit}
+.w-said.show{animation:rise .8s both}
+.light-btn,.dog-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem .95rem;border-radius:999px;border:1px solid rgba(242,196,106,.7);background:transparent;color:inherit;font:600 .7rem/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.light-btn::before{content:"";width:.5rem;height:.72rem;border-radius:50% 50% 45% 45%/60% 60% 40% 40%;background:radial-gradient(circle at 50% 70%,#fff4c8,#f2b54a 55%,#c76a1c);box-shadow:0 0 10px rgba(255,190,90,.8)}
+.light-btn:hover:not(:disabled),.dog-btn:hover:not(:disabled){background:rgba(242,196,106,.12)}
+.light-btn:disabled,.dog-btn:disabled{cursor:default;opacity:.55}
+
+/* the dog */
+.heads-list{list-style:none;padding:0;display:grid;gap:.55rem}
+.heads-list li{padding-left:1.1rem;position:relative}
+.heads-list li::before{content:"";position:absolute;left:0;top:.62em;width:.45rem;height:.45rem;border-radius:50%;background:#ff5a3c;box-shadow:0 0 10px #ff5a3c}
+.heads{display:grid;gap:1.05rem;margin-top:.9rem!important}
+.head{display:grid;gap:.5rem;padding-top:.9rem;border-top:1px solid var(--card-line)}
+.head:first-child{border-top:0;padding-top:0}
+.h-name{margin:0;font:600 .68rem/1.3 var(--font-mono);letter-spacing:.15em;text-transform:uppercase;color:#ff9a7e}
+.h-said{margin:0}
+.h-said.show{animation:rise .8s both}
+.dog-btn{justify-self:start}
+.dog-done{font-family:var(--font-display);font-style:italic;font-weight:540;font-variation-settings:"opsz" 14;font-size:1.3rem;line-height:1.3}
+.dog-done.show{animation:rise .9s both}
+.aside{font-size:.9rem;opacity:.85}
+
+/* holding */
+.hold{position:relative;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.hold.bar{display:inline-flex;align-items:center;gap:.6rem;justify-self:start;padding:.7rem 1rem;border-radius:999px;border:1px solid rgba(242,196,106,.7);color:inherit;font:600 .7rem/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,rgba(242,196,106,.4) calc(var(--p,0) * 100%),transparent calc(var(--p,0) * 100%))}
+.hold.bar:disabled{cursor:default}
+.hold.ring{display:grid;place-items:center;width:9rem;height:9rem;margin:1.2rem auto 0!important;border:0;border-radius:50%;background:radial-gradient(circle at 50% 42%,#3a1c0e,#0b0709 70%);color:var(--gold);font:600 .7rem/1.3 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;text-align:center;box-shadow:0 0 0 1px rgba(242,196,106,.25),0 0 40px rgba(255,120,40,calc(.12 + var(--p,0) * .5))}
+.hold.ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.hr-track{fill:none;stroke:rgba(242,196,106,.18);stroke-width:4}
+.hr-fill{fill:none;stroke:var(--gold);stroke-width:4;stroke-linecap:round;stroke-dasharray:276.46;stroke-dashoffset:calc(276.46 * (1 - var(--p,0)))}
+.hold.is-holding{filter:brightness(1.15)}
+.hold.ring span{position:relative;max-width:6rem}
+.hold-status{text-align:center;font:400 .74rem/1.5 var(--font-mono);letter-spacing:.06em;opacity:.9}
+
+/* final */
+.final{min-height:100vh;min-height:100svh;display:grid;align-items:center;padding:20vh 0 16vh;text-align:center}
+.final .col{margin-inline:auto!important;width:min(100% - 2.4rem,46rem)}
+.final .col::before{content:"";position:absolute;inset:-16% -14%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(255,250,240,.62),rgba(255,250,240,.32) 58%,rgba(255,250,240,0));transition:background .9s}
+html[data-ink="dawn"] .final .col::before{background:radial-gradient(closest-side,rgba(74,30,6,.36),rgba(74,30,6,.18) 60%,rgba(74,30,6,0))}
+html[data-ink="morning"] .act{color:#7c4108;text-shadow:0 0 30px rgba(255,246,222,.95),0 0 3px rgba(255,250,236,.95)}
+html[data-ink="morning"] .tally b{color:#a2600e}
+html[data-ink="morning"] .again{background:rgba(255,250,240,.45)}
+.final .col>*+*{margin-top:0}
+.final .eyebrow{color:var(--head-ink);text-shadow:var(--head-glow)}
+.final .bigp{margin-top:1.5rem!important;font-family:var(--font-display);font-weight:560;font-variation-settings:"opsz" 18;font-size:clamp(2.3rem,9vw,4.2rem);line-height:1.02;color:var(--head-ink);text-shadow:var(--head-glow)}
+.act{margin-top:1.4rem!important;font-family:var(--font-display);font-style:italic;font-weight:620;font-variation-settings:"opsz" 22;font-size:clamp(2.9rem,12.5vw,6.4rem);line-height:.96;letter-spacing:-.012em;color:#fff3d6;text-shadow:0 0 44px rgba(255,186,84,.75),0 2px 22px rgba(90,30,0,.7),0 0 2px rgba(90,30,0,.6);text-wrap:balance}
+.aurum{margin-top:1.8rem!important;font-size:1rem;color:var(--head-ink);text-shadow:var(--head-glow)}
+.aurum i{font-family:var(--font-display);font-variation-settings:"opsz" 14}
+.tally{margin-top:1.1rem!important;font:600 .74rem/1.5 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--head-ink);text-shadow:var(--head-glow)}
+.tally b{color:#ffe2a0}
+.again{margin-top:2.4rem!important;display:inline-flex;align-items:center;gap:.6rem;padding:.85rem 1.3rem;border:1px solid currentColor;border-radius:999px;background:rgba(255,245,228,.18);color:var(--head-ink);font:600 .72rem/1 var(--font-mono);letter-spacing:.13em;text-transform:uppercase;cursor:pointer;text-shadow:var(--head-glow)}
+.again:hover{background:rgba(255,245,228,.32)}
+
+/* cairns */
+.cairns{padding:6vh 0 16vh}
+.cairns .card{max-width:40rem}
+.cairns h2{margin:.5rem 0 0;font-family:var(--font-display);font-weight:560;font-variation-settings:"opsz" 14;font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.12}
+.cairn-list{margin:1.6rem 0 0;padding-left:1.35rem;display:grid;gap:.85rem;font-size:.9rem;line-height:1.55}
+.cairn-list li::marker{font-family:var(--font-mono);font-size:.72rem}
+.colophon{margin-top:2.2rem!important;font:400 .7rem/1.6 var(--font-mono);letter-spacing:.07em;opacity:.8}
+
+/* HUD: the hero's circle, an altimeter, the gold */
+.hud{position:fixed;top:max(.65rem,env(safe-area-inset-top));right:.65rem;z-index:20;display:flex;align-items:center;gap:.55rem;padding:.38rem .5rem .38rem .42rem;border-radius:.85rem;background:var(--hud-bg);color:var(--hud-ink);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);font-family:var(--font-mono);transition:background-color .8s,color .8s}
+.ring{width:2.15rem;height:2.15rem;flex:none;overflow:visible}
+.ring-track{fill:none;stroke:currentColor;stroke-opacity:.5;stroke-width:1.3;transition:stroke .8s,stroke-opacity .8s}
+.ring-thresh{stroke:currentColor;stroke-opacity:.4;stroke-width:.9;stroke-dasharray:1.5 1.6}
+.ring-under{fill:currentColor;fill-opacity:.07}
+.ring-dot{fill:var(--gold);stroke:rgba(0,0,0,.35);stroke-width:.6}
+.ring-head{fill:var(--gold);opacity:0;transition:opacity 1.2s}
+.hud.done .ring-track{stroke:var(--gold);stroke-opacity:.95}
+.hud.done .ring-head{opacity:1}
+.hud-read{display:grid;gap:.1rem;min-width:0}
+.hud-alt{font-size:.74rem;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hud-stage{font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;opacity:.86;white-space:nowrap}
+.hud-gold{padding-left:.5rem;border-left:1px solid currentColor;border-color:rgba(127,127,127,.35);font-size:.74rem;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hud-gold b{color:var(--gold-deep)}
+html[data-ink="cave"] .hud-gold b{color:var(--gold)}
+.hud-gold.flash{animation:flash 1.4s ease-out}
+@keyframes flash{0%{text-shadow:0 0 0 rgba(242,196,106,0)}20%{text-shadow:0 0 16px rgba(242,196,106,1);transform:scale(1.18)}100%{text-shadow:0 0 0 rgba(242,196,106,0);transform:none}}
+.hud-snd{padding:.38rem .55rem;border-radius:999px;border:1px solid currentColor;border-color:rgba(127,127,127,.45);background:transparent;color:inherit;font:600 .6rem/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.hud-snd[aria-pressed="true"]{border-color:var(--gold);color:inherit;box-shadow:0 0 10px rgba(242,196,106,.35)}
+@media (max-width:520px){
+  .hud{gap:.42rem;padding:.32rem .42rem .32rem .36rem}
+  .ring{width:1.85rem;height:1.85rem}
+  .hud-alt{font-size:.66rem}
+  .hud-stage{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#text">Skip to the text</a>
+<canvas id="world" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="hud" id="hud">
+  <svg class="ring" viewBox="0 0 40 40" aria-hidden="true">
+    <path class="ring-under" d="M6 20 A14 14 0 0 0 34 20 Z"/>
+    <circle class="ring-track" cx="20" cy="20" r="14"/>
+    <line class="ring-thresh" x1="1.5" y1="20" x2="38.5" y2="20"/>
+    <path class="ring-head" d="M16.2 4.1 Q20 1.6 23.6 4.4 Q21.6 6.6 18.4 7.2 Z"/>
+    <circle class="ring-dot" cx="20" cy="6" r="2.5"/>
+  </svg>
+  <div class="hud-read" aria-hidden="true">
+    <span class="hud-alt">▲ 1,904 m</span>
+    <span class="hud-stage">The Call to Adventure</span>
+  </div>
+  <span class="hud-gold" role="status" aria-label="Gold found: 0 of 4"><b aria-hidden="true">✦</b> <span class="gnum" aria-hidden="true">0</span><span aria-hidden="true">/4</span></span>
+  <button class="hud-snd" type="button" aria-pressed="false" aria-label="Sound">♪ <span class="snd-state">Off</span></button>
+</div>
+
+<main id="text">
+
+<header class="sec cover" data-s="0">
+  <div class="col">
+    <p class="eyebrow">Mythmaking · No. 2</p>
+    <h1 class="title"><span>Questions</span> <em>Wearing Teeth</em></h1>
+    <p class="deck">Everything too big to face, we bury. Come dig it up. It's gold.</p>
+    <p class="byline">Michael Wilhelm</p>
+    <p class="cue"><b>Scroll to climb</b><span>♪ Sound is optional, top right</span></p>
+  </div>
+</header>
+
+<section class="sec" data-s="1" id="climb" aria-labelledby="h-climb">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">The climb</p>
+      <p class="glyph" lang="grc">ὕψος</p>
+      <p class="gloss"><i>hypsos</i> · height, and the Greek word for the sublime</p>
+      <h2 id="h-climb">Altitude</h2>
+    </header>
+    <div class="card">
+      <p class="lead">Everything we get told about getting better is a mountain.</p>
+      <p>Climb the ladder. Reach new heights. Peak performance. Level up. We talk about progress like it has an altitude, and for a while it does. Pick a summit, put one boot in front of the other, and the air gets thin and the view gets big.</p>
+    </div>
+    <div class="card">
+      <p>Psychology drew it the same way. Maslow's hierarchy of needs gets taught as a pyramid: food and safety at the base, love and respect in the middle, self-actualization at the point.</p>
+      <p>The pyramid came later. A consulting psychologist drew it in 1960 for a business magazine, and it stuck, because it looks like a mountain and we already believed in mountains.</p>
+    </div>
+    <div class="card">
+      <p>Late in his life, Maslow kept climbing past the point. In <i>The Farther Reaches of Human Nature</i> he wrote about people he called transcenders, whose peak moments came often enough to change how they saw everything. The holy in a kitchen. Awe at a bus stop. The whole world lit from the inside.</p>
+      <p class="pull">The Greeks had a word for those moments. <i>Hypsos.</i> Height. It's also their word for the sublime.</p>
+      <p>Some two thousand years ago, a writer we call Longinus wrote a whole book about it, <i>Peri Hypsous</i>, <i>On the Sublime</i>: the moments that lift you out of yourself. A line that knocks the wind out of you. A ridge view that makes your chest go quiet.</p>
+    </div>
+    <div class="card">
+      <p>Howard Gardner, the Harvard psychologist who split intelligence into many kinds, floated one more in 1999. He called it existential intelligence: the capacity to place yourself against the biggest and smallest things there are, and to ask what a life means, what death is, where it all goes. He counted it as half an intelligence. Eight and a half, total.</p>
+      <p>Every kid has it at five. Where was I before I was born? What happens when you die? Why does the sky keep going? Then the grown-ups run out of answers, and most of us learn to quit asking.</p>
+    </div>
+    <div class="card">
+      <p class="pull">Curiosity is what carries you up the mountain. Stop moving on it, and the sublime stops coming around.</p>
+      <p>Some of those moments are subliminal: under the threshold, too quiet to catch unless you're looking. Some are sublime and knock you flat. Both words may grow from the same Latin root, <i lang="la">limen</i>, the threshold. Hold onto that word. You're about to cross one.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="2" id="plunge" aria-labelledby="h-plunge">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">The plunge</p>
+      <p class="glyph" lang="grc">ἴλιγγος</p>
+      <p class="gloss"><i>ilingos</i> · the whirl, the dizziness</p>
+      <h2 id="h-plunge">Which Way Is Up</h2>
+    </header>
+    <p class="big-line">Then the ground goes.</p>
+    <div class="card">
+      <p>Everybody gets one. A loss. A betrayal. A diagnosis. The night a question shows up at 3 a.m. and won't leave. You were climbing, and now you're falling, and the mountain you were so sure about is spinning past.</p>
+    </div>
+    <div class="card">
+      <p>That's vertigo. The word is Latin, from <i lang="la">vertere</i>, to turn. Same root as conversion. The spin is the turn. You just can't see yet what you're turning into.</p>
+      <p>Joseph Campbell lined up hero stories from all over the world and found this moment in nearly every one. He called it the belly of the whale. The hero gets swallowed. Everybody up top figures he's gone. Down inside, the real story starts.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="3" id="ceiling" aria-labelledby="h-ceiling">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">The threshold</p>
+      <p class="glyph" lang="grc">ὁρίζων</p>
+      <p class="gloss"><i>horizōn</i> · the bounding circle</p>
+      <h2 id="h-ceiling">The Ceiling</h2>
+    </header>
+    <div class="card">
+      <p class="lead">When you land, the sky is gone.</p>
+      <p>Look up. The horizon has closed over you like the roof of a cave, and the rock hangs down in points. <i>Horizon</i> is Greek, short for <i>horizōn kyklos</i>, the bounding circle. Most days it's a line way out there. Today it's a lid.</p>
+      <p>The birds you watched on the way up are bats now. Something in the corner growls.</p>
+    </div>
+    <div class="card">
+      <p class="pull">Every culture builds an underworld. It's where we put whatever's too big to face.</p>
+      <p>The Greeks called its king Hades, and the old reading of the name is the Unseen. That's the whole job of the place: holding what we won't look at. The grief we never finished. The thing we did. The thing somebody did to us. The question we couldn't answer, so we buried it and set a lid on it.</p>
+      <p class="pull">Down here, every growl is a question nobody asked out loud.</p>
+    </div>
+    <div class="card">
+      <p class="lead">You brought one thing down with you. A lamp.</p>
+      <p><i>Curious</i> comes from the Latin <i lang="la">cura</i>, care. Same root as <i>cure</i>. Curiosity is care with its eyes open.</p>
+      <p>The oldest story about this lamp belongs to a girl named Psyche, which is Greek for soul. Her sisters swore the husband who only came to her in the dark was a monster, a serpent fattening her up to eat. One night she lit a lamp and held it over him. The monster was Love. Eros himself, asleep. Looking cost her plenty. It also put her on the road that ends with a mortal girl made immortal.</p>
+    </div>
+    <div class="card">
+      <p>The lamp works three ways. Better words make better ideas. Better questions get better answers. And questioning better, slower, with the light held steady, is what pulls the mask off. <i>Question</i> has a quest inside it. Both come from the Latin <i lang="la">quaerere</i>, to seek.</p>
+      <p class="hint lamp-hint">Move your pointer to carry the lamp</p>
+      <figure class="lintel">
+        <p class="lintel-text" lang="la">VOCATVS ATQVE NON VOCATVS DEVS ADERIT</p>
+        <figcaption>Cut over the doorway ahead: <i>called or not called, the god will be there.</i> Carl Jung had the same words carved over his front door. A lintel is a <i lang="la">limen</i>. Go on through.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="4" id="room-1" aria-labelledby="h-room1">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">Room I · <span lang="la">Nigredo</span>, the blackening</p>
+      <p class="glyph" lang="grc">πρόσωπον</p>
+      <p class="gloss"><i>prosōpon</i> · face, and the actor's mask</p>
+      <h2 id="h-room1">A Thousand Faces</h2>
+    </header>
+    <p class="growl" data-growl>They'll find out what you really are.</p>
+    <div class="card">
+      <p>The walls are covered in masks. Hundreds. The face you wear at work. The one for your father. The one for the person you wanted. The one you put on when somebody asks how you're doing. Every one of them has eyes, and every set of eyes is on you.</p>
+      <p>Jung called it the persona, Latin for an actor's mask. Everybody needs one. Trouble starts when you forget you're wearing it and guard it like it's your face.</p>
+    </div>
+    <div class="card ask-card" data-room="0">
+      <p class="eyebrow">Ask it something</p>
+      <div class="asks" role="group" aria-label="Two ways to ask">
+        <button class="ask chew" type="button" data-room="0" data-kind="chew">What if they find out?</button>
+        <button class="ask seek" type="button" data-room="0" data-kind="seek">What is the mask protecting?</button>
+      </div>
+      <div class="answer a-chew" tabindex="-1" hidden>
+        <p class="echo">What if they find out? <span>What if they find out?</span> <span>What if they—</span> <span>what if—</span></p>
+        <p><i lang="la">Ruminari</i>, to chew the cud: the same mouthful, over and over. Watch the eyes multiply. Ask a better one.</p>
+      </div>
+      <div class="answer a-seek" tabindex="-1" hidden>
+        <p>The masks lift off the walls and drift up like ash. What glared out of them was light the whole time, and it's gold.</p>
+        <p>Here's what you were guarding: the kid who asked where he was before he was born. You put a guard on that door because what's behind it is alive. Still curious. Still five. He's been waiting for somebody to come down with a better question.</p>
+        <p class="stamp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15 L8 7 L16 6 L20 13 L14 19 L7 19 Z" fill="#f6d27a" stroke="#6b4310" stroke-width="1.2"/><path d="M8 7 L11 12 L16 6 M11 12 L14 19 M11 12 L4 15" fill="none" stroke="#8a5a18" stroke-width=".9"/></svg>Truth <small>· a B-value</small></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="5" id="room-2" aria-labelledby="h-room2">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">Room II · <span lang="la">Albedo</span>, the whitening</p>
+      <p class="glyph" lang="grc">κῆτος</p>
+      <p class="gloss"><i>kētos</i> · the great fish that swallows Jonah in the Septuagint</p>
+      <h2 id="h-room2">The Man in the Whale</h2>
+    </header>
+    <p class="growl" data-growl>Who do you think you are?</p>
+    <div class="card">
+      <p>Ribs arch over this room like the inside of something that swallowed you. Remember the whale? The man inside it gets a room of his own. On the far wall, something huge is breathing.</p>
+    </div>
+    <div class="card">
+      <p>Abraham Maslow used to ask his classes which of them would write the great novel, or lead the country, or become a saint. They'd giggle and blush and squirm. Then he'd ask: “If not you, then who else?”</p>
+      <p>At a friend's suggestion, he named that squirm after Jonah, the prophet who ran from his calling and got swallowed for it. The Jonah complex: the fear of your own greatness. We're scared of our worst. We're every bit as scared of our best, because once you see it, it's yours to carry.</p>
+    </div>
+    <div class="card ask-card" data-room="1">
+      <p class="eyebrow">Ask it something</p>
+      <div class="asks" role="group" aria-label="Two ways to ask">
+        <button class="ask chew" type="button" data-room="1" data-kind="chew">Who do I think I am?</button>
+        <button class="ask seek" type="button" data-room="1" data-kind="seek">What if I'm as big as this?</button>
+      </div>
+      <div class="answer a-chew" tabindex="-1" hidden>
+        <p class="echo">Who do you think you are? <span>Who do you think you—</span> <span>who do you—</span> <span>who—</span></p>
+        <p>Asked like that, it's an accusation wearing a question's clothes, and all it can do is growl. The shape gets bigger. Ask a better one.</p>
+      </div>
+      <div class="answer a-seek" tabindex="-1" hidden>
+        <p>The eyes on the wall close. Look at the shape again. It moves when you move. It's your shadow, thrown huge across the rock by the lamp in your own hand.</p>
+        <p>It's exactly the size of what you could become. The growl was your own voice, calling from the size you haven't grown into yet.</p>
+        <p class="stamp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 14 L9 6 L17 7 L20 14 L13 19 Z" fill="#f6d27a" stroke="#6b4310" stroke-width="1.2"/><path d="M9 6 L12 13 L17 7 M12 13 L13 19 M12 13 L5 14 M12 13 L20 14" fill="none" stroke="#8a5a18" stroke-width=".9"/></svg>Uniqueness <small>· a B-value</small></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="6" id="room-3" aria-labelledby="h-room3">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">Room III · <span lang="la">Citrinitas</span>, the yellowing</p>
+      <p class="glyph" lang="grc">χάος</p>
+      <p class="gloss"><i>chaos</i> · the yawning gap, first of all things in Hesiod</p>
+      <h2 id="h-room3">The Gap</h2>
+    </header>
+    <p class="growl quiet" data-growl>Don't look. It's too big.</p>
+    <div class="card">
+      <p>This room holds one thing: a size. It's where we keep the questions with no bottom. Why did they die. What's the point. Where does it all go. What happens to me.</p>
+      <p>It's the room existential intelligence was built for. Gardner's definition reads like a map of it: the biggest and smallest things there are, the meaning of a life, the meaning of a death. Most of us nail this door shut and decide we're just not deep like that.</p>
+    </div>
+    <div class="card ask-card" data-room="2">
+      <p class="eyebrow">Ask it something</p>
+      <div class="asks" role="group" aria-label="Two ways to ask">
+        <button class="ask chew" type="button" data-room="2" data-kind="chew">Why did this happen to me?</button>
+        <button class="ask seek" type="button" data-room="2" data-kind="seek">What is this asking me?</button>
+      </div>
+      <div class="answer a-chew" tabindex="-1" hidden>
+        <p class="echo">Why me? <span>Why me?</span> <span>Why—</span></p>
+        <p>That one's a verdict wearing a question mark. The dark gets heavier and the room gets smaller. Ask a better one.</p>
+      </div>
+      <div class="answer a-seek" tabindex="-1" hidden>
+        <p>The dark fills with stars. Thousands. It was always this big, and so is the part of you that can feel it.</p>
+        <p>Hesiod says the first thing that ever was is Chaos, the yawning gap, and everything else came out of it. Your lamp catches the dust hanging in the air, too. The infinite and the infinitesimal, Gardner's two ends, both in one room, both lit.</p>
+        <p class="stamp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13 L8 6 L15 5 L20 11 L16 18 L8 19 Z" fill="#f6d27a" stroke="#6b4310" stroke-width="1.2"/><path d="M8 6 L12 12 L15 5 M12 12 L20 11 M12 12 L8 19 M12 12 L4 13" fill="none" stroke="#8a5a18" stroke-width=".9"/></svg>Meaningfulness <small>· a B-value</small></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="7" id="others" aria-labelledby="h-others">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">On the road</p>
+      <p class="glyph" lang="grc">ψυχή</p>
+      <p class="gloss"><i>psychē</i> · breath, soul, butterfly</p>
+      <h2 id="h-others">The Others Down Here</h2>
+    </header>
+    <div class="card">
+      <p>You're going to pass people. Everybody comes down here sometime, and some of them have been sitting in the same room for years.</p>
+      <p>Psyche came down here too. The goddess she'd crossed sent her to fetch a box from the queen of the dead, and a tower told her how to come back alive. Carry two honey cakes and two coins. You'll meet a lame man with a lame donkey who wants help with his load. A dead man in the river, reaching up for your hand. Old women at a loom, asking you to take a turn. Pass them all. Drop a cake helping them and you'll never get past the dog.</p>
+    </div>
+    <div class="card">
+      <p>The myth is harder than I'd be. Here's the version I'd hand you.</p>
+      <p>Offer comfort in passing. A word, a light, a hand on the shoulder on your way through. Then keep walking. Their gold is in their own dark, and nobody can dig it for them. Set up camp in somebody else's room and you'll end up eating the pomegranate. Persephone ate its seeds down here and had to come back every year.</p>
+    </div>
+    <div class="card others-card">
+      <p class="eyebrow">Leave a light</p>
+      <div class="wanderers">
+        <div class="wanderer">
+          <p class="w-name">The one carrying a load</p>
+          <button class="light-btn" type="button" data-w="0">Leave a light</button>
+          <p class="w-said" hidden>“Set some of that down. It's heavier than it has to be.”</p>
+        </div>
+        <div class="wanderer">
+          <p class="w-name">The one in the river</p>
+          <button class="light-btn" type="button" data-w="1">Leave a light</button>
+          <p class="w-said" hidden>“I see you. Keep going. It's in there.”</p>
+        </div>
+        <div class="wanderer">
+          <p class="w-name">The one at the loom</p>
+          <button class="light-btn" type="button" data-w="2">Leave a light</button>
+          <p class="w-said" hidden>“There's a new thread in that pattern. Pull it.”</p>
+        </div>
+      </div>
+      <p>Their way out runs through their own rooms. Yours runs through yours.</p>
+      <p class="pull">Stick to the plan.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="8" id="dog" aria-labelledby="h-dog">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">The guardian</p>
+      <p class="glyph" lang="grc">κύων</p>
+      <p class="gloss"><i>kyōn</i> · dog; <i>kynikos</i>, dog-like, gives us <i>cynic</i></p>
+      <h2 id="h-dog">The Dog at the Door</h2>
+    </header>
+    <div class="card">
+      <p class="lead">Between you and the deepest room sits a dog with three heads.</p>
+      <p>Hesiod gave him fifty. Later tellers settled on three. Hesiod also left us his worst habit: he wags at everybody coming in, and eats anybody trying to leave.</p>
+      <ul class="heads-list">
+        <li><b>Depression.</b> Latin <i lang="la">deprimere</i>, to press down. It sits on your chest.</li>
+        <li><b>Rumination.</b> Latin <i lang="la">ruminari</i>, to chew the cud. The same mouthful, all night long.</li>
+        <li><b>Cynicism.</b> Greek <i>kynikos</i>, dog-like. It sneers at everything you love so nothing can let it down.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p>All three eat the same thing: your curiosity. Watch the lamp dim when they breathe on it.</p>
+      <p class="pull">Easy to walk in. Hard to walk out. That's the dog.</p>
+      <p>The myths left three ways past him.</p>
+    </div>
+    <div class="card dog-card">
+      <p class="eyebrow">Get past the dog</p>
+      <div class="heads">
+        <div class="head" data-h="1">
+          <p class="h-name">Rumination</p>
+          <button class="dog-btn" type="button" data-h="1">Give it honey</button>
+          <p class="h-said" hidden>The Sibyl got Aeneas past with a honey cake. Rumination wants something to chew, so hand it something sweet: sleep, a real meal, a walk, the song you love. Small care. <i lang="la">Cura</i> again. The chewing head lies down.</p>
+        </div>
+        <div class="head" data-h="2">
+          <p class="h-name">Cynicism</p>
+          <button class="dog-btn" type="button" data-h="2">Sing to it ♪</button>
+          <p class="h-said" hidden>Orpheus played, and all three mouths hung open and forgot to bite. Cynicism can't hold up against something beautiful and true. Play it one. The sneering head lies down.</p>
+        </div>
+        <div class="head" data-h="0">
+          <p class="h-name">Depression</p>
+          <button class="hold bar dog-hold" type="button" data-h="0" aria-describedby="carry-status">Hold to carry it into the light</button>
+          <p class="hold-status" id="carry-status" style="text-align:left">Press and hold. Heavy things take a minute.</p>
+          <p class="h-said" hidden>Heracles hauled the dog up into daylight with his bare hands, and Homer says he didn't go alone: Hermes and Athena guided him. Bring it up where there's light, and bring someone. <span class="aside">If it's been on your chest a long time, your Hermes and Athena are a doctor, a counselor, and the friend who picks up at 2 a.m. Even Heracles took the help.</span></p>
+        </div>
+      </div>
+      <p class="dog-done" tabindex="-1" hidden>The dog lies down. He always could. Behind him, the door to the deepest room stands open.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="9" id="will" aria-labelledby="h-will">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">The deepest room · <span lang="la">Rubedo</span>, the reddening</p>
+      <p class="glyph" lang="grc">ζώνη</p>
+      <p class="gloss"><i>zōnē</i> · belt, girdle</p>
+      <h2 id="h-will">The Will</h2>
+    </header>
+    <div class="card">
+      <p class="lead">At the very bottom, something is buried. It's black, and it's warm.</p>
+      <p>The alchemists called it the black sun, <i lang="la">sol niger</i>: the darkest stage of the work, the one that comes right before the gold.</p>
+    </div>
+    <div class="card">
+      <p>I've been turning this one over for a long time. There's a strip of your brain called the anterior midcingulate cortex. <i>Cingulate</i> is Latin, from <i lang="la">cingulum</i>, a belt, because it wraps the middle of the brain like one. When you gird yourself for something hard, that's the belt you're cinching.</p>
+      <p>In 2013, neurologists at Stanford sent a small current into that spot in two patients who already had electrodes in place to map their seizures. Both felt the same thing. One said it was like driving toward a storm on the far side of a hill, on a tire going flat. Worried, and set on getting through. In his words: push harder, push harder, push harder. They put the feeling in the paper's title: the will to persevere.</p>
+    </div>
+    <div class="card">
+      <p>Superagers, people in their sixties, seventies and eighties with the memory of people decades younger, tend to keep this region thick. A team at Mass General has made the case that it's a hub of tenacity, and that it may be trainable; regular exercise looks like it grows it. Andrew Huberman went further on his podcast with David Goggins: maybe this is the seat of the will to live. The ice-bath crowd took it from there.</p>
+      <p>The science is young, and the slogans run ahead of it. I'll keep the image anyway. The will to live has an address in the body, and it gets stronger every time you walk into the dark on purpose.</p>
+      <p class="pull">Every room you just walked into was a rep.</p>
+    </div>
+    <div class="card dig-card">
+      <p class="eyebrow">Dig</p>
+      <button class="hold ring dig" type="button" aria-describedby="dig-status">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="hr-track" cx="50" cy="50" r="44"/><circle class="hr-fill" cx="50" cy="50" r="44"/></svg>
+        <span>Hold to dig</span>
+      </button>
+      <p class="hold-status" id="dig-status">Press and hold. That's the belt.</p>
+      <div class="answer a-dig" tabindex="-1" hidden>
+        <p>The black sun turns gold in your hands.</p>
+        <p class="stamp"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" fill="#f6d27a" stroke="#6b4310" stroke-width="1.2"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="#8a5a18" stroke-width="1.2"/></svg>Aliveness <small>· a B-value</small></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-s="10" id="sunrise" aria-labelledby="h-sunrise">
+  <div class="col">
+    <header class="sec-head">
+      <p class="eyebrow">The return</p>
+      <p class="glyph" lang="grc">ἠώς</p>
+      <p class="gloss"><i>ēōs</i> · dawn</p>
+      <h2 id="h-sunrise">The Sun Spends the Night Down Here</h2>
+    </header>
+    <div class="card">
+      <p class="lead">Lift it.</p>
+      <p>It's heavier than it looks, and warm. The ceiling peels back. The bats turn back into birds. The gold in your hands climbs over the ridge and becomes the morning.</p>
+    </div>
+    <div class="card">
+      <p>The Egyptians said the sun sails through the underworld every night. Their books of the night count twelve hours and twelve gates, with a serpent going after the boat along the way. Every morning it comes back up as a scarab, rolling the new day over the hill.</p>
+      <p class="pull">Every sunrise you've ever seen was something coming back from the underworld.</p>
+    </div>
+    <div class="card">
+      <p>The mountain and the cave were one mountain the whole time. Longinus put the sublime at the top. Edmund Burke, seventeen centuries later, found it in the dark: obscurity, depth, terror held at a safe distance. They were both right. Height and depth are one line, and you're the one who travels it.</p>
+      <p>Campbell called the one who makes it back the master of the two worlds. The last stage on his map is the freedom to live.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec final" data-s="11" id="summit" aria-label="The summit">
+  <div class="col">
+    <p class="eyebrow">The summit · 2,918 m · sunrise</p>
+    <p class="bigp">Stick to the plan.</p>
+    <p class="act">Find the gold in your shadow.</p>
+    <p class="aurum"><i lang="la">Aurum nostrum non est aurum vulgi.</i> The alchemists' line: our gold is not the common gold.</p>
+    <p class="tally">You brought up <b>✦ 0</b> of 4. The rest is still down there.</p>
+    <button class="again" type="button" id="again">Climb again <span aria-hidden="true">↑</span></button>
+  </div>
+</section>
+
+<footer class="sec cairns" data-s="12">
+  <div class="col">
+    <div class="card">
+      <p class="eyebrow">Cairns</p>
+      <h2>Where the trail markers came from</h2>
+      <ol class="cairn-list">
+        <li>Longinus, <i>Peri Hypsous</i> (<i>On the Sublime</i>), probably first century CE.</li>
+        <li>The pyramid: Todd Bridgman, Stephen Cummings and John Ballard, “Who Built Maslow's Pyramid?”, <i>Academy of Management Learning &amp; Education</i> 18(1), 2019, tracing it to Charles McDermid's 1960 article in <i>Business Horizons</i>. <a href="https://doi.org/10.5465/amle.2017.0351">Paper</a></li>
+        <li>Abraham Maslow, <i>The Farther Reaches of Human Nature</i>, 1971: the transcenders (“Theory Z”), the Jonah complex and the classroom question, and the B-values stamped on the gold (truth, uniqueness, meaningfulness, aliveness).</li>
+        <li>Howard Gardner, <i>Intelligence Reframed</i>, 1999: existential intelligence, the half that makes eight and a half.</li>
+        <li>Word roots: <i>limen</i> (subliminal; the root of <i>sublime</i> is disputed), <i>vertere</i>, <i>horizōn kyklos</i>, <i>persona</i>, <i>cura</i>, <i>quaerere</i>, <i>ruminari</i>, <i>deprimere</i>, <i>kynikos</i>, <i>cingulum</i>. <a href="https://www.etymonline.com/">Online Etymology Dictionary</a></li>
+        <li>Hades as “the Unseen”: an old reading of the name, still argued over; Plato plays with it in the <i>Gorgias</i> and the <i>Phaedo</i>.</li>
+        <li>Joseph Campbell, <i>The Hero with a Thousand Faces</i>, 1949: the threshold, the belly of the whale, the road of trials, the ultimate boon, the master of the two worlds, the freedom to live. The ring in the corner is his circle, cut by the threshold line, and it closes as an ouroboros.</li>
+        <li>C. G. Jung on the persona, and on the shadow's good qualities (“normal instincts, appropriate reactions, realistic insights, creative impulses”), <i>Aion</i>, Collected Works 9ii, §423. <i>Vocatus atque non vocatus deus aderit</i> is carved over the door of his house at Küsnacht; it comes from Erasmus's <i>Adagia</i>, after an answer of the Delphic oracle.</li>
+        <li>Alchemy's stages, <i>nigredo</i>, <i>albedo</i>, <i>citrinitas</i> and <i>rubedo</i>, and the <i>sol niger</i>, as Jung read them in <i>Psychology and Alchemy</i> and <i>Mysterium Coniunctionis</i>. <i>Aurum nostrum non est aurum vulgi</i> is from the <i>Rosarium philosophorum</i> (1550), quoted by Jung.</li>
+        <li>Jonah's <i>kētos</i>: Septuagint, Jonah 2:1.</li>
+        <li>Hesiod, <i>Theogony</i> 116 (Chaos first), 311–312 (the fifty-headed hound), 769–773 (the dog that fawns on those who come in).</li>
+        <li>Apuleius, <i>Metamorphoses</i> 5.17–23 (the sisters and the lamp), 6.16–21 (the descent, the cakes and coins, the three traps), 6.23 (Psyche made immortal).</li>
+        <li>Virgil, <i>Aeneid</i> 6.417–425 (the Sibyl's honey cake) and <i>Georgics</i> 4.483 (Cerberus's three mouths hang open for Orpheus); Homer, <i>Odyssey</i> 11.623–626 (Hermes and Athena guide Heracles); Apollodorus, <i>Library</i> 2.5.12 (bare hands); the <i>Homeric Hymn to Demeter</i> (the pomegranate).</li>
+        <li>Josef Parvizi and colleagues, “The Will to Persevere Induced by Electrical Stimulation of the Human Cingulate Gyrus,” <i>Neuron</i> 80, 2013 (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3877748">paper</a>); the patient's words as reported by Ed Yong (<a href="https://www.nationalgeographic.com/science/article/electric-brain-stimulation-triggers-eye-of-the-tiger-effect">National Geographic</a>).</li>
+        <li>Superagers: Felicia Sun and colleagues, “Youthful Brains in Older Adults,” <i>Journal of Neuroscience</i> 36(37), 2016 (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5039247">paper</a>).</li>
+        <li>Tenacity: Alexandra Touroutoglou, Lisa Feldman Barrett and colleagues, review in <i>Cortex</i>, 2020 (<a href="https://mgriblog.org/2020/09/30/is-tenacity-a-matter-of-willpower-or-does-brain-structure-play-a-role-too/">Mass General summary</a>).</li>
+        <li>Andrew Huberman and David Goggins, <i>Huberman Lab</i>, “How to Build Immense Inner Strength.”</li>
+        <li>The sun's night journey: the Egyptian <i>Amduat</i> and <i>Book of Gates</i>; Khepri, the scarab of the morning sun.</li>
+        <li>Edmund Burke, <i>A Philosophical Enquiry into the Origin of Our Ideas of the Sublime and Beautiful</i>, 1757.</li>
+        <li>The altimeter tops out at 2,918 m, the height of Mytikas, the highest peak of Olympus.</li>
+      </ol>
+      <p class="colophon">Mythmaking · No. 2 · Words by Michael Wilhelm. Previous in the series: <i>Mimics &amp; Mythmakers</i>.</p>
+    </div>
+  </div>
+</footer>
+
+</main>
+<div class="sr-only" aria-live="polite" id="live"></div>
+
+<script>
+(() => {
+'use strict';
+const root = document.documentElement;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse = matchMedia('(pointer: coarse)').matches;
+const $ = (q, el = document) => el.querySelector(q);
+const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
+const live = $('#live');
+let sayT = 0;
+function say(t) { clearTimeout(sayT); live.textContent = ''; sayT = setTimeout(() => { live.textContent = t; }, 90); }
+
+/* ---------- math ---------- */
+const TAU = Math.PI * 2;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+const bell = (x, a, b, c, d) => ss(a, b, x) * (1 - ss(c, d, x));
+const mixc = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t, p[2] + (q[2] - p[2]) * t];
+const rgba = (c, a = 1) => 'rgba(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ',' + clamp(a).toFixed(3) + ')';
+let sd = 1;
+const srand = () => { sd = (sd * 16807) % 2147483647; return (sd - 1) / 2147483646; };
+const R = (a, b) => a + Math.random() * (b - a);
+function makeNoise(seed) {
+  sd = seed; const t = new Float32Array(1024); for (let i = 0; i < 1024; i++) t[i] = srand();
+  return x => { const i = Math.floor(x), f = x - i, a = t[i & 1023], b = t[(i + 1) & 1023], s = f * f * (3 - 2 * f); return a + (b - a) * s; };
+}
+const fbm = (n, x, o = 4) => { let v = 0, a = .5, f = 1; for (let k = 0; k < o; k++) { v += a * n(x * f + k * 17.3); a *= .5; f *= 2.07; } return v; };
+const N1 = makeNoise(11), N2 = makeNoise(23), N3 = makeNoise(37), N4 = makeNoise(41), N5 = makeNoise(53), N6 = makeNoise(67);
+const tri = (u, c, w, p = 1.15) => { const t = 1 - Math.abs(u - c) / w; return t > 0 ? Math.pow(t, p) : 0; };
+/* the mountain, with one summit made for climbing and a saddle beside it */
+const near = u => .17 + .06 * fbm(N1, u * 5) + .56 * tri(u, .5, .2, 1.08) + .33 * tri(u, .86, .15) + .18 * tri(u, .14, .22) + .035 * fbm(N1, u * 34, 3);
+const far1 = u => .30 + .20 * fbm(N2, u * 3.2) + .03 * fbm(N2, u * 22, 3);
+const far2 = u => .36 + .20 * fbm(N3, u * 2.1) + .02 * fbm(N3, u * 16, 2);
+/* from the summit at dawn, the range below is a sea of sharper peaks */
+const farD1 = u => .26 + .3 * Math.pow(fbm(N2, u * 7.5), 1.6) * 1.6 + .04 * fbm(N2, u * 34, 3);
+const farD2 = u => .34 + .32 * Math.pow(fbm(N3, u * 5.2), 1.5) * 1.5 + .03 * fbm(N3, u * 26, 2);
+/* the cave: stalactites and stalagmites, which is to say teeth */
+sd = 91; const CSP = [], FSP = [];
+for (let i = 0; i < 96; i++) CSP.push({ c: -.6 + i * .058 + srand() * .04, w: .008 + srand() * .024, h: .03 + srand() * .17 });
+for (let i = 0; i < 84; i++) FSP.push({ c: -.6 + i * .068 + srand() * .05, w: .01 + srand() * .026, h: .02 + srand() * .095 });
+function spikes(arr, u) { let v = 0; for (const p of arr) { const d = Math.abs(u - p.c); if (d < p.w) { const k = p.h * (1 - d / p.w); if (k > v) v = k; } } return v; }
+const ceilF = u => .07 + .05 * fbm(N4, u * 6) + spikes(CSP, u);
+const floorBase = u => .12 + .045 * fbm(N5, u * 7);
+const floorF = u => floorBase(u) + spikes(FSP, u);
+const LEV = [.17, .37, .57, .75, .89];
+const LEVN = ['PHYSIOLOGICAL', 'SAFETY', 'BELONGING', 'ESTEEM', 'SELF-ACTUALIZATION'];
+const MONO = '"Martian Mono", ui-monospace, Menlo, monospace';
+const SERIF = '"Bodoni Moda", "Bodoni 72", Didot, Georgia, serif';
+
+/* ---------- state ---------- */
+const S = {
+  s: 0, tgt: 0, walk: 0, shake: 0, flare: 0, lastY: window.scrollY,
+  lamp: { x: -1, y: -1, t: -99 }, hand: { x: 0, y: 0 },
+  rooms: [0, 1, 2].map(() => ({ chew: 0, seek: 0, tc: -99, ts: -99 })),
+  lights: [-99, -99, -99], dog: [-99, -99, -99], carry: 0, dogDown: -99,
+  dig: 0, dug: -99, gold: 0, honeyT: -99, singT: -99
+};
+let T = 0;
+const ap = (t0, dur) => (t0 < 0 ? 0 : (reduce ? 1 : ss(t0, t0 + dur, T)));
+
+/* ---------- canvas ---------- */
+const cvs = $('#world'), ctx = cvs.getContext('2d');
+const fog = document.createElement('canvas'), fx = fog.getContext('2d');
+let W = 1, H = 1, M = 1, DPR = 1, ZOOM = 1, wide = false, stageX = 0;
+let masks = [], stars = [], cons = [], eyes = [], dust = [], motes = [], notes = [], rocks = [];
+const flock = [];
+for (let i = 0; i < 14; i++) flock.push({ a: R(0, TAU), r: R(.04, .11), sp: R(.15, .32) * (Math.random() < .5 ? -1 : 1), ox: R(-.06, .06), oy: R(-.04, .04), x: R(.3, .9), y: R(.1, .3), ph: R(0, TAU), nx: R(0, 100) });
+for (let i = 0; i < 70; i++) dust.push({ x: Math.random(), y: Math.random(), v: R(.004, .018), ph: R(0, TAU), r: R(.5, 1.6) });
+sd = 1212; const CL = [];
+for (let i = 0; i < 6; i++) CL.push({ x: srand(), y: lerp(.07, .3, srand()), w: lerp(.12, .24, srand()), sp: lerp(.004, .012, srand()), puffs: Array.from({ length: 5 }, () => ({ dx: lerp(-.5, .5, srand()), dy: lerp(-.18, .12, srand()), r: lerp(.22, .42, srand()) })) });
+
+function genMasks() {
+  sd = 303; masks = []; const n = wide ? 32 : 20, extra = wide ? 18 : 12; let tries = 0;
+  while (masks.length < n + extra && tries < 5000) {
+    tries++;
+    const x = wide ? lerp(.44, .97, srand()) : lerp(.05, .95, srand());
+    const y = lerp(.22, .74, srand());
+    const sz = lerp(.045, .085, srand()) * M * (wide ? 1 : 1.15);
+    if (masks.some(m => Math.hypot(m.x * W - x * W, m.y * H - y * H) < (m.sz + sz) * .62)) continue;
+    masks.push({ x, y, sz, rot: lerp(-.28, .28, srand()), extra: masks.length >= n, ph: srand() * TAU });
+  }
+}
+function genStars() {
+  sd = 909; stars = [];
+  for (let i = 0; i < 260; i++) { const a = srand() * TAU, r = Math.sqrt(srand()) * 1.3; stars.push({ x: Math.cos(a) * r, y: Math.sin(a) * r * .9, sz: lerp(.35, 1.7, srand()) * (srand() < .07 ? 2.1 : 1), ph: srand() * TAU, sp: lerp(.6, 2.2, srand()) }); }
+  cons = [];
+  for (const s0 of [7, 61, 140]) {
+    const p0 = stars[s0];
+    cons.push(stars.map((p, i) => ({ i, d: Math.hypot(p.x - p0.x, p.y - p0.y) })).sort((a, b) => a.d - b.d).slice(0, 6).map(o => o.i));
+  }
+}
+function genEyes() {
+  sd = 707; eyes = []; const n = 12;
+  for (let i = 0; i < n; i++) {
+    const left = i % 2 === 0;
+    const x = wide ? (left ? lerp(.03, .2, srand()) : lerp(.82, .98, srand())) : (left ? lerp(.03, .17, srand()) : lerp(.83, .97, srand()));
+    eyes.push({ x, y: lerp(.3, .84, srand()), sz: lerp(.7, 1.4, srand()), ph: srand() * 20, warm: srand() < .35, shy: 0, k: i / n });
+  }
+}
+function layout() {
+  wide = W >= 900; ZOOM = Math.max(1, (H / W) * .95); stageX = wide ? .64 * W : .5 * W;
+  /* on a tall phone the mountain sits lower so the title gets the sky */
+  const tall = !wide && H / W > 1.3;
+  COMP.day.n = tall ? [1.05, .74] : [1.03, .857]; COMP.day.f1 = tall ? [1.0, .68] : [.98, .78]; COMP.day.f2 = tall ? [.96, .66] : [.93, .75];
+  genMasks(); genStars(); genEyes();
+}
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 1.75);
+  W = window.innerWidth; H = window.innerHeight; M = Math.min(W, H);
+  cvs.width = fog.width = Math.round(W * DPR); cvs.height = fog.height = Math.round(H * DPR);
+  if (S.hand.x === 0) { S.hand.x = W * .5; S.hand.y = H * .8; }
+  layout(); measure();
+}
+
+/* ---------- the story clock ---------- */
+const secs = $$('[data-s]'); let geo = [];
+function measure() { const y = window.scrollY; geo = secs.map(el => { const r = el.getBoundingClientRect(); return { top: r.top + y, h: Math.max(1, r.height), n: +el.dataset.s }; }); }
+function storyAt(y) { let i = 0; for (let k = 0; k < geo.length; k++) if (y >= geo[k].top) i = k; const g = geo[i]; return g ? g.n + clamp((y - g.top) / g.h) : 0; }
+
+/* ---------- drawing helpers ---------- */
+function glow(x, y, r, col, a) {
+  if (a <= .002 || r <= 0) return;
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, rgba(col, a)); g.addColorStop(.32, rgba(col, a * .36)); g.addColorStop(1, rgba(col, 0));
+  ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+}
+function rr(x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const COMP = { day: { cam: .5, n: [1.03, .857], f1: [.98, .78], f2: [.93, .75] }, dawn: { cam: .56, n: [1.42, .8], f1: [1.08, .4], f2: [1.0, .3] } };
+function rY(fn, cam, b, sc, x) { const u = cam + (x - W / 2) / (W * ZOOM); return b * H - fn(u) * sc * H; }
+function ridgePath(fn, cam, b, sc, X0, X1, Y1, step) { ctx.beginPath(); ctx.moveTo(X0, Y1); for (let x = X0; x <= X1 + step; x += step) ctx.lineTo(x, rY(fn, cam, b, sc, x)); ctx.lineTo(X1 + step, Y1); ctx.closePath(); }
+function caveCam(s) { return .5 + Math.max(0, s - 3) * .3; }
+function floorAt(x, s, cF) { const u = caveCam(s) + (x - W / 2) / (W * ZOOM); return H - floorBase(u) * H + (1 - cF) * H * .5; }
+
+/* a person, drawn in a few strokes; returns hand and head positions */
+function figure(x, y, h, o) {
+  const k = h, sit = o.sit || 0, kn = o.kneel || 0, arms = o.arms || 0, lean = o.lean || 0;
+  const walkAmt = (1 - Math.max(sit, kn, arms)) * (o.walkAmt === undefined ? 1 : o.walkAmt);
+  const sw = Math.sin(o.walk || 0) * .5 * walkAmt;
+  const hipY = -k * (.48 - .2 * Math.max(sit, kn * .55));
+  const neckY = hipY - k * .31, hr = k * .088;
+  const headX = k * .03 + lean * k * .07, headY = neckY - hr * 1.2 + (o.headDown || 0) * k * .05;
+  const lw = Math.max(1.3, k * .07);
+  let out = { hx: 0, hy: 0 };
+  ctx.save(); ctx.translate(x, y);
+  if (o.rot) { ctx.translate(0, -k * .5); ctx.rotate(o.rot); ctx.translate(0, k * .5); }
+  const pass = (col, w) => {
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.lineWidth = w * 1.12; ctx.beginPath();
+    if (sit > .5) { ctx.moveTo(0, hipY); ctx.lineTo(k * .22, hipY + k * .02); ctx.lineTo(k * .25, 0); ctx.moveTo(0, hipY); ctx.lineTo(k * .18, hipY + k * .06); ctx.lineTo(k * .2, 0); }
+    else if (kn > .01) { ctx.moveTo(0, hipY); ctx.lineTo(k * .2 * kn, hipY + k * .18); ctx.lineTo(k * .22 * kn + k * .01, 0); ctx.moveTo(0, hipY); ctx.lineTo(-k * .06, -k * .03); ctx.lineTo(-k * .3 * kn, 0); }
+    else { const a1 = Math.sin(sw); ctx.moveTo(0, hipY); ctx.lineTo(a1 * k * .16, hipY * .5); ctx.lineTo(a1 * k * .3, 0); ctx.moveTo(0, hipY); ctx.lineTo(-a1 * k * .16, hipY * .5); ctx.lineTo(-a1 * k * .3, 0); }
+    ctx.stroke();
+    const tx = k * .03 + lean * k * .06;
+    ctx.lineWidth = w * .55; ctx.beginPath();
+    ctx.moveTo(-k * .048, hipY + k * .01); ctx.lineTo(k * .048, hipY + k * .01); ctx.lineTo(tx + k * .07, neckY + k * .03); ctx.quadraticCurveTo(tx, neckY - k * .02, tx - k * .07, neckY + k * .03); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    const sy = neckY + k * .05;
+    const hx = k * lerp(.2, .1, arms) + lean * k * .06, hy = lerp(sy + k * .17, sy - k * .34, arms);
+    const ox = k * lerp(-.07, -.13, arms), oy = lerp(sy + k * .2, sy - k * .34, arms);
+    ctx.lineWidth = w * .82; ctx.beginPath();
+    ctx.moveTo(tx + k * .02, sy); ctx.lineTo(hx, hy); ctx.moveTo(tx - k * .02, sy); ctx.lineTo(ox, oy);
+    if (o.staff) { ctx.moveTo(hx, hy - k * .08); ctx.lineTo(hx + k * .1, 0); }
+    ctx.stroke();
+    if (o.pack !== false) { ctx.beginPath(); rr(-k * .17 + lean * k * .04, neckY + k * .03, k * .14, k * .21, k * .035); ctx.fill(); }
+    ctx.beginPath(); ctx.arc(headX, headY, hr + (w - lw) * .5, 0, TAU); ctx.fill();
+    out = { hx, hy };
+  };
+  if (o.outline) pass(o.outline, lw * (o.outlineW || 2.4));
+  pass(o.col, lw);
+  ctx.restore();
+  return { hx: x + out.hx, hy: y + out.hy, headX: x + headX, headY: y + headY, hr };
+}
+
+/* ---------- the world ---------- */
+const SKY = {
+  day: [[34, 104, 200], [92, 170, 234], [255, 232, 190]],
+  dusk: [[38, 30, 74], [150, 66, 98], [255, 148, 84]],
+  cave: [[9, 8, 12], [11, 9, 13], [14, 11, 14]],
+  dawnE: [[22, 28, 66], [172, 64, 86], [255, 170, 94]],
+  morn: [[44, 122, 214], [132, 186, 240], [255, 226, 172]]
+};
+function sky(s, dusk, dawn, morning, X0, Y0, X1, Y1) {
+  let c = SKY.day.map(a => a.slice());
+  const bl = (p, t) => { if (t <= 0) return; for (let i = 0; i < 3; i++) c[i] = mixc(c[i], p[i], t); };
+  bl(SKY.dusk, dusk); bl(SKY.cave, ss(2.3, 3.05, s)); bl(SKY.dawnE, dawn); bl(SKY.morn, morning);
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, rgba(c[0])); g.addColorStop(.56, rgba(c[1])); g.addColorStop(1, rgba(c[2]));
+  ctx.fillStyle = g; ctx.fillRect(X0, Y0, X1 - X0, Y1 - Y0);
+}
+function daySun(s, dusk) {
+  const gone = 1 - ss(2.2, 2.6, s); if (gone <= 0) return;
+  const x = lerp(.76, .82, dusk) * W, y = lerp(.16, .7, dusk) * H, r = M * .045;
+  const col = mixc([255, 244, 210], [255, 150, 70], dusk);
+  ctx.globalCompositeOperation = 'lighter';
+  glow(x, y, M * .5, col, .38 * gone); glow(x, y, M * .15, col, .6 * gone);
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = rgba(mixc([255, 252, 236], [255, 180, 110], dusk), gone);
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+}
+function cloud(c, cx, cy, cw, col, a, shade) {
+  for (const p of c.puffs) {
+    const x = cx + p.dx * cw, y = cy + p.dy * cw * .5, r = p.r * cw;
+    const g = ctx.createRadialGradient(x - r * .15, y - r * .3, 0, x, y, r);
+    g.addColorStop(0, rgba(col, a)); g.addColorStop(.55, rgba(col, a * .96)); g.addColorStop(.82, rgba(mixc(col, shade, .5), a * .7)); g.addColorStop(1, rgba(shade, 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  }
+}
+function clouds(s, dusk, morning, dawnComp) {
+  const aDay = 1 - ss(2.1, 2.6, s), aDawn = dawnComp ? ss(10.1, 10.8, s) : 0;
+  const span = Math.max(W, 700);
+  if (aDay > .01) { const col = mixc([255, 255, 255], [255, 170, 150], dusk), sh = mixc([196, 218, 240], [140, 90, 120], dusk); for (const c of CL) cloud(c, ((c.x + T * c.sp) % 1.3 - .15) * W, c.y * H, c.w * span, col, aDay * .9, sh); }
+  if (aDawn > .01) { const col = mixc([255, 198, 182], [255, 248, 240], morning), sh = mixc([190, 120, 150], [200, 215, 235], morning); CL.forEach((c, i) => cloud(c, ((c.x * 1.1 + T * c.sp * .5) % 1.3 - .15) * W, lerp(.87, .96, (i % 3) / 2) * H, c.w * 1.6 * span, col, aDawn * .5, sh)); }
+}
+function ridges(s, dusk, dawn, morning, dawnComp, X0, X1, Y1) {
+  const C = dawnComp ? COMP.dawn : COMP.day, step = Math.max(3, W / 320);
+  let f2c, f1c, nTop, nLow, snow;
+  if (!dawnComp) { f2c = mixc([160, 192, 226], [112, 80, 122], dusk); f1c = mixc([94, 142, 186], [70, 46, 86], dusk); nTop = mixc([108, 116, 128], [60, 40, 64], dusk); nLow = mixc([38, 100, 72], [30, 22, 40], dusk); snow = mixc([250, 252, 255], [255, 192, 172], dusk); }
+  else { f2c = mixc([152, 98, 142], [158, 190, 224], morning); f1c = mixc([104, 62, 100], [94, 138, 182], morning); nTop = mixc([46, 27, 42], [86, 98, 112], morning); nLow = mixc([26, 14, 24], [40, 86, 66], morning); snow = mixc([255, 206, 196], [250, 252, 255], morning); }
+  const F1 = dawnComp ? farD1 : far1, F2 = dawnComp ? farD2 : far2;
+  ridgePath(F2, C.cam, C.f2[0], C.f2[1], X0, X1, Y1, step * 2); ctx.fillStyle = rgba(f2c); ctx.fill();
+  if (!dawnComp) { const hz = ctx.createLinearGradient(0, H * .5, 0, H); hz.addColorStop(0, 'rgba(255,255,255,0)'); hz.addColorStop(1, rgba(mixc([255, 255, 255], [255, 170, 140], dusk), .28)); ctx.fillStyle = hz; ctx.fillRect(X0, H * .5, X1 - X0, Y1 - H * .5); }
+  ridgePath(F1, C.cam, C.f1[0], C.f1[1], X0, X1, Y1, step * 1.5); ctx.fillStyle = rgba(f1c); ctx.fill();
+  if (dawnComp && dawn > .01) { const mg = ctx.createLinearGradient(0, H * .8, 0, H); mg.addColorStop(0, 'rgba(255,200,190,0)'); mg.addColorStop(1, rgba(mixc([255, 190, 180], [235, 240, 250], morning), .42)); ctx.fillStyle = mg; ctx.fillRect(X0, H * .8, X1 - X0, Y1 - H * .8); }
+  ridgePath(near, C.cam, C.n[0], C.n[1], X0, X1, Y1, step);
+  const sumX = (.5 - C.cam) * W * ZOOM + W / 2, sumY = C.n[0] * H - near(.5) * C.n[1] * H;
+  const g = ctx.createLinearGradient(0, sumY, 0, H); g.addColorStop(0, rgba(nTop)); g.addColorStop(.45, rgba(mixc(nTop, nLow, .6))); g.addColorStop(1, rgba(nLow));
+  ctx.fillStyle = g; ctx.fill();
+  if (dawnComp && dawn > .01) { ctx.strokeStyle = rgba([255, 196, 120], .7 * dawn * (1 - morning * .5)); ctx.lineWidth = 1.6; ctx.stroke(); }
+  ctx.save(); ctx.clip();
+  const sg = ctx.createLinearGradient(sumX - W * .04 * ZOOM, 0, sumX + W * .14 * ZOOM, 0); sg.addColorStop(0, 'rgba(8,10,26,0)'); sg.addColorStop(1, 'rgba(8,10,26,.3)');
+  ctx.fillStyle = sg; ctx.fillRect(sumX - W * .04 * ZOOM, sumY - 10, X1 - sumX + W * .04 * ZOOM, Y1 - sumY);
+  const snowY = sumY + (dawnComp ? .05 : .13) * H;
+  ctx.beginPath(); ctx.moveTo(X0, sumY - H); ctx.lineTo(X1, sumY - H);
+  for (let x = X1; x >= X0; x -= step * 2) ctx.lineTo(x, snowY + (fbm(N6, x * .012) - .5) * H * .07);
+  ctx.closePath(); ctx.fillStyle = rgba(snow, .96); ctx.fill();
+  const ca = dawnComp ? 0 : bell(s, 1.05, 1.3, 1.9, 2.1);
+  if (ca > .01) {
+    ctx.strokeStyle = rgba([255, 255, 255], .55 * ca); ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    for (const f of LEV) { const y = lerp(.86 * H, sumY, f); ctx.beginPath(); ctx.moveTo(sumX - W * .24 * ZOOM, y); ctx.lineTo(sumX + W * .24 * ZOOM, y); ctx.stroke(); }
+    ctx.setLineDash([]);
+  }
+  ctx.restore();
+  if (ca > .01) {
+    const fs = Math.round(Math.max(8, Math.min(11, M * .013)));
+    ctx.font = '600 ' + fs + 'px ' + MONO; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+    LEVN.forEach((name, i) => {
+      const y = lerp(.86 * H, sumY, LEV[i]); let x = sumX; while (x < X1 && rY(near, C.cam, C.n[0], C.n[1], x) < y) x += 3;
+      ctx.strokeStyle = rgba([255, 255, 255], .8 * ca); ctx.lineWidth = 3; ctx.strokeText(name, x + 8, y);
+      ctx.fillStyle = rgba([16, 32, 43], .85 * ca); ctx.fillText(name, x + 8, y);
+    });
+    const ta = bell(s, 1.4, 1.65, 1.9, 2.1);
+    if (ta > .01) {
+      const y = sumY - H * .075, hw = W * .055 * ZOOM;
+      ctx.strokeStyle = rgba([255, 255, 255], .85 * ta); ctx.lineWidth = 1.2; ctx.setLineDash([2, 5]);
+      ctx.beginPath(); ctx.moveTo(sumX - hw, y); ctx.lineTo(sumX + hw, y); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = rgba([255, 255, 255], .8 * ta); ctx.lineWidth = 3; ctx.strokeText('SELF-TRANSCENDENCE', sumX + hw + 8, y);
+      ctx.fillStyle = rgba([16, 32, 43], .9 * ta); ctx.fillText('SELF-TRANSCENDENCE', sumX + hw + 8, y);
+    }
+  }
+}
+function caveWall(s) {
+  let c = [27, 21, 25];
+  c = mixc(c, [20, 22, 34], bell(s, 3.9, 4.15, 4.9, 5.1));
+  c = mixc(c, [17, 27, 27], bell(s, 4.9, 5.1, 5.9, 6.1));
+  c = mixc(c, [16, 14, 32], bell(s, 5.9, 6.1, 6.9, 7.1));
+  c = mixc(c, [30, 23, 17], bell(s, 6.9, 7.1, 7.9, 8.1));
+  c = mixc(c, [38, 15, 15], bell(s, 7.9, 8.1, 8.9, 9.1));
+  c = mixc(c, [34, 19, 13], ss(8.9, 9.2, s));
+  return c;
+}
+/* light pools: the lamp lights the rock, so whatever stands in front of it reads as a silhouette */
+function lightPools(s) {
+  const caveA = ss(2.8, 3.3, s) * (1 - ss(9.95, 10.4, s)); if (caveA < .01) return;
+  const L = lampPos(), lr = lampR(s);
+  ctx.globalCompositeOperation = 'lighter';
+  glow(L.x, L.y, lr * 1.05, [255, 164, 96], .2 * caveA);
+  glow(S.hand.x, S.hand.y - M * .04, M * .26, [255, 170, 100], .26 * caveA);
+  const wa = bell(s, 6.85, 7.1, 7.85, 8.1);
+  if (wa > .01) { const h = Math.min(H * .16, M * .21) * .82; for (let i = 0; i < 3; i++) { const p = wandererPos(i), lit = ap(S.lights[i], 1.2); glow(p.x + h * .1, p.y - h * .5, h * (1.1 + 1.1 * lit), [255, 168, 96], wa * (.16 + .3 * lit)); } }
+  if (S.dig > 0) { const b = blackSun(); glow(b.x, b.y - b.r, M * (.2 + .4 * S.dig), [255, 150, 70], .3 * S.dig * caveA * ss(8.85, 9.15, s)); }
+  ctx.globalCompositeOperation = 'source-over';
+}
+function caveShell(s, cC, cF, X0, X1, Y0, Y1) {
+  const cam = caveCam(s), step = Math.max(3, W / 300);
+  if (cC > .001) {
+    const lift = (1 - cC) * H * .75;
+    ctx.beginPath(); ctx.moveTo(X0, Y0);
+    for (let x = X0; x <= X1 + step; x += step) { const u = cam + (x - W / 2) / (W * ZOOM); ctx.lineTo(x, ceilF(u) * H * 1.05 - lift); }
+    ctx.lineTo(X1 + step, Y0); ctx.closePath();
+    const gc = ctx.createLinearGradient(0, -lift, 0, H * .36 - lift); gc.addColorStop(0, 'rgb(5,4,6)'); gc.addColorStop(1, 'rgb(40,29,30)');
+    ctx.fillStyle = gc; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,206,160,' + (.16 * cC).toFixed(3) + ')'; ctx.lineWidth = 1.3; ctx.stroke();
+  }
+  if (cF > .001) {
+    const drop = (1 - cF) * H * .5;
+    ctx.beginPath(); ctx.moveTo(X0, Y1);
+    for (let x = X0; x <= X1 + step; x += step) { const u = cam + (x - W / 2) / (W * ZOOM); ctx.lineTo(x, H - floorF(u) * H + drop); }
+    ctx.lineTo(X1 + step, Y1); ctx.closePath();
+    const gf = ctx.createLinearGradient(0, H * .7 + drop, 0, H + drop); gf.addColorStop(0, 'rgb(48,34,32)'); gf.addColorStop(1, 'rgb(8,6,8)');
+    ctx.fillStyle = gf; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,206,160,' + (.16 * cF).toFixed(3) + ')'; ctx.lineWidth = 1.3; ctx.stroke();
+  }
+}
+
+/* ---------- birds that become bats that become birds ---------- */
+function updFlock(dt) {
+  const s = S.s, bat = ss(2.6, 3.2, s) * (1 - ss(9.95, 10.5, s)), dawnB = ss(10.2, 10.9, s), spin = bell(s, 1.95, 2.15, 2.7, 2.95);
+  const L = lampPos(), lx = L.x / W, ly = L.y / H;
+  for (const b of flock) {
+    b.a += b.sp * dt * (1 + bat * 2); b.ph += dt * (bat > .5 ? 15 : 5 + 2 * Math.sin(b.a));
+    let tx = (wide ? .66 : .62) + Math.cos(b.a) * b.r * (wide ? 1 : 1.9) + b.ox, ty = .2 + Math.sin(b.a) * b.r * .48 + b.oy;
+    const dtx = .62 + Math.cos(b.a) * b.r * 1.7 + b.ox, dty = .28 + Math.sin(b.a) * b.r * .55 + b.oy;
+    tx = lerp(tx, dtx, dawnB); ty = lerp(ty, dty, dawnB);
+    b.nx += dt * .5;
+    const bx = .5 + .46 * Math.sin(b.nx * .7 + b.a), by = .1 + .17 * (.5 + .5 * Math.sin(b.nx * 1.3 + b.ox * 40));
+    tx = lerp(tx, bx, bat); ty = lerp(ty, by, bat);
+    tx += spin * Math.cos(b.a * 3) * .4; ty += spin * Math.sin(b.a * 2) * .3;
+    if (bat > .3) { const ddx = b.x - lx, ddy = b.y - ly; if (ddx * ddx + ddy * ddy < .035) { tx += ddx * 2.2; ty += ddy * 2.2; } }
+    const kk = 1 - Math.pow(bat > .5 ? .03 : .18, dt);
+    b.x += (tx - b.x) * kk; b.y += (ty - b.y) * kk;
+  }
+}
+function flockDraw(s) {
+  const bat = ss(2.6, 3.2, s) * (1 - ss(9.95, 10.5, s));
+  const day = 1 - ss(2.0, 2.7, s), dawnB = ss(10.2, 10.9, s);
+  const vis = Math.max(day, bat, dawnB); if (vis < .02) return;
+  const sz = M * (wide ? .011 : .016);
+  for (const b of flock) {
+    const x = b.x * W, y = b.y * H, f = Math.sin(b.ph);
+    ctx.save(); ctx.translate(x, y);
+    if (bat > .5) {
+      const w = sz * 1.5; ctx.fillStyle = rgba([24, 18, 26], .95 * bat);
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(-w * .5, -w * .55 * f - w * .1, -w * 1.25, -w * .15 * f);
+      ctx.quadraticCurveTo(-w * .95, w * .1, -w * .75, w * .28); ctx.quadraticCurveTo(-w * .5, w * .08, -w * .28, w * .3); ctx.quadraticCurveTo(-w * .12, w * .05, 0, w * .2);
+      ctx.quadraticCurveTo(w * .12, w * .05, w * .28, w * .3); ctx.quadraticCurveTo(w * .5, w * .08, w * .75, w * .28); ctx.quadraticCurveTo(w * .95, w * .1, w * 1.25, -w * .15 * f);
+      ctx.quadraticCurveTo(w * .5, -w * .55 * f - w * .1, 0, 0); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(0, w * .05, w * .16, w * .24, 0, 0, TAU); ctx.fill();
+    } else {
+      const col = dawnB > .5 ? [52, 26, 36] : [20, 32, 46];
+      ctx.strokeStyle = rgba(col, .85 * vis); ctx.lineWidth = Math.max(1.2, sz * .16); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-sz, -sz * .45 * f); ctx.quadraticCurveTo(-sz * .45, -sz * .5 - sz * .2 * f, 0, 0); ctx.quadraticCurveTo(sz * .45, -sz * .5 - sz * .2 * f, sz, -sz * .45 * f); ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+/* ---------- the lamp ---------- */
+function lampPos() {
+  const usePointer = S.lamp.x >= 0 && (!coarse || T - S.lamp.t < 3.2);
+  return usePointer ? { x: S.lamp.x, y: S.lamp.y } : { x: S.hand.x, y: S.hand.y };
+}
+function lampR(s) {
+  const base = M * (coarse ? .3 : .26) * (1 + .09 * S.gold);
+  const dogA = bell(s, 7.85, 8.1, 8.95, 9.2), awake = S.dog.filter(t => t < 0).length;
+  return base * (1 - .5 * dogA * awake / 3);
+}
+
+/* ---------- positions in the rooms ---------- */
+function blackSun() { const x = wide ? .74 * W : .64 * W, r = M * (wide ? .075 : .1); return { x, y: floorAt(x, S.s, 1) + r * .25, r }; }
+function dogPos() { const x = wide ? .84 * W : .72 * W, D = wide ? H * .44 : Math.min(H * .34, W * .74); return { x, y: floorAt(x, S.s, 1), D }; }
+function wandererPos(i) { const fx = wide ? [.47, .8, .9][i] : [.14, .86, .7][i]; const x = fx * W; return { x, y: floorAt(x, S.s, 1) }; }
+function figureX(s) {
+  let x = stageX;
+  x = lerp(x, wide ? stageX - .1 * W : .2 * W, bell(s, 7.85, 8.15, 8.95, 9.2));
+  const bs = blackSun(); x = lerp(x, bs.x - bs.r * 1.9, ss(9.15, 9.45, s));
+  return x;
+}
+
+/* ---------- the figure ---------- */
+function figureAll(s, cF) {
+  const dayH = M * .042 * (wide ? 1 : 1.15), caveH = Math.min(H * .16, M * .21), dawnH = M * .085;
+  const C = COMP.day, D = COMP.dawn;
+  let x, y, h, o = { walk: S.walk, col: '#0c1a24', staff: 1 };
+  if (s < 2.0) {
+    const cl = ss(.5, 1.95, s), u = lerp(.31, .5, cl);
+    x = (u - C.cam) * W * ZOOM + W / 2; y = rY(near, C.cam, C.n[0], C.n[1], x); h = dayH; o.lean = .5 * (1 - ss(1.85, 1.98, s));
+    o.col = rgba(mixc([12, 26, 36], [34, 18, 34], ss(1.6, 2.0, s)));
+  } else if (s < 2.88) {
+    const t = ss(2.0, 2.85, s), sx = (.5 - C.cam) * W * ZOOM + W / 2, sy = rY(near, C.cam, C.n[0], C.n[1], sx);
+    const ex = stageX, ey = floorAt(stageX, s, cF);
+    x = lerp(sx, ex, t) + Math.sin(t * Math.PI) * W * .1; y = lerp(sy, ey, t * t); h = lerp(dayH, caveH, t);
+    o = { walk: 0, col: '#150d15', rot: reduce ? 0 : t * TAU * 2, staff: 0 };
+  } else {
+    x = figureX(s); y = floorAt(x, s, cF); h = caveH;
+    const kn = ss(9.25, 9.5, s) * (1 - ss(9.95, 10.05, s));
+    o = { walk: S.walk, col: '#0f0a0f', staff: 0, kneel: kn };
+    const up = ss(9.98, 10.32, s);
+    if (up > 0) {
+      const smx = (.5 - D.cam) * W * ZOOM + W / 2, smy = rY(near, D.cam, D.n[0], D.n[1], smx);
+      x = lerp(x, smx, up); y = lerp(y, smy, up); h = lerp(caveH, dawnH, up);
+      o.col = rgba(mixc([15, 10, 15], [26, 12, 22], up)); o.arms = ss(11.0, 11.45, s); o.walkAmt = 1 - ss(10.28, 10.34, s);
+    }
+  }
+  const g = figure(x, y, h, o);
+  S.hand.x = g.hx; S.hand.y = g.hy;
+  return g;
+}
+
+/* ---------- rooms ---------- */
+function ribs(s) {
+  const a = bell(s, 4.85, 5.1, 5.85, 6.1); if (a < .01) return;
+  const seekP = ap(S.rooms[1].ts, 2.0), cx = wide ? .7 * W : .5 * W, fY = floorAt(cx, s, 1);
+  for (let i = 6; i >= 0; i--) {
+    const k = 1 - i * .11, span = (wide ? .36 : .6) * W * k, apex = lerp(H * .12, H * .36, 1 - k), cy = 2 * apex - fY;
+    ctx.beginPath(); ctx.moveTo(cx - span, fY + 4); ctx.quadraticCurveTo(cx, cy, cx + span, fY + 4);
+    ctx.lineWidth = Math.max(3, M * .024 * k); ctx.lineCap = 'round';
+    ctx.strokeStyle = rgba(mixc([224, 214, 194], [242, 196, 106], seekP), a * (.5 * k + .12)); ctx.stroke();
+  }
+}
+function maskShape(x, y, sz, rot, a) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sz, sz);
+  ctx.beginPath(); ctx.moveTo(0, -.66); ctx.bezierCurveTo(.45, -.66, .56, -.2, .5, .1); ctx.bezierCurveTo(.44, .45, .2, .7, 0, .7); ctx.bezierCurveTo(-.2, .7, -.44, .45, -.5, .1); ctx.bezierCurveTo(-.56, -.2, -.45, -.66, 0, -.66); ctx.closePath();
+  ctx.fillStyle = 'rgba(212,198,176,' + (a * .62).toFixed(3) + ')'; ctx.fill();
+  ctx.lineWidth = .035; ctx.strokeStyle = 'rgba(246,236,214,' + (a * .55).toFixed(3) + ')'; ctx.stroke();
+  ctx.fillStyle = 'rgba(6,4,6,' + a.toFixed(3) + ')';
+  ctx.beginPath(); ctx.ellipse(-.19, -.13, .13, .075, -.25, 0, TAU); ctx.ellipse(.19, -.13, .13, .075, .25, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-.18, .33); ctx.quadraticCurveTo(0, .4, .18, .33); ctx.lineWidth = .05; ctx.strokeStyle = 'rgba(6,4,6,' + a.toFixed(3) + ')'; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, -.05); ctx.lineTo(-.04, .14); ctx.lineTo(.04, .16); ctx.lineWidth = .03; ctx.stroke();
+  ctx.restore();
+}
+function masksBack(s) {
+  const a = bell(s, 3.98, 4.2, 4.85, 5.1); if (a < .01) return;
+  const st = S.rooms[0], chewP = ap(st.tc, 1), rise = ap(st.ts, 2.4);
+  for (const m of masks) {
+    let al = a * (m.extra ? chewP : 1) * (1 - rise); if (al < .01) continue;
+    const bob = Math.sin(T * .6 + m.ph) * M * .004;
+    maskShape(m.x * W, m.y * H + bob - rise * H * .45 * (.6 + .4 * Math.sin(m.ph)), m.sz, m.rot + rise * Math.sin(m.ph) * .8, al);
+  }
+}
+function masksFront(s) {
+  const a = bell(s, 3.98, 4.2, 4.85, 5.1); if (a < .01) return;
+  const st = S.rooms[0], chewP = ap(st.tc, 1), rise = ap(st.ts, 2.4), gold = ap(st.ts, .5);
+  const L = lampPos(), lr = lampR(s);
+  ctx.globalCompositeOperation = 'lighter';
+  for (const m of masks) {
+    const al = a * (m.extra ? chewP : 1) * (1 - rise); if (al < .02) continue;
+    const x = m.x * W, y = m.y * H + Math.sin(T * .6 + m.ph) * M * .004 - rise * H * .45 * (.6 + .4 * Math.sin(m.ph));
+    const blink = ((T * .7 + m.ph * 3) % 5.5) < .12 ? .1 : 1;
+    const d = Math.hypot(x - L.x, y - L.y), lit = d < lr ? 1 - d / lr : 0;
+    const col = mixc(mixc([255, 66, 40], [255, 120, 60], lit), [255, 206, 110], gold);
+    const c = Math.cos(m.rot), sn = Math.sin(m.rot);
+    for (const ex of [-.19, .19]) {
+      const px = x + (ex * c - (-.13) * sn) * m.sz, py = y + (ex * sn + (-.13) * c) * m.sz;
+      glow(px, py, m.sz * .5, col, al * .55 * (1 + .6 * S.flare + .5 * chewP) * blink);
+      ctx.fillStyle = rgba(mixc([255, 210, 180], [255, 240, 200], gold), al * .9 * blink);
+      ctx.beginPath(); ctx.arc(px, py, Math.max(1, m.sz * .045), 0, TAU); ctx.fill();
+    }
+  }
+  ctx.globalCompositeOperation = 'source-over';
+}
+function shadowFront(s) {
+  const a = bell(s, 4.85, 5.1, 5.85, 6.1); if (a < .01) return;
+  const st = S.rooms[1], chewP = ap(st.tc, .8), seekP = ap(st.ts, 1.2);
+  const x = wide ? .78 * W : .5 * W, y = floorAt(x, s, 1), h = H * lerp(.6, .74, chewP * (1 - seekP)) * (wide ? 1 : .92);
+  ctx.globalCompositeOperation = 'lighter';
+  glow(x - h * .05, y - h * .52, h * .78, [255, 170, 110], .16 * a * (1 + .5 * seekP));
+  ctx.globalCompositeOperation = 'source-over';
+  const breathe = 1 + Math.sin(T * 1.4) * .012 * (1 - seekP);
+  const g = figure(x, y, h * breathe, { walk: S.walk, col: rgba([6, 4, 6], .86 * a), pack: true, outline: seekP > .01 ? rgba([242, 196, 106], .26 * seekP * a) : null, outlineW: 1.45 });
+  const eo = 1 - seekP;
+  if (eo > .02) {
+    ctx.globalCompositeOperation = 'lighter';
+    for (const dx of [-.42, .42]) {
+      const ex = g.headX + dx * g.hr, ey = g.headY - g.hr * .05;
+      glow(ex, ey, g.hr * 1.4, [255, 60, 30], .5 * a * eo * (1 + .7 * S.flare + .6 * chewP));
+      ctx.fillStyle = rgba([255, 214, 186], .95 * a * eo); ctx.beginPath(); ctx.ellipse(ex, ey, g.hr * .2, g.hr * .11 * eo, 0, 0, TAU); ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+}
+function gapFront(s) {
+  const a = bell(s, 5.85, 6.1, 6.85, 7.1); if (a < .01) return;
+  const st = S.rooms[2], chewP = ap(st.tc, 1) * (1 - ap(st.ts, 1)), seekP = ap(st.ts, 2.2), conP = ap(st.ts + .9, 1.8);
+  const gx = wide ? .7 * W : .5 * W, gy = H * .5, gR = (wide ? .3 * M : .42 * W) * (1 - .12 * chewP);
+  const beat = Math.pow(Math.max(0, Math.sin(T * TAU / 1.15)), 14) * (1 - seekP);
+  if (chewP > .01) { ctx.fillStyle = rgba([0, 0, 0], .32 * chewP * a); ctx.fillRect(0, 0, W, H); }
+  ctx.fillStyle = rgba([0, 0, 2], .45 * a * (1 - seekP * .6)); ctx.beginPath(); ctx.arc(gx, gy, gR * (1 + .015 * beat), 0, TAU); ctx.fill();
+  ctx.strokeStyle = rgba([150, 120, 255], a * (.22 + .4 * beat) * (1 - seekP * .55)); ctx.lineWidth = Math.max(1, M * .003); ctx.stroke();
+  if (seekP > .01) {
+    ctx.globalCompositeOperation = 'lighter';
+    for (const p of stars) {
+      const tw = .55 + .45 * Math.sin(T * p.sp + p.ph), al = a * seekP * (.35 + .65 * tw);
+      const x = gx + p.x * gR, y = gy + p.y * gR, r = p.sz * (wide ? 1 : .9);
+      if (p.sz > 1.6) glow(x, y, r * 6, [210, 200, 255], al * .35);
+      ctx.fillStyle = rgba([235, 230, 255], al); ctx.fillRect(x - r * .5, y - r * .5, r, r);
+    }
+    if (conP > .01) {
+      ctx.strokeStyle = rgba([242, 210, 140], .55 * a * conP); ctx.lineWidth = 1;
+      for (const c of cons) { ctx.beginPath(); c.forEach((i, k) => { const p = stars[i]; const x = gx + p.x * gR, y = gy + p.y * gR; if (k) ctx.lineTo(x, y); else ctx.moveTo(x, y); }); ctx.stroke(); }
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+}
+function lintel(s, front) {
+  const a = bell(s, 3.45, 3.65, 3.92, 4.05); if (a < .01) return;
+  const cx = stageX, fy = floorAt(cx, s, 1), w = wide ? W * .3 : W * .84, top = H * .3, pw = w * .1;
+  if (!front) {
+    ctx.fillStyle = rgba([62, 48, 44], a); ctx.strokeStyle = rgba([170, 136, 108], .55 * a); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.rect(cx - w / 2, top, pw, fy - top); ctx.rect(cx + w / 2 - pw, top, pw, fy - top); ctx.rect(cx - w / 2 - pw * .3, top - H * .06, w + pw * .6, H * .06); ctx.fill(); ctx.stroke();
+  } else {
+    const fs = Math.max(7, Math.min(13, w / 34));
+    ctx.font = '600 ' + fs.toFixed(1) + 'px ' + SERIF; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = rgba([0, 0, 0], .8 * a); ctx.fillText('VOCATVS ATQVE NON VOCATVS DEVS ADERIT', cx, top - H * .03 + 1);
+    ctx.fillStyle = rgba([236, 214, 170], .62 * a); ctx.fillText('VOCATVS ATQVE NON VOCATVS DEVS ADERIT', cx, top - H * .03);
+    ctx.textAlign = 'start';
+  }
+}
+function carvings(s) {
+  const L = lampPos(), lr = lampR(s);
+  const list = [['NIGREDO', 3.98, 4.2, 4.85, 5.1], ['ALBEDO', 4.85, 5.1, 5.85, 6.1], ['CITRINITAS', 5.85, 6.1, 6.85, 7.1], ['RVBEDO', 8.85, 9.1, 9.9, 10.1]];
+  for (const [w, a0, a1, a2, a3] of list) {
+    const a = bell(s, a0, a1, a2, a3); if (a < .01) continue;
+    const x = wide ? .6 * W : .5 * W, y = H * (wide ? .19 : .16), fs = Math.max(14, M * (wide ? .04 : .062));
+    const d = Math.hypot(x - L.x, y - L.y), lit = d < lr * 1.3 ? 1 - d / (lr * 1.3) : 0;
+    ctx.font = '600 ' + fs.toFixed(0) + 'px ' + SERIF; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = (fs * .35).toFixed(0) + 'px';
+    ctx.fillStyle = rgba([0, 0, 0], .5 * a); ctx.fillText(w, x + 1, y + 2);
+    ctx.fillStyle = rgba([226, 204, 170], a * (.1 + .5 * lit)); ctx.fillText(w, x, y);
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+    ctx.textAlign = 'start';
+  }
+}
+function wanderersBack(s) {
+  const a = bell(s, 6.85, 7.1, 7.85, 8.1); if (a < .01) return;
+  const h = Math.min(H * .16, M * .21) * .82;
+  for (let i = 0; i < 3; i++) {
+    const p = wandererPos(i), lit = ap(S.lights[i], 1.2), col = rgba([14, 10, 14], a);
+    if (i === 0) { ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(p.x - h * .2, p.y - h * .44, h * .2, h * .25, -.3, 0, TAU); ctx.fill(); }
+    figure(p.x, p.y, h, { sit: 1, col, pack: false, headDown: 1 - lit });
+    if (i === 1) { ctx.strokeStyle = rgba([110, 140, 160], .5 * a); ctx.lineWidth = Math.max(1, h * .02); for (let k = 0; k < 3; k++) { ctx.beginPath(); for (let x = -h * .7; x <= h * .9; x += 4) { const yy = p.y - h * .02 + k * h * .06 + Math.sin(x * .08 + T * 1.5 + k) * h * .02; if (x === -h * .7) ctx.moveTo(p.x + x, yy); else ctx.lineTo(p.x + x, yy); } ctx.stroke(); } }
+    if (i === 2) { ctx.strokeStyle = rgba([92, 72, 60], .8 * a); ctx.lineWidth = Math.max(1.5, h * .035); const lx = p.x + h * .42; ctx.beginPath(); ctx.moveTo(lx, p.y); ctx.lineTo(lx, p.y - h * .8); ctx.moveTo(lx + h * .4, p.y); ctx.lineTo(lx + h * .4, p.y - h * .8); ctx.moveTo(lx - h * .04, p.y - h * .78); ctx.lineTo(lx + h * .44, p.y - h * .78); ctx.stroke(); ctx.lineWidth = 1; ctx.strokeStyle = rgba([160, 130, 100], .45 * a); for (let k = 1; k < 8; k++) { ctx.beginPath(); ctx.moveTo(lx + k * h * .05, p.y - h * .76); ctx.lineTo(lx + k * h * .05, p.y - h * .1); ctx.stroke(); } }
+  }
+}
+function wanderersFront(s) {
+  const a = bell(s, 6.85, 7.1, 7.85, 8.1); if (a < .01) return;
+  const h = Math.min(H * .16, M * .21) * .82;
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 3; i++) {
+    const p = wandererPos(i), lit = ap(S.lights[i], 1.2);
+    glow(p.x + h * .16, p.y - h * .3, h * .5, [255, 170, 90], a * (.18 + .3 * lit));
+    if (lit > .01) {
+      const cx = p.x + (i === 2 ? -h * .25 : h * .34), cy = p.y - h * .05, fl = 1 + .12 * Math.sin(T * 13 + i) + .08 * Math.sin(T * 7.3 + i * 2);
+      glow(cx, cy - h * .12, h * .9 * fl, [255, 180, 90], .35 * a * lit);
+      ctx.fillStyle = rgba([255, 236, 190], a * lit); ctx.beginPath(); ctx.ellipse(cx, cy - h * .12, h * .025 * fl, h * .055 * fl, 0, 0, TAU); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = rgba([220, 206, 180], a * lit); ctx.fillRect(cx - h * .018, cy - h * .07, h * .036, h * .07);
+      ctx.globalCompositeOperation = 'lighter';
+    }
+  }
+  ctx.globalCompositeOperation = 'source-over';
+}
+function dogHead(x, y, r, kind, sp) {
+  const tilt = sp * .5 + (kind === 0 ? .28 : 0);
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-tilt);
+  ctx.fillStyle = 'rgb(9,6,7)'; ctx.strokeStyle = 'rgba(255,92,60,.32)'; ctx.lineWidth = Math.max(1, r * .05);
+  ctx.beginPath(); ctx.ellipse(0, 0, r * 1.05, r * .86, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  const jaw = kind === 1 && sp < .5 ? Math.max(0, Math.sin(T * 7)) * r * .2 : 0;
+  ctx.beginPath(); ctx.ellipse(-r * 1.15, r * .14, r * .78, r * .4, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(-r * 1.02, r * .5 + jaw, r * .64, r * .22, .08, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.beginPath();
+  if (kind === 0) { ctx.moveTo(r * .25, -r * .55); ctx.lineTo(r * 1.05, r * .4); ctx.lineTo(r * .7, -r * .72); }
+  else { ctx.moveTo(-r * .1, -r * .7); ctx.lineTo(r * .28, -r * 1.7); ctx.lineTo(r * .6, -r * .52); }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  if (kind === 2 && sp < .6) { ctx.fillStyle = 'rgba(240,230,214,' + (.9 * (1 - sp * 1.6)).toFixed(3) + ')'; for (let k = 0; k < 4; k++) { const tx = -r * 1.78 + k * r * .3; ctx.beginPath(); ctx.moveTo(tx, r * .36); ctx.lineTo(tx + r * .11, r * .6); ctx.lineTo(tx + r * .22, r * .36); ctx.fill(); } }
+  ctx.fillStyle = 'rgb(34,18,18)'; ctx.beginPath(); ctx.arc(-r * 1.88, r * .04, r * .13, 0, TAU); ctx.fill();
+  const ex = -r * .45, ey = -r * .2;
+  if (sp < .5) {
+    const o = 1 - sp * 2;
+    ctx.globalCompositeOperation = 'lighter'; glow(ex, ey, r * 1.3, [255, 58, 30], .6 * o * (1 + .6 * S.flare));
+    ctx.fillStyle = rgba([255, 204, 170], .95 * o); ctx.beginPath(); ctx.ellipse(ex, ey, r * .17, r * .1 * o + .5, 0, 0, TAU); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+  } else {
+    ctx.strokeStyle = 'rgba(255,130,100,.55)'; ctx.lineWidth = Math.max(1, r * .06); ctx.beginPath(); ctx.moveTo(ex - r * .18, ey); ctx.quadraticCurveTo(ex, ey + r * .1, ex + r * .18, ey); ctx.stroke();
+  }
+  ctx.restore();
+}
+function dogFront(s) {
+  const a = bell(s, 7.85, 8.1, 8.95, 9.2); if (a < .01) return;
+  const P = dogPos(), D = P.D, dx = P.x, fy = P.y, lie = ap(S.dogDown, 1.4);
+  const bodyY = fy - D * lerp(.34, .15, lie);
+  ctx.save(); ctx.globalAlpha = a;
+  const fill = 'rgb(9,6,7)', rim = 'rgba(255,92,60,.3)';
+  if (lie > .02) {
+    ctx.globalCompositeOperation = 'lighter'; glow(dx + D * .42, fy - D * .42, D * .62, [255, 176, 92], .32 * lie);
+    const dg = ctx.createLinearGradient(dx + D * .33, 0, dx + D * .51, 0); dg.addColorStop(0, 'rgba(255,214,150,0)'); dg.addColorStop(.5, rgba([255, 226, 170], .55 * lie)); dg.addColorStop(1, 'rgba(255,214,150,0)');
+    ctx.fillStyle = dg; ctx.fillRect(dx + D * .33, fy - D * .9, D * .18, D * .9);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.fillStyle = fill; ctx.strokeStyle = rim; ctx.lineWidth = Math.max(1.2, D * .006);
+  const legTop = bodyY + D * .08;
+  for (const lx of [-.2, -.06, .22, .34]) { ctx.beginPath(); rr(dx + D * lx - D * .035, legTop, D * .07, Math.max(2, (fy - legTop) * (1 - lie * .85)), D * .03); ctx.fill(); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(dx + D * .42, bodyY - D * .04); ctx.quadraticCurveTo(dx + D * .64, bodyY - D * .18 + Math.sin(T * 2.2) * D * .04 * (1 - lie), dx + D * .6, bodyY - D * .36 * (1 - lie * .6));
+  ctx.lineWidth = D * .04; ctx.strokeStyle = fill; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineWidth = Math.max(1.2, D * .006); ctx.strokeStyle = rim;
+  ctx.beginPath(); ctx.ellipse(dx + D * .1, bodyY, D * .36, D * lerp(.19, .14, lie), 0, 0, TAU); ctx.fill(); ctx.stroke();
+  const HD = [{ bx: -.44, by: -.02, rest: .07, k: 0 }, { bx: -.38, by: -.28, rest: -.13, k: 1 }, { bx: -.19, by: -.49, rest: -.3, k: 2 }];
+  const nb = { x: dx - D * .15, y: bodyY - D * .07 };
+  const heads = [];
+  for (const hh of HD) {
+    const sp = ap(S.dog[hh.k], .9);
+    let hx = dx + D * hh.bx, hy = bodyY + D * hh.by;
+    if (hh.k === 0) hy -= D * .14 * S.carry * (1 - sp);
+    hy = lerp(hy, bodyY + D * hh.rest, sp); hx = lerp(hx, hx - D * .04, sp);
+    ctx.beginPath(); ctx.moveTo(nb.x, nb.y); ctx.quadraticCurveTo(lerp(nb.x, hx, .5) + D * .02, lerp(nb.y, hy, .5) - D * .04, hx + D * .05, hy);
+    ctx.lineWidth = D * .1 + Math.max(2.4, D * .012); ctx.strokeStyle = rim; ctx.stroke();
+    ctx.lineWidth = D * .1; ctx.strokeStyle = fill; ctx.stroke(); ctx.lineWidth = Math.max(1.2, D * .006); ctx.strokeStyle = rim;
+    dogHead(hx, hy, D * .1, hh.k, sp);
+    heads.push({ x: hx, y: hy, sp });
+  }
+  const names = ['DEPRESSION', 'RUMINATION', 'CYNICISM'];
+  ctx.font = '600 ' + Math.max(8, Math.round(D * .028)) + 'px ' + MONO; ctx.textAlign = 'center';
+  heads.forEach((hp, i) => { ctx.fillStyle = rgba([255, 150, 120], .5 * (1 - hp.sp * .6)); ctx.fillText(names[i], hp.x - D * .1, hp.y + D * .15); });
+  ctx.textAlign = 'start';
+  ctx.globalCompositeOperation = 'lighter';
+  if (!reduce) for (let i = 0; i < 3; i++) { const hp = heads[i]; if (hp.sp > .5) continue; const ph = (T * .7 + i * .33) % 1; glow(hp.x - D * .3 - ph * D * .12, hp.y + D * .02 - ph * D * .08, D * .05 * (1 + ph), [200, 190, 190], .12 * (1 - ph)); }
+  const hp1 = heads[1], ht = ap(S.honeyT, .9);
+  if (S.honeyT > 0 && ht < 1) { const t = ht, x = lerp(S.hand.x, hp1.x - D * .2, t), y = lerp(S.hand.y, hp1.y, t) - Math.sin(t * Math.PI) * H * .18; glow(x, y, D * .06, [255, 200, 90], .8); }
+  const hp2 = heads[2];
+  for (let i = notes.length - 1; i >= 0; i--) { const n = notes[i]; const t = (T - n.t0) / 2.2; if (t > 1) { notes.splice(i, 1); continue; } if (t < 0) continue; const x = lerp(S.hand.x, hp2.x - D * .15, t) + Math.sin(t * 9 + n.ph) * D * .04, y = lerp(S.hand.y, hp2.y, t) - Math.sin(t * Math.PI) * H * .12; ctx.font = Math.round(D * .07) + 'px ' + SERIF; ctx.fillStyle = rgba([255, 214, 140], .9 * (1 - t * t)); ctx.fillText(n.c, x, y); }
+  const hp0 = heads[0], gA = Math.max(S.carry > 0 ? 1 : 0, S.dog[0] > 0 ? 1 - ap(S.dog[0] + 2.5, 2) : 0);
+  if (gA > .01) for (let k = 0; k < 2; k++) { const an = T * 2.2 + k * Math.PI, x = hp0.x + Math.cos(an) * D * .22, y = hp0.y - D * .06 + Math.sin(an) * D * .1; glow(x, y, D * .09, k ? [250, 214, 120] : [190, 220, 255], .75 * gA); }
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.restore();
+}
+function dustFront(s) {
+  const a = ss(3.0, 3.5, s) * (1 - ss(9.9, 10.3, s)); if (a < .01) return;
+  const L = lampPos(), lr = lampR(s), boost = 1 + ap(S.rooms[2].ts, 2);
+  ctx.globalCompositeOperation = 'lighter';
+  for (const p of dust) {
+    const x = p.x * W, y = p.y * H, d = Math.hypot(x - L.x, y - L.y); if (d > lr) continue;
+    const al = a * (1 - d / lr) * (.35 + .35 * Math.sin(T * 1.3 + p.ph)) * boost;
+    ctx.fillStyle = rgba([255, 226, 180], al); ctx.fillRect(x, y, p.r, p.r);
+  }
+  ctx.globalCompositeOperation = 'source-over';
+}
+function eyesFront(s) {
+  const vis = ss(3.1, 3.5, s) * (1 - ss(6.85, 7.1, s)) + .65 * bell(s, 7.85, 8.1, 8.9, 9.15); if (vis < .01) return;
+  const L = lampPos(), lr = lampR(s), goldT = Math.min(1, S.gold / 3), count = lerp(.34, 1, ss(3.95, 4.25, s));
+  ctx.globalCompositeOperation = 'lighter';
+  for (const e of eyes) {
+    if (e.k >= count) continue;
+    const x = e.x * W, y = e.y * H, d = Math.hypot(x - L.x, y - L.y);
+    e.shy = lerp(e.shy, d < lr * .85 ? 1 : 0, .06);
+    const bl = (T + e.ph) % 6.5, open = bl < .16 ? Math.abs(bl - .08) / .08 : 1;
+    const al = vis * (1 - e.shy) * (.5 + .5 * S.flare) * open; if (al < .02) continue;
+    const col = mixc(e.warm ? [255, 170, 70] : [255, 64, 36], [255, 208, 112], goldT), sz = e.sz * M * .006;
+    glow(x - sz * 2.3, y, sz * 5, col, al * .5); glow(x + sz * 2.3, y, sz * 5, col, al * .5);
+    ctx.fillStyle = rgba([255, 222, 196], al);
+    ctx.beginPath(); ctx.ellipse(x - sz * 2.3, y, sz, Math.max(.3, sz * .6 * open), 0, 0, TAU); ctx.ellipse(x + sz * 2.3, y, sz, Math.max(.3, sz * .6 * open), 0, 0, TAU); ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+/* ---------- fog: the dark, with holes where there is light ---------- */
+function fogPass(s, fogA) {
+  fx.setTransform(1, 0, 0, 1, 0, 0); fx.globalCompositeOperation = 'source-over';
+  fx.clearRect(0, 0, fog.width, fog.height);
+  fx.fillStyle = 'rgba(3,2,5,' + fogA.toFixed(3) + ')'; fx.fillRect(0, 0, fog.width, fog.height);
+  fx.setTransform(DPR, 0, 0, DPR, 0, 0); fx.globalCompositeOperation = 'destination-out';
+  const L = lampPos(), lr = lampR(s), holes = [[L.x, L.y, lr, 1], [S.hand.x, S.hand.y, M * .15, .8]];
+  const wa = bell(s, 6.85, 7.1, 7.85, 8.1);
+  if (wa > .01) for (let i = 0; i < 3; i++) { const p = wandererPos(i), lit = ap(S.lights[i], 1.2); holes.push([p.x, p.y - M * .05, M * (.07 + .1 * lit), .55 * wa + .35 * lit * wa]); }
+  const gapA = bell(s, 5.85, 6.1, 6.85, 7.1), gp = ap(S.rooms[2].ts, 2.2);
+  if (gapA * gp > .01) holes.push([wide ? .7 * W : .5 * W, H * .5, (wide ? .36 * M : .5 * W), .45 * gapA * gp]);
+  const shA = bell(s, 4.85, 5.1, 5.85, 6.1);
+  if (shA > .01) holes.push([wide ? .76 * W : .5 * W, H * .5, M * .32, .3 * shA]);
+  const dA = bell(s, 7.85, 8.1, 8.95, 9.2), lie = ap(S.dogDown, 1.4);
+  if (dA * lie > .01) { const P = dogPos(); holes.push([P.x + P.D * .42, P.y - P.D * .42, P.D * .7, .7 * dA * lie]); }
+  const bsV = ss(8.85, 9.15, s);
+  if (bsV > .01) { const b = blackSun(); holes.push([b.x, b.y, M * (.12 + .35 * Math.max(S.dig, ss(9.9, 10.3, s))), .9 * bsV]); }
+  for (const h of holes) {
+    if (h[2] <= 0) continue;
+    const g = fx.createRadialGradient(h[0], h[1], 0, h[0], h[1], h[2]);
+    g.addColorStop(0, 'rgba(0,0,0,' + clamp(h[3]).toFixed(3) + ')'); g.addColorStop(.5, 'rgba(0,0,0,' + clamp(h[3] * .55).toFixed(3) + ')'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    fx.fillStyle = g; fx.fillRect(h[0] - h[2], h[1] - h[2], h[2] * 2, h[2] * 2);
+  }
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(fog, 0, 0); ctx.restore();
+  ctx.globalCompositeOperation = 'lighter'; glow(L.x, L.y, lr * .9, [255, 186, 116], .09 * fogA); ctx.globalCompositeOperation = 'source-over';
+}
+
+/* ---------- the black sun, the gold, the morning ---------- */
+function ringText(str, rad, a) {
+  const n = str.length, fs = Math.max(7, Math.min(rad * .12, TAU * rad / n * .78));
+  ctx.font = '600 ' + fs.toFixed(1) + 'px ' + SERIF; ctx.fillStyle = rgba([255, 242, 212], .82 * a); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let i = 0; i < n; i++) { ctx.save(); ctx.rotate(i / n * TAU); ctx.translate(0, -rad); ctx.fillText(str[i], 0, 0); ctx.restore(); }
+  ctx.textAlign = 'start';
+}
+function mandala(x, y, r, a) {
+  ctx.save(); ctx.translate(x, y);
+  ctx.globalCompositeOperation = 'lighter';
+  const rot = T * .02, len = Math.hypot(W, H);
+  for (let i = 0; i < 16; i++) {
+    const an = rot + i * TAU / 16, g = ctx.createLinearGradient(0, 0, Math.cos(an) * len * .7, Math.sin(an) * len * .7);
+    g.addColorStop(0, rgba([255, 222, 150], .1 * a)); g.addColorStop(1, rgba([255, 222, 150], 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, len * .7, an - .022, an + .022); ctx.closePath(); ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.strokeStyle = rgba([255, 240, 200], .55 * a); ctx.lineWidth = 1;
+  for (const k of [1.5, 2.25, 3.2]) { ctx.beginPath(); ctx.arc(0, 0, r * k, 0, TAU); ctx.stroke(); }
+  ctx.save(); ctx.rotate(-T * .03);
+  for (let i = 0; i < 8; i++) { ctx.rotate(TAU / 8); ctx.beginPath(); ctx.ellipse(r * 2.72, 0, r * .46, r * .18, 0, 0, TAU); ctx.stroke(); }
+  ctx.restore();
+  ctx.rotate(T * .012); ringText('AVRVM · NOSTRVM · NON · EST · AVRVM · VVLGI · ', r * 1.87, a);
+  ctx.restore();
+}
+function goldSun(s, morning) {
+  const vis = ss(8.85, 9.15, s); if (vis < .01) return;
+  const bs = blackSun(), lit = Math.max(S.dig, ss(9.95, 10.4, s)), lift = ss(9.95, 10.95, s), le = 1 - Math.pow(1 - lift, 2.2);
+  const sx = wide ? .74 * W : .7 * W, sy = H * (wide ? .36 : .3);
+  const x = lerp(bs.x, sx, ss(9.95, 10.7, s)), y = lerp(bs.y - S.dig * bs.r * .7, sy, le), r = lerp(bs.r, M * .085, lift);
+  const core = lit < .33 ? mixc([7, 4, 5], [120, 20, 12], lit / .33) : lit < .66 ? mixc([120, 20, 12], [240, 110, 40], (lit - .33) / .33) : mixc([240, 110, 40], [255, 214, 120], (lit - .66) / .34);
+  const c2 = mixc(core, [255, 248, 226], morning * .75);
+  const floorY = floorAt(bs.x, s, 1);
+  ctx.save();
+  if (lift < .25) { const clipB = lerp(floorY, H * 2, lift * 4); ctx.beginPath(); ctx.rect(0, 0, W, clipB); ctx.clip(); }
+  ctx.globalCompositeOperation = 'lighter';
+  glow(x, y, r * lerp(2.2, 7, Math.max(lit * .7, lift)), mixc([255, 80, 36], [255, 204, 116], lit), (.2 + .5 * lit) * vis);
+  if (lift > .15) glow(x, y, M * 1.2, [255, 196, 116], .42 * ss(10.15, 10.9, s) * (1 - morning * .45));
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = rgba(c2, vis); ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  if (lit < .5) { ctx.strokeStyle = rgba([255, 84, 44], (.55 - lit) * 1.3 * vis); ctx.lineWidth = Math.max(1.5, r * .07); ctx.stroke(); }
+  ctx.restore();
+  if (S.dig > .01 && lift < .08) {
+    ctx.globalCompositeOperation = 'lighter'; ctx.lineWidth = 1.2;
+    for (let i = 0; i < 9; i++) { const an = Math.PI + (i / 8) * Math.PI, ln = r * (2 + 5 * S.dig) * (.6 + .4 * Math.sin(i * 7.3)); ctx.strokeStyle = rgba([255, 196, 96], .55 * S.dig * vis * (1 - lift * 12.5)); ctx.beginPath(); ctx.moveTo(x + Math.cos(an) * r, floorY); ctx.lineTo(x + Math.cos(an) * ln, floorY + Math.sin(an) * ln * .25); ctx.stroke(); }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  const mand = ss(10.45, 11.1, s); if (mand > .01) mandala(x, y, r, mand);
+}
+
+/* ---------- gold that flies home ---------- */
+function spawnMotes(x, y, n) {
+  const g = $('.hud-gold').getBoundingClientRect(), hx = g.left + g.width / 2, hy = g.top + g.height / 2;
+  for (let i = 0; i < n; i++) motes.push({ x0: x + R(-M * .06, M * .06), y0: y + R(-M * .06, M * .06), cx: lerp(x, hx, .5) + R(-W * .2, W * .2), cy: Math.min(y, hy) - R(H * .05, H * .3), x1: hx, y1: hy, t0: T + R(0, .45), life: R(1.1, 1.8) });
+}
+function motesDraw() {
+  if (!motes.length) return;
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = motes.length - 1; i >= 0; i--) {
+    const m = motes[i], t = (T - m.t0) / m.life; if (t > 1) { motes.splice(i, 1); continue; } if (t < 0) continue;
+    const e = t * t * (3 - 2 * t), u = 1 - e, x = u * u * m.x0 + 2 * u * e * m.cx + e * e * m.x1, y = u * u * m.y0 + 2 * u * e * m.cy + e * e * m.y1;
+    glow(x, y, M * .02, [255, 210, 110], .9 * (1 - t * .5));
+    ctx.fillStyle = 'rgba(255,248,220,.95)'; ctx.fillRect(x - 1, y - 1, 2, 2);
+  }
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+/* ---------- one frame ---------- */
+function draw() {
+  const s = S.s;
+  const dusk = ss(1.65, 2.35, s), spinT = ss(2.0, 2.85, s);
+  const closeF = ss(2.35, 3.0, s) * (1 - ss(10.3, 10.8, s)), closeC = ss(2.55, 3.35, s) * (1 - ss(9.98, 10.75, s));
+  const wallA = ss(2.45, 3.2, s) * (1 - ss(10.0, 10.72, s)), fogA = .8 * ss(2.7, 3.45, s) * (1 - ss(9.9, 10.55, s));
+  const dawn = ss(9.95, 10.6, s), morning = ss(10.55, 11.45, s), dawnComp = s > 5;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+  const theta = reduce ? 0 : TAU * spinT + .18 * Math.sin(spinT * Math.PI * 3) * Math.sin(spinT * Math.PI);
+  const zs = 1 + (reduce ? 0 : .6 * Math.sin(Math.PI * spinT));
+  const sh = reduce ? 0 : S.shake, shx = (Math.random() - .5) * sh * 12, shy = (Math.random() - .5) * sh * 12;
+  ctx.save(); ctx.translate(W / 2 + shx, H / 2 + shy); ctx.rotate(theta); ctx.scale(zs, zs); ctx.translate(-W / 2, -H / 2);
+  const ext = spinT > 0 && spinT < 1;
+  const X0 = ext ? -W * .9 : -20, X1 = ext ? W * 1.9 : W + 20, Y0 = ext ? -H * .9 : -20, Y1 = ext ? H * 1.9 : H + 20;
+  sky(s, dusk, dawn, morning, X0, Y0, X1, Y1);
+  if (s < 2.6) daySun(s, dusk);
+  if (wallA < .999) { clouds(s, dusk, morning, dawnComp); ridges(s, dusk, dawn, morning, dawnComp, X0, X1, Y1); }
+  if (wallA > .001) { ctx.fillStyle = rgba(caveWall(s), wallA); ctx.fillRect(X0, Y0, X1 - X0, Y1 - Y0); }
+  caveShell(s, closeC, closeF, X0, X1, Y0, Y1);
+  ctx.restore();
+  const caveOn = wallA > .02;
+  if (caveOn) { ribs(s); lintel(s, false); masksBack(s); lightPools(s); wanderersBack(s); }
+  figureAll(s, closeF);
+  flockDraw(s);
+  if (fogA > .001) fogPass(s, fogA);
+  if (caveOn) {
+    carvings(s); lintel(s, true); dustFront(s); eyesFront(s); masksFront(s); shadowFront(s); gapFront(s); wanderersFront(s); dogFront(s);
+    if (fogA > .05) { ctx.globalCompositeOperation = 'lighter'; glow(S.hand.x, S.hand.y, M * .05, [255, 196, 120], .85 * fogA); ctx.fillStyle = 'rgba(255,240,206,' + (.9 * fogA).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(S.hand.x, S.hand.y, Math.max(1.5, M * .006), 0, TAU); ctx.fill(); ctx.globalCompositeOperation = 'source-over'; }
+  }
+  goldSun(s, morning);
+  motesDraw();
+}
+
+/* ---------- HUD ---------- */
+const hud = $('#hud'), dot = $('.ring-dot'), hAlt = $('.hud-alt'), hStage = $('.hud-stage');
+const nf = new Intl.NumberFormat('en-US');
+function ringFrac(s) { if (s < 2.3) return .25 * s / 2.3; if (s < 9.5) return .25 + .25 * (s - 2.3) / 7.2; if (s < 10.2) return .5 + .25 * (s - 9.5) / .7; return Math.min(1, .75 + .25 * (s - 10.2) / 1.1); }
+function stageName(s) {
+  if (s < 1.95) return 'The Call to Adventure'; if (s < 2.6) return 'Crossing the Threshold'; if (s < 3.9) return 'The Belly of the Whale';
+  if (s < 7.9) return 'The Road of Trials'; if (s < 8.95) return 'The Threshold Guardian'; if (s < 9.95) return 'The Ultimate Boon';
+  if (s < 10.75) return 'The Return Threshold'; if (s < 11.4) return 'Master of the Two Worlds'; return 'Freedom to Live';
+}
+let lastStage = '', lastAlt = '', lastInk = '';
+function updHud() {
+  const s = S.s, a = ringFrac(s) * TAU;
+  dot.setAttribute('cx', (20 + Math.sin(a) * 14).toFixed(2)); dot.setAttribute('cy', (20 - Math.cos(a) * 14).toFixed(2));
+  const st = stageName(s); if (st !== lastStage) { hStage.textContent = st; lastStage = st; hud.classList.toggle('done', s >= 11.4); }
+  let alt;
+  if (s < 2.0) alt = '▲ ' + nf.format(Math.round(lerp(1904, 2918, ss(.35, 1.95, s)))) + ' m';
+  else if (s < 2.9) alt = '▼ ' + nf.format(Math.max(0, Math.round(lerp(2918, 0, ss(2.0, 2.85, s)) + (reduce ? 0 : (Math.random() - .5) * 260)))) + ' m';
+  else if (s < 10.0) alt = '↕ ? m';
+  else if (s < 10.8) alt = '▲ ' + nf.format(Math.round(lerp(0, 2918, ss(10.0, 10.75, s)))) + ' m';
+  else alt = '▲ 2,918 m';
+  if (alt !== lastAlt) { hAlt.textContent = alt; lastAlt = alt; }
+  const ink = s < 1.97 ? 'day' : s < 10.35 ? 'cave' : s < 11.0 ? 'dawn' : 'morning';
+  if (ink !== lastInk) { root.dataset.ink = ink; lastInk = ink; }
+}
+const plungeH = $('#h-plunge');
+function updPlungeHead() {
+  if (!plungeH || reduce) return;
+  const t = ss(1.85, 2.9, S.s), deg = Math.sin(t * Math.PI) * Math.sin(t * Math.PI * 2.5) * 16;
+  plungeH.style.transform = Math.abs(deg) < .01 ? '' : 'rotate(' + deg.toFixed(2) + 'deg)';
+}
+
+/* ---------- sound (off until asked for) ---------- */
+const Snd = { on: false, ctx: null, nextDrip: 0, nextBeat: 0, mixT: 0, tmp: 0 };
+function sndInit() {
+  if (Snd.ctx) return true;
+  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+  let a; try { a = new AC(); } catch (_) { return false; }
+  Snd.ctx = a;
+  const master = a.createGain(); master.gain.value = 0; master.connect(a.destination); Snd.master = master;
+  const dly = a.createDelay(1.2); dly.delayTime.value = .27; const fb = a.createGain(); fb.gain.value = .4; const wet = a.createGain(); wet.gain.value = .1;
+  dly.connect(fb); fb.connect(dly); dly.connect(wet); wet.connect(master); Snd.dly = dly; Snd.wet = wet;
+  const len = a.sampleRate * 2, buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1; Snd.noise = buf;
+  const wn = a.createBufferSource(); wn.buffer = buf; wn.loop = true;
+  const wf = a.createBiquadFilter(); wf.type = 'bandpass'; wf.frequency.value = 520; wf.Q.value = .6;
+  const wg = a.createGain(); wg.gain.value = 0; wn.connect(wf); wf.connect(wg); wg.connect(master); wn.start(); Snd.wf = wf; Snd.wg = wg;
+  const dg = a.createGain(); dg.gain.value = 0; dg.connect(master); dg.connect(dly); Snd.dg = dg;
+  [[55, 'triangle', .5], [82.41, 'sine', .28], [110, 'sine', .12]].forEach(([f, t, v]) => { const o = a.createOscillator(); o.type = t; o.frequency.value = f; const g = a.createGain(); g.gain.value = v; o.connect(g); g.connect(dg); o.start(); });
+  const dn = a.createBufferSource(); dn.buffer = buf; dn.loop = true; const dfl = a.createBiquadFilter(); dfl.type = 'lowpass'; dfl.frequency.value = 170; const dng = a.createGain(); dng.gain.value = .55; dn.connect(dfl); dfl.connect(dng); dng.connect(dg); dn.start();
+  const pg = a.createGain(); pg.gain.value = 0; pg.connect(master); pg.connect(dly); Snd.pg = pg;
+  [146.83, 220, 293.66, 369.99, 440, 659.25].forEach((f, i) => { const o = a.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.detune.value = i % 2 ? 5 : -5; const g = a.createGain(); g.gain.value = .16 / (1 + i * .35); o.connect(g); g.connect(pg); o.start(); });
+  return true;
+}
+function quiet() { if (!Snd.ctx) return; const t = Snd.ctx.currentTime; [Snd.wg, Snd.dg, Snd.pg].forEach(g => g.gain.setTargetAtTime(0, t, .2)); }
+function audioMix() {
+  if (!Snd.on || !Snd.ctx || T - Snd.mixT < .1) return; Snd.mixT = T;
+  const a = Snd.ctx, t = a.currentTime, s = S.s;
+  const dayA = (1 - ss(2.2, 2.9, s)) + ss(10.4, 11.2, s) * .55, caveA = ss(2.6, 3.3, s) * (1 - ss(9.95, 10.6, s));
+  Snd.wg.gain.setTargetAtTime(.085 * dayA * (.65 + .35 * Math.sin(T * .37)), t, .3);
+  Snd.wf.frequency.setTargetAtTime(380 + 320 * N6(T * .4), t, .4);
+  Snd.dg.gain.setTargetAtTime(.2 * caveA * (1 + .4 * bell(s, 7.85, 8.1, 8.95, 9.2)), t, .5);
+  Snd.wet.gain.setTargetAtTime(.1 + .3 * caveA, t, .5);
+  Snd.pg.gain.setTargetAtTime(.13 * ss(10.0, 10.9, s), t, .9);
+  if (caveA > .5 && T > Snd.nextDrip) { drip(); Snd.nextDrip = T + R(1.4, 4.2); }
+  if (bell(s, 5.9, 6.1, 6.9, 7.1) > .5 && S.rooms[2].ts < 0 && T > Snd.nextBeat) { thump(); Snd.nextBeat = T + 1.15; }
+}
+function env(g, t, peak, att, dec) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + att); g.gain.exponentialRampToValueAtTime(.0005, t + att + dec); }
+function drip() { const a = Snd.ctx, t = a.currentTime, o = a.createOscillator(), g = a.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(R(1300, 1700), t); o.frequency.exponentialRampToValueAtTime(R(520, 700), t + .12); env(g, t, .06, .004, .26); o.connect(g); g.connect(Snd.master); g.connect(Snd.dly); o.start(t); o.stop(t + .3); }
+function thump() { const a = Snd.ctx, t = a.currentTime; [0, .22].forEach((d, i) => { const o = a.createOscillator(), g = a.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(62, t + d); o.frequency.exponentialRampToValueAtTime(38, t + d + .16); env(g, t + d, i ? .18 : .28, .008, .22); o.connect(g); g.connect(Snd.master); o.start(t + d); o.stop(t + d + .3); }); }
+function growlSnd() {
+  const a = Snd.ctx, t = a.currentTime;
+  const n = a.createBufferSource(); n.buffer = Snd.noise; const f = a.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 240;
+  const am = a.createGain(); am.gain.value = .5; const lfo = a.createOscillator(); lfo.frequency.value = 23; const lg = a.createGain(); lg.gain.value = .5; lfo.connect(lg); lg.connect(am.gain);
+  const g = a.createGain(); env(g, t, .5, .25, 1.4); n.connect(f); f.connect(am); am.connect(g); g.connect(Snd.master); g.connect(Snd.dly);
+  n.start(t); n.stop(t + 1.8); lfo.start(t); lfo.stop(t + 1.8);
+  const o = a.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(72, t); o.frequency.linearRampToValueAtTime(50, t + 1.4);
+  const of = a.createBiquadFilter(); of.type = 'lowpass'; of.frequency.value = 190; const og = a.createGain(); env(og, t, .17, .3, 1.3);
+  o.connect(of); of.connect(og); og.connect(Snd.master); o.start(t); o.stop(t + 1.8);
+}
+function chime(soft) { const a = Snd.ctx, t = a.currentTime; (soft ? [659.25, 987.77] : [523.25, 659.25, 783.99, 1046.5]).forEach((f, i) => { const o = a.createOscillator(), g = a.createGain(), st = t + i * .09; o.type = 'sine'; o.frequency.value = f; env(g, st, soft ? .07 : .11, .01, 2.2); o.connect(g); g.connect(Snd.master); g.connect(Snd.dly); o.start(st); o.stop(st + 2.4); }); }
+function pluck(f, st, v, dur) { const a = Snd.ctx, o = a.createOscillator(), o2 = a.createOscillator(), g = a.createGain(), g2 = a.createGain(); o.type = 'triangle'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2; g2.gain.value = .3; env(g, st, v, .006, dur); o.connect(g); o2.connect(g2); g2.connect(g); g.connect(Snd.master); g.connect(Snd.dly); o.start(st); o2.start(st); o.stop(st + dur + .1); o2.stop(st + dur + .1); }
+function lyre() {
+  const a = Snd.ctx, t0 = a.currentTime + .05, e = .17;
+  const bar = [293.66, 349.23, 440, 392, 329.63, 293.66, 261.63];
+  for (let rep = 0; rep < 2; rep++) bar.forEach((f, k) => pluck(rep && k === 6 ? 293.66 : f, t0 + (rep * 7 + k) * e, (k === 0 || k === 2 || k === 4) ? .16 : .1, 1.3));
+  pluck(146.83, t0 + 14 * e, .15, 2.6); pluck(440, t0 + 14 * e, .1, 2.6); pluck(587.33, t0 + 14 * e + .05, .07, 2.6);
+}
+function snd(name) {
+  if (name === 'lyre') { if (!sndInit()) return; Snd.ctx.resume && Snd.ctx.resume(); if (!Snd.on) { const t = Snd.ctx.currentTime; Snd.master.gain.cancelScheduledValues(t); Snd.master.gain.setTargetAtTime(.6, t, .02); clearTimeout(Snd.tmp); Snd.tmp = setTimeout(() => { if (!Snd.on) Snd.master.gain.setTargetAtTime(0, Snd.ctx.currentTime, .3); }, 4800); } lyre(); return; }
+  if (!Snd.on || !Snd.ctx) return;
+  if (name === 'growl') growlSnd(); else if (name === 'heart') thump(); else if (name === 'chime') chime(false); else if (name === 'soft') chime(true);
+}
+const sndBtn = $('.hud-snd');
+sndBtn.addEventListener('click', () => {
+  if (!sndInit()) { sndBtn.disabled = true; return; }
+  Snd.ctx.resume && Snd.ctx.resume();
+  Snd.on = !Snd.on; clearTimeout(Snd.tmp);
+  const t = Snd.ctx.currentTime; Snd.master.gain.cancelScheduledValues(t); Snd.master.gain.setTargetAtTime(Snd.on ? .7 : 0, t, .15);
+  if (!Snd.on) quiet(); Snd.mixT = 0;
+  sndBtn.setAttribute('aria-pressed', String(Snd.on)); $('.snd-state', sndBtn).textContent = Snd.on ? 'On' : 'Off';
+});
+
+/* ---------- interactions ---------- */
+function show(el) { if (!el) return; el.hidden = false; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); requestAnimationFrame(measure); }
+function hide(el) { if (!el) return; el.hidden = true; el.classList.remove('show'); }
+function addGold(x, y) {
+  S.gold = Math.min(4, S.gold + 1); $('.gnum').textContent = S.gold;
+  const g = $('.hud-gold'); g.setAttribute('aria-label', 'Gold found: ' + S.gold + ' of 4'); g.classList.remove('flash'); void g.offsetWidth; g.classList.add('flash');
+  if (!reduce) spawnMotes(x, y, 26);
+  updTally();
+}
+function updTally() { $('.tally').innerHTML = S.gold >= 4 ? 'You brought up <b>✦ 4</b> of 4.' : 'You brought up <b>✦ ' + S.gold + '</b> of 4. The rest is still down there.'; }
+const roomCenter = i => [[wide ? .7 * W : .5 * W, H * .45], [wide ? .78 * W : .5 * W, H * .4], [wide ? .7 * W : .5 * W, H * .5]][i];
+$$('.ask').forEach(b => b.addEventListener('click', () => {
+  const i = +b.dataset.room, st = S.rooms[i], card = b.closest('.ask-card'); if (st.seek) return;
+  if (b.dataset.kind === 'chew') {
+    if (!st.chew) st.tc = T; st.chew = 1; b.setAttribute('aria-pressed', 'true');
+    const ans = $('.a-chew', card); show(ans); S.flare = 1; S.shake = reduce ? 0 : .7; snd('growl'); say(ans.textContent.replace(/\s+/g, ' ').trim());
+  } else {
+    st.seek = 1; st.ts = T; b.setAttribute('aria-pressed', 'true');
+    hide($('.a-chew', card)); const ans = $('.a-seek', card); show(ans);
+    $$('.ask', card).forEach(x => { x.disabled = true; });
+    const c = roomCenter(i); addGold(c[0], c[1]); snd('chime');
+    ans.focus({ preventScroll: true }); say(ans.textContent.replace(/\s+/g, ' ').trim());
+  }
+  paintSoon();
+}));
+$$('.light-btn').forEach(b => b.addEventListener('click', () => {
+  const i = +b.dataset.w; if (S.lights[i] > 0) return; S.lights[i] = T;
+  b.disabled = true; b.textContent = 'Light left'; const said = $('.w-said', b.closest('.wanderer')); show(said); say(said.textContent); snd('soft'); paintSoon();
+}));
+function settle(i) {
+  if (S.dog[i] > 0) return; S.dog[i] = T;
+  const head = $('.head[data-h="' + i + '"]'); const btn = $('button', head); btn.disabled = true;
+  const said = $('.h-said', head); show(said); say(said.textContent.replace(/\s+/g, ' ').trim());
+  if (i === 1) S.honeyT = T;
+  if (i === 2) { S.singT = T; for (let k = 0; k < 9; k++) notes.push({ t0: T + k * .22, c: k % 3 ? '♪' : '♫', ph: R(0, TAU) }); }
+  if (S.dog.every(t => t > 0)) { S.dogDown = T + .5; setTimeout(() => { const dd = $('.dog-done'); show(dd); snd('chime'); say(dd.textContent); }, reduce ? 0 : 900); }
+  paintSoon();
+}
+$('.dog-btn[data-h="1"]').addEventListener('click', () => { settle(1); snd('soft'); });
+$('.dog-btn[data-h="2"]').addEventListener('click', () => { settle(2); snd('lyre'); });
+function makeHold(btn, dur, onProg, onDone) {
+  let p = 0, holding = false, done = false, t0 = 0, downAt = 0, raf = 0;
+  const tick = now => { if (!holding || done) return; const dt = Math.min(.05, (now - t0) / 1000); t0 = now; p = Math.min(1, p + dt / dur); onProg(p); if (p >= 1) { done = true; holding = false; btn.classList.remove('is-holding'); onDone(); return; } raf = requestAnimationFrame(tick); };
+  const start = () => { if (done || holding) return; holding = true; downAt = t0 = performance.now(); btn.classList.add('is-holding'); raf = requestAnimationFrame(tick); };
+  const stop = () => { if (!holding) return; holding = false; btn.classList.remove('is-holding'); cancelAnimationFrame(raf); if (performance.now() - downAt < 240 && !done) { p = Math.min(1, p + .2); onProg(p); if (p >= 1) { done = true; onDone(); } } };
+  btn.addEventListener('pointerdown', e => { if (e.button > 0) return; e.preventDefault(); if (btn.setPointerCapture) try { btn.setPointerCapture(e.pointerId); } catch (_) {} start(); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => btn.addEventListener(ev, stop));
+  btn.addEventListener('keydown', e => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); start(); } });
+  btn.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); stop(); } });
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+  return { reset() { p = 0; done = false; holding = false; onProg(0); } };
+}
+const carryBtn = $('.dog-hold'), carryStatus = $('#carry-status');
+const carryHold = makeHold(carryBtn, 2.4, p => { S.carry = p; carryBtn.style.setProperty('--p', p.toFixed(3)); if (p > 0 && p < 1) carryStatus.textContent = p < .5 ? 'Keep lifting.' : 'Almost up into the light.'; paintSoon(); }, () => { carryStatus.textContent = 'Up in the light.'; carryBtn.disabled = true; settle(0); snd('soft'); });
+const digBtn = $('.dig'), digStatus = $('#dig-status');
+const digHold = makeHold(digBtn, 3.2, p => {
+  S.dig = p; digBtn.style.setProperty('--p', p.toFixed(3));
+  if (p > 0 && p < 1) digStatus.textContent = p < .3 ? 'Keep holding.' : p < .65 ? "That's the belt tightening." : 'Almost.';
+  paintSoon();
+}, () => {
+  S.dug = T; digStatus.textContent = 'Got it.'; digBtn.disabled = true;
+  const b = blackSun(); addGold(b.x, b.y); const ans = $('.a-dig'); show(ans); snd('chime'); say(ans.textContent.replace(/\s+/g, ' ').trim());
+});
+const holds = [carryHold, digHold];
+$('#again').addEventListener('click', () => {
+  S.rooms.forEach(r => { r.chew = 0; r.seek = 0; r.tc = -99; r.ts = -99; });
+  S.lights = [-99, -99, -99]; S.dog = [-99, -99, -99]; S.carry = 0; S.dogDown = -99; S.dig = 0; S.dug = -99; S.gold = 0; S.honeyT = -99; S.singT = -99; notes.length = 0; motes.length = 0;
+  $('.gnum').textContent = '0'; $('.hud-gold').setAttribute('aria-label', 'Gold found: 0 of 4');
+  $$('.answer,.w-said,.h-said,.dog-done').forEach(hide);
+  $$('.ask,.light-btn,.dog-btn,.hold').forEach(b => { b.disabled = false; b.removeAttribute('aria-pressed'); });
+  $$('.light-btn').forEach(b => { b.textContent = 'Leave a light'; });
+  carryStatus.textContent = 'Press and hold. Heavy things take a minute.'; digStatus.textContent = "Press and hold. That's the belt.";
+  holds.forEach(h => h.reset()); updTally(); measure();
+  window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+});
+if (coarse) { const lh = $('.lamp-hint'); if (lh) lh.textContent = 'Touch the dark to carry the lamp'; }
+
+/* growls fire when they come into view */
+const io = new IntersectionObserver(es => {
+  for (const e of es) {
+    if (!e.isIntersecting) continue; const el = e.target; if (el.dataset.fired === '1') continue;
+    el.dataset.fired = '1'; el.classList.add('is-on'); S.flare = 1; const q = el.classList.contains('quiet');
+    S.shake = reduce ? 0 : (q ? .25 : .8); snd(q ? 'heart' : 'growl');
+    setTimeout(() => { el.dataset.fired = '0'; el.classList.remove('is-on'); }, 4200);
+  }
+}, { threshold: .6 });
+$$('[data-growl]').forEach(el => io.observe(el));
+
+/* pointer carries the lamp */
+window.addEventListener('pointermove', e => { if (e.pointerType !== 'touch') { S.lamp.x = e.clientX; S.lamp.y = e.clientY; S.lamp.t = T; } }, { passive: true });
+window.addEventListener('pointerdown', e => { S.lamp.x = e.clientX; S.lamp.y = e.clientY; S.lamp.t = T; }, { passive: true });
+window.addEventListener('touchmove', e => { const t = e.touches[0]; if (t) { S.lamp.x = t.clientX; S.lamp.y = t.clientY; S.lamp.t = T; } }, { passive: true });
+
+/* ---------- loop ---------- */
+function step(dt) {
+  S.tgt = storyAt(window.scrollY + H * .5);
+  S.s += (S.tgt - S.s) * (reduce ? 1 : 1 - Math.pow(.0009, dt));
+  if (Math.abs(S.tgt - S.s) < .0005) S.s = S.tgt;
+  const y = window.scrollY; S.walk += Math.abs(y - S.lastY) * .022; S.lastY = y;
+  S.shake = Math.max(0, S.shake - dt * 1.6); S.flare = Math.max(0, S.flare - dt * .45);
+  updFlock(dt); updHud(); updPlungeHead(); audioMix();
+}
+let running = false, tPrev = 0, painting = false;
+function frame(now) { if (!running) return; const dt = Math.min(.05, (now - tPrev) / 1000); tPrev = now; T += dt; step(dt); draw(); requestAnimationFrame(frame); }
+function start() { if (running || reduce) return; running = true; tPrev = performance.now(); requestAnimationFrame(frame); }
+function stop() { running = false; }
+function paintSoon() { if (!reduce || painting) return; painting = true; requestAnimationFrame(() => { painting = false; T += .5; step(.016); draw(); }); }
+document.addEventListener('visibilitychange', () => { if (document.hidden) { stop(); if (Snd.ctx && Snd.ctx.suspend) Snd.ctx.suspend(); } else { start(); if (Snd.on && Snd.ctx && Snd.ctx.resume) Snd.ctx.resume(); } });
+window.addEventListener('scroll', () => { if (reduce) paintSoon(); }, { passive: true });
+let rT = 0;
+window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { resize(); paintSoon(); }, 120); });
+window.addEventListener('load', () => { measure(); paintSoon(); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); paintSoon(); });
+resize(); S.s = S.tgt = storyAt(window.scrollY + H * .5); updHud(); updTally();
+if (reduce) { step(.016); draw(); } else start();
+})();
+</script>
+</body>
+</html>
