@@ -6,3 +6,9 @@
 /writings/the-unseen-one /gallery/the-unseen-one/ 301
 /writings/where-it-was/ /gallery/where-it-was/ 301
 /writings/where-it-was /gallery/where-it-was/ 301
+
+# The Mimics series is Mythmaking: its index, its feed and anything else
+# under the old path move permanently to /writings/mythmaking/.
+/writings/mimics /writings/mythmaking/ 301
+/writings/mimics/ /writings/mythmaking/ 301
+/writings/mimics/* /writings/mythmaking/:splat 301
