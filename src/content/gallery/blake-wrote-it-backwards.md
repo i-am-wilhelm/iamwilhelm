@@ -21,7 +21,7 @@ claude.ai/artifact/3hBdbx7Y71i7fzBMJMMSnC; the same file is on record at
 _incoming/art-scrollies/blake-wrote-it-backwards.html). The mirror-written
 plate, the acid bite, the pull, the hand coloring that makes every copy an
 original, and fourfold vision. The prototype numbers it "Seen · No. 7", after
-The Paranoiac-Critical Method, Applied, which is not hung; on the site it
-follows Monet Invented the Dither (No. 3) and keeps No. 7, so it lines up
-with No. 8 to No. 15, which print their own numbers. Sagittarius, Blake's
+The Paranoiac-Critical Method, Applied (No. 6, hung since, with No. 4 and
+No. 5), and keeps No. 7, so it lines up with No. 8 to No. 15, which print
+their own numbers. Sagittarius, Blake's
 own sign (born 28 November 1757); the plate is the copper taken down.

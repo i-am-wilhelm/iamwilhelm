@@ -1,0 +1,14 @@
+---
+/**
+ * Those Who Heard the Sky: mounted from the page file of the owner's published artifact,
+ * _incoming/elsewhere/those-who-heard-the-sky.html (named in SEEN_SOURCES, src/config/seen.ts).
+ * The page is the file; src/lib/seen.ts documents the few changes made on
+ * the way (self-hosted fonts, share and schema meta, and any per-page
+ * repair). It is a whole document with no wrapper, so nothing above its
+ * sticky stages clips or transforms them.
+ */
+import { seenDocument } from '../../lib/seen';
+const html = await seenDocument('those-who-heard-the-sky');
+---
+
+<Fragment set:html={html} />

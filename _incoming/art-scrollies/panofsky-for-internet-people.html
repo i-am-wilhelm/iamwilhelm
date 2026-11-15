@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panofsky for Internet People</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&family=Anton&display=swap" rel="stylesheet">
+<style>
+:root{ --bg:#0e1014; --bone:#e8e1d2; --brass:#c9a24a; --parch:#d9c7a3; --muted:#8c877c; --ink:#e6dfd0; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:760px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass)}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(44px,12.5vw,118px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em}
+h1 em{font-style:italic;color:var(--brass)}
+.sub{max-width:36ch;margin:0 auto;font-size:19px;color:#cfc8b8;font-style:italic}
+.hint{margin-top:10vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(14,16,20,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(201,162,74,.22);padding:18px 20px 16px;font-size:17.5px}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--brass);display:block;margin-bottom:9px;text-transform:uppercase}
+.card .big{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;font-weight:400}
+.card .big i{color:var(--brass)}
+.strata{position:absolute;left:12px;top:12px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink);pointer-events:none;max-width:min(60vw,300px)}
+.strata div{opacity:.25;transition:opacity .5s;padding:4px 0;border-left:2px solid rgba(201,162,74,.25);padding-left:9px;margin-bottom:5px}
+.strata div.on{opacity:1;border-left-color:var(--brass)}
+.strata b{display:block;color:var(--brass);font-weight:500;letter-spacing:.2em;font-size:9.5px;margin-bottom:2px}
+
+.end{padding:16vh 22px 20vh;text-align:center;max-width:720px;margin:0 auto}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,8vw,64px);line-height:1;margin:0 0 .5em}
+.end p{color:#cfc8b8;max-width:46ch;margin:0 auto 1em}
+.end .colophon{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7vh;line-height:1.8}
+.end .next{display:inline-block;margin-top:3vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);border:1px solid rgba(201,162,74,.35);padding:10px 16px;text-decoration:none}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,74,.5),transparent);margin:0 auto;width:60%}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A field guide to reading pictures</div>
+    <h1>Panofsky for<br><em>Internet People</em></h1>
+    <p class="sub">Three layers in every image. You already read all of them, every day, on your phone. Here is the method, named.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · Three strata -->
+<section class="scene" id="s1">
+  <div class="stage"><canvas></canvas>
+    <div class="strata" id="st1"><div><b>Stratum I</b>form: what the eye reports</div><div><b>Stratum II</b>convention: what culture adds</div><div><b>Stratum III</b>meaning: why this, here, now</div></div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">I · Three strata</span><p>Erwin Panofsky, 1939, <i>Studies in Iconology</i>. Every picture has three layers, and most people stop at the first. Start there: thirteen figures, one long table, bread, cups. That is everything the eye reports.</p></div></div>
+    <div class="step"><div class="card"><p>Stratum two needs culture. If you grew up anywhere near a church you said it before the halo appeared: the Last Supper. The same thirteen shapes, plus a story you were handed.</p></div></div>
+    <div class="step"><div class="card"><p>Stratum three asks why this picture, this way, this century. Why the lines of the room converge on one head. Why it went on a dining-hall wall so that monks ate beneath it. Panofsky called this layer iconology and treated it as the real subject of art history.</p></div></div>
+    <div class="step"><div class="card"><p>Irving Lavin wrote that Panofsky's genius was his insistence on meaning in places where no one suspected there was any. Keep that sentence. It is the whole blog.</p></div></div>
+  </div>
+</section>
+
+<!-- II · The meme -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas></canvas>
+    <div class="strata" id="st2"><div><b>Stratum I</b>a cat on a laptop</div><div><b>Stratum II</b>image macro · setup / punchline · the universal interrupter</div><div><b>Stratum III</b>a decade joking together about never getting to the work</div></div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">II · The meme</span><p>Now the same three strata on a picture you actually look at. Stratum one: a cat sitting on a laptop.</p></div></div>
+    <div class="step"><div class="card"><p>Stratum two: an image macro. You know the dialect: bold white type with a black outline, setup on top, the picture is the punchline. You know a cat on a keyboard is the universal interrupter. None of that is in the pixels. It is in you.</p></div></div>
+    <div class="step"><div class="card"><p>Stratum three: a decade of people joking, together, about never getting to the work. The format carried a mood. Historians will read it the way Panofsky read altarpieces.</p></div></div>
+    <div class="step"><div class="card"><p>Tap the picture to see it the way someone without the codes sees it. That is stratum one, alone.</p></div></div>
+  </div>
+</section>
+
+<!-- III · Disguised symbolism -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">III · Disguised symbolism</span><p>Panofsky's second big idea, from <i>Early Netherlandish Painting</i> (1953): in fifteenth-century Flemish pictures, ordinary household objects are also words. He called it disguised symbolism.</p></div></div>
+    <div class="step"><div class="card"><p>His example was Robert Campin's Mérode Altarpiece. A pot of lilies sits on a table, perfectly at ease. Panofsky's point: without hundreds of other Annunciations to compare it to, nobody could guess from this one that the lilies mean anything at all.</p></div></div>
+    <div class="step"><div class="card"><p>Lilies: purity. The candle, just snuffed, smoke still rising: the natural light yielding to the divine one entering the room. The basin and towel: cleansing. A merchant's parlour, and every object in it is praying.</p></div></div>
+    <div class="step"><div class="card"><p>The whole room is an Annunciation hiding as a still life. The viewer who knows, knows. The viewer who doesn't gets a very good painting of a table.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · Build for three -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">IV · Build for three</span><p>This is the operating rule for every image on this site. Stratum one: clean and beautiful with no key at all. Stratum two: the cultured reader catches the quotation. Stratum three: a private signature only the initiated recognize.</p></div></div>
+    <div class="step"><div class="card"><p>Peter Burke's warning belongs here. The lazy version of Panofsky is a matching game, symbol to meaning. The third layer is where the work is. Ask why this sign, here, for these people, now.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">Meaning in places where <i>nobody suspected</i> there was any.</p></div></div>
+  </div>
+</section>
+
+<section class="end">
+  <hr class="rule">
+  <h2 style="margin-top:10vh">Three layers.<br>Every time.</h2>
+  <p>Form, convention, meaning. Panofsky built the ladder for Renaissance altarpieces; it climbs just as well on an image macro, a logo, a campaign poster, a scroll page. The first rung is free. The second you earn by paying attention to a culture. The third is the one worth writing about, and the one this blog is for.</p>
+  <p>Every picture here is built to hold all three.</p>
+  <a class="next" href="#hero">Read it again &uarr;</a>
+  <div class="colophon">
+    Drawn in code. Thirteen silhouettes, one cat, one pot of lilies. No images loaded.<br>
+    Next: <i>Root Rectangles in Desmos</i> &middot; Previous: <i>Monet Invented the Dither</i>
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function hash(i, j, k) { let n = (i * 374761393 + j * 668265263 + k * 1274126177) | 0; n = Math.imul(n ^ (n >>> 13), 1274126177); return ((n ^ (n >>> 16)) >>> 0) / 4294967295; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  let resized = false; if (c.width !== W || c.height !== H) { c.width = W; c.height = H; resized = true; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h, dpr, resized };
+}
+const MONO = `'IBM Plex Mono', monospace`;
+function label(ctx, text, x, y, a, align = 'left', size = 10.5) {
+  ctx.font = `${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle';
+  ctx.fillStyle = `rgba(230,223,208,${a})`; ctx.fillText(text, x, y);
+}
+function leader(ctx, x0, y0, x1, y1, a, f = 1) {
+  ctx.strokeStyle = `rgba(201,162,74,${a})`; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(lerp(x0, x1, f), lerp(y0, y1, f)); ctx.stroke();
+  ctx.fillStyle = `rgba(201,162,74,${a})`; ctx.beginPath(); ctx.arc(x0, y0, 2.2, 0, TAU); ctx.fill();
+}
+function setStrata(el, level) { [...el.children].forEach((d, i) => d.classList.toggle('on', i <= level)); }
+
+/* ---------- hero: three faint planes ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC);
+  ctx.clearRect(0, 0, w, h);
+  const cx = w / 2, cy = h * 0.5, W = Math.min(w * 0.9, 520), H = W * 0.22;
+  for (let i = 0; i < 3; i++) {
+    const y = cy + (i - 1) * H * 0.9 + Math.sin(t * 0.0006 + i) * 4;
+    ctx.strokeStyle = `rgba(201,162,74,${(0.12 + 0.06 * i) * fade})`; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx - W / 2 + H * 0.5, y - H / 2); ctx.lineTo(cx + W / 2 + H * 0.5, y - H / 2); ctx.lineTo(cx + W / 2 - H * 0.5, y + H / 2); ctx.lineTo(cx - W / 2 - H * 0.5, y + H / 2); ctx.closePath(); ctx.stroke();
+  }
+}
+
+/* ---------- scene 1: thirteen at a table ---------- */
+const s1 = document.querySelector('#s1 canvas'), st1 = document.getElementById('st1');
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(s1);
+  ctx.fillStyle = '#0e1014'; ctx.fillRect(0, 0, w, h);
+  const level = p < 0.36 ? 0 : p < 0.66 ? 1 : 2; setStrata(st1, level);
+  const draw = sstep(ramp(p, 0.02, 0.3));       // forms draw in
+  const conv = sstep(ramp(p, 0.38, 0.56));      // halo, bread, cup, title
+  const icon = sstep(ramp(p, 0.68, 0.9));       // perspective lines, wall, label
+  const cx = w / 2, baseY = h * 0.56;
+  const tableW = Math.min(w * 0.92, 720), tableH = tableW * 0.06;
+  const n = 13, gap = tableW / (n + 0.5), figH = Math.min(tableW * 0.13, h * 0.14);
+  // stratum III: the room, converging on the centre head
+  if (icon > 0) {
+    const vp = { x: cx, y: baseY - tableH - figH * 1.02 };
+    ctx.strokeStyle = `rgba(201,162,74,${0.35 * icon})`; ctx.lineWidth = 1;
+    for (let i = 0; i <= 8; i++) {
+      const u = -1 + i / 4; const fx = cx + u * w * 0.9, fy = i % 2 ? h : h * 1.0;
+      ctx.beginPath(); ctx.moveTo(fx, h); ctx.lineTo(lerp(fx, vp.x, icon), lerp(h, vp.y, icon)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(fx, 0); ctx.lineTo(lerp(fx, vp.x, icon), lerp(0, vp.y, icon)); ctx.stroke();
+    }
+    // coffered ceiling hints
+    for (let k = 1; k <= 4; k++) { const yy = lerp(0, vp.y, k / 5); const hw = w * 0.9 * (1 - k / 5); ctx.beginPath(); ctx.moveTo(cx - hw, yy); ctx.lineTo(cx + hw, yy); ctx.stroke(); }
+    label(ctx, 'REFECTORY WALL · THE DINERS BELOW ATE UNDER IT', cx, vp.y - figH * 0.9, 0.8 * icon, 'center', 10);
+  }
+  // table
+  ctx.fillStyle = `rgba(217,199,163,${0.9 * draw})`;
+  ctx.fillRect(cx - tableW / 2, baseY - tableH, tableW, tableH);
+  ctx.fillStyle = `rgba(160,140,105,${0.9 * draw})`; ctx.fillRect(cx - tableW / 2, baseY, tableW, tableH * 0.35);
+  // figures
+  for (let i = 0; i < n; i++) {
+    const fa = sstep(ramp(draw, i / (n + 2), (i + 2) / (n + 2)));
+    if (fa <= 0) continue;
+    const x = cx + (i - (n - 1) / 2) * gap;
+    const centre = i === 6;
+    const hgt = figH * (centre ? 1.08 : 0.92 + 0.08 * hash(i, 1, 1));
+    const lean = (hash(i, 2, 2) - 0.5) * 0.25 * (centre ? 0 : 1);
+    const top = baseY - tableH - hgt;
+    ctx.fillStyle = `rgba(232,225,210,${0.9 * fa})`;
+    // shoulders
+    ctx.beginPath(); ctx.moveTo(x - gap * 0.42, baseY - tableH); ctx.quadraticCurveTo(x - gap * 0.3 + lean * gap, top + hgt * 0.35, x + lean * gap, top + hgt * 0.3); ctx.quadraticCurveTo(x + gap * 0.3 + lean * gap, top + hgt * 0.35, x + gap * 0.42, baseY - tableH); ctx.closePath(); ctx.fill();
+    // head
+    const hx = x + lean * gap * 1.4, hy = top + hgt * 0.17, hr = hgt * 0.14;
+    if (centre && conv > 0) {
+      const g = ctx.createRadialGradient(hx, hy, hr * 0.8, hx, hy, hr * 3.2);
+      g.addColorStop(0, `rgba(201,162,74,${0.85 * conv})`); g.addColorStop(1, 'rgba(201,162,74,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, hy, hr * 3.2, 0, TAU); ctx.fill();
+      ctx.fillStyle = `rgba(232,225,210,${0.9 * fa})`;
+    }
+    ctx.beginPath(); ctx.arc(hx, hy, hr, 0, TAU); ctx.fill();
+  }
+  // bread and cups on the table
+  for (let i = 0; i < 9; i++) {
+    const x = cx + (i - 4) * gap * 1.45, y = baseY - tableH * 0.5;
+    ctx.fillStyle = i % 2 ? `rgba(120,96,60,${draw})` : `rgba(90,110,130,${draw})`;
+    if (i % 2) { ctx.beginPath(); ctx.ellipse(x, y, gap * 0.22, tableH * 0.22, 0, 0, TAU); ctx.fill(); }
+    else ctx.fillRect(x - gap * 0.08, y - tableH * 0.42, gap * 0.16, tableH * 0.42);
+  }
+  // stratum I labels
+  const l1 = sstep(ramp(p, 0.2, 0.34)) * (1 - conv);
+  if (l1 > 0) {
+    leader(ctx, cx - tableW * 0.46, baseY - tableH / 2, cx - tableW * 0.46, baseY + h * 0.09, l1); label(ctx, '1 TABLE', cx - tableW * 0.46, baseY + h * 0.09 + 10, l1, 'left');
+    leader(ctx, cx + gap * 3, baseY - tableH - figH * 0.6, cx + gap * 3 + 30, baseY + h * 0.06, l1); label(ctx, '13 FIGURES', cx + gap * 3 + 30, baseY + h * 0.06 + 10, l1, 'left');
+    label(ctx, 'BREAD · CUPS', cx, baseY + h * 0.13, l1, 'center');
+  }
+  // stratum II title
+  if (conv > 0) { ctx.font = `italic ${Math.min(42, w * 0.09)}px 'Cormorant Garamond', serif`; ctx.textAlign = 'center'; ctx.fillStyle = `rgba(201,162,74,${conv * (1 - icon * 0.6)})`; ctx.fillText('The Last Supper', cx, baseY + h * 0.14); }
+}
+
+/* ---------- scene 2: the image macro ---------- */
+const s2 = document.querySelector('#s2 canvas'), st2 = document.getElementById('st2');
+const S2 = { plain: false };
+s2.addEventListener('pointerdown', () => { S2.plain = !S2.plain; });
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(s2);
+  ctx.fillStyle = '#0e1014'; ctx.fillRect(0, 0, w, h);
+  const level = p < 0.3 ? 0 : p < 0.6 ? 1 : 2; setStrata(st2, S2.plain ? 0 : level);
+  const conv = S2.plain ? 0 : sstep(ramp(p, 0.3, 0.45));
+  const icon = S2.plain ? 0 : sstep(ramp(p, 0.62, 0.8));
+  // frame
+  const fw = Math.min(w * 0.86, 480), fh = fw * 0.78, fx = (w - fw) / 2, fy = h * 0.5 - fh / 2;
+  ctx.fillStyle = '#d7d2c4'; ctx.fillRect(fx, fy, fw, fh);
+  // "photo": a desk, a laptop, a cat
+  const g = ctx.createLinearGradient(0, fy, 0, fy + fh); g.addColorStop(0, '#b9b3a3'); g.addColorStop(1, '#8e887a');
+  ctx.fillStyle = g; ctx.fillRect(fx, fy, fw, fh);
+  ctx.fillStyle = '#6d5c48'; ctx.fillRect(fx, fy + fh * 0.62, fw, fh * 0.38); // desk
+  // laptop
+  const lx = fx + fw * 0.5, ly = fy + fh * 0.66;
+  ctx.fillStyle = '#2a2d33'; ctx.beginPath(); ctx.moveTo(lx - fw * 0.3, ly); ctx.lineTo(lx + fw * 0.3, ly); ctx.lineTo(lx + fw * 0.34, ly + fh * 0.07); ctx.lineTo(lx - fw * 0.34, ly + fh * 0.07); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#1b1d22'; ctx.fillRect(lx - fw * 0.28, ly - fh * 0.36, fw * 0.56, fh * 0.36);
+  ctx.fillStyle = '#5f8ab5'; ctx.fillRect(lx - fw * 0.26, ly - fh * 0.34, fw * 0.52, fh * 0.32);
+  // keyboard keys
+  ctx.fillStyle = 'rgba(255,255,255,.18)';
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 12; c++) ctx.fillRect(lx - fw * 0.27 + c * fw * 0.046, ly + fh * 0.012 + r * fh * 0.018, fw * 0.036, fh * 0.012);
+  // cat
+  const cxx = lx + fw * 0.02, cy = ly - fh * 0.02, s = fw * 0.16;
+  const breathe = reduce ? 0 : Math.sin(t * 0.002) * s * 0.02;
+  ctx.fillStyle = '#2b2622';
+  ctx.beginPath(); ctx.ellipse(cxx, cy - s * 0.35 + breathe, s * 0.95, s * 0.62, 0, 0, TAU); ctx.fill();         // body
+  ctx.beginPath(); ctx.arc(cxx + s * 0.75, cy - s * 0.95, s * 0.42, 0, TAU); ctx.fill();                          // head
+  ctx.beginPath(); ctx.moveTo(cxx + s * 0.45, cy - s * 1.22); ctx.lineTo(cxx + s * 0.52, cy - s * 1.62); ctx.lineTo(cxx + s * 0.78, cy - s * 1.3); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cxx + s * 1.05, cy - s * 1.22); ctx.lineTo(cxx + s * 0.98, cy - s * 1.62); ctx.lineTo(cxx + s * 0.72, cy - s * 1.3); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#2b2622'; ctx.lineWidth = s * 0.16; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(cxx - s * 0.85, cy - s * 0.3); ctx.quadraticCurveTo(cxx - s * 1.5, cy - s * 0.1 + breathe * 3, cxx - s * 1.35, cy - s * 0.9); ctx.stroke(); // tail
+  // eyes
+  ctx.fillStyle = '#d9c75a';
+  ctx.beginPath(); ctx.ellipse(cxx + s * 0.62, cy - s * 0.98, s * 0.07, s * 0.1, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cxx + s * 0.88, cy - s * 0.98, s * 0.07, s * 0.1, 0, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#1a1612'; ctx.fillRect(cxx + s * 0.61, cy - s * 1.06, s * 0.02, s * 0.16); ctx.fillRect(cxx + s * 0.87, cy - s * 1.06, s * 0.02, s * 0.16);
+  // stratum II: the macro text
+  if (conv > 0) {
+    ctx.font = `${Math.round(fw * 0.085)}px Anton, Impact, 'Arial Black', sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.lineJoin = 'round'; ctx.lineWidth = fw * 0.012; ctx.strokeStyle = `rgba(0,0,0,${conv})`; ctx.fillStyle = `rgba(255,255,255,${conv})`;
+    const top1 = 'WHEN YOU FINALLY SIT DOWN';
+    ctx.strokeText(top1, lx, fy + fh * 0.04); ctx.fillText(top1, lx, fy + fh * 0.04);
+    ctx.textBaseline = 'bottom';
+    const bot = 'TO DO THE WORK';
+    ctx.strokeText(bot, lx, fy + fh - fh * 0.04); ctx.fillText(bot, lx, fy + fh - fh * 0.04);
+  }
+  // stratum III: the mood, as a margin note around the frame
+  if (icon > 0) {
+    ctx.strokeStyle = `rgba(201,162,74,${0.6 * icon})`; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    ctx.strokeRect(fx - 10, fy - 10, fw + 20, fh + 20); ctx.setLineDash([]);
+    label(ctx, 'c. 2008–2014 · SHARED EXHAUSTION AS A FORMAT', w / 2, fy + fh + 34, 0.85 * icon, 'center', 10);
+    label(ctx, 'THE JOKE IS THE SETUP · THE CAT IS THE WORLD', w / 2, fy + fh + 52, 0.7 * icon, 'center', 10);
+  }
+  if (S2.plain) label(ctx, 'STRATUM I ONLY · TAP TO RESTORE THE CODES', w / 2, fy + fh + 34, 0.8, 'center', 10);
+}
+
+/* ---------- scene 3: the parlour ---------- */
+const s3 = document.querySelector('#s3 canvas');
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(s3);
+  ctx.fillStyle = '#0e1014'; ctx.fillRect(0, 0, w, h);
+  const draw = sstep(ramp(p, 0.02, 0.3));
+  const lab = sstep(ramp(p, 0.36, 0.72));
+  const net = sstep(ramp(p, 0.76, 0.94));
+  const tt = reduce ? 0 : t;
+  const W = Math.min(w * 0.92, 560), H = Math.min(h * 0.62, W * 1.1), x0 = (w - W) / 2, y0 = h * 0.5 - H / 2;
+  // room: back wall, floor
+  ctx.fillStyle = `rgba(46,40,34,${draw})`; ctx.fillRect(x0, y0, W, H * 0.7);
+  ctx.fillStyle = `rgba(70,52,34,${draw})`; ctx.fillRect(x0, y0 + H * 0.7, W, H * 0.3);
+  // window with light rays
+  const wx = x0 + W * 0.68, wy = y0 + H * 0.08, ww = W * 0.22, wh = H * 0.4;
+  ctx.fillStyle = `rgba(190,205,215,${0.9 * draw})`; ctx.fillRect(wx, wy, ww, wh);
+  ctx.strokeStyle = `rgba(20,18,16,${draw})`; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(wx + ww / 2, wy); ctx.lineTo(wx + ww / 2, wy + wh); ctx.moveTo(wx, wy + wh / 2); ctx.lineTo(wx + ww, wy + wh / 2); ctx.stroke();
+  // rays (the divine light entering)
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 7; i++) {
+    const a = draw * (0.05 + 0.04 * Math.sin(tt * 0.001 + i));
+    ctx.fillStyle = `rgba(230,210,160,${a})`;
+    ctx.beginPath(); ctx.moveTo(wx + ww * (0.2 + i * 0.1), wy + wh * 0.3); ctx.lineTo(x0 + W * (0.05 + i * 0.09), y0 + H); ctx.lineTo(x0 + W * (0.12 + i * 0.09), y0 + H); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+  // table
+  const tx = x0 + W * 0.12, ty = y0 + H * 0.62, tw = W * 0.5, th = H * 0.05;
+  ctx.fillStyle = `rgba(120,88,52,${draw})`; ctx.fillRect(tx, ty, tw, th);
+  ctx.fillRect(tx + tw * 0.06, ty + th, tw * 0.05, H * 0.3); ctx.fillRect(tx + tw * 0.89, ty + th, tw * 0.05, H * 0.3);
+  // vase of lilies
+  const vx = tx + tw * 0.3, vy = ty;
+  ctx.fillStyle = `rgba(90,110,130,${draw})`; ctx.beginPath(); ctx.moveTo(vx - W * 0.035, vy); ctx.lineTo(vx + W * 0.035, vy); ctx.lineTo(vx + W * 0.025, vy - H * 0.1); ctx.lineTo(vx - W * 0.025, vy - H * 0.1); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = `rgba(80,120,70,${draw})`; ctx.lineWidth = 2;
+  const lilies = [[-0.06, -0.3], [0, -0.36], [0.06, -0.29]];
+  for (const [dx, dy] of lilies) {
+    ctx.beginPath(); ctx.moveTo(vx, vy - H * 0.1); ctx.quadraticCurveTo(vx + dx * W * 0.5, vy + dy * H * 0.6, vx + dx * W, vy + dy * H); ctx.stroke();
+    // trumpet: three petals
+    ctx.fillStyle = `rgba(240,236,222,${draw})`;
+    for (let k = 0; k < 3; k++) { const an = -Math.PI / 2 + (k - 1) * 0.9; ctx.beginPath(); ctx.ellipse(vx + dx * W + Math.cos(an) * W * 0.02, vy + dy * H + Math.sin(an) * W * 0.02, W * 0.012, W * 0.03, an + Math.PI / 2, 0, TAU); ctx.fill(); }
+    ctx.fillStyle = `rgba(201,162,74,${draw})`; ctx.beginPath(); ctx.arc(vx + dx * W, vy + dy * H, W * 0.006, 0, TAU); ctx.fill();
+  }
+  // candlestick, candle just snuffed, smoke rising
+  const cx = tx + tw * 0.72, cy = ty;
+  ctx.fillStyle = `rgba(190,150,80,${draw})`; ctx.fillRect(cx - W * 0.02, cy - H * 0.02, W * 0.04, H * 0.02); ctx.fillRect(cx - W * 0.006, cy - H * 0.06, W * 0.012, H * 0.04);
+  ctx.fillStyle = `rgba(240,232,210,${draw})`; ctx.fillRect(cx - W * 0.01, cy - H * 0.16, W * 0.02, H * 0.1);
+  ctx.fillStyle = `rgba(40,30,20,${draw})`; ctx.fillRect(cx - W * 0.002, cy - H * 0.175, W * 0.004, H * 0.015);
+  ctx.strokeStyle = `rgba(200,200,200,${0.5 * draw})`; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(cx, cy - H * 0.175);
+  for (let k = 1; k <= 12; k++) { const yy = cy - H * 0.175 - k * H * 0.018; ctx.lineTo(cx + Math.sin(k * 0.9 + tt * 0.002) * W * 0.012 * k * 0.3, yy); }
+  ctx.stroke();
+  // niche with basin and towel
+  const nx = x0 + W * 0.08, ny = y0 + H * 0.14;
+  ctx.fillStyle = `rgba(28,24,20,${draw})`; ctx.fillRect(nx, ny, W * 0.16, H * 0.2);
+  ctx.fillStyle = `rgba(150,160,170,${draw})`; ctx.beginPath(); ctx.ellipse(nx + W * 0.08, ny + H * 0.16, W * 0.05, H * 0.02, 0, 0, TAU); ctx.fill();
+  ctx.fillStyle = `rgba(235,230,215,${draw})`; ctx.fillRect(nx + W * 0.18, ny + H * 0.02, W * 0.035, H * 0.16);
+  // labels, one by one
+  const items = [
+    { x: vx, y: vy - H * 0.3, lx: x0 + W * 0.02, ly: y0 - 18, text: 'LILIES · PURITY' },
+    { x: cx, y: cy - H * 0.26, lx: x0 + W * 0.98, ly: y0 - 18, text: 'SNUFFED CANDLE · THE NATURAL LIGHT YIELDS', align: 'right' },
+    { x: nx + W * 0.19, y: ny + H * 0.1, lx: x0 - 4, ly: y0 + H * 0.38, text: 'BASIN · TOWEL · CLEANSING' },
+    { x: wx + ww * 0.5, y: wy + wh * 0.3, lx: x0 + W * 0.98, ly: y0 + H * 0.56, text: 'LIGHT ENTERING · THE VISITOR', align: 'right' },
+  ];
+  items.forEach((it, i) => {
+    const a = sstep(ramp(lab, i / 4, (i + 1) / 4)); if (a <= 0) return;
+    leader(ctx, it.x, it.y, it.lx, it.ly, a, a);
+    if (a > 0.9) label(ctx, it.text, it.lx, it.ly + (it.ly < y0 ? -10 : 12), a, it.align || 'left', 9.5);
+  });
+  // the net: everything connected, one word
+  if (net > 0) {
+    ctx.strokeStyle = `rgba(201,162,74,${0.5 * net})`; ctx.lineWidth = 1;
+    for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) { ctx.beginPath(); ctx.moveTo(items[i].x, items[i].y); ctx.lineTo(lerp(items[i].x, items[j].x, net), lerp(items[i].y, items[j].y, net)); ctx.stroke(); }
+    ctx.font = `italic ${Math.min(46, w * 0.1)}px 'Cormorant Garamond', serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = `rgba(201,162,74,${net})`; ctx.fillText('Annunciation', w / 2, y0 + H + 44);
+  }
+}
+
+/* ---------- scene 4: three planes ---------- */
+const s4 = document.querySelector('#s4 canvas');
+const BASE = 0.19, TERMS = [[-0.09, 0.93, 0.12], [0.05, 0.42, 0.10], [0.14, 0.12, 0.07], [0.045, -0.05, 0.035], [0.045, -0.15, 0.04], [0.07, -0.32, 0.08], [-0.07, -0.50, 0.07], [0.12, -0.85, 0.12]];
+function profile(y) { let r = BASE; for (const [a, mu, s] of TERMS) { const d = (y - mu) / s; r += a * Math.exp(-d * d); } return r; }
+function vasePath(cx, cy, S) { const p = new Path2D(), N = 120; for (let i = 0; i <= N; i++) { const y = 0.9 - 1.8 * i / N; const X = cx + profile(y) * S, Y = cy - y * S; i ? p.lineTo(X, Y) : p.moveTo(X, Y); } for (let i = N; i >= 0; i--) { const y = 0.9 - 1.8 * i / N; p.lineTo(cx - profile(y) * S, cy - y * S); } p.closePath(); return p; }
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(s4);
+  ctx.fillStyle = '#0e1014'; ctx.fillRect(0, 0, w, h);
+  const reveal = sstep(ramp(p, 0.02, 0.25));
+  const focus = clamp(ramp(p, 0.2, 0.85) * 2, 0, 2);     // 0..2 across the three planes
+  const cx = w / 2, cy = h * 0.47;
+  const PW = Math.min(w * 0.62, 400), PH = PW * 0.46, gapY = PH * 1.3, skew = PW * 0.18;
+  const names = ['I · FORM', 'II · CONVENTION', 'III · MEANING'];
+  const subs = ['a curve', 'two faces · a vase · Janus', 'a degree · a date · a wordform'];
+  for (let i = 0; i < 3; i++) {
+    const y = cy + (1 - i) * gapY;                  // III on top
+    const act = clamp(1 - Math.abs(focus - i), 0, 1);
+    const a = reveal * (0.18 + 0.82 * act);
+    // plane
+    ctx.fillStyle = `rgba(232,225,210,${0.03 + 0.05 * act})`;
+    ctx.strokeStyle = `rgba(201,162,74,${0.35 + 0.65 * act})`; ctx.lineWidth = 1 + act;
+    ctx.beginPath(); ctx.moveTo(cx - PW / 2 + skew, y - PH / 2); ctx.lineTo(cx + PW / 2 + skew, y - PH / 2); ctx.lineTo(cx + PW / 2 - skew, y + PH / 2); ctx.lineTo(cx - PW / 2 - skew, y + PH / 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // the glyph on the plane, in perspective-ish squash
+    const S = PH * 0.42;
+    ctx.save(); ctx.translate(cx, y); ctx.transform(1, 0, -0.35, 0.78, 0, 0); ctx.translate(-cx, -y);
+    const path = vasePath(cx, y, S);
+    if (i === 0) { ctx.strokeStyle = `rgba(232,225,210,${a})`; ctx.lineWidth = 1.5; ctx.stroke(path); }
+    if (i === 1) {
+      const p2 = new Path2D(); p2.rect(cx - PW, y - PH, PW * 2, PH * 2); p2.addPath(path);
+      ctx.fillStyle = `rgba(232,225,210,${0.75 * a})`; ctx.fill(p2, 'evenodd');
+      ctx.strokeStyle = `rgba(201,162,74,${a})`; ctx.lineWidth = 1; ctx.stroke(path);
+    }
+    if (i === 2) {
+      ctx.fillStyle = `rgba(232,225,210,${0.75 * a})`; ctx.fill(path);
+      // signature: tick ring and a degree
+      ctx.strokeStyle = `rgba(201,162,74,${a})`; ctx.lineWidth = 1;
+      for (let k = 0; k < 36; k++) { const an = k * TAU / 36; const r0 = S * 1.05, r1 = k % 3 ? S * 1.1 : S * 1.18; ctx.beginPath(); ctx.moveTo(cx + Math.cos(an) * r0, y + Math.sin(an) * r0); ctx.lineTo(cx + Math.cos(an) * r1, y + Math.sin(an) * r1); ctx.stroke(); }
+    }
+    ctx.restore();
+    // name above each plane
+    ctx.font = `${10.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = `rgba(201,162,74,${0.35 + 0.65 * act})`; ctx.fillText(names[i], cx, y - PH / 2 - 22);
+    ctx.fillStyle = `rgba(230,223,208,${0.25 + 0.75 * act})`; ctx.fillText(i === 2 ? subs[i] + '  ·  302.00°' : subs[i], cx, y - PH / 2 - 9);
+  }
+}
+
+/* ---------- loop ---------- */
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 },
+  { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 },
+  { el: document.getElementById('s4'), render: renderS4 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight;
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+    s.render(p, t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Those Who Heard the Sky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Plan: the scrolly system's graph paper turned to night, Desmos strokes lit for the dark,
+     paper index cards over the sky, and a dawn back to paper for the DNA movement and the close.
+     Display Cormorant Garamond, body Newsreader, labels and equations IBM Plex Mono.
+     Layout: night hero, five pinned stages with cards scrolling over them, paper end section.
+     One visual world, single theme by choice. */
+  --bg:#f3efe4; --night:#101329; --ink:#2a2740; --star:#eef1ff; --sky:#9db8ff;
+  --blue:#2d70b3; --orange:#fa7e19; --green:#388c46; --purple:#6042a6; --red:#c74440;
+  --gold:#8a6a1f; --brass:#e2c275; --muted:#7a7568;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:8vh 24px 11vh;overflow:hidden;background:var(--night);color:var(--star)}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:780px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);max-width:60ch;margin:0 auto;line-height:1.7;text-wrap:balance}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(52px,12.5vw,118px);line-height:.9;margin:.28em 0 .3em;letter-spacing:-.02em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--sky)}
+.sub{max-width:36ch;margin:0 auto;font-size:19px;color:#c6cbea;font-style:italic;text-wrap:balance}
+.key{list-style:none;margin:3.5vh auto 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#aab0d6}
+.key li{display:flex;align-items:center;gap:8px}
+.snd-main{margin-top:3.5vh;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--night);background:var(--brass);border:1px solid var(--brass);border-radius:999px;padding:12px 22px;cursor:pointer}
+.snd-main[aria-pressed="true"]{background:transparent;color:var(--brass)}
+.snd-main:disabled{opacity:.6;cursor:default}
+.snd-note{margin:12px auto 0;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#8f95bd;max-width:44ch}
+.hint{margin-top:4.5vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:#8f95bd}
+
+.tg{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;border:1px solid currentColor;border-radius:2px;padding:2px 6px 1px;white-space:nowrap;line-height:1.5}
+.tg.m{color:#2c7a3b}.tg.c{color:var(--purple)}.tg.o{color:#b5560b}
+.hero .tg.m{color:#7fdc9b}.hero .tg.c{color:#c3b0ff}.hero .tg.o{color:#ffb066}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:var(--night)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.card{pointer-events:auto;max-width:37ch;background:rgba(243,239,228,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(42,39,64,.16);padding:16px 20px 14px;font-size:17.5px;color:#1a1826}
+.card p{margin:0 0 .7em}
+.card p:last-of-type{margin:0}
+.card .hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
+.hear{display:flex;align-items:center;gap:9px;width:100%;margin-top:12px;padding:10px 0 0;border:0;border-top:1px solid rgba(42,39,64,.16);background:none;font-family:'IBM Plex Mono',monospace;font-size:10.5px;line-height:1.5;color:#5b5770;text-align:left;cursor:pointer}
+.hear b{font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.hear:hover b{text-decoration:underline;text-underline-offset:3px}
+.hear .eq{color:var(--gold)}
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:10px;flex:none}
+.eq i{display:block;width:2px;height:3px;border-radius:1px;background:currentColor}
+.eq i:nth-child(2){height:7px}
+.eq i:nth-child(3){height:5px}
+.on > .eq i{animation:eq .9s ease-in-out infinite alternate}
+.on > .eq i:nth-child(2){animation-delay:-.3s}
+.on > .eq i:nth-child(3){animation-delay:-.6s}
+@keyframes eq{from{height:2px}to{height:10px}}
+@media (prefers-reduced-motion:reduce){.on > .eq i{animation:none}}
+
+.snd-fix{position:fixed;right:12px;bottom:12px;z-index:30;display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);background:rgba(243,239,228,.95);border:1px solid rgba(42,39,64,.35);border-radius:999px;padding:8px 13px;cursor:pointer}
+.snd-fix:disabled{opacity:.6;cursor:default}
+.snd-main:focus-visible,.snd-fix:focus-visible,.hear:focus-visible{outline:2px solid var(--sky);outline-offset:3px}
+.card .hear:focus-visible{outline-color:var(--blue)}
+
+.panel{position:absolute;left:10px;top:10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:var(--ink);background:rgba(243,239,228,.92);border:1px solid rgba(42,39,64,.14);border-radius:3px;padding:7px 10px;max-width:min(94vw,410px);pointer-events:none}
+.panel div{opacity:0;transform:translateX(-5px);transition:opacity .5s ease,transform .5s ease;white-space:nowrap}
+.panel div.on{opacity:1;transform:none}
+.panel .lbl{color:var(--gold);margin-left:.7em;font-style:italic}
+.panel .sw{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:middle;background:var(--blue)}
+.panel .sw.o{background:var(--orange)} .panel .sw.g{background:var(--green)} .panel .sw.p{background:var(--purple)} .panel .sw.r{background:var(--red)} .panel .sw.h{background:#d9a01e} .panel .sw.k{background:var(--ink)}
+.panel sup,.panel sub{font-size:8.5px;line-height:0}
+@media (max-width:420px){ .panel{font-size:9.6px;padding:6px 8px} .panel .lbl{margin-left:.5em} }
+
+.end{padding:14vh 22px 14vh;text-align:center;max-width:720px;margin:0 auto}
+.end .coda{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-top:9vh}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(44px,11vw,84px);line-height:.98;margin:.25em 0 .5em}
+.end h2 em{color:var(--blue)}
+.end p{color:#3d3a52;max-width:46ch;margin:0 auto 1em;text-align:left}
+.end .last{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,6.4vw,40px);line-height:1.12;text-align:center;color:var(--ink);margin:7vh auto 0;max-width:20ch;text-wrap:balance}
+.end .next{display:inline-block;margin-top:6vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(138,106,31,.4);padding:10px 16px;text-decoration:none}
+.end .next:focus-visible,.srcs a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(42,39,64,.4),transparent);margin:0 auto;width:60%}
+.srcs{max-width:720px;margin:0 auto;padding:0 22px 16vh;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;color:var(--muted)}
+.srcs h3{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:500;margin:0 0 10px}
+.srcs ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.srcs a{color:var(--ink);text-decoration-color:rgba(42,39,64,.35);text-underline-offset:3px;overflow-wrap:anywhere}
+.srcs .colophon{margin-top:5vh;letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A scrolly for the ears, in six movements</div>
+    <h1>Those Who<br>Heard the <em>Sky</em></h1>
+    <p class="sub">Pythagoras heard it in a string. Kepler wrote it out as a score. Then the antennas began to pick it up.</p>
+    <ul class="key" aria-label="How each card is labeled">
+      <li><span class="tg m">Measured</span> an instrument recorded it</li>
+      <li><span class="tg c">Composed</span> a person chose the notes</li>
+      <li><span class="tg o">Model</span> one person's picture of the sky</li>
+    </ul>
+    <button class="snd-main" id="sndHero" type="button" aria-pressed="false">Turn sound on</button>
+    <p class="snd-note">Every sound is built in your browser from the published numbers. No recordings.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · The string -->
+<section class="scene" id="s1">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step" data-cue="oct"><div class="card"><div class="hd"><span class="n">I · The string</span><span class="tg m">Measured</span></div><p>Pluck a string and it sounds one note. Press it at the halfway point and the note jumps an octave. Half the length, twice the frequency.</p><button class="hear" type="button" data-cue="oct"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>as measured: the open string, then the octave</span></button></div></div>
+    <div class="step" data-cue="fifth"><div class="card"><div class="hd"><span class="tg m">Measured</span></div><p>Two thirds of the string gives the fifth, 3 to 2. Three quarters gives the fourth, 4 to 3. The intervals the ear finds sweetest are ratios of small whole numbers. Greek tradition credits the finding to Pythagoras, in the sixth century BC.</p><button class="hear" type="button" data-cue="fifth"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>as measured: the fifth, then the fourth</span></button></div></div>
+    <div class="step" data-cue="spheres"><div class="card"><div class="hd"><span class="tg o">Model</span></div><p>Then the leap. If a string obeys number, the heavens might too. Pythagoreans taught that the planets, circling at different speeds, sound a harmony we never notice because it has been in our ears since birth. Aristotle wrote the idea down, admired its elegance, and called it untrue.</p><button class="hear" type="button" data-cue="spheres"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>composed: a drone on the string's own ratios</span></button></div></div>
+  </div>
+</section>
+
+<!-- II · The score -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step" data-cue="mars"><div class="card"><div class="hd"><span class="n">II · The score</span><span class="tg m">Measured</span></div><p>1619. Johannes Kepler has Tycho Brahe's planetary observations, the best ever made by eye, and a musician's question. How much faster does a planet move at its closest to the Sun than at its farthest? For Mars, about 3 to 2. A fifth.</p><button class="hear" type="button" data-cue="mars"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>transposed: Mars sliding across its fifth</span></button></div></div>
+    <div class="step" data-cue="earth"><div class="card"><div class="hd"><span class="tg c">Composed</span></div><p>So he wrote each planet a part. Earth's speed changes by only 16 to 15, a semitone, and it sings mi, fa, mi. Kepler noted, drily, that this suits a world of misery and famine.</p><button class="hear" type="button" data-cue="earth"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>transposed: Earth, mi fa mi</span></button></div></div>
+    <div class="step" data-cue="inner"><div class="card"><div class="hd"><span class="tg c">Composed</span></div><p>Mercury has the stretched orbit and the big range, an octave plus a minor third. Venus circles almost perfectly and barely leaves one note. In this score, eccentricity is range.</p><button class="hear" type="button" data-cue="inner"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>transposed: Mercury swooping, Venus holding</span></button></div></div>
+    <div class="step" data-cue="six"><div class="card"><div class="hd"><span class="tg c">Composed</span></div><p>Saturn and Jupiter take the bass with a major and a minor third. Sound all six and they mostly clash. Kepler worked out that full six-part concord is so rare it may have happened only once, at the Creation.</p><button class="hear" type="button" data-cue="six"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>transposed: all six parts, octaves folded to fit the ear</span></button></div></div>
+    <div class="step" data-cue="six"><div class="card"><div class="hd"><span class="tg o">Model</span></div><p>He was plain about what kind of music this is. It is for the mind, he wrote, and it makes no sound. He took it for the Creator's signature. The same book holds his third law of planetary motion, which astronomers still use.</p></div></div>
+  </div>
+</section>
+
+<!-- III · The octave -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><div class="hd"><span class="n">III · The octave</span><span class="tg o">Model</span></div><p>1926. Walter Russell, an American painter and sculptor, publishes his own periodic chart of the elements, wound into a spiral of nine octaves. He was an artist by training, and he drew his physics.</p></div></div>
+    <div class="step" data-cue="russell"><div class="card"><div class="hd"><span class="tg o">Model</span></div><p>His wave counts four tones in toward a bright center and the same four out again. Zero, one, two, three, four. Four, three, two, one, zero. He named the inward half gravitation and the outward half radiation.</p><button class="hear" type="button" data-cue="russell"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>composed: his count on a rising and falling scale. The notes are this page's.</span></button></div></div>
+    <div class="step" data-cue="russell"><div class="card"><div class="hd"><span class="tg o">Model</span></div><p>Chemistry and physics went another way, and the chart is read today as Russell's own model. It still belongs in this line. Pythagoras gave the sky ratios. Kepler gave it parts. Russell gave it octaves, all the way down to the atom.</p><p>All three drew what they believed. Then the instruments arrived.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · The instruments -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step" data-cue="jansky"><div class="card"><div class="hd"><span class="n">IV · The instruments</span><span class="tg m">Measured</span></div><p>1933, Holmdel, New Jersey. Karl Jansky, a Bell Labs engineer, is hunting the static that spoils transatlantic phone calls. One faint hiss keeps a strange schedule. It peaks four minutes earlier each day, in step with the stars. He has picked up the center of the Milky Way.</p><button class="hear" type="button" data-cue="jansky"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>rendered: filtered noise on his schedule, one star-day every six seconds</span></button></div></div>
+    <div class="step" data-cue="sun"><div class="card"><div class="hd"><span class="tg m">Measured</span></div><p>1960, Mount Wilson, California. Robert Leighton finds the Sun's surface rising and falling about every five minutes. The Sun rings like a struck bell, in millions of tones at once, all far below hearing.</p><button class="hear" type="button" data-cue="sun"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>transposed: three neighboring tones raised 16 octaves</span></button></div></div>
+    <div class="step" data-cue="cmb"><div class="card"><div class="hd"><span class="tg m">Measured</span></div><p>1964, Holmdel again. Arno Penzias and Robert Wilson cannot clear a faint hiss from their horn antenna. It arrives from every direction at every hour. They evict two pigeons and scrub out the droppings. The hiss stays. It is the afterglow of the Big Bang.</p><button class="hear" type="button" data-cue="cmb"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>rendered: a steady hiss, the same in every direction</span></button></div></div>
+    <div class="step" data-cue="pulsar"><div class="card"><div class="hd"><span class="tg m">Measured</span></div><p>1967, Cambridge. Jocelyn Bell, a graduate student, reads her telescope's output by hand on long rolls of chart paper. One smudge, which she calls scruff, keeps time. A pulse every 1.337 seconds. The team files it, half joking, as LGM-1, for little green men. It is a spinning neutron star.</p><button class="hear" type="button" data-cue="pulsar"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>as measured: one tick every 1.337 seconds</span></button></div></div>
+    <div class="step" data-cue="perseus"><div class="card"><div class="hd"><span class="tg m">Measured</span></div><p>2003. The Chandra X-ray telescope looks at the Perseus cluster, 250 million light-years away, and sees ripples in the hot gas around a giant black hole. Ripples in gas are sound. One wave passes every ten million years. The note is a B-flat, 57 octaves below middle C.</p><button class="hear" type="button" data-cue="perseus"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>transposed: that B-flat raised 57 octaves</span></button></div></div>
+    <div class="step" data-cue="ligo"><div class="card"><div class="hd"><span class="tg m">Measured</span></div><p>September 14, 2015. A wave from two merging black holes, 1.3 billion years on the road, crosses Earth. Detectors in Washington and Louisiana stretch by a thousandth of a proton's width. The signal sweeps from 35 to 250 hertz in a fifth of a second. Those are audible pitches.</p><button class="hear" type="button" data-cue="ligo"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>as measured: the 35 to 250 hertz sweep, then two octaves up for small speakers</span></button></div></div>
+  </div>
+</section>
+
+<!-- V · The turn inward -->
+<section class="scene" id="s5">
+  <div class="stage"><canvas aria-hidden="true"></canvas><div class="panel"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><div class="hd"><span class="n">V · The turn inward</span><span class="tg m">Measured</span></div><p>Now turn the antenna around. Nearly every cell you have holds about two meters of DNA, a twisted ladder of some six billion rungs. It makes one turn every ten and a half rungs, 3.4 nanometers per turn.</p></div></div>
+    <div class="step" data-cue="breath"><div class="card"><div class="hd"><span class="tg m">Measured</span></div><p>It moves. The rungs flick open and shut on their own, a motion biologists call breathing. Laser spectroscopy also finds the helix flexing at terahertz frequencies, around a trillion times a second, far above hearing.</p><button class="hear" type="button" data-cue="breath"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>transposed: a one-terahertz tone lowered 32 octaves</span></button></div></div>
+    <div class="step" data-cue="riff"><div class="card"><div class="hd"><span class="tg c">Composed</span></div><p>It also reads as a score. In 1986 the geneticist Susumu Ohno turned the four bases into notes and published genes as sheet music. Genes repeat phrases the way compositions do. Here is one: TTAGGG, up to thousands of times over, at the tip of every chromosome you have.</p><button class="hear" type="button" data-cue="riff"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>composed: TTAGGG on this page's four notes</span></button></div></div>
+    <div class="step" data-cue="canon"><div class="card"><div class="hd"><span class="tg c">Composed</span></div><p>The ladder has one rule. A pairs with T, and G pairs with C. So every melody on one strand fixes a second melody on the other. Musicians call that counterpoint. Chemists call it base pairing.</p><button class="hear" type="button" data-cue="canon"><i class="eq"><i></i><i></i><i></i></i><b>Hear it</b><span>composed: both strands at once</span></button></div></div>
+    <div class="step" data-cue="canon"><div class="card"><div class="hd"><span class="tg c">Composed</span></div><p>At MIT in 2019, Markus Buehler's lab built a twenty-note scale from the natural vibrations of the amino acids and played proteins as music.</p><p>Keep the two kinds of claim apart. The vibrations are physics. The melodies are a person's choice of notes.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <div class="coda">VI · Coda</div>
+  <h2>It's all a <em>song.</em></h2>
+  <p>Tally it up. A string in Greece. A score computed from a Danish astronomer's notebooks. A painter's spiral of octaves. Then a hiss from Sagittarius, a star that ticks every 1.337 seconds, a B-flat ten million years long, and a chirp from two black holes that arrived on a Monday in September 2015.</p>
+  <p>The first three drew what they believed the sky was doing. The rest were measurements, made mostly by people listening for something else. Jansky was chasing static. Penzias and Wilson blamed pigeons. Bell was surveying quasars.</p>
+  <p>The instruments found real vibrations at real frequencies, nearly all of them far outside human hearing, which is stranger than the harmony Pythagoras promised. Shift them by enough octaves and anyone can listen. That shift is the honest part of the job, so every sound on this page says whether it is measured, transposed, rendered or composed.</p>
+  <p>Then the same test, run on yourself. Two meters of ladder in every cell, flexing a trillion times a second, spelling the same six letters at the end of every chromosome.</p>
+  <p class="last">Everything spins. Everything sings.</p>
+  <a class="next" href="#hero">Hear it again &uarr;</a>
+</section>
+
+<footer class="srcs" id="srcs">
+  <h3>Sources</h3>
+  <ul>
+    <li><a href="http://classics.mit.edu/Aristotle/heavens.2.ii.html">Aristotle, On the Heavens, Book II, chapter 9: the Pythagorean harmony, reported and rejected</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Harmonice_Mundi">Kepler, Harmonices Mundi (1619), Book V: the planets' intervals and the third law</a></li>
+    <li><a href="https://www.aps.org/apsnews/2019/05/this-month-in-physics-history">APS News: Kepler's discovery of solar system harmonics</a></li>
+    <li><a href="https://lightwavemechanics.org/">University of Science and Philosophy: Walter Russell's octave wave and periodic chart</a></li>
+    <li><a href="https://aps.org/publications/apsnews/201505/physicshistory.cfm">APS News: Jansky and the discovery of cosmic radio waves, 1933</a></li>
+    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC33578">Helioseismology and the Sun's five-minute oscillation (PNAS review)</a>; Leighton, Noyes and Simon 1962, Astrophysical Journal 135</li>
+    <li><a href="https://www.aps.org/funding-recognition/historic-sites/holmdel-horn-antenna">APS historic site: the Holmdel horn antenna and the cosmic microwave background</a></li>
+    <li><a href="https://www.smithsonianmag.com/smithsonian-institution/how-scientists-confirmed-big-bang-theory-owe-it-all-to-a-pigeon-trap-180949741/">Smithsonian: Penzias, Wilson and the pigeons</a></li>
+    <li><a href="https://public.nrao.edu/tick-tock-pulsating-star/">National Radio Astronomy Observatory: Jocelyn Bell and the first pulsar</a></li>
+    <li><a href="https://spaceflightnow.com/news/n0309/09blackhole/">NASA release, September 2003: Chandra hears a black hole in Perseus</a></li>
+    <li><a href="https://arxiv.org/abs/1602.03837">LIGO and Virgo collaborations 2016: Observation of gravitational waves from a binary black hole merger</a></li>
+    <li><a href="https://doi.org/10.1038/ncomms11799">Gonz&aacute;lez-Jim&eacute;nez et al. 2016, Nature Communications: terahertz phonon-like modes in DNA</a></li>
+    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC282029">Moyzis et al. 1988, PNAS: the TTAGGG repeat at human telomeres</a></li>
+    <li>Ohno and Ohno 1986, Immunogenetics 24: 71&ndash;78: repetitious recurrence in coding sequences and in musical composition</li>
+    <li><a href="https://www.eurekalert.org/news-releases/602453">MIT 2019: Translating proteins into music, and back (Yu and Buehler, ACS Nano)</a></li>
+  </ul>
+  <div class="colophon">Drawn in functions on graph paper. No images and no audio files loaded. Kepler's intervals are computed live from each planet's modern eccentricity, with orbit sizes schematic and periods compressed. The Russell wave is this page's own drawing of his count. Helix figures are the standard values for B-form DNA.</div>
+</footer>
+
+<button class="snd-fix" id="sndFix" type="button" aria-pressed="false"><i class="eq"><i></i><i></i><i></i></i><span>Sound off</span></button>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const ease = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C = { paper: '#f3efe4', night: '#101329', ink: '#2a2740', blue: '#2d70b3', orange: '#fa7e19', green: '#388c46', purple: '#6042a6', gold: '#8a6a1f', red: '#c74440' };
+const NT = { ink: '#e6e8ff', blue: '#6aa9ff', orange: '#ffa24d', green: '#6fd08c', purple: '#b9a2ff', gold: '#e2c275', red: '#ff7d73' };
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+const rgb = hex => { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+function mix(a, b, t, alpha = 1) { const A = rgb(a), B = rgb(b); return `rgba(${Math.round(lerp(A[0], B[0], t))},${Math.round(lerp(A[1], B[1], t))},${Math.round(lerp(A[2], B[2], t))},${alpha})`; }
+const col = (name, nt = 1, a = 1) => mix(C[name], NT[name], nt, a);
+const hash = n => { const s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+const wrap = (x, p) => ((x % p) + p) % p;
+
+/* ---------- graph paper, day or night ---------- */
+function paper(ctx, w, h, nt = 0) {
+  ctx.fillStyle = mix(C.paper, C.night, nt); ctx.fillRect(0, 0, w, h);
+  const g = w < 520 ? 13 : 16, cx = w / 2, cy = Math.round(h * 0.37);
+  const nx = Math.ceil(cx / g), ny = Math.ceil(Math.max(cy, h - cy) / g);
+  ctx.lineWidth = 1;
+  for (const major of [false, true]) {
+    ctx.beginPath();
+    for (let k = -nx; k <= nx; k++) { if ((k % 5 === 0) !== major) continue; const x = Math.round(cx + k * g) + 0.5; ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+    for (let k = -ny; k <= ny; k++) { if ((k % 5 === 0) !== major) continue; const y = Math.round(cy + k * g) + 0.5; ctx.moveTo(0, y); ctx.lineTo(w, y); }
+    ctx.strokeStyle = mix(C.ink, '#dfe3ff', nt, major ? 0.17 : 0.06); ctx.stroke();
+  }
+}
+function focus(w, h) { const wide = w >= 820; return { fx: w / 2, fy: h * (wide ? 0.42 : 0.37), S: Math.min(w * 0.88, h * (wide ? 0.5 : 0.42), 560) }; }
+
+/* ---------- marks ---------- */
+function dot(ctx, x, y, color, r = 4.2, nt = 1) { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fillStyle = mix('#ffffff', C.night, nt); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = color; ctx.stroke(); }
+function mono(ctx, text, x, y, color, align = 'left', size = 10.5) { ctx.font = `${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function tag(ctx, text, x, y, color, align = 'left', size = 10, nt = 1) {
+  ctx.font = `${size}px ${MONO}`; const tw = ctx.measureText(text).width, px = 4;
+  const x0 = align === 'left' ? x : align === 'right' ? x - tw : x - tw / 2;
+  ctx.fillStyle = mix(C.paper, C.night, nt, 0.88); ctx.fillRect(x0 - px, y - size * 0.78, tw + px * 2, size * 1.56);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x0, y + 0.5);
+}
+function bracket(ctx, xa, xb, y, color) { ctx.strokeStyle = color; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(xa, y + 5); ctx.lineTo(xa, y); ctx.lineTo(xb, y); ctx.lineTo(xb, y + 5); ctx.stroke(); }
+function makePanel(el, lines) { el.innerHTML = ''; return lines.map(html => { const d = document.createElement('div'); d.innerHTML = html; el.appendChild(d); return d; }); }
+const on = (d, v) => d.classList.toggle('on', !!v);
+
+/* ---------- the numbers ---------- */
+/* Kepler's six planets: modern eccentricity, longitude of perihelion in degrees, a compressed
+   period in seconds, and the pitch at aphelion. Pitches keep Kepler's own speed table
+   (arcseconds per day at aphelion) and fold octaves so the six parts fit the ear. */
+const PL = [
+  { n: 'Mercury', e: 0.2056, w: 77.5, T: 2.6, f: 638.2, c: 'purple' },
+  { n: 'Venus', e: 0.0068, w: 131.5, T: 3.9, f: 369.0, c: 'orange' },
+  { n: 'Earth', e: 0.0167, w: 102.9, T: 5.0, f: 222.0, c: 'blue' },
+  { n: 'Mars', e: 0.0934, w: 336.0, T: 6.6, f: 204.2, c: 'red' },
+  { n: 'Jupiter', e: 0.0489, w: 14.7, T: 9.5, f: 140.1, c: 'gold' },
+  { n: 'Saturn', e: 0.0565, w: 92.4, T: 13.0, f: 110.0, c: 'green' }
+];
+function kepNu(e, M) { let E = M; for (let j = 0; j < 6; j++) E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E)); return 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2)); }
+/* true anomaly, and angular speed as a multiple of the speed at aphelion */
+function plState(i, sec) { const p = PL[i], nu = kepNu(p.e, TAU * sec / p.T + i * 1.3); return { nu, om: Math.pow((1 + p.e * Math.cos(nu)) / (1 - p.e), 2) }; }
+
+const RSEQ = [0, 1, 2, 3, 4, 4, 3, 2, 1, 0], RSLOT = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10], RRAT = [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2], RBEAT = 0.42, RPER = 13 * RBEAT;
+const SEQ = ['T', 'T', 'A', 'G', 'G', 'G'], COMP = { A: 'T', T: 'A', G: 'C', C: 'G' };
+const NOTE = { A: 220, C: 261.63, T: 329.63, G: 392 };      /* A, C and G play the notes that share their names. T takes E. */
+const ROW = { G: 0, T: 1, C: 2, A: 3 }, BCOL = { A: 'green', T: 'red', G: 'orange', C: 'blue' }, RIFF = 0.3;
+const PULSAR = 1.337, CH_T = 0.2, CH_TC = 0.20106;           /* GW150914: 35 Hz at t = 0 rising to 250 Hz at 0.2 s */
+const chirpF = tau => 35 * Math.pow(1 - tau / CH_TC, -0.375);
+
+/* ---------- sound: everything synthesized ---------- */
+const Snd = (() => {
+  let ctx = null, master = null, noiseBuf = null, enabled = false, cur = null;
+  const subs = [];
+  const emit = () => subs.forEach(f => f());
+  const supported = !!(window.AudioContext || window.webkitAudioContext);
+  function ensure() {
+    if (ctx) return true;
+    if (!supported) return false;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.knee.value = 12; comp.ratio.value = 4;
+      master = ctx.createGain(); master.gain.value = 0.85; master.connect(comp); comp.connect(ctx.destination);
+      const n = Math.floor(ctx.sampleRate * 2); noiseBuf = ctx.createBuffer(1, n, ctx.sampleRate);
+      const d = noiseBuf.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    } catch (e) { ctx = null; return false; }
+    return true;
+  }
+  function voice(h, freq, type, gain) { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.value = freq; g.gain.value = gain; o.connect(g); g.connect(h.out); o.start(); h.nodes.push(o); return { o, g }; }
+  function lfo(h, rate, depth, param) { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = rate; g.gain.value = depth; o.connect(g); g.connect(param); o.start(); h.nodes.push(o); }
+  function ping(h, freq, when, dur, gain, type = 'triangle') {
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.value = freq; g.gain.value = 0.0001;
+    g.gain.setValueAtTime(0.0001, when); g.gain.exponentialRampToValueAtTime(gain, when + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+    o.connect(g); g.connect(h.out); o.start(when); o.stop(when + dur + 0.05);
+  }
+  function hiss(h, type, freq, q, gain) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf; s.loop = true;
+    const f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+    const g = ctx.createGain(); g.gain.value = gain; s.connect(f); f.connect(g); g.connect(h.out); s.start(); h.nodes.push(s); return g;
+  }
+  function tick(h, when) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1500; f.Q.value = 1.2;
+    const g = ctx.createGain(); g.gain.value = 0.0001;
+    g.gain.setValueAtTime(0.0001, when); g.gain.exponentialRampToValueAtTime(0.55, when + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, when + 0.075);
+    s.connect(f); f.connect(g); g.connect(h.out); s.start(when, Math.random() * 1.5, 0.12);
+  }
+  function chirp(h, when, mult, gain) {
+    const N = 48, fs = new Float32Array(N), gs = new Float32Array(N);
+    for (let i = 0; i < N; i++) { const f = chirpF(CH_T * i / (N - 1)); fs[i] = f * mult; gs[i] = gain * Math.pow(f / 250, 2 / 3) + 0.0001; }
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = fs[0]; g.gain.value = 0.0001;
+    o.frequency.setValueCurveAtTime(fs, when, CH_T); g.gain.setValueCurveAtTime(gs, when, CH_T); g.gain.setTargetAtTime(0.0001, when + CH_T + 0.002, 0.007);
+    o.connect(g); g.connect(h.out); o.start(when); o.stop(when + CH_T + 0.12);
+  }
+  /* run fn at t0, t0 + period, ... a little ahead of the audio clock */
+  function loop(h, period, fn) {
+    let n = 0;
+    const run = () => {
+      if (cur !== h) return;
+      while (h.t0 + n * period < ctx.currentTime + 0.3) { const when = h.t0 + n * period; if (when > ctx.currentTime - 0.05) { try { fn(Math.max(when, ctx.currentTime), n); } catch (e) {} } n++; }
+    };
+    run(); h.timers.push(setInterval(run, 90));
+  }
+  function kepler(h, idx) {
+    const vs = idx.map(i => ({ i, v: voice(h, PL[i].f, 'sine', idx.length > 2 ? 0.05 : 0.11) }));
+    h.frame = sec => { const now = ctx.currentTime; vs.forEach(({ i, v }) => v.o.frequency.setTargetAtTime(PL[i].f * plState(i, sec).om, now, 0.03)); };
+  }
+  const CUES = {
+    oct: h => loop(h, 3.4, t => { ping(h, 110, t, 1.5, 0.3); ping(h, 220, t + 1.2, 1.5, 0.26); }),
+    fifth: h => loop(h, 5.2, t => { ping(h, 110, t, 1.1, 0.28); ping(h, 165, t + 0.9, 1.3, 0.26); ping(h, 110, t + 2.5, 1.1, 0.28); ping(h, 146.67, t + 3.4, 1.3, 0.26); }),
+    spheres: h => { [[110, 0.09, 0.11], [165, 0.06, 0.07], [220, 0.05, 0.09], [330, 0.03, 0.13], [440, 0.02, 0.05]].forEach(([f, g, r]) => { const v = voice(h, f, 'sine', g); lfo(h, r, g * 0.6, v.g.gain); }); },
+    mars: h => kepler(h, [3]),
+    earth: h => kepler(h, [2]),
+    inner: h => kepler(h, [0, 1]),
+    six: h => kepler(h, [0, 1, 2, 3, 4, 5]),
+    russell: h => loop(h, RPER, t => RSEQ.forEach((k, i) => { ping(h, 196 * RRAT[k], t + i * RBEAT, 0.8, 0.22, 'sine'); ping(h, 392 * RRAT[k], t + i * RBEAT, 0.5, 0.05, 'sine'); })),
+    jansky: h => { const g = hiss(h, 'bandpass', 900, 0.6, 0.1); lfo(h, 1 / 6, 0.075, g.gain); },
+    sun: h => { [[207.4, 0.05], [216.3, 0.09], [225.1, 0.05]].forEach(([f, g]) => voice(h, f, 'sine', g)); },
+    cmb: h => { hiss(h, 'highpass', 2400, 0.5, 0.05); },
+    pulsar: h => loop(h, PULSAR, t => tick(h, t)),
+    perseus: h => { const v = voice(h, 466.16, 'sine', 0.085); lfo(h, 0.3, 0.05, v.g.gain); },
+    ligo: h => loop(h, 3.4, t => { chirp(h, t, 1, 0.55); chirp(h, t + 1.3, 4, 0.2); }),
+    breath: h => { const v = voice(h, 232.83, 'sine', 0.08); voice(h, 233.9, 'sine', 0.03); lfo(h, 0.22, 0.055, v.g.gain); },
+    riff: h => loop(h, RIFF, (t, n) => ping(h, NOTE[SEQ[n % 6]], t, 0.42, 0.2)),
+    canon: h => loop(h, RIFF, (t, n) => { ping(h, NOTE[SEQ[n % 6]], t, 0.42, 0.17); ping(h, NOTE[COMP[SEQ[n % 6]]] / 2, t, 0.5, 0.15, 'sine'); })
+  };
+  function stop() {
+    if (!cur) return;
+    const h = cur; cur = null;
+    h.timers.forEach(clearInterval);
+    try { const now = ctx.currentTime; h.out.gain.cancelScheduledValues(now); h.out.gain.setTargetAtTime(0, now, 0.1); } catch (e) {}
+    setTimeout(() => { h.nodes.forEach(n => { try { n.stop(); } catch (e) {} }); try { h.out.disconnect(); } catch (e) {} }, 800);
+    emit();
+  }
+  function play(id) {
+    if (!enabled || !ensure()) return;
+    if (cur && cur.id === id) return;
+    stop();
+    if (!CUES[id]) return;
+    const out = ctx.createGain(); out.gain.value = 0; out.connect(master); out.gain.setTargetAtTime(1, ctx.currentTime, 0.06);
+    const h = { id, out, timers: [], nodes: [], t0: ctx.currentTime + 0.08, frame: null };
+    cur = h;
+    try { CUES[id](h); } catch (e) { /* a cue that fails stays silent */ }
+    emit();
+  }
+  function setEnabled(v) {
+    if (v) { if (!ensure()) return false; enabled = true; if (ctx.state === 'suspended') { const p = ctx.resume(); if (p && p.catch) p.catch(() => {}); } }
+    else { enabled = false; stop(); }
+    emit(); return enabled;
+  }
+  return {
+    supported, play, stop, setEnabled,
+    get enabled() { return enabled; },
+    get id() { return cur ? cur.id : null; },
+    /* seconds since the current cue's first beat, or null when that cue is not playing */
+    clock(id) { return enabled && cur && cur.id === id ? ctx.currentTime - cur.t0 : null; },
+    frame(sec) { if (cur && cur.frame) { try { cur.frame(sec); } catch (e) {} } },
+    onChange(f) { subs.push(f); }
+  };
+})();
+
+/* ---------- hero: stars, seven rings, one string with three harmonics ---------- */
+const heroEl = document.getElementById('hero'), heroC = document.getElementById('heroCanvas');
+function renderHero(t) {
+  if (heroEl.getBoundingClientRect().bottom <= 0) return;
+  const { ctx, w, h } = prep(heroC);
+  paper(ctx, w, h, 1);
+  for (let i = 0; i < 150; i++) {
+    const x = hash(i + 0.37) * w, y = hash(i * 1.618 + 4.2) * h, r = 0.4 + hash(i * 2.71 + 9) * 1.1;
+    const tw = 0.3 + 0.45 * (0.5 + 0.5 * Math.sin(t * 0.0012 + i * 2.3));
+    ctx.fillStyle = `rgba(238,241,255,${tw})`; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  }
+  const cx = w / 2, cy = h * 0.47, R0 = Math.max(w, h) * 0.085;
+  ctx.lineWidth = 1;
+  for (let n = 1; n <= 7; n++) {
+    const r = R0 * n; ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.strokeStyle = `rgba(157,184,255,${0.17 - n * 0.014})`; ctx.stroke();
+    const a = (reduce ? 0 : t * 0.0011 / Math.pow(n, 1.5)) + n * 2.1;
+    ctx.beginPath(); ctx.arc(cx + r * Math.cos(a), cy + r * Math.sin(a), 2.2, 0, TAU); ctx.fillStyle = 'rgba(226,194,117,.75)'; ctx.fill();
+  }
+  const x0 = w * 0.07, x1 = w * 0.93, y0 = h - Math.max(38, h * 0.065), L = x1 - x0, A = Math.min(24, h * 0.028);
+  [[1, NT.blue], [2, NT.orange], [3, NT.green]].forEach(([n, c]) => {
+    const ph = reduce ? 1 : Math.cos(t * 0.0016 * n);
+    ctx.beginPath();
+    for (let i = 0; i <= 120; i++) { const u = i / 120, x = x0 + L * u, y = y0 + (A / n) * Math.sin(n * Math.PI * u) * ph; if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+    ctx.strokeStyle = c; ctx.globalAlpha = 0.8; ctx.lineWidth = 1.5; ctx.stroke(); ctx.globalAlpha = 1;
+  });
+  dot(ctx, x0, y0, NT.gold); dot(ctx, x1, y0, NT.gold);
+}
+
+/* ---------- scene plumbing ---------- */
+const scenes = [];
+function scene(id, lines, N, draw) { const el = document.getElementById(id); scenes.push({ el, c: el.querySelector('canvas'), P: makePanel(el.querySelector('.panel'), lines), N, draw }); }
+
+/* ---------- I · one string, then seven spheres ---------- */
+scene('s1', [
+  '<i class="sw"></i>y = A sin(&pi;x&frasl;L) cos 2&pi;ft<span class="lbl">one string</span>',
+  '<i class="sw o"></i>L&frasl;2 &rarr; 2f<span class="lbl">octave, 2 : 1</span>',
+  '<i class="sw g"></i>2L&frasl;3 &rarr; 3f&frasl;2<span class="lbl">fifth, 3 : 2</span>',
+  '<i class="sw p"></i>3L&frasl;4 &rarr; 4f&frasl;3<span class="lbl">fourth, 4 : 3</span>',
+  '<i class="sw h"></i>x&sup2; + y&sup2; = r<sub>n</sub>&sup2;, n = 1&hellip;7<span class="lbl">the leap</span>'
+], 3, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), a0 = k(0), a1 = k(1), a2 = k(2), sec = t / 1000;
+  paper(ctx, w, h, 1);
+  const L = S * 0.94, x0 = fx - L / 2, x1 = fx + L / 2, y0 = fy, A = S * 0.075;
+  /* the seven spheres of the old sky, Earth at the center */
+  if (a2 > 0) {
+    const names = { 1: 'Moon', 4: 'Sun', 7: 'Saturn' };
+    for (let n = 1; n <= 7; n++) {
+      const al = ramp(a2, 0.2 + (n - 1) * 0.08, 0.42 + (n - 1) * 0.08); if (al <= 0) continue;
+      const r = S * 0.5 * n / 7;
+      ctx.beginPath(); ctx.arc(fx, fy, r, -Math.PI / 2, -Math.PI / 2 + TAU * al); ctx.strokeStyle = col('gold', 1, 0.55); ctx.lineWidth = 1.2; ctx.stroke();
+      const an = sec * 1.5 / Math.pow(n, 1.2) + n * 1.7;
+      ctx.globalAlpha = al; ctx.beginPath(); ctx.arc(fx + r * Math.cos(an), fy + r * Math.sin(an), 3, 0, TAU); ctx.fillStyle = '#eef1ff'; ctx.fill();
+      if (names[n]) tag(ctx, names[n], fx + r * Math.cos(-0.95), fy + r * Math.sin(-0.95), NT.gold, 'center', 9.5);
+      ctx.globalAlpha = 1;
+    }
+    ctx.globalAlpha = ramp(a2, 0.2, 0.5); tag(ctx, 'Earth', fx, fy + 15, NT.ink, 'center', 9.5); ctx.globalAlpha = 1;
+  }
+  /* the bridge slides to 1/2, 2/3, 3/4, then lets go */
+  let b = lerp(1, 0.5, ease(ramp(a0, 0.55, 1)));
+  if (a1 > 0) b = lerp(0.5, 2 / 3, ease(ramp(a1, 0, 0.42)));
+  if (a1 > 0.55) b = lerp(2 / 3, 0.75, ease(ramp(a1, 0.55, 0.97)));
+  if (a2 > 0) b = lerp(0.75, 1, ease(ramp(a2, 0, 0.35)));
+  const g = ramp(a0, 0, 0.4), amp = ramp(a0, 0.3, 0.6), dim = 1 - 0.6 * a2, xb = x0 + L * b;
+  ctx.strokeStyle = col('ink', 1, 0.4 * dim); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + L * g, y0); ctx.stroke();
+  if (amp > 0) {
+    const wave = m => { ctx.beginPath(); for (let i = 0; i <= 64; i++) { const u = i / 64, x = x0 + (xb - x0) * u, y = y0 + m * A * amp * Math.sin(Math.PI * u); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); } ctx.stroke(); };
+    ctx.lineWidth = 1; ctx.strokeStyle = col('blue', 1, 0.3 * dim); wave(1); wave(-1);
+    ctx.lineWidth = 2.2; ctx.strokeStyle = col('blue', 1, dim); wave(Math.cos(sec * 7 / b));
+  }
+  /* ruler */
+  const yr = y0 + A + 16, marks = [[0.5, '1/2', ramp(a0, 0.55, 0.8)], [2 / 3, '2/3', ramp(a1, 0.05, 0.3)], [0.75, '3/4', ramp(a1, 0.55, 0.8)]];
+  if (g >= 1) { ctx.strokeStyle = col('ink', 1, 0.35 * dim); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, yr); ctx.lineTo(x1, yr); ctx.stroke(); }
+  for (const [f, lab, al] of marks) { if (al <= 0) continue; const x = x0 + L * f; ctx.globalAlpha = al * dim; ctx.strokeStyle = NT.ink; ctx.beginPath(); ctx.moveTo(x, yr - 4); ctx.lineTo(x, yr + 4); ctx.stroke(); mono(ctx, lab, x, yr + 15, NT.ink, 'center', 10.5); ctx.globalAlpha = 1; }
+  if (a2 < 0.3) {
+    const hit = Math.abs(b - 0.5) < 0.02 ? ['2 : 1 · octave', NT.orange] : Math.abs(b - 2 / 3) < 0.02 ? ['3 : 2 · fifth', NT.green] : Math.abs(b - 0.75) < 0.02 ? ['4 : 3 · fourth', NT.purple] : null;
+    if (hit) tag(ctx, hit[0], (x0 + xb) / 2, y0 - A - 17, hit[1], 'center', 10.5);
+  }
+  if (g > 0) dot(ctx, x0, y0, NT.gold);
+  if (g >= 1) dot(ctx, x1, y0, NT.gold);
+  if (b < 0.995 && amp > 0) dot(ctx, xb, y0, NT.orange, 4.6);
+  on(P[0], a0 > 0.35); on(P[1], a0 > 0.8); on(P[2], a1 > 0.3); on(P[3], a1 > 0.75); on(P[4], a2 > 0.4);
+});
+
+/* ---------- II · six orbits, six parts ---------- */
+scene('s2', [
+  '<i class="sw k"></i>r = a(1 &minus; e&sup2;) &frasl; (1 + e cos &nu;)<span class="lbl">an orbit</span>',
+  '<i class="sw r"></i>&omega; &prop; 1 &frasl; r&sup2;<span class="lbl">closer is faster</span>',
+  '<i class="sw"></i>((1 + e) &frasl; (1 &minus; e))&sup2;<span class="lbl">fastest : slowest</span>',
+  '<i class="sw p"></i>Mercury 12 : 5, Venus 25 : 24<span class="lbl">widest, narrowest</span>',
+  '<i class="sw h"></i>T&sup2; &prop; a&sup3;<span class="lbl">same book, 1619</span>'
+], 5, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), a0 = k(0), a1 = k(1), a2 = k(2), a3 = k(3), a4 = k(4);
+  paper(ctx, w, h, 1);
+  const sec = reduce ? 3.1 : t / 1000;
+  const solo = [a2 * (1 - a3), a2 * (1 - a3), a1 * (1 - a2), a0 * (1 - a1), 0, 0], zin = ease(solo[0]), zoom = 1 + 1.5 * zin;
+  const far = { Mercury: 'slowest', Venus: '', Earth: 'mi', Mars: 'slowest' }, near = { Mercury: 'fastest · 12 : 5', Venus: '25 : 24', Earth: 'fa · 16 : 15', Mars: 'fastest · 3 : 2' };
+  const grad = ctx.createRadialGradient(fx, fy, 0, fx, fy, S * 0.06); grad.addColorStop(0, 'rgba(255,217,138,.9)'); grad.addColorStop(1, 'rgba(255,217,138,0)');
+  ctx.globalAlpha = ramp(a0, 0, 0.3); ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(fx, fy, S * 0.06, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(fx, fy, 4.5, 0, TAU); ctx.fillStyle = '#ffe2a3'; ctx.fill(); ctx.globalAlpha = 1;
+  PL.forEach((p, i) => {
+    const born = ramp(a0, i * 0.08, i * 0.08 + 0.45); if (born <= 0) return;
+    const a = S * (0.11 + 0.074 * i) * zoom, pp = a * (1 - p.e * p.e), w0 = p.w * Math.PI / 180, hl = Math.max(solo[i], a3);
+    const pt = nu => { const r = pp / (1 + p.e * Math.cos(nu)), th = nu + w0; return [fx + r * Math.cos(th), fy - r * Math.sin(th)]; };
+    ctx.beginPath(); const n = Math.round(96 * born);
+    for (let j = 0; j <= n; j++) { const [x, y] = pt(j / 96 * TAU); if (j) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+    ctx.strokeStyle = col(p.c, 1, lerp(0.3, 0.95, hl) * (i > 1 ? 1 - 0.65 * zin : 1)); ctx.lineWidth = lerp(1, 2, hl); ctx.stroke();
+    if (born < 1) return;
+    const st = plState(i, sec), [x, y] = pt(st.nu);
+    if (hl > 0.05) {
+      ctx.beginPath(); for (let j = 0; j <= 14; j++) { const [tx, ty] = pt(st.nu - j * 0.03 * Math.sqrt(st.om)); if (j) ctx.lineTo(tx, ty); else ctx.moveTo(tx, ty); }
+      ctx.strokeStyle = col(p.c, 1, 0.85 * hl); ctx.lineWidth = 3.4; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineCap = 'butt';
+    }
+    ctx.beginPath(); ctx.arc(x, y, lerp(2.4, 4.6, hl), 0, TAU); ctx.fillStyle = col(p.c); ctx.fill();
+    const side = x >= fx ? 1 : -1, al = side > 0 ? 'left' : 'right';
+    if (solo[i] > 0.5) {
+      ctx.globalAlpha = ramp(solo[i], 0.5, 0.9);
+      const [qx, qy] = pt(0), [rx, ry] = pt(Math.PI);
+      dot(ctx, qx, qy, col(p.c), 3.4); dot(ctx, rx, ry, col(p.c), 3.4);
+      if (near[p.n]) tag(ctx, near[p.n], qx + (qx >= fx ? 9 : -9), qy, col(p.c), qx >= fx ? 'left' : 'right', 10);
+      if (far[p.n]) tag(ctx, far[p.n], rx + (rx >= fx ? 9 : -9), ry, col(p.c), rx >= fx ? 'left' : 'right', 10);
+      tag(ctx, p.n + ' ×' + st.om.toFixed(2), x + side * 10, y - 13, NT.ink, al, 10);
+      ctx.globalAlpha = 1;
+    } else if (a3 > 0.4) { ctx.globalAlpha = ramp(a3, 0.4, 0.8); tag(ctx, p.n, x + side * 8, y - 10, col(p.c), al, 9.5); ctx.globalAlpha = 1; }
+  });
+  on(P[0], a0 > 0.4); on(P[1], a0 > 0.85); on(P[2], a1 > 0.4); on(P[3], a2 > 0.4); on(P[4], a4 > 0.4);
+});
+
+/* ---------- III · Russell's count, drawn as one wave through a center ---------- */
+scene('s3', [
+  '<i class="sw o"></i>0 &middot; 1 &middot; 2 &middot; 3 &middot; 4<span class="lbl">in: he called it gravitation</span>',
+  '<i class="sw"></i>4 &middot; 3 &middot; 2 &middot; 1 &middot; 0<span class="lbl">out: radiation</span>',
+  '<i class="sw k"></i>y = A(x) sin &phi;(x)<span class="lbl">this page&rsquo;s drawing</span>',
+  '<i class="sw p"></i>r = c&theta;, 0 &le; &theta; &le; 18&pi;<span class="lbl">nine turns, nine octaves</span>'
+], 3, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), a0 = k(0), a1 = k(1), a2 = k(2), sec = t / 1000;
+  paper(ctx, w, h, 1);
+  const L = S * 0.96, x0 = fx - L / 2, wv = 1 - 0.82 * a2, g = ramp(a0, 0, 0.7);
+  const PHI = u => TAU * (1.1 * u + 2.1 * Math.sign(u) * (1 - Math.pow(1 - Math.abs(u), 3)));
+  const AMP = u => S * 0.17 * (0.12 + 0.88 * Math.pow(1 - Math.abs(u), 1.4));
+  /* nine turns of spiral, behind */
+  if (a2 > 0) {
+    const rm = S * 0.47, top = 18 * Math.PI * ramp(a2, 0, 0.85);
+    ctx.beginPath(); for (let th = 0; th <= top; th += 0.08) { const r = rm * th / (18 * Math.PI), x = fx + r * Math.cos(th), y = fy - r * Math.sin(th); if (th) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+    ctx.strokeStyle = col('purple', 1, 0.9); ctx.lineWidth = 1.6; ctx.stroke();
+    for (let n = 1; n <= 9; n++) { if (TAU * n > top) break; const x = fx + rm * n / 9; dot(ctx, x, fy, NT.purple, 3); mono(ctx, String(n), x - 1, fy + 12, NT.purple, 'center', 9); }
+    if (a2 > 0.85) { ctx.globalAlpha = ramp(a2, 0.85, 1); tag(ctx, 'nine octaves', fx, fy - rm - 12, NT.purple, 'center', 10.5); ctx.globalAlpha = 1; }
+  }
+  ctx.strokeStyle = col('ink', 1, 0.3 * wv); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, fy); ctx.lineTo(x0 + L * g, fy); ctx.stroke();
+  for (const half of [0, 1]) {
+    ctx.beginPath(); let started = false;
+    for (let i = 0; i <= 180; i++) {
+      const u = (half ? 0 : -1) + i / 180; if (u > -1 + 2 * g) break;
+      const x = fx + u * L / 2, y = fy + AMP(u) * Math.sin(PHI(u) - sec * 2.2);
+      if (started) ctx.lineTo(x, y); else { ctx.moveTo(x, y); started = true; }
+    }
+    ctx.strokeStyle = col(half ? 'blue' : 'orange', 1, wv); ctx.lineWidth = 2; ctx.stroke();
+  }
+  if (g > 0.5) {
+    const gl = ramp(g, 0.5, 0.7) * wv, rr = S * 0.075, grad = ctx.createRadialGradient(fx, fy, 0, fx, fy, rr);
+    grad.addColorStop(0, `rgba(238,241,255,${0.95 * gl})`); grad.addColorStop(1, 'rgba(238,241,255,0)');
+    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(fx, fy, rr, 0, TAU); ctx.fill();
+  }
+  /* the count */
+  const ck = Snd.clock('russell'), pos = wrap(ck != null ? ck : sec, RPER) / RBEAT, si = Math.floor(pos), live = a1 > 0.2 && si < 10 ? RSLOT[si] : -1, glow = 1 - (pos - si);
+  const yn = fy + S * 0.17 + 24, nums = [0, 1, 2, 3, 4, null, 4, 3, 2, 1, 0];
+  nums.forEach((v, j) => {
+    if (v == null) return;
+    const al = ramp(a0, 0.35 + j * 0.04, 0.5 + j * 0.04) * wv; if (al <= 0) return;
+    const x = x0 + L * j / 10, c = j < 5 ? NT.orange : NT.blue;
+    ctx.globalAlpha = al;
+    ctx.strokeStyle = col('ink', 1, 0.25); ctx.lineWidth = 1; ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.moveTo(x, fy); ctx.lineTo(x, yn - 11); ctx.stroke(); ctx.setLineDash([]);
+    if (j === live) { ctx.beginPath(); ctx.arc(x, yn, 9 + 4 * glow, 0, TAU); ctx.fillStyle = col(j < 5 ? 'orange' : 'blue', 1, 0.35 * glow); ctx.fill(); }
+    mono(ctx, String(v), x, yn, c, 'center', 13);
+    ctx.globalAlpha = 1;
+  });
+  if (a1 > 0) { ctx.globalAlpha = a1 * wv; mono(ctx, 'compression →', x0 + L * 0.2, yn + 22, NT.orange, 'center', 10); mono(ctx, '→ expansion', x0 + L * 0.8, yn + 22, NT.blue, 'center', 10); ctx.globalAlpha = 1; }
+  on(P[0], a0 > 0.5); on(P[1], a0 > 0.8); on(P[2], a1 > 0.3); on(P[3], a2 > 0.4);
+});
+
+/* ---------- IV · six traces off the chart recorder ---------- */
+scene('s4', [
+  '<i class="sw"></i>P(t + 23 h 56 min) = P(t)<span class="lbl">Jansky, 1933</span>',
+  '<i class="sw o"></i>&nu; &asymp; 3.3 mHz<span class="lbl">the Sun, 1960</span>',
+  '<i class="sw p"></i>T = 2.725 K<span class="lbl">every direction, 1964</span>',
+  '<i class="sw g"></i>P = 1.337 s<span class="lbl">Bell, 1967</span>',
+  '<i class="sw p"></i>B&#9837; &minus; 57 octaves<span class="lbl">Perseus, 2003</span>',
+  '<i class="sw o"></i>f: 35 &rarr; 250 Hz in 0.2 s<span class="lbl">LIGO, 2015</span>'
+], 6, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), a = [k(0), k(1), k(2), k(3), k(4), k(5)], sec = t / 1000;
+  paper(ctx, w, h, 1);
+  const W = S * 0.96, H = S * 0.5, my = fy - S * 0.1, Lx = fx - W / 2, Rx = fx + W / 2, Ty = my - H / 2, By = my + H / 2, X = u => Lx + W * u, fl = Math.floor(sec * 8);
+  const vis = i => a[i] * (i < 5 ? 1 - a[i + 1] : 1);
+  const axA = Math.max(vis(0), vis(1), vis(2), vis(3), vis(5));
+  if (axA > 0) { ctx.strokeStyle = col('ink', 1, 0.55 * axA); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(Lx, Ty); ctx.lineTo(Lx, By); ctx.lineTo(Rx, By); ctx.stroke(); }
+  const head = txt => tag(ctx, txt, Rx, Ty - 13, NT.gold, 'right', 10.5);
+  let v;
+  /* Jansky: a hiss that rises and sets on star time */
+  if ((v = vis(0)) > 0) {
+    ctx.globalAlpha = v; const g = ramp(a[0], 0, 0.75), n = Math.floor(W * g / 2);
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) { const u = i * 2 / W, e = 0.5 + 0.5 * Math.sin(TAU * u * 3), y = By - H * (0.08 + 0.62 * e * (0.72 + 0.28 * hash(i * 3.7 + fl)) + 0.05 * hash(i * 1.3 + fl * 2)); if (i) ctx.lineTo(X(u), y); else ctx.moveTo(X(u), y); }
+    ctx.strokeStyle = NT.blue; ctx.lineWidth = 1.2; ctx.stroke();
+    for (let d = 0; d < 3; d++) {
+      const up = (d + 0.25) / 3; if (up > g) break;
+      ctx.strokeStyle = col('gold', 1, 0.7); ctx.lineWidth = 1; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(X(up), By); ctx.lineTo(X(up), Ty + H * 0.14); ctx.stroke(); ctx.setLineDash([]);
+      mono(ctx, 'day ' + (d + 1), X((d + 0.5) / 3), By + 13, col('ink', 1, 0.8), 'center', 9.5);
+    }
+    if (g > 0.62) { bracket(ctx, X(0.25 / 3), X(1.25 / 3), Ty + H * 0.06, NT.gold); tag(ctx, '23 h 56 min', X(0.75 / 3), Ty + H * 0.06 - 9, NT.gold, 'center', 10); }
+    const ck = Snd.clock('jansky'); if (ck != null) { const u = wrap(ck / 6, 3) / 3; ctx.strokeStyle = NT.orange; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(X(u), Ty); ctx.lineTo(X(u), By); ctx.stroke(); }
+    head('the Milky Way, toward Sagittarius'); ctx.globalAlpha = 1;
+  }
+  /* the Sun: five-minute oscillation */
+  if ((v = vis(1)) > 0) {
+    ctx.globalAlpha = v; const g = ramp(a[1], 0, 0.75), n = Math.floor(W * g / 2);
+    ctx.strokeStyle = col('ink', 1, 0.25); ctx.lineWidth = 1; ctx.setLineDash([2, 5]); ctx.beginPath(); ctx.moveTo(Lx, my); ctx.lineTo(Rx, my); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) { const u = i * 2 / W, m = u * 30, y = my - H * 0.32 * Math.sin(TAU * m / 5 - sec * 1.2) * (0.62 + 0.38 * Math.cos(TAU * m / 37 + 1)); if (i) ctx.lineTo(X(u), y); else ctx.moveTo(X(u), y); }
+    ctx.strokeStyle = NT.orange; ctx.lineWidth = 2; ctx.stroke();
+    for (let m = 0; m <= 30; m += 5) { ctx.strokeStyle = col('ink', 1, 0.6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X(m / 30), By); ctx.lineTo(X(m / 30), By + 4); ctx.stroke(); if (m % 10 === 0) mono(ctx, m + ' min', X(m / 30), By + 14, col('ink', 1, 0.8), m === 0 ? 'left' : m === 30 ? 'right' : 'center', 9.5); }
+    if (g > 0.5) { bracket(ctx, X(10 / 30), X(15 / 30), Ty + 4, NT.gold); tag(ctx, '5 min', X(12.5 / 30), Ty - 5, NT.gold, 'center', 10); }
+    head('the surface of the Sun'); ctx.globalAlpha = 1;
+  }
+  /* the microwave background: flat in every direction */
+  if ((v = vis(2)) > 0) {
+    ctx.globalAlpha = v; const g = ramp(a[2], 0, 0.75), n = Math.floor(W * g / 2), yl = By - H * 0.45;
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) { const u = i * 2 / W, y = yl + (hash(i * 2.9 + fl) - 0.5) * H * 0.07; if (i) ctx.lineTo(X(u), y); else ctx.moveTo(X(u), y); }
+    ctx.strokeStyle = NT.purple; ctx.lineWidth = 1.3; ctx.stroke();
+    tag(ctx, '2.725 K', Lx + 8, yl - 16, NT.purple, 'left', 10.5); tag(ctx, '0 K', Lx + 8, By - 10, col('ink', 1, 0.8), 'left', 9.5);
+    ['N', 'E', 'S', 'W', 'N'].forEach((d, i) => { ctx.strokeStyle = col('ink', 1, 0.6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X(i / 4), By); ctx.lineTo(X(i / 4), By + 4); ctx.stroke(); mono(ctx, d, X(i / 4), By + 14, col('ink', 1, 0.8), i === 0 ? 'left' : i === 4 ? 'right' : 'center', 9.5); });
+    head('antenna pointed anywhere'); ctx.globalAlpha = 1;
+  }
+  /* the pulsar: eight seconds of chart, scrolling in real time */
+  if ((v = vis(3)) > 0) {
+    ctx.globalAlpha = v; const ck = Snd.clock('pulsar'), now = ck != null ? ck : sec, WIN = 8, yb = By - H * 0.2, n = Math.floor(W);
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) { const u = i / W, tt = now - WIN * (1 - u), d = tt - Math.round(tt / PULSAR) * PULSAR, y = yb - H * 0.55 * Math.exp(-(d * d) / 0.006) + (hash(i * 5.1 + fl) - 0.5) * H * 0.045; if (i) ctx.lineTo(X(u), y); else ctx.moveTo(X(u), y); }
+    ctx.strokeStyle = NT.green; ctx.lineWidth = 1.5; ctx.stroke();
+    const tp = Math.floor(now / PULSAR) * PULSAR, ua = 1 - (now - tp + PULSAR) / WIN, ub = 1 - (now - tp) / WIN;
+    bracket(ctx, X(ua), X(ub), Ty + H * 0.1, NT.gold); tag(ctx, '1.337 s', X((ua + ub) / 2), Ty + H * 0.1 - 9, NT.gold, 'center', 10);
+    for (let s = 0; s <= WIN; s++) { ctx.strokeStyle = col('ink', 1, 0.6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X(1 - s / WIN), By); ctx.lineTo(X(1 - s / WIN), By + 4); ctx.stroke(); }
+    mono(ctx, '8 s ago', Lx, By + 14, col('ink', 1, 0.8), 'left', 9.5); mono(ctx, 'now', Rx, By + 14, col('ink', 1, 0.8), 'right', 9.5);
+    head('pulsar B1919+21'); ctx.globalAlpha = 1;
+  }
+  /* Perseus: pressure waves in cluster gas */
+  if ((v = vis(4)) > 0) {
+    ctx.globalAlpha = v; const sp = S * 0.085, ph = reduce ? 0.4 : (sec * 0.12) % 1, grow = ramp(a[4], 0, 0.6);
+    for (let n = 0; n < 6; n++) { const r = (n + ph) * sp + S * 0.05, al = clamp(1 - r / (S * 0.52), 0, 1) * grow; ctx.beginPath(); ctx.arc(fx, my, r, 0, TAU); ctx.strokeStyle = col('purple', 1, 0.85 * al); ctx.lineWidth = 2.2; ctx.stroke(); }
+    ctx.beginPath(); ctx.arc(fx, my, S * 0.028, 0, TAU); ctx.fillStyle = '#05060f'; ctx.fill(); ctx.strokeStyle = NT.gold; ctx.lineWidth = 1.5; ctx.stroke();
+    tag(ctx, 'one wave every 10 million years', Lx, Ty - 13, NT.purple, 'left', 10);
+    head('Perseus cluster'); ctx.globalAlpha = 1;
+  }
+  /* GW150914: the chirp at both detectors */
+  if ((v = vis(5)) > 0) {
+    ctx.globalAlpha = v; const g = ramp(a[5], 0, 0.8), span = 0.27, lead = 0.035, n = Math.floor(W * g * 2);
+    const endPh = TAU * 35 * CH_TC * 1.6 * (1 - Math.pow(1 - CH_T / CH_TC, 0.625));
+    const strain = tau => {
+      if (tau < 0) return 0;
+      if (tau <= CH_T) { const q = 1 - tau / CH_TC; return Math.pow(chirpF(tau) / 250, 2 / 3) * Math.sin(TAU * 35 * CH_TC * 1.6 * (1 - Math.pow(q, 0.625))); }
+      const d = tau - CH_T; return Math.exp(-d / 0.008) * Math.sin(endPh + TAU * 250 * d);
+    };
+    [[0.007, NT.blue, 0.75], [0, NT.orange, 1]].forEach(([shift, c, al]) => {
+      ctx.beginPath();
+      for (let i = 0; i <= n; i++) { const u = i / (W * 2), y = my - H * 0.36 * strain(u * span - lead + shift); if (i) ctx.lineTo(X(u), y); else ctx.moveTo(X(u), y); }
+      ctx.strokeStyle = c; ctx.lineWidth = 1.5; ctx.globalAlpha = v * al; ctx.stroke();
+    });
+    ctx.globalAlpha = v;
+    for (let s = 0; s <= 4; s++) { const u = (lead + s * 0.05) / span; ctx.strokeStyle = col('ink', 1, 0.6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X(u), By); ctx.lineTo(X(u), By + 4); ctx.stroke(); if (s % 2 === 0) mono(ctx, s === 0 ? '0' : (s * 0.05).toFixed(1) + ' s', X(u), By + 14, col('ink', 1, 0.8), 'center', 9.5); }
+    if (g > 0.3) tag(ctx, '35 Hz', X((lead + 0.012) / span), my + H * 0.24, NT.gold, 'left', 10);
+    if (g > 0.9) tag(ctx, '250 Hz', X((lead + CH_T) / span), Ty + 2, NT.gold, 'center', 10);
+    mono(ctx, 'Hanford', Lx + 8, Ty + 9, NT.orange, 'left', 9.5); mono(ctx, 'Livingston, 7 ms earlier', Lx + 8, Ty + 22, NT.blue, 'left', 9.5);
+    head('strain, both detectors'); ctx.globalAlpha = 1;
+  }
+  for (let i = 0; i < 6; i++) on(P[i], a[i] > 0.4);
+});
+
+/* ---------- V · the helix, breathing, then read as a score ---------- */
+scene('s5', [
+  '<i class="sw k"></i>y = &plusmn;sin x<span class="lbl">two strands</span>',
+  '<i class="sw g"></i>10.5 rungs per turn, 3.4 nm<span class="lbl">measured</span>',
+  '<i class="sw r"></i>&nu; ~ 10<sup>12</sup> Hz<span class="lbl">the helix flexing</span>',
+  '<i class="sw p"></i>A&rarr;A &nbsp;C&rarr;C &nbsp;G&rarr;G &nbsp;T&rarr;E<span class="lbl">this page&rsquo;s notes</span>',
+  '<i class="sw"></i>A : T, G : C<span class="lbl">the answering strand</span>'
+], 5, (ctx, w, h, k, t, P) => {
+  const { fx, fy, S } = focus(w, h), a0 = k(0), a1 = k(1), a2 = k(2), a3 = k(3), a4 = k(4), sec = t / 1000;
+  const nt = 1 - a2, bw = a1 * (1 - a2);
+  paper(ctx, w, h, nt);
+  const NR = 31, L = S * 0.96, xl = fx - L / 2, cy = fy - S * 0.2, g = ramp(a0, 0, 0.7), spin = reduce ? 0.6 : sec * 0.5;
+  const A = S * 0.12 * (1 + 0.04 * bw * Math.sin(sec * 38));
+  const th = u => TAU * u * NR / 10.5 - spin, ink = col('ink', nt);
+  const strand = front => {
+    ctx.beginPath();
+    for (const s of [1, -1]) for (let i = 0; i < 200; i++) {
+      const u0 = i / 200, u1 = (i + 1) / 200; if (u1 > g) break;
+      if ((s * Math.cos(th((u0 + u1) / 2)) >= 0) !== front) continue;
+      ctx.moveTo(xl + L * u0, cy + s * A * Math.sin(th(u0))); ctx.lineTo(xl + L * u1, cy + s * A * Math.sin(th(u1)));
+    }
+    ctx.strokeStyle = col('ink', nt, front ? 1 : 0.4); ctx.lineWidth = front ? 2.4 : 1.4; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineCap = 'butt';
+  };
+  strand(false);
+  const ck = Snd.clock('riff'), ck2 = Snd.clock('canon'), beat = Math.floor((ck != null ? ck : ck2 != null ? ck2 : sec) / RIFF), head = a2 > 0.5 ? wrap(beat, 30) : -1;
+  const xr = r => xl + L * (r + 0.5) / NR;
+  for (let r = 0; r < NR; r++) {
+    const u = (r + 0.5) / NR; if (u > g) break;
+    const x = xr(r), sn = Math.sin(th(u)), y1 = cy + A * sn, y2 = cy - A * sn, base = SEQ[r % 6];
+    const open = r >= 13 && r <= 15 ? bw * (0.5 + 0.5 * Math.sin(sec * 2.2 + r)) * 0.42 : 0;
+    ctx.lineWidth = r === head ? 3.4 : 2;
+    ctx.strokeStyle = col(BCOL[base], nt); ctx.beginPath(); ctx.moveTo(x, y1); ctx.lineTo(x, lerp(y1, cy, 1 - open)); ctx.stroke();
+    ctx.strokeStyle = col(BCOL[COMP[base]], nt); ctx.beginPath(); ctx.moveTo(x, y2); ctx.lineTo(x, lerp(y2, cy, 1 - open)); ctx.stroke();
+  }
+  strand(true);
+  /* one turn, to scale */
+  const brA = ramp(a0, 0.75, 1) * (1 - ramp(a1, 0, 0.4));
+  if (brA > 0) { ctx.globalAlpha = brA; const xa = xl + L * 4 / NR, xb = xl + L * 14.5 / NR; bracket(ctx, xa, xb, cy - A - 12, NT.gold); tag(ctx, 'one turn · 10.5 rungs · 3.4 nm', (xa + xb) / 2, cy - A - 23, NT.gold, 'center', 10); ctx.globalAlpha = 1; }
+  if (bw > 0.3) { ctx.globalAlpha = ramp(bw, 0.3, 0.7); tag(ctx, 'breathing', xr(14), cy - A - 15, NT.red, 'center', 10); ctx.globalAlpha = 1; }
+  /* letters and the roll */
+  const al2 = ramp(a2, 0.35, 0.8), al3 = ramp(a3, 0.2, 0.7), fs = Math.max(8, Math.min(11, L / NR * 0.95));
+  const yt = cy - A - 14, yb = cy + A + 14, yr0 = cy + A + 36, rh = 9;
+  if (al2 > 0) {
+    for (let r = 0; r < NR; r++) {
+      const x = xr(r), base = SEQ[r % 6], cb = COMP[base];
+      ctx.globalAlpha = al2;
+      if (r === head) { ctx.beginPath(); ctx.arc(x, yt, fs * 0.85, 0, TAU); ctx.fillStyle = col('purple', nt, 0.22); ctx.fill(); }
+      mono(ctx, base, x, yt, col(BCOL[base], nt), 'center', fs);
+      ctx.beginPath(); ctx.arc(x, yr0 + ROW[base] * rh, r === head ? 4.2 : 2.8, 0, TAU); ctx.fillStyle = col('purple', nt); ctx.fill();
+      if (al3 > 0) {
+        ctx.globalAlpha = al3; mono(ctx, cb, x, yb, col(BCOL[cb], nt), 'center', fs);
+        ctx.beginPath(); ctx.arc(x, yr0 + ROW[cb] * rh, r === head ? 4 : 2.8, 0, TAU); ctx.strokeStyle = col('green', nt); ctx.lineWidth = 1.4; ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = al2;
+    ['G', 'E', 'C', 'A'].forEach((nm, i) => {
+      ctx.strokeStyle = col('ink', nt, 0.16); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xl, yr0 + i * rh); ctx.lineTo(xl + L, yr0 + i * rh); ctx.stroke();
+      mono(ctx, nm, xl - 6, yr0 + i * rh, col('ink', nt, 0.75), 'right', 8.5);
+    });
+    ctx.globalAlpha = 1;
+  }
+  if (a4 > 0) { ctx.globalAlpha = a4; tag(ctx, '20 amino acids → 20 notes · MIT, 2019', fx, yr0 + 4 * rh + 12, col('gold', nt), 'center', 10, nt); ctx.globalAlpha = 1; }
+  on(P[0], a0 > 0.4); on(P[1], a0 > 0.85); on(P[2], a1 > 0.4); on(P[3], a2 > 0.5); on(P[4], a3 > 0.4);
+});
+
+/* ---------- sound controls ---------- */
+const sndHero = document.getElementById('sndHero'), sndFix = document.getElementById('sndFix'), sndFixLabel = sndFix.querySelector('span');
+const hears = Array.from(document.querySelectorAll('.hear'));
+let wantCue = null;
+function paintSound() {
+  const live = Snd.enabled, id = Snd.id;
+  sndHero.textContent = live ? 'Turn sound off' : 'Turn sound on'; sndHero.setAttribute('aria-pressed', String(live));
+  sndFixLabel.textContent = live ? 'Sound on' : 'Sound off'; sndFix.setAttribute('aria-pressed', String(live)); sndFix.classList.toggle('on', live && !!id);
+  hears.forEach(b => { const p = live && id === b.dataset.cue; b.classList.toggle('on', p); b.setAttribute('aria-pressed', String(p)); b.querySelector('b').textContent = p ? 'Playing' : 'Hear it'; });
+}
+function toggleSound() { const v = Snd.setEnabled(!Snd.enabled); if (v && wantCue) Snd.play(wantCue); }
+if (Snd.supported) {
+  sndHero.addEventListener('click', toggleSound); sndFix.addEventListener('click', toggleSound);
+  hears.forEach(b => b.addEventListener('click', () => { const cue = b.dataset.cue; if (Snd.enabled && Snd.id === cue) { Snd.stop(); return; } if (!Snd.enabled && !Snd.setEnabled(true)) return; Snd.play(cue); }));
+  Snd.onChange(paintSound);
+} else {
+  sndHero.textContent = 'Sound is unavailable in this browser'; sndHero.disabled = true; sndFix.disabled = true; hears.forEach(b => { b.disabled = true; });
+}
+/* the cue for whatever card last crossed into view */
+const triggers = [{ el: heroEl, cue: null }];
+document.querySelectorAll('.step').forEach(s => triggers.push({ el: s.querySelector('.card'), cue: s.dataset.cue || null }));
+triggers.push({ el: document.getElementById('end'), cue: 'spheres' }, { el: document.getElementById('srcs'), cue: null });
+function activeCue(vh) { let cue = null; for (const tr of triggers) { if (tr.el.getBoundingClientRect().top < vh * 0.82) cue = tr.cue; else break; } return cue; }
+
+/* ---------- loop ---------- */
+function frame(now) {
+  const t = reduce ? 0 : now, vh = window.innerHeight;
+  renderHero(t);
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect(); if (r.bottom <= 0 || r.top >= vh) continue;
+    const e = clamp(1 - r.top / vh, 0, 1), p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1), N = s.N;
+    const k = i => i === 0 ? ease(ramp(e, 0.3, 1)) : ease(ramp(p, (i - 0.6) / (N - 1), (i - 0.05) / (N - 1)));
+    const { ctx, w, h } = prep(s.c); if (!w || !h) continue;
+    try { s.draw(ctx, w, h, k, t, s.P); } catch (err) { if (!s.failed) { s.failed = true; console.error(err); } }
+  }
+  const c = activeCue(vh);
+  if (c !== wantCue) { wantCue = c; if (Snd.enabled) { if (c) Snd.play(c); else Snd.stop(); } }
+  Snd.frame(now / 1000);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

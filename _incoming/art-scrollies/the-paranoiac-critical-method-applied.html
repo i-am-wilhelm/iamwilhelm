@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Paranoiac-Critical Method, Applied</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{ --bg:#0f0c0a; --bone:#e9e2d2; --gold:#d4a84b; --muted:#8e8777; --desk:#3a2a1c; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:760px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(40px,11vw,104px);line-height:.94;margin:.35em 0 .3em;letter-spacing:-.015em}
+h1 em{font-style:italic;color:var(--gold)}
+.sub{max-width:36ch;margin:0 auto;font-size:19px;color:#cfc8b8;font-style:italic}
+.hint{margin-top:10vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(15,12,10,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(212,168,75,.22);padding:18px 20px 16px;font-size:17.5px}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin-bottom:9px;text-transform:uppercase}
+.card .big{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;font-weight:400}
+.card .big i{color:var(--gold)}
+.chain{position:absolute;left:12px;top:12px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--bone);pointer-events:none;text-transform:uppercase}
+.chain span{display:block;opacity:.22;transition:opacity .5s;padding:3px 0}
+.chain span.on{opacity:1}
+.chain span.now{color:var(--gold)}
+
+.end{padding:16vh 22px 20vh;text-align:center;max-width:720px;margin:0 auto}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,8vw,64px);line-height:1;margin:0 0 .5em}
+.end p{color:#cfc8b8;max-width:46ch;margin:0 auto 1em}
+.end .colophon{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7vh;line-height:1.8}
+.end .next{display:inline-block;margin-top:3vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(212,168,75,.35);padding:10px 16px;text-decoration:none}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,75,.5),transparent);margin:0 auto;width:60%}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A monthly column &middot; No. 1 &middot; the stapler</div>
+    <h1>The Paranoiac-Critical Method, <em>Applied</em></h1>
+    <p class="sub">Dal&iacute;'s recipe for turning a thing into a second thing. One ordinary object a month, walked all the way to the picture.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · The object -->
+<section class="scene" id="s1">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">I · The object</span><p>The rule: one object from the desk. This month, the stapler. Look at it until it stops being a stapler. Dal&iacute; called this inducing the delusion while keeping the critical faculty awake. Let the associations run; keep the hand steady.</p></div></div>
+    <div class="step"><div class="card"><p>The first thing it stops being is a tool. It becomes a hinge with two arms, and a hinge with two arms is a jaw.</p></div></div>
+    <div class="step"><div class="card"><p>That is the whole method in one move. You just did it.</p></div></div>
+  </div>
+</section>
+
+<!-- II · The chain -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas></canvas>
+    <div class="chain" id="chain"><span>stapler</span><span>hinge · jaw</span><span>crocodile</span><span>staple · Π · doorway</span><span>colonnade · temple</span><span>religare · to bind</span></div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">II · The chain</span><p>Jaw. Open it. The anvil is the lower jaw, the magazine is the upper, and the whole thing is long and low and hinged at the back. The chain goes where it wants: crocodile.</p></div></div>
+    <div class="step"><div class="card"><p>Stay with the crocodile a second. It eats paper. It lives on a desk the way the Nile one lives on a bank: motionless until something passes.</p></div></div>
+    <div class="step"><div class="card"><p>Now the staple itself. A tiny &Pi;. Two legs and a lintel. That is a doorway. Every staple you have ever driven is a doorway closed over a stack of pages.</p></div></div>
+    <div class="step"><div class="card"><p>A thousand doorways in a row is a colonnade. A colonnade with a roof is a temple. The thing in the crocodile's mouth is a temple made of staples.</p></div></div>
+    <div class="step"><div class="card"><p>And the word. Religion, by one old etymology, is <i>religare</i>: to bind back, to bind together. A stapler is a small machine for binding together. The chain closes on itself.</p></div></div>
+  </div>
+</section>
+
+<!-- III · The image -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">III · The image</span><p>Now render both readings so neither one loses. A stapler on a desk, drawn plainly. A crocodile with a temple in its mouth and worshippers walking in, drawn plainly. The same lines.</p></div></div>
+    <div class="step"><div class="card"><p>The hinge pin is the sun. The anvil is the floor. The staples are the columns. Nobody in the picture is surprised.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big"><i>Religare.</i><br>No. 1 of a series.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · The method -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas></canvas></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">IV · The method, written down</span><p>Pick an object you touch every day. Name what it is made of mechanically: hinge, arm, lever, spring. Every mechanism has an animal and a building hiding in it. Follow one until a word arrives.</p></div></div>
+    <div class="step"><div class="card"><p>Then draw it twice at once. The precision is the point. Dal&iacute;'s phrase for it was the most imperialist fury of precision, and he meant it: a sloppy double image is only a blur.</p></div></div>
+    <div class="step"><div class="card"><p>Next month's object is yours to nominate. The desk is full of them.</p></div></div>
+  </div>
+</section>
+
+<section class="end">
+  <hr class="rule">
+  <h2 style="margin-top:10vh">The desk is a zoo<br>and a city.</h2>
+  <p>The paranoiac-critical method is a generator, and generators are cheap; the chain from stapler to crocodile to temple took four minutes. The craft is in the last step, where both readings have to survive the same lines. That is where the month goes. Nominate an object and it gets the treatment: mechanism, animal, building, word, picture.</p>
+  <p>No. 2 will be whatever you leave on the desk.</p>
+  <a class="next" href="#hero">Read it again &uarr;</a>
+  <div class="colophon">
+    Drawn in code. One stapler, one crocodile, forty staples, five worshippers. No images loaded.<br>
+    Previous: <i>Root Rectangles in Desmos</i> &middot; Series: <i>The Double Image</i>
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  let resized = false; if (c.width !== W || c.height !== H) { c.width = W; c.height = H; resized = true; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h, dpr, resized };
+}
+const MONO = `'IBM Plex Mono', monospace`;
+function mono(ctx, text, x, y, color, align = 'center', size = 10.5) { ctx.font = `${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+
+/* ---------- the stapler, in local units (1 = its length), y up ----------
+   params: open 0..1 (jaw angle), croc 0..1 (teeth, eye, legs, tail), temple 0..1 (colonnade, sun, figures), plain 0..1 (dull desk-object shading) */
+const HINGE = [0.03, 0.20];
+function armPoints(open) {
+  const th = open * 0.62;
+  const pts = [[0.0, 0.13], [0.0, 0.30], [0.90, 0.27], [1.0, 0.22], [1.0, 0.13]];
+  return pts.map(([x, y]) => { const dx = x - HINGE[0], dy = y - HINGE[1]; return [HINGE[0] + dx * Math.cos(th) - dy * Math.sin(th), HINGE[1] + dx * Math.sin(th) + dy * Math.cos(th)]; });
+}
+function armUnder(open, x) { // y of the arm's underside at local x (approx: the segment from pts[0] to pts[4])
+  const a = armPoints(open); const [x0, y0] = a[0], [x1, y1] = a[4]; const tt = clamp((x - x0) / (x1 - x0), 0, 1); return lerp(y0, y1, tt);
+}
+function drawStapler(ctx, ox, oy, L, q, t) {
+  const { open = 0, croc = 0, temple = 0, plain = 1 } = q;
+  ctx.save(); ctx.translate(ox, oy); ctx.scale(L, -L);
+  const lw = px => px / L;
+  const arm = armPoints(open);
+  // tail (crocodile)
+  if (croc > 0) {
+    const len = 0.95 * croc;
+    ctx.fillStyle = `rgba(40,40,44,${croc})`;
+    ctx.beginPath(); ctx.moveTo(0.02, 0.0); ctx.moveTo(0.0, 0.0);
+    ctx.bezierCurveTo(-0.3 * len, -0.02, -0.6 * len, 0.18 * len, -len, 0.30 * len);
+    ctx.bezierCurveTo(-0.6 * len, 0.16 * len, -0.3 * len, 0.06, 0.0, 0.11); ctx.closePath(); ctx.fill();
+    // ridges on the tail
+    ctx.fillStyle = `rgba(233,226,210,${0.35 * croc})`;
+    for (let k = 1; k <= 7; k++) { const u = k / 8, x = -len * u * 0.95, y = lerp(0.11, 0.30 * len, u) - 0.01; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 0.02, y + 0.035 * (1 - u * 0.5)); ctx.lineTo(x - 0.045, y); ctx.closePath(); ctx.fill(); }
+    // legs
+    ctx.fillStyle = `rgba(40,40,44,${croc})`;
+    for (const x of [0.2, 0.74]) { ctx.beginPath(); ctx.moveTo(x, 0.01); ctx.lineTo(x + 0.09, 0.01); ctx.lineTo(x + 0.11, -0.11 * croc); ctx.lineTo(x + 0.14, -0.12 * croc); ctx.lineTo(x - 0.02, -0.12 * croc); ctx.closePath(); ctx.fill(); }
+  }
+  // anvil / lower jaw
+  ctx.fillStyle = '#2a2a2e';
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(1.0, 0); ctx.lineTo(1.0, 0.07); ctx.lineTo(0.95, 0.10); ctx.lineTo(0.0, 0.10); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = `rgba(233,226,210,${0.18 * plain})`; ctx.fillRect(0.05, 0.085, 0.86, 0.012);
+  // temple inside the mouth
+  if (temple > 0 && open > 0.2) {
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(0.06, 0.10); ctx.lineTo(1.0, 0.10); ctx.lineTo(arm[4][0], arm[4][1]); ctx.lineTo(arm[0][0], arm[0][1]); ctx.closePath(); ctx.clip();
+    // sun at the hinge
+    const g = ctx.createRadialGradient(HINGE[0] + 0.06, HINGE[1], 0, HINGE[0] + 0.06, HINGE[1], 0.5);
+    g.addColorStop(0, `rgba(255,200,90,${0.55 * temple})`); g.addColorStop(0.3, `rgba(255,170,60,${0.18 * temple})`); g.addColorStop(1, 'rgba(255,160,50,0)');
+    ctx.fillStyle = g; ctx.fillRect(-0.2, 0, 1.4, 0.6);
+    // floor lines converging toward the hinge
+    ctx.strokeStyle = `rgba(233,226,210,${0.25 * temple})`; ctx.lineWidth = lw(1);
+    for (let k = 0; k < 6; k++) { const d = k / 6; const x = lerp(0.98, 0.14, d * d); ctx.beginPath(); ctx.moveTo(x, 0.10); ctx.lineTo(x, 0.105 + 0.006 * (1 - d)); ctx.stroke(); }
+    // colonnade of staples, far to near
+    const N = 14;
+    for (let k = N - 1; k >= 0; k--) {
+      const d = k / (N - 1);                       // 0 near, 1 far
+      const x = lerp(0.95, 0.16, Math.pow(d, 0.8)), sc = lerp(1, 0.35, d);
+      const a = temple * (1 - d * 0.45);
+      const yTop = armUnder(open, x) - 0.012, legW = 0.012 * sc, span = 0.045 * sc;
+      ctx.fillStyle = `rgba(233,226,210,${a})`;
+      ctx.fillRect(x - span / 2, 0.10, legW, yTop - 0.10);
+      ctx.fillRect(x + span / 2 - legW, 0.10, legW, yTop - 0.10);
+      ctx.fillRect(x - span / 2, yTop - 0.012, span, 0.012);
+      // shadow of the column on the floor
+      ctx.fillStyle = `rgba(0,0,0,${0.35 * a})`; ctx.fillRect(x - span / 2, 0.10, span, 0.004);
+    }
+    // worshippers walking in along the floor
+    const tt = reduce ? 0 : t;
+    for (let k = 0; k < 5; k++) {
+      const u = ((k / 5) + tt * 0.00004) % 1;
+      const x = lerp(1.05, 0.2, u), sc = lerp(1, 0.4, u), hh = 0.09 * sc;
+      const a = temple * clamp(Math.sin(Math.PI * u) * 1.6, 0, 1);
+      ctx.fillStyle = `rgba(20,16,14,${a})`;
+      ctx.beginPath(); ctx.moveTo(x - hh * 0.2, 0.10); ctx.lineTo(x + hh * 0.2, 0.10); ctx.lineTo(x + hh * 0.12, 0.10 + hh * 0.7); ctx.lineTo(x - hh * 0.12, 0.10 + hh * 0.7); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.arc(x, 0.10 + hh * 0.84, hh * 0.14, 0, TAU); ctx.fill();
+    }
+    ctx.restore();
+  }
+  // anvil teeth (crocodile)
+  if (croc > 0) {
+    ctx.fillStyle = `rgba(233,226,210,${0.9 * croc})`;
+    for (let x = 0.3; x < 0.96; x += 0.08) { ctx.beginPath(); ctx.moveTo(x, 0.10); ctx.lineTo(x + 0.02, 0.10 + 0.035 * croc); ctx.lineTo(x + 0.04, 0.10); ctx.closePath(); ctx.fill(); }
+  }
+  // upper arm / jaw
+  ctx.fillStyle = '#34343a';
+  ctx.beginPath(); arm.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fill();
+  // arm highlight
+  ctx.strokeStyle = `rgba(233,226,210,${0.25 * plain})`; ctx.lineWidth = lw(1.2);
+  ctx.beginPath(); ctx.moveTo(arm[1][0] + 0.03, arm[1][1] - 0.02); ctx.lineTo(arm[2][0] - 0.02, arm[2][1] - 0.02); ctx.stroke();
+  // teeth under the arm
+  if (croc > 0) {
+    ctx.save(); const th = open * 0.62; ctx.translate(HINGE[0], HINGE[1]); ctx.rotate(th); ctx.translate(-HINGE[0], -HINGE[1]);
+    ctx.fillStyle = `rgba(233,226,210,${0.9 * croc})`;
+    for (let x = 0.26; x < 0.96; x += 0.08) { ctx.beginPath(); ctx.moveTo(x, 0.13); ctx.lineTo(x + 0.02, 0.13 - 0.035 * croc); ctx.lineTo(x + 0.04, 0.13); ctx.closePath(); ctx.fill(); }
+    // eye
+    ctx.fillStyle = `rgba(233,226,210,${croc})`; ctx.beginPath(); ctx.ellipse(0.14, 0.33, 0.035, 0.022, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = `rgba(15,12,10,${croc})`; ctx.beginPath(); ctx.ellipse(0.145, 0.33, 0.008, 0.02, 0, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+  // hinge pin
+  ctx.fillStyle = temple > 0 ? `rgb(${lerp(120, 255, temple) | 0},${lerp(120, 200, temple) | 0},${lerp(128, 90, temple) | 0})` : '#787880';
+  ctx.beginPath(); ctx.arc(HINGE[0], HINGE[1], 0.045, 0, TAU); ctx.fill();
+  if (temple > 0) { ctx.strokeStyle = `rgba(255,210,110,${0.5 * temple})`; ctx.lineWidth = lw(1); for (let k = 0; k < 12; k++) { const an = k * TAU / 12 + (reduce ? 0 : t * 0.0002); ctx.beginPath(); ctx.moveTo(HINGE[0] + Math.cos(an) * 0.06, HINGE[1] + Math.sin(an) * 0.06); ctx.lineTo(HINGE[0] + Math.cos(an) * (0.09 + 0.02 * (k % 2)), HINGE[1] + Math.sin(an) * (0.09 + 0.02 * (k % 2))); ctx.stroke(); } }
+  ctx.restore();
+}
+function desk(ctx, w, h, yDesk, a, dusk) {
+  // sky / room
+  const g = ctx.createLinearGradient(0, 0, 0, yDesk);
+  g.addColorStop(0, `rgba(${lerp(15, 70, dusk) | 0},${lerp(12, 40, dusk) | 0},${lerp(10, 50, dusk) | 0},1)`);
+  g.addColorStop(1, `rgba(${lerp(15, 160, dusk) | 0},${lerp(12, 90, dusk) | 0},${lerp(10, 50, dusk) | 0},1)`);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, yDesk);
+  ctx.fillStyle = `rgba(58,42,28,${a})`; ctx.fillRect(0, yDesk, w, h - yDesk);
+  ctx.fillStyle = `rgba(233,226,210,${0.12 * a})`; ctx.fillRect(0, yDesk, w, 1.5);
+}
+
+/* ---------- hero ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC);
+  ctx.fillStyle = '#0f0c0a'; ctx.fillRect(0, 0, w, h);
+  const L = Math.min(w * 0.5, 300);
+  ctx.globalAlpha = 0.18 * fade;
+  drawStapler(ctx, w / 2 - L * 0.45, h * 0.86, L, { open: 0.5 + 0.5 * Math.sin(t * 0.0005), croc: 0, temple: 0 }, t);
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- scene 1: the object ---------- */
+const s1 = document.querySelector('#s1 canvas');
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(s1);
+  const yDesk = h * 0.6;
+  desk(ctx, w, h, yDesk, 1, 0.15);
+  const L = Math.min(w * 0.8, 520);
+  const open = sstep(ramp(p, 0.35, 0.7));
+  const bob = reduce ? 0 : Math.sin(t * 0.001) * 2;
+  drawStapler(ctx, (w - L) / 2 + L * 0.02, yDesk + bob, L, { open, croc: 0, temple: 0, plain: 1 }, t);
+  const la = sstep(ramp(p, 0.4, 0.6));
+  if (la > 0) {
+    mono(ctx, 'HINGE', (w - L) / 2 + L * 0.05, yDesk - L * 0.42, `rgba(212,168,75,${la})`, 'left', 10);
+    mono(ctx, 'TWO ARMS', (w - L) / 2 + L * 0.98, yDesk - L * 0.42, `rgba(212,168,75,${la})`, 'right', 10);
+  }
+  const ja = sstep(ramp(p, 0.72, 0.9));
+  if (ja > 0) { ctx.font = `italic ${Math.min(52, w * 0.12)}px 'Cormorant Garamond', serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(212,168,75,${ja})`; ctx.fillText('a jaw', w / 2, h * 0.2); }
+}
+
+/* ---------- scene 2: the chain ---------- */
+const s2 = document.querySelector('#s2 canvas'), chain = document.getElementById('chain');
+function setChain(k) { [...chain.children].forEach((s, i) => { s.classList.toggle('on', i <= k); s.classList.toggle('now', i === k); }); }
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(s2);
+  ctx.fillStyle = '#0f0c0a'; ctx.fillRect(0, 0, w, h);
+  const step = p < 0.14 ? 0 : p < 0.3 ? 1 : p < 0.46 ? 2 : p < 0.62 ? 3 : p < 0.8 ? 4 : 5; setChain(step);
+  const open = sstep(ramp(p, 0.05, 0.2)), croc = sstep(ramp(p, 0.22, 0.42));
+  const toStaple = sstep(ramp(p, 0.46, 0.56));        // crossfade to the single Π
+  const colon = sstep(ramp(p, 0.64, 0.78));           // Π multiplies into a colonnade
+  const word = sstep(ramp(p, 0.82, 0.96));
+  const L = Math.min(w * 0.78, 520);
+  const yBase = h * 0.56;
+  if (toStaple < 1) {
+    ctx.globalAlpha = 1 - toStaple;
+    drawStapler(ctx, (w - L) / 2 + L * 0.05, yBase, L, { open, croc, temple: 0, plain: 1 }, t);
+    ctx.globalAlpha = 1;
+  }
+  // the staple as doorway
+  if (toStaple > 0) {
+    const n = Math.max(1, Math.round(lerp(1, 9, colon)));
+    const cx = w / 2, cy = h * 0.5;
+    const S = lerp(Math.min(w * 0.5, 320), Math.min(w * 0.5, 320) * 0.55, colon);
+    for (let k = n - 1; k >= 0; k--) {
+      const d = n === 1 ? 0 : k / (n - 1);                 // depth
+      const sc = lerp(1, 0.3, d), x = cx + lerp(0, 0, d), y = cy + lerp(0, -S * 0.25, d);
+      const a = toStaple * (1 - d * 0.5);
+      const legW = S * 0.07 * sc, span = S * 0.7 * sc, hgt = S * 0.75 * sc;
+      ctx.fillStyle = `rgba(233,226,210,${a})`;
+      ctx.fillRect(x - span / 2, y - hgt / 2, legW, hgt); ctx.fillRect(x + span / 2 - legW, y - hgt / 2, legW, hgt);
+      ctx.fillRect(x - span / 2 - legW * 0.3, y - hgt / 2 - legW, span + legW * 0.6, legW);
+      if (colon > 0.6 && k === n - 1) { // roof when it has become a temple
+        ctx.fillStyle = `rgba(233,226,210,${a * (colon - 0.6) * 2.5})`;
+        ctx.beginPath(); ctx.moveTo(cx - S * 0.5, cy - S * 0.75 / 2 - S * 0.1); ctx.lineTo(cx, cy - S * 0.75 / 2 - S * 0.32); ctx.lineTo(cx + S * 0.5, cy - S * 0.75 / 2 - S * 0.1); ctx.closePath(); ctx.fill();
+      }
+    }
+    // a figure walking through the doorway
+    const u = reduce ? 0.5 : ((t * 0.00012) % 1);
+    const fx = cx + (0.5 - u) * S * 0.9, fs = S * 0.26 * lerp(1, 0.6, colon);
+    ctx.fillStyle = `rgba(20,16,14,${toStaple * clamp(Math.sin(Math.PI * u) * 1.5, 0, 1)})`;
+    ctx.beginPath(); ctx.moveTo(fx - fs * 0.22, cy + S * 0.375); ctx.lineTo(fx + fs * 0.22, cy + S * 0.375); ctx.lineTo(fx + fs * 0.12, cy + S * 0.375 - fs * 0.7); ctx.lineTo(fx - fs * 0.12, cy + S * 0.375 - fs * 0.7); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(fx, cy + S * 0.375 - fs * 0.86, fs * 0.15, 0, TAU); ctx.fill();
+    // floor line
+    ctx.strokeStyle = `rgba(233,226,210,${0.3 * toStaple})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx - S, cy + S * 0.375); ctx.lineTo(cx + S, cy + S * 0.375); ctx.stroke();
+    mono(ctx, colon > 0.5 ? 'COLONNADE · TEMPLE' : 'Π · A DOORWAY', cx, cy + S * 0.375 + 22, `rgba(212,168,75,${toStaple})`, 'center', 10);
+  }
+  if (word > 0) {
+    ctx.font = `italic ${Math.min(64, w * 0.15)}px 'Cormorant Garamond', serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = `rgba(212,168,75,${word})`; ctx.fillText('religare', w / 2, h * 0.17);
+    mono(ctx, 'RE- + LIGARE · TO BIND BACK · TO BIND TOGETHER', w / 2, h * 0.17 + 40, `rgba(233,226,210,${0.8 * word})`, 'center', 10);
+  }
+}
+
+/* ---------- scene 3: the image ---------- */
+const s3 = document.querySelector('#s3 canvas');
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(s3);
+  const yDesk = h * 0.6;
+  const wonder = sstep(ramp(p, 0.08, 0.6));
+  desk(ctx, w, h, yDesk, 1, 0.15 + 0.75 * wonder);
+  const L = Math.min(w * 0.86, 600);
+  const ox = (w - L) / 2 + L * 0.06;
+  // long shadow of the thing across the desk as the sun inside rises
+  if (wonder > 0) { ctx.fillStyle = `rgba(0,0,0,${0.35 * wonder})`; ctx.beginPath(); ctx.moveTo(ox, yDesk); ctx.lineTo(ox + L, yDesk); ctx.lineTo(ox + L * 1.25, yDesk + h * 0.18); ctx.lineTo(ox - L * 0.3, yDesk + h * 0.18); ctx.closePath(); ctx.fill(); }
+  drawStapler(ctx, ox, yDesk, L, { open: lerp(0.15, 0.95, wonder), croc: wonder * 0.85, temple: sstep(ramp(p, 0.3, 0.7)), plain: 1 - wonder * 0.6 }, t);
+  const cap = sstep(ramp(p, 0.75, 0.9));
+  if (cap > 0) {
+    ctx.font = `italic ${Math.min(56, w * 0.13)}px 'Cormorant Garamond', serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = `rgba(212,168,75,${cap})`; ctx.fillText('Religare', w / 2, h * 0.16);
+    mono(ctx, 'STAPLER · CROCODILE · TEMPLE · 2026', w / 2, h * 0.16 + 36, `rgba(233,226,210,${0.75 * cap})`, 'center', 10);
+  }
+}
+
+/* ---------- scene 4: the desk, full of candidates ---------- */
+const s4 = document.querySelector('#s4 canvas');
+const OBJ = ['PAPERCLIP', 'MUG', 'KEY', 'SCISSORS', 'LAMP', 'TAPE'];
+function icon(ctx, k, x, y, s, a) {
+  ctx.strokeStyle = `rgba(233,226,210,${a})`; ctx.fillStyle = `rgba(233,226,210,${a})`; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  if (k === 0) { ctx.moveTo(x - s * 0.2, y + s * 0.4); ctx.lineTo(x - s * 0.2, y - s * 0.3); ctx.arc(x, y - s * 0.3, s * 0.2, Math.PI, 0); ctx.lineTo(x + s * 0.2, y + s * 0.2); ctx.arc(x + s * 0.05, y + s * 0.2, s * 0.15, 0, Math.PI); ctx.lineTo(x - s * 0.1, y - s * 0.1); }
+  if (k === 1) { ctx.rect(x - s * 0.3, y - s * 0.3, s * 0.55, s * 0.65); ctx.moveTo(x + s * 0.25, y - s * 0.1); ctx.arc(x + s * 0.25, y + s * 0.05, s * 0.16, -Math.PI / 2, Math.PI / 2); }
+  if (k === 2) { ctx.arc(x - s * 0.22, y - s * 0.2, s * 0.18, 0, TAU); ctx.moveTo(x - s * 0.08, y - s * 0.1); ctx.lineTo(x + s * 0.4, y + s * 0.35); ctx.moveTo(x + s * 0.25, y + s * 0.2); ctx.lineTo(x + s * 0.35, y + s * 0.1); ctx.moveTo(x + s * 0.14, y + s * 0.09); ctx.lineTo(x + s * 0.24, y - s * 0.01); }
+  if (k === 3) { ctx.arc(x - s * 0.22, y + s * 0.25, s * 0.14, 0, TAU); ctx.moveTo(x + s * 0.22, y + s * 0.25); ctx.arc(x + s * 0.22, y + s * 0.25, s * 0.14, 0, TAU); ctx.moveTo(x - s * 0.12, y + s * 0.15); ctx.lineTo(x + s * 0.3, y - s * 0.4); ctx.moveTo(x + s * 0.12, y + s * 0.15); ctx.lineTo(x - s * 0.3, y - s * 0.4); }
+  if (k === 4) { ctx.moveTo(x - s * 0.3, y - s * 0.1); ctx.lineTo(x + s * 0.3, y - s * 0.1); ctx.lineTo(x + s * 0.12, y - s * 0.4); ctx.lineTo(x - s * 0.12, y - s * 0.4); ctx.closePath(); ctx.moveTo(x, y - s * 0.1); ctx.lineTo(x, y + s * 0.3); ctx.moveTo(x - s * 0.22, y + s * 0.4); ctx.lineTo(x + s * 0.22, y + s * 0.4); }
+  if (k === 5) { ctx.arc(x, y, s * 0.36, 0, TAU); ctx.moveTo(x + s * 0.14, y); ctx.arc(x, y, s * 0.14, 0, TAU); ctx.moveTo(x + s * 0.3, y + s * 0.2); ctx.lineTo(x + s * 0.55, y + s * 0.2); }
+  ctx.stroke();
+}
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(s4);
+  const yDesk = h * 0.3;
+  desk(ctx, w, h, yDesk, 1, 0.2);
+  const cols = 3, rows = 2, cw = Math.min(w, 560) / cols, x0 = (w - cw * cols) / 2, y0 = yDesk + h * 0.08, rh = h * 0.2;
+  for (let k = 0; k < 6; k++) {
+    const a = sstep(ramp(p, 0.05 + k * 0.08, 0.15 + k * 0.08)); if (a <= 0) continue;
+    const x = x0 + (k % cols + 0.5) * cw, y = y0 + Math.floor(k / cols) * rh + rh * 0.4;
+    const pulse = reduce ? 1 : 0.85 + 0.15 * Math.sin(t * 0.002 + k);
+    icon(ctx, k, x, y, Math.min(cw, rh) * 0.5, a * pulse);
+    mono(ctx, OBJ[k], x, y + rh * 0.42, `rgba(212,168,75,${a})`, 'center', 10);
+  }
+  const q = sstep(ramp(p, 0.6, 0.8));
+  if (q > 0) { ctx.font = `italic ${Math.min(40, w * 0.09)}px 'Cormorant Garamond', serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(212,168,75,${q})`; ctx.fillText('mechanism · animal · building · word', w / 2, h * 0.15); }
+}
+
+/* ---------- loop ---------- */
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 },
+  { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 },
+  { el: document.getElementById('s4'), render: renderS4 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight;
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+    s.render(p, t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

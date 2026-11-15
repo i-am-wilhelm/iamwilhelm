@@ -2,10 +2,11 @@
  * The Seen institutions batch: pages mounted exactly as their approved
  * source files (in _incoming/art-scrollies/), by src/lib/seen.ts.
  *
- * `SEEN_CHAIN` is the reading order of the whole series, by slug: the
- * essays already hung, then No. 7 to No. 15. The colophon's "Previous" and
- * "Next" links follow it. The Snowflake Machine is unnumbered and stands
- * outside the chain.
+ * `SEEN_CHAIN` is the reading order of the pages that take their
+ * "Previous" and "Next" links from it, by slug: No. 1 to No. 3, then No. 7
+ * to No. 15. No. 4 to No. 6 name their own neighbours (SEEN_SOURCES below),
+ * and No. 16 and No. 17 name none. The Snowflake Machine is unnumbered and
+ * stands outside the chain.
  */
 export const SEEN_CHAIN = [
   'the-double-image',
@@ -49,4 +50,14 @@ export const SEEN_SOURCES: Record<string, string> = {
   'per-my-last-memo': '_incoming/elsewhere/per-my-last-memo.html',
   'fall-line': '_incoming/art-scrollies/fall-line.html',
   'off-soundings': '_incoming/art-scrollies/off-soundings.html',
+  /* Seen No. 4 to 6, from their published artifacts. They name their own
+     previous and next pieces, which src/lib/seen.ts links, so they too
+     stand outside SEEN_CHAIN; like it, they follow Monet Invented the
+     Dither and lead to Blake Wrote It Backwards. */
+  'panofsky-for-internet-people': '_incoming/art-scrollies/panofsky-for-internet-people.html',
+  'root-rectangles-in-desmos': '_incoming/art-scrollies/root-rectangles-in-desmos.html',
+  'the-paranoiac-critical-method-applied': '_incoming/art-scrollies/the-paranoiac-critical-method-applied.html',
+  'those-who-heard-the-sky': '_incoming/elsewhere/those-who-heard-the-sky.html',
+  'backgold-scrolly': '_incoming/elsewhere/backgold-scrolly.html',
+  'lla-scrolly-homepage': '_incoming/elsewhere/lla-scrolly-homepage.html',
 };

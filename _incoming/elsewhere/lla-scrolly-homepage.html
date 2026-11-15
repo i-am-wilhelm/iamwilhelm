@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LLA Scrolly Homepage</title>
+<meta name="description" content="The Libertarian Leadership Academy is recruiting and training 900 candidates this cycle, at every level, nationwide. Free training. Open to anyone, without regard to party.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout idea: quad-ruled workbook sheets. Copy in ink on the left, a plotted figure on the right,
+     every answer written in ember pencil. One visual world, light only. */
+  --paper:#fbfcfb; --ink:#0c1626; --graphite:#5d6875; --ember:#e9662a; --ember-ink:#b93f0c; --blue:#2d70b3; --gold:#f2c96b;
+  --rule:rgba(45,112,179,.11); --rule-major:rgba(45,112,179,.2); --hair:rgba(12,22,38,.16);
+  --display:'Instrument Serif','Iowan Old Style',Georgia,serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --pencil:'Caveat','Segoe Print','Bradley Hand',cursive;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:400 1.0625rem/1.6 var(--body);background-color:var(--paper);
+  background-image:linear-gradient(var(--rule-major) 1px,transparent 1px),linear-gradient(90deg,var(--rule-major) 1px,transparent 1px),linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px;background-position:-1px -1px;overflow-x:clip}
+a{color:var(--ember-ink);text-underline-offset:.18em;text-decoration-thickness:1px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.005em}
+h1{font-size:clamp(2.5rem,6.6vw,4.3rem)}
+h2{font-size:clamp(2rem,4.6vw,3.1rem)}
+h3{font-size:1.45rem;line-height:1.15}
+p{margin:0}
+em.hl{font-style:italic;background:linear-gradient(transparent 58%,rgba(242,201,107,.6) 58%,rgba(242,201,107,.6) 92%,transparent 92%)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.eyebrow{font:500 .76rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--graphite);display:flex;align-items:center;gap:4px;min-height:32px}
+.lede{font-size:1.14rem;max-width:34em;color:#27303d}
+.pencil{font-family:var(--pencil);color:var(--ember-ink);font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border:1.5px solid var(--ink);border-radius:3px;font:600 .98rem/1 var(--body);text-decoration:none;color:var(--ink);background:#fff;box-shadow:3px 3px 0 var(--hair);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(12,22,38,.28)}
+.btn.primary{background:var(--ink);color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:12px}
+.stack{display:grid;gap:18px;align-content:start}
+
+/* disclaimer + header */
+.notice{background:var(--ink);color:#e7ecf3;font-size:.8rem;line-height:1.4;padding:8px 0;text-align:center}
+header.top{border-bottom:1px solid var(--hair);background:rgba(251,252,251,.92);backdrop-filter:blur(4px);position:sticky;top:0;z-index:20}
+header.top .wrap{display:flex;align-items:center;gap:14px 22px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:400 1.3rem/1 var(--display);margin-right:auto}
+.brand svg{width:20px;height:28px;flex:none}
+nav.main{display:flex;gap:4px 18px;flex-wrap:wrap;font-size:.95rem}
+nav.main a{color:var(--ink);text-decoration:none;padding:6px 0}
+nav.main a:hover{text-decoration:underline}
+.top .btn{min-height:38px;padding:0 14px;font-size:.9rem;box-shadow:2px 2px 0 var(--hair)}
+#tallyBtn{display:none;align-items:center;gap:6px;border:0;background:none;cursor:pointer;font:700 1.25rem/1 var(--pencil);color:var(--ember-ink);padding:6px 4px}
+#tallyBtn.on{display:inline-flex}
+.tally{stroke:var(--ember-ink);stroke-width:1.6;stroke-linecap:round;flex:none}
+
+/* sheets */
+.sheet{padding:clamp(56px,9vw,116px) 0}
+.sheet .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,72px);align-items:center}
+.sheet.flip .copy{order:2}
+.sheet.solo .wrap{grid-template-columns:minmax(0,1fr)}
+.hero{padding-top:clamp(36px,6vw,72px)}
+.proof{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0;font-family:var(--mono);font-size:.84rem;color:var(--graphite)}
+.proof div{display:flex;align-items:baseline;gap:8px}
+.proof dt{order:2}.proof dd{margin:0;font:700 2rem/1 var(--pencil);color:var(--ember-ink)}
+
+/* figures */
+figure.fig{margin:0;background:#fff;border:1px solid rgba(12,22,38,.3);box-shadow:5px 5px 0 var(--hair);position:relative}
+.stage{position:relative}
+.fig canvas{display:block;width:100%;touch-action:pan-y}
+#fig-hero{aspect-ratio:4/3;cursor:crosshair}
+#fig-board{cursor:crosshair}
+#fig-map{aspect-ratio:12.8/8.8;cursor:pointer}
+#fig-rays{aspect-ratio:1/1}
+#fig-steps{aspect-ratio:1/1}
+.exprs{list-style:none;margin:0;padding:0;border-top:1px solid var(--hair);font:400 .82rem/1.35 var(--mono)}
+.exprs li{display:grid;grid-template-columns:30px 1fr;align-items:center;border-bottom:1px solid rgba(12,22,38,.08);min-height:36px}
+.exprs li>i{font-style:normal;justify-self:center;width:14px;height:14px;border-radius:50%;background:var(--c,var(--ink))}
+.exprs li>span{padding:7px 10px 7px 0;overflow-wrap:anywhere}
+.exprs b{font-weight:500;color:var(--ember-ink)}
+.exprs input{width:100%;border:0;background:none;font:inherit;color:var(--ink);padding:9px 10px 9px 0;min-width:0}
+.exprs input::placeholder{color:#8a94a1}
+figcaption{font-size:.84rem;color:var(--graphite);padding:9px 12px;line-height:1.45}
+figcaption b{font-weight:600;color:var(--ink)}
+#tip{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border:0;background:none;padding:0;cursor:grab;touch-action:none;display:grid;place-items:center}
+#tip::after{content:"";width:15px;height:15px;border-radius:50%;background:#fff;border:2.5px solid var(--ember);box-shadow:0 0 0 5px rgba(233,102,42,.16)}
+#tip:active{cursor:grabbing}
+
+/* marked points: the hunt */
+.pt{appearance:none;border:0;background:none;padding:0;width:32px;height:32px;display:inline-grid;place-items:center;cursor:pointer;position:relative;flex:none;vertical-align:middle}
+.pt::before{content:"";position:absolute;inset:5px;background:linear-gradient(var(--hair),var(--hair)) center/100% 1px no-repeat,linear-gradient(var(--hair),var(--hair)) center/1px 100% no-repeat}
+.pt::after{content:"";position:relative;width:11px;height:11px;border-radius:50%;background:#fff;border:1.6px solid var(--ember-ink);transition:box-shadow .2s,background .2s}
+.pt:hover::after,.pt:focus-visible::after{box-shadow:0 0 0 5px rgba(233,102,42,.2)}
+.pt[data-lit]::after{background:var(--ember)}
+.pt.blaze::after{animation:blaze 1.5s ease}
+@keyframes blaze{0%{box-shadow:0 0 0 0 rgba(233,102,42,.7);background:var(--ember)}60%{box-shadow:0 0 0 16px rgba(233,102,42,0);background:var(--gold)}100%{box-shadow:0 0 0 0 rgba(233,102,42,0)}}
+.fig>.pt{position:absolute;top:-16px;right:-16px;z-index:2}
+.note{position:absolute;z-index:40;width:min(340px,calc(100vw - 24px));background:#fff;border:1px solid rgba(12,22,38,.35);border-top:5px solid var(--ember);box-shadow:6px 6px 0 var(--hair);padding:16px 18px 14px;transform:rotate(-.6deg);
+  background-image:linear-gradient(transparent 27px,rgba(45,112,179,.14) 27px);background-size:100% 28px}
+.note blockquote{margin:0 22px 10px 0;font:400 1.3rem/28px var(--display)}
+.note cite{display:block;font:500 .78rem/28px var(--mono);font-style:normal;letter-spacing:.08em;text-transform:uppercase}
+.note .check{font:700 1.15rem/28px var(--pencil);color:var(--ember-ink)}
+.note .prog{display:flex;align-items:center;gap:8px;font:700 1.15rem/28px var(--pencil);color:var(--ember-ink);flex-wrap:wrap}
+.x{position:absolute;top:4px;right:4px;width:36px;height:36px;border:0;background:none;font:400 1.5rem/1 var(--body);cursor:pointer;color:var(--graphite)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) rotate(-.5deg);z-index:60;background:#fff;border:1px solid rgba(12,22,38,.35);border-left:5px solid var(--ember);box-shadow:5px 5px 0 var(--hair);padding:10px 16px;font:700 1.3rem/1.2 var(--pencil);color:var(--ink);width:max-content;max-width:calc(100vw - 24px)}
+
+/* lists and ledgers */
+.lessons,.paths,.ledger,.steps{list-style:none;margin:0;padding:0}
+.lessons li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--hair)}
+.k{font:500 .8rem/1 var(--mono);color:var(--graphite)}
+.tag{font:500 .74rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite)}
+.tag.free{color:var(--ember-ink)}
+.paths li{display:grid;grid-template-columns:34px 1fr;gap:4px 10px;padding:14px 0;border-bottom:1px solid var(--hair)}
+.paths p{font-size:.98rem;color:#27303d;margin:4px 0 6px}
+.paths code,.steps code{font:400 .8rem/1 var(--mono);color:var(--blue)}
+.paths a{font-weight:500}
+.ledger{border-top:1.5px solid var(--ink)}
+.ledger li{display:grid;grid-template-columns:1fr 4.2rem;gap:16px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--hair)}
+.ledger p{font-size:.95rem;color:#27303d;margin-top:3px;max-width:44em}
+.ledger.times li{grid-template-columns:1fr 5rem;padding:10px 0}
+.ledger.times h3{font:500 1rem/1.35 var(--body);letter-spacing:0}
+.ledger.times p{font-size:.86rem;color:var(--graphite)}
+.num{font:500 1.3rem/1 var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:pre}
+.ledger .head{border-bottom:0;padding:8px 0 0}
+.carry{display:inline-block;width:.78rem;text-align:center;font:700 1.25rem/1 var(--pencil);color:var(--ember-ink)}
+.ledger .head span:first-child{font:500 .74rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--graphite)}
+.sum{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;border-top:2.5px solid var(--ink);padding-top:12px;margin-top:-1px}
+.sum small{font:400 .84rem/1.4 var(--mono);color:var(--graphite)}
+.total{position:relative;font:700 2.7rem/1 var(--pencil);color:var(--ember-ink);padding:6px 16px;white-space:nowrap}
+.total svg{position:absolute;inset:-6px -8px;width:calc(100% + 16px);height:calc(100% + 12px);overflow:visible}
+.total path{fill:none;stroke:var(--ember-ink);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;transition:stroke-dashoffset 1s ease .15s}
+.in .total path{stroke-dashoffset:0}
+.steps li{display:grid;grid-template-columns:34px 1fr;gap:2px 10px;padding:14px 0;border-bottom:1px solid var(--hair)}
+.steps p{color:#27303d}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:24px}
+.card{background:#fff;border:1px solid rgba(12,22,38,.3);box-shadow:5px 5px 0 var(--hair);padding:clamp(22px,4vw,36px)}
+.card .role{font:500 .8rem/1.3 var(--mono);color:var(--graphite);letter-spacing:.04em}
+form.letter{display:flex;flex-wrap:wrap;gap:10px}
+form.letter input{flex:1 1 220px;min-height:46px;border:1.5px solid var(--ink);border-radius:3px;padding:0 14px;font:inherit;background:#fff;min-width:0}
+#letterMsg{font-size:.9rem;color:var(--graphite);min-height:1.4em}
+
+/* footer */
+footer{border-top:1.5px solid var(--ink);background:rgba(255,255,255,.72);padding:56px 0 34px}
+footer .wrap{display:grid;gap:34px}
+.fgrid{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,.6fr));gap:28px}
+.fgrid h4{margin:0 0 8px;font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--graphite)}
+.fgrid ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.fgrid a{color:var(--ink)}
+.fine{font-size:.82rem;color:var(--graphite);line-height:1.5;display:grid;gap:8px}
+#year{border:0;background:none;padding:0 2px;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-underline-offset:.2em}
+#work{font:700 1.5rem/1.15 var(--pencil);color:var(--ember-ink);white-space:pre;margin:0}
+
+/* answer key */
+#key{position:fixed;inset:0;z-index:80;background:rgba(12,22,38,.55);display:none;overflow:auto;padding:16px}
+#key.open{display:block}
+#key .page{position:relative;max-width:760px;margin:16px auto;background:#fff;border:1px solid var(--ink);box-shadow:8px 8px 0 rgba(12,22,38,.35);padding:clamp(22px,5vw,48px);background-image:linear-gradient(90deg,transparent 43px,rgba(233,102,42,.35) 43px,rgba(233,102,42,.35) 44px,transparent 44px)}
+#key ol{list-style:none;margin:22px 0 0;padding:0;counter-reset:q}
+#key li{counter-increment:q;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid rgba(45,112,179,.22);color:#8a94a1}
+#key li::before{content:counter(q);font:500 .8rem/1.9 var(--mono);text-align:right;padding-right:4px}
+#key blockquote{margin:0;font:400 1.22rem/1.3 var(--display)}
+#key cite{font:500 .74rem/1.9 var(--mono);font-style:normal;letter-spacing:.08em;text-transform:uppercase}
+#key li.inked{color:var(--ink)}
+#key li.inked::before{content:"\2713";font:700 1.5rem/1 var(--pencil);color:var(--ember-ink)}
+#key .flag{display:block;font:700 1.1rem/1.2 var(--pencil);color:var(--ember-ink)}
+.proto{font:400 .74rem/1.4 var(--mono);color:var(--graphite)}
+
+/* the 900 */
+.aside{font:400 .84rem/1.4 var(--mono);color:var(--graphite)}
+#seatMark{position:absolute;width:0;height:0;pointer-events:none}
+#seatMark::before{content:"";position:absolute;left:-10px;top:-10px;width:20px;height:20px;border-radius:50%;border:2px solid var(--ember);animation:ping 1.8s ease-out infinite}
+#seatMark b{position:absolute;left:12px;top:-32px;font:700 1.6rem/1 var(--pencil);color:var(--ember-ink);white-space:nowrap;text-shadow:0 0 2px #fff,0 0 4px #fff,0 0 7px #fff,0 0 10px #fff}
+#seatMark.left b{left:auto;right:12px}
+@keyframes ping{0%{transform:scale(.55);opacity:1}100%{transform:scale(2.3);opacity:0}}
+.lnk{border:0;background:none;padding:0;font:inherit;color:var(--ember-ink);text-decoration:underline;text-underline-offset:.18em;cursor:pointer}
+.division{margin:0;font:500 1.3rem/1.45 var(--mono);color:var(--ember-ink);white-space:pre;overflow-x:auto}
+.division u{text-decoration:none;border-top:2px solid var(--ember-ink)}
+.division s{text-decoration:none;border-bottom:2px solid var(--ember-ink)}
+.field{font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--graphite)}
+select{min-height:46px;border:1.5px solid var(--ink);border-radius:3px;padding:0 12px;font:inherit;background:#fff;color:var(--ink);max-width:100%}
+
+@media (max-width:860px){
+  .sheet .wrap{grid-template-columns:minmax(0,1fr)}
+  .sheet.flip .copy{order:0}
+  #fig-hero{aspect-ratio:1/1}
+  #fig-rays,#fig-steps{max-height:420px}
+  .fgrid{grid-template-columns:1fr 1fr}.fgrid>div:first-child{grid-column:1/-1}
+  nav.main{order:3;width:100%;font-size:.9rem}
+  header.top{position:static}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.pt::after,.total path{transition:none}.pt.blaze::after{animation:none}#seatMark::before{animation:none;transform:scale(1.3)}.total path{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<p class="notice"><span class="wrap" style="display:block">Contributions or gifts to Libertarian Leadership Academy are not deductible as charitable contributions for federal income tax purposes.</span></p>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="#top" aria-label="Libertarian Leadership Academy, home">
+    <svg viewBox="0 0 20 28" aria-hidden="true"><path d="M10 1C15 9 19 13 19 18.5A9 9 0 0 1 1 18.5C1 13 5 9 10 1Z" fill="none" stroke="#e9662a" stroke-width="2"/><path d="M10 11C12.5 15 14.5 17 14.5 20A4.5 4.5 0 0 1 5.5 20C5.5 17 7.5 15 10 11Z" fill="#f2c96b" stroke="#c98f1b" stroke-width="1"/></svg>
+    Libertarian Leadership Academy</a>
+  <nav class="main" aria-label="Main">
+    <a href="https://libertarianleadership.org/courses">Courses</a><a href="https://libertarianleadership.org/programs">Programs</a><a href="https://libertarianleadership.org/watch">Watch</a><a href="https://libertarianleadership.org/about">About</a><a href="https://libertarianleadership.org/instructor">Instructor</a>
+  </nav>
+  <button id="tallyBtn" type="button" aria-label="Open the tinderbox"></button>
+  <a class="btn primary" href="https://libertarianleadership.org/join">Apply to run</a>
+  <a class="btn" href="https://libertarianleadership.org/_backgold/sign-in?return=%2F">Sign in</a>
+</div></header>
+
+<main id="top">
+<section class="sheet hero"><div class="wrap">
+  <div class="copy stack">
+    <p class="eyebrow">Libertarian Leadership Academy · this cycle</p>
+    <h1>Nine hundred candidates. Every level. <em class="hl">One of them is you.</em></h1>
+    <p class="lede">This cycle the Academy is recruiting and training 900 people to put their names on a ballot, from school board to Congress, in every part of the country. The training is free. The first step takes one minute.</p>
+    <div class="row"><a class="btn primary" href="https://libertarianleadership.org/join">Apply to run</a><a class="btn" href="https://libertarianleadership.org/watch">Watch people who ran</a></div>
+    <dl class="proof"><div><dt>candidates</dt><dd>900</dd></div><div><dt>states</dt><dd>50</dd></div><div><dt>levels of office</dt><dd>6</dd></div></dl>
+    <p class="aside">Open to anyone, without regard to party.</p>
+  </div>
+  <figure class="fig">
+    <button class="pt" data-quote="jefferson-altar" aria-label="A marked point. Press to read a line about liberty."></button>
+    <div class="stage"><canvas id="fig-board" role="img" aria-label="Nine hundred open points in rows on graph paper, one for each candidate the Academy is recruiting this cycle."></canvas>
+      <span id="seatMark" aria-hidden="true"><b>you?</b></span></div>
+    <ol class="exprs">
+      <li><i style="--c:#fff;border:1.5px solid #0c1626"></i><span><span id="dims">36 × 25</span> = <b>900</b> open points<span id="filedNote"></span></span></li>
+      <li><i style="--c:#e9662a"></i><span><span id="seatLine">One of them is yours. Tap a point to mark it.</span> <button type="button" class="lnk" id="pick">Pick one for me</button></span></li>
+    </ol>
+    <figcaption><b>Fig. 1.</b> One open point for each of the 900. Tap any point to mark it as yours. Applying is what holds it.</figcaption>
+  </figure>
+</div></section>
+
+<section class="sheet flip"><div class="wrap">
+  <div class="copy stack">
+    <p class="eyebrow">Nationwide <button class="pt" data-quote="mason-free" aria-label="A marked point. Press to read a line about liberty."></button></p>
+    <h2>Fifty states. Eighteen apiece.</h2>
+    <p class="lede">Divide the 900 by fifty states and it comes to eighteen candidates a state. Eighteen people fit around two tables at a diner.</p>
+    <pre class="division" role="img" aria-label="Long division on paper: 900 divided by 50 is 18, with nothing left over.">      18
+50 ) <u>900</u>
+     <s>50</s>
+     400
+     <s>400</s>
+       0</pre>
+    <div class="stack" style="gap:8px;justify-items:start">
+      <label class="field" for="state">Your state</label>
+      <select id="state"><option value="">Pick your state</option></select>
+      <p class="pencil" id="stateLine" style="font-size:1.45rem;line-height:1.15">Your state’s eighteen starts with one name.</p>
+    </div>
+    <div class="row"><a class="btn primary" id="stateCta" href="https://libertarianleadership.org/join">Apply to run</a></div>
+  </div>
+  <figure class="fig">
+    <canvas id="fig-map" role="img" aria-label="The fifty states as labelled points on a grid, laid out roughly as a map. Use the state menu to choose yours."></canvas>
+    <ol class="exprs"><li><i style="--c:#0c1626"></i><span>900 ÷ 50 = <b>18</b> per state, on average</span></li></ol>
+    <figcaption><b>Fig. 2.</b> Fifty states on the lattice. Eighteen is the average, and the count in every state starts at one. Tap yours.</figcaption>
+  </figure>
+</div></section>
+
+<section class="sheet"><div class="wrap">
+  <div class="copy stack">
+    <p class="eyebrow">Every level <button class="pt" data-quote="washington-plant" aria-label="A marked point. Press to read a line about liberty."></button></p>
+    <h2>School board to Congress. Each seat counts as one.</h2>
+    <p class="lede">The 900 run at every level. On this sheet a school board seat and a seat in Congress are worth exactly the same: one.</p>
+    <ol class="steps">
+      <li><span class="k">01</span><div><h3>School board</h3><p>The budget and the classroom where your kids sit.</p></div></li>
+      <li><span class="k">02</span><div><h3>City council</h3><p>Zoning, permits, policing, and what your street costs.</p></div></li>
+      <li><span class="k">03</span><div><h3>County</h3><p>Commission, clerk, recorder, treasurer, sheriff. The offices that run the paperwork of daily life.</p></div></li>
+      <li><span class="k">04</span><div><h3>State legislature</h3><p>Where most of the law you live under gets written.</p></div></li>
+      <li><span class="k">05</span><div><h3>Statewide</h3><p>Governor, secretary of state, auditor, and the rest of the row.</p></div></li>
+      <li><span class="k">06</span><div><h3>Congress</h3><p>The House and the Senate.</p></div></li>
+    </ol>
+    <div class="row"><a class="btn primary" href="https://libertarianleadership.org/join">Apply to run</a></div>
+  </div>
+  <figure class="fig">
+    <canvas id="fig-steps" role="img" aria-label="A step function with six steps, numbered 01 to 06, one for each level of office."></canvas>
+    <ol class="exprs"><li><i style="--c:#2d70b3"></i><span>y = ⌊x⌋ + 1 &nbsp; {0 ≤ x &lt; 6}</span></li><li><i style="--c:#e9662a"></i><span>every step adds exactly <b>1</b> to the 900</span></li></ol>
+    <figcaption><b>Fig. 3.</b> A step function. Six levels of office, and each one holds your weight.</figcaption>
+  </figure>
+</div></section>
+
+<section class="sheet flip"><div class="wrap">
+  <div class="copy stack">
+    <p class="eyebrow">How 900 happens <button class="pt" data-quote="paine-begin" aria-label="A marked point. Press to read a line about liberty."></button></p>
+    <h2>Liberty spreads the way fire does: <em class="hl">one mind at a time.</em></h2>
+    <p class="lede">Nobody recruits nine hundred people at once. One person decides to run. Someone who watched them decides next. The Academy makes sure each of them knows what to do the morning after they decide.</p>
+    <div class="row"><a class="btn primary" href="https://libertarianleadership.org/join">Apply to run</a></div>
+  </div>
+  <figure class="fig">
+    <div class="stage"><canvas id="fig-hero" role="img" aria-label="A flame plotted on graph paper from two equations. Around it, open points fill in one at a time, each joined to the one that lit it."></canvas>
+      <button id="tip" type="button" aria-label="Flame tip. Drag it, or use the arrow keys, to reshape the flame."></button></div>
+    <ol class="exprs">
+      <li><i style="--c:#e9662a"></i><span>x = 2.3 · sin t · sin²(t/2)</span></li>
+      <li><i style="--c:#e9662a"></i><span>y = h(1 + cos t) &nbsp; h = <b id="hval">2.5</b></span></li>
+      <li><i style="--c:#5d6875"></i><span>n → n + 1 &nbsp; one at a time</span></li>
+      <li><i style="--c:#fff;border:1.5px solid #8a94a1"></i><input id="blank" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="solve for …" aria-label="Blank expression. Type a word to solve for."></li>
+    </ol>
+    <figcaption><b>Fig. 4.</b> Every curve here is a function. Each open point is a mind, joined to the one that lit it. Tap a point to light it yourself, or drag the tip of the flame.</figcaption>
+  </figure>
+</div></section>
+
+<section class="sheet"><div class="wrap">
+  <div class="copy stack">
+    <p class="eyebrow">How it works <button class="pt" data-quote="madison-knowledge" aria-label="A marked point. Press to read a line about liberty."></button></p>
+    <h2>Apply. Learn. Lead.</h2>
+    <ol class="steps">
+      <li><span class="k">01</span><div><h3>Apply</h3><p>One minute. Your name and email, and the training opens.</p></div></li>
+      <li><span class="k">02</span><div><h3>Learn</h3><p>Short video lessons you can finish in an evening, each one ending in something you made: a message, a plan, a budget, a talk.</p></div></li>
+      <li><span class="k">03</span><div><h3>Lead</h3><p>Go run. The classroom stays open the whole way.</p></div></li>
+    </ol>
+    <div class="row"><a class="btn primary" href="https://libertarianleadership.org/join">Apply to run</a></div>
+  </div>
+  <div class="card stack">
+    <p class="eyebrow">What it costs you</p>
+    <ol class="ledger" aria-label="What the training costs">
+      <li><div><h3>The application</h3><p>One minute. Your name and email.</p></div><span class="num">$0</span></li>
+      <li><div><h3>41 lessons</h3><p>Message, persuasion, fundraising, building a team, running ads. Free with your email.</p></div><span class="num">$0</span></li>
+      <li><div><h3>212 conversations and clips</h3><p>Candidates, councilmembers, party officers and organizers on what actually happened.</p></div><span class="num">+ $0</span></li>
+    </ol>
+    <div class="sum watchme"><small>0 + 0 + 0<br>Free to join.</small>
+      <span class="total" aria-label="Total: zero dollars">$0<svg viewBox="0 0 120 60" preserveAspectRatio="none" aria-hidden="true"><path d="M14 30C10 12 58 3 96 9C124 15 118 50 70 55C30 59 4 50 16 24"/></svg></span></div>
+  </div>
+</div></section>
+
+<section class="sheet flip"><div class="wrap">
+  <div class="copy stack">
+    <p class="eyebrow">Watch <button class="pt" data-quote="henry-liberty" aria-label="A marked point. Press to read a line about liberty."></button></p>
+    <h2>People who ran. In their own words.</h2>
+    <p class="lede">Candidates, councilmembers, party officers and organizers, talking about what actually happened: the filing, the doors, the money, the count. New conversations go up as they are recorded.</p>
+    <div class="row"><a class="btn" href="https://libertarianleadership.org/watch">All conversations</a></div>
+  </div>
+  <div class="card stack">
+    <ol class="ledger times" aria-label="Four new conversations, with running times">
+      <li class="head"><span>New</span><span class="num" title="Carried from the seconds column"><b class="carry">1</b>   </span></li>
+      <li><div><h3>Olivia Hayse</h3><p>Libertarian candidate for Sedgwick County Commission 5, Kansas</p></div><span class="num">29:03</span></li>
+      <li><div><h3>Steven Borella</h3><p>Libertarian candidate for Clark County Recorder, Nevada</p></div><span class="num">26:00</span></li>
+      <li><div><h3>Nathan Weise</h3><p>Libertarian candidate for Ohio's 1st Congressional District</p></div><span class="num">30:27</span></li>
+      <li><div><h3>Johnny Baucom</h3><p>Libertarian candidate for US House District 1, Mississippi</p></div><span class="num">+ 29:47</span></li>
+    </ol>
+    <div class="sum watchme"><small>Four conversations.<br>115 min 17 s = 1 h 55 min 17 s</small>
+      <span class="total" aria-label="115 minutes 17 seconds">115:17<svg viewBox="0 0 120 60" preserveAspectRatio="none" aria-hidden="true"><path d="M14 30C10 12 58 3 96 9C124 15 118 50 70 55C30 59 4 50 16 24"/></svg></span></div>
+  </div>
+</div></section>
+
+<section class="sheet"><div class="wrap">
+  <div class="copy stack">
+    <p class="eyebrow">Not running? <button class="pt" data-quote="douglass-demand" aria-label="A marked point. Press to read a line about liberty."></button></p>
+    <h2>Every one of the 900 needs people.</h2>
+    <p class="lede">A candidate is one point. A campaign is the lines that leave it. Pick yours.</p>
+    <ol class="paths">
+      <li><span class="k">01</span><div><h3>Campaign staff</h3><p>You run the operation behind a candidate: field, money, message, or all of it.</p><a href="https://libertarianleadership.org/join">Apply →</a> <code>y = 0.6x</code></div></li>
+      <li><span class="k">02</span><div><h3>Organizer</h3><p>You move people around a cause, a petition, or a local fight.</p><a href="https://libertarianleadership.org/join">Apply →</a> <code>y = 0.3x</code></div></li>
+      <li><span class="k">03</span><div><h3>Civic leader</h3><p>You sit on a board, a commission, or a party body, or you want to.</p><a href="https://libertarianleadership.org/join">Apply →</a> <code>y = 0</code></div></li>
+      <li><span class="k">04</span><div><h3>Scout</h3><p>You know someone who should run. Tell us who.</p><a href="https://libertarianleadership.org/contact">Send us a name →</a> <code>y = −0.3x</code></div></li>
+      <li><span class="k">05</span><div><h3>Backer</h3><p>You want the training paid for. Gifts cover the first cohorts and the training days.</p><a href="https://libertarianleadership.org/donate">Give →</a> <code>y = −0.6x</code></div></li>
+    </ol>
+  </div>
+  <figure class="fig">
+    <canvas id="fig-rays" role="img" aria-label="Five rays leaving one point, numbered 01 to 05. The point is a candidate; each ray is a way to stand behind one."></canvas>
+    <figcaption><b>Fig. 5.</b> Five lines through one point. The point is a candidate. Each line is someone standing behind them.</figcaption>
+  </figure>
+</div></section>
+
+<section class="sheet solo"><div class="wrap"><div class="duo">
+  <div class="card stack">
+    <p class="eyebrow">Lead instructor <button class="pt" data-quote="paul-example" aria-label="A marked point. Press to read a line about liberty."></button></p>
+    <h2>C. Michael Pickens</h2>
+    <p class="role">Founder and Lead Instructor</p>
+    <p>Michael has run for office, managed campaigns, and built local organizations from scratch, and he has trained candidates, staff and organizers for more than a decade. He wrote <i>Libertarian Leadership</i> and <i>The Liberated Mind</i>. He teaches the way he coaches: direct, practical, and about what you will do next week.</p>
+    <div class="row"><a class="btn" href="https://libertarianleadership.org/instructor">Meet the instructor</a></div>
+  </div>
+  <div class="card stack">
+    <p class="eyebrow">Give</p>
+    <h2>Help us become a nonprofit.</h2>
+    <p>The Academy is filing for 501(c)(3) recognition. Gifts today are not tax-deductible yet; they pay for the filing, the first cohorts, and the training days.</p>
+    <div class="row"><a class="btn primary" href="https://libertarianleadership.org/donate">Give</a></div>
+  </div>
+</div>
+<div class="stack" style="max-width:40rem">
+  <p class="eyebrow">The Academy letter</p>
+  <h2>The count, new lessons and training days. Once a month.</h2>
+  <form class="letter" id="letter"><label for="email" style="position:absolute;left:-9999px">Email address</label><input id="email" type="email" required placeholder="you@example.com" autocomplete="email"><button class="btn primary" type="submit">Subscribe</button></form>
+  <p id="letterMsg" role="status"></p>
+</div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div class="stack"><h2 style="font-size:clamp(1.6rem,3.6vw,2.3rem)">Liberty spreads the way fire does: <em class="hl">one mind at a time.</em> <button class="pt" data-quote="adams-brushfires" aria-label="A marked point. Press to read a line about liberty."></button></h2>
+      <p style="max-width:36em;color:#27303d">An independent, nonpartisan academy for the people who carry liberty into public life: candidates, campaign staff, organizers, civic leaders and job seekers. Open to anyone, without regard to party.</p></div>
+    <div><h4>Learn</h4><ul><li><a href="https://libertarianleadership.org/courses">Courses</a></li><li><a href="https://libertarianleadership.org/programs">Programs</a></li><li><a href="https://libertarianleadership.org/watch">Watch</a></li><li><a href="https://libertarianleadership.org/instructor">Instructor</a></li></ul></div>
+    <div><h4>The Academy</h4><ul><li><a href="https://libertarianleadership.org/about">About</a></li><li><a href="https://libertarianleadership.org/join">Apply</a></li><li><a href="https://libertarianleadership.org/donate">Give</a></li><li><a href="https://libertarianleadership.org/contact">Contact</a></li></ul></div>
+  </div>
+  <pre id="work" hidden aria-live="polite"></pre>
+  <div class="fine">
+    <p>Contributions or gifts to Libertarian Leadership Academy are not deductible as charitable contributions for federal income tax purposes.</p>
+    <p>© <button id="year" type="button" title="Show the work">2026</button> Libertarian Leadership Academy · Powered by BackGold</p>
+    <p class="proto">Design preview. Buttons and links open the live site.</p>
+  </div>
+</div></footer>
+
+<div id="key" role="dialog" aria-modal="true" aria-labelledby="keyTitle"><div class="page">
+  <button class="x" type="button" id="keyClose" aria-label="Close">×</button>
+  <p class="eyebrow">You found the tinderbox</p>
+  <h2 id="keyTitle">Answers in the back.</h2>
+  <p class="pencil" id="keyCount" style="font-size:1.35rem;margin-top:8px"></p>
+  <ol id="keyList"></ol>
+</div></div>
+
+<script>
+(()=>{
+'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={ink:'#0c1626',graphite:'#5d6875',ember:'#e9662a',emberInk:'#b93f0c',blue:'#2d70b3',gold:'#f2c96b',rule:'rgba(45,112,179,.13)',major:'rgba(45,112,179,.26)',axis:'rgba(12,22,38,.62)'};
+const MONO="'IBM Plex Mono',ui-monospace,monospace", PEN="Caveat,'Segoe Print',cursive", SANS="'IBM Plex Sans',system-ui,sans-serif";
+
+/* ---------- the tinderbox: same ids and storage key as the ember hunt ---------- */
+const QUOTES=[
+ {id:'adams-brushfires',text:'It does not require a majority to prevail, but rather an irate, tireless minority, keen on setting brushfires of freedom in the minds of men.',who:'Attributed to Samuel Adams',flag:'Trick question. Nobody has found this line in his papers. Check the source.'},
+ {id:'paine-begin',text:'We have it in our power to begin the world over again.',who:'Thomas Paine'},
+ {id:'paine-souls',text:'These are the times that try men’s souls.',who:'Thomas Paine'},
+ {id:'paine-enemy',text:'He that would make his own liberty secure must guard even his enemy from oppression; for if he violates this duty, he establishes a precedent that will reach to himself.',who:'Thomas Paine'},
+ {id:'jefferson-resistance',text:'The spirit of resistance to government is so valuable on certain occasions that I wish it to be always kept alive.',who:'Thomas Jefferson'},
+ {id:'jefferson-altar',text:'I have sworn upon the altar of God eternal hostility against every form of tyranny over the mind of man.',who:'Thomas Jefferson'},
+ {id:'franklin-safety',text:'Those who would give up essential Liberty, to purchase a little temporary Safety, deserve neither Liberty nor Safety.',who:'Benjamin Franklin'},
+ {id:'adams-lost',text:'Liberty, once lost, is lost forever.',who:'John Adams'},
+ {id:'madison-knowledge',text:'The advancement and diffusion of knowledge is the only guardian of true liberty.',who:'James Madison'},
+ {id:'washington-plant',text:'Liberty, when it begins to take root, is a plant of rapid growth.',who:'George Washington'},
+ {id:'mason-free',text:'All men are by nature equally free and independent, and have certain inherent rights.',who:'George Mason'},
+ {id:'henry-liberty',text:'Give me liberty, or give me death!',who:'Patrick Henry'},
+ {id:'bastiat-fiction',text:'The state is that great fiction by which everyone tries to live at the expense of everyone else.',who:'Frédéric Bastiat'},
+ {id:'douglass-demand',text:'Power concedes nothing without a demand. It never did and it never will.',who:'Frederick Douglass'},
+ {id:'spooner-master',text:'A man is none the less a slave because he is allowed to choose a new master once in a term of years.',who:'Lysander Spooner'},
+ {id:'paul-truth',text:'Truth is treason in the empire of lies.',who:'Ron Paul'},
+ {id:'paul-example',text:'Setting a good example is a far better way to spread ideals than through force of arms.',who:'Ron Paul'}
+];
+const byId=Object.fromEntries(QUOTES.map(q=>[q.id,q])), KEY='lla:embers';
+let mem=new Set();
+const found=()=>{try{return new Set(JSON.parse(localStorage.getItem(KEY)||'[]').filter(id=>byId[id]))}catch{return mem}};
+const remember=id=>{const s=found();s.add(id);mem=s;try{localStorage.setItem(KEY,JSON.stringify([...s]))}catch{}return s};
+function tally(n){let s='',x=3;const bar=x=>`<line x1="${x}" y1="3" x2="${x}" y2="19"/>`;
+  for(let i=0;i<Math.floor(n/5);i++){for(let j=0;j<4;j++)s+=bar(x+j*5);s+=`<line x1="${x-2}" y1="16" x2="${x+17}" y2="5"/>`;x+=25}
+  for(let j=0;j<n%5;j++)s+=bar(x+j*5);const w=Math.max(8,x+(n%5)*5);
+  return `<svg class="tally" viewBox="0 0 ${w} 22" width="${w}" height="22" aria-hidden="true">${s}</svg>`}
+const tallyBtn=$('#tallyBtn');
+function refresh(){const s=found();$$('.pt[data-quote]').forEach(el=>s.has(el.dataset.quote)?el.setAttribute('data-lit',''):el.removeAttribute('data-lit'));
+  tallyBtn.classList.toggle('on',s.size>0);tallyBtn.innerHTML=tally(s.size)+`<span>${s.size}/${QUOTES.length}</span>`;
+  tallyBtn.setAttribute('aria-label',`${s.size} of ${QUOTES.length} points plotted. Open the tinderbox.`)}
+let note=null,noteFrom=null;
+function closeNote(){if(note){note.remove();note=null;if(noteFrom)noteFrom.focus({preventScroll:true})}}
+function openNote(pt){closeNote();const q=byId[pt.dataset.quote];if(!q)return;const s=remember(q.id);refresh();noteFrom=pt;
+  const all=s.size>=QUOTES.length;
+  note=document.createElement('div');note.className='note';note.setAttribute('role','dialog');note.setAttribute('aria-label','A line about liberty');
+  note.innerHTML=`<button class="x" type="button" aria-label="Close">×</button><blockquote></blockquote><cite></cite>${q.flag?'<p class="check"></p>':''}<p class="prog">${tally(s.size)}<span>${all?'Every point plotted. <a href="#" data-key>Open the tinderbox →</a>':`${s.size} of ${QUOTES.length} plotted`}</span></p>`;
+  $('blockquote',note).textContent='“'+q.text+'”';$('cite',note).textContent=q.who;if(q.flag)$('.check',note).textContent=q.flag;
+  document.body.appendChild(note);
+  const r=pt.getBoundingClientRect(),w=note.offsetWidth,h=note.offsetHeight;
+  const left=clamp(r.left+r.width/2-w/2,12,innerWidth-w-12);let top=r.bottom+10;if(top+h>innerHeight-12&&r.top-h-10>70)top=r.top-h-10;
+  note.style.left=left+scrollX+'px';note.style.top=top+scrollY+'px';
+  $('.x',note).addEventListener('click',closeNote);$('.x',note).focus({preventScroll:true})}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-key]')){e.preventDefault();closeNote();openKey();return}
+  const pt=e.target.closest('.pt');if(pt){e.preventDefault();openNote(pt);return}
+  if(note&&!note.contains(e.target)){noteFrom=null;closeNote()}});
+
+/* the tinderbox page (lives at /brushfire/ on the real site) */
+const key=$('#key');let keyFrom=null;
+function openKey(){const s=found();keyFrom=document.activeElement;
+  $('#keyList').innerHTML=QUOTES.map(q=>`<li class="${s.has(q.id)?'inked':''}"><div><blockquote>“${q.text}”</blockquote><cite>${q.who}</cite>${q.flag&&s.has(q.id)?`<span class="flag">${q.flag}</span>`:''}</div></li>`).join('');
+  $('#keyCount').textContent=`${s.size} of ${QUOTES.length} plotted on this device. The inked ones are yours.`;
+  key.classList.add('open');document.body.style.overflow='hidden';$('#keyClose').focus()}
+function closeKey(){key.classList.remove('open');document.body.style.overflow='';if(keyFrom&&keyFrom.focus)keyFrom.focus({preventScroll:true})}
+$('#keyClose').addEventListener('click',closeKey);key.addEventListener('click',e=>{if(e.target===key)closeKey()});
+tallyBtn.addEventListener('click',openKey);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){key.classList.contains('open')?closeKey():closeNote()}});
+
+/* typed "liberty": solve for it */
+let buf='';
+document.addEventListener('keydown',e=>{const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
+  if(e.key.length!==1)return;buf=(buf+e.key.toLowerCase()).slice(-7);if(buf==='liberty'){buf='';solve()}});
+$('#blank').addEventListener('input',e=>{if(e.target.value.trim().toLowerCase()==='liberty'){e.target.value='';e.target.blur();solve()}});
+let toast=null,solving=false;
+function solve(){$$('.pt').forEach((el,i)=>setTimeout(()=>{el.classList.add('blaze');setTimeout(()=>el.classList.remove('blaze'),1600)},i*130));
+  lightAll();if(toast)toast.remove();toast=document.createElement('div');toast.className='toast';toast.setAttribute('role','status');
+  toast.innerHTML='Solved for liberty. <a href="#" data-key>The tinderbox is open →</a>';document.body.appendChild(toast);
+  const t=toast;setTimeout(()=>{t.remove();if(toast===t)toast=null},6500)}
+window.brushfire=solve;
+
+/* footer year: the 250th, worked out */
+const work=$('#work');
+$('#year').addEventListener('click',()=>{work.hidden=!work.hidden;work.textContent='  2026\n− 1776\n——————\n   250   years of it.'});
+$('#letter').addEventListener('submit',e=>{e.preventDefault();$('#letterMsg').textContent='Design preview: the live sign-up form mounts here.'});
+
+/* ---------- figures ---------- */
+const figs=[];
+function seg(g,x1,y1,x2,y2){g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke()}
+function dot(g,x,y,r,fill,stroke,lw){g.beginPath();g.arc(x,y,r,0,7);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw||1.5;g.stroke()}}
+function Fig(c,view,draw,opt={}){
+  const f={c,draw,opt,p:RM?1:0,ctx:c.getContext('2d')};
+  f.X=x=>f.w/2+(x-f.cx)*f.s;f.Y=y=>f.h/2-(y-f.cy)*f.s;f.ix=px=>(px-f.w/2)/f.s+f.cx;f.iy=py=>f.cy-(py-f.h/2)/f.s;
+  f.size=()=>{const w=c.clientWidth;if(!w)return;if(opt.height)c.style.height=opt.height(w)+'px';const h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
+    c.width=Math.round(w*d);c.height=Math.round(h*d);f.w=w;f.h=h;f.d=d;
+    if(view){const v=typeof view==='function'?view(w,h):view;f.s=Math.min(w/(v.x[1]-v.x[0]),h/(v.y[1]-v.y[0]));f.cx=(v.x[0]+v.x[1])/2;f.cy=(v.y[0]+v.y[1])/2}
+    if(opt.onsize)opt.onsize(f);f.render()};
+  f.render=()=>{if(!f.w)return;const g=f.ctx;g.setTransform(f.d,0,0,f.d,0,0);g.clearRect(0,0,f.w,f.h);if(view)paper(f);draw(f,g)};
+  figs.push(f);return f}
+function paper(f){const g=f.ctx,xa=Math.floor(f.ix(0)),xb=Math.ceil(f.ix(f.w)),ya=Math.floor(f.iy(f.h)),yb=Math.ceil(f.iy(0));g.lineWidth=1;
+  for(let x=xa;x<=xb;x++){g.strokeStyle=x%5===0?C.major:C.rule;const px=Math.round(f.X(x))+.5;seg(g,px,0,px,f.h)}
+  for(let y=ya;y<=yb;y++){g.strokeStyle=y%5===0?C.major:C.rule;const py=Math.round(f.Y(y))+.5;seg(g,0,py,f.w,py)}
+  if(f.opt.axes===false)return;
+  g.strokeStyle=C.axis;g.lineWidth=1.25;const ox=Math.round(f.X(0))+.5,oy=Math.round(f.Y(0))+.5;seg(g,0,oy,f.w,oy);seg(g,ox,0,ox,f.h);
+  g.fillStyle=C.graphite;g.font='10px '+MONO;const st=f.opt.lab||2;
+  g.textAlign='center';g.textBaseline='top';for(let x=xa;x<=xb;x++)if(x&&x%st===0)g.fillText(x,f.X(x),oy+4);
+  g.textAlign='right';g.textBaseline='middle';for(let y=ya;y<=yb;y++)if(y&&y%st===0)g.fillText(y,ox-5,f.Y(y))}
+
+/* Fig. 1: the 900 */
+const FILED=0; /* candidates recruited so far: wire this to the real count */
+const JOIN='https://libertarianleadership.org/join';
+const B={cols:36,rows:25,seat:-1};
+try{const s=parseInt(localStorage.getItem('lla:seat'),10);if(s>=FILED&&s<900)B.seat=s}catch{}
+const boardC=$('#fig-board'),seatMark=$('#seatMark'),seatLine=$('#seatLine');
+const seatXY=i=>[i%B.cols+1,B.rows-Math.floor(i/B.cols)];
+function placeSeat(f){const i=B.seat>=0?B.seat:Math.floor(B.rows*.45)*B.cols+Math.floor(B.cols*.6),[x,y]=seatXY(i);
+  seatMark.style.left=f.X(x)+'px';seatMark.style.top=f.Y(y)+'px';seatMark.classList.toggle('left',x>B.cols-7);
+  seatMark.firstElementChild.textContent=B.seat>=0?'you':'you?';$('#dims').textContent=`${B.cols} × ${B.rows}`;
+  $('#filedNote').textContent=FILED>0?`, ${FILED} filled`:'';$('#pick').textContent=B.seat>=0?'Move it':'Pick one for me';
+  if(B.seat>=0)seatLine.innerHTML=`Yours: point <b>${B.seat+1}</b> of 900, at (${x}, ${y}). <a href="${JOIN}">Apply to hold it →</a> ·`}
+const board=Fig(boardC,w=>{const ph=w<480;B.cols=ph?30:36;B.rows=ph?30:25;return{x:[-1.5,B.cols+1],y:[-1.5,B.rows+1]}},(f,g)=>{const r=clamp(f.s*.26,2,4);
+  for(let i=0;i<900;i++){const[x,y]=seatXY(i),px=f.X(x),py=f.Y(y);
+    if(i===B.seat)dot(g,px,py,r+2.4,C.ember,C.emberInk,1.5);else if(i<FILED)dot(g,px,py,r,C.ink);else dot(g,px,py,r,'#fff','rgba(12,22,38,.5)',1)}
+},{lab:5,height:w=>w<480?w:Math.round(w*.715),onsize:placeSeat});
+function setSeat(i){if(i<FILED||i>899)return;B.seat=i;try{localStorage.setItem('lla:seat',i)}catch{}board.render();placeSeat(board)}
+boardC.addEventListener('click',e=>{const r=boardC.getBoundingClientRect(),c=Math.round(board.ix(e.clientX-r.left))-1,row=B.rows-Math.round(board.iy(e.clientY-r.top));
+  if(c>=0&&c<B.cols&&row>=0&&row<B.rows)setSeat(row*B.cols+c)});
+$('#pick').addEventListener('click',()=>setSeat(FILED+Math.floor(Math.random()*(900-FILED))));
+
+/* Fig. 2: fifty states on the lattice */
+const STATES='AK,0,0,Alaska|ME,11,0,Maine|VT,10,1,Vermont|NH,11,1,New Hampshire|WA,1,2,Washington|ID,2,2,Idaho|MT,3,2,Montana|ND,4,2,North Dakota|MN,5,2,Minnesota|IL,6,2,Illinois|WI,7,2,Wisconsin|MI,8,2,Michigan|NY,9,2,New York|RI,10,2,Rhode Island|MA,11,2,Massachusetts|OR,1,3,Oregon|NV,2,3,Nevada|WY,3,3,Wyoming|SD,4,3,South Dakota|IA,5,3,Iowa|IN,6,3,Indiana|OH,7,3,Ohio|PA,8,3,Pennsylvania|NJ,9,3,New Jersey|CT,10,3,Connecticut|CA,1,4,California|UT,2,4,Utah|CO,3,4,Colorado|NE,4,4,Nebraska|MO,5,4,Missouri|KY,6,4,Kentucky|WV,7,4,West Virginia|VA,8,4,Virginia|MD,9,4,Maryland|DE,10,4,Delaware|AZ,2,5,Arizona|NM,3,5,New Mexico|KS,4,5,Kansas|AR,5,5,Arkansas|TN,6,5,Tennessee|NC,7,5,North Carolina|SC,8,5,South Carolina|OK,4,6,Oklahoma|LA,5,6,Louisiana|MS,6,6,Mississippi|AL,7,6,Alabama|GA,8,6,Georgia|HI,0,7,Hawaii|TX,4,7,Texas|FL,9,7,Florida'
+  .split('|').map(s=>{const[a,c,r,n]=s.split(',');return{a,x:+c,y:7-r,n}});
+[...STATES].sort((a,b)=>a.x-b.x||b.y-a.y).forEach((s,k)=>s.k=k);
+let myState='';try{myState=localStorage.getItem('lla:state')||''}catch{}
+const sel=$('#state'),mapC=$('#fig-map');
+sel.insertAdjacentHTML('beforeend',[...STATES].sort((a,b)=>a.n.localeCompare(b.n)).map(s=>`<option value="${s.a}">${s.n}</option>`).join(''));
+const fMap=Fig(mapC,{x:[-.9,11.9],y:[-.9,7.9]},(f,g)=>{const r=Math.min(f.s*.41,16);g.font=`500 ${f.s<25?9:11}px ${MONO}`;g.textAlign='center';g.textBaseline='middle';
+  STATES.forEach(s=>{const on=f.p*52>s.k,me=s.a===myState,x=f.X(s.x),y=f.Y(s.y);
+    dot(g,x,y,r,me?C.ember:'#fff',me?C.emberInk:on?C.ink:'rgba(12,22,38,.28)',me?2:1.4);g.fillStyle=me||on?C.ink:C.graphite;g.fillText(s.a,x,y+.5)})
+},{axes:false});
+function setState(a){const s=STATES.find(s=>s.a===a);myState=s?a:'';try{localStorage.setItem('lla:state',myState)}catch{}sel.value=myState;
+  $('#stateLine').textContent=s?`${s.n}’s eighteen starts with one name.`:'Your state’s eighteen starts with one name.';
+  $('#stateCta').textContent=s?`Apply to run in ${s.n}`:'Apply to run';fMap.render()}
+sel.addEventListener('change',()=>setState(sel.value));
+mapC.addEventListener('click',e=>{const c=mapC.getBoundingClientRect(),x=fMap.ix(e.clientX-c.left),y=fMap.iy(e.clientY-c.top);let b=null,bd=.62;
+  STATES.forEach(s=>{const d=Math.hypot(s.x-x,s.y-y);if(d<bd){bd=d;b=s}});if(b)setState(b.a)});
+
+/* Fig. 3: every level, one step each */
+const fSteps=Fig($('#fig-steps'),{x:[-.8,6.9],y:[-.8,6.9]},(f,g)=>{
+  for(let i=0;i<6;i++){const a=clamp(f.p*6.6-i,0,1),y=f.Y(i+1);
+    g.setLineDash([4,4]);g.strokeStyle='rgba(93,104,117,.55)';g.lineWidth=1;seg(g,f.X(i),f.Y(i),f.X(i),y);g.setLineDash([]);
+    g.strokeStyle='rgba(45,112,179,.25)';g.lineWidth=2;seg(g,f.X(i),y,f.X(i+1),y);
+    if(a>0){g.strokeStyle=C.blue;g.lineWidth=3;seg(g,f.X(i),y,f.X(i+a),y)}
+    dot(g,f.X(i),y,4.5,a>0?C.blue:'#fff',C.blue,1.6);dot(g,f.X(i+1),y,4.5,'#fff',a>=1?C.blue:'rgba(45,112,179,.35)',1.6);
+    g.fillStyle=a>0?C.ink:C.graphite;g.font='500 12px '+MONO;g.textAlign='center';g.textBaseline='alphabetic';g.fillText('0'+(i+1),f.X(i+.5),y-9)}
+},{lab:1});
+
+/* Fig. 4: the flame and the minds */
+const H={h:2.5,lean0:.15,lean:.15,base:.3,pts:[]};
+const tip=$('#tip'),hval=$('#hval');
+function rnd(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function flameXY(t,a,h,base,lean){const y=base+h*(1+Math.cos(t)),u=(y-base)/(2*h);return[a*Math.sin(t)*Math.sin(t/2)**2+lean*u*u,y]}
+function seed(f){const r=rnd(11),xa=f.ix(0),xb=f.ix(f.w),ya=f.iy(f.h),yb=f.iy(0),P=[],cy=H.base+2.5,had=H.pts.filter(p=>p.lit).length;
+  let row=0;for(let gy=ya+.5;gy<yb-.4;gy+=.82,row++)for(let gx=Math.ceil(xa)+(row%2?.45:0)-.1;gx<xb-.35;gx+=.9){
+    const x=gx+(r()-.5)*.36,y=gy+(r()-.5)*.36;
+    if(x<xa+.35||Math.abs(x)<2.25&&y>-.8&&y<7.1)continue;if(Math.abs(y+.28)<.34||Math.abs(x+.3)<.3)continue;P.push({x,y})}
+  P.sort((a,b)=>Math.hypot(a.x,a.y-cy)-Math.hypot(b.x,b.y-cy));
+  P.forEach((p,i)=>{let best=-1,bd=Math.hypot(p.x,p.y-cy);for(let j=0;j<i;j++){const d=Math.hypot(p.x-P[j].x,p.y-P[j].y);if(d<bd){bd=d;best=j}}p.par=best});
+  const keep=Math.max(had,RM?Math.round(P.length*.45):6);P.forEach((p,i)=>p.lit=i<keep);H.pts=P}
+function light(i){const p=H.pts[i];if(!p||p.lit)return;p.lit=true;p.at=performance.now()}
+function lightAll(){if(RM){H.pts.forEach(p=>p.lit=true);hero.render();return}
+  if(solving)return;solving=true;const iv=setInterval(()=>{const i=H.pts.findIndex(p=>!p.lit);if(i<0){clearInterval(iv);solving=false;return}light(i)},35)}
+function placeTip(f){tip.style.left=f.X(H.lean)+'px';tip.style.top=f.Y(H.base+2*H.h)+'px'}
+function drawHero(f,g){const now=performance.now(),P=H.pts;
+  g.lineWidth=1;g.strokeStyle='rgba(93,104,117,.5)';
+  P.forEach(p=>{if(!p.lit)return;const q=p.par<0?{x:0,y:H.base+1.3}:P[p.par];seg(g,f.X(q.x),f.Y(q.y),f.X(p.x),f.Y(p.y))});
+  P.forEach(p=>{const x=f.X(p.x),y=f.Y(p.y);if(p.lit){dot(g,x,y,4.2,C.ember);const a=(now-(p.at||0))/700;if(a<1&&!RM)dot(g,x,y,4+a*13,null,`rgba(233,102,42,${.65*(1-a)})`,1.5)}
+    else dot(g,x,y,3.6,'#fff',C.graphite,1.2)});
+  const path=(a,h,base,lean)=>{g.beginPath();for(let k=0;k<=120;k++){const[x,y]=flameXY(k/120*Math.PI*2,a,h,base,lean);k?g.lineTo(f.X(x),f.Y(y)):g.moveTo(f.X(x),f.Y(y))}g.closePath()};
+  path(2.3,H.h,H.base,H.lean);g.fillStyle='#fff';g.fill();
+  g.save();g.clip();g.strokeStyle='rgba(233,102,42,.4)';g.lineWidth=1;for(let x=-f.h;x<f.w;x+=7)seg(g,x,f.h,x+f.h,0);g.restore();
+  path(2.3,H.h,H.base,H.lean);g.strokeStyle=C.ember;g.lineWidth=2.4;g.lineJoin='round';g.stroke();
+  path(1.25,H.h*.56,H.base+.3,H.lean*.6);g.fillStyle='rgba(242,201,107,.55)';g.fill();g.strokeStyle='#c98f1b';g.lineWidth=1.5;g.stroke();
+  g.setLineDash([4,4]);g.strokeStyle='rgba(93,104,117,.7)';g.lineWidth=1;seg(g,f.X(0),f.Y(H.base),f.X(H.lean),f.Y(H.base+2*H.h));g.setLineDash([])}
+const heroC=$('#fig-hero');
+const hero=Fig(heroC,w=>w<520?{x:[-4.3,4.3],y:[-1.1,7.3]}:{x:[-7.2,7.2],y:[-1.1,7.3]},drawHero,{lab:2,onsize:f=>{seed(f);placeTip(f)}});
+function setFlame(h,lean){H.h=clamp(h,1.5,3.1);H.lean0=clamp(lean,-1.3,1.3);H.lean=H.lean0;hval.textContent=H.h.toFixed(1);placeTip(hero);if(RM)hero.render()}
+let drag=false;
+tip.addEventListener('pointerdown',e=>{drag=true;tip.setPointerCapture(e.pointerId);e.preventDefault()});
+tip.addEventListener('pointermove',e=>{if(!drag)return;const r=heroC.getBoundingClientRect();setFlame((hero.iy(e.clientY-r.top)-H.base)/2,hero.ix(e.clientX-r.left))});
+['pointerup','pointercancel'].forEach(t=>tip.addEventListener(t,()=>{drag=false}));
+tip.addEventListener('keydown',e=>{const k={ArrowUp:[.1,0],ArrowDown:[-.1,0],ArrowLeft:[0,-.1],ArrowRight:[0,.1]}[e.key];if(k){e.preventDefault();setFlame(H.h+k[0],H.lean0+k[1])}});
+heroC.addEventListener('click',e=>{const r=heroC.getBoundingClientRect(),x=hero.ix(e.clientX-r.left),y=hero.iy(e.clientY-r.top);let b=-1,bd=.95;
+  H.pts.forEach((p,i)=>{if(p.lit)return;const d=Math.hypot(p.x-x,p.y-y);if(d<bd){bd=d;b=i}});if(b>=0){light(b);if(RM)hero.render()}});
+let heroOn=false,lastAdd=0;
+if('IntersectionObserver'in window)new IntersectionObserver(es=>{heroOn=es[0].isIntersecting}).observe(heroC);else heroOn=true;
+function tick(ts){if(heroOn&&!document.hidden){if(!drag)H.lean=H.lean0+.1*Math.sin(ts/430)+.045*Math.sin(ts/170);
+    if(ts-lastAdd>1000&&!solving){const i=H.pts.findIndex(p=>!p.lit);if(i>=0)light(i);lastAdd=ts}
+    hero.render();placeTip(hero)}requestAnimationFrame(tick)}
+
+/* Fig. 5: five rays from one candidate */
+const SL=[.6,.3,0,-.3,-.6];
+const fRays=Fig($('#fig-rays'),{x:[-1,7],y:[-4.2,4.2]},(f,g)=>{
+  SL.forEach((m,i)=>{g.strokeStyle='rgba(45,112,179,.25)';g.lineWidth=1.5;seg(g,f.X(0),f.Y(0),f.X(6),f.Y(6*m));
+    const a=clamp(f.p*5.4-i,0,1);if(a>0){g.strokeStyle=C.blue;g.lineWidth=2.2;seg(g,f.X(0),f.Y(0),f.X(6*a),f.Y(6*m*a))}
+    dot(g,f.X(6),f.Y(6*m),4.6,a>=1?C.blue:'#fff',a>=1?C.blue:'rgba(12,22,38,.3)',1.5);
+    g.fillStyle=a>=1?C.ink:C.graphite;g.font='500 12px '+MONO;g.textAlign='left';g.textBaseline='middle';g.fillText('0'+(i+1),f.X(6)+10,f.Y(6*m))});
+  g.setLineDash([3,4]);g.strokeStyle='rgba(185,63,12,.7)';g.lineWidth=1;seg(g,f.X(.25),f.Y(1.85),f.X(.04),f.Y(.3));g.setLineDash([]);
+  dot(g,f.X(0),f.Y(0),6.5,C.ember,C.emberInk,2);g.fillStyle=C.emberInk;g.font='700 23px '+PEN;g.textAlign='left';g.textBaseline='alphabetic';g.fillText('a candidate',f.X(0)-8,f.Y(2.05))
+},{lab:99});
+
+/* scroll drives the drawing */
+const scrollFigs=[fMap,fSteps,fRays];let queued=false;
+function onScroll(){queued=false;const vh=innerHeight;scrollFigs.forEach(f=>{const r=f.c.getBoundingClientRect(),p=RM?1:clamp((vh*.94-r.top)/(vh*.55),0,1);if(p!==f.p){f.p=p;f.render()}})}
+addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(onScroll)}},{passive:true});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{figs.forEach(f=>f.size());onScroll()},120)});
+if('IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.6});$$('.watchme').forEach(el=>io.observe(el))}
+else $$('.watchme').forEach(el=>el.classList.add('in'));
+
+figs.forEach(f=>f.size());setState(myState);onScroll();refresh();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>figs.forEach(f=>f.render()));
+if(!RM)requestAnimationFrame(tick);
+try{console.log('%c○ %cShow your work.%c\n“We have it in our power to begin the world over again.” Paine\nType liberty on any page.','color:#e9662a;font-size:18px','color:#0c1626;font-family:Georgia,serif;font-size:14px','color:#5d6875;font-size:12px')}catch{}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Root Rectangles in Desmos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{ --bg:#f3efe4; --ink:#2a2740; --blue:#2d70b3; --orange:#fa7e19; --green:#388c46; --purple:#6042a6; --gold:#8a6a1f; --muted:#7a7568; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:760px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(44px,12.5vw,118px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em}
+h1 em{font-style:italic;color:var(--blue)}
+.sub{max-width:36ch;margin:0 auto;font-size:19px;color:#4a4660;font-style:italic}
+.hint{margin-top:10vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 9vh}
+.step.mid{align-items:center;padding-bottom:0}
+.card{pointer-events:auto;max-width:37ch;background:rgba(243,239,228,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(42,39,64,.16);padding:18px 20px 16px;font-size:17.5px;color:#1a1826}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin-bottom:9px;text-transform:uppercase}
+.card .big{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;font-weight:400}
+.card .big i{color:var(--blue)}
+.panel{position:absolute;left:10px;top:10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:var(--ink);background:rgba(243,239,228,.88);border:1px solid rgba(42,39,64,.14);border-radius:3px;padding:7px 10px;max-width:min(94vw,380px);pointer-events:none}
+.panel div{opacity:0;transform:translateX(-5px);transition:opacity .5s ease,transform .5s ease;white-space:nowrap}
+.panel div.on{opacity:1;transform:none}
+.panel .lbl{color:var(--gold);margin-left:.7em;font-style:italic}
+.panel .sw{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:middle;background:var(--blue)}
+.panel .sw.o{background:var(--orange)} .panel .sw.g{background:var(--green)} .panel .sw.p{background:var(--purple)}
+.panel sup{font-size:9px}
+@media (max-width:420px){ .panel{font-size:10px;padding:6px 8px} }
+
+.end{padding:16vh 22px 20vh;text-align:center;max-width:720px;margin:0 auto}
+.end h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,8vw,64px);line-height:1;margin:0 0 .5em}
+.end p{color:#4a4660;max-width:46ch;margin:0 auto 1em}
+.end .colophon{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7vh;line-height:1.8}
+.end .next{display:inline-block;margin-top:3vh;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(138,106,31,.4);padding:10px 16px;text-decoration:none}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(42,39,64,.4),transparent);margin:0 auto;width:60%}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="inner">
+    <div class="eyebrow">A scrolly on the secret geometry that is not a secret</div>
+    <h1>Root Rectangles<br>in <em>Desmos</em></h1>
+    <p class="sub">The hidden armature of Greek vases and Baroque paintings is a diagonal and a compass. You learned it in ninth grade.</p>
+    <div class="hint">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · Square and diagonal -->
+<section class="scene" id="s1">
+  <div class="stage"><canvas></canvas><div class="panel" id="p1"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">I · The square and its diagonal</span><p>Start with a square, side one. Its diagonal is &radic;2. Swing that diagonal down to the baseline and you have a rectangle one by &radic;2: the root-two rectangle. Paper sizes still use it.</p></div></div>
+    <div class="step"><div class="card"><p>Do it again. The diagonal of the root-two rectangle is &radic;3. Swing it: root-three. Again: root-four, which is two squares. Again: root-five. Jay Hambidge, 1920, called these dynamic rectangles, because each one is made from the one before by a motion.</p></div></div>
+    <div class="step"><div class="card"><p>His claim: Greek vases and temples were laid out on these proportions, and rectangles past root-five almost never appear in human design. Historians have doubted the Greeks did it on purpose since 1921. That argument is beside the point here.</p></div></div>
+    <div class="step"><div class="card"><p>The point is that the whole system is a square, a diagonal, and an arc. Three functions. A generation of kids on Desmos figured out you can draw anything with that.</p></div></div>
+  </div>
+</section>
+
+<!-- II · The amphora -->
+<section class="scene" id="s2">
+  <div class="stage"><canvas></canvas><div class="panel" id="p2"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">II · The amphora</span><p>Stand the root-two rectangle up. Draw a diagonal, then drop a perpendicular onto it from the opposite corner: that line is the reciprocal. Where they cross is the rectangle's eye. Do it from all four corners and you have four eyes.</p></div></div>
+    <div class="step"><div class="card"><p>The eyes of a root-two rectangle sit at thirds: one third up, two thirds up, one third across, two thirds across. Hambidge's vase chapters are mostly this. Find the eyes, hang the pot on them.</p></div></div>
+    <div class="step"><div class="card"><p>So the belly turns at the lower third. The neck sits exactly on the inner vertical lines. The handles spring from the upper eyes and land on the lip. Six points, one smooth curve through them, mirrored.</p></div></div>
+    <div class="step"><div class="card"><p>That is a pelike. It is also a table of six coordinates and a spline, and the list on the left is the entire file.</p></div></div>
+  </div>
+</section>
+
+<!-- III · The armature -->
+<section class="scene" id="s3">
+  <div class="stage"><canvas></canvas><div class="panel" id="p3"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">III · The armature</span><p>Lay the rectangle down. Both diagonals, all four reciprocals: the armature. Painters have pinned compositions to this skeleton since the Baroque, whether or not they knew the name.</p></div></div>
+    <div class="step"><div class="card"><p>The Baroque diagonal runs lower-left to upper-right; to a left-to-right reader it feels like ascent. The other one, the sinister diagonal, feels like a fall or a shove. Put the action on one and the light on the other.</p></div></div>
+    <div class="step"><div class="card"><p>Watch three figures find the eyes. Nothing is centered. Everything holds. That is what dynamic symmetry means: balance that moves.</p></div></div>
+    <div class="step"><div class="card"><p>Cartier-Bresson shot on this grid. Orozco painted the New School murals on it. It is a diagonal and its perpendicular.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · Growth -->
+<section class="scene" id="s4">
+  <div class="stage"><canvas></canvas><div class="panel" id="p4"></div></div>
+  <div class="steps">
+    <div class="step"><div class="card"><span class="n">IV · Growth</span><p>Hambidge's last claim was the biggest: that these proportions are the symmetry of growth itself. His evidence was the whirling-square rectangle, &phi;, 1.618, and the spiral it throws off when you keep cutting squares away.</p></div></div>
+    <div class="step"><div class="card"><p>Here is the same arithmetic in a sunflower. Each seed turns 137.5&deg; from the last and steps out as the square root of its number. Two functions. The spiral arms were never drawn; they appear.</p></div></div>
+    <div class="step mid"><div class="card"><p class="big">The same arithmetic grows a <i>sunflower</i> and fills a <i>vase</i>.</p></div></div>
+  </div>
+</section>
+
+<section class="end">
+  <hr class="rule">
+  <h2 style="margin-top:10vh">A diagonal<br>and a compass.</h2>
+  <p>Whether the potters of Athens measured their amphorae this way is an argument for historians. Whether you can is settled: every shape on this page is a square, a diagonal, an arc, a table of points and a curve through them, and the equations were on screen the whole time. The secret geometry of the masters is a ninth-grade worksheet with ambition.</p>
+  <p>No AI drew these. Functions did.</p>
+  <a class="next" href="#hero">Read it again &uarr;</a>
+  <div class="colophon">
+    Drawn in functions. Paper, grid, &radic;2, &radic;3, 2, &radic;5, &phi;. No images loaded.<br>
+    Previous: <i>Panofsky for Internet People</i> &middot; Next: <i>The Paranoiac-Critical Method, Applied</i>
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2, SQ2 = Math.SQRT2, PHI = (1 + Math.sqrt(5)) / 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  let resized = false; if (c.width !== W || c.height !== H) { c.width = W; c.height = H; resized = true; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h, dpr, resized };
+}
+const C = { paper: '#f3efe4', ink: '#2a2740', blue: '#2d70b3', orange: '#fa7e19', green: '#388c46', purple: '#6042a6', gold: '#8a6a1f' };
+const MONO = `'IBM Plex Mono', monospace`;
+
+/* ---------- Desmos paper ---------- */
+function paper(ctx, w, h, ox, oy, U) {
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, w, h);
+  const minor = U / 5;
+  ctx.lineWidth = 1;
+  for (let x = ox % minor; x < w; x += minor) { const major = Math.abs(((x - ox) / U) - Math.round((x - ox) / U)) < 1e-6; ctx.strokeStyle = major ? 'rgba(42,39,64,.22)' : 'rgba(42,39,64,.07)'; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+  for (let y = oy % minor; y < h; y += minor) { const major = Math.abs(((oy - y) / U) - Math.round((oy - y) / U)) < 1e-6; ctx.strokeStyle = major ? 'rgba(42,39,64,.22)' : 'rgba(42,39,64,.07)'; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(42,39,64,.6)'; ctx.lineWidth = 1.3;
+  ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, h); ctx.moveTo(0, oy); ctx.lineTo(w, oy); ctx.stroke();
+  ctx.fillStyle = 'rgba(42,39,64,.6)'; ctx.font = `10px ${MONO}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  for (let k = -6; k <= 6; k++) { if (!k) continue; ctx.fillText(k, ox + k * U + 3, oy + 4); ctx.fillText(k, ox + 4, oy - k * U + 3); }
+}
+function dot(ctx, x, y, color = C.orange, r = 4.2) { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = color; ctx.stroke(); }
+function seg(ctx, x0, y0, x1, y1, f, color, width = 2.2, dash) {
+  if (f <= 0) return; ctx.strokeStyle = color; ctx.lineWidth = width; if (dash) ctx.setLineDash(dash);
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(lerp(x0, x1, f), lerp(y0, y1, f)); ctx.stroke(); ctx.setLineDash([]);
+}
+function mono(ctx, text, x, y, color, align = 'left', size = 11) { ctx.font = `${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+function makePanel(el, lines) { el.innerHTML = ''; return lines.map(html => { const d = document.createElement('div'); d.innerHTML = html; el.appendChild(d); return d; }); }
+const on = (d, v) => d.classList.toggle('on', !!v);
+
+/* ---------- hero: faint root rectangles unfolding ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC);
+  const U = Math.min(w * 0.36, h * 0.26), ox = (w - SQ2 * 1.6 * U) / 2, oy = h * 0.5 + U * 0.5;
+  paper(ctx, w, h, ox, oy, U);
+  ctx.globalAlpha = 0.35 * fade;
+  const k = 1 + (Math.sin(t * 0.0004) * 0.5 + 0.5) * 3, r = Math.sqrt(k);
+  ctx.strokeStyle = C.blue; ctx.lineWidth = 1.5; ctx.strokeRect(ox, oy - U, r * U, U);
+  seg(ctx, ox, oy, ox + r * U, oy - U, 1, C.purple, 1.2);
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- scene 1: swing the diagonal ---------- */
+const s1 = document.querySelector('#s1 canvas');
+const P1 = makePanel(document.getElementById('p1'), [
+  `<span class="sw"></span>square: 0 &le; x &le; 1, 0 &le; y &le; 1`,
+  `<span class="sw p"></span>y = x <span class="lbl">diagonal, length &radic;2</span>`, `<span class="sw o"></span>x&sup2; + y&sup2; = 2 {y &ge; 0}`, `<span class="sw"></span>x = &radic;2 <span class="lbl">root-two</span>`,
+  `<span class="sw p"></span>y = x/&radic;2 <span class="lbl">length &radic;3</span>`, `<span class="sw o"></span>x&sup2; + y&sup2; = 3 {y &ge; 0}`, `<span class="sw"></span>x = &radic;3 <span class="lbl">root-three</span>`,
+  `<span class="sw p"></span>y = x/&radic;3 <span class="lbl">length 2</span>`, `<span class="sw o"></span>x&sup2; + y&sup2; = 4 {y &ge; 0}`, `<span class="sw"></span>x = 2 <span class="lbl">root-four</span>`,
+  `<span class="sw p"></span>y = x/2 <span class="lbl">length &radic;5</span>`, `<span class="sw o"></span>x&sup2; + y&sup2; = 5 {y &ge; 0}`, `<span class="sw"></span>x = &radic;5 <span class="lbl">root-five</span>`,
+]);
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(s1);
+  const U = Math.min((w * 0.9) / 2.45, h * 0.26), ox = (w - 2.3 * U) / 2, oy = h * 0.5 + U * 0.45;
+  paper(ctx, w, h, ox, oy, U);
+  const sq = sstep(ramp(p, 0, 0.05)); on(P1[0], p > 0.005);
+  ctx.strokeStyle = C.blue; ctx.lineWidth = 2.2; ctx.globalAlpha = sq; ctx.strokeRect(ox, oy - U, U, U); ctx.globalAlpha = 1;
+  ctx.fillStyle = 'rgba(45,112,179,.08)'; ctx.fillRect(ox, oy - U, U, U);
+  const names = ['√2', '√3', '2', '√5'];
+  for (let k = 1; k <= 4; k++) {
+    const tk = ramp(p, 0.06 + (k - 1) * 0.2, 0.06 + k * 0.2); if (tk <= 0) break;
+    const r0 = Math.sqrt(k), r1 = Math.sqrt(k + 1);
+    const base = 1 + (k - 1) * 3;
+    on(P1[base], tk > 0.02); on(P1[base + 1], tk > 0.4); on(P1[base + 2], tk > 0.8);
+    // diagonal of the current rectangle
+    const fd = sstep(ramp(tk, 0, 0.4));
+    seg(ctx, ox, oy, ox + r0 * U, oy - U, fd, C.purple, 1.8);
+    // swing: arc from the diagonal's end down to the baseline
+    const a0 = Math.atan2(1, r0), swing = sstep(ramp(tk, 0.4, 0.8));
+    if (swing > 0) {
+      const a1 = a0 * (1 - swing);
+      ctx.strokeStyle = C.orange; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.arc(ox, oy, r1 * U, -a0, -a1, false); ctx.stroke(); ctx.setLineDash([]);
+      const px = ox + Math.cos(a1) * r1 * U, py = oy - Math.sin(a1) * r1 * U;
+      seg(ctx, ox, oy, px, py, 1, 'rgba(250,126,25,.5)', 1);
+      dot(ctx, px, py, C.orange);
+    }
+    // the new rectangle
+    const fr = sstep(ramp(tk, 0.8, 1));
+    if (fr > 0) {
+      ctx.globalAlpha = fr; ctx.strokeStyle = C.blue; ctx.lineWidth = 2.2; ctx.strokeRect(ox, oy - U, r1 * U, U);
+      ctx.fillStyle = 'rgba(45,112,179,.06)'; ctx.fillRect(ox + r0 * U, oy - U, (r1 - r0) * U, U);
+      mono(ctx, names[k - 1], ox + r1 * U, oy + 22 + (k % 2) * 14, C.ink, 'center', 12);
+      ctx.globalAlpha = 1;
+    }
+  }
+  mono(ctx, '1', ox + U, oy + 22, C.ink, 'center', 12);
+}
+
+/* ---------- monotone cubic through points ---------- */
+function monotone(pts) {
+  const n = pts.length, xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const d = [], m = [];
+  for (let i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+  m[0] = d[0]; m[n - 1] = d[n - 2];
+  for (let i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+  for (let i = 0; i < n - 1; i++) { if (d[i] === 0) { m[i] = m[i + 1] = 0; continue; } const a = m[i] / d[i], b = m[i + 1] / d[i], s = a * a + b * b; if (s > 9) { const tt = 3 / Math.sqrt(s); m[i] = tt * a * d[i]; m[i + 1] = tt * b * d[i]; } }
+  return x => {
+    let i = 0; while (i < n - 2 && x > xs[i + 1]) i++;
+    const hh = xs[i + 1] - xs[i], tt = (x - xs[i]) / hh, t2 = tt * tt, t3 = t2 * tt;
+    return (2 * t3 - 3 * t2 + 1) * ys[i] + (t3 - 2 * t2 + tt) * hh * m[i] + (-2 * t3 + 3 * t2) * ys[i + 1] + (t3 - t2) * hh * m[i + 1];
+  };
+}
+// amphora: (y up the rectangle 0..1, half-width as a fraction of rect width)
+const PTS = [[0, 0.15], [0.06, 0.11], [1 / 3, 0.46], [2 / 3, 1 / 6], [0.9, 1 / 6], [0.98, 0.25]];
+const PTL = ['foot', 'stem', 'belly · lower third', 'eye · 2/3 up, 1/6 out', 'neck · inner line', 'lip'];
+const R = monotone(PTS);
+
+/* ---------- scene 2: the amphora ---------- */
+const s2 = document.querySelector('#s2 canvas');
+const P2 = makePanel(document.getElementById('p2'), [
+  `<span class="sw"></span>0 &le; x &le; 1, 0 &le; y &le; &radic;2 <span class="lbl">root-two, standing</span>`,
+  `<span class="sw p"></span>y = &radic;2&middot;x, y = &radic;2(1&minus;x) <span class="lbl">diagonals</span>`,
+  `<span class="sw g"></span>y = &radic;2 &minus; x/&radic;2 &hellip; <span class="lbl">reciprocals</span>`,
+  `<span class="sw o"></span>eyes: (1/3, &radic;2/3) (2/3, &radic;2/3) (1/3, 2&radic;2/3) (2/3, 2&radic;2/3)`,
+  ...PTS.map((q, i) => `<span class="sw o"></span>(${q[1].toFixed(3).replace(/0+$/, '').replace(/\.$/, '')}, ${(q[0] * SQ2).toFixed(3)}) <span class="lbl">${PTL[i]}</span>`),
+  `<span class="sw"></span>x = &plusmn;r(y) <span class="lbl">monotone cubic through the table</span>`,
+  `<span class="sw g"></span>handles: arc (1/6, 2&radic;2/3) &rarr; (1/4, 0.95&radic;2)`,
+]);
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(s2);
+  const Hr = Math.min(h * 0.58, w * 0.82 * SQ2), Wr = Hr / SQ2;
+  const x0 = (w - Wr) / 2, y0 = h * 0.47 + Hr / 2;   // bottom-left corner of the rectangle
+  const U = Wr;                                        // one unit = rect width
+  paper(ctx, w, h, x0, y0, U);
+  const X = u => x0 + u * U, Y = v => y0 - v * U;      // rect coords (u in 0..1, v in 0..√2)
+  const f1 = sstep(ramp(p, 0.02, 0.12)), f2 = sstep(ramp(p, 0.12, 0.24)), f3 = sstep(ramp(p, 0.24, 0.36)), f4 = sstep(ramp(p, 0.36, 0.42));
+  on(P2[0], p > 0.02); on(P2[1], p > 0.12); on(P2[2], p > 0.24); on(P2[3], p > 0.36);
+  ctx.globalAlpha = f1; ctx.strokeStyle = C.blue; ctx.lineWidth = 2.2; ctx.strokeRect(X(0), Y(SQ2), Wr, Hr); ctx.globalAlpha = 1;
+  // diagonals
+  seg(ctx, X(0), Y(0), X(1), Y(SQ2), f2, C.purple, 1.6);
+  seg(ctx, X(1), Y(0), X(0), Y(SQ2), f2, C.purple, 1.6);
+  // reciprocals: from each corner, perpendicular to the opposite diagonal, to the midpoint of a side
+  seg(ctx, X(0), Y(SQ2), X(1), Y(SQ2 / 2), f3, C.green, 1.4);
+  seg(ctx, X(1), Y(0), X(0), Y(SQ2 / 2), f3, C.green, 1.4);
+  seg(ctx, X(0), Y(0), X(1), Y(SQ2 / 2), f3, C.green, 1.4);
+  seg(ctx, X(1), Y(SQ2), X(0), Y(SQ2 / 2), f3, C.green, 1.4);
+  // eyes + third lines
+  const eyes = [[1 / 3, SQ2 / 3], [2 / 3, SQ2 / 3], [1 / 3, 2 * SQ2 / 3], [2 / 3, 2 * SQ2 / 3]];
+  if (f4 > 0) {
+    ctx.globalAlpha = f4;
+    ctx.strokeStyle = 'rgba(250,126,25,.45)'; ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
+    for (const u of [1 / 3, 2 / 3]) { ctx.beginPath(); ctx.moveTo(X(u), Y(0)); ctx.lineTo(X(u), Y(SQ2)); ctx.stroke(); }
+    for (const v of [SQ2 / 3, 2 * SQ2 / 3]) { ctx.beginPath(); ctx.moveTo(X(0), Y(v)); ctx.lineTo(X(1), Y(v)); ctx.stroke(); }
+    ctx.setLineDash([]);
+    for (const [u, v] of eyes) dot(ctx, X(u), Y(v), C.orange, 5);
+    ctx.globalAlpha = 1;
+  }
+  // the table of points, mirrored
+  const cu = 0.5;
+  PTS.forEach((q, i) => {
+    const a = sstep(ramp(p, 0.44 + i * 0.03, 0.47 + i * 0.03)); on(P2[4 + i], a > 0.5);
+    if (a <= 0) return; ctx.globalAlpha = a;
+    dot(ctx, X(cu + q[1]), Y(q[0] * SQ2), C.orange); dot(ctx, X(cu - q[1]), Y(q[0] * SQ2), C.orange);
+    ctx.globalAlpha = 1;
+  });
+  // the curve
+  const fc = sstep(ramp(p, 0.62, 0.8)); on(P2[10], fc > 0.05);
+  const path = new Path2D(); const N = 160;
+  for (let i = 0; i <= N; i++) { const v = 0.98 * i / N, r = R(v); const px = X(cu + r), py = Y(v * SQ2); i ? path.lineTo(px, py) : path.moveTo(px, py); }
+  for (let i = N; i >= 0; i--) { const v = 0.98 * i / N, r = R(v); path.lineTo(X(cu - r), Y(v * SQ2)); }
+  path.closePath();
+  if (fc > 0) {
+    // draw the right side then the left side progressively
+    ctx.strokeStyle = C.blue; ctx.lineWidth = 2.4; ctx.lineJoin = 'round';
+    const M = Math.floor(fc * 2 * N);
+    ctx.beginPath();
+    for (let i = 0; i <= Math.min(M, N); i++) { const v = 0.98 * i / N; const px = X(cu + R(v)), py = Y(v * SQ2); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+    for (let i = N; i >= 2 * N - M && M > N; i--) { const v = 0.98 * i / N; ctx.lineTo(X(cu - R(v)), Y(v * SQ2)); }
+    ctx.stroke();
+  }
+  // handles
+  const fh = sstep(ramp(p, 0.8, 0.9)); on(P2[11], fh > 0.05);
+  if (fh > 0) {
+    ctx.strokeStyle = C.green; ctx.lineWidth = Wr * 0.03; ctx.lineCap = 'round';
+    for (const s of [-1, 1]) {
+      const ax = X(cu + s / 6), ay = Y(2 * SQ2 / 3), bx = X(cu + s * 0.25), by = Y(0.95 * SQ2);
+      const cx1 = X(cu + s * 0.42), cy1 = Y(0.72 * SQ2), cx2 = X(cu + s * 0.40), cy2 = Y(0.98 * SQ2);
+      ctx.beginPath(); ctx.moveTo(ax, ay);
+      // partial bezier via subdivision
+      const steps = 40; for (let i = 1; i <= Math.floor(steps * fh); i++) { const u = i / steps, m = 1 - u; const px = m * m * m * ax + 3 * m * m * u * cx1 + 3 * m * u * u * cx2 + u * u * u * bx, py = m * m * m * ay + 3 * m * m * u * cy1 + 3 * m * u * u * cy2 + u * u * u * by; ctx.lineTo(px, py); }
+      ctx.stroke();
+    }
+  }
+  // fill: terracotta with a black-figure band
+  const ff = sstep(ramp(p, 0.9, 1));
+  if (ff > 0) {
+    ctx.save(); ctx.globalAlpha = ff; ctx.clip(path);
+    ctx.fillStyle = '#b8663a'; ctx.fillRect(X(0), Y(SQ2), Wr, Hr);
+    ctx.fillStyle = '#1e1a19'; ctx.fillRect(X(0), Y(0.62 * SQ2), Wr, 0.26 * Hr); ctx.fillRect(X(0), Y(0.08 * SQ2), Wr, 0.08 * Hr);
+    ctx.fillStyle = '#b8663a'; ctx.fillRect(X(0), Y(0.60 * SQ2), Wr, 0.012 * Hr);
+    ctx.restore();
+    ctx.globalAlpha = ff; ctx.strokeStyle = '#1e1a19'; ctx.lineWidth = 2; ctx.stroke(path); ctx.globalAlpha = 1;
+  }
+}
+
+/* ---------- scene 3: the armature ---------- */
+const s3 = document.querySelector('#s3 canvas');
+const P3 = makePanel(document.getElementById('p3'), [
+  `<span class="sw"></span>0 &le; x &le; &radic;2, 0 &le; y &le; 1 <span class="lbl">root-two, lying</span>`,
+  `<span class="sw p"></span>y = x/&radic;2 <span class="lbl">baroque diagonal</span>`,
+  `<span class="sw p"></span>y = 1 &minus; x/&radic;2 <span class="lbl">sinister diagonal</span>`,
+  `<span class="sw g"></span>reciprocals &perp; to each diagonal, from each corner`,
+  `<span class="sw o"></span>eyes: (&radic;2/3, 1/3) (2&radic;2/3, 2/3) (&radic;2/3, 2/3) (2&radic;2/3, 1/3)`,
+]);
+function foot(px, py, ax, ay, bx, by) { const dx = bx - ax, dy = by - ay, tt = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy); return [ax + tt * dx, ay + tt * dy]; }
+function silhouette(ctx, x, y, H, lean, a) {
+  ctx.fillStyle = `rgba(42,39,64,${a})`;
+  ctx.beginPath(); ctx.moveTo(x - H * 0.42, y); ctx.quadraticCurveTo(x - H * 0.3 + lean * H, y - H * 0.6, x + lean * H, y - H * 0.66); ctx.quadraticCurveTo(x + H * 0.3 + lean * H, y - H * 0.6, x + H * 0.42, y); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + lean * H * 1.3, y - H * 0.84, H * 0.16, 0, TAU); ctx.fill();
+}
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(s3);
+  const Wr = Math.min(w * 0.92, h * 0.6 * SQ2), Hr = Wr / SQ2;
+  const x0 = (w - Wr) / 2, y0 = h * 0.45 + Hr / 2, U = Hr;
+  paper(ctx, w, h, x0, y0, U);
+  const X = u => x0 + u * U, Y = v => y0 - v * U;
+  const f1 = sstep(ramp(p, 0.02, 0.1)), f2 = sstep(ramp(p, 0.1, 0.22)), f3 = sstep(ramp(p, 0.22, 0.34)), f4 = sstep(ramp(p, 0.34, 0.4));
+  on(P3[0], p > 0.02); on(P3[1], p > 0.1); on(P3[2], p > 0.16); on(P3[3], p > 0.22); on(P3[4], p > 0.34);
+  ctx.globalAlpha = f1; ctx.strokeStyle = C.blue; ctx.lineWidth = 2.2; ctx.strokeRect(X(0), Y(1), Wr, Hr); ctx.globalAlpha = 1;
+  const A = [X(0), Y(0)], B = [X(SQ2), Y(0)], Cc = [X(SQ2), Y(1)], D = [X(0), Y(1)];
+  seg(ctx, A[0], A[1], Cc[0], Cc[1], f2, C.purple, 1.8);                 // baroque
+  seg(ctx, D[0], D[1], B[0], B[1], sstep(ramp(p, 0.16, 0.28)), C.purple, 1.8); // sinister
+  const eD = foot(D[0], D[1], A[0], A[1], Cc[0], Cc[1]), eB = foot(B[0], B[1], A[0], A[1], Cc[0], Cc[1]);
+  const eA = foot(A[0], A[1], D[0], D[1], B[0], B[1]), eC = foot(Cc[0], Cc[1], D[0], D[1], B[0], B[1]);
+  // reciprocals, extended to the far side (they land on side midpoints)
+  const ext = (c, e) => [c[0] + (e[0] - c[0]) * 1.5, c[1] + (e[1] - c[1]) * 1.5];
+  for (const [c, e] of [[D, eD], [B, eB], [A, eA], [Cc, eC]]) { const q = ext(c, e); seg(ctx, c[0], c[1], q[0], q[1], f3, C.green, 1.4); }
+  if (f4 > 0) { ctx.globalAlpha = f4; for (const e of [eD, eB, eA, eC]) dot(ctx, e[0], e[1], C.orange, 5); ctx.globalAlpha = 1; }
+  // light along the sinister diagonal
+  const fl = sstep(ramp(p, 0.62, 0.82));
+  if (fl > 0) {
+    ctx.save(); ctx.beginPath(); ctx.rect(X(0), Y(1), Wr, Hr); ctx.clip();
+    const g = ctx.createLinearGradient(D[0], D[1], B[0], B[1]);
+    g.addColorStop(0, `rgba(250,200,90,${0.55 * fl})`); g.addColorStop(0.5, `rgba(250,200,90,${0.12 * fl})`); g.addColorStop(1, 'rgba(250,200,90,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(D[0], D[1]); ctx.lineTo(X(SQ2 * 0.55), Y(1)); ctx.lineTo(B[0], B[1]); ctx.lineTo(X(0), Y(0.45)); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  // three figures find the eyes: big at the lower-left eye of the baroque diagonal, medium at its upper-right eye, small at the lower-right eye of the sinister one
+  const fm = sstep(ramp(p, 0.4, 0.62));
+  const figs = [
+    { to: eD, from: [X(-0.4), Y(-0.1)], H: Hr * 0.46, lean: 0.12 },
+    { to: eB, from: [X(SQ2 + 0.4), Y(1.1)], H: Hr * 0.34, lean: -0.1 },
+    { to: eC, from: [X(SQ2 + 0.3), Y(-0.2)], H: Hr * 0.26, lean: 0.05 },
+  ];
+  figs.forEach((f, i) => {
+    const e = sstep(ramp(fm, i * 0.2, 0.6 + i * 0.2));
+    const x = lerp(f.from[0], f.to[0], e), y = lerp(f.from[1], f.to[1] + f.H * 0.5, e);
+    silhouette(ctx, x, y, f.H, f.lean, 0.2 + 0.7 * e);
+  });
+  // the overturned table edge along the baroque diagonal
+  if (fm > 0.8) { ctx.globalAlpha = (fm - 0.8) * 5; seg(ctx, X(0.15), Y(0.15 / SQ2 - 0.02), X(0.85), Y(0.85 / SQ2 - 0.02), 1, 'rgba(42,39,64,.55)', Hr * 0.03); ctx.globalAlpha = 1; }
+  const fl2 = sstep(ramp(p, 0.84, 0.95));
+  if (fl2 > 0) mono(ctx, 'ACTION ON ONE DIAGONAL · LIGHT ON THE OTHER · WEIGHT ON THE EYES', w / 2, Y(1) - 18, `rgba(42,39,64,${fl2})`, 'center', 10);
+}
+
+/* ---------- scene 4: whirling squares → sunflower ---------- */
+const s4 = document.querySelector('#s4 canvas');
+const P4 = makePanel(document.getElementById('p4'), [
+  `<span class="sw"></span>&phi; = (1 + &radic;5)/2 = 1.618&hellip;`,
+  `<span class="sw p"></span>a<sub>n+1</sub> = a<sub>n</sub>/&phi; <span class="lbl">whirling squares</span>`,
+  `<span class="sw o"></span>r = &phi;<sup>2&theta;/&pi;</sup> <span class="lbl">the spiral</span>`,
+  `<span class="sw g"></span>&theta;<sub>n</sub> = 137.5&deg;&middot;n`,
+  `<span class="sw g"></span>r<sub>n</sub> = c&middot;&radic;n <span class="lbl">n = 1 &hellip; 600</span>`,
+]);
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(s4);
+  const cx = w / 2, cy = h * 0.45;
+  const Wg = Math.min(w * 0.86, h * 0.5 * PHI), Hg = Wg / PHI;
+  const U = Hg;
+  paper(ctx, w, h, cx - Wg / 2, cy + Hg / 2, U);
+  const fw = sstep(ramp(p, 0.02, 0.4)), fs = sstep(ramp(p, 0.42, 0.92)), fade = 1 - sstep(ramp(p, 0.5, 0.75));
+  on(P4[0], p > 0.02); on(P4[1], p > 0.08); on(P4[2], p > 0.25); on(P4[3], p > 0.45); on(P4[4], p > 0.52);
+  // whirling squares
+  if (fw > 0 && fade > 0) {
+    ctx.globalAlpha = fade;
+    let x = cx - Wg / 2, y = cy - Hg / 2, ww = Wg, hh = Hg, dir = 0;
+    ctx.strokeStyle = C.blue; ctx.lineWidth = 2; ctx.strokeRect(x, y, ww, hh);
+    const n = Math.floor(fw * 9);
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const s = Math.min(ww, hh);
+      let sx, sy, acx, acy, a0, a1;
+      if (dir === 0) { sx = x; sy = y; acx = x + s; acy = y + s; a0 = Math.PI; a1 = 1.5 * Math.PI; x += s; ww -= s; }
+      else if (dir === 1) { sx = x; sy = y; acx = x; acy = y + s; a0 = 1.5 * Math.PI; a1 = 2 * Math.PI; y += s; hh -= s; }
+      else if (dir === 2) { sx = x + ww - s; sy = y; acx = x + ww - s; acy = y; a0 = 0; a1 = 0.5 * Math.PI; ww -= s; }
+      else { sx = x; sy = y + hh - s; acx = x + s; acy = y + hh - s; a0 = 0.5 * Math.PI; a1 = Math.PI; hh -= s; }
+      ctx.strokeStyle = C.purple; ctx.lineWidth = 1.4; ctx.strokeRect(sx, sy, s, s);
+      ctx.strokeStyle = C.orange; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(acx, acy, s, a0, a1); ctx.stroke();
+      dir = (dir + 1) % 4;
+    }
+    ctx.globalAlpha = 1;
+  }
+  // sunflower
+  if (fs > 0) {
+    const N = 600, shown = Math.floor(fs * N), Rm = Math.min(w, h) * 0.36, c = Rm / Math.sqrt(N);
+    const golden = 137.50776 * Math.PI / 180;
+    const tt = reduce ? 0 : t;
+    for (let n = 1; n <= shown; n++) {
+      const th = n * golden + (reduce ? 0 : Math.sin(tt * 0.0003) * 0.02), r = c * Math.sqrt(n);
+      const x = cx + Math.cos(th) * r, y = cy + Math.sin(th) * r;
+      const k = n / N;
+      const pop = clamp((shown - n) / 25, 0, 1);
+      ctx.fillStyle = k < 0.72 ? `rgba(90,60,30,${0.9 * pop})` : `rgba(250,180,40,${0.95 * pop})`;
+      ctx.beginPath(); ctx.arc(x, y, (2.2 + 2.2 * k) * (0.6 + 0.4 * pop), 0, TAU); ctx.fill();
+    }
+    if (fs > 0.98) mono(ctx, '600 SEEDS · NO SPIRAL WAS DRAWN', w / 2, cy + Rm + 26, C.ink, 'center', 10);
+  }
+}
+
+/* ---------- loop ---------- */
+const scenes = [
+  { el: document.getElementById('s1'), render: renderS1 },
+  { el: document.getElementById('s2'), render: renderS2 },
+  { el: document.getElementById('s3'), render: renderS3 },
+  { el: document.getElementById('s4'), render: renderS4 },
+];
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight;
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+    s.render(p, t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

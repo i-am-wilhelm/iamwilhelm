@@ -91,6 +91,22 @@ const FACES: Record<string, string[]> = {
     ...['400', '500', '600', '700'].map((w) => face('Libre Franklin', 'normal', w, 'libre-franklin-latin-wght-normal')),
     face('Libre Franklin', 'italic', '400', 'libre-franklin-latin-wght-italic'),
   ],
+  /* Panofsky for Internet People sets its poster lines in Anton (its
+     canvases name it); the rest of its type, and all of Root Rectangles in
+     Desmos, The Paranoiac-Critical Method, Applied and Those Who Heard the
+     Sky, is the Seen essays' three families above. */
+  Anton: [face('Anton', 'normal', '400', 'anton-latin-400-normal')],
+  /* BackGold Scrolly and LLA Scrolly Homepage ask for weights the files
+     above do not carry, so each spec has its own entry: Cormorant Garamond
+     500, 600, 700 and 600 italic, and Caveat 500 and 700, are the variable
+     latin files exactly as fonts.gstatic.com serves them for those links;
+     IBM Plex Sans 700 is the variable file already here. */
+  'Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600': [
+    ...['500', '600', '700'].map((w) => face('Cormorant Garamond', 'normal', w, 'cormorant-garamond-latin-wght-normal')),
+    face('Cormorant Garamond', 'italic', '600', 'cormorant-garamond-latin-wght-italic'),
+  ],
+  'IBM+Plex+Sans:wght@400;600;700': ['400', '600', '700'].map((w) => face('IBM Plex Sans', 'normal', w, 'ibm-plex-sans-latin-wght-normal')),
+  'Caveat:wght@500;700': ['500', '700'].map((w) => face('Caveat', 'normal', w, 'caveat-latin-wght-normal')),
 };
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -128,6 +144,9 @@ const CTL_CSS =
   '@supports (animation-timeline:view()){@media not all and (min-width:900px) and (min-aspect-ratio:5/4){' +
   '.ctl~.step .card{animation:ctl-pass linear both;animation-timeline:view(block 262px 0px);animation-range:exit 0px exit 44px}}}\n';
 function liftControls(html: string, slug: string): string {
+  /* A page with no control bars has nothing to lift and takes no site CSS
+     (it may also use a .stage of its own, with no steps under it). */
+  if (!html.includes('class="palette"')) return html;
   const out: string[] = [];
   let rest = html;
   let scenes = 0;
@@ -154,6 +173,74 @@ function liftControls(html: string, slug: string): string {
 
 /** Repairs to single pages: [what, the exact source text, its replacement]. */
 const FIXES: Record<string, [string, string, string][]> = {
+  /* Seen No. 4, 5 and 6, hung from their published artifacts. Each page
+     names its own previous and next piece in its colophon; the names become
+     links on the site's routes, and the line closes on the way back to the
+     wall, as the other numbered pages' lines do. The Paranoiac-Critical
+     Method, Applied gains the link on to No. 7, and its "Series: The Double
+     Image" stays as written, linked to that essay.
+     The Paranoiac-Critical Method, Applied was written as the first of a
+     monthly column. At the owner's direction every claim of a column is
+     cut (the kicker's "A monthly column, No. 1", "a month", "This month",
+     "No. 1 of a series", "Next month's object is yours to nominate", "That
+     is where the month goes. Nominate an object and it gets the treatment",
+     and the promise of a No. 2), each with the fewest words changed. */
+  'panofsky-for-internet-people': [
+    [
+      'the colophon\'s next and previous pieces',
+      'Next: <i>Root Rectangles in Desmos</i> &middot; Previous: <i>Monet Invented the Dither</i>',
+      'Next: <a href="/gallery/root-rectangles-in-desmos/"><i>Root Rectangles in Desmos</i></a> &middot; Previous: <a href="/gallery/monet-invented-the-dither/"><i>Monet Invented the Dither</i></a> &middot; <a href="/gallery/">The Gallery</a>',
+    ],
+  ],
+  'root-rectangles-in-desmos': [
+    [
+      'the colophon\'s previous and next pieces',
+      'Previous: <i>Panofsky for Internet People</i> &middot; Next: <i>The Paranoiac-Critical Method, Applied</i>',
+      'Previous: <a href="/gallery/panofsky-for-internet-people/"><i>Panofsky for Internet People</i></a> &middot; Next: <a href="/gallery/the-paranoiac-critical-method-applied/"><i>The Paranoiac-Critical Method, Applied</i></a> &middot; <a href="/gallery/">The Gallery</a>',
+    ],
+  ],
+  'the-paranoiac-critical-method-applied': [
+    [
+      'the eyebrow',
+      '<div class="eyebrow">A monthly column &middot; No. 1 &middot; the stapler</div>',
+      '<div class="eyebrow">The stapler</div>',
+    ],
+    [
+      'the dek',
+      'One ordinary object a month, walked all the way to the picture.',
+      'One ordinary object, walked all the way to the picture.',
+    ],
+    [
+      'the first card',
+      'The rule: one object from the desk. This month, the stapler.',
+      'The rule: one object from the desk. The stapler.',
+    ],
+    [
+      'the picture\'s caption',
+      '<p class="big"><i>Religare.</i><br>No. 1 of a series.</p>',
+      '<p class="big"><i>Religare.</i></p>',
+    ],
+    [
+      'the last card',
+      '<p>Next month\'s object is yours to nominate. The desk is full of them.</p>',
+      '<p>The next object is yours. The desk is full of them.</p>',
+    ],
+    [
+      'the closing paragraph',
+      'That is where the month goes. Nominate an object and it gets the treatment: mechanism, animal, building, word, picture.',
+      'That is where the time goes. Any object gets the treatment: mechanism, animal, building, word, picture.',
+    ],
+    [
+      'the promise of a No. 2',
+      '<p>No. 2 will be whatever you leave on the desk.</p>',
+      '',
+    ],
+    [
+      'the colophon\'s previous piece and series',
+      'Previous: <i>Root Rectangles in Desmos</i> &middot; Series: <i>The Double Image</i>',
+      'Previous: <a href="/gallery/root-rectangles-in-desmos/"><i>Root Rectangles in Desmos</i></a> &middot; Next: <a href="/gallery/blake-wrote-it-backwards/"><i>Blake Wrote It Backwards</i></a> &middot; Series: <a href="/gallery/the-double-image/"><i>The Double Image</i></a> &middot; <a href="/gallery/">The Gallery</a>',
+    ],
+  ],
   'nobody-sees-the-same-sea': [
     /* The belly-lights slider had no aria-valuetext. It now reads the
        contrast the scene is about, in the page's language. */
@@ -303,9 +390,12 @@ export async function seenDocument(slug: string): Promise<string> {
     if (!f) throw new Error(`seen: ${slug}: no self-hosted copy of ${spec.split(':')[0]}.`);
     return f;
   });
-  html = swap(html, '<link rel="preconnect" href="https://fonts.googleapis.com">\n', '', 'the fonts.googleapis.com preconnect', slug);
-  html = swap(html, '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n', '', 'the fonts.gstatic.com preconnect', slug);
+  /* A page carries one or both preconnects (BackGold Scrolly has only the
+     second); whichever it has goes, and nothing may still point at Google. */
+  html = html.replace('<link rel="preconnect" href="https://fonts.googleapis.com">\n', '');
+  html = html.replace('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n', '');
   html = html.replace(fonts[0], `<style>\n${faces.join('\n')}\n</style>\n`);
+  if (/fonts\.g(oogleapis|static)\.com/.test(html)) throw new Error(`seen: ${slug}: a Google Fonts reference was left in the page.`);
 
   /* Head: where the page lives, how it shares, what it is. */
   const canonical = new URL(piece.path, SITE_URL).href;
@@ -358,7 +448,12 @@ export async function seenDocument(slug: string): Promise<string> {
     ? swap(html, /(<meta name="description" content="[^"]*">\n)/, (m) => `${m}${head}\n`, 'the meta description', slug)
     : swap(html, /(<title>[^<]*<\/title>\n)/, (m) => `${m}<meta name="description" content="${esc(description)}">\n${head}\n`, 'the <title>', slug);
 
-  /* Colophon: the series links and the making-of line. A numbered page
+  /* The per-page repairs go first: a page outside the chain that names
+     its own previous and next pieces (Seen No. 4 to 6) has them linked
+     there, and the check below then finds nothing left to link. */
+  for (const [what, find, put] of FIXES[slug] ?? []) html = swap(html, find, () => put, what, slug);
+
+  /* Colophon: the series links and the making-of line. A page in the chain
      must carry the line; any other page that carries it prints it from the
      same place, so the pending wording changes everywhere at once. */
   const at = (SEEN_CHAIN as readonly string[]).indexOf(slug);
@@ -398,7 +493,6 @@ export async function seenDocument(slug: string): Promise<string> {
     throw new Error(`seen: ${slug}: the page names a previous piece but is not in SEEN_CHAIN.`);
   }
 
-  for (const [what, find, put] of FIXES[slug] ?? []) html = swap(html, find, () => put, what, slug);
   html = liftControls(html, slug);
 
   return html.replace(/^<!DOCTYPE html>\n/i, '');
