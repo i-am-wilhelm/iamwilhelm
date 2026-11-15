@@ -30,6 +30,9 @@ const SHELF: (SeriesId | null)[] = ['futurist', 'in-the-original', 'through-the-
 const ELSEWHERE_ACCENT = '#7a5a1f';
 /** Titles this long are set a size down so they fit the box front. */
 const LONG_TITLE = 28;
+/** And these another size down: at the narrowest box they would run to a
+    third column and off the front (The Paranoiac-Critical Method, Applied). */
+const LONGER_TITLE = 36;
 
 const pieces = await getScrollPieces();
 
@@ -106,6 +109,7 @@ const firstBay = bays[0];
                         class:list={[
                           'arc-box',
                           p.title.length >= LONG_TITLE && 'arc-box--long',
+                          p.title.length >= LONGER_TITLE && 'arc-box--longer',
                           isLight(plate) && 'arc-box--light',
                         ]}
                         href={p.path}
@@ -413,6 +417,11 @@ const firstBay = bays[0];
   .arc-box--long .arc-box__title {
     font-size: 0.66rem;
     letter-spacing: 0.09em;
+  }
+  .arc-box--longer .arc-box__title {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    line-height: 1.12;
   }
   .arc-box__pull {
     width: 13px;
