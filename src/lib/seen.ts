@@ -14,7 +14,8 @@
  *   - the colophon's "Previous: <i>Title</i>" becomes a link, with a
  *     matching "Next" where a next piece is hung (src/config/seen.ts) and
  *     the link back to the Gallery that the hung essays end on;
- *   - the making-of line is printed from src/config/seen.ts;
+ *   - the making-of line is printed from src/config/seen.ts, on every
+ *     numbered page and on any other page whose source carries it;
  *   - each scene's control bar is lifted out of the stage into a layer above
  *     the text cards (liftControls), so a card scrolling past on a phone
  *     passes under the bar instead of covering it;
@@ -54,6 +55,17 @@ const FACES: Record<string, string[]> = {
   'IBM+Plex+Mono': [
     face('IBM Plex Mono', 'normal', '400', 'ibm-plex-mono-latin-400-normal'),
     face('IBM Plex Mono', 'normal', '500', 'ibm-plex-mono-latin-500-normal'),
+  ],
+  /* Per My Last Memo: the latin files exactly as fonts.gstatic.com serves
+     them for the page's link (the Courier Prime 400 and 700 files were
+     already here, byte for byte). The page's canvases set ctx.font by these
+     family names, so the names stay exactly as Google declares them. */
+  Caprasimo: [face('Caprasimo', 'normal', '400', 'caprasimo-latin-400-normal')],
+  Caveat: [face('Caveat', 'normal', '700', 'caveat-latin-700-normal')],
+  'Courier+Prime': [
+    face('Courier Prime', 'normal', '400', 'courier-prime-latin-400-normal'),
+    face('Courier Prime', 'normal', '700', 'courier-prime-latin-700-normal'),
+    face('Courier Prime', 'italic', '400', 'courier-prime-latin-400-italic'),
   ],
 };
 
@@ -140,6 +152,54 @@ const FIXES: Record<string, [string, string, string][]> = {
       'the link to How to Throw a Flame Twenty Miles',
       '<a href="https://iamwilhelm.com/gallery/how-to-throw-a-flame-twenty-miles/" rel="noopener">',
       '<a href="/gallery/how-to-throw-a-flame-twenty-miles/">',
+    ],
+  ],
+  'per-my-last-memo': [
+    /* The prototype was only ever checked with fallback fonts. Set in its
+       web fonts, the two-column layout between 900px and the page's full
+       width (1180px) has a sheet narrower than the type it carries:
+         - the H1 broke "Per My / Last / Memo" up to 951px; it is held to
+           two lines by the width of "Last Memo";
+         - Exhibit 4's five cards were 67 to 117px wide, so words such as
+           "Approve", "bachelor" and "extinguisher" ran out of them; the
+           cards sit two across with the fifth spanning, as on a phone;
+         - the incident title, set by the window's width at 30px, ran under
+           the red stamp; it is set by the sheet's width instead, and starts
+           6px lower, below the stamp.
+       And on a phone shorter than 844px, Exhibit 4's sheet (66% of the
+       screen) was too short for the incident card, whose text rose over
+       the option buttons and blocked taps on them (375 x 667: 115px short
+       at Figure 0). That sheet takes the height it has on a 390 x 844
+       phone, 556px, up to 84% of the screen; on a phone held sideways,
+       where the page already unpins its sheets at 380px, it is 480px; and
+       the card's text centres safely, so any overflow runs down, never
+       over the options.
+       Exhibit 2's readout kept two lines free, but its eight sentences
+       run to three under 482px and from 900 to 995px (four under 346px),
+       so the chart above it changed height from sort to sort and the red
+       line moved 12 to 18px on the screen. The readout keeps its longest
+       sentence's height free at those widths, and the line stays put.
+       CSS only. From 1180px up nothing changes; on a phone 844px tall or
+       more, only the readout's reserved line. */
+    [
+      'the end of the stylesheet',
+      '</style>\n</head>',
+      '/* site: display repairs found with the web fonts (src/lib/seen.ts) */\n' +
+        '@media (min-width:900px) and (max-width:1059px){h1{font-size:min(10.6vw,calc((100vw - 400px) / 5.6))}}\n' +
+        '@media (min-width:900px) and (max-width:1179px){' +
+        '.hand{grid-template-columns:repeat(2,minmax(0,1fr))}' +
+        '.opt{min-height:60px;justify-content:center;padding:7px 10px}' +
+        '.opt:last-child{grid-column:1 / -1}' +
+        '.opt-n{display:none}' +
+        '.inc-t{font-size:clamp(19px,2.2vw,26px)}' +
+        '.inc-k{margin-bottom:6px}}\n' +
+        '@media (max-width:899px) and (min-height:521px){' +
+        '[data-scene="4"] .sheet{height:max(66vh,min(556px,84vh));height:max(66svh,min(556px,84svh))}}\n' +
+        '@media (max-width:899px) and (max-height:520px){[data-scene="4"] .sheet{height:480px}}\n' +
+        '@media (max-width:899px){.inc{justify-content:safe center}}\n' +
+        '@media (max-width:495px),(min-width:900px) and (max-width:1005px){#o2{min-height:4.2em}}\n' +
+        '@media (max-width:350px){#o2{min-height:5.6em}}\n' +
+        '</style>\n</head>',
     ],
   ],
 };
@@ -232,8 +292,11 @@ export async function seenDocument(slug: string): Promise<string> {
     ? swap(html, /(<meta name="description" content="[^"]*">\n)/, (m) => `${m}${head}\n`, 'the meta description', slug)
     : swap(html, /(<title>[^<]*<\/title>\n)/, (m) => `${m}<meta name="description" content="${esc(description)}">\n${head}\n`, 'the <title>', slug);
 
-  /* Colophon: the series links and the making-of line. */
+  /* Colophon: the series links and the making-of line. A numbered page
+     must carry the line; any other page that carries it prints it from the
+     same place, so the pending wording changes everywhere at once. */
   const at = (SEEN_CHAIN as readonly string[]).indexOf(slug);
+  if (at < 0 && html.includes(SEEN_AI_LINE_SOURCE)) html = swap(html, SEEN_AI_LINE_SOURCE, () => SEEN_AI_LINE, 'the making-of line', slug);
   if (at >= 0) {
     html = swap(html, SEEN_AI_LINE_SOURCE, SEEN_AI_LINE, 'the making-of line', slug);
     const link = (p: Piece) => `<a href="${p.path}"><i>${esc(p.title)}</i></a>`;

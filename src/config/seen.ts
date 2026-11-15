@@ -23,10 +23,12 @@ export const SEEN_CHAIN = [
 ] as const;
 
 /**
- * The making-of line in every numbered page's colophon. The wording is
- * pending the owner's decision: change it here and every page mounted from
- * a source file follows. `SOURCE` is the sentence as the source files carry
- * it (what gets replaced); `LINE` is what the site prints.
+ * The making-of line in every numbered page's colophon, and in the colophon
+ * of any other page mounted from a source file that carries it (Nine
+ * Hundred Lights, Per My Last Memo). The wording is pending the owner's
+ * decision: change it here and every page mounted from a source file
+ * follows. `SOURCE` is the sentence as the source files carry it (what gets
+ * replaced); `LINE` is what the site prints.
  */
 export const SEEN_AI_LINE_SOURCE =
   'Research, writing and code made with AI assistance and checked against the sources listed.';
@@ -41,4 +43,5 @@ export const SEEN_AI_LINE = SEEN_AI_LINE_SOURCE;
 export const SEEN_SOURCES: Record<string, string> = {
   'due-space': '_incoming/due-space/due-space.html',
   'nine-hundred-lights': '_incoming/elsewhere/nine-hundred-lights.html',
+  'per-my-last-memo': '_incoming/elsewhere/per-my-last-memo.html',
 };
