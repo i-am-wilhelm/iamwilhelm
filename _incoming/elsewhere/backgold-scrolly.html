@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BackGold Scrolly</title>
+<meta name="description" content="Run the whole thing. Sign once and follow one record through everything BackGold does: giving, email, text, calls, field, sites, compliance, and the handoff.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: one reading column over a living dither field; sticky stages for scrubbed scenes; the record docks at the screen edge. Single theme by choice: Vault Black and gold. */
+  --vault:#0E0D0B; --vault-2:#15130F; --vault-3:#1E1B14; --rule:#3A3428; --ash:#5E584B;
+  --gold:#D4A93C; --gold-hi:#F2D27A; --gold-lo:#8F7226;
+  --paper:#F4EFE3; --dim:#CFC6B2; --mute:#9A917D;
+  --f-display:'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --top:52px; --dock:58px; --col:680px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--vault);color:var(--paper);font-family:var(--f-body);font-size:17px;line-height:1.55;overflow-x:hidden}
+#field{position:fixed;inset:0;width:100%;height:100%;z-index:0;image-rendering:pixelated;pointer-events:none}
+main{position:relative;z-index:1;padding-top:var(--top);padding-bottom:calc(var(--dock) + 28px)}
+
+/* top bar */
+.topbar{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;gap:12px;padding:0 16px;background:#0E0D0B;border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:9px;flex:none}
+.logo{width:26px;height:26px;flex:none;display:block}
+.wm{font:700 17px/1 var(--f-body);letter-spacing:-.01em;color:var(--paper)}
+.wm i{font-style:normal;color:var(--gold)}
+.where{flex:1;min-width:0;text-align:right;font:500 11px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jr{flex:none;font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);background:none;border:1px solid var(--rule);border-radius:999px;padding:9px 12px;cursor:pointer;white-space:nowrap}
+.jr[aria-pressed="true"]{color:var(--vault);background:var(--gold);border-color:var(--gold)}
+#prog{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--gold);transform-origin:0 50%;transform:scaleX(0)}
+
+/* type */
+.ch{max-width:calc(var(--col) + 40px);margin:0 auto;padding:72px 20px 24px}
+.ch.wide{max-width:1160px}
+.col{max-width:var(--col);margin:0 auto}
+.eyebrow{display:flex;align-items:center;gap:14px;margin:0 0 6px;font:500 12px/1 var(--f-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);max-width:none}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--rule)}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;text-wrap:balance;margin:0}
+h1{font-weight:700;font-size:clamp(60px,16.5vw,132px);line-height:.9;letter-spacing:-.015em;margin:10px 0 20px}
+h2{font-weight:700;font-size:clamp(38px,9.4vw,66px);line-height:1;margin:12px 0 18px}
+h3{font-size:clamp(27px,6.2vw,36px);line-height:1.1;margin:8px 0 12px}
+p{margin:0 0 16px;max-width:62ch}
+.lead{font-size:19px;color:var(--dim)}
+.fine{font-size:14px;color:var(--mute)}
+.mono{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+b,strong{font-weight:600}
+a{color:var(--gold-hi)}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px;border-radius:4px}
+button{font-family:inherit}
+.q{display:block;width:100%;text-align:left;background:none;border:0;border-left:2px solid var(--gold);padding:6px 0 6px 16px;margin:10px 0 18px;font:600 clamp(25px,6vw,36px)/1.14 var(--f-display);color:var(--gold-hi);cursor:pointer;text-wrap:balance}
+.q:hover{color:#fff3c4}
+.q::after{content:"quote";display:inline-block;margin-left:10px;font:500 9.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lo);vertical-align:middle;border:1px solid var(--gold-lo);border-radius:999px;padding:4px 7px}
+.q.fee{font:500 clamp(15px,3.9vw,18px)/1.5 var(--f-mono);border:1px solid var(--gold-lo);border-radius:10px;padding:16px;background:rgba(212,169,60,.05)}
+.kit{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:10px;max-width:62ch}
+.kit li{position:relative;padding-left:20px}
+.kit li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;background:var(--gold);transform:rotate(45deg)}
+.plate{position:relative;margin:22px 0 26px;padding:18px;border:1px solid var(--rule);border-radius:12px;background:linear-gradient(180deg,rgba(30,27,20,.95),rgba(17,16,12,.97))}
+.plate>.mono:first-child{display:block;margin-bottom:12px}
+.guil{background-image:var(--guil);background-size:240px 120px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:11px 22px;border-radius:999px;border:1px solid var(--gold);background:var(--gold);color:#14110a;font:600 15.5px/1.1 var(--f-body);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.btn:hover{background:var(--gold-hi)}
+.btn.ghost{background:transparent;color:var(--gold-hi)}
+.btn.ghost:hover{background:rgba(212,169,60,.12)}
+.btn:disabled{cursor:default;opacity:.85}
+.link{background:none;border:0;padding:6px 0;color:var(--dim);font:inherit;font-size:15px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:left}
+input[type=range]{width:100%;accent-color:var(--gold);height:30px;margin:2px 0 10px}
+.rl{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 12px;font-size:15px;color:var(--dim)}
+.rl output{font:600 17px var(--f-body);color:var(--paper);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* record line + meter */
+.rec{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:start;margin:26px 0 8px;padding:14px 16px;border:1px solid var(--gold-lo);border-radius:10px;background:rgba(212,169,60,.06)}
+.rec svg{width:22px;height:22px;grid-row:span 2;margin-top:3px}
+.rec svg path{stroke:var(--gold-hi);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset .7s .15s}
+.rec.on svg path{stroke-dashoffset:0}
+.rec .mono{color:var(--gold)}
+.rec p{margin:0;font-size:15.5px;color:var(--paper)}
+.meterline{font:500 13px/1.45 var(--f-mono);color:var(--dim);margin:8px 0 0}
+.meterline b{color:var(--gold-hi);font-weight:500}
+
+/* hero */
+.hero{min-height:calc(100vh - var(--top));display:flex;flex-direction:column;justify-content:center;padding-top:36px;padding-bottom:52px}
+.sign{margin:14px 0 16px}
+.signlabel{display:block;font:600 clamp(22px,5.4vw,28px)/1.2 var(--f-display);color:var(--gold-hi);margin-bottom:10px}
+.signline{display:flex;gap:12px;align-items:flex-end;border-bottom:2px solid var(--gold);padding-bottom:8px;max-width:520px;transition:box-shadow .3s}
+.signline input{flex:1;min-width:0;background:none;border:0;color:var(--paper);font:italic 600 clamp(30px,8vw,44px)/1.1 var(--f-display);padding:4px 2px;outline:none}
+.signline input::placeholder{color:var(--ash)}
+.signline:focus-within{border-bottom-color:var(--gold-hi);box-shadow:0 12px 20px -16px var(--gold)}
+.signed{min-height:20px;margin:10px 0 0;font:500 12px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.sign.done .signline input{color:var(--gold-hi)}
+.sign.done .signline .btn{display:none}
+.cue{margin-top:22px}
+
+/* scrolly */
+.scrolly{position:relative}
+.stage{position:sticky;top:var(--top);z-index:3;height:46vh;min-height:290px;max-height:430px;margin:0 -20px;padding:12px 14px;background:var(--vault);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.steps{position:relative;z-index:2}
+.step{min-height:54vh;padding:26px 0 8px;display:flex;flex-direction:column;justify-content:center}
+.step>*{flex:none}
+@media(min-width:960px){
+  .scrolly{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:start}
+  .stage{order:2;top:calc(var(--top) + 22px);height:calc(100vh - var(--top) - 44px);max-height:680px;margin:0;border:1px solid var(--rule);border-radius:14px;padding:22px}
+  .step{min-height:80vh}
+}
+.calm .stage{position:relative;top:auto;height:auto;min-height:0;max-height:none;padding:18px 14px;border:1px solid var(--rule);border-radius:12px;margin:0}
+.calm .step{min-height:0;padding:16px 0}
+.calm *,.calm *::before,.calm *::after{transition-duration:.01ms !important;animation-duration:.01ms !important;animation-iteration-count:1 !important}
+
+/* 01 shelf */
+.shelf-gfx{display:grid;grid-template-columns:1.32fr 1fr;gap:12px;width:100%;max-width:560px;align-items:center}
+.shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.box{aspect-ratio:1/1.12;border:1px solid var(--ash);border-radius:4px;background:linear-gradient(180deg,#242018,#17150f);display:flex;flex-direction:column;justify-content:space-between;padding:6px 5px 5px;min-width:0;transition:opacity .5s,filter .5s,border-color .5s}
+.box .spine{font:500 8.5px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.box .tag{font:500 9px/1.15 var(--f-mono);color:var(--gold-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .4s,color .4s}
+.box.drift .tag{color:#b9b19d}
+.box.dark{opacity:.3;filter:grayscale(1);border-color:#2a2720}
+.box.dark .tag{opacity:0}
+.tape{background:var(--paper);color:#1a1814;font:500 9.5px/1.5 var(--f-mono);padding:9px 8px 12px;border-radius:2px;border-bottom:3px dashed var(--vault);opacity:.5;transition:opacity .5s}
+.tape.live{opacity:1}
+.tape b{display:block;letter-spacing:.12em;font-weight:500}
+.tape>span{display:block;color:#6b6352;margin-bottom:6px}
+.tape ul{list-style:none;margin:0;padding:0}
+.tape li{display:flex;justify-content:space-between;gap:6px;padding:3px 0;border-top:1px dashed rgba(26,24,20,.3);opacity:.18;transition:opacity .4s}
+.tape li.on{opacity:1}
+.tape em{font-style:normal;white-space:nowrap}
+@media(min-width:960px){.shelf-gfx{grid-template-columns:1fr;max-width:400px;gap:18px}.box{aspect-ratio:1/.92;padding:10px 10px 9px}.box .spine{font-size:11px}.box .tag{font-size:12.5px}.tape{font-size:12.5px;padding:14px 14px 18px}}
+
+/* 02 fuse */
+.fuse-gfx{position:relative;width:100%;max-width:520px;height:100%}
+.calm .fuse-gfx{height:300px}
+.fuse{position:absolute;inset:0}
+.pl{position:absolute;width:16%;aspect-ratio:1/1.12;border:1px solid var(--gold-lo);border-radius:4px;background:linear-gradient(180deg,#2a2416,#17150f);will-change:transform}
+.rowcard{position:absolute;left:50%;top:50%;width:min(96%,440px);transform:translate(-50%,-50%);border:1px solid var(--gold);border-radius:10px;background-color:#14120d;padding:14px 16px;will-change:transform,opacity}
+.rc-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding-bottom:8px;border-bottom:1px solid var(--gold-lo)}
+.rc-name{font:600 30px/1 var(--f-display);color:var(--gold-hi)}
+.rc-fields{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:7px;font:400 11px/1.4 var(--f-mono)}
+.rc-fields li{display:grid;grid-template-columns:78px 1fr;gap:8px;color:var(--dim);opacity:.14;transition:opacity .45s}
+.rc-fields li.on{opacity:1}
+.rc-fields b{color:var(--gold);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:10px}
+@media(min-width:960px){.rowcard{width:min(94%,500px);padding:22px 24px}.rc-fields{font-size:14px;gap:11px}.rc-fields li{grid-template-columns:104px 1fr}.rc-fields b{font-size:11px}.rc-name{font-size:42px}}
+
+/* 03 raise */
+.phone{max-width:400px;margin-inline:auto;border-radius:26px;padding:18px 16px 16px;border-color:var(--ash);background:#14120e}
+.co-head{display:flex;flex-direction:column;gap:3px;padding-bottom:12px;border-bottom:1px solid var(--rule);margin-bottom:12px}
+.co-org{font:600 23px/1.1 var(--f-display);color:var(--paper)}
+.chipsrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.payrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 12px}
+.chip{min-height:44px;border-radius:10px;border:1px solid var(--rule);background:#1b1812;color:var(--paper);font:600 16px var(--f-body);cursor:pointer;padding:0 4px}
+.chip[aria-pressed="true"]{border-color:var(--gold);background:rgba(212,169,60,.16);color:var(--gold-hi)}
+.payrow .chip{font-size:14px}
+.tog{display:flex;align-items:center;gap:10px;min-height:38px;font-size:15.5px;cursor:pointer}
+.tog input{width:20px;height:20px;accent-color:var(--gold);margin:0}
+.law{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.law label,.co-fund{display:flex;flex-direction:column;gap:4px;font:500 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.law input,.co-fund select{background:#1b1812;border:1px solid var(--rule);border-radius:8px;color:var(--paper);font:400 16px var(--f-body);padding:9px 10px;min-width:0;width:100%;text-transform:none;letter-spacing:0}
+.co-fund{margin-bottom:12px}
+.co-sum{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:15px;color:var(--dim);padding:10px 0 12px;border-top:1px solid var(--rule)}
+.co-sum b{color:var(--paper);font-variant-numeric:tabular-nums;text-align:right}
+.phone .btn{width:100%}
+.co-done{text-align:center;padding:6px 0 2px}
+.co-done svg{width:54px;height:54px}
+.co-done h3{margin:6px 0 8px}
+.co-done p{margin:0 auto 8px;color:var(--dim);font-size:15.5px}
+.co-done p.mono{font-size:11px;color:var(--mute);margin-top:12px}
+.gates{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+.gates li{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:7px 10px;border:1px solid var(--rule);border-radius:999px;color:var(--mute);transition:all .35s}
+.gates li.on{border-color:var(--gold);color:var(--gold-hi);background:rgba(212,169,60,.1)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.stat b{display:block;font:600 30px/1 var(--f-display);color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.stat span{font:500 10.5px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+@media(min-width:620px){.stats{grid-template-columns:repeat(4,1fr)}}
+
+/* 04 reach */
+.jr-gfx{display:grid;grid-template-columns:1.12fr 1fr;gap:12px;width:100%;max-width:540px;align-items:center}
+.jhead{grid-column:1/-1;display:flex;justify-content:space-between;font:500 10.5px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.jhead b{color:var(--gold-hi);font-weight:500}
+#jrail{list-style:none;margin:0;padding:0 0 0 6px;border-left:1px solid var(--rule);display:grid;gap:5px}
+#jrail li{position:relative;padding-left:14px;font:400 10.5px/1.35 var(--f-mono);color:var(--ash);transition:color .35s}
+#jrail li::before{content:"";position:absolute;left:-10.5px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--vault);border:1px solid var(--ash);transition:all .35s}
+#jrail li.on{color:var(--paper)}
+#jrail li.on::before{background:var(--gold);border-color:var(--gold-hi);box-shadow:0 0 8px rgba(212,169,60,.6)}
+#jrail b{font-weight:500;color:inherit;letter-spacing:.06em}
+#jrail li.on b{color:var(--gold-hi)}
+#pm{border:1px solid var(--ash);border-radius:16px;background:#12100c;padding:10px 8px;display:grid;gap:6px;align-content:start;min-height:210px}
+.msg{font:400 10.5px/1.35 var(--f-body);padding:6px 8px;border-radius:8px;background:#1f1c15;color:var(--dim);opacity:.1;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.msg.on{opacity:1;transform:none}
+.msg b{display:block;font:500 8.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.msg.me{justify-self:end;background:var(--gold);color:#14110a;font-weight:600}
+.msg.sys{background:none;border:1px dashed var(--gold-lo);color:var(--gold-hi);font:500 9px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;text-align:center}
+@media(min-width:960px){#jrail li{font-size:13px}#jrail{gap:10px}.msg{font-size:13px}.msg b{font-size:10px}}
+.duel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 12px}
+.duel>div{border:1px solid var(--rule);border-radius:10px;padding:12px;min-width:0}
+.duel .mono{display:block;white-space:nowrap}
+.duel .bg{border-color:var(--gold)}
+.duel b{display:block;font:600 clamp(34px,9vw,48px)/1 var(--f-display);font-variant-numeric:tabular-nums;margin:6px 0 4px}
+.duel .bg b{color:var(--gold-hi)}
+.duel .mc b{color:var(--dim)}
+.duel small{display:block;font-size:12.5px;line-height:1.35;color:var(--mute)}
+
+/* 05 field */
+#turf{display:block;width:100%;aspect-ratio:4/3;border-radius:8px;background:#12100c;touch-action:none;cursor:crosshair;border:1px solid var(--rule)}
+@media(min-width:700px){#turf{aspect-ratio:16/10}}
+.mapbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:12px}
+.mapstat{font:500 12px/1.4 var(--f-mono);color:var(--dim);flex:1;min-width:180px}
+.doorcard{border:1px solid var(--gold-lo);border-radius:10px;padding:12px 14px;margin-top:12px;opacity:.38;transition:opacity .5s,border-color .5s,transform .5s;transform:translateY(4px)}
+.doorcard.on{opacity:1;border-color:var(--gold-hi);transform:none}
+.doorcard p{margin:4px 0 0;font:600 22px/1.15 var(--f-display)}
+#pbDots{display:grid;grid-template-columns:repeat(25,1fr);gap:3px;margin:6px 0 16px}
+#pbDots i{aspect-ratio:1;border-radius:50%;background:var(--ash);opacity:.55;transition:background .4s,transform .4s,opacity .4s}
+#pbDots i.wait{opacity:.1}
+#pbDots i.talk{background:var(--gold-lo);opacity:1}
+#pbDots i.yes{background:var(--gold-hi);transform:scale(1.45);box-shadow:0 0 8px rgba(242,210,122,.6)}
+.pb-nums{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 10px;margin-bottom:12px}
+@media(min-width:560px){.pb-nums{grid-template-columns:repeat(4,1fr)}}
+.pb-nums span,.nums span,.stat span{display:block;line-height:1.35;margin-top:4px}
+.pb-nums b{display:block;font:600 clamp(38px,10vw,50px)/1 var(--f-display);color:var(--gold-hi);font-variant-numeric:tabular-nums}
+
+/* 06 build */
+.site-gfx{position:relative;width:100%;max-width:520px;min-height:250px;display:flex;align-items:center;justify-content:center}
+.bw{width:min(100%,400px);border:1px solid var(--ash);border-radius:10px;background:#12100c;overflow:hidden;transition:opacity .5s,transform .5s}
+.bw-bar{display:flex;align-items:center;gap:5px;padding:7px 9px;border-bottom:1px solid var(--rule);font:500 9.5px var(--f-mono);color:var(--mute)}
+.bw-bar i{width:7px;height:7px;border-radius:50%;background:var(--ash)}
+.bw-bar span{margin-left:8px}
+.bw-body{display:grid;gap:6px;padding:8px}
+.blk{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:32px;padding:6px 10px;border:1px dashed var(--ash);border-radius:6px;font:500 10px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);opacity:.2;transform:translateY(-14px);transition:transform .45s cubic-bezier(.2,.9,.3,1.25),opacity .35s,border-color .35s,color .35s}
+.blk.in{opacity:1;transform:none;border:1px solid var(--gold-lo);color:var(--gold-hi);background:rgba(212,169,60,.05)}
+.blk em{font-style:normal;color:var(--mute);font-size:9px;letter-spacing:.04em;text-transform:none}
+.kinds{position:absolute;right:4px;top:0;font:500 10px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-lo);border-radius:999px;padding:5px 9px;background:var(--vault)}
+#petmap{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .5s}
+.pm-count{position:absolute;left:6px;bottom:0;font:500 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--gold-hi);opacity:0;transition:opacity .5s}
+.site-gfx.map .bw{opacity:.08;transform:scale(.94)}
+.site-gfx.map #petmap,.site-gfx.map .pm-count{opacity:1}
+@media(min-width:960px){.site-gfx{height:100%}.blk{min-height:48px;font-size:12px}.bw-bar{font-size:11px}}
+.be-big{font:600 clamp(64px,18vw,104px)/.9 var(--f-display);color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.tagsplit{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.tagsplit svg{width:84px;height:84px}
+.split{display:flex;height:22px;border-radius:5px;overflow:hidden;border:1px solid var(--rule);margin:8px 0 6px}
+.split i{background:var(--ash);width:60%}
+.split u{background:var(--gold);width:40%}
+.splitlab{display:flex;justify-content:space-between;gap:10px;font:500 11px/1.35 var(--f-mono);color:var(--dim)}
+.splitlab span:last-child{color:var(--gold-hi);text-align:right}
+
+/* 07 comply */
+.limit{position:relative;height:26px;border:1px solid var(--rule);border-radius:6px;background:#12100c;overflow:hidden;margin:10px 0 8px}
+.limit i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold-lo),var(--gold));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.limit::after{content:"";position:absolute;right:0;top:0;bottom:0;width:5px;background:var(--gold-hi)}
+.limit.hit{animation:bump .5s}
+@keyframes bump{0%{transform:translateX(0)}30%{transform:translateX(6px)}60%{transform:translateX(-3px)}100%{transform:none}}
+.limitmeta{display:flex;justify-content:space-between;gap:10px;font:500 11.5px var(--f-mono);color:var(--mute);margin-bottom:14px}
+.decline{margin:14px 0 0;padding:12px 14px;border-left:2px solid var(--gold-hi);background:rgba(212,169,60,.07);font-size:15px;max-width:none}
+.ledger{list-style:none;margin:0;padding:0;font:400 12px/1.45 var(--f-mono)}
+.ledger li{display:grid;grid-template-columns:40px 1fr auto;gap:8px;padding:9px 0;border-bottom:1px solid var(--rule);color:var(--dim);opacity:.16;transition:opacity .5s,color .5s}
+.ledger li.on{opacity:1;color:var(--paper)}
+.ledger li>b{color:var(--gold-hi);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ledger .d{color:var(--mute)}
+.stamp{display:inline-block;margin-left:6px;padding:1px 6px;border:1px solid var(--gold);border-radius:3px;color:var(--gold);font-size:9.5px;letter-spacing:.14em;transform:rotate(-4deg)}
+.fecdoc{display:flex;align-items:center;gap:14px;margin-top:16px;opacity:.3;transform:translateY(8px);transition:all .6s cubic-bezier(.2,.9,.3,1.3)}
+.fecdoc.on{opacity:1;transform:none}
+.fecdoc svg{width:46px;height:58px;flex:none}
+.fecdoc p{margin:0;font-size:15px;color:var(--dim)}
+
+/* 08 connect */
+#net{display:block;width:100%;height:auto;margin-bottom:12px}
+#net line{stroke:var(--ash);stroke-width:1.2;stroke-dasharray:3 5}
+#net .nd circle.c{fill:#17150f;stroke:var(--gold-lo);stroke-width:1.4}
+#net .nd circle.r{fill:var(--ash)}
+#net .nd.home circle.c{stroke:var(--gold-hi);fill:rgba(212,169,60,.18)}
+#net .nd.home circle.r{fill:var(--gold)}
+#net text{font:500 9.5px var(--f-mono);fill:var(--dim);letter-spacing:.04em;text-anchor:middle}
+#net .roll{fill:var(--gold-hi);opacity:0;transition:opacity .6s .3s}
+#net.linked #ln-rc{stroke:var(--gold-hi);stroke-width:2.4;stroke-dasharray:none}
+#net.linked #ln-cs{stroke:var(--gold);stroke-dasharray:4 6;animation:flow 1.1s linear infinite}
+#net.linked .roll{opacity:1}
+#net.linked .nd.peer circle.c{stroke:var(--gold-hi)}
+#net.linked .nd.peer circle.r{fill:var(--gold)}
+@keyframes flow{to{stroke-dashoffset:-20}}
+.holdbtn{position:relative;overflow:hidden;touch-action:none;-webkit-touch-callout:none}
+.holdbtn i{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.4);pointer-events:none}
+.holdbtn span{position:relative}
+.holdbtn.done{background:transparent;color:var(--gold-hi)}
+.holdbtn.done i{display:none}
+.holdmsg{font:500 12px/1.4 var(--f-mono);color:var(--dim);margin:10px 0 0;min-height:18px}
+
+/* 09 aurelia */
+.au-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.au-top b{font:600 32px/1 var(--f-display);color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.au-line{min-height:58px;padding:12px 14px;border:1px solid var(--gold-lo);border-radius:10px;font:500 14.5px/1.4 var(--f-mono);color:var(--paper);background:#12100c}
+.au-line::after{content:"";display:inline-block;width:8px;height:1.05em;margin-left:3px;background:var(--gold);vertical-align:text-bottom;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+#auChips{display:grid;grid-template-columns:repeat(20,1fr);gap:3px;margin:12px 0}
+#auChips i{aspect-ratio:1;border-radius:2px;background:#221f18;transition:background .25s}
+#auChips i.on{background:var(--gold-hi)}
+#auChips i.dim{background:var(--gold-lo)}
+.au-ans{min-height:72px;padding:12px 14px;border-left:2px solid var(--gold);background:rgba(212,169,60,.06);font-size:15.5px;margin:0;max-width:none}
+.asks{display:grid;gap:8px;margin:14px 0 0}
+.ask{text-align:left;padding:11px 14px;border-radius:10px;border:1px solid var(--rule);background:#1b1812;color:var(--paper);font:400 15px/1.35 var(--f-body);cursor:pointer}
+.ask:hover,.ask[aria-pressed="true"]{border-color:var(--gold);color:var(--gold-hi)}
+
+/* 10 handoff */
+.ho-gfx{width:100%;max-width:520px;display:grid;gap:10px}
+.chairs{display:flex;align-items:flex-start;justify-content:center;gap:34px;position:relative;height:50px}
+.chair{display:flex;flex-direction:column;align-items:center;gap:4px;font:500 9px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);width:96px}
+.chair i{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ash);background:#1b1812;transition:all .5s}
+.chair.has i{border-color:var(--gold-hi);background:rgba(212,169,60,.28);box-shadow:0 0 12px rgba(212,169,60,.4)}
+.chair.has{color:var(--gold-hi)}
+.key{position:absolute;top:2px;left:calc(50% - 30px);width:22px;height:22px;transition:left 1s cubic-bezier(.3,.8,.3,1)}
+.chairs.passed .key{left:calc(50% + 8px)}
+.years{display:grid;grid-template-columns:repeat(5,1fr);position:relative;font:500 10.5px var(--f-mono);color:var(--mute);text-align:center;padding-top:10px;border-top:1px solid var(--rule)}
+.years span.on{color:var(--gold-hi)}
+.years i{position:absolute;top:-4.5px;left:10%;width:8px;height:8px;background:var(--gold-hi);border-radius:50%;transform:translateX(-50%);box-shadow:0 0 8px rgba(242,210,122,.7)}
+.ho-body{display:grid;grid-template-columns:.62fr 1.38fr;gap:10px}
+.ho-shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;align-content:start}
+.ho-shelf i{aspect-ratio:1/1.1;border:1px solid #2a2720;border-radius:3px;background:repeating-linear-gradient(45deg,#17150f 0 2px,#0f0e0b 2px 4px)}
+.ho-shelf span{grid-column:1/-1;font:500 9px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ash);margin-top:4px}
+.ho-rec{border:1px solid var(--gold-lo);border-radius:8px;padding:9px 11px;background:rgba(212,169,60,.04);min-width:0}
+.ho-rec .rc-name{font-size:22px}
+.ho-rec ul{list-style:none;margin:6px 0 0;padding:0;font:400 10.5px/1.5 var(--f-mono);color:var(--dim)}
+.ho-rec li{opacity:.14;transition:opacity .4s}
+.ho-rec li.on{opacity:1}
+.ho-rec li b{color:var(--gold-hi);font-weight:500}
+@media(min-width:960px){.ho-rec ul{font-size:13.5px;line-height:1.7}.ho-rec .rc-name{font-size:32px}.chair{font-size:10.5px}}
+
+/* 11 proof */
+.stamps{display:grid;gap:12px;margin:18px 0 22px}
+.stampc{border:1px solid var(--gold-lo);border-radius:10px;background:rgba(212,169,60,.04)}
+.stampc summary{list-style:none;cursor:pointer;padding:14px 16px;display:grid;gap:5px}
+.stampc summary::-webkit-details-marker{display:none}
+.stampc summary .mono{color:var(--gold)}
+.stampc summary .t{font:600 22px/1.15 var(--f-display)}
+.stampc summary::after{content:"+ detail";font:500 10.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lo)}
+.stampc[open] summary::after{content:"close"}
+.stampc .d{padding:0 16px 14px;color:var(--dim);font-size:15.5px;margin:0}
+blockquote{margin:20px 0;padding:0 0 0 16px;border-left:2px solid var(--gold);font:italic 600 clamp(23px,5.4vw,30px)/1.22 var(--f-display);color:var(--paper)}
+blockquote cite{display:block;margin-top:8px;font:500 11px var(--f-mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.nums{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 12px;margin:22px 0}
+.nums div{border-top:1px solid var(--gold-lo);padding-top:10px}
+.nums b{display:block;font:600 clamp(42px,11vw,58px)/1 var(--f-display);color:var(--gold-hi)}
+@media(min-width:700px){.nums{grid-template-columns:repeat(4,1fr)}.stamps{grid-template-columns:repeat(3,1fr);align-items:start}}
+
+/* 12 price */
+.two{display:grid;gap:14px;margin:22px 0}
+@media(min-width:760px){.two{grid-template-columns:1fr 1fr;align-items:start}}
+.rcpt{font:500 13px/1.5 var(--f-mono);padding:18px 16px 20px;border-radius:4px}
+.rcpt.gold{background-color:#0b0a08;border:1px solid var(--gold);color:var(--gold-hi)}
+.rcpt.paper{background:var(--paper);color:#1a1814}
+.rcpt h4{margin:0 0 10px;font:500 11px var(--f-mono);letter-spacing:.2em;text-transform:uppercase;text-align:center}
+.rcpt ul{list-style:none;margin:0;padding:0}
+.rcpt li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed rgba(212,169,60,.35)}
+.rcpt.paper li{border-bottom-color:rgba(26,24,20,.3)}
+.rcpt li>span:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rcpt small{display:block;font-size:10.5px;opacity:.78;white-space:normal;font-weight:400}
+.rcpt .total{display:flex;justify-content:space-between;margin-top:12px;font-size:17px;font-weight:500}
+.rcpt .tog{font:500 13px var(--f-mono);min-height:36px}
+.rcpt .tog input{accent-color:#1a1814}
+.rcpt select{font:500 14px var(--f-mono);background:#fff;color:#1a1814;border:1px solid #1a1814;border-radius:6px;padding:7px 8px;width:100%;margin:4px 0 10px}
+.rcpt label.sl{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.final12{text-align:center;padding:28px 16px 22px;margin-top:30px}
+.final12 .big{font:600 clamp(110px,34vw,200px)/.86 var(--f-display);color:var(--gold-hi);letter-spacing:-.02em}
+.final12 .brk{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;margin:14px 0 0;font:500 12px/1.5 var(--f-mono);color:var(--dim)}
+
+/* 13 close */
+.rows-gfx{position:relative;width:100%;height:100%}
+.calm .rows-gfx{height:300px}
+#rows{position:absolute;inset:0;width:100%;height:100%}
+.finale{text-align:center;padding:44px 20px 26px;max-width:var(--col);margin:0 auto}
+.finale .brand{justify-content:center;gap:14px;margin-bottom:18px}
+.finale .logo{width:60px;height:60px}
+.finale .wm{font-size:36px}
+.finale h2{font-size:clamp(44px,11vw,84px)}
+.finale p{margin-inline:auto}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:22px 0 16px}
+footer{position:relative;z-index:1;max-width:calc(var(--col) + 40px);margin:26px auto 0;padding:22px 20px 96px;border-top:1px solid var(--rule);color:var(--mute);font-size:13.5px}
+footer summary{cursor:pointer;color:var(--dim)}
+footer ul{padding-left:18px;margin:10px 0 0}
+footer li{margin:5px 0}
+
+/* dock */
+#dock{position:fixed;left:0;right:0;bottom:0;z-index:20;transform:translateY(110%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+#dock.live{transform:none}
+.dockbar{display:flex;align-items:center;gap:10px;width:100%;height:var(--dock);padding:0 16px;background:#100E0B;border:0;border-top:1px solid var(--gold-lo);color:var(--paper);cursor:pointer;text-align:left}
+.dockbar svg{width:20px;height:20px;flex:none}
+.dockbar svg path{stroke:var(--gold-hi);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dn{font:600 21px/1 var(--f-display);color:var(--gold-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:36vw}
+.dc{font:500 10.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.dm{margin-left:auto;text-align:right;font:500 9.5px/1.25 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.dm b{display:block;font-size:15px;font-weight:500;color:var(--gold-hi);letter-spacing:0;font-variant-numeric:tabular-nums}
+#dock.pulse .dockbar{animation:pulse .9s}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(242,210,122,0)}30%{box-shadow:0 -8px 28px 0 rgba(242,210,122,.5)}100%{box-shadow:0 0 0 0 rgba(242,210,122,0)}}
+.docksheet{max-height:0;overflow:hidden;background:#100E0B;transition:max-height .45s cubic-bezier(.2,.8,.2,1)}
+#dock.open .docksheet{max-height:56vh;overflow:auto;border-top:1px solid var(--gold-lo)}
+.docksheet ol{list-style:none;margin:0;padding:14px 16px 16px;display:grid;gap:11px}
+.docksheet li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:14px;line-height:1.4;color:var(--dim)}
+.docksheet li span{font:500 10.5px var(--f-mono);letter-spacing:.06em;color:var(--gold);padding-top:3px}
+.docksheet .empty{color:var(--mute);font-size:14px;padding:14px 16px;margin:0}
+@media(min-width:1180px){
+  body{padding-left:300px}
+  main{padding-bottom:40px}
+  footer{padding-bottom:40px}
+  #dock{right:auto;top:var(--top);width:300px;transform:none;border-right:1px solid var(--rule);background:rgba(16,14,11,.92);display:flex;flex-direction:column-reverse;justify-content:flex-end;opacity:.45;transition:opacity .5s}
+  #dock.live{opacity:1}
+  .dockbar{height:auto;flex-wrap:wrap;padding:20px 18px 16px;border-top:0;border-bottom:1px solid var(--gold-lo);cursor:default;background:none}
+  .dn{max-width:200px;font-size:30px}
+  .dm{margin-left:0;width:100%;text-align:left;margin-top:8px}
+  .docksheet,#dock.open .docksheet{max-height:none;overflow:auto;flex:1;background:none;border:0}
+}
+
+/* share */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px;background:rgba(8,7,6,.84)}
+.modal[hidden]{display:none}
+.card{width:min(100%,440px);border:1px solid var(--gold);border-radius:14px;background-color:#12100c;padding:22px 20px 18px}
+.sh-line{font:600 clamp(26px,7vw,34px)/1.12 var(--f-display);color:var(--gold-hi);margin:16px 0 12px;text-wrap:balance}
+.sh-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+
+<header class="topbar">
+  <span class="brand" aria-label="BackGold">
+    <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#D4A93C"/><path d="M20 6.5c3.3 3.5 5.4 6.2 5.4 9.5a5.4 5.4 0 0 1-10.8 0c0-2 .8-3.4 2.1-4.8.2 1.6.9 2.5 2 3-.4-2.7.1-5.1 1.3-7.7z" fill="#0E0D0B"/><path d="M15.2 22.6h9.6l-1.4 3.1h-6.8z" fill="#0E0D0B"/><path d="M17.7 26.6h4.6l-1 7.4h-2.6z" fill="#0E0D0B"/></svg>
+    <span class="wm">Back<i>Gold</i></span>
+  </span>
+  <span class="where" id="where">Run the whole thing</span>
+  <button class="jr" id="jrBtn" type="button" aria-pressed="false">Just read</button>
+  <i id="prog" aria-hidden="true"></i>
+</header>
+
+<main>
+<!-- 00 · SIGN HERE -->
+<section class="ch hero" id="c00" data-label="Run the whole thing">
+  <p class="eyebrow">BackGold</p>
+  <h1>Run the whole thing.</h1>
+  <p class="lead">The money, the list, the message, the field, and the filing. One platform. One record. One login.</p>
+  <form id="signform" class="sign" autocomplete="off" novalidate>
+    <label for="nameIn" class="signlabel">Sign here. Then follow your name.</label>
+    <div class="signline">
+      <input id="nameIn" name="first" type="text" maxlength="18" placeholder="First name" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done">
+      <button class="btn" type="submit" id="signBtn">Sign</button>
+    </div>
+    <p class="signed" id="signedLine" aria-live="polite"></p>
+  </form>
+  <p>For the next few minutes you are the supporter. At the end you get the keys.</p>
+  <p class="fine">Stays in this tab. This page sets no cookies and runs no trackers.</p>
+  <button class="link" id="skipBtn" type="button">Skip, and ride along as Jordan</button>
+  <p class="mono cue">Scroll to follow it &darr;</p>
+</section>
+
+<!-- 01 · THE SHELF -->
+<section class="ch wide" id="c01" data-label="01 · The shelf">
+  <div class="scrolly" id="sc01">
+    <div class="stage">
+      <div class="shelf-gfx" role="img" aria-label="Nine software boxes on a shelf, each holding its own drifting copy of your name, with a receipt printing beside them.">
+        <div class="shelf" id="shelf">
+          <div class="box"><span class="spine">Donate</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">Email</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">CRM</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">Text</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">Calls</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">Doors</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">Site</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">Events</span><span class="tag">Jordan</span></div>
+          <div class="box"><span class="spine">Sheet</span><span class="tag">Jordan</span></div>
+        </div>
+        <div class="tape" id="tape">
+          <b>RENTED SHELF</b><span>per month</span>
+          <ul>
+            <li>Email <em id="tapeEmail">$100</em></li>
+            <li>CRM + site <em>$34&ndash;160</em></li>
+            <li>Canvassing <em>$99&ndash;599</em></li>
+            <li>Donations <em>4% + 30&cent;</em></li>
+            <li>Text, calls <em>+ more</em></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="eyebrow">01 &middot; The shelf</p>
+        <h2>First, where a name usually goes.</h2>
+        <p>You signed one petition. In most operations that signature now lives in nine places: donations, email, the CRM, texting, calling, canvassing, the website, events, and the treasurer's spreadsheet.</p>
+        <button class="q" type="button">Nine tools. Nine logins. Nine copies of <span class="nm">Jordan</span>.</button>
+      </div>
+      <div class="step">
+        <h3>None of them talk to each other.</h3>
+        <p>So the copies drift. One has your new address. One still has the old one. One marked you unsubscribed. One never heard.</p>
+      </div>
+      <div class="step">
+        <h3>Every box sends a bill. Most bills grow with the list.</h3>
+        <label class="rl" for="listSize"><span>How big is the list?</span><output id="lsOut" for="listSize">5,000 people</output></label>
+        <input type="range" id="listSize" min="0" max="3" step="1" value="2">
+        <button class="q" type="button">Rent on every name. The rent goes up each time the movement grows.</button>
+        <p class="fine">Published list prices: Mailchimp Standard, NationBuilder, Ecanvasser, Anedot. November 2026.</p>
+      </div>
+      <div class="step">
+        <p>Then the election ends. The chair steps down. The card on file expires.</p>
+        <p>The boxes go dark, and <span class="nm">Jordan</span> goes with them.</p>
+        <button class="q" type="button">A movement lasts as long as its memory.</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 · ONE RECORD -->
+<section class="ch wide" id="c02" data-label="02 · One record">
+  <div class="scrolly" id="sc02">
+    <div class="stage">
+      <div class="fuse-gfx" role="img" aria-label="The nine boxes press flat and fuse into one gold record with your name on it.">
+        <div class="fuse" id="fuse"><i class="pl"></i><i class="pl"></i><i class="pl"></i><i class="pl"></i><i class="pl"></i><i class="pl"></i><i class="pl"></i><i class="pl"></i><i class="pl"></i></div>
+        <div class="rowcard guil" id="rowcard">
+          <div class="rc-head"><span class="rc-name nm">Jordan</span><span class="mono">signed Saturday, 10:14 am</span></div>
+          <ul class="rc-fields">
+            <li><b>Source</b><span>QR code at the park table &middot; scan counted</span></li>
+            <li><b>District</b><span>found from your address, automatically</span></li>
+            <li><b>Household</b><span>grouped under one roof</span></li>
+            <li><b>Duplicates</b><span>checked and merged &middot; copies: 0</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="eyebrow">02 &middot; One record</p>
+        <h2>Now the same signature, on BackGold.</h2>
+        <button class="q" type="button">One signature makes one record.</button>
+      </div>
+      <div class="step">
+        <h3>Every tool on this page reads and writes this one row.</h3>
+        <p>Bring the list you already have. Importers for NationBuilder, Zoho, Constant Contact, Anedot, and any spreadsheet, with duplicates skipped on the way in.</p>
+      </div>
+      <div class="step">
+        <h3>Your record docks here. Watch it grow.</h3>
+        <div class="rec" data-key="c02" data-ch="02" data-meter="0">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+          <span class="mono">On the record</span>
+          <p>Signed the petition &middot; source: QR &middot; district resolved.</p>
+        </div>
+        <p class="meterline">Cost to reach <span class="nm">Jordan</span> so far: <b>$0.00</b>. Joining is free.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · RAISE -->
+<section class="ch" id="c03" data-label="03 · Raise">
+  <p class="eyebrow">03 &middot; Raise</p>
+  <h2>Giving takes one screen.</h2>
+  <p>Card, bank transfer, or Stripe Link. One time or monthly. One tap to give again next time.</p>
+
+  <div class="plate phone" id="checkout">
+    <div class="co-head"><span class="co-org">Riverside Forward</span><span class="mono">Keep Riverside Park public</span></div>
+    <div id="coForm">
+      <div class="chipsrow" role="group" aria-label="Gift amount">
+        <button class="chip" type="button" data-amt="10" aria-pressed="false">$10</button>
+        <button class="chip" type="button" data-amt="25" aria-pressed="true">$25</button>
+        <button class="chip" type="button" data-amt="50" aria-pressed="false">$50</button>
+        <button class="chip" type="button" data-amt="100" aria-pressed="false">$100</button>
+      </div>
+      <label class="tog" for="coMonthly"><input type="checkbox" id="coMonthly" checked> Make it monthly</label>
+      <label class="tog" for="coFees"><input type="checkbox" id="coFees" checked> Cover the fees</label>
+      <div class="payrow" role="group" aria-label="Payment method">
+        <button class="chip" type="button" data-pay="Card" aria-pressed="true">Card</button>
+        <button class="chip" type="button" data-pay="Bank" aria-pressed="false">Bank</button>
+        <button class="chip" type="button" data-pay="Link" aria-pressed="false">Link</button>
+      </div>
+      <div class="law">
+        <label for="coOcc">Occupation<input id="coOcc" type="text" value="Teacher" autocomplete="off"></label>
+        <label for="coEmp">Employer<input id="coEmp" type="text" value="Riverside Schools" autocomplete="off"></label>
+      </div>
+      <label class="co-fund" for="coFund">Fund
+        <select id="coFund"><option>General fund</option><option>Building fund</option><option>Ballot drive</option></select>
+      </label>
+      <div class="co-sum">
+        <span>Gift</span><b id="coGift">$25.00</b>
+        <span id="coFeeLab">Fees, covered by you</span><b id="coFee">$1.28</b>
+        <span>Total today</span><b id="coTotal">$26.28</b>
+      </div>
+      <button class="btn" type="button" id="giveBtn">Give $25</button>
+    </div>
+    <div class="co-done" id="coDone" hidden>
+      <svg viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="25" fill="none" stroke="#D4A93C" stroke-width="2"/><path d="M16 28l8 8 15-17" fill="none" stroke="#F2D27A" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>Thank you, <span class="nm">Jordan</span>.</h3>
+      <p id="coNote">You covered the fees. All $25 landed.</p>
+      <p class="mono">Receipt RF-0001 &middot; Riverside Forward</p>
+    </div>
+    <ul class="gates" id="gates" aria-label="Checks every gift passes">
+      <li>Occupation and employer</li><li>Limit check</li><li>Fund</li>
+    </ul>
+  </div>
+  <p class="fine">A working illustration of the giving screen. Riverside Forward is a fictional cause.</p>
+
+  <p>A clear ask, a clear total, and a receipt that carries the cause's name.</p>
+  <button class="q fee" type="button">BackGold keeps 1%. Card processing is Stripe's 2.9% + 30&cent;. That is the whole fee, and donors can cover it.</button>
+
+  <ul class="kit">
+    <li>The two questions the law asks get asked once, at checkout.</li>
+    <li>Gifts go to the fund you choose: general, building, ballot drive. Each fund keeps its own books.</li>
+    <li>Larger gifts get a nudge toward bank transfer.</li>
+  </ul>
+
+  <div class="plate guil">
+    <span class="mono">What the record learns from one gift</span>
+    <div class="stats">
+      <div class="stat"><b class="giftm">$25</b><span>Lifetime giving</span></div>
+      <div class="stat"><b class="giftm">$25</b><span>Last twelve months</span></div>
+      <div class="stat"><b>High</b><span>Likely to give again</span></div>
+      <div class="stat"><b id="nextAsk">$35</b><span>Next ask</span></div>
+    </div>
+  </div>
+  <p>The record learns as it goes: lifetime giving, the last twelve months, how likely you are to give again, and the right amount to ask for next.</p>
+
+  <div class="rec" data-key="c03" data-ch="03">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+    <span class="mono">On the record</span>
+    <p id="rec03">Gave $25, monthly &middot; fees covered &middot; occupation and employer on file &middot; limit checked.</p>
+  </div>
+  <p class="meterline">Cost to reach <span class="nm">Jordan</span> so far: <b>$0.00</b>.</p>
+</section>
+
+<!-- 04 · REACH -->
+<section class="ch wide" id="c04" data-label="04 · Reach">
+  <div class="scrolly" id="sc04">
+    <div class="stage">
+      <div class="jr-gfx" role="img" aria-label="A journey rail lighting node by node while messages arrive on a phone.">
+        <div class="jhead"><span>Journey</span><b id="jday">Day 0</b></div>
+        <ol id="jrail">
+          <li><b>Tag</b> signed petition</li>
+          <li><b>Email</b> thank you</li>
+          <li><b>Wait</b> 3 days</li>
+          <li><b>Email</b> what your signature did</li>
+          <li><b>Check</b> opened? yes</li>
+          <li><b>Email</b> three ways to help</li>
+          <li><b>Text</b> Saturday cleanup</li>
+          <li><b>Email</b> see you Saturday</li>
+          <li><b>Exit</b> you acted</li>
+        </ol>
+        <div id="pm">
+          <div class="msg"><b>Email</b>Thank you, <span class="nm">Jordan</span></div>
+          <div class="msg"><b>Email</b>What your signature did</div>
+          <div class="msg"><b>Email</b>Three ways to help</div>
+          <div class="msg"><b>Text</b>Hi <span class="nm">Jordan</span>, park cleanup Saturday at 9. Can you come? Reply YES</div>
+          <div class="msg me">YES</div>
+          <div class="msg sys">Tagged: volunteer</div>
+        </div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="eyebrow">04 &middot; Reach</p>
+        <h2>Every message knows who it is talking to.</h2>
+        <p>A tag starts the journey. It sends, waits, checks, and stops the moment you act.</p>
+      </div>
+      <div class="step">
+        <ul class="kit">
+          <li><b>Email.</b> Segments, merge fields, open and click tracking, journeys with as many steps as the plan needs.</li>
+          <li><b>Text.</b> Two-way texting with pictures. Keywords people text in. Quiet hours kept. Consent on the record. Carrier registration handled inside the app.</li>
+          <li><b>Calls.</b> Call-time sessions, routing, voicemail. Every call made from the app writes itself to the record.</li>
+          <li><b>Social.</b> Posts scheduled from the same desk.</li>
+        </ul>
+        <p>When a donor goes quiet, a nudge goes out on its own and stops the moment they give.</p>
+      </div>
+      <div class="step">
+        <h3>The text is waiting on you.</h3>
+        <p>Answer it and watch the rail grow a branch.</p>
+        <p><button class="btn" type="button" id="replyBtn">Reply YES</button></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="plate" id="sendcalc">
+      <span class="mono">Riverside Forward's email bill</span>
+      <h3>Pay for what you send. Keep what you built for free.</h3>
+      <label class="rl" for="scList"><span>People on the list</span><output id="scListOut" for="scList">5,000</output></label>
+      <input type="range" id="scList" min="0" max="3" step="1" value="2">
+      <label class="rl" for="scSends"><span>Emails to everyone, per month</span><output id="scSendsOut" for="scSends">4</output></label>
+      <input type="range" id="scSends" min="0" max="12" step="1" value="4">
+      <div class="duel">
+        <div class="bg"><span class="mono">BackGold</span><b id="scBG">$30</b><small id="scBGnote">20,000 sends at $1.50 per 1,000</small></div>
+        <div class="mc"><span class="mono">Mailchimp</span><b id="scMC">$100</b><small id="scMCnote">Standard plan, a month for 5,000 stored contacts, sending or silent</small></div>
+      </div>
+      <p class="fine" id="scQuiet">Slide the sends to zero. A quiet month on BackGold costs $0.</p>
+    </div>
+    <p>Email is $1.50 per 1,000 sends. Texts are 3&cent; a segment. Storing your people costs nothing.</p>
+
+    <div class="rec" data-key="c04" data-ch="04" data-meter="0.036">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+      <span class="mono">On the record</span>
+      <p>Opened 3 of 4 emails &middot; replied YES to a text &middot; tagged volunteer.</p>
+    </div>
+    <p class="meterline">Four emails and one text. Cost to reach <span class="nm">Jordan</span> so far: <b>$0.036</b>.</p>
+  </div>
+</section>
+<!-- 05 · FIELD -->
+<section class="ch" id="c05" data-label="05 · Field">
+  <p class="eyebrow">05 &middot; Field</p>
+  <h2>Then someone knocks.</h2>
+  <p>Voter files, precinct maps, and shading that shows two measures at once, so a Saturday goes where it counts.</p>
+
+  <div class="plate" id="mapPlate">
+    <span class="mono">Riverside &middot; shade is support, hatch is turnout</span>
+    <canvas id="turf" role="img" aria-label="A precinct map of Riverside. Drag a loop around a few blocks to cut a turf, or use the button below."></canvas>
+    <div class="mapbar">
+      <button class="btn ghost" type="button" id="turfAuto">Draw one for me</button>
+      <span class="mapstat" id="turfStat" aria-live="polite">Drag a loop around a few blocks to cut a turf.</span>
+    </div>
+    <div class="doorcard" id="doorcard">
+      <span class="mono">At <span class="nm">Jordan</span>'s door, Saturday 10:42</span>
+      <p>Supportive. Wants a yard sign.</p>
+    </div>
+  </div>
+
+  <button class="q" type="button">Draw a shape on the map. That shape is a turf, and everyone inside it is a list.</button>
+  <ul class="kit">
+    <li>The walk list sorts itself nearest door first.</li>
+    <li>The walker app keeps working with zero bars.</li>
+    <li>Each knock writes to the record. The follow-up goes out on its own schedule.</li>
+  </ul>
+
+  <div class="plate" id="phonebank">
+    <span class="mono">One phone bank, counted</span>
+    <div id="pbDots" role="img" aria-label="125 dots for 125 calls. 19 light up as conversations. 13 stay bright as supporters."></div>
+    <div class="pb-nums">
+      <div><b id="pbCalls">125</b><span class="mono">calls by 5 volunteers</span></div>
+      <div><b id="pbTalk">19</b><span class="mono">conversations</span></div>
+      <div><b id="pbYes">13</b><span class="mono">supporters found</span></div>
+      <div><b id="pbCost">$10</b><span class="mono">total for the session</span></div>
+    </div>
+    <button class="link" type="button" id="pbReplay">Play it again</button>
+  </div>
+  <button class="q" type="button">5 volunteers. 125 calls. 13 supporters found. Total cost of the session: $10.</button>
+  <p>That is 77 cents per supporter. In Texas, volunteers have knocked thousands of doors on this turf tool.</p>
+
+  <div class="rec" data-key="c05" data-ch="05" data-meter="0.116">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+    <span class="mono">On the record</span>
+    <p>Door knocked, Saturday 10:42 &middot; supportive &middot; yard sign requested &middot; called Tuesday, said yes to a shift.</p>
+  </div>
+  <p class="meterline">One call at the session average of 8&cent;. Cost to reach <span class="nm">Jordan</span> so far: <b>$0.116</b>.</p>
+</section>
+
+<!-- 06 · BUILD -->
+<section class="ch wide" id="c06" data-label="06 · Build">
+  <div class="scrolly" id="sc06">
+    <div class="stage">
+      <div class="site-gfx" id="siteGfx" role="img" aria-label="Blocks snapping into a website, then a petition map filling with signatures.">
+        <div class="bw" id="bw">
+          <div class="bw-bar"><i></i><i></i><i></i><span>riversideforward.example</span></div>
+          <div class="bw-body">
+            <div class="blk">Header <em>logo, menu</em></div>
+            <div class="blk">Petition <em>live map</em></div>
+            <div class="blk">Donate <em>one screen</em></div>
+            <div class="blk">Events <em>tickets</em></div>
+            <div class="blk">Store <em>merch</em></div>
+          </div>
+        </div>
+        <span class="kinds" id="kinds">Block kinds: 35</span>
+        <canvas id="petmap" aria-hidden="true"></canvas>
+        <span class="pm-count" id="pmCount">Signatures: 1,204</span>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="eyebrow">06 &middot; Build</p>
+        <h2>The front door is part of the same house.</h2>
+        <p>A site builder with about 35 kinds of blocks. Build a full page, drop in one module, or embed a form on the site you already run.</p>
+      </div>
+      <div class="step">
+        <h3>Petition pages show a live map of who signed and where. You are on it.</h3>
+        <p>Forms, polls, quizzes, and booking pages come from the same kit, and every answer lands on the record.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="plate" id="breakeven">
+      <span class="mono">Fall dinner &middot; break-even</span>
+      <h3>Events that know their own math.</h3>
+      <label class="rl" for="beCost"><span>What the night costs</span><output id="beCostOut" for="beCost">$1,200</output></label>
+      <input type="range" id="beCost" min="200" max="3000" step="50" value="1200">
+      <label class="rl" for="bePrice"><span>Ticket price</span><output id="bePriceOut" for="bePrice">$25</output></label>
+      <input type="range" id="bePrice" min="10" max="150" step="5" value="25">
+      <div class="be-big" id="beN">48</div>
+      <p id="beLine" style="margin-bottom:0">Ticket 48 pays the bill. Ticket 49 is the first dollar raised.</p>
+    </div>
+    <p>Set the cost and the ticket price. The break-even count is there before the flyer goes to print. Tickets, door check-in, branded share art, and short links that track who came from where.</p>
+
+    <div class="plate">
+      <span class="mono">A store that knows the rules</span>
+      <div class="tagsplit">
+        <svg viewBox="0 0 84 84" aria-hidden="true"><path d="M28 12l-18 10 7 13 8-4v41h34V31l8 4 7-13-18-10c-2 5-7 8-14 8s-12-3-14-8z" fill="none" stroke="#D4A93C" stroke-width="2" stroke-linejoin="round"/><path d="M42 36c2.4 2.6 4 4.6 4 7a4 4 0 0 1-8 0c0-1.5.6-2.5 1.6-3.6.1 1.2.7 1.9 1.4 2.2-.3-2 .1-3.7 1-5.6z" fill="#D4A93C"/></svg>
+        <div>
+          <div class="rl"><span>Park shirt</span><output>$30</output></div>
+          <div class="split" aria-hidden="true"><i></i><u></u></div>
+          <div class="splitlab"><span>$18 cost</span><span>$12 counts as a contribution</span></div>
+        </div>
+      </div>
+    </div>
+    <ul class="kit">
+      <li>The amount above cost counts as a contribution, tracked automatically against the limit.</li>
+      <li>Memberships split dues across affiliated committees on their own.</li>
+      <li>Referral links come with a leaderboard. QR codes come with scan counts.</li>
+      <li>For the builders: a documented API, signed webhooks, embeds, and prefill links.</li>
+    </ul>
+
+    <div class="rec" data-key="c06" data-ch="06">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+      <span class="mono">On the record</span>
+      <p>Bought a ticket &middot; checked in at the door &middot; bought a shirt, amount above cost counted.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 · COMPLY -->
+<section class="ch" id="c07" data-label="07 · Comply">
+  <p class="eyebrow">07 &middot; Comply</p>
+  <h2>Your treasurer sleeps at night.</h2>
+
+  <div class="plate" id="limitPlate">
+    <span class="mono"><span class="nm">Jordan</span> &middot; giving this year &middot; example limit</span>
+    <div class="limit" id="limit"><i id="limFill"></i></div>
+    <div class="limitmeta"><span id="limNow">$162 of $1,000</span><span>hard stop</span></div>
+    <button class="btn ghost" type="button" id="limBtn">Try to give $1,000 more</button>
+    <p class="decline" id="decline" hidden></p>
+  </div>
+  <button class="q" type="button">Contribution limits are a hard stop. The platform holds the line so a volunteer never has to.</button>
+  <p>Occupation and employer are captured at checkout. Prohibited sources are screened.</p>
+
+  <div class="plate guil" id="ledgerPlate">
+    <span class="mono">Riverside Forward &middot; ledger</span>
+    <ol class="ledger" id="ledger">
+      <li><span class="d">10/03</span><span>Gift &middot; <span class="nm">Jordan</span> &middot; General fund</span><b class="giftc">$25.00</b></li>
+      <li><span class="d">10/03</span><span id="ledFeeLab">Card fees &middot; covered by donor</span><b id="ledFee">$0.00</b></li>
+      <li><span class="d">10/09</span><span>Ticket &middot; Fall dinner</span><b>$25.00</b></li>
+      <li><span class="d">10/09</span><span>Store &middot; park shirt &middot; $12.00 as contribution</span><b>$30.00</b></li>
+      <li><span class="d">10/17</span><span>Expense &middot; flyers &middot; receipt forwarded<span class="stamp">Approved</span></span><b>&minus;$86.40</b></li>
+      <li id="ledRenew"><span class="d">11/03</span><span>Gift &middot; <span class="nm">Jordan</span> &middot; monthly renewal</span><b class="giftc">$25.00</b></li>
+      <li><span class="d">11/04</span><span>Audit &middot; treasurer role added by the chair</span><b>logged</b></li>
+    </ol>
+  </div>
+  <button class="q" type="button">This ledger only moves forward.</button>
+  <ul class="kit">
+    <li>Entries are append-only. Every change carries a name and a time in the audit log.</li>
+    <li>Forward a receipt. The treasurer approves it. The expense is on the books.</li>
+    <li>Funds map to real bank accounts.</li>
+  </ul>
+
+  <div class="plate">
+    <span class="mono">Filing day</span>
+    <button class="btn" type="button" id="fecBtn">Export the filing</button>
+    <div class="fecdoc" id="fecdoc">
+      <svg viewBox="0 0 46 58" aria-hidden="true"><path d="M3 3h28l12 12v40H3z" fill="#14120d" stroke="#D4A93C" stroke-width="2" stroke-linejoin="round"/><path d="M31 3v12h12" fill="none" stroke="#D4A93C" stroke-width="2" stroke-linejoin="round"/><path d="M10 26h26M10 33h26M10 40h18" stroke="#8F7226" stroke-width="2"/></svg>
+      <div><span class="mono" style="color:var(--gold-hi)">F3X &middot; Schedule A &middot; .fec</span><p>Filing-ready, built from the ledger above.</p></div>
+    </div>
+  </div>
+  <p>Filing-ready FEC exports: F3 and F3X with Schedule A. Filing-period calculators. Limit and disclosure rules loaded for ten states.</p>
+
+  <div class="rec" data-key="c07" data-ch="07">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+    <span class="mono">On the record</span>
+    <p>Giving for the year within the limit &middot; included in the Q3 filing.</p>
+  </div>
+</section>
+
+<!-- 08 · CONNECT -->
+<section class="ch" id="c08" data-label="08 · Connect">
+  <p class="eyebrow">08 &middot; Connect</p>
+  <h2>Both sides say yes.</h2>
+  <p>Organizations connect by double opt-in. Each one keeps its own records until both agree to share.</p>
+
+  <div class="plate" id="netPlate">
+    <span class="mono">Riverside and its neighbors</span>
+    <svg id="net" viewBox="0 0 360 220" role="img" aria-label="Four organizations. Riverside Forward and the county affiliate join by a gold line once both consent, and totals roll up to the state org.">
+      <line id="ln-rs" x1="84" y1="150" x2="180" y2="52"/>
+      <line id="ln-ca" x1="252" y1="150" x2="318" y2="78"/>
+      <line id="ln-cs" x1="252" y1="150" x2="180" y2="52"/>
+      <line id="ln-rc" x1="84" y1="150" x2="252" y2="150"/>
+      <g class="nd"><circle class="c" cx="180" cy="52" r="15"/><circle class="r" cx="180" cy="28" r="2"/><circle class="r" cx="201" cy="40" r="2"/><circle class="r" cx="201" cy="64" r="2"/><circle class="r" cx="159" cy="64" r="2"/><circle class="r" cx="159" cy="40" r="2"/><text x="180" y="16">State org</text></g>
+      <g class="nd"><circle class="c" cx="318" cy="78" r="13"/><circle class="r" cx="318" cy="57" r="2"/><circle class="r" cx="336" cy="88" r="2"/><circle class="r" cx="300" cy="88" r="2"/><text x="318" y="112">Candidate</text></g>
+      <g class="nd peer"><circle class="c" cx="252" cy="150" r="15"/><circle class="r" cx="252" cy="126" r="2"/><circle class="r" cx="273" cy="138" r="2"/><circle class="r" cx="273" cy="162" r="2"/><circle class="r" cx="231" cy="162" r="2"/><text x="252" y="190">County affiliate</text></g>
+      <g class="nd home"><circle class="c" cx="84" cy="150" r="17"/><circle class="r" cx="84" cy="124" r="2.2"/><circle class="r" cx="106" cy="137" r="2.2"/><circle class="r" cx="106" cy="163" r="2.2"/><circle class="r" cx="62" cy="163" r="2.2"/><circle class="r" cx="62" cy="137" r="2.2"/><text x="84" y="192">Riverside Forward</text></g>
+      <text class="roll" x="168" y="142">both said yes</text>
+      <text class="roll" x="284" y="124">totals roll up</text>
+    </svg>
+    <button class="btn holdbtn" type="button" id="connBtn"><i></i><span>Press and hold to connect</span></button>
+    <p class="holdmsg" id="connMsg">Hold the button. Riverside Forward and the county affiliate each say yes.</p>
+  </div>
+
+  <ul class="kit">
+    <li>Connected organizations share an event with one post. Peers find each other. Leaders see roll-up numbers for the whole movement.</li>
+    <li><b>Sponsor seats.</b> A state org can stand up a new chapter in minutes, provisioned and ready.</li>
+    <li><b>Volunteer marketplace.</b> People list what they are good at. Organizations post what they need. Missions give every volunteer a clear next job.</li>
+    <li>Roles for owners, admins, and viewers. Invites by magic link.</li>
+  </ul>
+
+  <div class="rec" data-key="c08" data-ch="08">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+    <span class="mono">On the record</span>
+    <p>Listed a skill: graphic design &middot; matched to the county affiliate's flyer request.</p>
+  </div>
+</section>
+
+<!-- 09 · AURELIA -->
+<section class="ch" id="c09" data-label="09 · Aurelia">
+  <p class="eyebrow">09 &middot; Aurelia</p>
+  <h2>Ask for it in a sentence.</h2>
+  <p>Aurelia is the assistant built into BackGold. She works from the same record your team does, with more than 1,000 tools at hand.</p>
+
+  <div class="plate" id="aurelia">
+    <div class="au-top"><span class="mono">Aurelia &middot; tools in reach</span><b id="auCount">1,000+</b></div>
+    <div class="au-line" id="auLine" aria-live="polite">Who gave last year and has gone quiet since?</div>
+    <div id="auChips" aria-hidden="true"></div>
+    <p class="au-ans" id="auAns" aria-live="polite"></p>
+    <div class="asks" role="group" aria-label="Sample asks">
+      <button class="ask" type="button" data-i="0" aria-pressed="true">Who gave last year and has gone quiet since?</button>
+      <button class="ask" type="button" data-i="1" aria-pressed="false">Draft a thank-you to everyone who signed Saturday.</button>
+      <button class="ask" type="button" data-i="2" aria-pressed="false">Cut a turf of 40 doors near the park for two walkers.</button>
+      <button class="ask" type="button" data-i="3" aria-pressed="false">How close is the March dinner to break-even?</button>
+    </div>
+  </div>
+  <p class="fine">Sample asks with illustrative answers. Riverside Forward's data is fictional.</p>
+  <button class="q" type="button">A first-week volunteer can run the platform by asking.</button>
+
+  <div class="rec" data-key="c09" data-ch="09">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+    <span class="mono">On the record</span>
+    <p>Thanked &middot; drafted by Aurelia, sent by a person.</p>
+  </div>
+</section>
+<!-- 10 · THE HANDOFF -->
+<section class="ch wide" id="c10" data-label="10 · The handoff">
+  <div class="scrolly" id="sc10">
+    <div class="stage">
+      <div class="ho-gfx" role="img" aria-label="One chair hands a key to the next. Years pass. The rented shelf stays dark while your record keeps adding lines.">
+        <div class="chairs" id="chairs">
+          <div class="chair has" id="chairA"><i></i>Outgoing chair</div>
+          <svg class="key" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="12" r="4.5" fill="none" stroke="#F2D27A" stroke-width="2"/><path d="M12 12h10M18 12v4M21.5 12v3" stroke="#F2D27A" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="chair" id="chairB"><i></i>New chair</div>
+        </div>
+        <div class="years" id="years"><i></i><span>2026</span><span>2027</span><span>2028</span><span>2029</span><span>2030</span></div>
+        <div class="ho-body">
+          <div class="ho-shelf"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span>The rented shelf, dark since 2026</span></div>
+          <div class="ho-rec" id="hoRec">
+            <span class="rc-name nm">Jordan</span>
+            <ul>
+              <li><b>2026</b> signed the petition</li>
+              <li><b>2026</b> <span id="hoGave">gave $25 monthly</span></li>
+              <li><b>2026</b> door knocked, supportive</li>
+              <li><b>2026</b> volunteered: design</li>
+              <li><b>2027</b> 6 gifts, fall dinner</li>
+              <li><b>2028</b> walked two Saturdays</li>
+              <li><b>2028</b> brought two neighbors</li>
+              <li><b>2029</b> 9 gifts, 2 events</li>
+              <li><b>2030</b> 11 gifts, 3 events</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="eyebrow">10 &middot; The handoff</p>
+        <h2>Chairs change. The record stays.</h2>
+        <p><button class="btn holdbtn" type="button" id="hoBtn"><i></i><span>Press and hold to hand off</span></button></p>
+        <p class="holdmsg" id="hoMsg">Election night is over. Pass the key.</p>
+        <p>A new chair gets a magic link. Roles move in a minute. Every record, gift, note, and conversation stays where it is.</p>
+      </div>
+      <div class="step">
+        <h3>After a race, your records stay readable for three years or more, free.</h3>
+        <p>Export everything to a spreadsheet whenever you like. The data is yours.</p>
+      </div>
+      <div class="step">
+        <button class="q" type="button">Every cycle starts where the last one ended.</button>
+        <div class="rec" data-key="c10" data-ch="10">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+          <span class="mono">On the record</span>
+          <p>By 2030: four years &middot; 11 gifts &middot; 3 events &middot; 2 Saturdays walking &middot; brought 2 neighbors.</p>
+        </div>
+        <p class="meterline">The meter held at <b>$0.116</b> through the quiet years. Storing <span class="nm">Jordan</span>: <b>$0</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · THE PROOF -->
+<section class="ch" id="c11" data-label="11 · The proof">
+  <p class="eyebrow">11 &middot; The proof</p>
+  <h2>In the field today.</h2>
+  <p>Riverside is a story. These are real.</p>
+  <div class="stamps">
+    <details class="stampc"><summary><span class="mono">Michigan</span><span class="t">A statewide petition drive runs on BackGold.</span></summary><p class="d">A statewide Michigan petition drive on a school millage transparency question, live at <a href="https://unitemi.org" target="_blank" rel="noopener">unitemi.org</a>.</p></details>
+    <details class="stampc"><summary><span class="mono">Texas</span><span class="t">Thousands of doors knocked on the turf tool.</span></summary><p class="d">Volunteer canvassers working from turfs cut on the map.</p></details>
+    <details class="stampc"><summary><span class="mono">One evening on the phones</span><span class="t">125 calls, 19 conversations, 13 supporters, $10.</span></summary><p class="d">Five volunteers in one session. 68% of the conversations were supportive. 77 cents per supporter found.</p></details>
+  </div>
+  <p><b>Aboard.</b> Unlabeled, the Texas candidate mixer. The Mobility Independence Foundation. DeFlock DFW.</p>
+  <blockquote>&ldquo;I've seen basically all the nonprofit and issue-advocacy CRMs&hellip; it looks freaking amazing.&rdquo;<cite>DeFlock DFW</cite></blockquote>
+  <div class="nums">
+    <div><b>130</b><span class="mono">service modules</span></div>
+    <div><b>1,000+</b><span class="mono">Aurelia tools</span></div>
+    <div><b>10</b><span class="mono">states of rules loaded</span></div>
+    <div><b>Every</b><span class="mono">service live</span></div>
+  </div>
+</section>
+
+<!-- 12 · THE PRICE -->
+<section class="ch" id="c12" data-label="12 · The price">
+  <p class="eyebrow">12 &middot; The price</p>
+  <h2>The whole price list fits on one receipt.</h2>
+
+  <div class="rcpt gold guil">
+    <h4>BackGold &middot; everything</h4>
+    <ul>
+      <li><span>Join<small>Account, committee setup, donate page</small></span><span>$0</span></li>
+      <li><span>Candidate plan<small>Every dollar comes back as sending credit</small></span><span>$25 / mo</span></li>
+      <li><span>Other plans</span><span>$25&ndash;79 / mo</span></li>
+      <li><span>Gifts<small>Donors can cover it</small></span><span>1% + card</span></li>
+      <li><span>Email</span><span>$1.50 / 1,000</span></li>
+      <li><span>Texts</span><span>3&cent; / segment</span></li>
+      <li><span>Phone number<small>Carrier registration: $95 to Campaign Verify</small></span><span>$25 once</span></li>
+      <li><span>Storing your list</span><span>$0</span></li>
+      <li><span>Records after the race</span><span>$0</span></li>
+    </ul>
+  </div>
+
+  <h3 style="margin-top:34px">Build your shelf.</h3>
+  <p>Tick the tools you rent today. Same list, same four emails a month.</p>
+  <div class="two">
+    <div class="rcpt paper" id="pkRentBox">
+      <h4>The rented shelf</h4>
+      <label class="sl" for="pkList">People on the list</label>
+      <select id="pkList"><option value="0">500</option><option value="1">2,500</option><option value="2" selected>5,000</option><option value="3">10,000</option></select>
+      <label class="tog" for="pkEmail"><input type="checkbox" id="pkEmail" checked> Email &middot; Mailchimp Standard</label>
+      <label class="tog" for="pkCRM"><input type="checkbox" id="pkCRM" checked> CRM and site &middot; NationBuilder</label>
+      <label class="tog" for="pkDoor"><input type="checkbox" id="pkDoor" checked> Canvassing &middot; Ecanvasser</label>
+      <ul id="pkRent"></ul>
+      <div class="total"><span>Per month</span><span id="pkRentTot">$233</span></div>
+      <small>Texting, calling, events, and compliance tools bill on top.</small>
+    </div>
+    <div class="rcpt gold guil">
+      <h4>BackGold &middot; same work</h4>
+      <ul>
+        <li><span>Candidate plan<small>Includes $25 of sending credit</small></span><span>$25</span></li>
+        <li><span id="pkBGsends">Email<small>20,000 sends, $30, less the credit</small></span><span id="pkBGemail">$5</span></li>
+        <li><span>CRM, site, canvassing, texting, calling, events, compliance</span><span>included</span></li>
+      </ul>
+      <div class="total"><span>Per month</span><span id="pkBG">$30</span></div>
+      <small>Texts and calls bill by use: 3&cent; a segment, about 8&cent; a call in the field session.</small>
+    </div>
+  </div>
+
+  <p>Everything in this story runs on that receipt: the checkout, the journeys, the texts, the map, the walk list, the phone bank, the site, the events, the store, the filings, the sharing, and Aurelia.</p>
+
+  <div class="plate final12 guil">
+    <span class="mono">The meter, final</span>
+    <div class="big">12&cent;</div>
+    <div class="brk"><span>4 emails &middot; $0.006</span><span>1 text &middot; $0.03</span><span>1 call &middot; $0.08</span></div>
+  </div>
+  <button class="q" type="button">Reaching <span class="nm">Jordan</span> through this whole story cost Riverside Forward 12 cents.</button>
+  <p>Four emails. One text. One phone call. The knock on the door was a neighbor.</p>
+</section>
+
+<!-- 13 · THE CLOSE -->
+<section class="ch wide" id="c13" data-label="13 · The close">
+  <div class="scrolly" id="sc13">
+    <div class="stage">
+      <div class="rows-gfx" role="img" aria-label="Your one gold record pulls back until it is one line among thousands.">
+        <canvas id="rows"></canvas>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="eyebrow">13 &middot; The close</p>
+        <h2>That was one name.</h2>
+        <p>Every line the scroll wrote for <span class="nm">Jordan</span> is still on the record, docked at the edge of your screen.</p>
+      </div>
+      <div class="step">
+        <button class="q" type="button">A movement is thousands of these. BackGold keeps every one.</button>
+        <p>Now take the other side of the table.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="finale" id="finale" data-label="Bring your movement forward">
+  <span class="brand">
+    <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#D4A93C"/><path d="M20 6.5c3.3 3.5 5.4 6.2 5.4 9.5a5.4 5.4 0 0 1-10.8 0c0-2 .8-3.4 2.1-4.8.2 1.6.9 2.5 2 3-.4-2.7.1-5.1 1.3-7.7z" fill="#0E0D0B"/><path d="M15.2 22.6h9.6l-1.4 3.1h-6.8z" fill="#0E0D0B"/><path d="M17.7 26.6h4.6l-1 7.4h-2.6z" fill="#0E0D0B"/></svg>
+    <span class="wm">Back<i>Gold</i></span>
+  </span>
+  <h2>Bring your movement forward.</h2>
+  <div class="ctas">
+    <a class="btn" href="https://backgold.com" target="_blank" rel="noopener">Start free at backgold.com</a>
+    <a class="btn ghost" href="https://backgold.com" target="_blank" rel="noopener">Book a walkthrough</a>
+  </div>
+  <p>Joining is free. Three steps, then you are raising.</p>
+</section>
+</main>
+
+<footer>
+  <p>Riverside Forward and everyone in its story are fictional. The proof in Chapter 11 is real. BackGold prices as published on November 14, 2026. Other tools are shown at their published list prices and change often.</p>
+  <details>
+    <summary>Where the numbers come from</summary>
+    <ul>
+      <li>BackGold pricing and features: <a href="https://libertariantoolsuite.com" target="_blank" rel="noopener">libertariantoolsuite.com</a></li>
+      <li>Mailchimp Standard by list size: <a href="https://moosend.com/blog/mailchimp-pricing/" target="_blank" rel="noopener">Moosend</a>, <a href="https://sagnikbhattacharya.com/blog/mailchimp-cost-essentials-standard-contacts" target="_blank" rel="noopener">price data dated Nov 5, 2026</a></li>
+      <li>NationBuilder Starter and Pro: <a href="https://www.softwareadvice.com/nonprofit/nationbuilder-profile/" target="_blank" rel="noopener">Software Advice</a>, <a href="https://www.vottiv.com/nationbuilder" target="_blank" rel="noopener">Vottiv</a></li>
+      <li>Ecanvasser plans: <a href="https://www.capterra.com/p/156872/Ecanvasser/pricing/" target="_blank" rel="noopener">Capterra</a></li>
+      <li>Anedot standard rate: <a href="https://help.anedot.com/knowledge/pricing" target="_blank" rel="noopener">Anedot help center</a></li>
+      <li>Phone bank and door counts: BackGold field reports, fall 2026</li>
+    </ul>
+  </details>
+</footer>
+
+<aside id="dock" aria-label="Your record">
+  <div class="docksheet" id="dockSheet">
+    <p class="empty">Your record starts in Chapter 02.</p>
+    <ol id="dockList"></ol>
+  </div>
+  <button class="dockbar" id="dockBar" type="button" aria-expanded="false" aria-controls="dockSheet">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+    <span class="dn nm">Jordan</span>
+    <span class="dc" id="dockCount">0 lines</span>
+    <span class="dm">Cost to reach<b id="meterVal">$0.00</b></span>
+  </button>
+</aside>
+
+<div class="modal" id="share" hidden>
+  <div class="card guil" role="dialog" aria-modal="true" aria-labelledby="shLine">
+    <span class="brand">
+      <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#D4A93C"/><path d="M20 6.5c3.3 3.5 5.4 6.2 5.4 9.5a5.4 5.4 0 0 1-10.8 0c0-2 .8-3.4 2.1-4.8.2 1.6.9 2.5 2 3-.4-2.7.1-5.1 1.3-7.7z" fill="#0E0D0B"/><path d="M15.2 22.6h9.6l-1.4 3.1h-6.8z" fill="#0E0D0B"/><path d="M17.7 26.6h4.6l-1 7.4h-2.6z" fill="#0E0D0B"/></svg>
+      <span class="wm">Back<i>Gold</i></span>
+    </span>
+    <p class="sh-line" id="shLine"></p>
+    <p class="mono" id="shMeter" style="color:var(--gold)"></p>
+    <p class="fine" id="shNote" style="margin:8px 0 0"></p>
+    <div class="sh-actions">
+      <button class="btn" type="button" id="shCopy">Copy the line</button>
+      <button class="btn ghost" type="button" id="shClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(()=>{
+'use strict';
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const seg=(p,a,b)=>clamp((p-a)/(b-a));
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const root=document.documentElement;
+const usd=(v,d=0)=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const usdx=v=>usd(v,v%1?2:0);
+const num=v=>v.toLocaleString('en-US');
+function rng(seed){let s=seed>>>0;return()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};}
+const RM=window.matchMedia('(prefers-reduced-motion: reduce)');
+const S={name:'Jordan',gift:25,monthly:true,fees:true,gave:false,replied:false,signed:false,dip:0,justRead:false,calm:RM.matches,meter:-1,keys:new Set()};
+const onName=[],onGift=[];
+let ticking=false;
+function req(){if(!ticking){ticking=true;requestAnimationFrame(tick);}}
+function countTo(el,to,dur,fmt){fmt=fmt||(v=>String(Math.round(v)));if(S.calm){el.textContent=fmt(to);return;}const t0=performance.now();(function step(t){const k=clamp((t-t0)/dur);el.textContent=fmt(to*ease(k));if(k<1)requestAnimationFrame(step);})(t0);}
+function once(el,fn){const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){io.disconnect();fn();}});},{threshold:.45});io.observe(el);}
+
+/* ---------- guilloche underlay ---------- */
+(function(){const W=240,H=120;let p='';for(let i=0;i<14;i++){let d='';for(let x=0;x<=W;x+=6){const y=H/2+Math.sin((x/W)*Math.PI*4+i*.45)*(H*.42)*Math.cos(i*.22);d+=(x?' L':'M')+x+' '+y.toFixed(1);}p+="%3Cpath d='"+d+"' fill='none' stroke='%23D4A93C' stroke-opacity='.09' stroke-width='.6'/%3E";}
+root.style.setProperty('--guil',"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='"+W+"' height='"+H+"' viewBox='0 0 "+W+" "+H+"'%3E"+p+"%3C/svg%3E\")");})();
+
+/* ---------- dither field ---------- */
+const field=$('#field'),fx=field.getContext('2d');
+const B4=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v=>(v+.5)/16);
+let FW=0,FH=0,fimg=null,flevel=1,ft=0,flast=0;
+function sizeField(){const cell=window.innerWidth<700?4:5;FW=Math.max(8,Math.ceil(window.innerWidth/cell));FH=Math.max(8,Math.ceil(window.innerHeight/cell));field.width=FW;field.height=FH;fimg=fx.createImageData(FW,FH);drawField();}
+function drawField(){if(!fimg)return;const d=fimg.data,t=ft,L=flevel*(1-.75*S.dip)*.56;let k=0;
+  for(let y=0;y<FH;y++){const yb=(y&3)*4,sy=Math.sin(y*.09-t*.6);for(let x=0;x<FW;x++){
+    let v=.5+.25*Math.sin(x*.07+t*.9)+.2*Math.sin(y*.09-t*.6+Math.sin(x*.03+t*.3)*1.7)+.12*Math.sin((x+y)*.045+t*.4)+.04*sy;v=(v-.3)*1.45;
+    if(v*L>B4[yb+(x&3)]){d[k]=196;d[k+1]=172;d[k+2]=116;d[k+3]=38;}else{d[k+3]=0;}k+=4;}}
+  fx.putImageData(fimg,0,0);}
+function floop(t){requestAnimationFrame(floop);if(S.calm||document.hidden)return;if(t-flast<110)return;flast=t;ft+=.07;if(S.dip>.01)S.dip*=.9;else S.dip=0;drawField();}
+
+/* ---------- name ---------- */
+function cleanName(v){v=(v||'').replace(/[^\p{L}\p{M}' .-]/gu,'').replace(/\s+/g,' ').trim().slice(0,18);return v?v.charAt(0).toUpperCase()+v.slice(1):'';}
+function setName(n){S.name=n;$$('.nm').forEach(e=>{e.textContent=n;});onName.forEach(f=>f());}
+const form=$('#signform'),inp=$('#nameIn');
+function sign(n){setName(n);inp.value=n;inp.readOnly=true;form.classList.add('done');$('#signedLine').textContent='Signed. Scroll to follow your name.';$('#skipBtn').hidden=true;S.signed=true;S.dip=1;inp.blur();req();}
+form.addEventListener('submit',e=>{e.preventDefault();if(!S.signed)sign(cleanName(inp.value)||'Jordan');});
+$('#skipBtn').addEventListener('click',()=>sign('Jordan'));
+inp.addEventListener('input',()=>{if(S.signed)return;setName(cleanName(inp.value)||'Jordan');S.dip=Math.max(S.dip,.45);});
+
+/* ---------- record dock + meter ---------- */
+const dock=$('#dock'),dockList=$('#dockList'),dockBar=$('#dockBar'),meterEl=$('#meterVal');
+const fmtMeter=v=>v<=0?'$0.00':'$'+v.toFixed(3);
+function setMeter(v){if(v<=S.meter)return;const from=Math.max(0,S.meter);S.meter=v;if(S.calm||v===0){meterEl.textContent=fmtMeter(v);return;}const t0=performance.now();(function step(t){const k=clamp((t-t0)/900);meterEl.textContent=fmtMeter(lerp(from,v,ease(k)));if(k<1)requestAnimationFrame(step);})(t0);}
+function pulseDock(){dock.classList.remove('pulse');void dock.offsetWidth;dock.classList.add('pulse');}
+const hooks={};
+function commit(el){const key=el.dataset.key;if(S.keys.has(key))return;S.keys.add(key);if(hooks[key])hooks[key]();el.classList.add('on');
+  const li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('div');a.textContent=el.dataset.ch;b.textContent=$('p',el).textContent;li.append(a,b);dockList.append(li);
+  const em=$('.empty',dock);if(em)em.remove();$('#dockCount').textContent=S.keys.size+(S.keys.size===1?' line':' lines');
+  dock.classList.add('live');pulseDock();if(el.dataset.meter!==undefined)setMeter(parseFloat(el.dataset.meter));}
+const recs=$$('.rec');
+dockBar.addEventListener('click',()=>{if(window.innerWidth>=1180)return;const o=dock.classList.toggle('open');dockBar.setAttribute('aria-expanded',String(o));});
+
+/* ---------- scroll engine ---------- */
+const scenes=[],watchers=[];
+function scene(id,fn){const el=$('#'+id);scenes.push({el,steps:$$('.step',el),fn});}
+const chapters=$$('[data-label]'),whereEl=$('#where'),prog=$('#prog');
+function tick(){ticking=false;const vh=window.innerHeight,wide=window.innerWidth>=960,line=vh*(wide?.62:.8),top=52;
+  for(const s of scenes){const r=s.el.getBoundingClientRect();let p,idx=0,sp=0;
+    if(S.calm){p=1;idx=s.steps.length-1;sp=1;}
+    else{if(r.bottom<-vh||r.top>vh*2)continue;p=clamp((top-r.top)/Math.max(1,r.height-vh*.6));
+      for(let i=0;i<s.steps.length;i++){const sr=s.steps[i].getBoundingClientRect();if(sr.top<line){idx=i;sp=clamp((line-sr.top)/Math.max(1,sr.height));}}}
+    s.fn(p,idx,sp);}
+  for(const w of watchers)w(vh);
+  for(const el of recs){if(S.keys.has(el.dataset.key))continue;if(el.getBoundingClientRect().top<vh*.8)commit(el);else break;}
+  let lab=chapters[0].dataset.label;for(const c of chapters){if(c.getBoundingClientRect().top<vh*.5)lab=c.dataset.label;else break;}
+  if(whereEl.textContent!==lab)whereEl.textContent=lab;
+  const max=Math.max(1,root.scrollHeight-vh),frac=clamp(window.scrollY/max);prog.style.transform='scaleX('+frac.toFixed(4)+')';flevel=(S.signed?.82:1)*lerp(1,.06,Math.pow(frac,.75));}
+
+/* ---------- 01 shelf ---------- */
+const boxes=$$('#shelf .box'),tape=$('#tape'),tapeLis=$$('#tape li');
+const drift=[n=>n.length>3?n[0]+n[2]+n[1]+n.slice(3):n+'e',()=>'unsubscribed',()=>'old address',n=>n+' ?',()=>'no answer',()=>'moved?',n=>n.toLowerCase().replace(/[^a-z]/g,'')+'_77',()=>'duplicate x2',()=>'row 412'];
+const driftOrder=[1,6,3,0,8,5,2,7,4];
+function tagText(){boxes.forEach((b,i)=>{$('.tag',b).textContent=b._d?drift[i](S.name):S.name;});}
+onName.push(tagText);
+scene('sc01',(p,idx,sp)=>{
+  const dn=idx<1?0:idx===1?Math.ceil(seg(sp,.05,.8)*9):9;let ch=false;
+  driftOrder.forEach((bi,k)=>{const b=boxes[bi],d=k<dn;if(b._d!==d){b._d=d;b.classList.toggle('drift',d);ch=true;}});if(ch)tagText();
+  const tn=idx<2?0:idx===2?Math.ceil(seg(sp,.02,.5)*5):5;tapeLis.forEach((li,i)=>li.classList.toggle('on',i<tn));tape.classList.toggle('live',idx>=2);
+  const dk=(S.calm||idx<3)?0:Math.ceil(seg(sp,.2,.85)*9);boxes.forEach((b,i)=>b.classList.toggle('dark',i<dk));
+});
+const LIST=[500,2500,5000,10000],MC=[20,60,100,135],NB=[34,34,34,160],EC=[99,99,99,99];
+const listSize=$('#listSize');
+function drawListSize(){const i=+listSize.value;$('#tapeEmail').textContent=usd(MC[i]);$('#lsOut').textContent=num(LIST[i])+' people: '+usd(MC[i])+' a month';}
+listSize.addEventListener('input',drawListSize);
+
+/* ---------- 02 fuse ---------- */
+const fuse=$('#fuse'),pls=$$('.pl',fuse),rowcard=$('#rowcard'),rcF=$$('#rowcard .rc-fields li');
+pls.forEach((el,i)=>{el.style.left=(25+25*(i%3))+'%';el.style.top=(20+30*(i/3|0))+'%';});
+scene('sc02',(p,idx,sp)=>{
+  const f=S.calm?1:idx===0?ease(seg(sp,.12,.9)):1,cw=fuse.clientWidth,chh=fuse.clientHeight;
+  pls.forEach((el,i)=>{const cx=cw*(.25+.25*(i%3)),cy=chh*(.2+.3*(i/3|0));
+    el.style.transform='translate(-50%,-50%) translate('+((cw/2-cx)*f).toFixed(1)+'px,'+((chh/2-cy)*f).toFixed(1)+'px) scale('+lerp(1,3.2,f).toFixed(3)+','+lerp(1,.05,f).toFixed(3)+')';
+    el.style.opacity=String(1-seg(f,.78,1));});
+  const n=S.calm?4:idx<1?0:idx===1?Math.ceil(seg(sp,.02,.7)*4):4;rcF.forEach((li,i)=>li.classList.toggle('on',i<n));
+  const d=(!S.calm&&idx===2)?ease(seg(sp,.3,.95)):0;
+  rowcard.style.transform='translate(-50%,-50%) translateY('+(d*30)+'%) scale('+(1-d*.22)+')';
+  rowcard.style.opacity=String(idx===0&&!S.calm?seg(f,.68,1):1);
+});
+
+/* ---------- 03 checkout ---------- */
+const feeOf=a=>Math.round((a*.039+.30)*100)/100;
+function drawCheckout(){const a=S.gift,f=feeOf(a);
+  $('#coGift').textContent=usd(a,2);$('#coFeeLab').textContent=S.fees?'Fees, covered by you':'Fees, paid by the cause';$('#coFee').textContent=usd(f,2);$('#coTotal').textContent=usd(S.fees?a+f:a,2);
+  $('#giveBtn').textContent='Give '+usd(a)+(S.monthly?' monthly':'');
+  $('#coNote').textContent=S.fees?'You covered the fees. All '+usd(a)+' landed.':'Riverside Forward receives '+usd(a-f,2)+' after fees.';
+  $('#rec03').textContent='Gave '+usd(a)+(S.monthly?', monthly':', one time')+' · '+(S.fees?'fees covered':'fees paid by the cause')+' · occupation and employer on file · limit checked.';
+  $$('.giftm').forEach(e=>{e.textContent=usd(a);});$$('.giftc').forEach(e=>{e.textContent=usd(a,2);});$('#nextAsk').textContent=usd(Math.round(a*1.4/5)*5);
+  $('#hoGave').textContent='gave '+usd(a)+(S.monthly?' monthly':'');$('#ledFeeLab').textContent=S.fees?'Card fees \u00b7 covered by donor':'Card fees \u00b7 paid by the cause';$('#ledFee').textContent=S.fees?'$0.00':'\u2212'+usd(f,2);$('#ledRenew').hidden=!S.monthly;
+  onGift.forEach(fn=>fn());}
+$$('.chip[data-amt]').forEach(c=>c.addEventListener('click',()=>{S.gift=+c.dataset.amt;$$('.chip[data-amt]').forEach(o=>o.setAttribute('aria-pressed',String(o===c)));drawCheckout();}));
+$$('.chip[data-pay]').forEach(c=>c.addEventListener('click',()=>{$$('.chip[data-pay]').forEach(o=>o.setAttribute('aria-pressed',String(o===c)));}));
+$('#coMonthly').addEventListener('change',e=>{S.monthly=e.target.checked;drawCheckout();});
+$('#coFees').addEventListener('change',e=>{S.fees=e.target.checked;drawCheckout();});
+function give(){if(S.gave)return;S.gave=true;$('#coForm').hidden=true;$('#coDone').hidden=false;$$('#gates li').forEach((li,i)=>{setTimeout(()=>li.classList.add('on'),S.calm?0:300+i*360);});}
+$('#giveBtn').addEventListener('click',give);
+hooks.c03=give;
+
+/* ---------- 04 journey + send calc ---------- */
+const jn=$$('#jrail li'),msgs=$$('#pm .msg'),dayEl=$('#jday'),replyBtn=$('#replyBtn');
+const days=[0,0,3,3,3,6,8,9,9],msgAt=[2,4,6,7,9,9];
+function replyYes(){if(S.replied)return;S.replied=true;replyBtn.textContent='You replied YES';replyBtn.disabled=true;req();}
+replyBtn.addEventListener('click',replyYes);
+hooks.c04=replyYes;
+scene('sc04',p=>{let lit=1+Math.floor(seg(p,.03,.74)*6.999);if(p>=.985)replyYes();if(S.replied&&lit>=7)lit=9;
+  jn.forEach((li,i)=>li.classList.toggle('on',i<lit));msgs.forEach((m,i)=>m.classList.toggle('on',lit>=msgAt[i]));dayEl.textContent='Day '+days[lit-1];});
+function drawCalc(){const i=+$('#scList').value,n=+$('#scSends').value,sends=LIST[i]*n,cost=sends*1.5/1000;
+  $('#scListOut').textContent=num(LIST[i]);$('#scSendsOut').textContent=String(n);$('#scBG').textContent=usdx(cost);
+  $('#scBGnote').textContent=n?num(sends)+' sends at $1.50 per 1,000':'A quiet month. The list waits for free.';
+  $('#scMC').textContent=usd(MC[i]);$('#scMCnote').textContent='Standard plan, a month for '+num(LIST[i])+' stored contacts, sending or silent';
+  $('#scQuiet').textContent=n?'Slide the sends to zero. A quiet month on BackGold costs $0.':'Go quiet for a month. BackGold: $0. The rented list: '+usd(MC[i])+'.';}
+$('#scList').addEventListener('input',drawCalc);$('#scSends').addEventListener('input',drawCalc);
+
+/* ---------- 05 map ---------- */
+const cv=$('#turf'),g2=cv.getContext('2d'),turfStat=$('#turfStat'),doorcard=$('#doorcard');
+const M={blocks:[],houses:[],pts:[],closed:false,sel:new Set(),route:[],me:-1,rp:0,drawing:false,ghost:true,run:0,busy:false,W:0,H:0,dpr:1,hx:0,hy:0};
+(function(){const r=rng(77),xs=[.04,.195,.35,.505,.66,.815],ys=[.06,.285,.51,.735,.96];
+  for(let c=0;c<5;c++)for(let w=0;w<4;w++){const park=(c===3&&w===1),b={x:xs[c]+.012,y:ys[w]+.016,w:xs[c+1]-xs[c]-.024,h:ys[w+1]-ys[w]-.032,s:r()>.45,t:r()>.5,park};M.blocks.push(b);
+    if(park)continue;const n=2+Math.floor(r()*2);for(let i=0;i<n;i++){const fx2=.16+.68*(i/(n-1));M.houses.push({x:b.x+b.w*fx2,y:b.y+b.h*.22});M.houses.push({x:b.x+b.w*fx2,y:b.y+b.h*.78});}}})();
+function rr(g,x,y,w,h,r){g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h);}
+function sizeMap(){const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;M.dpr=Math.min(2,window.devicePixelRatio||1);M.W=w;M.H=h;cv.width=Math.round(w*M.dpr);cv.height=Math.round(h*M.dpr);drawMap();}
+function drawMap(){const g=g2,W=M.W,H=M.H;if(!W)return;g.setTransform(M.dpr,0,0,M.dpr,0,0);g.clearRect(0,0,W,H);g.lineCap='round';g.lineJoin='round';
+  g.strokeStyle='rgba(143,114,38,.32)';g.lineWidth=W*.055;g.beginPath();for(let i=0;i<=24;i++){const t=i/24,x=(.905+.035*Math.sin(t*5.4+.6))*W,y=(t*1.1-.05)*H;if(i)g.lineTo(x,y);else g.moveTo(x,y);}g.stroke();
+  g.font='500 9px "IBM Plex Mono",ui-monospace,monospace';
+  for(const b of M.blocks){const x=b.x*W,y=b.y*H,w=b.w*W,h=b.h*H;
+    if(b.park){g.setLineDash([2,3]);g.strokeStyle='rgba(212,169,60,.75)';g.lineWidth=1.2;rr(g,x,y,w,h,8);g.fillStyle='rgba(212,169,60,.09)';g.fill();g.stroke();g.setLineDash([]);g.fillStyle='rgba(242,210,122,.95)';g.textAlign='center';g.fillText('PARK',x+w/2,y+h/2+3);g.textAlign='left';continue;}
+    g.fillStyle='rgba(212,169,60,'+(b.s?.17:.05)+')';g.fillRect(x,y,w,h);
+    if(b.t){g.save();g.beginPath();g.rect(x,y,w,h);g.clip();g.strokeStyle='rgba(212,169,60,.22)';g.lineWidth=1;g.beginPath();for(let k=-h;k<w;k+=7){g.moveTo(x+k,y+h);g.lineTo(x+k+h,y);}g.stroke();g.restore();}
+    g.strokeStyle='rgba(94,88,75,.75)';g.lineWidth=1;g.strokeRect(x+.5,y+.5,w-1,h-1);}
+  if(M.ghost&&!M.pts.length){g.setLineDash([5,5]);g.strokeStyle='rgba(242,210,122,.6)';g.lineWidth=1.5;g.beginPath();g.ellipse(W*.35,H*.5,W*.2,H*.28,0,0,Math.PI*2);g.stroke();g.setLineDash([]);}
+  if(M.pts.length>1){g.beginPath();M.pts.forEach((q,i)=>{if(i)g.lineTo(q.x*W,q.y*H);else g.moveTo(q.x*W,q.y*H);});if(M.closed){g.closePath();g.fillStyle='rgba(212,169,60,.1)';g.fill();}g.setLineDash([6,4]);g.strokeStyle='#F2D27A';g.lineWidth=2;g.stroke();g.setLineDash([]);}
+  const n=M.route.length;
+  if(n>1&&M.rp>0){const f=M.rp*(n-1),fi=Math.min(n-1,Math.floor(f)),fr=f-fi;g.strokeStyle='#D4A93C';g.lineWidth=1.6;g.beginPath();
+    for(let i=0;i<=fi;i++){const h=M.houses[M.route[i]];if(i)g.lineTo(h.x*W,h.y*H);else g.moveTo(h.x*W,h.y*H);M.hx=h.x*W;M.hy=h.y*H;}
+    if(fi<n-1){const a=M.houses[M.route[fi]],b=M.houses[M.route[fi+1]];M.hx=lerp(a.x,b.x,fr)*W;M.hy=lerp(a.y,b.y,fr)*H;g.lineTo(M.hx,M.hy);}g.stroke();}
+  M.houses.forEach((h,i)=>{const s=M.sel.has(i);g.fillStyle=s?'#F2D27A':'#6f6858';const z=s?5.5:4.5;g.fillRect(h.x*W-z/2,h.y*H-z/2,z,z);});
+  if(M.me>=0){const h=M.houses[M.route[M.me]];g.strokeStyle='#F2D27A';g.lineWidth=1.6;g.beginPath();g.arc(h.x*W,h.y*H,9,0,Math.PI*2);g.stroke();
+    g.font='600 12px "IBM Plex Sans",system-ui,sans-serif';const tw=g.measureText(S.name).width,tx=h.x*W+13;g.fillStyle='rgba(14,13,11,.8)';const lx=tx+tw>W-4?h.x*W-13-tw:tx,ly=Math.max(14,h.y*H-10);g.fillRect(lx-3,ly-11,tw+6,15);g.fillStyle='#F4EFE3';g.fillText(S.name,lx,ly);}
+  if(n>1&&M.rp>0&&M.rp<1){g.fillStyle='#fff';g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=5;g.beginPath();g.arc(M.hx,M.hy,4.5,0,Math.PI*2);g.stroke();g.fill();}}
+onName.push(drawMap);
+const mpos=e=>{const r=cv.getBoundingClientRect();return{x:clamp((e.clientX-r.left)/r.width),y:clamp((e.clientY-r.top)/r.height)};};
+function resetTurf(){M.run++;M.busy=false;M.closed=false;M.sel=new Set();M.route=[];M.me=-1;M.rp=0;M.pts=[];doorcard.classList.remove('on');}
+function inside(pt,poly){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if((a.y>pt.y)!==(b.y>pt.y)&&pt.x<(b.x-a.x)*(pt.y-a.y)/(b.y-a.y)+a.x)c=!c;}return c;}
+function cutTurf(){
+  if(M.pts.length<8){resetTurf();M.ghost=true;turfStat.textContent='Drag a loop around a few blocks to cut a turf.';drawMap();return;}
+  M.closed=true;M.sel=new Set();M.houses.forEach((h,i)=>{if(inside(h,M.pts))M.sel.add(i);});
+  if(M.sel.size<3){const c=M.sel.size;resetTurf();M.ghost=true;turfStat.textContent='That loop caught '+c+(c===1?' door':' doors')+'. Loop in at least three.';drawMap();return;}
+  const left=Array.from(M.sel),route=[];let cur=M.pts[0];
+  while(left.length){let bi=0,bd=9;left.forEach((hi,k)=>{const h=M.houses[hi],d=Math.hypot(h.x-cur.x,h.y-cur.y);if(d<bd){bd=d;bi=k;}});const hi=left.splice(bi,1)[0];route.push(hi);cur=M.houses[hi];}
+  M.route=route;let sx=0,sy=0;route.forEach(hi=>{sx+=M.houses[hi].x;sy+=M.houses[hi].y;});sx/=route.length;sy/=route.length;
+  let best=0,bd=9;route.forEach((hi,k)=>{const h=M.houses[hi],d=Math.hypot(h.x-sx,h.y-sy);if(d<bd){bd=d;best=k;}});M.me=best;
+  turfStat.textContent='Turf cut: '+route.length+' doors, nearest door first.';runWalk();}
+function runWalk(){const my=++M.run,n=M.route.length,dur=Math.min(5200,1400+n*60);
+  if(S.calm){M.rp=1;drawMap();doorcard.classList.add('on');return;}
+  const t0=performance.now();(function step(t){if(my!==M.run)return;M.rp=clamp((t-t0)/dur);drawMap();if(M.rp*(n-1)>=M.me)doorcard.classList.add('on');if(M.rp<1)requestAnimationFrame(step);})(t0);}
+cv.addEventListener('pointerdown',e=>{if(M.busy)return;e.preventDefault();try{cv.setPointerCapture(e.pointerId);}catch(_){}resetTurf();M.drawing=true;M.ghost=false;M.pts=[mpos(e)];drawMap();});
+cv.addEventListener('pointermove',e=>{if(!M.drawing)return;const q=mpos(e),l=M.pts[M.pts.length-1];if(Math.hypot(q.x-l.x,q.y-l.y)>.012){M.pts.push(q);drawMap();}});
+const endDraw=()=>{if(!M.drawing)return;M.drawing=false;cutTurf();};
+cv.addEventListener('pointerup',endDraw);cv.addEventListener('pointercancel',endDraw);
+$('#turfAuto').addEventListener('click',()=>{if(M.busy)return;resetTurf();M.ghost=false;const N=46,full=[];
+  for(let i=0;i<=N;i++){const a=i/N*Math.PI*2-1.2;full.push({x:.35+.205*Math.cos(a)*(1+.07*Math.sin(a*3)),y:.5+.285*Math.sin(a)});}
+  if(S.calm){M.pts=full;cutTurf();return;}
+  M.busy=true;const my=M.run;let i=0;(function step(){if(my!==M.run){M.busy=false;return;}M.pts.push(full[i++]);drawMap();if(i<full.length)requestAnimationFrame(step);else{M.busy=false;cutTurf();}})();});
+
+/* ---------- 05 phone bank ---------- */
+const pb=$('#pbDots'),pbd=[];
+const pbTalk=new Set(),pbYes=new Set();
+(function(){const r=rng(19),ix=Array.from({length:125},(_,i)=>i);for(let i=124;i>0;i--){const j=Math.floor(r()*(i+1));const t=ix[i];ix[i]=ix[j];ix[j]=t;}
+  ix.slice(0,19).forEach(i=>pbTalk.add(i));ix.slice(0,13).forEach(i=>pbYes.add(i));
+  for(let i=0;i<125;i++){const el=document.createElement('i');el.className=pbYes.has(i)?'talk yes':pbTalk.has(i)?'talk':'';pb.append(el);pbd.push(el);}})();
+let pbRun=0;
+function playPB(){if(S.calm)return;const my=++pbRun,at=(ms,fn)=>setTimeout(()=>{if(my===pbRun)fn();},ms);
+  pbd.forEach(el=>{el.className='wait';});['#pbCalls','#pbTalk','#pbYes'].forEach(s=>{$(s).textContent='0';});$('#pbCost').textContent='$0';
+  pbd.forEach((el,i)=>at(250+i*9,()=>{el.className='';}));
+  at(250,()=>countTo($('#pbCalls'),125,1150));
+  at(1750,()=>{pbd.forEach((el,i)=>{if(pbTalk.has(i))el.className='talk';});countTo($('#pbTalk'),19,600);});
+  at(2700,()=>{pbd.forEach((el,i)=>{if(pbYes.has(i))el.className='talk yes';});countTo($('#pbYes'),13,600);});
+  at(3400,()=>countTo($('#pbCost'),10,600,v=>'$'+Math.round(v)));}
+once($('#phonebank'),playPB);
+$('#pbReplay').addEventListener('click',playPB);
+
+/* ---------- 06 site + petition map ---------- */
+const blks=$$('#bw .blk'),siteG=$('#siteGfx'),kinds=$('#kinds'),pmc=$('#petmap'),pmx=pmc.getContext('2d'),pmPts=[];
+(function(){const r=rng(1204);let guard=0;while(pmPts.length<240&&guard++<9000){const x=r(),y=r(),dx=(x-.5)/.44,dy=(y-.5)/.4,q=1+.12*Math.sin(Math.atan2(dy,dx)*5);if(dx*dx+dy*dy<q*q*.9)pmPts.push({x,y});}})();
+function drawPet(n,pulse){const w=pmc.clientWidth,h=pmc.clientHeight;if(!w||!h)return;const d=Math.min(2,window.devicePixelRatio||1);if(pmc.width!==Math.round(w*d)||pmc.height!==Math.round(h*d)){pmc.width=Math.round(w*d);pmc.height=Math.round(h*d);}
+  const g=pmx;g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);g.beginPath();
+  for(let i=0;i<=72;i++){const a=i/72*Math.PI*2,q=1+.12*Math.sin(a*5),x=(.5+.44*q*Math.cos(a))*w,y=(.5+.4*q*Math.sin(a))*h;if(i)g.lineTo(x,y);else g.moveTo(x,y);}
+  g.closePath();g.fillStyle='rgba(212,169,60,.05)';g.fill();g.strokeStyle='rgba(143,114,38,.9)';g.lineWidth=1.2;g.stroke();
+  g.fillStyle='rgba(212,169,60,.85)';for(let i=0;i<n&&i<pmPts.length;i++){const q=pmPts[i];g.beginPath();g.arc(q.x*w,q.y*h,1.8,0,6.3);g.fill();}
+  const mx=.56*w,my=.46*h;g.strokeStyle='rgba(242,210,122,'+(.95-.7*pulse).toFixed(2)+')';g.lineWidth=1.5;g.beginPath();g.arc(mx,my,5+pulse*13,0,6.3);g.stroke();g.fillStyle='#fff';g.beginPath();g.arc(mx,my,3.6,0,6.3);g.fill();
+  g.font='600 12px "IBM Plex Sans",system-ui,sans-serif';g.fillStyle='#F4EFE3';g.fillText(S.name,mx+10,my-9);}
+scene('sc06',(p,idx,sp)=>{
+  const k0=S.calm?1:idx===0?seg(sp,.08,.8):1,n=Math.ceil(k0*5-.001);blks.forEach((b,i)=>b.classList.toggle('in',i<n));kinds.textContent='Block kinds: '+Math.round(lerp(5,35,k0));
+  const map=idx>=1&&!S.calm;siteG.classList.toggle('map',map);
+  if(map){const k=seg(sp,.08,.85);drawPet(Math.round(k*240),(sp*5)%1);$('#pmCount').textContent='Signatures: '+num(964+Math.round(k*240));}
+});
+function drawBE(){const c=+$('#beCost').value,t=+$('#bePrice').value,n=Math.ceil(c/t);$('#beCostOut').textContent=usd(c);$('#bePriceOut').textContent=usd(t);$('#beN').textContent=num(n);
+  $('#beLine').textContent='Ticket '+num(n)+' pays the bill. Ticket '+num(n+1)+' is the first dollar raised.';}
+$('#beCost').addEventListener('input',drawBE);$('#bePrice').addEventListener('input',drawBE);
+
+/* ---------- 07 limit, ledger, filing ---------- */
+const yearTotal=()=>S.gift*(S.monthly?6:1)+12;
+function drawLimit(){const t=yearTotal();$('#limFill').style.width=(t/10)+'%';$('#limNow').textContent=usd(t)+' of $1,000';}
+onGift.push(drawLimit);
+$('#limBtn').addEventListener('click',()=>{const t=yearTotal(),lim=$('#limit'),d=$('#decline');$('#limFill').style.width='100%';lim.classList.remove('hit');void lim.offsetWidth;lim.classList.add('hit');
+  d.hidden=false;d.textContent='Declined at checkout. That gift would pass the $1,000 limit. Riverside Forward can accept '+usd(1000-t)+' more from '+S.name+' this year.';setTimeout(drawLimit,S.calm?0:1400);});
+const ledger=$('#ledger'),ledLis=$$('#ledger li');let ledMax=0;
+watchers.push(vh=>{const r=ledger.getBoundingClientRect(),k=S.calm?1:clamp((vh*.88-r.top)/Math.max(1,r.height+vh*.1));if(k>ledMax)ledMax=k;const n=Math.ceil(ledMax*ledLis.length-.001);ledLis.forEach((li,i)=>li.classList.toggle('on',i<n));});
+$('#fecBtn').addEventListener('click',()=>{$('#fecdoc').classList.add('on');$('#fecBtn').textContent='Filing exported';});
+
+/* ---------- press and hold ---------- */
+function hold(btn,ms,done){const bar=$('i',btn);let t0=0,raf=0,fin=false;
+  const finish=()=>{if(fin)return;fin=true;cancelAnimationFrame(raf);done();};
+  const stop=()=>{if(fin)return;cancelAnimationFrame(raf);t0=0;bar.style.width='0';};
+  const loop=t=>{if(!t0)t0=t;const k=(t-t0)/ms;bar.style.width=(clamp(k)*100)+'%';if(k>=1)finish();else raf=requestAnimationFrame(loop);};
+  btn.addEventListener('pointerdown',e=>{if(fin)return;if(S.calm){finish();return;}try{btn.setPointerCapture(e.pointerId);}catch(_){}t0=0;cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);});
+  ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>btn.addEventListener(ev,stop));
+  btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();finish();}});
+  btn.addEventListener('contextmenu',e=>e.preventDefault());}
+function holdDone(btn,label){btn.classList.add('done');btn.disabled=true;$('span',btn).textContent=label;}
+
+/* ---------- 08 connect ---------- */
+let connected=false;
+function connectDone(){if(connected)return;connected=true;$('#net').classList.add('linked');$('#connMsg').textContent='Connected. Each org kept its own records. Totals roll up to the state.';holdDone($('#connBtn'),'Connected');}
+hold($('#connBtn'),1000,connectDone);hooks.c08=connectDone;
+
+/* ---------- 09 aurelia ---------- */
+const asks=[
+  {q:'Who gave last year and has gone quiet since?',a:()=>'38 people gave in 2025 and have been quiet since. Saved as a segment: Lapsed 2025. A nudge journey is ready to start.'},
+  {q:'Draft a thank-you to everyone who signed Saturday.',a:()=>'Draft ready for 212 signers. It opens: "Thank you for standing up for Riverside Park, '+S.name+'." Waiting on a person to press send.'},
+  {q:'Cut a turf of 40 doors near the park for two walkers.',a:()=>'Two turfs of 20 doors, cut along Elm Street and Water Street. Both walk lists are in the walker app.'},
+  {q:'How close is the March dinner to break-even?',a:()=>'31 of 48 tickets sold. 17 to go. Share art and a tracked short link are ready to post.'}];
+const auChipsEl=$('#auChips'),auChips=[],askBtns=$$('.ask'),auLine=$('#auLine'),auAns=$('#auAns'),auCount=$('#auCount');
+for(let i=0;i<100;i++){const el=document.createElement('i');el.className='dim';auChipsEl.append(el);auChips.push(el);}
+let auRun=0,auCur=0;
+function showAsk(i){auCur=i;askBtns.forEach((b,k)=>b.setAttribute('aria-pressed',String(k===i)));auLine.textContent=asks[i].q;auAns.textContent=asks[i].a();auCount.textContent='1,000+';auChips.forEach(c=>{c.className='dim';});}
+function runAsk(i){const my=++auRun,A=asks[i];if(S.calm){showAsk(i);return;}
+  auCur=i;askBtns.forEach((b,k)=>b.setAttribute('aria-pressed',String(k===i)));auAns.textContent='';auLine.textContent='';auChips.forEach(c=>{c.className='';});auCount.textContent='0';
+  let k=0;(function type(){if(my!==auRun)return;auLine.textContent=A.q.slice(0,++k);if(k<A.q.length)setTimeout(type,15);else cascade();})();
+  function cascade(){const t0=performance.now(),dur=1500;(function step(t){if(my!==auRun)return;const u=clamp((t-t0)/dur),front=u*33;
+    auChips.forEach((c,j)=>{const d=front-((j%20)*.9+(j/20|0)*1.6+(j*7%5)*.4);c.className=d>6?'dim':d>0?'on':'';});
+    auCount.textContent=u<1?num(Math.round(ease(u)*1000)):'1,000+';
+    if(u<1)requestAnimationFrame(step);else{auAns.textContent=A.a();if(i===1)pulseDock();}})(t0);}}
+askBtns.forEach(b=>b.addEventListener('click',()=>runAsk(+b.dataset.i)));
+onName.push(()=>{if(auAns.textContent)auAns.textContent=asks[auCur].a();});
+
+/* ---------- 10 handoff ---------- */
+const hoL=$$('#hoRec li'),yrs=$$('#years span'),yDot=$('#years i');let handed=false;
+function handoffDone(){if(handed)return;handed=true;$('#chairs').classList.add('passed');$('#chairA').classList.remove('has');$('#chairB').classList.add('has');$('#hoMsg').textContent='Roles moved. Every record intact.';holdDone($('#hoBtn'),'Handed off');}
+hold($('#hoBtn'),1000,handoffDone);hooks.c10=handoffDone;
+scene('sc10',p=>{const k=seg(p,.22,.9),y=k*4;yDot.style.left=(10+20*y)+'%';yrs.forEach((s,i)=>s.classList.toggle('on',i<=Math.round(y)));
+  const n=Math.round(lerp(4,hoL.length,k));hoL.forEach((li,i)=>li.classList.toggle('on',i<n));if(p>.42)handoffDone();});
+
+/* ---------- 12 build your shelf ---------- */
+function drawPick(){const i=+$('#pkList').value,ul=$('#pkRent'),rows=[];let tot=0;
+  if($('#pkEmail').checked)rows.push(['Mailchimp Standard',MC[i]]);
+  if($('#pkCRM').checked)rows.push(['NationBuilder '+(i===3?'Pro':'Starter'),NB[i]]);
+  if($('#pkDoor').checked)rows.push(['Ecanvasser, from',EC[i]]);
+  ul.textContent='';if(!rows.length)rows.push(['Nothing rented',0]);
+  rows.forEach(r=>{tot+=r[1];const li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('span');a.textContent=r[0];b.textContent=usd(r[1]);li.append(a,b);ul.append(li);});
+  $('#pkRentTot').textContent=usd(tot);
+  const sends=LIST[i]*4,cost=sends*1.5/1000,extra=Math.max(0,cost-25),lab=$('#pkBGsends');
+  lab.textContent='Email';const sm=document.createElement('small');sm.textContent=num(sends)+' sends, '+usdx(cost)+(extra>0?', less the credit':', inside the credit');lab.append(sm);
+  $('#pkBGemail').textContent=usdx(extra);$('#pkBG').textContent=usdx(25+extra);}
+['pkList','pkEmail','pkCRM','pkDoor'].forEach(id=>$('#'+id).addEventListener('change',drawPick));
+
+/* ---------- 13 rows ---------- */
+const rc=$('#rows'),rx=rc.getContext('2d'),rowSeed=[];
+(function(){const r=rng(2030);for(let i=0;i<2400;i++)rowSeed.push([r(),r(),r()]);})();
+function drawRows(p){const w=rc.clientWidth,h=rc.clientHeight;if(!w||!h)return;const d=Math.min(2,window.devicePixelRatio||1);if(rc.width!==Math.round(w*d)||rc.height!==Math.round(h*d)){rc.width=Math.round(w*d);rc.height=Math.round(h*d);}
+  const g=rx;g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);
+  const z=ease(seg(p,.04,.9)),rowH=lerp(40,3.6,z),colW=lerp(w*.82,w/7,z),gap=lerp(0,2.5,z),ox=(w-colW)/2,oy=(h-rowH)/2,C=Math.ceil(w/colW/2)+1,R=Math.ceil(h/rowH/2)+1,bar=Math.max(1.2,rowH*.34);
+  for(let r=-R;r<=R;r++)for(let c=-C;c<=C;c++){const me=(r===0&&c===0),s=rowSeed[(((r*53+c*97)%2400)+2400)%2400];if(!me&&s[2]>z*1.12)continue;
+    const x=ox+c*colW,y=oy+r*rowH;g.fillStyle=me?'#F2D27A':'rgba(212,169,60,'+(.22+.5*s[1]).toFixed(2)+')';g.fillRect(x+gap,y+(rowH-bar)/2,(me?1:.35+.6*s[0])*(colW-gap*2),bar);}
+  if(z<.6){g.globalAlpha=1-z/.6;g.fillStyle='#F2D27A';g.font='600 '+Math.round(lerp(30,12,z))+'px "Cormorant Garamond",Georgia,serif';g.fillText(S.name,ox+gap,oy+(rowH-bar)/2-8);g.globalAlpha=1;}}
+scene('sc13',p=>drawRows(S.calm?1:p));
+onName.push(()=>req());
+
+/* ---------- tap to quote ---------- */
+const share=$('#share');let lastFocus=null;
+function openShare(text){lastFocus=document.activeElement;$('#shLine').textContent=text;$('#shMeter').textContent=S.meter>0?'Cost to reach '+S.name+' so far: '+fmtMeter(S.meter):'Follow one name through BackGold';$('#shNote').textContent='';share.hidden=false;$('#shCopy').focus();}
+function closeShare(){share.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+$$('.q').forEach(b=>b.addEventListener('click',()=>openShare(b.textContent.trim())));
+$('#shClose').addEventListener('click',closeShare);
+share.addEventListener('click',e=>{if(e.target===share)closeShare();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!share.hidden)closeShare();});
+$('#shCopy').addEventListener('click',()=>{const txt=$('#shLine').textContent+' backgold.com',note=$('#shNote'),fail=()=>{note.textContent='Copying is blocked in this view. Press and hold the line to select it.';};
+  try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(()=>{note.textContent='Copied.';},fail);else fail();}catch(_){fail();}});
+
+/* ---------- just read ---------- */
+const jrBtn=$('#jrBtn');
+function applyCalm(){S.calm=S.justRead||RM.matches;root.classList.toggle('calm',S.calm);jrBtn.setAttribute('aria-pressed',String(S.justRead));drawField();requestAnimationFrame(()=>{sizeMap();req();});}
+jrBtn.addEventListener('click',()=>{S.justRead=!S.justRead;applyCalm();});
+if(RM.addEventListener)RM.addEventListener('change',applyCalm);
+
+/* ---------- init ---------- */
+tagText();drawListSize();drawCheckout();drawCalc();drawBE();drawPick();showAsk(0);
+sizeField();applyCalm();
+window.addEventListener('scroll',req,{passive:true});
+window.addEventListener('resize',()=>{sizeField();sizeMap();req();});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{sizeMap();req();});
+requestAnimationFrame(floop);
+tick();
+})();
+
+</script>
+</body>
+</html>
