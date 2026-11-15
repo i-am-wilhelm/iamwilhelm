@@ -13,6 +13,7 @@
  * cache-busting hash) as they are:
  *   npm run og:scrollies -- everyone-searchable
  * The foot (ScrollFoot) and every exit are hidden in the shot by data-og-hide.
+ * A page named in STILL is shot under prefers-reduced-motion (its held frame).
  *
  * Needs a local Chromium (Playwright's, or set CHROMIUM_PATH).
  */
@@ -38,6 +39,11 @@ mkdirSync(out, { recursive: true });
    it shoots at 800x420 scaled up (the column fills the card), centred on the
    poem's title movement; `target` is the selector to centre on. Any page can
    instead mark one element data-og-frame to be centred (see below). */
+/* Pages shot under prefers-reduced-motion, where the page draws its own
+   held frame. Depth Chart's meteor is in flight for 2.6s of each 7.4s
+   loop, so a timed shot catches it anywhere or not at all; the held frame
+   is the page's own, with the meteor mid-fall. */
+const STILL = new Set(['depth-chart']);
 const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 let routes = [];
 const descent = (slug) => {
@@ -77,7 +83,11 @@ const base = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 for (const { slug, route, width, settle, target } of routes) {
   const height = Math.round((width * 630) / 1200);
-  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1200 / width });
+  const page = await browser.newPage({
+    viewport: { width, height },
+    deviceScaleFactor: 1200 / width,
+    ...(STILL.has(slug) && { reducedMotion: 'reduce' }),
+  });
   await page.goto(base + route, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   /* A page can name its own card: the element marked data-og-frame is
