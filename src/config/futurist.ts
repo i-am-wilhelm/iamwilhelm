@@ -1,7 +1,7 @@
 /**
  * The Futurist pages mounted exactly as their approved source files (in
  * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward, The
- * Receipts and Depth Chart, the third, fourth and fifth Futurist
+ * Receipts, Depth Chart and Quantum Banking, the third to sixth Futurist
  * installments.
  *
  * `sha256` is the approved file's hash: the build stops if the file on
@@ -23,6 +23,11 @@ export const FUTURIST_SOURCES = {
   'depth-chart': {
     sha256: '7b0d2bd8c2e9611cb020980130e177d2fa3236af82b5b0bcb785a633b6e6dddd',
     night: '#0e1419',
+    preload: ['/fonts/barlow-condensed-latin-800-normal.woff2', '/fonts/public-sans-latin-wght-normal.woff2'],
+  },
+  'quantum-banking': {
+    sha256: '8c5bdb978bd96a258261cee2465e690622b9eb0b9808c2a4ce00673e03afeebe',
+    night: '#0c1814',
     preload: ['/fonts/barlow-condensed-latin-800-normal.woff2', '/fonts/public-sans-latin-wght-normal.woff2'],
   },
 } as const;

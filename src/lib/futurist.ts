@@ -14,9 +14,12 @@
  *     the link to the plain-text twin, the share card (the page's own
  *     render, public/og/<slug>.jpg) and the Article schema;
  *   - LINKS holds the two cross-links between Face Forward and The
- *     Receipts, each one a named, exact replacement (Depth Chart has none);
+ *     Receipts, each one a named, exact replacement (Depth Chart and
+ *     Quantum Banking have none);
  *   - FIXES holds the repairs made since the files were approved, each one
- *     a named, exact replacement (the source files stay as approved);
+ *     a named, exact replacement (the source files stay as approved), and
+ *     for Quantum Banking the sentences its plain-text twin reads for the
+ *     two rigs and the mark that leaves its counter out of the share card;
  *   - the links back, as Everyone, Searchable carries them: the series label
  *     (to the series index), the byline (to the foyer) and the way back to
  *     the Gallery, set in a line of the page's own masthead (`back`);
@@ -44,7 +47,8 @@ const face = (family: string, weight: number, file: string) =>
 /* Each family a Google Fonts link in the source files asks for, and the
    faces it stood for: one per weight asked for, as Google declares them (a
    variable file is named once per weight). Depth Chart asks for its three
-   families in one link. */
+   families in one link; Quantum Banking asks for the same three, the same
+   way. */
 const FACES: Record<string, string[]> = {
   'Big+Shoulders+Display:wght@600;700;800;900': [600, 700, 800, 900].map((w) =>
     face('Big Shoulders Display', w, 'big-shoulders-display-latin-wght-normal'),
@@ -89,6 +93,8 @@ const LINKS: Partial<Record<FuturistSlug, [string, string, string]>> = {
  * The Receipts: the register counted the first item as rung up on load,
  * before any scrolling, so it never showed "ITEM 00/14 · SCROLL TO RING
  * UP". Items now ring up only once the reader has scrolled.
+ *
+ * Quantum Banking: one line of CSS, described at its entry.
  */
 const FIXES: Record<FuturistSlug, [string, string, string][]> = {
   'face-forward': [
@@ -116,6 +122,55 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
     ],
   ],
   'depth-chart': [],
+  /* Quantum Banking: the hero rosette is drawn once, at load, into a canvas
+     sized to the hero as it stands then, and the canvas is shown at the
+     hero's full size. On a phone the web fonts arrive after that and the
+     hero grows 3 to 10% taller (the headline and lead re-wrap), so the
+     drawing was stretched tall and the rings went oval until the next
+     resize. The canvas now keeps its drawing's proportions and covers the
+     hero, so the rings stay round. CSS only; where the drawing already
+     matches the hero (768px up, or fonts already cached) nothing changes. */
+  'quantum-banking': [
+    [
+      'the end of the stylesheet',
+      '</style>\n</head>',
+      '/* site: the rosette keeps its proportions when the fonts settle the hero (src/lib/futurist.ts) */\n' +
+        '.hero canvas { object-fit: cover; }\n' +
+        '</style>\n</head>',
+    ],
+    /* The share card only: at 1200x630 the twin counter (fixed to the
+       bottom edge) cut through the last line of the lead, so the card
+       leaves the counter out and shows the whole hero. The mark does
+       nothing on the page itself (scripts/og-scrollies.mjs reads it). */
+    ['the twin counter', '<div class="counter" aria-hidden="true">', '<div class="counter" aria-hidden="true" data-og-hide>'],
+    /* The plain-text twin is the page without its script, so the two rigs
+       read as their unfilled placeholders ("$0 credit resting on one $100
+       token", "Saved per month $0") and the six streams, which are labels,
+       were not read at all. Each part carries the twin's sentence for it
+       (data-twin, which the page itself never shows): the page's own
+       labels and the readings its own arithmetic gives at the settings it
+       opens on. */
+    [
+      "the chain's bars",
+      '      <div class="hops" id="hops"></div>\n',
+      '      <div class="hops" id="hops" data-twin="Two sliders set the haircut at each hop, from 2% to 50%, and the times the token is re-pledged, from 1 to 8. A row of bars follows them: the $100 token, then one bar for each loan made against it. At a 15% haircut and four re-pledgings the loans are $85, $72, $61 and $52."></div>\n',
+    ],
+    [
+      "the chain's totals",
+      '      <div class="sum">\n',
+      '      <div class="sum" data-twin="At that setting, $271 of credit rests on one $100 token, and the ceiling if the chain never stopped is $567.">\n',
+    ],
+    [
+      'the data streams',
+      '      <ul class="streams" id="streams">\n',
+      '      <ul class="streams" id="streams" data-twin="Six data streams, each a checkbox with the monthly saving it buys. Purchase history (member pricing on groceries and fuel), $85. Location and driving (telematics insurance rate), $60. Verified-identity wallet (lower payment and transfer fees), $25. Home energy meter (utility credit for load sharing), $30. Wearable and pharmacy feed (health premium discount), $70. Contacts and referrals (sign-up and streak bonuses), $20. The first three start ticked.">\n',
+    ],
+    [
+      "the veil's meters",
+      '      <div class="twin-out">\n',
+      '      <div class="twin-out" data-twin="Two meters and a sentence follow the ticks. With the first three streams ticked: saved per month, $170 of $290; twin completeness, 50%; “$2,040 a year saved. The veil on the rest costs $1,440 a year.” With none ticked: “Full veil. You pay list price on everything: $3,480 a year for privacy.” With all six: “Full collector. $3,480 a year saved, and the twin is complete.”">\n',
+    ],
+  ],
 };
 
 /**
@@ -137,12 +192,19 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
  * ScrollFoot's z-index so the rig readout (fixed, later in the page) always
  * rides above it; the body's own bottom padding already keeps the readout
  * clear of the foot's last line.
+ *
+ * Quantum Banking: the page has no <main>, so the foot follows the last
+ * sheet, the sources, on the paper ledger, set like Depth Chart's (same
+ * 44rem column, same mono). It gives up ScrollFoot's z-index so the twin
+ * counter (fixed, later in the page) always rides above it; the body's own
+ * bottom padding keeps the counter clear of the foot's last line.
  */
 /* The source text the foot follows: [what, the exact text]. */
 const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
   'face-forward': ["the page's own footer", '</footer>\n'],
   'the-receipts': ['the end of <main>', '</main>\n'],
   'depth-chart': ['the end of <main>', '</main>\n'],
+  'quantum-banking': ['the end of the sources sheet', '    </ol>\n  </div>\n</section>\n'],
 };
 const FOOT_CSS: Record<FuturistSlug, string> = {
   'face-forward':
@@ -151,6 +213,7 @@ const FOOT_CSS: Record<FuturistSlug, string> = {
   'the-receipts':
     '.scroll-foot.site-foot{--log:var(--body);z-index:auto;max-width:30rem;margin-top:0;padding-bottom:104px;color:var(--paper)}',
   'depth-chart': '.scroll-foot.site-foot{--log:var(--mono);z-index:auto;max-width:44rem;margin-top:0;border-top-color:var(--rule)}',
+  'quantum-banking': '.scroll-foot.site-foot{--log:var(--mono);z-index:auto;max-width:44rem;margin-top:0;border-top-color:var(--rule)}',
 };
 const FOOT_MARK = '<!--futurist:foot-->';
 
@@ -168,6 +231,15 @@ const back = (slug: FuturistSlug, label: string, href: string): [string, string,
       '    <p class="tag">Borehole log &middot; The new money &middot; Logged 14 Nov 2026</p>\n' +
         `    <p class="tag"><a href="${href}" ${a}>${esc(label)}</a> &middot; <span style="white-space:nowrap">By <a href="/" rel="author" ${a}>Michael Wilhelm</a></span>` +
         `<span data-og-hide data-twin-skip> &middot; <a href="/gallery/" ${a}>The Gallery</a></span></p>\n`,
+    ];
+  }
+  if (slug === 'quantum-banking') {
+    return [
+      'the hero tag',
+      '    <p class="tag">Money file · status checked 14 November 2026</p>\n',
+      '    <p class="tag">Money file · status checked 14 November 2026</p>\n' +
+        `    <p class="tag"><a href="${href}" ${a}>${esc(label)}</a> · <span style="white-space:nowrap">By <a href="/" rel="author" ${a}>Michael Wilhelm</a></span>` +
+        `<span data-og-hide data-twin-skip> · <a href="/gallery/" ${a}>The Gallery</a></span></p>\n`,
     ];
   }
   if (slug === 'face-forward') {
