@@ -67,6 +67,30 @@ const FACES: Record<string, string[]> = {
     face('Courier Prime', 'normal', '700', 'courier-prime-latin-700-normal'),
     face('Courier Prime', 'italic', '400', 'courier-prime-latin-400-italic'),
   ],
+  /* Fall Line and Off Soundings. A key with its axes (the family as the
+     link spells it) is matched before the bare family name, so Fall Line's
+     IBM Plex Mono gains the 600 it asks for and the batch pages, which ask
+     for 400 and 500, build as before. IBM Plex Mono is the repo's three
+     files; the rest are the latin files exactly as fonts.gstatic.com serves
+     them for each page's link (IBM Plex Sans and Libre Franklin are
+     variable files, named once per weight asked for, as Google declares
+     them). The canvases set ctx.font by these family names. */
+  'IBM+Plex+Mono:wght@400;500;600': ['400', '500', '600'].map((w) => face('IBM Plex Mono', 'normal', w, `ibm-plex-mono-latin-${w}-normal`)),
+  'IBM+Plex+Sans': ['400', '500', '600'].map((w) => face('IBM Plex Sans', 'normal', w, 'ibm-plex-sans-latin-wght-normal')),
+  'Instrument+Serif': [
+    face('Instrument Serif', 'normal', '400', 'instrument-serif-latin-400-normal'),
+    face('Instrument Serif', 'italic', '400', 'instrument-serif-latin-400-italic'),
+  ],
+  'Libre+Caslon+Display': [face('Libre Caslon Display', 'normal', '400', 'libre-caslon-display-latin-400-normal')],
+  'Libre+Caslon+Text': [
+    face('Libre Caslon Text', 'normal', '400', 'libre-caslon-text-latin-400-normal'),
+    face('Libre Caslon Text', 'normal', '700', 'libre-caslon-text-latin-700-normal'),
+    face('Libre Caslon Text', 'italic', '400', 'libre-caslon-text-latin-400-italic'),
+  ],
+  'Libre+Franklin': [
+    ...['400', '500', '600', '700'].map((w) => face('Libre Franklin', 'normal', w, 'libre-franklin-latin-wght-normal')),
+    face('Libre Franklin', 'italic', '400', 'libre-franklin-latin-wght-italic'),
+  ],
 };
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -202,6 +226,47 @@ const FIXES: Record<string, [string, string, string][]> = {
         '</style>\n</head>',
     ],
   ],
+  /* Fall Line and Off Soundings were approved as review drafts. Published,
+     each drops the words "review draft" and their separator from its sheet
+     tag (the markup and the string the script sets it back to) and from its
+     colophon, and nothing else.
+     Each also carries one sentence for the plain-text twin (data-twin,
+     which the page itself never shows), since the twin is the page without
+     its script: Fall Line's Term paragraph is hidden until its button is
+     pressed, and Off Soundings' four quarter notes live in its script. The
+     sentences are the pages' own words. */
+  'fall-line': [
+    [
+      'the policy buttons',
+      '<div class="seg" role="group" aria-label="Kind of policy">',
+      '<div class="seg" role="group" aria-label="Kind of policy" data-twin="Two buttons, Term and Whole life, swap the tank in the drawing and the paragraph that follows. Whole life is shown. Term reads: “A rented tank. Large, cheap, and it expires. In one Consumer Reports comparison the term policy cost $660 a year. Critics of the method buy this one and invest the difference.” (source 10)">',
+    ],
+    ['the sheet tag', '<span id="tagL">Fall Line · review draft</span>', '<span id="tagL">Fall Line</span>'],
+    ['the first sheet name', "const SHEETS=['Fall Line · review draft',", "const SHEETS=['Fall Line',"],
+    [
+      'the colophon',
+      '<p class="colophon">Fall Line · Drawing RW-01 · Review draft · Nov 2026</p>',
+      '<p class="colophon">Fall Line · Drawing RW-01 · Nov 2026</p>',
+    ],
+  ],
+  'off-soundings': [
+    [
+      "the quarter's note",
+      '<p class="qout" id="qout" aria-live="polite"></p>',
+      '<p class="qout" id="qout" aria-live="polite" data-twin="Four buttons, one for each quarter of the compass. The chosen quarter lights on the chart and its note shows here; Private, Offshore is chosen first. Private, Onshore: A South Dakota dynasty trust. A Wyoming LLC. A private placement policy written in the States. Closed to the public, inside the reach of U.S. courts. Private, Offshore: A Cook Islands trust. A Cayman fund. Closed to the public and outside the reach of U.S. courts. Reported to the IRS in full. Public, Onshore: Your brokerage account, even when it holds euros and Tokyo-listed shares. Open, regulated, simple. Public, Offshore: A plain bank account in Zurich or Singapore. Another country\'s system, reported home every year once balances pass $10,000."></p>',
+    ],
+    ['the sheet tag', '<span id="tagL">Off Soundings · review draft</span>', '<span id="tagL">Off Soundings</span>'],
+    [
+      "the sheet tag's opening text",
+      "tagL.textContent=stepIdx===0?'Off Soundings · review draft':'Off Soundings';",
+      "tagL.textContent=stepIdx===0?'Off Soundings':'Off Soundings';",
+    ],
+    [
+      'the colophon',
+      '<p class="colophon">Off Soundings · Chart No. 3 · Review draft · Nov 2026 · Not for navigation</p>',
+      '<p class="colophon">Off Soundings · Chart No. 3 · Nov 2026 · Not for navigation</p>',
+    ],
+  ],
 };
 
 export function seenSource(slug: string): string {
@@ -232,10 +297,11 @@ export async function seenDocument(slug: string): Promise<string> {
   /* Fonts: the site's copies, under the names the stylesheet already uses. */
   const fonts = html.match(/<link href="https:\/\/fonts\.googleapis\.com\/css2\?([^"]*)" rel="stylesheet">\n/);
   if (!fonts) throw new Error(`seen: ${slug}: expected the Google Fonts stylesheet link.`);
-  const families = [...fonts[1].matchAll(/family=([^:&]+)/g)].map((m) => m[1]);
-  const faces = families.flatMap((f) => {
-    if (!FACES[f]) throw new Error(`seen: ${slug}: no self-hosted copy of ${f}.`);
-    return FACES[f];
+  const families = [...fonts[1].matchAll(/family=([^&]+)/g)].map((m) => m[1]);
+  const faces = families.flatMap((spec) => {
+    const f = FACES[spec] ?? FACES[spec.split(':')[0]];
+    if (!f) throw new Error(`seen: ${slug}: no self-hosted copy of ${spec.split(':')[0]}.`);
+    return f;
   });
   html = swap(html, '<link rel="preconnect" href="https://fonts.googleapis.com">\n', '', 'the fonts.googleapis.com preconnect', slug);
   html = swap(html, '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n', '', 'the fonts.gstatic.com preconnect', slug);
