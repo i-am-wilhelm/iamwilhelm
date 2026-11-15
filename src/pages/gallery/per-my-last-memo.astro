@@ -1,0 +1,15 @@
+---
+/**
+ * Per My Last Memo: mounted as delivered from its approved source file,
+ * _incoming/elsewhere/per-my-last-memo.html (named in SEEN_SOURCES, src/config/seen.ts).
+ * The page is the file; src/lib/seen.ts documents the few changes made on
+ * the way (self-hosted fonts, share and schema meta, the making-of line
+ * printed from its one shared place). It is a whole document with no
+ * wrapper, so nothing above its .scene sections clips or transforms them
+ * and every sheet pins as it did in the prototype.
+ */
+import { seenDocument } from '../../lib/seen';
+const html = await seenDocument('per-my-last-memo');
+---
+
+<Fragment set:html={html} />

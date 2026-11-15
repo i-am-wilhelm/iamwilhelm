@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Per My Last Memo</title>
+<meta name="description" content="Cipolla's five laws of human stupidity, confirmed this quarter at one pizza place, three offices, a four-way stop and your family group chat. A memo from Regional, with graphs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Caveat:wght@700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one goldenrod office memo. Each law is a scene: memo paragraphs scroll past a pinned sheet of graph paper holding the exhibit and its controls. The crew answers back in red pen. */
+  --paper:#f2d98b; --sheet:#fbf9ee; --grid:#a9c9d6; --ink:#2a1b52; --ink-soft:#5a4a86; --stamp:#b8342a;
+  --q-i:#2f7d3b; --q-h:#2d70b3; --q-b:#a8510a; --q-s:#b8342a;
+  --display:'Caprasimo','Cooper Black',Georgia,serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'Courier Prime','Courier New',Courier,monospace;
+  --hand:'Caveat','Segoe Print','Bradley Hand',cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:var(--body);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+p{margin:0 0 1em}
+a{color:var(--ink)}
+:focus-visible{outline:3px solid var(--stamp);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--ink);color:var(--sheet);padding:10px 14px;font-family:var(--mono);font-size:13px;text-decoration:none}
+.skip:focus{top:12px}
+.sig{font-family:Georgia,'Times New Roman',serif;font-style:italic}
+.wide{max-width:1180px;margin:0 auto;padding-left:20px;padding-right:20px}
+.note{font-family:var(--hand);font-weight:700;font-size:23px;line-height:1.12;color:var(--stamp);margin:14px 0 0 14px;max-width:25ch;transform:rotate(-1.6deg);transform-origin:left center}
+.note.blue{color:var(--q-h);transform:rotate(1.2deg)}
+
+/* masthead */
+.mast{position:relative;padding-top:26px;display:grid;gap:26px}
+.mast::after{content:'';position:absolute;right:7%;top:58px;width:128px;height:128px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,transparent 57%,rgba(110,62,14,.2) 59%,rgba(110,62,14,.1) 64%,transparent 66%);transform:rotate(20deg) scaleX(1.05)}
+.slug{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 24px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;border-bottom:3px double var(--ink);padding-bottom:10px}
+.route{font-family:var(--mono);font-size:14.5px;line-height:1.6;margin:0;display:grid;grid-template-columns:4.6em minmax(0,1fr);column-gap:10px}
+.route dt{color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em}
+.route dd{margin:0}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,10.6vw,112px);line-height:.95;letter-spacing:-.01em;margin:.3em 0 .22em;text-wrap:balance}
+.deck{font-size:clamp(19px,2.2vw,23px);line-height:1.4;max-width:37ch;margin:0}
+.seen{display:inline-block;margin-top:20px;border:3px double var(--stamp);color:var(--stamp);font-family:var(--mono);font-weight:700;font-size:13.5px;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;transform:rotate(-4deg)}
+.board{justify-self:start;align-self:end;background:var(--sheet);border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:14px 18px 12px;width:min(100%,320px);display:grid;gap:4px;transform:rotate(-1.2deg)}
+.board-l{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.14em}
+.board-n{font-family:var(--display);font-size:92px;line-height:1;color:var(--stamp);justify-self:start}
+.board-r{font-family:var(--mono);font-size:12.5px;line-height:1.45;color:var(--ink-soft);min-height:2.9em}
+.board.thud .board-n{animation:thud .45s}
+@keyframes thud{0%{transform:translateY(-10px) rotate(-5deg)}45%{transform:translateY(3px) rotate(2deg)}100%{transform:none}}
+
+/* background */
+.intro{padding-top:34px;padding-bottom:10px;display:grid;gap:26px}
+.intro p{max-width:62ch}
+.side{display:grid;gap:24px;align-content:start}
+.terms{border:1.5px solid var(--ink);padding:16px 18px;font-size:16px;line-height:1.5;background:rgba(251,249,238,.5)}
+.terms h2{font-family:var(--mono);font-size:12.5px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;margin:0 0 10px;font-weight:700}
+.terms dl{margin:0;display:grid;gap:10px}
+.terms dt{font-family:var(--mono);font-weight:700;display:inline}
+.terms dd{display:inline;margin:0}
+.sticky{justify-self:end;width:min(100%,260px);background:#f7b9c4;color:#3a1830;font-family:var(--hand);font-weight:700;font-size:24px;line-height:1.1;padding:16px 16px 18px;box-shadow:3px 5px 0 rgba(42,27,82,.35);transform:rotate(2deg)}
+.sticky p{margin:0}
+.sticky .blue{color:#1f4f86;margin-top:10px;transform:rotate(-3deg)}
+
+/* law heading */
+.law{padding-top:9vh}
+.law-head{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:18px;align-items:end}
+.law-head>div{border-bottom:1.5px solid var(--ink);padding-bottom:14px}
+.law-no{font-family:var(--display);font-size:clamp(84px,15vw,170px);line-height:.78;padding-bottom:10px}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px;color:var(--ink-soft)}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,5.4vw,56px);line-height:1;margin:0 0 .32em;text-wrap:balance}
+.statute{font-family:var(--mono);font-size:15px;line-height:1.5;margin:0;max-width:62ch}
+.statute b{font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:12px;display:block;color:var(--ink-soft)}
+
+/* scene: pinned sheet + memo steps */
+.scene{position:relative}
+.sheet{position:sticky;top:0;z-index:3;margin:0 -20px;padding:10px 12px 12px;background:var(--paper);height:66vh;height:66svh;min-height:390px;max-height:580px;box-shadow:0 10px 12px -10px rgba(42,27,82,.4)}
+.sheet.short{height:58vh;height:58svh;min-height:340px;max-height:540px}
+.pad{height:100%;min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--sheet);border:1.5px solid var(--ink);padding:8px 10px 10px}
+.tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;line-height:1.3}
+.plot{flex:1;min-height:0;position:relative}
+.plot canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+#c1{cursor:pointer}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.out{font-family:var(--mono);font-size:12.5px;line-height:1.4;margin:0;min-height:2.8em}
+.file{font-family:var(--mono);font-size:12.5px;line-height:1.4;margin:0;min-height:2.8em;border-left:3px solid var(--stamp);padding-left:8px}
+button{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);background:var(--sheet);border:1.5px solid var(--ink);border-radius:0;box-shadow:3px 3px 0 var(--ink);padding:0 9px;min-height:40px;cursor:pointer}
+button:active,button[aria-pressed="true"]{background:var(--ink);color:var(--sheet);box-shadow:1px 1px 0 var(--ink);transform:translate(2px,2px)}
+.rng{display:flex;align-items:center;gap:8px;flex:1;min-width:220px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.rng input{flex:1;min-width:0;height:40px;margin:0;accent-color:var(--ink)}
+.rng output{min-width:2.4em;font-size:13px}
+.ctl.two{gap:0 22px}
+.ctl.two .rng{min-width:240px}
+.ctl.two .rng span{min-width:3.6em}
+.steps{padding:4vh 0 8vh}
+.step{padding:15vh 0}
+.memo{position:relative;max-width:34em}
+.memo::before{content:'';position:absolute;left:-12px;top:.35em;bottom:.35em;width:3px;background:var(--ink);transform:scaleY(0);transform-origin:top;transition:transform .35s}
+.step.on .memo::before{transform:scaleY(1)}
+.memo p:last-child{margin-bottom:0}
+.aside{font-family:var(--mono);font-size:14px;line-height:1.5;border:1.5px dashed var(--ink-soft);padding:10px 12px;margin-top:16px}
+.aside b{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* exhibit 3: expression list, wide screens only */
+.g3{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:10px}
+.fx{display:none;list-style:none;margin:0;padding:0;font-family:var(--mono);font-size:11.5px;line-height:1.35;border:1px solid var(--grid);align-self:start;counter-reset:fx}
+.fx li{counter-increment:fx;display:grid;grid-template-columns:1.9em minmax(0,1fr);border-bottom:1px solid var(--grid);opacity:.3;transition:opacity .4s}
+.fx li:last-child{border-bottom:0}
+.fx li::before{content:counter(fx);background:rgba(169,201,214,.35);color:var(--ink-soft);text-align:center;padding:4px 0}
+.fx li span{padding:4px 6px}
+.fx li i{font-style:normal;color:var(--ink-soft)}
+.fx li.on{opacity:1}
+
+/* exhibit 4: the Figure, five options, and what came back */
+.dom{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.trk-l{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px;margin:0 0 3px}
+.figrow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.fign{font-family:var(--display);font-size:42px;line-height:1;min-width:1.4em}
+.figbar{position:relative;height:20px;border:1.5px solid var(--ink);background:var(--sheet)}
+.figbar b{position:absolute;left:0;top:0;bottom:0;width:100%;background:repeating-linear-gradient(90deg,var(--q-i) 0 2px,transparent 2px 5px);transition:width .5s}
+.figbar span{position:absolute;top:-4px;bottom:-4px;border-left:1.5px dashed var(--ink)}
+.hand{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.opt{display:flex;flex-direction:column;justify-content:center;gap:1px;text-align:left;text-transform:none;letter-spacing:0;font-size:12.5px;line-height:1.2;min-height:46px;padding:5px 9px}
+.opt:last-child{grid-column:1 / -1}
+.opt-k{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--stamp)}
+.opt:active .opt-k{color:inherit}
+.opt-n{display:none}
+.opt.dealt{animation:deal .35s}
+@keyframes deal{from{transform:translateY(-10px) rotate(-3deg);opacity:.2}to{transform:none;opacity:1}}
+button:disabled{opacity:.45;cursor:default}
+.inc{flex:1;min-height:96px;position:relative;border:1.5px solid var(--ink);background:var(--paper);padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.inc-k{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:0;color:var(--ink-soft);padding-right:7.5em}
+.inc-t{font-family:var(--display);font-size:clamp(19px,3.2vw,30px);line-height:1.05;margin:0}
+.inc-l{font-style:italic;font-size:15.5px;line-height:1.3;margin:2px 0 0}
+.inc-v{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0;font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.inc-v span{border:1.5px solid var(--ink);padding:1px 7px;background:var(--sheet)}
+.inc-v[hidden],#reopen[hidden]{display:none}
+#reopen{align-self:flex-start;margin-top:8px}
+.inc.fired{animation:flip .4s}
+@keyframes flip{from{transform:rotateX(70deg);opacity:.4}to{transform:none;opacity:1}}
+.rubber{position:absolute;right:8px;top:8px;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--stamp);border:2px solid var(--stamp);padding:2px 6px;transform:rotate(7deg);display:none}
+.inc.fired .rubber{display:block}
+
+/* closing */
+.closing{position:relative;margin-top:10vh;padding:8vh 20px 7vh;border-top:3px double var(--ink)}
+.closing .col{max-width:720px;margin:0 auto}
+.fall{position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--stamp);transform-origin:top}
+.fall-tip{position:absolute;top:0;left:16px;display:none;width:104px;font-family:var(--mono);font-weight:700;font-size:11px;line-height:1.3;letter-spacing:.08em;text-transform:uppercase;color:var(--stamp)}
+.cont,.depth{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--stamp);margin:0 0 5vh}
+.depth{margin:5vh 0}
+.recs{list-style:none;margin:0 0 6vh;padding:0;counter-reset:rec;display:grid;gap:14px}
+.recs li{counter-increment:rec;display:grid;grid-template-columns:2.2em minmax(0,1fr);align-items:baseline;font-size:20px;line-height:1.4}
+.recs li::before{content:counter(rec);font-family:var(--display);font-size:34px;line-height:1}
+.form{background:var(--sheet);border:1.5px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:16px 18px 18px;display:grid;gap:14px}
+.form h3{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin:0;font-weight:700}
+.form fieldset{border:0;margin:0;padding:0;min-width:0}
+.form legend{padding:0;margin:0 0 10px;font-size:19px;line-height:1.35}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.opts label{display:flex;align-items:center;gap:10px;border:1.5px solid var(--ink);padding:10px 12px;min-height:48px;font-family:var(--mono);font-size:15px;cursor:pointer}
+.opts input{width:20px;height:20px;margin:0;accent-color:var(--ink);flex:none}
+.form button{justify-self:start;font-size:13px;padding:0 14px;min-height:44px}
+#sa-out{font-family:var(--mono);font-size:14px;line-height:1.5;margin:0;min-height:1.5em}
+.dale{margin-top:7vh;font-size:20px;line-height:1.5}
+.sign{font-family:var(--display);font-size:clamp(36px,7vw,78px);line-height:1;text-wrap:balance;margin:9vh 0 .35em}
+.tie{font-family:var(--mono);font-size:15px;margin:0 0 .3em}
+.dict{font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin:0;color:var(--ink-soft)}
+.colophon{margin-top:9vh;border-top:1.5px solid var(--ink);padding-top:18px;font-size:15.5px;line-height:1.5}
+.colophon h3{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 10px;font-weight:700}
+.colophon ul{margin:0 0 1.2em;padding-left:1.1em;display:grid;gap:8px}
+.colophon .fine{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 .6em}
+
+@media (max-height:520px) and (max-width:899px){ .sheet,.sheet.short{position:static;height:380px} }
+@media (min-width:900px){
+  .mast{grid-template-columns:minmax(0,1fr) 320px;column-gap:40px}
+  .mast .slug{grid-column:1 / -1}
+  .intro{grid-template-columns:minmax(0,1fr) 350px;column-gap:48px}
+  .scene{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);column-gap:56px;align-items:start}
+  .sheet,.sheet.short{order:2;top:20px;margin:28px 0;padding:0;height:calc(100vh - 40px);min-height:420px;max-height:720px;background:none;box-shadow:none}
+  .pad{box-shadow:6px 6px 0 var(--ink);padding:12px 14px 14px;gap:10px}
+  .steps{order:1;padding:0 0 6vh}
+  .step{padding:0;min-height:74vh;display:flex;flex-direction:column;justify-content:center}
+  .tag{font-size:12px}
+  .out,.file{font-size:13.5px}
+  button{font-size:13px;padding:0 12px}
+  .inc-l{font-size:17px}
+  .hand{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .opt{min-height:150px;justify-content:space-between;padding:10px 10px 8px;font-size:14.5px;line-height:1.25}
+  .opt:last-child{grid-column:auto}
+  .opt-k{font-size:10.5px}
+  .opt-n{display:block;align-self:flex-end;font-family:var(--display);font-weight:400;font-size:26px;line-height:1;opacity:.3}
+  .dom{justify-content:center;gap:22px}
+  .inc{flex:0 0 auto;min-height:176px;padding:16px 18px}
+}
+@media (min-width:1000px){
+  .fall{left:max(24px,calc(50% - 470px))}
+  .fall-tip{display:block;left:max(32px,calc(50% - 462px))}
+  .depth{display:none}
+}
+@media (min-width:1100px){
+  .g3{grid-template-columns:196px minmax(0,1fr)}
+  .fx{display:block}
+}
+@media (prefers-reduced-motion:reduce){
+  .memo::before,.fx li,.figbar b{transition:none}
+  .board.thud .board-n,.inc.fired,.opt.dealt{animation:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#law1">Skip to the First Law</a>
+
+<header class="mast wide">
+  <div class="slug"><span>Regional Office · Loss Prevention</span><span>Circular 76-S</span></div>
+  <div>
+    <dl class="route">
+      <dt>To</dt><dd>All crew, all shifts, and whoever keeps unplugging the freezer</dd>
+      <dt>From</dt><dd>Regional</dd>
+      <dt>Re</dt><dd>Stupidity</dd>
+      <dt>Note</dt><dd>Supersedes Circular 76-R. Please disregard Circular 76-R. Please stop framing Circular 76-R.</dd>
+    </dl>
+    <h1>Per My Last Memo</h1>
+    <p class="deck">The five laws of human stupidity, confirmed this quarter at one pizza place, three offices, a four-way stop and your family group chat.</p>
+    <span class="seen">Received · Not read</span>
+  </div>
+  <aside class="board" id="board" aria-label="Sign by the time clock. Days since last incident: zero.">
+    <span class="board-l" aria-hidden="true">DAYS SINCE LAST INCIDENT</span>
+    <span class="board-n" id="days" aria-hidden="true">0</span>
+    <span class="board-r" id="why" aria-hidden="true">Reset 4:12 p.m. Reason: reply all.</span>
+  </aside>
+</header>
+
+<main>
+<section class="intro wide" aria-label="Background">
+  <div>
+    <p>In 1976 a Berkeley economic historian named Carlo M. Cipolla had a short essay printed for his friends. The edition was private and numbered, under the imprint Mad Millers. It laid out five basic laws of human stupidity and argued them with graphs. It reads like the work of a man who had sat through one faculty meeting too many.</p>
+    <p>The essay got loose. <i>Whole Earth Review</i> reprinted it in 1987, an Italian edition followed in 1988, and the English original came out as a book in 2011. Cipolla died in 2000. The laws are still in force. You can confirm this in any comment section.</p>
+    <p>Regional is the office everybody reports to and nobody has met. This quarter Regional checked all five laws against its incident reports. Most of them come from Location 114, which is a pizza place. The rest come from places you already know: the office, the airport, the road, the group chat. Every law held.</p>
+    <p>Please read the findings, fill out the form at the end, and stop microwaving fish.</p>
+  </div>
+  <div class="side">
+    <div class="terms">
+      <h2>Terms used in this memo</h2>
+      <dl>
+        <div><dt>The Figure.</dt> <dd>The one number Regional watches. Nobody has been told what it measures. People only ask when it drops.</dd></div>
+        <div><dt>Incident.</dt> <dd>Anything that lowers the Figure and ends with someone saying “so what had happened was.”</dd></div>
+        <div><dt><span class="sig">σ</span>.</dt> <dd>Sigma. Cipolla’s symbol for the share of any group that is stupid. He refused to put a number on it. See Law One.</dd></div>
+        <div><dt>Dale.</dt> <dd>A member of the crew. You will meet him. You have already met him.</dd></div>
+      </dl>
+    </div>
+    <div class="sticky">
+      <p><span class="sr-only">Sticky note: </span>FRIDGE CLEANOUT FRIDAY. Label your food. Yes, this is about the fish.</p>
+      <p class="blue"><span class="sr-only">Added in blue pen: </span>it was Dale’s fish</p>
+    </div>
+  </div>
+</section>
+
+<!-- LAW ONE -->
+<section class="law" id="law1">
+  <header class="law-head wide">
+    <span class="law-no" aria-hidden="true">1</span>
+    <div>
+      <p class="eyebrow">The First Law</p>
+      <h2>There are more of them than you think</h2>
+      <p class="statute"><b>The law, in plain English</b>Everybody, every time, lowballs the number of stupid people on the loose.</p>
+    </div>
+  </header>
+  <div class="scene wide" data-scene="1">
+    <figure class="sheet">
+      <div class="pad">
+        <figcaption class="tag">Exhibit 1 · 114 people, any given Friday</figcaption>
+        <div class="plot"><canvas id="c1" role="img" aria-label="114 small figures in a grid. The share you estimate is filled in. Regional then marks more of them in red, beyond your count. Every marked figure has a file, which the Pull a file button reads out."></canvas></div>
+        <div class="ctl">
+          <label class="rng" for="est"><span>Your guess</span> <output id="est-o" for="est">20%</output> <input type="range" id="est" min="0" max="100" step="1" value="20"></label>
+          <button type="button" id="pull">Pull a file</button>
+        </div>
+        <p class="out" id="o1" role="status" aria-live="polite">Your guess: 20%, or 23 people. Regional’s finding: pending.</p>
+        <p class="file" id="f1" role="status" aria-live="polite">Tap anyone on the sheet, or pull a file. They all have files.</p>
+      </div>
+    </figure>
+    <div class="steps">
+      <div class="step"><div class="memo">
+        <p>Take any 114 people. Friday dinner rush at the pizza place, your office holiday party, Gate B22. It makes no difference.</p>
+        <p>How many of them are stupid? Give Regional a number. Use the slider. Be honest.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Adorable. The real number is higher.</p>
+        <p>Cipolla’s first law says it is always higher, for everyone, every time. That is why he never gave a number himself. Anything he wrote down would have been too low before the ink dried. He called the share <span class="sig">σ</span> and changed the subject.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Go ahead and raise your guess. Regional has raised its own five times this quarter, in Circulars 76-N through 76-R. Each one was correct for about a day.</p>
+        <p class="note"><span class="sr-only">Handwritten in the margin: </span>76-R is the one where he wrote “surely that’s all of them”</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>You already know this law. You relearn it every time you leave the house, and the proof is printed on everything you own.</p>
+        <p>The hair dryer says do not use while sleeping. The coffee cup says the coffee is hot. The bag of peanuts says it contains peanuts. Every warning label is a small plaque honoring a specific person, and somebody had to meet that person first.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Your guess runs low for two reasons. You built it out of people you picked: friends, the coworkers you eat lunch with, the one group chat you have not muted. Then you renew your license, or fly on a holiday weekend, or read the replies.</p>
+        <p>And you only count the ones you caught. You saw the guy who replied all. You missed the eleven people who replied all to tell him to stop replying all.</p>
+        <p>Tap anyone on the sheet, or pull a file. Everybody marked has one.</p>
+        <p class="note blue"><span class="sr-only">Handwritten in the margin: </span>one of these is Dale. keep pulling.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAW TWO -->
+<section class="law" id="law2">
+  <header class="law-head wide">
+    <span class="law-no" aria-hidden="true">2</span>
+    <div>
+      <p class="eyebrow">The Second Law</p>
+      <h2>It can be anybody</h2>
+      <p class="statute"><b>The law, in plain English</b>Whether a person is stupid has nothing to do with anything else about them. Degrees, job, money, title. None of it helps.</p>
+    </div>
+  </header>
+  <div class="scene wide" data-scene="2">
+    <figure class="sheet">
+      <div class="pad">
+        <figcaption class="tag">Exhibit 2 · Everybody, sorted</figcaption>
+        <div class="plot"><canvas id="c2" role="img" aria-label="Bar chart. However people are sorted, the same share of every column is marked stupid. Under species, dogs come back clean and cats return no reading."></canvas></div>
+        <div class="ctl" id="sorts" role="group" aria-label="Sort everybody by">
+          <button type="button" data-k="job" aria-pressed="true">Job</button>
+          <button type="button" data-k="school" aria-pressed="false">Degrees</button>
+          <button type="button" data-k="money" aria-pressed="false">Money</button>
+          <button type="button" data-k="age" aria-pressed="false">Age</button>
+          <button type="button" data-k="politics" aria-pressed="false">Politics</button>
+          <button type="button" data-k="sure" aria-pressed="false">Certainty</button>
+          <button type="button" data-k="sign" aria-pressed="false">Sign</button>
+          <button type="button" data-k="species" aria-pressed="false">Species</button>
+        </div>
+        <p class="out" id="o2" role="status" aria-live="polite">Sorted by job. σ in every column. Regional has checked the Regional column twice and would rather not discuss it.</p>
+      </div>
+    </figure>
+    <div class="steps">
+      <div class="step"><div class="memo">
+        <p>The obvious move is to work out where the stupid people are and go stand somewhere else.</p>
+        <p>Regional tried. Regional sorted everybody eight ways. Press a button and watch the red line. It does not move.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Cipolla ran this at a university. Janitors, office staff, students, administrators, professors. The same share in every group, at the fancy schools and at the other kind.</p>
+        <p>Then he checked Nobel laureates. Same share. Somewhere tonight a Nobel Prize winner is pushing on a door marked PULL.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>You have watched this law work. The surgeon who cannot beat the parking machine. The engineer who replied all. The man with two doctorates standing on the top rung of a ladder, the rung with the sticker on it.</p>
+        <p>A diploma certifies what somebody knows. It has no opinion about what they are about to do.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>This is the law people fight hardest, because everybody has a column they were counting on.</p>
+        <p>Money does not fix it. That is a ninety-thousand-dollar truck parked across two compact spaces. Age does not fix it. Your politics do not fix it, and neither do theirs.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Being sure does not fix it either. Regional really thought that one would work.</p>
+        <p>And the columns have room for you. The laureate at the PULL door has company. You have pushed on that door, and you looked around afterward to see who saw.</p>
+        <p class="note"><span class="sr-only">Handwritten in the margin: </span>Dale has a master’s. in ENGINEERING.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>As a control, Regional sorted by sun sign. <span class="sig">σ</span>, twelve times. Mercury was not in retrograde. Regional checked.</p>
+        <p>Then by species. The dogs came back clean. The cats declined to participate.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAW THREE -->
+<section class="law" id="law3">
+  <header class="law-head wide">
+    <span class="law-no" aria-hidden="true">3</span>
+    <div>
+      <p class="eyebrow">The Third Law, called golden</p>
+      <h2>Everybody loses, including the guy who did it</h2>
+      <p class="statute"><b>The law, in plain English</b>A stupid person is someone who costs other people something and gets nothing out of it, or even loses on the deal.</p>
+    </div>
+  </header>
+  <div class="scene wide" data-scene="3">
+    <figure class="sheet">
+      <div class="pad">
+        <figcaption class="tag">Exhibit 3 · The graph</figcaption>
+        <div class="g3">
+          <ol class="fx" id="fx" aria-hidden="true">
+            <li class="on" data-s="0"><span>x = <i>what it did for you</i></span></li>
+            <li class="on" data-s="0"><span>y = <i>what it did for others</i></span></li>
+            <li data-s="1"><span>(1, 3) <i>Fixed the printer</i></span></li>
+            <li data-s="1"><span>(−2, 3) <i>Helped him move</i></span></li>
+            <li data-s="1"><span>(2, −2) <i>Reclined the seat</i></span></li>
+            <li data-s="2"><span>(0, −3) <i>Replied all</i></span></li>
+            <li data-s="2"><span>(−2, −2) <i>Cited a fake rule</i></span></li>
+            <li data-s="3"><span>y = −x <i>{Figure holds}</i></span></li>
+            <li data-s="3"><span>x + y &lt; 0 <i>{Figure falls}</i></span></li>
+            <li data-s="3"><span>(3, −1) <i>Expensed lunch</i></span></li>
+            <li data-s="3"><span>(1, −4) <i>Microwaved fish</i></span></li>
+            <li data-s="4"><span>(−5, −5) <i>Fought a spider with fire</i></span></li>
+            <li class="on" data-s="0"><span id="fx-p">P = (5, 4)</span></li>
+          </ol>
+          <div class="plot"><canvas id="c3" role="img" aria-label="Graph with four corners: helpless upper left, intelligent upper right, stupid lower left, bandit lower right. Everyday acts are plotted as the text describes them. A point marked P can be moved with the two sliders."></canvas></div>
+        </div>
+        <div class="ctl two">
+          <label class="rng" for="px"><span>You</span> <output id="px-o" for="px">+5</output> <input type="range" id="px" min="-6" max="6" step="1" value="5"></label>
+          <label class="rng" for="py"><span>Others</span> <output id="py-o" for="py">+4</output> <input type="range" id="py" min="-6" max="6" step="1" value="4"></label>
+        </div>
+        <p class="out" id="o3" role="status" aria-live="polite"></p>
+      </div>
+    </figure>
+    <div class="steps">
+      <div class="step"><div class="memo">
+        <p>Everything a person does gets two numbers. One is what it did for them. The other is what it did for everybody else.</p>
+        <p>Plot the first one across and the second one up, and all of humanity sorts into four corners. It is the most useful graph Regional owns, and Regional owns a lot of graphs.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Three of the corners make sense. Someone fixed the printer. Good for her, good for the floor. Intelligent.</p>
+        <p>Someone gave up his Saturday to help a friend move a couch. Bad for him, great for the friend. Cipolla’s word is helpless, and he had clearly carried a couch.</p>
+        <p>And someone reclined his airplane seat. He gained two inches. The lady behind him lost exactly two. That is a bandit. You may hate him, and at least you understand him.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>The fourth corner is the law. A man replied all to four hundred people. They lost a morning. He gained nothing.</p>
+        <p>A man in a lanyard cited a rule that does not exist, was asked to produce it, and could not. Now everyone is late and he is furious.</p>
+        <p>Nobody came out ahead, and nobody can tell you why it happened, least of all him. Cipolla called this one golden because it is the whole definition. Stupid is the lower left.</p>
+        <p class="note"><span class="sr-only">Handwritten in the margin: </span>lower left = Dale’s corner</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Once you know the corner, you see it on every commute. The driver who pulls into the intersection on a red and blocks it, so that nobody moves, himself included. The man who brake-checks a stranger on the freeway and is now also late.</p>
+        <p>Two neighbors who spent four thousand dollars on lawyers over six inches of hedge. The crowd that jams the gate before its row is called, so the whole plane boards slower, them too.</p>
+        <p>Nobody profits. That is how you tell it from crime.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Now the red diagonal. Right on the line sits the perfect bandit, who takes exactly what you lose. The seat recliner. The tip jar skimmer. Nothing was created and nothing was destroyed. It just changed seats.</p>
+        <p>Above the line, a bandit makes more than he costs. That is how lunch gets expensed and the deal still closes. Below the line he wrecks more than he gets. One hot lunch for him, one ruined afternoon for forty people. He microwaved the fish.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Then there is the far corner. Some people take everyone down and go down with them. Cipolla’s term is super-stupid.</p>
+        <p>Regional’s file photo is a man who saw a spider in his garage and reached for the lighter fluid. The garage is gone. The spider was unharmed.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Now you. Plot something you did this week. Tap the graph or work the sliders, and Regional will tell you what you are.</p>
+        <p>Start small. The thing in the group chat will do.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAW FOUR -->
+<section class="law" id="law4">
+  <header class="law-head wide">
+    <span class="law-no" aria-hidden="true">4</span>
+    <div>
+      <p class="eyebrow">The Fourth Law</p>
+      <h2>“It’ll be fine” will not be fine</h2>
+      <p class="statute"><b>The law, in plain English</b>People who aren’t stupid always underestimate how much damage a stupid person can do, and keep forgetting that dealing with one costs you. Every time. No exceptions.</p>
+    </div>
+  </header>
+  <div class="scene wide" data-scene="4">
+    <figure class="sheet">
+      <div class="pad">
+        <figcaption class="tag">Exhibit 4 · Five options. Pick the safe one.</figcaption>
+        <div class="dom">
+          <div>
+            <p class="trk-l"><span>The Figure</span></p>
+            <div class="figrow">
+              <span class="fign" id="figv">40</span>
+              <div class="figbar" aria-hidden="true"><b id="figfill"></b><span style="left:25%"></span><span style="left:50%"></span><span style="left:75%"></span></div>
+            </div>
+          </div>
+          <div class="hand" id="hand" role="group" aria-label="Five options. Pick one.">
+            <button type="button" class="opt" data-slot="0"><span class="opt-k">It’ll be fine</span><span class="opt-t">Lend him the truck</span><span class="opt-n" aria-hidden="true">1</span></button>
+            <button type="button" class="opt" data-slot="1"><span class="opt-k">It’ll be fine</span><span class="opt-t">Let him run the grill</span><span class="opt-n" aria-hidden="true">2</span></button>
+            <button type="button" class="opt" data-slot="2"><span class="opt-k">It’ll be fine</span><span class="opt-t">Add him to the group chat</span><span class="opt-n" aria-hidden="true">3</span></button>
+            <button type="button" class="opt" data-slot="3"><span class="opt-k">It’ll be fine</span><span class="opt-t">Approve his budget request</span><span class="opt-n" aria-hidden="true">4</span></button>
+            <button type="button" class="opt" data-slot="4"><span class="opt-k">It’ll be fine</span><span class="opt-t">Stay out of it</span><span class="opt-n" aria-hidden="true">5</span></button>
+          </div>
+          <div class="inc" id="inc">
+            <span class="rubber" id="rubber" aria-hidden="true">NOT FINE</span>
+            <p class="inc-k" id="inc-k">Nothing has happened yet</p>
+            <p class="inc-t" id="inc-t">Pick one</p>
+            <p class="inc-l" id="inc-l">Five options. Take your time. They are all fine.</p>
+            <p class="inc-v" id="inc-v" hidden><span id="v-you"></span><span id="v-all"></span></p>
+            <button type="button" id="reopen" hidden>Reopen under new management</button>
+          </div>
+        </div>
+        <p class="sr-only" id="o4" role="status" aria-live="polite"></p>
+      </div>
+    </figure>
+    <div class="steps">
+      <div class="step"><div class="memo">
+        <p>The first three laws are about him. This one is about you. You know better, and you keep doing it anyway.</p>
+        <p>Regional has laid out five options. Pick whichever one looks safest.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>It happens because you are reasonable. You assume he has a reason, because you would have one. You assume he will stop when it starts going badly, because you would stop.</p>
+        <p>He has no reason and he will not stop. You are waiting for a motive the way people wait at a bus stop on a discontinued route.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>So you lend him the truck. You add him to the group chat. You let him run the grill, plan the bachelor party, hold the ladder. He is family, or he asked nicely, or you were tired.</p>
+        <p>Each one felt like the decent thing to do. Cipolla’s point is that the decent thing has a price here, every single time, and that you will have forgotten the price by Thursday.</p>
+        <p class="note"><span class="sr-only">Handwritten in the margin: </span>DO NOT lend Dale the truck (again)</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>You do not even have to say yes. Regional notes that the number on the sheet just dropped while you were reading this.</p>
+        <p>You were standing near him. That counts.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Being right will not save you. A man in a lanyard tells you something is against policy. You ask to see the policy. There is no policy.</p>
+        <p>Now he is angry, the line is out the door, and you have won an argument and lost an afternoon. The same goes for correcting him online. You will be right by the third reply and still typing at midnight.</p>
+        <p>You were correct, you were polite, and everything is worse. That is the Fourth Law working exactly as designed.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAW FIVE -->
+<section class="law" id="law5">
+  <header class="law-head wide">
+    <span class="law-no" aria-hidden="true">5</span>
+    <div>
+      <p class="eyebrow">The Fifth Law</p>
+      <h2>Fear the idiot. The thief at least has a plan.</h2>
+      <p class="statute"><b>The law, in plain English</b>A stupid person is the most dangerous kind of person there is. More dangerous than a thief.</p>
+    </div>
+  </header>
+  <div class="scene wide" data-scene="5">
+    <figure class="sheet short">
+      <div class="pad">
+        <figcaption class="tag">Exhibit 5 · The Figure over one quarter, three crews</figcaption>
+        <div class="plot"><canvas id="c5" role="img" aria-label="Line chart of the Figure over thirteen weeks for three crews, each starting at 40. A crew made of thieves stays flat at 40. A crew with one Dale and adults in the room climbs to 56. A crew with one Dale unsupervised falls in irregular steps and leaves the bottom of the chart in week twelve."></canvas></div>
+        <p class="out" id="o5">Each crew starts the quarter at 40.</p>
+      </div>
+    </figure>
+    <div class="steps">
+      <div class="step"><div class="memo">
+        <p>Regional ran the same quarter three times on paper. Same store, same menu, same number on the wall to start. The only thing that changed was who showed up.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>First, a crew made entirely of thieves. Every shift somebody skimmed the tip jar. He was up two, the jar was down two, and the total never moved.</p>
+        <p>Thirteen weeks later the place was exactly where it started. Everyone hated each other and the Figure was a flat line. Regional has worked at worse.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>You can manage a thief. He wants something, so you always know where he will be. He will be next to the something.</p>
+        <p>We are good at this. We have locks, cameras, passwords, insurance and an entire court system, and they mostly work, because a thief is predictable. He also needs the store to still be there tomorrow.</p>
+        <p class="note"><span class="sr-only">Handwritten in the margin: </span>at least the thief brings donuts</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Second, an honest crew with one Dale, unsupervised. Cipolla’s point is that a stupid person hits you without a motive or a plan, at the moment and in the place nobody thought to guard. You cannot stake out a man who does not know what he is about to do.</p>
+        <p>And every loss is a loss for everybody. No pocket fills up. Regional regrets that the chart ends at zero. The line does not.</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Look around and you can see which one we planned for. Your front door has a lock for the burglar. It has nothing for the man deep-frying a frozen turkey on the back porch.</p>
+        <p>Your bank can stop a stranger from draining your account. It cannot stop your brother-in-law from investing it. There is no alarm that goes off when somebody says “watch this.”</p>
+      </div></div>
+      <div class="step"><div class="memo">
+        <p>Third, the same crew, the same Dale, and a few adults in the room. This is where Cipolla ends, and he was talking about whole countries.</p>
+        <p>A country on the way up and a country on the way down have the same share of stupid people. The difference is everybody else. Where the sensible ones stay on the job, the damage gets soaked up and the total still climbs. Where the people in charge turn into thieves who break more than they take, and everyone else gives up, he says it in five words: “the country goes to Hell.”</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing" id="closing">
+  <div class="fall" id="fall" aria-hidden="true"></div>
+  <div class="fall-tip" id="fall-tip" aria-hidden="true">Figure −114</div>
+  <div class="col">
+    <p class="cont">The Figure, continued from Exhibit 5</p>
+    <p class="eyebrow">Recommendations</p>
+    <h2>What Regional needs from you</h2>
+    <ol class="recs">
+      <li>Guess higher. Then guess higher than that.</li>
+      <li>Quit looking for the safe column. There is no safe column. You are in a column.</li>
+      <li>Before you do the thing, write down both numbers. If both are negative, put the lighter fluid down.</li>
+      <li>When somebody says it’ll be fine, ask who is watching the grill.</li>
+      <li>Keep an eye on the thief. Keep both eyes on Dale.</li>
+    </ol>
+    <p class="depth">Figure −40 · passed the basement</p>
+
+    <form class="form" id="sa" novalidate>
+      <h3>Form 76-S/a · Self-assessment · All crew</h3>
+      <fieldset>
+        <legend>Which of the four types are you? Mark one. Be honest.</legend>
+        <div class="opts">
+          <label for="q1"><input type="radio" name="q" id="q1" value="1"><span>Intelligent</span></label>
+          <label for="q2"><input type="radio" name="q" id="q2" value="2"><span>Intelligent</span></label>
+          <label for="q3"><input type="radio" name="q" id="q3" value="3"><span>Intelligent</span></label>
+          <label for="q4"><input type="radio" name="q" id="q4" value="4"><span>Intelligent</span></label>
+        </div>
+      </fieldset>
+      <button type="submit" id="file">File with Regional</button>
+      <p id="sa-out" role="status" aria-live="polite"></p>
+    </form>
+    <p class="depth">Figure −80 · geologists notified</p>
+
+    <p class="dale">One clarification. Several of you have written in asking Regional to just fire Dale. Cipolla would have backed you. He thought the stupid were born that way and stayed remarkably consistent. Regional has reviewed its own file and respectfully dissents. Dale is a position, and it rotates. You held it the morning you replied all. Regional held it for most of Circulars 76-N through 76-R. The share never changes. Nothing says it has to be you today.</p>
+
+    <p class="sign">The shift ends when the losses exceed the gains.</p>
+    <p class="tie">In the event of a tie, the tie stands.</p>
+    <p class="dict">Regional · Dictated but not read</p>
+    <p class="note blue"><span class="sr-only">Handwritten at the bottom: </span>we’re out of goldenrod. next one’s on pink.</p>
+    <p class="depth">Figure −114 · struck oil. Great quarter, team.</p>
+
+    <footer class="colophon">
+      <h3>Sources</h3>
+      <ul>
+        <li>Carlo M. Cipolla, <i>The Basic Laws of Human Stupidity</i>. Privately printed under the imprint Mad Millers, 1976. Reprinted in <i>Whole Earth Review</i> no. 54, Spring 1987. Italian edition in <i>Allegro ma non troppo</i>, il Mulino, 1988. English edition, il Mulino, 2011.</li>
+      </ul>
+      <p class="fine">The five laws are paraphrased, and one five-word phrase is quoted. Cipolla’s own wording is sharper and the book takes an hour.</p>
+      <p class="fine">Location 114, Regional, Dale and Circular 76-S are invented. Any resemblance to a place you have worked, a road you have driven or a chat you are in is a matter of probability. See Law One.</p>
+      <p class="fine">Research, writing and code made with AI assistance and checked against the sources listed.</p>
+    </footer>
+  </div>
+</section>
+</main>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const rs = getComputedStyle(document.documentElement), tok = n => rs.getPropertyValue(n).trim();
+const K = { sheet: tok('--sheet'), grid: tok('--grid'), ink: tok('--ink'), soft: tok('--ink-soft'), stamp: tok('--stamp'), I: tok('--q-i'), H: tok('--q-h'), B: tok('--q-b'), S: tok('--q-s') };
+const MONO = "'Courier Prime','Courier New',Courier,monospace", DISP = "Caprasimo,Georgia,serif", SERIF = "Georgia,'Times New Roman',serif";
+const TAU = Math.PI * 2, MINUS = '−';
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const easeOut = t => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
+const signed = v => (v > 0 ? '+' : v < 0 ? MINUS : '') + Math.abs(v);
+let now = 0;
+
+/* ---------- exhibits: one canvas each, redrawn only when dirty and on screen ---------- */
+const exhibits = [];
+function exhibit(id, draw) {
+  const canvas = document.getElementById(id), ctx = canvas.getContext('2d');
+  const e = { canvas, ctx, w: 0, h: 0, dirty: true, seen: true, draw };
+  const fit = () => {
+    const r = canvas.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1);
+    if (!r.width || !r.height) return;
+    e.w = r.width; e.h = r.height; canvas.width = Math.round(r.width * d); canvas.height = Math.round(r.height * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0); e.dirty = true;
+  };
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(canvas); else addEventListener('resize', fit);
+  if (window.IntersectionObserver) new IntersectionObserver(en => { e.seen = en[0].isIntersecting; if (e.seen) e.dirty = true; }, { rootMargin: '120px' }).observe(canvas);
+  fit(); exhibits.push(e); return e;
+}
+/* graph paper: a light rule every u, a heavier one every 5u, registered to (ox, oy) */
+function paper(ctx, w, h, u, ox, oy) {
+  ctx.fillStyle = K.sheet; ctx.fillRect(0, 0, w, h); ctx.lineWidth = 1; ctx.strokeStyle = K.grid;
+  for (let pass = 0; pass < 2; pass++) {
+    const st = pass ? u * 5 : u; ctx.globalAlpha = pass ? .95 : .45; ctx.beginPath();
+    for (let x = ((ox % st) + st) % st; x <= w; x += st) { const X = Math.round(x) + .5; ctx.moveTo(X, 0); ctx.lineTo(X, h); }
+    for (let y = ((oy % st) + st) % st; y <= h; y += st) { const Y = Math.round(y) + .5; ctx.moveTo(0, Y); ctx.lineTo(w, Y); }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+function label(ctx, s, x, y, o = {}) {
+  ctx.font = `${o.style || ''} ${o.weight || 400} ${o.size || 11}px ${o.font || MONO}`.trim(); ctx.textAlign = o.align || 'left'; ctx.textBaseline = o.base || 'middle';
+  if (o.halo !== false) { ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeStyle = K.sheet; ctx.strokeText(s, x, y); }
+  ctx.fillStyle = o.color || K.ink; ctx.fillText(s, x, y);
+}
+function hatch(ctx, x, y, w, h, color, gap, alpha) {
+  if (w <= 0 || h <= 0) return;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.strokeStyle = color; ctx.globalAlpha = alpha; ctx.lineWidth = 1; ctx.beginPath();
+  for (let i = -h; i < w; i += gap) { ctx.moveTo(x + i, y + h); ctx.lineTo(x + i + h, y); }
+  ctx.stroke(); ctx.restore();
+}
+
+/* ---------- EXHIBIT 1: whatever you count, there are more. Everybody marked has a file. ---------- */
+const N = 114;
+const rank = (() => { // a fixed shuffle: rank[seat] is the order in which that seat gets counted
+  const a = Array.from({ length: N }, (_, i) => i); let s = 76;
+  const rnd = () => (s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  for (let i = N - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  const r = new Array(N); a.forEach((seat, order) => { r[seat] = order; }); return r;
+})();
+const FILES = [
+  'Replied all to 400 people. The reply was “please take me off this list.”',
+  'Stopped at the top of the escalator to think.',
+  'Is explaining crypto to the cashier.',
+  'Brought a guitar. Nobody asked for the guitar.',
+  'Microwaved fish at 11:45. Knew what he was doing.',
+  'Left the cart in the last open parking space.',
+  'Honked at a train.',
+  'Asked the group chat a question the group chat answered an hour ago.',
+  'Express lane. Forty items. Paying by check.',
+  'Clapped when the plane landed, then stood up while it was still rolling.',
+  'Did his own research. Will not say where.',
+  'Has a system for the lottery. Will explain it.',
+  'Texted “here” from a different building.',
+  'Saving nine seats with one jacket.',
+  'Lit the grill in the garage because it was raining.',
+  'Called a meeting to schedule the meeting.',
+  'Put diesel in it. It was not that kind of car.',
+  'Arguing with the GPS. Out loud. Losing.',
+  'Fed the bear “just a little.”',
+  'Ordered for the whole table. Calamari.',
+  '“Tested” the fire extinguisher.',
+  'Put it on the company card. The place was called The Velvet Otter.',
+  'Has the Wi-Fi password tattooed. They changed the password.',
+  'Parked in the fire lane “for one second,” forty minutes ago.',
+  'Is the reason the hair dryer has a warning label.',
+  'Said “watch this.”',
+  'Bought a jet ski. The nearest water is a car wash.',
+  'Told the officer it was “barely a U-turn.”',
+  'Has keys. Was never asked to have keys.',
+  'Vehicle is “mostly” insured.',
+  'Has a binder. Has a plan. The plan is in the binder.',
+  'Has asked three coworkers to “hop on a quick call.”',
+  'Is running for city council. Keeps the lawn signs in the walk-in freezer.',
+  'Available weekends. Not available weekends.',
+  'Introduced himself twice. To the same person.',
+  'Smells faintly of a different restaurant.',
+];
+const NOFILE = ['No file yet. Give it a minute.', 'Clean so far. Regional is watching.', 'No file. He has a look about him, though.', 'Nothing on record. It is early.'];
+const E1 = { est: 20, on: false, t0: 0, timer: 0, sel: -1, pulls: 0, geo: null };
+const counted = () => Math.round(E1.est / 100 * N), added = k => 9 + (k % 5);
+function person(ctx, cx, cy, c, kind) {
+  const by = cy + c * .36, br = c * .27;
+  ctx.beginPath(); ctx.arc(cx, cy - c * .17, c * .15, 0, TAU); ctx.moveTo(cx + br, by); ctx.arc(cx, by, br, 0, Math.PI, true); ctx.closePath();
+  if (kind === 'mine') { ctx.fillStyle = K.ink; ctx.fill(); }
+  else if (kind === 'extra') { ctx.fillStyle = K.S; ctx.fill(); ctx.strokeStyle = K.S; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy + c * .04, c * .46, 0, TAU); ctx.stroke(); }
+  else { ctx.strokeStyle = K.soft; ctx.lineWidth = 1; ctx.globalAlpha = .75; ctx.stroke(); ctx.globalAlpha = 1; }
+}
+const e1 = exhibit('c1', (e, t) => {
+  const { ctx, w, h } = e, k = counted(), m = added(k), over = Math.max(0, k + m - N);
+  const top = 8, bot = 50; let cols = 12, c = 0;
+  for (let n = 8; n <= 24; n++) { const cc = Math.min((w - 20) / n, (h - top - bot) / Math.ceil(N / n)); if (cc > c) { c = cc; cols = n; } }
+  c = Math.min(c, 46); const rows = Math.ceil(N / cols), gx = (w - c * cols) / 2, gy = top + ((h - top - bot) - c * rows) / 2;
+  E1.geo = { gx, gy, c, cols };
+  paper(ctx, w, h, c / 2, gx, gy);
+  const rv = E1.on ? (reduce ? 1 : clamp((t - E1.t0) / 800, 0, 1)) : 0;
+  for (let i = 0; i < N; i++) {
+    const cx = gx + (i % cols + .5) * c, cy = gy + (Math.floor(i / cols) + .5) * c, r = rank[i];
+    person(ctx, cx, cy, c, r < k ? 'mine' : (r < k + m && rv > (r - k) / m) ? 'extra' : 'none');
+  }
+  if (E1.sel >= 0) { // the file that is open
+    const x = gx + (E1.sel % cols) * c, y = gy + Math.floor(E1.sel / cols) * c;
+    ctx.strokeStyle = K.ink; ctx.lineWidth = 2.5; ctx.strokeRect(x + 1, y + 1, c - 2, c - 2);
+  }
+  const fs = w < 430 ? 10 : 11.5, ly = h - 34;
+  person(ctx, 18, ly - 2, 15, 'mine'); label(ctx, 'counted by you', 30, ly, { size: fs });
+  const x2 = 30 + fs * .62 * 14 + 22;
+  person(ctx, x2, ly - 2, 15, 'extra'); label(ctx, 'added by Regional', x2 + 13, ly, { size: fs, color: K.S });
+  if (over && rv > 0) {
+    const shown = Math.min(over, Math.ceil(over * rv)), txt = 'not on the schedule';
+    label(ctx, txt, 10, h - 13, { size: fs, color: K.S, weight: 700 });
+    const x0 = 10 + fs * .62 * txt.length + 14;
+    for (let j = 0; j < shown; j++) person(ctx, x0 + j * 14, h - 15, 14, 'extra');
+  }
+  return E1.on && rv < 1;
+});
+function say1() {
+  const k = counted(), over = Math.max(0, k + added(k) - N);
+  $('#est-o').textContent = E1.est + '%';
+  $('#o1').textContent = `Your guess: ${E1.est}%, or ${k} ${k === 1 ? 'person' : 'people'}. Regional’s finding: ` + (!E1.on ? 'pending.' : over ? `higher. ${over} of them ${over === 1 ? 'was' : 'were'} not even on the schedule.` : 'higher.');
+}
+function reveal1() { if (E1.on) return; E1.on = true; E1.t0 = now; e1.dirty = true; say1(); }
+function pull(i) {
+  if (!E1.on) { clearTimeout(E1.timer); reveal1(); }
+  const k = counted(), r = rank[i], flagged = r < k + added(k);
+  E1.sel = i; e1.dirty = true;
+  $('#f1').textContent = `File ${i + 1}: ` + (!flagged ? NOFILE[i % NOFILE.length] : r === 0 ? 'Dale. See attached. See all attachments.' : FILES[(r * 7 + 3) % FILES.length]);
+}
+$('#est').addEventListener('input', ev => {
+  E1.est = +ev.target.value; E1.on = false; E1.sel = -1; e1.dirty = true; say1();
+  clearTimeout(E1.timer); E1.timer = setTimeout(reveal1, 650);
+});
+$('#pull').addEventListener('click', () => {
+  const k = counted(), lim = Math.min(N, k + added(k)), pool = [];
+  for (let i = 0; i < N; i++) if (rank[i] < lim && i !== E1.sel) pool.push(i);
+  E1.pulls++; pull(E1.pulls === 3 ? rank.indexOf(0) : pool[Math.floor(Math.random() * pool.length)]); // the third file is always Dale
+});
+(() => { // tap a figure to open its file; a drag still scrolls the page
+  const c = e1.canvas; let down = null;
+  c.addEventListener('pointerdown', ev => { down = { x: ev.clientX, y: ev.clientY }; });
+  c.addEventListener('pointercancel', () => { down = null; });
+  c.addEventListener('pointerup', ev => {
+    const d = down; down = null; if (!d || Math.hypot(ev.clientX - d.x, ev.clientY - d.y) > 10 || !E1.geo) return;
+    const r = c.getBoundingClientRect(), g = E1.geo, col = Math.floor((ev.clientX - r.left - g.gx) / g.c), row = Math.floor((ev.clientY - r.top - g.gy) / g.c), i = row * g.cols + col;
+    if (col >= 0 && col < g.cols && row >= 0 && i < N) pull(i);
+  });
+})();
+
+/* ---------- EXHIBIT 2: sort everybody any way you like ---------- */
+const SIG = .32;
+const SORTS = {
+  job: { cols: ['Intern', 'Staff', 'Manager', 'VP', 'Thought leader'], say: 'Sorted by job. σ in every column. Regional has checked the Regional column twice and would rather not discuss it.' },
+  school: { cols: ['No diploma', 'Diploma', 'Degree', 'Doctorate', 'Nobel Prize'], say: 'Sorted by schooling. σ in every column. Cipolla checked the Nobel laureates himself.' },
+  money: { cols: ['Broke', 'Getting by', 'Comfortable', 'Rich', 'Owns a rocket'], say: 'Sorted by money. σ in every column. The column on the right can afford to do it at scale.' },
+  age: { cols: ['Boomers', 'Gen X', 'Millennials', 'Gen Z'], say: 'Sorted by generation. σ in every column. Every generation believes it started with the next one.' },
+  politics: { cols: ['Left', 'Right', 'Libertarian', '“Not political”'], say: 'Sorted by politics. σ in every column. Each column is certain this chart is about the other columns.' },
+  sure: { cols: ['No idea', 'Not sure', 'Pretty sure', 'Certain', 'Did my own research'], say: 'Sorted by how sure they are. σ in every column. Regional really thought this one would work.' },
+  sign: { cols: ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis'], say: 'Sorted by sun sign, as a control. σ, twelve times. Mercury was not in retrograde. Regional checked.' },
+  species: { cols: ['People', 'Dogs', 'Cats'], dog: 1, cat: 2, say: 'Sorted by species. People: σ. Dogs: none found. All good boys. The cats declined to participate.' },
+};
+const SEQ = [['job'], ['school'], ['school'], ['money', 'age', 'politics'], ['sure'], ['sign', 'species']];
+const E2 = { key: 'job', t0: -1e6, seeds: SORTS.job.cols.map(() => SIG), queue: [], nextAt: 0 };
+function wrap(s, max) { const out = []; let line = ''; s.split(' ').forEach(wd => { if (line && (line + ' ' + wd).length > max) { out.push(line); line = wd; } else line = line ? line + ' ' + wd : wd; }); out.push(line); return out; }
+const e2 = exhibit('c2', (e, t) => {
+  const { ctx, w, h } = e, S = SORTS[E2.key], n = S.cols.length, small = w < 430;
+  paper(ctx, w, h, 12, 0, 0);
+  const L = 10, R = 34, T = 14, B = 70, pw = w - L - R, ph = h - T - B, bw = pw / n, gap = Math.min(12, bw * .2), fs = n > 6 ? (small ? 9 : 11) : (small ? 10 : 12);
+  const p = reduce ? 1 : clamp((t - E2.t0) / 1200, 0, 1), ez = easeOut(p); let live = p < 1;
+  for (let i = 0; i < n; i++) {
+    const cat = S.cat === i, dog = S.dog === i, x = L + i * bw + gap / 2, bx = bw - gap;
+    let lv = E2.seeds[i] + (SIG - E2.seeds[i]) * ez + (1 - ez) * .05 * Math.sin(t / 70 + i * 2.1);
+    if (cat) { lv = reduce ? .55 : .5 + .3 * Math.sin(t / 430) * Math.sin(t / 1270 + 1); live = live || !reduce; }
+    lv = dog ? 0 : clamp(lv, .04, .96);
+    ctx.fillStyle = K.sheet; ctx.fillRect(x, T, bx, ph);
+    hatch(ctx, x, T + ph * (1 - lv), bx, ph * lv, K.ink, 5, cat ? .35 : .8);
+    ctx.strokeStyle = K.ink; ctx.lineWidth = 1.5; ctx.strokeRect(x, T, bx, ph);
+    if (!dog) { ctx.beginPath(); ctx.moveTo(x, T + ph * (1 - lv)); ctx.lineTo(x + bx, T + ph * (1 - lv)); ctx.stroke(); }
+    if (cat) label(ctx, '?', x + bx / 2, T + ph * .18, { size: Math.min(44, bx * .5), font: DISP, align: 'center', color: K.S });
+    if (dog) ['all', 'good', 'boys'].forEach((ln, j) => label(ctx, ln, x + bx / 2, T + ph * .85 + (j - 1) * (fs + 4), { size: fs + 2, weight: 700, align: 'center', color: K.I }));
+    wrap(S.cols[i], Math.max(3, Math.floor(bw / (fs * .62)))).slice(0, 3).forEach((ln, j) => label(ctx, ln, x + bx / 2, T + ph + 11 + j * (fs + 2), { size: fs, align: 'center' }));
+  }
+  const y = T + ph * (1 - SIG); ctx.globalAlpha = ez;
+  ctx.setLineDash([7, 5]); ctx.strokeStyle = K.S; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L - 4, y); ctx.lineTo(w - R + 6, y); ctx.stroke(); ctx.setLineDash([]);
+  label(ctx, 'σ', w - R + 12, y - 1, { size: 24, font: SERIF, style: 'italic', color: K.S });
+  ctx.globalAlpha = 1;
+  label(ctx, small ? 'σ drawn for illustration. Real value: higher.' : 'σ is drawn for illustration. The real value is higher. See Law One.', L, h - 9, { size: small ? 9.5 : 11, color: K.soft });
+  return live;
+});
+function sortBy(key) {
+  if (key === E2.key) return;
+  E2.key = key; E2.t0 = now; E2.seeds = SORTS[key].cols.map(() => .1 + Math.random() * .75); e2.dirty = true;
+  $$('#sorts button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === key)));
+  $('#o2').textContent = SORTS[key].say;
+}
+function play2(list) { // a step can run several sorts in a row; the line lands in the same place each time
+  if (reduce) { E2.queue = []; sortBy(list[list.length - 1]); return; }
+  E2.queue = list.slice(1); E2.nextAt = now + 3000; sortBy(list[0]);
+}
+$('#sorts').addEventListener('click', ev => { const b = ev.target.closest('button[data-k]'); if (b) { E2.queue = []; sortBy(b.dataset.k); } });
+
+/* ---------- EXHIBIT 3: the graph. x = what it did for you, y = what it did for everyone else ---------- */
+const PTS = [
+  { x: 1, y: 3, n: 'Fixed the printer', q: 'I', s: 1, a: 'r' },
+  { x: -2, y: 3, n: 'Helped him move', q: 'H', s: 1, a: 'l' },
+  { x: 2, y: -2, n: 'Reclined the seat', q: 'B', s: 1, a: 'r' },
+  { x: 0, y: -3, n: 'Replied all', q: 'S', s: 2, a: 'l' },
+  { x: -2, y: -2, n: 'Cited a fake rule', q: 'S', s: 2, a: 'l' },
+  { x: 3, y: -1, n: 'Expensed lunch', q: 'B', s: 3, a: 'r' },
+  { x: 1, y: -4, n: 'Microwaved fish', q: 'B', s: 3, a: 'r' },
+  { x: -5, y: -5, n: 'Fought a spider with fire', q: 'S', s: 4, a: 'u' },
+];
+const G = { px: 5, py: 4, step: 0, diagAt: 0, geo: null };
+function mark(ctx, q, x, y, r) {
+  ctx.fillStyle = ctx.strokeStyle = K[q]; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.beginPath();
+  if (q === 'I') { ctx.arc(x, y, r, 0, TAU); ctx.fill(); }
+  else if (q === 'H') { ctx.moveTo(x, y - r * 1.15); ctx.lineTo(x + r * 1.1, y + r * .85); ctx.lineTo(x - r * 1.1, y + r * .85); ctx.closePath(); ctx.fill(); }
+  else if (q === 'B') { ctx.moveTo(x, y - r * 1.25); ctx.lineTo(x + r * 1.25, y); ctx.lineTo(x, y + r * 1.25); ctx.lineTo(x - r * 1.25, y); ctx.closePath(); ctx.fill(); }
+  else { ctx.moveTo(x - r, y - r); ctx.lineTo(x + r, y + r); ctx.moveTo(x + r, y - r); ctx.lineTo(x - r, y + r); ctx.stroke(); }
+  ctx.lineCap = 'butt';
+}
+const e3 = exhibit('c3', (e, t) => {
+  const { ctx, w, h } = e, small = w < 430, fs = small ? 10 : 12;
+  const S = Math.max(120, Math.min(w - 24, h - 24)), u = S / 12, ox = w / 2, oy = h / 2, X = v => ox + v * u, Y = v => oy - v * u;
+  G.geo = { u, ox, oy }; let live = false;
+  paper(ctx, w, h, u, ox, oy);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `${u * 3.6}px ${DISP}`; ctx.globalAlpha = .1;
+  [['H', -3, 2.7], ['I', 3, 2.7], ['S', -3, -3.1], ['B', 3, -3.1]].forEach(([q, x, y]) => { ctx.fillStyle = K[q]; ctx.fillText(q, X(x), Y(y)); });
+  ctx.globalAlpha = 1;
+  if (G.step >= 3) { // the diagonal y = -x, and the half of the page where everyone ends up poorer
+    const p = reduce ? 1 : clamp((t - G.diagAt) / 900, 0, 1); live = live || p < 1;
+    ctx.save(); ctx.beginPath(); ctx.moveTo(X(-6), Y(6)); ctx.lineTo(X(-6), Y(-6)); ctx.lineTo(X(6), Y(-6)); ctx.closePath(); ctx.clip();
+    ctx.globalAlpha = .2 * p; ctx.strokeStyle = K.S; ctx.lineWidth = 1; ctx.beginPath();
+    for (let c = -12; c <= 12; c += .5) { ctx.moveTo(X(-6), Y(-6 + c)); ctx.lineTo(X(6), Y(6 + c)); }
+    ctx.stroke(); ctx.restore();
+    ctx.setLineDash([7, 5]); ctx.strokeStyle = K.S; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(-6), Y(6)); ctx.lineTo(X(-6 + 12 * p), Y(6 - 12 * p)); ctx.stroke(); ctx.setLineDash([]);
+    if (p > .5) {
+      ctx.save(); ctx.translate(X(-5), Y(5)); ctx.rotate(Math.PI / 4); label(ctx, 'y = ' + MINUS + 'x', 0, -10, { size: fs, color: K.S, align: 'center', weight: 700 }); ctx.restore();
+      label(ctx, 'FIGURE FALLS', X(-5.9), Y(.55), { size: fs - 1, color: K.S, weight: 700 });
+      label(ctx, 'FIGURE RISES', X(5.9), Y(.55), { size: fs - 1, color: K.I, weight: 700, align: 'right' });
+    }
+  }
+  // axes
+  ctx.strokeStyle = K.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(-6), oy); ctx.lineTo(X(6), oy); ctx.moveTo(ox, Y(-6)); ctx.lineTo(ox, Y(6)); ctx.stroke();
+  ctx.fillStyle = K.ink; ctx.beginPath(); ctx.moveTo(X(6) + 7, oy); ctx.lineTo(X(6) - 2, oy - 5); ctx.lineTo(X(6) - 2, oy + 5); ctx.closePath(); ctx.moveTo(ox, Y(6) - 7); ctx.lineTo(ox - 5, Y(6) + 2); ctx.lineTo(ox + 5, Y(6) + 2); ctx.closePath(); ctx.fill();
+  [-4, -2, 2, 4].forEach(v => { if (!(small && v === 4)) label(ctx, signed(v), X(v), oy + 10, { size: fs - 2, align: 'center', color: K.soft }); label(ctx, signed(v), ox + 5, Y(v), { size: fs - 2, color: K.soft }); });
+  label(ctx, 'YOU', X(6) - 3, oy + 11, { size: fs - 1, weight: 700, align: 'right' });
+  label(ctx, 'OTHERS', ox + 8, Y(5.72), { size: fs - 1, weight: 700 });
+  [['HELPLESS', 'H', -3, 5.05], ['INTELLIGENT', 'I', 3.3, 5.05], ['STUPID', 'S', -2.6, -5.6], ['BANDIT', 'B', 3, -5.6]].forEach(([s, q, x, y]) => label(ctx, s, X(x), Y(y), { size: fs, weight: 700, color: K[q], align: 'center' }));
+  // the evidence
+  for (const pt of PTS) {
+    if (G.step < pt.s) { pt.b = 0; continue; }
+    if (!pt.b) pt.b = t;
+    const k = reduce ? 1 : clamp((t - pt.b) / 380, 0, 1), sc = k < 1 ? easeOut(k) * (1 + .5 * (1 - k)) : 1; live = live || k < 1;
+    const x = X(pt.x), y = Y(pt.y); mark(ctx, pt.q, x, y, (small ? 4.5 : 5.5) * sc);
+    if (k > .4) {
+      ctx.font = `400 ${fs}px ${MONO}`; const tw = ctx.measureText(pt.n).width; let lx, ly = y, al;
+      if (pt.a === 'r') { lx = Math.min(x + 10, w - 3 - tw); al = 'left'; }
+      else if (pt.a === 'l') { lx = Math.max(x - 10, 3 + tw); al = 'right'; }
+      else { lx = clamp(x, 3 + tw / 2, w - 3 - tw / 2); ly = y - 13; al = 'center'; }
+      label(ctx, pt.n, lx, ly, { size: fs, align: al });
+    }
+  }
+  // P, the reader's own act
+  const px = X(G.px), py = Y(G.py), pulse = (G.step >= 5 && !reduce) ? 2.5 * (1 + Math.sin(t / 260)) : 0; live = live || (G.step >= 5 && !reduce);
+  ctx.setLineDash([3, 4]); ctx.strokeStyle = K.ink; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, oy); ctx.moveTo(px, py); ctx.lineTo(ox, py); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = K.sheet; ctx.strokeStyle = K.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(px, py, 7 + pulse, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = K.ink; ctx.beginPath(); ctx.arc(px, py, 2.5, 0, TAU); ctx.fill();
+  label(ctx, 'P', px + 11, py - 12, { size: fs + 3, weight: 700 });
+  return live;
+});
+function classify(x, y) {
+  const net = x + y;
+  if (!x && !y) return 'No effect on anyone. Regional classifies this as a meeting.';
+  if (x > 0 && y > 0) return x + y >= 8 ? 'Intelligent. Both numbers way up. You will be asked to do it again for free.' : 'Intelligent. Both numbers went up. Nobody will thank you.';
+  if (x < 0 && y < 0) return (x <= -4 && y <= -4) ? 'Superstupid. Please see the manager. The manager is also in this corner.' : 'Stupid. Everyone lost, you included. Nobody can explain it, least of all you.';
+  if (!x) return y > 0 ? 'Halfway between helpless and intelligent. Others gained and it cost you nothing. You let someone merge.' : 'Stupid. They lost and you gained nothing. You replied all.';
+  if (!y) return x > 0 ? 'Halfway between intelligent and bandit. You gained and nobody lost. Found a twenty in your coat.' : 'Halfway between helpless and stupid. You hurt only yourself. This is between you and your tattoo artist.';
+  if (x > 0) return net > 0 ? 'Bandit, with overtones of intelligence. You took a little and made more than you took. Regional has promoted people for this.' : net < 0 ? 'Bandit, with overtones of stupidity. You stole the copper out of a working air conditioner.' : 'A perfect bandit. You took exactly what they lost. Airlines call this reclining.';
+  return net > 0 ? 'Helpless, with overtones of intelligence. You lost a little and they gained a lot. This is parenting.' : net < 0 ? 'Helpless, with overtones of stupidity. You gave up more than anyone got. You cosigned the loan.' : 'Perfectly helpless. You gave away your fries. He got exactly your fries.';
+}
+function setP(x, y) {
+  G.px = clamp(Math.round(x), -6, 6); G.py = clamp(Math.round(y), -6, 6); e3.dirty = true;
+  $('#px').value = G.px; $('#py').value = G.py; $('#px-o').textContent = signed(G.px); $('#py-o').textContent = signed(G.py);
+  const part = (v, who) => v > 0 ? `${who} gain${who === 'You' ? '' : 's'} ${v}.` : v < 0 ? `${who} lose${who === 'You' ? '' : 's'} ${-v}.` : `${who} break${who === 'You' ? '' : 's'} even.`;
+  $('#o3').textContent = `P (${signed(G.px)}, ${signed(G.py)}). ${part(G.px, 'You')} ${part(G.py, 'Everyone else')} ${classify(G.px, G.py)}`;
+  $('#fx-p').textContent = `P = (${signed(G.px).replace('+', '')}, ${signed(G.py).replace('+', '')})`;
+}
+$('#px').addEventListener('input', ev => setP(+ev.target.value, G.py));
+$('#py').addEventListener('input', ev => setP(G.px, +ev.target.value));
+(() => { // mouse drags P; a tap places it; a touch drag still scrolls the page
+  const c = e3.canvas; let drag = false, down = null;
+  const at = ev => { const r = c.getBoundingClientRect(), g = G.geo; if (g) setP((ev.clientX - r.left - g.ox) / g.u, -(ev.clientY - r.top - g.oy) / g.u); };
+  c.addEventListener('pointerdown', ev => { down = { x: ev.clientX, y: ev.clientY }; if (ev.pointerType === 'mouse') { drag = true; try { c.setPointerCapture(ev.pointerId); } catch (x) {} at(ev); } });
+  c.addEventListener('pointermove', ev => { if (drag) at(ev); });
+  c.addEventListener('pointerup', ev => { if (!drag && down && Math.hypot(ev.clientX - down.x, ev.clientY - down.y) < 10) at(ev); drag = false; down = null; });
+  c.addEventListener('pointercancel', () => { drag = false; down = null; });
+})();
+
+/* ---------- EXHIBIT 4: five options on the table. [what you agree to, what comes back, Regional's line, you, everyone, keeps coming back] ---------- */
+const OPTS = [
+  ['Lend him the truck', 'He Was Lent the Truck', 'Vehicle located. Vehicle in a lake.', -2, -2],
+  ['Let him run the grill', 'He Was Put in Charge of the Grill', 'The eyebrows will grow back. The fence will not.', -1, -2],
+  ['Add him to the group chat', 'He Was Added to the Group Chat', 'Forty-one messages by lunch. Nine are the same raccoon video. Your aunt has left the chat.', -1, -1],
+  ['Approve his budget request', 'The Animatronic Arrives', 'Nobody ordered it. It was in the budget. It knows your name.', -3, -3, true],
+  ['Stay out of it', 'He Did It Anyway', 'You were not involved. You were nearby. The form has your name on it.', -1, -1, true],
+  ['Take his shortcut', 'He Knew a Shortcut', 'Added ninety minutes. Saw a lake. Different lake.', -1, -2],
+  ['Let him plan the bachelor party', 'He Planned the Bachelor Party', 'Two arrests. One goat. The goat has retained counsel.', -2, -3],
+  ['Give him the password', 'He Was Given the Password', 'The password is now “password1.” The account now sells sunglasses.', -2, -2],
+  ['Let him bring the drone', 'He Brought a Drone to the Wedding', 'The cake did not make it. The footage is excellent.', -1, -2],
+  ['Let him test the extinguisher', 'He “Tested” the Fire Extinguisher', 'It works. It worked everywhere.', -1, -2],
+  ['Ask him to cite the rule', 'No Such Rule', 'He “will be speaking to someone.” You were right. Everyone is late.', -1, -2],
+  ['Cosign for him', 'He Bought a Jet Ski', 'The nearest water is a car wash. Your credit score has been notified.', -3, -1],
+  ['Let him book the party room', 'Birthday Party Takes the Dining Room', 'Reservation for six. Party of twenty-two. One clown, unbooked.', -1, -2],
+  ['Let him pick tonight’s special', 'Crawfish Night', 'At a pizza place. During dinner. “It’s a community thing.”', -1, -2],
+  ['Join him for a quick smoke', 'Group Smoke Break Discovered', 'Nine people. One lighter. Nobody on the register.', -1, -1],
+  ['Let him prep for the inspector', 'Health Inspector Walks In', 'Routine. He has stopped writing and started taking pictures.', -1, -2],
+  ['Let him count the wings', 'Wing Count Is Off', 'Someone is stealing the wings. The cooks will be retrained on portioning.', 0, -2],
+  ['Reply all to correct him', 'Reply All, 412 Recipients', '“Please remove me from this list.” Sent to the list. By you.', -1, -1],
+  ['Hold his beer', 'He Said “Watch This”', 'The trampoline was not rated for that. Neither was the roof.', -1, -3],
+  ['Let him drive', 'He Drove', 'You are in a different state. He is “pretty sure” about the next exit.', -2, -2],
+  ['Let him fix the Wi-Fi', 'He Fixed the Wi-Fi', 'There is no Wi-Fi. There is no router. There is a hole.', -1, -2],
+  ['Call his guy', 'He Knows a Guy', 'The guy has your deposit. The guy can no longer be reached.', -2, -1],
+  ['Let him make the schedule', 'He Made the Schedule', 'Posted Thursday, for Thursday. You open at 6. You close at 1. Both are today.', -2, -1],
+  ['Let him talk to the reviewer', 'Viral Review (Positive)', 'Nobody knows why. Regional takes credit. Great quarter, team.', 0, 2],
+];
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const H = { fig: 40, dead: false, near: false, hand: [0, 1, 2, 3, 4], deck: [] };
+const slots = $$('#hand .opt');
+function deal() { // the next option that is not already on the table
+  if (!H.deck.length) H.deck = shuffle(OPTS.map((_, i) => i).filter(i => H.hand.indexOf(i) < 0));
+  return H.deck.shift();
+}
+function showSlot(n, anim) {
+  const b = slots[n]; b.querySelector('.opt-t').textContent = OPTS[H.hand[n]][0];
+  if (anim && !reduce) { b.classList.remove('dealt'); void b.offsetWidth; b.classList.add('dealt'); }
+}
+function renderFig() {
+  $('#figv').textContent = H.fig; $('#figfill').style.width = clamp(H.fig / 40 * 100, 0, 100) + '%';
+  slots.forEach(b => { b.disabled = H.dead; }); $('#reopen').hidden = !H.dead;
+}
+function card(k, t, l, you, all, stamp) {
+  const el = $('#inc'); $('#inc-k').textContent = k; $('#inc-t').textContent = t; $('#inc-l').textContent = l; $('#rubber').textContent = stamp;
+  $('#inc-v').hidden = you === null; if (you !== null) { $('#v-you').textContent = 'You ' + signed(you); $('#v-all').textContent = 'Everyone ' + signed(all); }
+  el.classList.remove('fired'); void el.offsetWidth; el.classList.add('fired');
+}
+function hit(k, title, line, you, all) { // what came back, and what it did to the Figure
+  const was = H.fig; H.fig = Math.max(0, H.fig + all); let note = '';
+  [[30, 'A Performance Improvement Plan has been issued. “We believe in this location.”'], [20, 'The District Manager is on his way. He has a clipboard.'], [10, 'There has been a reorganization. Your role has not changed.']].forEach(([th, s]) => { if (was > th && H.fig <= th) note = ' ' + s; });
+  if (H.fig === 0) { H.dead = true; card(k, 'Restructured', title + '. That was the last of the Figure. Everyone is now a “team member.”', you, all, 'CLOSED'); }
+  else card(k, title, line + note, you, all, all > 0 ? 'FINE?!' : 'NOT FINE');
+  renderFig();
+  $('#o4').textContent = `${k}. ${title}. ${line}${note} The Figure is now ${H.fig}.` + (H.dead ? ' The location has been restructured.' : '');
+}
+function pick(n) {
+  if (H.dead) return;
+  const idx = H.hand[n], o = OPTS[idx];
+  H.hand[n] = deal(); if (o[5]) H.deck.splice(1 + Math.floor(Math.random() * H.deck.length), 0, idx); // some options keep coming back
+  hit('You picked: ' + o[0], o[1], o[2], o[3], o[4]); showSlot(n, true);
+}
+function near4() { // nobody picked anything
+  if (H.near || H.dead) return; H.near = true;
+  hit('You did not pick anything', 'You Were Standing Near It', 'That counts.', -1, -1);
+}
+$('#hand').addEventListener('click', ev => { const b = ev.target.closest('.opt'); if (b && !b.disabled) pick(+b.dataset.slot); });
+$('#reopen').addEventListener('click', () => {
+  H.dead = false; H.fig = 40; H.hand = [-1, -1, -1, -1, -1];
+  for (let n = 0; n < 5; n++) { H.hand[n] = deal(); showSlot(n, true); }
+  card('Memo from Regional', 'Reopened under new management', 'Same logo, slightly rounder. Same crew. Same Dale.', null, null, 'MEMO'); renderFig();
+  $('#o4').textContent = 'Reopened under new management. The Figure is 40. Five new options are on the table.';
+});
+
+/* ---------- EXHIBIT 5: three crews, one quarter ---------- */
+const SER = { A: new Array(13).fill(40), B: [40, 40, 37, 37, 31, 30, 30, 22, 19, 19, 9, -9], C: [40, 42, 41, 44, 46, 45, 48, 50, 49, 52, 54, 53, 56] };
+const F5 = { step: 0, at: { A: 0, B: 0, C: 0 } };
+const e5 = exhibit('c5', (e, t) => {
+  const { ctx, w, h } = e, small = w < 430, fs = small ? 10 : 12;
+  const L = 34, R = 14, T = 12, B = small ? 62 : 72, pw = w - L - R, ph = h - T - B, X = i => L + pw * i / 12, Y = v => T + ph * (1 - v / 60);
+  paper(ctx, w, h, ph / 12, L, T); let live = false;
+  ctx.strokeStyle = K.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L, T); ctx.lineTo(L, T + ph); ctx.lineTo(L + pw, T + ph); ctx.stroke();
+  [0, 20, 40, 60].forEach(v => label(ctx, String(v), L - 6, Y(v), { size: fs - 1, align: 'right', color: K.soft }));
+  [0, 3, 6, 9, 12].forEach(i => label(ctx, (i ? '' : 'WK ') + (i + 1), X(i), T + ph + 12, { size: fs - 1, align: i ? 'center' : 'left', color: K.soft }));
+  ctx.setLineDash([2, 4]); ctx.strokeStyle = K.soft; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L, Y(40)); ctx.lineTo(L + pw, Y(40)); ctx.stroke(); ctx.setLineDash([]);
+  const run = (key, color, stairs) => {
+    const p = reduce ? 1 : clamp((t - F5.at[key]) / 1600, 0, 1), d = SER[key]; live = live || p < 1;
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, L + pw * easeOut(p) + 2, h); ctx.clip();
+    ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(X(0), Y(d[0]));
+    for (let i = 1; i < d.length; i++) { if (stairs) ctx.lineTo(X(i), Y(d[i - 1])); ctx.lineTo(X(i), Y(d[i])); }
+    ctx.stroke(); ctx.restore(); return p;
+  };
+  const vis = { A: F5.step >= 1, B: F5.step >= 3, C: F5.step >= 4 };
+  for (const k in vis) { if (!vis[k]) F5.at[k] = 0; else if (!F5.at[k]) F5.at[k] = t; }
+  if (vis.C && run('C', K.I, false) > .8) label(ctx, 'same Dale, adults in the room', X(12), Y(56) - 11, { size: fs, align: 'right', color: K.I, weight: 700 });
+  if (vis.A) {
+    const p = run('A', K.B, false);
+    if (F5.step >= 2) { ctx.strokeStyle = K.B; ctx.lineWidth = 2; ctx.beginPath(); for (let i = 1; i <= 12; i++) { ctx.moveTo(X(i), Y(40) - 6); ctx.lineTo(X(i), Y(40) + 6); } ctx.stroke(); }
+    if (p > .8) label(ctx, F5.step >= 2 ? 'all thieves, audited Fridays' : 'all thieves', X(12), Y(40) + 14, { size: fs, align: 'right', color: K.B, weight: 700 });
+  }
+  if (vis.B) {
+    const p = run('B', K.S, true), d = SER.B, xe = X(d.length - 1);
+    if (p > .3) label(ctx, 'one Dale, unsupervised', X(.3), Y(25), { size: fs, color: K.S, weight: 700 });
+    if (w >= 520 && p > .6) { label(ctx, 'left the freezer open', X(4) + 7, Y(34.5), { size: fs - 1, color: K.S }); label(ctx, 'crawfish night', X(7) + 7, Y(26.5), { size: fs - 1, color: K.S }); label(ctx, '“watch this”', X(10) - 7, Y(13), { size: fs - 1, color: K.S, align: 'right' }); }
+    if (p >= 1) {
+      ctx.strokeStyle = ctx.fillStyle = K.S; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(xe, Y(-9)); ctx.lineTo(xe, h - 12); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(xe, h - 3); ctx.lineTo(xe - 6, h - 13); ctx.lineTo(xe + 6, h - 13); ctx.closePath(); ctx.fill();
+      label(ctx, 'the line keeps going', xe - 11, h - 13, { size: fs, color: K.S, weight: 700, align: 'right' });
+    }
+  }
+  return live;
+});
+const SAY5 = ['Each crew starts the quarter at 40.', 'Crew one: all thieves. Money changed pockets for thirteen weeks. The Figure ended at 40.', 'Crew one, audited every Friday. The thief was right where Regional left him.', 'Crew two: one Dale, unsupervised. The Figure left the chart in week twelve.', 'Crew three: same Dale, adults in the room. The Figure ended at 56. Regional takes credit. Great quarter, team.'];
+
+/* ---------- scroll: the memo paragraph being read drives each exhibit ---------- */
+const scenes = $$('.scene').map(el => ({ el, id: el.dataset.scene, sheet: el.querySelector('.sheet'), steps: Array.from(el.querySelectorAll('.step')), cur: -1 }));
+const stacked = matchMedia('(max-width: 899px)');
+const closing = $('#closing'), fall = $('#fall'), tip = $('#fall-tip');
+const DEPTH = [[.15, ''], [.35, ' · passed the basement'], [.55, ' · passed the parking garage'], [.75, ' · geologists notified'], [.93, ' · getting warm'], [9, ' · struck oil. Great quarter, team.']];
+function stepChanged(id, i) {
+  if (id === '1') { if (i >= 1) reveal1(); }
+  else if (id === '2') play2(SEQ[i] || SEQ[0]);
+  else if (id === '3') { const st = [0, 1, 2, 2, 3, 4, 5][i] || 0; if (st >= 3 && G.step < 3) G.diagAt = now; G.step = st; e3.dirty = true; $$('#fx li').forEach(li => li.classList.toggle('on', +li.dataset.s <= st)); }
+  else if (id === '4') { if (i >= 3) near4(); }
+  else if (id === '5') { const st = [0, 1, 2, 3, 3, 4][i] || 0; F5.step = st; e5.dirty = true; $('#o5').textContent = SAY5[st]; }
+}
+function onScroll() {
+  const vh = innerHeight;
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect(); if (r.bottom < -200 || r.top > vh + 200) continue;
+    const focus = stacked.matches ? (Math.min(vh, Math.max(0, s.sheet.getBoundingClientRect().bottom)) + vh) / 2 : vh * .5;
+    let best = 0, bd = Infinity;
+    s.steps.forEach((st, i) => { const b = st.getBoundingClientRect(), d = Math.abs((b.top + b.bottom) / 2 - focus); if (d < bd) { bd = d; best = i; } });
+    if (best !== s.cur) { s.cur = best; s.steps.forEach((st, i) => st.classList.toggle('on', i === best)); stepChanged(s.id, best); }
+  }
+  const r = closing.getBoundingClientRect(), p = reduce ? 1 : clamp((vh * .75 - r.top) / r.height, 0, 1); // the loss line keeps going down the margin
+  fall.style.transform = `scaleY(${p})`; tip.style.transform = `translateY(${clamp(p * r.height - 16, 0, r.height - 100)}px)`;
+  tip.textContent = 'Figure ' + MINUS + Math.round(9 + p * 105) + DEPTH.find(d => p < d[0])[1];
+}
+let scrollDirty = true;
+addEventListener('scroll', () => { scrollDirty = true; }, { passive: true });
+addEventListener('resize', () => { scrollDirty = true; });
+
+/* ---------- the sign by the time clock ---------- */
+const WHY = ['Reset 4:12 p.m. Reason: reply all.', 'Reset 4:19 p.m. Reason: someone said “watch this.”', 'Reset 4:26 p.m. Reason: crawfish.', 'Reset 4:31 p.m. Reason: a rule was enforced. The rule does not exist.', 'Reset 4:40 p.m. Reason: this sign was being updated.', 'Reset 4:44 p.m. Reason: Dale found the fireworks.', 'Reset 4:51 p.m. Reason: the fish again.'];
+const BRD = { next: 5200, phase: 0, at: 0, i: 0 };
+function board(t) {
+  if (reduce) return;
+  if (!BRD.phase && t > BRD.next) { $('#days').textContent = '1'; BRD.phase = 1; BRD.at = t; }
+  else if (BRD.phase && t > BRD.at + 1100) {
+    const b = $('#board'); $('#days').textContent = '0'; b.classList.remove('thud'); void b.offsetWidth; b.classList.add('thud');
+    BRD.i = (BRD.i + 1) % WHY.length; $('#why').textContent = WHY[BRD.i]; BRD.phase = 0; BRD.next = t + 6400;
+  }
+}
+
+/* ---------- Form 76-S/a ---------- */
+$('#sa').addEventListener('submit', ev => {
+  ev.preventDefault();
+  const pick = document.querySelector('#sa input[name="q"]:checked'), out = $('#sa-out');
+  if (!pick) { out.textContent = 'Please mark one. All four are available.'; return; }
+  $$('#sa .opts span').forEach(s => { s.textContent = 'Intelligent'; });
+  pick.parentElement.querySelector('span').textContent = 'Intelligent (Revised)';
+  out.textContent = 'Filed on this page only. Nothing was sent anywhere. Regional lost the fax number. 100% of respondents marked Intelligent, the same as last quarter and the quarter the freezer caught fire. Your answer has been entered as Intelligent (Revised). See Law One.';
+});
+
+/* ---------- one loop ---------- */
+function frame(t) {
+  now = t;
+  if (scrollDirty) { scrollDirty = false; onScroll(); }
+  if (E2.queue.length && t > E2.nextAt) { sortBy(E2.queue.shift()); E2.nextAt = t + 3000; }
+  for (const e of exhibits) if (e.dirty && e.seen && e.w) e.dirty = !!e.draw(e, t);
+  board(t);
+  requestAnimationFrame(frame);
+}
+renderFig(); setP(G.px, G.py); say1();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => exhibits.forEach(e => { e.dirty = true; }));
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
