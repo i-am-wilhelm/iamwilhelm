@@ -18,6 +18,11 @@ export default defineConfig({
   site: 'https://iamwilhelm.com',
   output: 'static',
   trailingSlash: 'ignore',
+  // A short address for the Threshold ("What brought you here?"), for bios
+  // and cards: /welcome lands on the homepage at #welcome.
+  redirects: {
+    '/welcome': '/#welcome',
+  },
   build: {
     // Inline every stylesheet: no render-blocking CSS requests on first paint.
     inlineStylesheets: 'always',

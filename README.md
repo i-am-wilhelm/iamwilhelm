@@ -21,7 +21,8 @@ custom domain in the Cloudflare dashboard.
 
 ## The museum (public homepage)
 
-The homepage is a walk through a small museum: a foyer, three numbered rooms
+The homepage is a walk through a small museum: a foyer, the threshold
+("What brought you here?"), three numbered rooms
 (the Treasury, the Gallery, Writings) divided by Greek meander keylines, and a
 colophon. Warm ivory walls, charcoal
 ink, gilt as the one shared accent, paper grain from an SVG noise tile, and
@@ -33,6 +34,29 @@ No WebGL, no dithering, no audio on these pages.
   the series indexes, `/method`, `/support`, `/services` (Room IV, the
   commissions page for scrollies), `/scrollbrief` (Room V, the studio page),
   `/what-is-a-scrolly` (Room IV, the glossary), the plain-text twins, and 404.
+- The Threshold (`rooms/Threshold.astro`, `#welcome`; `/welcome` redirects
+  there, set in `astro.config.mjs`): the doorway between the Foyer and Now
+  on view, and the site's wayfinding. It asks "What brought you here?" and
+  offers six answers, three on each side of a Janus coin, each a door to
+  the room that fits it. The elder's side is the work done for others
+  (BackGold, Scrollbrief, Commissions); the youth's side is the work made
+  for its own sake (the Gallery, Futurist, Writings), after the couplet at
+  its foot (Ovid, Fasti 1.135-136: every door has two fronts, one toward
+  the people, one toward the household god). Two more answers sit under
+  the coin (only looking; looking for Michael). Pointing at a door wakes
+  the face that looks toward it. The last door taken is kept in
+  localStorage (`iw:threshold`, this browser only) and offered back in one
+  line on the next visit. To add or move a door, edit the arrays at the top
+  of the component; a door's `id` is what the page remembers. The Foyer's
+  "Begin the tour" leads here.
+- The coin (`Janus.astro`, geometry in `janus.ts`): a Roman as in hairline
+  gilt, Janus on the obverse and a ship's prow on the reverse, with 365
+  marks on the rim. It is a button: it turns over, and the reverse's
+  caption (capita aut navia, "heads or ships") opens the door to `/earl/`.
+  `JanusMark.astro` is the same god at glyph size. The site footer ("The
+  front door") and the foot of every scroll page ("Came in by a side
+  door?") link back to `/#welcome` under it, since most readers arrive on
+  a piece and never see the homepage.
 - Room I, the Treasury (`rooms/RoomBackGold.astro`): the one dark room. The
   BackGold tablet stands in a glass vitrine on a plinth and the eight things
   the platform holds sit in gilt niches. The vitrine is decoration; with a

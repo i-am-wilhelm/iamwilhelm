@@ -1,0 +1,268 @@
+---
+/**
+ * The threshold's coin: a Roman as in hairline gilt. Obverse, Janus: the
+ * elder looks left, the youth looks right. Reverse, a ship's prow under
+ * the mark of value. Geometry in ./janus.ts.
+ *
+ * The coin is a button. Touching it turns it over, and the caption under
+ * it changes with the side: the reverse names the game Roman children
+ * played with this coin (capita aut navia, "heads or ships"; Macrobius,
+ * Saturnalia 1.7.22) and opens the one door the plan does not list, /earl/.
+ * Without script the coin shows its obverse and the caption says only that.
+ *
+ * The two faces carry classes (janus__face--out, janus__face--in) so the
+ * section that mounts the coin can wake the face that looks toward
+ * whatever the visitor is pointing at.
+ */
+import { ELDER, FACE, PROW, RIM, SHARED, YOUTH } from './janus';
+
+const C = 120;
+---
+
+<div class="coin" data-coin>
+  <button class="coin__turn" type="button" aria-pressed="false" aria-describedby="coin-caption" data-coin-turn>
+    <span class="sr-only">Turn the coin over</span>
+    <span class="coin__body" aria-hidden="true">
+      <svg class="coin__side coin__side--obv" viewBox="0 0 240 240" fill="none" stroke="currentColor" focusable="false">
+        <g class="coin__rim">
+          <circle cx={C} cy={C} r={RIM.outer}></circle>
+          <circle cx={C} cy={C} r={RIM.scale}></circle>
+          <path d={RIM.ticks} opacity="0.7"></path>
+          <circle cx={C} cy={C} r={RIM.inner} stroke-dasharray="1 4" opacity="0.8"></circle>
+        </g>
+        <g class="janus__face janus__face--out" transform="translate(240 0) scale(-1 1)">
+          <path d={FACE.brow}></path>
+          <path d={FACE.nostril}></path>
+          <path d={FACE.eye}></path>
+          <path d={FACE.ear}></path>
+          <path d={FACE.hair} opacity="0.75"></path>
+          <path d={FACE.laurel}></path>
+          <path d={ELDER.lip}></path>
+          <path d={ELDER.moustache}></path>
+          <path d={ELDER.beard}></path>
+          <path d={ELDER.beardCurls} opacity="0.7"></path>
+          <path d={ELDER.throat}></path>
+        </g>
+        <g class="janus__face janus__face--in">
+          <path d={FACE.brow}></path>
+          <path d={FACE.nostril}></path>
+          <path d={FACE.eye}></path>
+          <path d={FACE.ear}></path>
+          <path d={FACE.hair} opacity="0.75"></path>
+          <path d={FACE.laurel}></path>
+          <path d={YOUTH.profile}></path>
+          <path d={YOUTH.lips}></path>
+          <path d={YOUTH.jaw} opacity="0.8"></path>
+        </g>
+        <g class="janus__shared">
+          <path d={SHARED.crown}></path>
+          <path d={SHARED.seam} opacity="0.5" stroke-dasharray="1 3"></path>
+          <path d={SHARED.bust}></path>
+        </g>
+      </svg>
+      <svg class="coin__side coin__side--rev" viewBox="0 0 240 240" fill="none" stroke="currentColor" focusable="false">
+        <g class="coin__rim">
+          <circle cx={C} cy={C} r={RIM.outer}></circle>
+          <circle cx={C} cy={C} r={RIM.scale}></circle>
+          <path d={RIM.ticks} opacity="0.7"></path>
+          <circle cx={C} cy={C} r={RIM.inner} stroke-dasharray="1 4" opacity="0.8"></circle>
+        </g>
+        <g class="coin__prow">
+          <path d={PROW.hull}></path>
+          <path d={PROW.eye}></path>
+          <path d={PROW.deck} opacity="0.8"></path>
+          <path d={PROW.value}></path>
+          <path d={PROW.sea} opacity="0.7"></path>
+        </g>
+      </svg>
+    </span>
+  </button>
+  <p class="coin__caption mono" id="coin-caption" aria-live="polite">
+    <span data-coin-obverse>
+      Obverse<span class="coin__dot" aria-hidden="true"> &middot; </span>Janus, both ways.
+      <span class="coin__hint" data-coin-hint hidden>It turns over.</span>
+    </span>
+    <span data-coin-reverse hidden>
+      Reverse<span class="coin__dot" aria-hidden="true"> &middot; </span>A prow. <i lang="la">Capita aut navia</i>: heads
+      or ships. <a class="coin__boat" href="/earl/">He has a boat</a>
+    </span>
+  </p>
+</div>
+
+<script>
+  /* The coin turns on a touch. The hint that it does appears only once
+     this script is running, so the caption never promises a dead control. */
+  for (const coin of document.querySelectorAll<HTMLElement>('[data-coin]')) {
+    const turn = coin.querySelector<HTMLButtonElement>('[data-coin-turn]');
+    const obverse = coin.querySelector<HTMLElement>('[data-coin-obverse]');
+    const reverse = coin.querySelector<HTMLElement>('[data-coin-reverse]');
+    const hint = coin.querySelector<HTMLElement>('[data-coin-hint]');
+    if (!turn || !obverse || !reverse) continue;
+    coin.classList.add('is-live');
+    if (hint) hint.hidden = false;
+    turn.addEventListener('click', () => {
+      coin.classList.add('is-touched');
+      const turned = coin.classList.toggle('is-turned');
+      turn.setAttribute('aria-pressed', String(turned));
+      obverse.hidden = turned;
+      reverse.hidden = !turned;
+    });
+  }
+</script>
+
+<style>
+  .coin {
+    --coin-turn: calc(var(--beat) * 1.2);
+    display: grid;
+    justify-items: center;
+    gap: 0.9rem;
+    width: 100%;
+  }
+  .coin__turn {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--gilt-ink);
+    font: inherit;
+    cursor: default;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .coin.is-live .coin__turn {
+    cursor: pointer;
+  }
+  .coin.is-live .coin__turn:hover {
+    transform: translateY(-4px);
+  }
+  .coin__body {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .coin__side {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    /* Struck metal under gallery light, kept as pale as the wall. */
+    background: radial-gradient(circle at 50% 30%, #fdfbf5 0%, #f8f3e8 46%, #eee6d6 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 22px 34px -24px rgba(40, 28, 12, 0.6);
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /*
+   * The turn is flat: the coin narrows to its edge and opens on the other
+   * side, which keeps the engraving sharp (a 3D flip softens the far face).
+   * Two identical keyframes, so each touch restarts the motion; the sides
+   * change places at the moment the coin is edge-on.
+   */
+  .coin__side--rev {
+    visibility: hidden;
+  }
+  .coin.is-turned .coin__side--rev,
+  .coin.is-touched:not(.is-turned) .coin__side--obv {
+    visibility: visible;
+    animation: coin-show var(--coin-turn) both;
+  }
+  .coin.is-turned .coin__side--obv,
+  .coin.is-touched:not(.is-turned) .coin__side--rev {
+    visibility: hidden;
+    animation: coin-hide var(--coin-turn) both;
+  }
+  .coin.is-turned .coin__body {
+    animation: coin-turn-a var(--coin-turn) both;
+  }
+  .coin.is-touched:not(.is-turned) .coin__body {
+    animation: coin-turn-b var(--coin-turn) both;
+  }
+  @keyframes coin-turn-a {
+    0% {
+      transform: scaleX(1);
+      animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+    }
+    50% {
+      transform: scaleX(0.02);
+      animation-timing-function: cubic-bezier(0.1, 0.5, 0.3, 1);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes coin-turn-b {
+    0% {
+      transform: scaleX(1);
+      animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+    }
+    50% {
+      transform: scaleX(0.02);
+      animation-timing-function: cubic-bezier(0.1, 0.5, 0.3, 1);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes coin-show {
+    0%,
+    49.9% {
+      visibility: hidden;
+    }
+    50%,
+    100% {
+      visibility: visible;
+    }
+  }
+  @keyframes coin-hide {
+    0%,
+    49.9% {
+      visibility: visible;
+    }
+    50%,
+    100% {
+      visibility: hidden;
+    }
+  }
+  .coin__side path,
+  .coin__side circle {
+    vector-effect: non-scaling-stroke;
+  }
+  .coin__rim {
+    color: var(--gilt);
+  }
+  .janus__face {
+    transition:
+      color calc(var(--beat) * 0.8) var(--ease-settle),
+      opacity calc(var(--beat) * 0.8) var(--ease-settle);
+  }
+
+  .coin__caption {
+    min-height: 3.1em;
+    max-width: 17rem;
+    color: var(--ink-faint);
+    line-height: 1.55;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .coin__caption i {
+    font-style: italic;
+  }
+  .coin__hint:not([hidden]) {
+    display: block;
+  }
+  .coin__boat {
+    color: var(--gilt-ink);
+    white-space: nowrap;
+  }
+  .coin__boat::after {
+    content: ' \2192';
+  }
+</style>

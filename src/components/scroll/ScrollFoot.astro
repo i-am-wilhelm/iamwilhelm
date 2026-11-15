@@ -7,6 +7,9 @@
  * series index after the last), the newsletter field (the same form and
  * endpoint as the colophon, via NewsletterForm), and the patronage door to
  * /support, and one line to the commissions page, since every piece ends here.
+ * Under it, the way to the front door: most readers arrive on a piece from
+ * a shared link and have never seen the homepage, so the foot points them
+ * to the Threshold (/#welcome), where the rest of the work is laid out.
  *
  * Self-contained: everything inherits the page's colour and text face, and
  * the small type reads the page's mono variable (--font-mono, --log or
@@ -14,6 +17,7 @@
  * One inline script of a few lines handles the copy button; nothing loads.
  */
 import NewsletterForm from '../museum/NewsletterForm.astro';
+import JanusMark from '../museum/JanusMark.astro';
 import { series as registry } from '../../config/series';
 import { getPiece, nextInSeries, type PieceKind } from '../../lib/pieces';
 
@@ -84,6 +88,10 @@ const uid = `sf-${id}`;
       </span>
     )}
     Pieces like these are built to order. <a href="/services/">Commissions &rarr;</a>
+    <span class="scroll-foot__front">
+      <JanusMark size={16} />
+      <span>Came in by a side door? <a href="/#welcome">The front door &rarr;</a></span>
+    </span>
   </p>
 </aside>
 
@@ -290,6 +298,15 @@ const uid = `sf-${id}`;
   .scroll-foot__commission a {
     color: inherit;
     text-underline-offset: 0.3em;
+  }
+  .scroll-foot__front {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin-top: 0.9rem;
+  }
+  .scroll-foot__front svg {
+    flex: none;
   }
   @media print {
     .scroll-foot {
