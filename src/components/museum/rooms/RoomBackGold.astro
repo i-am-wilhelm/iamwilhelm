@@ -206,7 +206,15 @@ const motes = [
           {organizations.map((o) => <li>{o}</li>)}
         </ul>
       </div>
-      <a class="cta cta--gilt" href={BACKGOLD_URL} rel="noopener">Visit BackGold.com</a>
+      <div class="tr__doors">
+        <a class="cta cta--gilt" href={BACKGOLD_URL} rel="noopener">Visit BackGold.com</a>
+        <div class="tr__door">
+          <a class="cta cta--gilt" href="/gallery/nine-hundred-lights/" aria-describedby="tr-door-line">Read Nine Hundred Lights</a>
+          <p class="tr__door-line" id="tr-door-line">
+            Why a party that keeps its list keeps its people. BackGold is the lens in Part V.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </Room>
@@ -795,6 +803,25 @@ const motes = [
     gap: 2rem;
     padding-top: 2rem;
     border-top: 1px solid var(--rule);
+  }
+  /* The ways out of the room, side by side: BackGold.com, and the essay
+     that reads BackGold as its lens, with its line beneath it. */
+  .tr__doors {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1.2rem 1.4rem;
+  }
+  .tr__door {
+    display: grid;
+    justify-items: start;
+    gap: 0.65rem;
+  }
+  .tr__door-line {
+    max-width: 32ch;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
   .tr__orgs {
     display: grid;

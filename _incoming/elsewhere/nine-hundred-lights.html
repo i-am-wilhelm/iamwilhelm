@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nine Hundred Lights</title>
+<meta name="description" content="Nine hundred apprentices, training to be their own flame keepers and standing watch on the shore for brigands. An endorsement of the Libertarian Leadership Academy, and the case that a party full of trained people stays in its own hands.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one sticky full-height stage per scene; text cards scroll over it (bottom on portrait, right column on wide screens). One visual world: graph paper at night. */
+  --bg:#0a1220; --bone:#e9edf2; --warm:#cfc6b2; --glass:#9fd8e8; --red:#e2584a; --gold:#f2c46d; --muted:#8d9bb0;
+  --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Newsreader',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:#ffe2a8}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;background:var(--bone);color:#0a1220;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+.hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 24px 10vh;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero .inner{position:relative;max-width:820px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);line-height:1.8}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,124px);line-height:.92;margin:.35em 0 .3em;letter-spacing:-.015em;text-wrap:balance}
+h1 em{font-style:italic;color:#ffe2a8}
+.sub{max-width:42ch;margin:0 auto;font-size:19px;color:var(--warm);font-style:italic}
+.by{margin-top:4vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone)}
+.hint{margin-top:6vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.steps{position:relative;margin-top:-100vh;margin-top:-100dvh;pointer-events:none}
+.step{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-end;justify-content:center;padding:0 18px 8vh}
+.card{pointer-events:auto;max-width:37ch;background:rgba(11,19,33,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(242,196,109,.22);padding:18px 20px 16px;font-size:clamp(17.5px,calc(12px + .85vmin),26px);color:var(--bone)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin:0}
+.card .n{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--gold);display:block;margin:0 0 9px;text-transform:uppercase}
+.tag{position:absolute;left:12px;top:12px;font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.6;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(10,18,32,.72);border:1px solid rgba(242,196,109,.25);padding:5px 9px;max-width:calc(100% - 24px);pointer-events:none}
+
+.palette{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 24px);background:rgba(10,18,32,.82);border:1px solid rgba(242,196,109,.3);padding:8px 10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.palette.on{opacity:1;pointer-events:auto}
+.palette .pl,.palette label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.palette input[type=range]{width:min(38vw,220px);height:44px;accent-color:#f2c46d}
+.palette output{font-family:var(--mono);font-size:11px;min-width:5.6em;color:var(--bone)}
+.palette button{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone);background:transparent;border:1px solid rgba(236,228,210,.35);padding:9px 12px;min-height:44px;cursor:pointer}
+.palette button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0a1220}
+
+@media (max-width:899px){ .palette{top:48px} }
+@media (max-width:520px){ .palette{gap:6px;padding:6px} .palette .pl{display:none} .palette input[type=range]{width:32vw} }
+@media (min-width:900px) and (max-aspect-ratio:5/4){ .palette{top:56px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .step{justify-content:flex-end;align-items:center;padding:0 7vw 0 0}
+  .card{max-width:40ch}
+  .palette{left:35%;top:auto;bottom:26px}
+}
+
+.end{padding:16vh 22px 12vh;max-width:760px;margin:0 auto}
+.end h2{font-family:var(--display);font-weight:400;font-size:clamp(44px,10vw,88px);line-height:.98;margin:10vh 0 .45em;text-align:center}
+.end .lede{color:var(--warm);max-width:46ch;margin:0 auto 1em;text-align:center}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(242,196,109,.5),transparent);margin:0 auto;width:60%}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:11vh 0 1.4em}
+.end p.body{font-size:19px;max-width:60ch;margin:0 0 1em;color:var(--bone)}
+.end p.line{font-family:var(--display);font-style:italic;font-size:clamp(24px,5.4vw,32px);line-height:1.2;color:#fff3dc;margin:1.2em 0 0}
+.objs{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.obj{border-top:1px solid rgba(236,228,210,.16);padding-top:14px;display:grid;gap:3px}
+.obj b{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.15}
+.obj span{font-size:16px;color:var(--warm)}
+.obj .who{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.7}
+.src{margin:0;padding-left:1.1em;font-size:15.5px;color:var(--warm);display:grid;gap:8px}
+.sig{margin-top:9vh;font-family:var(--display);font-size:26px;line-height:1.2}
+.sig small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);margin-top:6px;line-height:1.8}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-top:6vh;line-height:1.8}
+.btn{display:inline-block;margin:5vh 10px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(242,196,109,.45);padding:12px 16px;text-decoration:none}
+
+@media (prefers-reduced-motion:reduce){ .palette{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#stand">Skip to where I stand and what I am endorsing</a>
+
+<header class="hero" id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">An endorsement · The Libertarian Leadership Academy</div>
+    <h1>Nine Hundred <em>Lights</em></h1>
+    <p class="sub">Nine hundred apprentices, training to be their own flame keepers and standing watch on the shore for brigands. This is my endorsement of the Libertarian Leadership Academy, and the case that a party full of trained people stays in its own hands.</p>
+    <div class="by">Michael Wilhelm</div>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · the flame -->
+<section class="scene" id="s1" aria-labelledby="s1h">
+  <div class="stage">
+    <canvas role="img" aria-label="A lamp on graph paper sends rays in every direction. A small ship moves away from it and the light reaching the ship fades." aria-describedby="s1d"></canvas>
+    <div class="tag" aria-hidden="true">A bare flame</div>
+    <div class="palette" id="distBar">
+      <label for="dist">Ship</label>
+      <input type="range" id="dist" min="10" max="60" value="10" step="1" aria-valuetext="1 mile out">
+      <output id="distOut" for="dist">1.0 mi</output>
+    </div>
+    <p class="sr-only" id="s1d">A slider moves the ship from one mile out to six. The light spreads as it travels. At one mile all of it arrives. At two miles a quarter arrives. At six miles about three percent arrives.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s1h">I · The flame</h2><p>Liberty is a flame, and it has never burned low. Stand beside it at a convention, a county meeting or a kitchen table, and it is the brightest thing in the room.</p></div></div>
+    <div class="step"><div class="card"><p>Out past the room it thins fast. Slide the ship out. A voter three counties over sees a flicker.</p></div></div>
+    <div class="step"><div class="card"><p>A bright flame in a thin house draws company. Some come to keep the light. Some are brigands, and they come for the tower.</p></div></div>
+  </div>
+</section>
+
+<!-- II · the room -->
+<section class="scene" id="s2" aria-labelledby="s2h">
+  <div class="stage">
+    <canvas role="img" aria-label="A room of nine hundred chairs drawn as dots. Gold dots are keepers. Red dots are brigands arriving to fill the empty chairs." aria-describedby="s2d"></canvas>
+    <div class="tag" aria-hidden="true">A room of nine hundred chairs</div>
+    <div class="palette" id="keepBar">
+      <label for="keep">Keepers</label>
+      <input type="range" id="keep" min="30" max="900" value="120" step="1" aria-valuetext="120 keepers in a room of 900">
+      <output id="keepOut" for="keep">120 / 900</output>
+    </div>
+    <p class="sr-only" id="s2d">A slider sets how many of the nine hundred chairs are filled by keepers, shown in gold from the front of the room. Brigands, shown in red, fill empty chairs from the back. With 120 keepers, 121 brigands carry the room. Once keepers fill more than half the chairs, the empty chairs left over cannot hold an outside majority.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s2h">II · The room</h2><p>Every party office is decided in a room. A county meeting, a state convention, a national floor. Whoever fills the chairs holds the tower.</p></div></div>
+    <div class="step"><div class="card"><p>Here is a room of nine hundred chairs with a hundred and twenty keepers in it. Watch what one boatload of brigands does with the empty ones.</p></div></div>
+    <div class="step"><div class="card"><p>That is the whole trick of a takeover from the outside: empty chairs and a head count. The speeches come later, from the podium, once the tower has changed hands.</p></div></div>
+    <div class="step"><div class="card"><p>Now slide the keepers up. Past half the room, the brigands have nowhere to sit. Recruitment fills the chairs. Training is why the people in them stay.</p></div></div>
+  </div>
+</section>
+
+<!-- III · the focus -->
+<section class="scene" id="s3" aria-labelledby="s3h">
+  <div class="stage">
+    <canvas role="img" aria-label="A lamp sits behind a glass lens. Its rays cross or fan out until the lamp reaches the right spot, where they leave the lens side by side as one beam." aria-describedby="s3d"></canvas>
+    <div class="tag" aria-hidden="true">The same flame, behind a lens</div>
+    <div class="palette" id="lampBar">
+      <label for="lamp">Lamp</label>
+      <input type="range" id="lamp" min="50" max="200" value="180" step="1" aria-valuetext="too far back: the rays cross">
+      <output id="lampOut" for="lamp">far</output>
+    </div>
+    <p class="sr-only" id="s3d">A slider moves the lamp toward or away from the lens. Too far back, the rays cross. Too close, they fan out. At one exact spot, the focus, all eleven rays leave level as one beam.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s3h">III · The focus</h2><p>Filling chairs is half of it. A room of new arrivals, each on their own heading, is light without a lens. Slide the lamp and watch the rays cross, then fan out.</p></div></div>
+    <div class="step"><div class="card"><p>Training is the lens. It takes the same people and the same fire and sends them out level, side by side. An apprentice learns how to ask, how to keep a list, how to run a meeting, and how to lose a vote and stay.</p></div></div>
+    <div class="step"><div class="card"><p>This is the work of the Libertarian Leadership Academy, and it has my full endorsement. It trains candidates, campaign staff and organizers, online and in person, and its door is open on the same terms to anyone ready to lead.</p></div></div>
+    <div class="step"><div class="card"><p>Its goal for this cycle is on the wall: nine hundred candidates, at every level, nationwide. Nine hundred apprentices, each training to be the keeper of their own flame.</p></div></div>
+  </div>
+</section>
+
+<!-- IV · the climb -->
+<section class="scene" id="s4" aria-labelledby="s4h">
+  <div class="stage">
+    <canvas role="img" aria-label="A lighthouse on a cliff beside a curved sea. A line of light from the lamp reaches a boat far out on the water. The higher the lamp, the farther out the boat." aria-describedby="s4d"></canvas>
+    <div class="tag" aria-hidden="true">One level at a time</div>
+    <div class="palette" id="highBar">
+      <label for="high">Level</label>
+      <input type="range" id="high" min="5" max="100" value="10" step="1" aria-valuetext="School board">
+      <output id="highOut" for="high">School board</output>
+    </div>
+    <p class="sr-only" id="s4d">A slider raises the lamp through five levels named for offices: school board, city council, county commission, statehouse and Congress. At each level the light is seen from farther out, from about ten miles at the lowest to about twenty-seven at the highest. The drawing exaggerates the curve of the sea.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s4h">IV · The climb</h2><p>Keepers are made on the stairs. School board, city council, county commission, statehouse. Slide the lamp up a level and watch how far it carries.</p></div></div>
+    <div class="step"><div class="card"><p>Every campaign, win or lose, leaves a keeper behind. Someone who has knocked the doors, carried the petitions and balanced the books. Those are the people in the chairs when the brigands land.</p></div></div>
+    <div class="step"><div class="card"><p>The count is within reach. Ballotpedia lists 967 Libertarian candidates in 2018. Nine hundred campaigns, each with a handful of volunteers, is a few thousand people who earned their seat and know a stranger's pitch when they hear one.</p></div></div>
+  </div>
+</section>
+
+<!-- V · the glass -->
+<section class="scene" id="s5" aria-labelledby="s5h">
+  <div class="stage">
+    <canvas role="img" aria-label="Two lenses in cross-section. One is a thick solid dome. The other keeps the same curved face cut into rings on a thin plate. Both send out the same beam." aria-describedby="s5d"></canvas>
+    <div class="tag" aria-hidden="true">One curve, cut thin</div>
+    <div class="palette" id="ringBar">
+      <label for="ring">Rings</label>
+      <input type="range" id="ring" min="1" max="12" value="1" step="1" aria-valuetext="1 ring">
+      <output id="ringOut" for="ring">1</output>
+    </div>
+    <p class="sr-only" id="s5d">A slider cuts the second lens into one to twelve rings. With one ring it is the same solid dome. With twelve it is a thin plate that throws the same beam at about a sixth of the weight. Small prisms at its edges catch stray rays and turn them level.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s5h">V · The glass</h2><p>Keepers need a lens they can lift. The old one was a boulder: one subscription for the list, another for email, another for donations, another for the site, and data lost each time one lapsed.</p></div></div>
+    <div class="step"><div class="card"><p>Slide the rings. The same curve, cut thin, does the same work at a fraction of the weight. That is BackGold: the list, the outreach, the money, the site and the map on one plate, kept year over year, election over election.</p></div></div>
+    <div class="step"><div class="card"><p>A party that keeps its list keeps its people, and a party that keeps its people is hard to outnumber. The rest is craft: designers with taste and a hunger to carry the message all the way to the reader.</p></div></div>
+  </div>
+</section>
+
+<!-- VI · the signature -->
+<section class="scene" id="s6" aria-labelledby="s6h">
+  <div class="stage">
+    <canvas role="img" aria-label="Seen from above, a lens turns and sweeps beams of light across dark water. Two strips below compare the flashes printed on the chart with the flashes a sailor counts." aria-describedby="s6d"></canvas>
+    <div class="tag" aria-hidden="true">Each light keeps time</div>
+    <div class="palette" id="lights" role="group" aria-label="Choose the rhythm">
+      <span class="pl">Rhythm</span>
+      <button type="button" data-light="chart" aria-pressed="true">As charted</button>
+      <button type="button" data-light="changed" aria-pressed="false">Rhythm changed</button>
+    </div>
+    <p class="sr-only" id="s6d">Two buttons choose the rhythm. As charted, the light sends two white flashes every 30 seconds and the sailor's count matches the chart. With the rhythm changed, the same tower sends three red flashes and the count no longer matches the chart. The animation runs faster than life.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s6h">VI · The signature</h2><p>At night every light is a dot. Sailors tell one from another by its rhythm, and the rhythm is printed on the chart.</p></div></div>
+    <div class="step"><div class="card"><p>Here is a takeover seen from the water. Press Rhythm changed. Same tower, same flame, bright as ever. The count is wrong, and a ship steering by the chart finds the rocks.</p></div></div>
+    <div class="step"><div class="card"><p>Ours has been on the chart since 1971. Each person owns their own life. Trade is free. Peace is the policy.</p></div></div>
+    <div class="step"><div class="card"><p>Trained keepers know that count by heart, so the door can stand wide open. Everyone who comes for the light is welcome in the tower. The rabble-rousers of empire can find another hall to shout in.</p></div></div>
+  </div>
+</section>
+
+<!-- VII · the coast -->
+<section class="scene" id="s7" aria-labelledby="s7h">
+  <div class="stage">
+    <canvas role="img" aria-label="The same nine hundred chairs, thirty rows of thirty, now drawn as lights. They come on a few at a time until the whole field is lit." aria-describedby="s7d"></canvas>
+    <div class="tag" aria-hidden="true">The same room, lit</div>
+    <div class="palette" id="cntBar">
+      <label for="cnt">Lights</label>
+      <input type="range" id="cnt" min="1" max="900" value="1" step="1" aria-valuetext="1 of 900 lights lit">
+      <output id="cntOut" for="cnt">1 / 900</output>
+    </div>
+    <p class="sr-only" id="s7d">A slider lights from 1 to 900 lamps, scattered across thirty rows of thirty. Every lit lamp keeps the same rhythm of two flashes and a pause. A readout counts the lamps lit and the lamps still to go.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="card"><h2 class="n" id="s7h">VII · The coast</h2><p>Here is the same room. Nine hundred chairs, thirty rows of thirty. Slide the lights on.</p></div></div>
+    <div class="step"><div class="card"><p>Each one is an apprentice turned keeper. A neighbor who was recruited, trained and stood up where they live, tending their own flame and watching their own stretch of shore.</p></div></div>
+    <div class="step"><div class="card"><p>From the water, nine hundred lights read as a single coast. Brigands take towers. Nobody takes a coast.</p></div></div>
+  </div>
+</section>
+
+<section class="end" id="end">
+  <hr class="rule">
+  <h2>Face forward.</h2>
+  <p class="lede">The flame is as bright as it ever was. What guards it is people: recruited, trained and in their chairs.</p>
+  <p class="lede">The tools are on the bench and the number is on the wall. What is left is the climb, and everyone who makes it wins. The apprentice gets a craft, the party gets a coast, and the voter gets a light to steer by.</p>
+
+  <h3 id="stand">Where I stand</h3>
+  <p class="body">I came into this movement in 2016 as one of eight delegates Utah sent to Orlando, and I came back to it this year. Today I am cofounder and CEO of BackGold and vice president of the board at the Libertarian Leadership Academy.</p>
+  <p class="body">The Academy opens its door to anyone ready to lead. What that training does for the Libertarian Party is my own read, and I stand on it: nine hundred apprentices, training to be their own flame keepers, guarding the shore against brigands.</p>
+  <p class="body">My own post is the lantern room. I learned design just over a year ago, and I now have dozens of pages as beautiful and as unique as this one. I grind the glass and keep it clean.</p>
+  <p class="line">I call it the long apprenticeship of keeping fire.</p>
+
+  <h3>What I am endorsing</h3>
+  <ul class="objs">
+    <li class="obj"><b>The Academy</b><span>The Libertarian Leadership Academy. Training for candidates, campaign staff and organizers, online and in person, open on the same terms to anyone ready to lead.</span><span class="who">libertarianleadership.org · Part III</span></li>
+    <li class="obj"><b>The goal</b><span>Nine hundred candidates, at every level, nationwide, this cycle.</span><span class="who">Parts III and VII</span></li>
+    <li class="obj"><b>The reason</b><span>A party that recruits and trains its own people fills its own chairs, keeps its own rhythm and stays in its own hands.</span><span class="who">Parts II and VI</span></li>
+    <li class="obj"><b>The tools</b><span>BackGold keeps the list, the outreach, the money, the site and the map in one place, live and in use today.</span><span class="who">backgold.com · Part V</span></li>
+  </ul>
+
+  <h3>On the record</h3>
+  <ul class="src">
+    <li>The 2018 candidate count and the party's founding year: <a href="https://ballotpedia.org/Libertarian" rel="noopener">Ballotpedia, &ldquo;Libertarian Party&rdquo;</a>.</li>
+    <li>The room in Part II is a diagram: nine hundred chairs and a simple head count. The changed rhythm in Part VI is invented for the demonstration.</li>
+    <li>The lighthouse drawings come from <a href="https://iamwilhelm.com/gallery/how-to-throw-a-flame-twenty-miles/" rel="noopener">How to Throw a Flame Twenty Miles</a>, which lists its own sources.</li>
+  </ul>
+
+  <div class="sig">Michael Wilhelm<small>Co-Founder, BackGold · Vice President of the Board, Libertarian Leadership Academy<br>iamwilhelm.com</small></div>
+
+  <div><a class="btn" href="#hero">Read it again &uarr;</a></div>
+  <div class="colophon">
+    Drawn in code on graph paper. No photographs and no image generators.<br>
+    Research, writing and code made with AI assistance and checked against the sources listed.
+  </div>
+</section>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ramp = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+const sstep = t => t * t * (3 - 2 * t);
+const ease = (p, a, b) => sstep(ramp(p, a, b));
+const lerp = (a, b, t) => a + (b - a) * t;
+const frac = v => v - Math.floor(v);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = `'IBM Plex Mono', ui-monospace, monospace`;
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function prep(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.clientWidth, h = c.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  return { ctx, w, h };
+}
+/* the drawing area: left 56% on wide screens (cards sit right), the upper part on portrait (cards sit below) */
+function frameOf(w, h) {
+  const wide = w >= 900 && w / h >= 1.25;
+  return wide ? { wide, cx: w * 0.35, cy: h * 0.5, aw: w * 0.54, ah: h * 0.8 }
+              : { wide, cx: w * 0.5, cy: h * 0.385, aw: w * 0.9, ah: h * 0.56 };
+}
+function mono(ctx, text, x, y, color, align = 'left', size = 10) { ctx.font = `500 ${size}px ${MONO}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(text, x, y); }
+
+/* ---------- palette and small tools ---------- */
+const AMBER = '#f2c46d', GLASS = '#9fd8e8', BONE = '#e9edf2', MUTE = '#8d9bb0', NAVY = '#0a1220', REDL = '#e2584a', WHITE = '#fff4d6', D2R = Math.PI / 180;
+function paper(ctx, w, h) { // graph paper at night
+  ctx.fillStyle = NAVY; ctx.fillRect(0, 0, w, h); const s = w < 700 ? 18 : 24; ctx.lineWidth = 1;
+  for (const [st, c] of [[s, 'rgba(150,180,220,.075)'], [s * 5, 'rgba(150,180,220,.16)']]) { ctx.strokeStyle = c; ctx.beginPath(); for (let x = .5; x < w; x += st) { ctx.moveTo(x, 0); ctx.lineTo(x, h); } for (let y = .5; y < h; y += st) { ctx.moveTo(0, y); ctx.lineTo(w, y); } ctx.stroke(); }
+}
+function zone(F, w, h) { // where a drawing can sit without touching the label, the control or the text cards
+  const y0 = F.wide ? 64 : w >= 900 ? 132 : 118, y1 = F.wide ? h - 92 : Math.max(y0 + 220, h * .665), x0 = F.cx - F.aw / 2;
+  return { x0, x1: x0 + F.aw, y0, y1, cx: F.cx, cy: (y0 + y1) / 2, zw: F.aw, zh: y1 - y0 };
+}
+const area = (Z, fs) => { const y1 = Z.y1 - fs * 4; return { y0: Z.y0, y1, h: y1 - Z.y0, cy: (Z.y0 + y1) / 2, a: Z.y1 - fs * 2.6, b: Z.y1 - fs * .95 }; }; // the picture, then two lines of caption under it
+const fsOf = (F, w) => F.wide ? clamp(w / 125, 11, 14) : clamp(w / 40, 9.5, 15);
+const gridOf = (Z, D, fs) => { const g = Math.min(Z.zw / 30, (D.h - fs) / 30); return { g, gx: Z.cx - g * 14.5, gy: D.cy - g * 14.5 }; }; // thirty rows of thirty
+function bar(el, on) { if (el._on !== on) { el._on = on; el.classList.toggle('on', on); el.inert = !on; } }
+function txt(el, s) { if (el._s !== s) { el._s = s; el.textContent = s; } }
+function lampAt(ctx, x, y, r) { // a small flame and its glow
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r * 5); g.addColorStop(0, 'rgba(255,214,130,.55)'); g.addColorStop(1, 'rgba(255,214,130,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 5, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#ffe9b0'; ctx.beginPath(); ctx.moveTo(x, y - r * 1.9); ctx.quadraticCurveTo(x + r * 1.1, y - r * .2, x, y + r); ctx.quadraticCurveTo(x - r * 1.1, y - r * .2, x, y - r * 1.9); ctx.fill();
+}
+function boat(ctx, x, y, s, lit, col = WHITE) { // hull, mast and one sail; lit is how much light reaches it
+  if (lit > 0) { const g = ctx.createRadialGradient(x, y - s * .5, 0, x, y - s * .5, s * 2.2); g.addColorStop(0, col); g.addColorStop(1, 'rgba(255,244,214,0)'); ctx.save(); ctx.globalAlpha *= clamp(lit, 0, 1) * .8; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y - s * .5, s * 2.2, 0, TAU); ctx.fill(); ctx.restore(); }
+  ctx.fillStyle = BONE; ctx.beginPath(); ctx.moveTo(x - s, y - s * .28); ctx.lineTo(x + s, y - s * .28); ctx.lineTo(x + s * .62, y); ctx.lineTo(x - s * .72, y); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = BONE; ctx.lineWidth = Math.max(1, s * .1); ctx.beginPath(); ctx.moveTo(x, y - s * .28); ctx.lineTo(x, y - s * 1.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x + s * .12, y - s * 1.45); ctx.lineTo(x + s * .8, y - s * .45); ctx.lineTo(x + s * .12, y - s * .45); ctx.closePath(); ctx.fill();
+}
+function clipZone(ctx, Z) { ctx.beginPath(); ctx.rect(Z.x0 - 8, Z.y0 - 10, Z.zw + 16, Z.zh + 20); ctx.clip(); }
+function sweep(ctx, x, y, R, ang, half, col, a) { // a wedge of light from x, y
+  const g = ctx.createRadialGradient(x, y, 0, x, y, R); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, R, ang - half, ang + half); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+
+/* ---------- hero: two slow white beams a quarter turn apart, the rhythm of Part VI ---------- */
+const heroC = document.getElementById('heroCanvas');
+function renderHero(t, fade) {
+  const { ctx, w, h } = prep(heroC), a = reduce ? -.5 : t * .00022; paper(ctx, w, h);
+  for (let i = 0; i < 2; i++) sweep(ctx, w * .5, h * .5, Math.max(w, h) * .8, a + i * Math.PI / 2, 5 * D2R, 'rgba(255,236,190,.5)', fade * .55);
+}
+
+/* ---------- I · the flame: light thins with distance ---------- */
+const c1 = document.querySelector('#s1 canvas'), distBar = document.getElementById('distBar'), distIn = document.getElementById('dist'), distOut = document.getElementById('distOut');
+let userDist = false; distBar.inert = true; distIn.addEventListener('input', () => { userDist = true; });
+function renderS1(p, t) {
+  const { ctx, w, h } = prep(c1), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); paper(ctx, w, h);
+  bar(distBar, p > .12 && p < .94);
+  if (!userDist) distIn.value = String(Math.round(lerp(10, 60, ease(p, .22, .74))));
+  const d = +distIn.value / 10, lab = d.toFixed(1) + ' mi'; txt(distOut, lab); if (distIn._v !== lab) { distIn._v = lab; distIn.setAttribute('aria-valuetext', d.toFixed(1) + ' miles out'); }
+  const D = area(Z, fs), lx = Z.x0 + Z.zw * .08, cy = D.cy - fs, u = Z.zw * .84 / 6.6, xs = lx + d * u, cell = Math.min(u * .5, (D.h - fs * 5) / 6), size = cell * d, b = 1 / (d * d), ty = D.y1 - fs * 1.4;
+  ctx.save(); clipZone(ctx, Z);
+  ctx.strokeStyle = 'rgba(255,214,130,.2)'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 0; i < 28; i++) { const a = i / 28 * TAU + .11; ctx.moveTo(lx, cy); ctx.lineTo(lx + Math.cos(a) * Z.zw, cy + Math.sin(a) * Z.zw); } ctx.stroke();
+  ctx.fillStyle = 'rgba(255,214,130,.13)'; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(xs, cy - size / 2); ctx.lineTo(xs, cy + size / 2); ctx.closePath(); ctx.fill(); // the cone that reaches the ship
+  ctx.fillStyle = `rgba(255,214,130,${.08 + .5 * b})`; ctx.fillRect(xs - size, cy - size / 2, size, size); // the same light, spread wider and thinner
+  ctx.strokeStyle = 'rgba(255,214,130,.55)'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 0; i <= Math.ceil(d); i++) { const o = Math.min(i * cell, size); ctx.moveTo(xs - size + o, cy - size / 2); ctx.lineTo(xs - size + o, cy + size / 2); ctx.moveTo(xs - size, cy - size / 2 + o); ctx.lineTo(xs, cy - size / 2 + o); } ctx.stroke();
+  ctx.strokeStyle = 'rgba(150,180,220,.35)'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(xs, cy + size / 2); ctx.lineTo(xs, ty - fs * .6); ctx.stroke(); ctx.setLineDash([]);
+  ctx.restore(); lampAt(ctx, lx, cy, 6); boat(ctx, xs + fs * 1.5, cy + fs * .4, fs * .95, b * 1.2);
+  ctx.strokeStyle = MUTE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(lx, ty - fs * .6); ctx.lineTo(lx + 6.3 * u, ty - fs * .6); for (let i = 0; i <= 6; i++) { ctx.moveTo(lx + i * u, ty - fs); ctx.lineTo(lx + i * u, ty - fs * .2); } ctx.stroke();
+  for (let i = 0; i <= 6; i++) mono(ctx, i === 0 ? '0' : String(i), lx + i * u, ty + fs * .7, MUTE, 'center', fs - 1); mono(ctx, 'mi', lx + 6.3 * u + fs * .6, ty - fs * .6, MUTE, 'left', fs - 1);
+  mono(ctx, d === 1 ? '1 mile from the room' : `${d.toFixed(1)} miles from the room`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, `${Math.max(1, Math.round(100 * b))}% of the light arrives`, Z.cx, D.b, AMBER, 'center', fs + 1);
+}
+
+/* ---------- II · the room: empty chairs and a head count ---------- */
+const c2 = document.querySelector('#s2 canvas'), keepBar = document.getElementById('keepBar'), keepIn = document.getElementById('keep'), keepOut = document.getElementById('keepOut');
+let userKeep = false; keepBar.inert = true; keepIn.addEventListener('input', () => { userKeep = true; });
+function renderS2(p, t) {
+  const { ctx, w, h } = prep(c2), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); paper(ctx, w, h);
+  bar(keepBar, p > .08 && p < .985);
+  if (!userKeep) keepIn.value = String(Math.round(lerp(120, 900, ease(p, .72, .97))));
+  const n = +keepIn.value, lab = n + ' / 900'; txt(keepOut, lab); if (keepIn._v !== n) { keepIn._v = n; keepIn.setAttribute('aria-valuetext', n + ' keepers in a room of 900'); }
+  // keepers sit from the front. Brigands need one more than the keepers, and they can only sit in empty chairs.
+  const bloc = userKeep ? 1 : ease(p, .18, .4), need = n + 1, empty = 900 - n, fits = need <= empty, r = Math.round((fits ? need : empty) * bloc);
+  const D = area(Z, fs), { g, gx, gy } = gridOf(Z, D, fs), rad = Math.max(1.3, g * .27);
+  ctx.fillStyle = 'rgba(150,180,220,.32)'; for (let i = n; i < 900 - r; i++) ctx.fillRect(gx + (i % 30) * g - .8, gy + ((i / 30) | 0) * g - .8, 1.6, 1.6);
+  ctx.fillStyle = AMBER; ctx.beginPath(); for (let i = 0; i < n; i++) { const x = gx + (i % 30) * g, y = gy + ((i / 30) | 0) * g; ctx.moveTo(x + rad, y); ctx.arc(x, y, rad, 0, TAU); } ctx.fill();
+  ctx.fillStyle = REDL; ctx.beginPath(); for (let i = 900 - r; i < 900; i++) { const x = gx + (i % 30) * g, y = gy + ((i / 30) | 0) * g; ctx.moveTo(x + rad, y); ctx.arc(x, y, rad, 0, TAU); } ctx.fill();
+  const hy = gy + 14.5 * g; ctx.strokeStyle = 'rgba(233,237,242,.6)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(gx - g * .6, hy); ctx.lineTo(gx + 29.6 * g, hy); ctx.stroke(); ctx.setLineDash([]);
+  ctx.font = `500 ${fs - 1}px ${MONO}`; const tw = ctx.measureText('half').width; ctx.fillStyle = NAVY; ctx.fillRect(gx + 29.6 * g - tw - 8, hy - fs * .7, tw + 8, fs * 1.4); mono(ctx, 'half', gx + 29.6 * g - 4, hy, BONE, 'right', fs - 1);
+  mono(ctx, `${n} keepers in a room of 900`, Z.cx, D.a, BONE, 'center', fs);
+  if (n === 900) mono(ctx, 'every chair kept', Z.cx, D.b, AMBER, 'center', fs + 1);
+  else if (bloc < .02) mono(ctx, `${empty} empty chairs`, Z.cx, D.b, MUTE, 'center', fs + 1);
+  else if (!fits) mono(ctx, 'no boatload of brigands is big enough', Z.cx, D.b, AMBER, 'center', fs + (F.wide ? 1 : 0));
+  else mono(ctx, r < need ? `${r} brigands through the door` : `${need} brigands carry the room`, Z.cx, D.b, REDL, 'center', fs + 1);
+}
+
+/* ---------- III · the focus: the same flame, behind a lens ---------- */
+const c3 = document.querySelector('#s3 canvas'), lampBar = document.getElementById('lampBar'), lampIn = document.getElementById('lamp'), lampOut = document.getElementById('lampOut');
+let userLamp = false; lampBar.inert = true; lampIn.addEventListener('input', () => { userLamp = true; });
+function renderS3(p, t) {
+  const { ctx, w, h } = prep(c3), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); paper(ctx, w, h);
+  bar(lampBar, p > .04 && p < .94);
+  if (!userLamp) lampIn.value = String(Math.round(100 * (p < .27 ? lerp(1.8, .6, ease(p, .05, .25)) : lerp(.6, 1, ease(p, .29, .42)))));
+  const s = +lampIn.value / 100, lab = s < .96 ? 'close' : s > 1.04 ? 'far' : 'focus', verdict = s < .96 ? 'too close: the rays fan out' : s > 1.04 ? 'too far back: the rays cross' : 'at the focus: one beam';
+  txt(lampOut, lab); if (lampIn._v !== verdict) { lampIn._v = verdict; lampIn.setAttribute('aria-valuetext', verdict); }
+  const D = area(Z, fs), xl = Z.x0 + Z.zw * .44, cy = D.cy, f = Z.zw * .2, H = D.h * .36, lx = xl - s * f;
+  ctx.save(); clipZone(ctx, Z);
+  ctx.strokeStyle = 'rgba(150,180,220,.3)'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(Z.x0, cy); ctx.lineTo(Z.x1, cy); ctx.stroke(); ctx.setLineDash([]);
+  for (let i = -5; i <= 5; i++) { const hh = i / 5 * H * .92, m = hh / (s * f) - hh / f, xe = Z.x1 + 10; // the ray climbs hh on the way in, then leaves with slope m
+    ctx.strokeStyle = `rgba(255,214,130,${Math.abs(s - 1) < .04 ? .95 : .6})`; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(xl, cy - hh); ctx.lineTo(xe, cy - (hh + m * (xe - xl))); ctx.stroke(); }
+  ctx.fillStyle = 'rgba(159,216,232,.3)'; ctx.strokeStyle = GLASS; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xl, cy - H); ctx.quadraticCurveTo(xl + Z.zw * .11, cy, xl, cy + H); ctx.lineTo(xl - 7, cy + H); ctx.lineTo(xl - 7, cy - H); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  ctx.strokeStyle = GLASS; ctx.beginPath(); ctx.lineWidth = 1.5; ctx.moveTo(xl - f, cy - 9); ctx.lineTo(xl - f, cy + 9); ctx.stroke(); mono(ctx, 'focus', xl - f - fs * .9, cy + fs * 2.3, GLASS, 'right', fs); lampAt(ctx, lx, cy, 5);
+  mono(ctx, 'the same flame, the same light', Z.cx, D.a, BONE, 'center', fs); mono(ctx, verdict, Z.cx, D.b, AMBER, 'center', fs + 1);
+}
+
+/* ---------- IV · the climb: the higher the lamp, the farther it carries ---------- */
+const c4 = document.querySelector('#s4 canvas'), highBar = document.getElementById('highBar'), highIn = document.getElementById('high'), highOut = document.getElementById('highOut');
+let userHigh = false; highBar.inert = true; highIn.addEventListener('input', () => { userHigh = true; });
+const km = m => 3.57 * Math.sqrt(m);
+const LEVELS = [[20, 'School board'], [40, 'City council'], [60, 'County commission'], [80, 'Statehouse'], [101, 'Congress']];
+function renderS4(p, t) {
+  const { ctx, w, h } = prep(c4), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); paper(ctx, w, h);
+  bar(highBar, p > .04 && p < .94);
+  if (!userHigh) highIn.value = String(Math.round(lerp(10, 90, ease(p, .08, .55))));
+  const hm = +highIn.value, office = LEVELS.find(L => hm < L[0])[1]; txt(highOut, office === 'County commission' ? 'County' : office); if (highIn._v !== office) { highIn._v = office; highIn.setAttribute('aria-valuetext', office); }
+  // one consistent picture: the sea is a circle of radius Rs, and the sight line is its true tangent from the lamp
+  const D = area(Z, fs), Hm = Math.min(D.h * .27, Z.zw * .2), k = Hm / 100, e5 = 5 * k, Rs = (Z.zw * .8 / (Math.sqrt(Hm) + Math.sqrt(e5))) ** 2 / 2;
+  const pe = Math.acos(Rs / (Rs + e5)), dropMax = Rs * (1 - Math.cos(Math.acos(Rs / (Rs + Hm)) + pe)), ex = Z.x0 + Z.zw * .1, by = D.y0 + fs + Hm + Math.max(0, (D.h - fs * 2 - Hm - dropMax) / 2), ey = by + Rs, hs = hm * k;
+  const P = (phi, up = 0) => [ex + (Rs + up) * Math.sin(phi), ey - (Rs + up) * Math.cos(phi)], ph = Math.acos(Rs / (Rs + hs)), L = P(0, hs), T = P(ph), E = P(ph + pe, e5), B = P(ph + pe);
+  ctx.save(); ctx.beginPath(); ctx.rect(0, Z.y0 - 10, Z.x1 + 8, D.y1 - Z.y0 + 10); ctx.clip(); // the sea runs off the left edge of the stage
+  const sea = ctx.createLinearGradient(0, by, 0, by + dropMax + fs * 4); sea.addColorStop(0, 'rgba(24,70,104,.75)'); sea.addColorStop(1, 'rgba(24,70,104,.08)');
+  ctx.fillStyle = sea; ctx.beginPath(); ctx.moveTo(...P(-.6)); for (let a = -.6; a <= 1.2; a += .01) ctx.lineTo(...P(a)); ctx.lineTo(Z.x1 + 20, D.y1 + 40); ctx.lineTo(-20, D.y1 + 40); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(159,216,232,.8)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(...P(-.6)); for (let a = -.6; a <= 1.2; a += .01) ctx.lineTo(...P(a)); ctx.stroke();
+  const tw = Math.min(16, hm) * k, cl = hs - tw, bw = Math.max(4, 16 * k * .2); // the cliff, then the tower on top of it
+  if (cl > 0) { ctx.fillStyle = '#2a3648'; ctx.strokeStyle = 'rgba(150,180,220,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ex - bw * 5, by + 6); ctx.lineTo(ex - bw * 3.6, by - cl * .86); ctx.lineTo(ex - bw * 1.6, by - cl); ctx.lineTo(ex + bw * 1.9, by - cl); ctx.lineTo(ex + bw * 2.7, by - cl * .62); ctx.lineTo(ex + bw * 3.4, by - cl * .5); ctx.lineTo(ex + bw * 4.4, by + 6); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle = BONE; ctx.beginPath(); ctx.moveTo(ex - bw, by - cl); ctx.lineTo(ex - bw * .6, by - hs + bw * .5); ctx.lineTo(ex + bw * .6, by - hs + bw * .5); ctx.lineTo(ex + bw, by - cl); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,214,130,.95)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L[0], L[1]); ctx.lineTo(E[0], E[1]); ctx.stroke();
+  ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,214,130,.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(E[0], E[1]); ctx.lineTo(E[0] + (E[0] - L[0]), E[1] + (E[1] - L[1])); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = AMBER; ctx.beginPath(); ctx.arc(T[0], T[1], 3.5, 0, TAU); ctx.fill(); ctx.save(); ctx.translate(B[0], B[1]); ctx.rotate(ph + pe); boat(ctx, 0, 0, Math.max(6, e5 * 1.1), 1); ctx.restore();
+  ctx.restore(); lampAt(ctx, L[0], L[1], 4);
+  mono(ctx, office, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, `seen from ${Math.round((km(hm) + km(5)) * .621)} miles out`, Z.cx, D.b, AMBER, 'center', fs + 1);
+}
+
+/* ---------- V · the glass: one curve, cut thin ---------- */
+const c5 = document.querySelector('#s5 canvas'), ringBar = document.getElementById('ringBar'), ringIn = document.getElementById('ring'), ringOut = document.getElementById('ringOut');
+let userRing = false; ringBar.inert = true; ringIn.addEventListener('input', () => { userRing = true; });
+function renderS5(p, t) {
+  const { ctx, w, h } = prep(c5), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); paper(ctx, w, h);
+  bar(ringBar, p > .1 && p < .94);
+  if (!userRing) ringIn.value = String(Math.round(lerp(1, 12, ease(p, .25, .6))));
+  const n = +ringIn.value; txt(ringOut, String(n)); if (ringIn._v !== n) { ringIn._v = n; ringIn.setAttribute('aria-valuetext', n + (n === 1 ? ' ring' : ' rings')); }
+  const D = area(Z, fs), cy = D.cy, H = D.h * .29, T0 = Z.zw * .075, base = Math.max(2, T0 * .07), fpx = Z.zw * .15, prisms = ease(p, .76, .9);
+  const prof = hh => T0 * (1 - (hh / H) ** 2), ring = (hh, k) => base + (k === 1 ? prof(hh) : (prof(hh) - 1e-4) % (T0 / k));
+  let aFull = 0, aRing = 0; for (let i = 0; i <= 600; i++) { const q = 1 - (i / 300 - 1) ** 2; aFull += .07 + q; aRing += .07 + (n === 1 ? q : (q - 1e-6) % (1 / n)); } // the share of glass, measured on the ideal profile so every screen agrees
+  const share = Math.round(100 * aRing / aFull);
+  ctx.save(); clipZone(ctx, Z);
+  [[Z.x0 + Z.zw * .27, 1, 'the old lens', '100% of the weight'], [Z.x0 + Z.zw * .73, n, n === 1 ? 'one ring: the same boulder' : `${n} rings`, `${share}% of the weight`]].forEach(([x, k, name, note], side) => {
+    const lx = x - fpx;
+    ctx.strokeStyle = 'rgba(255,214,130,.8)'; ctx.lineWidth = 1.3; for (let i = -3; i <= 3; i++) { const hh = i / 3 * H * .9; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(x, cy - hh); ctx.lineTo(x + Z.zw * .2, cy - hh); ctx.stroke(); }
+    if (side && prisms > 0) { ctx.globalAlpha = prisms; for (const m of [-1, 1]) for (let j = 0; j < 3; j++) { const hh = m * H * (1.14 + j * .17), px = x - j * fpx * .16, sz = H * .12; // prisms that catch the stray rays
+      ctx.strokeStyle = 'rgba(255,214,130,.8)'; ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(px, cy - hh); ctx.lineTo(x + Z.zw * .2, cy - hh); ctx.stroke();
+      ctx.fillStyle = 'rgba(159,216,232,.35)'; ctx.strokeStyle = GLASS; ctx.beginPath(); ctx.moveTo(px - sz * .5, cy - hh + m * sz * .6); ctx.lineTo(px + sz * .6, cy - hh + m * sz * .1); ctx.lineTo(px - sz * .1, cy - hh - m * sz * .7); ctx.closePath(); ctx.fill(); ctx.stroke(); } ctx.globalAlpha = 1; }
+    ctx.fillStyle = 'rgba(159,216,232,.32)'; ctx.strokeStyle = GLASS; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(x, cy - H); for (let hh = -H; hh <= H; hh += 1) ctx.lineTo(x + ring(hh, k), cy + hh); ctx.lineTo(x, cy + H); ctx.closePath(); ctx.fill(); ctx.stroke();
+    lampAt(ctx, lx, cy, 4); mono(ctx, name, x, D.a, BONE, 'center', fs); mono(ctx, note, x, D.b, side ? AMBER : MUTE, 'center', fs + (side ? 1 : 0));
+  });
+  ctx.restore();
+}
+
+/* ---------- VI · the signature: the count against the chart ---------- */
+const c6 = document.querySelector('#s6 canvas'), lights = document.getElementById('lights');
+const CHART = [[0, WHITE], [90, WHITE]], TURN = 30, SPEED = 5; // two white flashes every 30 s
+const LIGHTS = { chart: CHART, changed: [[0, REDL], [120, REDL], [240, REDL]] };
+let light = 'chart', userLight = false; lights.inert = true;
+function setLight(m) { if (m === light) return; light = m; for (const b of lights.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.light === m)); }
+lights.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { userLight = true; setLight(b.dataset.light); } });
+function flashes(beams, t0, t1) { const out = []; for (const [deg, col] of beams) { const first = ((360 - deg) % 360) / 360 * TURN; for (let k = Math.floor((t0 - first) / TURN); k <= Math.ceil((t1 - first) / TURN); k++) { const ft = first + k * TURN; if (ft >= t0 && ft <= t1) out.push([ft, col]); } } return out; }
+function renderS6(p, t) {
+  const { ctx, w, h } = prep(c6), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); paper(ctx, w, h);
+  bar(lights, p > .08 && p < .96);
+  if (!userLight) setLight(p > .2 && p < .52 ? 'changed' : 'chart');
+  const beams = LIGHTS[light], now = reduce ? 0 : t / 1000 * SPEED, rot = now / TURN * TAU, D = area(Z, fs);
+  const axis = D.y1 - fs * .6, rowS = axis - fs * 1.5, rowC = axis - fs * 4, top = Z.y0 + fs * .5, bot = rowC - fs * 3.2, R = Math.min(Z.zw * .42, (bot - top) * .5), ox = Z.x0 + Z.zw * .38, oy = (top + bot) / 2, bx = ox + R * .92;
+  ctx.save(); clipZone(ctx, Z); let lit = 0, litCol = WHITE;
+  for (const [deg, col] of beams) { const a = deg * D2R + rot; sweep(ctx, ox, oy, R * 1.25, a, 4.5 * D2R, col === REDL ? 'rgba(226,88,74,.95)' : 'rgba(255,240,200,.95)', .9); const dlt = Math.atan2(Math.sin(a), Math.cos(a)), v = Math.exp(-((dlt / (5 * D2R)) ** 2)); if (v > lit) { lit = v; litCol = col; } }
+  ctx.strokeStyle = GLASS; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ox, oy, R * .09, 0, TAU); ctx.stroke(); ctx.fillStyle = '#ffe9b0'; ctx.beginPath(); ctx.arc(ox, oy, R * .035, 0, TAU); ctx.fill();
+  ctx.restore(); boat(ctx, bx + fs, oy + fs * .5, fs, lit, litCol === REDL ? 'rgba(226,88,74,.9)' : WHITE);
+  // two strips of time: what the chart promises, and what the sailor counts
+  const lx0 = Z.x0 + fs * 4.6, sw = Z.x1 - lx0, win = TURN * 2, t0 = now - win * .75, X = tt => lx0 + (tt - t0) / win * sw, mh = fs * 1.6;
+  mono(ctx, 'chart', Z.x0, rowC, MUTE, 'left', fs - 1); mono(ctx, 'seen', Z.x0, rowS, MUTE, 'left', fs - 1);
+  ctx.strokeStyle = 'rgba(150,180,220,.4)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(lx0, axis); ctx.lineTo(Z.x1, axis); ctx.stroke();
+  ctx.strokeStyle = BONE; ctx.lineWidth = 1.2; for (const [ft] of flashes(CHART, t0, t0 + win)) ctx.strokeRect(X(ft) - 2.5, rowC - mh / 2, 5, mh);
+  for (const [ft, col] of flashes(beams, t0, now)) { ctx.fillStyle = col; ctx.fillRect(X(ft) - 2.5, rowS - mh / 2, 5, mh); }
+  ctx.strokeStyle = AMBER; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(now), rowC - fs * 1.3); ctx.lineTo(X(now), axis); ctx.stroke(); mono(ctx, 'now', X(now), rowC - fs * 2.1, AMBER, 'center', fs - 1);
+  mono(ctx, 'on the chart: 2 white flashes every 30 s', Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, light === 'chart' ? 'the sailor counts 2 white: the right coast' : 'the sailor counts 3 red: which coast is this?', Z.cx, D.b, light === 'chart' ? AMBER : REDL, 'center', fs + (F.wide ? 1 : 0));
+}
+
+/* ---------- VII · the coast: the same nine hundred chairs, lit ---------- */
+const c7 = document.querySelector('#s7 canvas'), cntBar = document.getElementById('cntBar'), cntIn = document.getElementById('cnt'), cntOut = document.getElementById('cntOut');
+let userCnt = false; cntBar.inert = true; cntIn.addEventListener('input', () => { userCnt = true; });
+const R7 = rng(900), ORDER = Array.from({ length: 900 }, (_, i) => i);
+for (let i = 899; i > 0; i--) { const j = Math.floor(R7() * (i + 1)); const tmp = ORDER[i]; ORDER[i] = ORDER[j]; ORDER[j] = tmp; } // the order they come on: scattered, like towns
+const PHASE = Array.from({ length: 900 }, () => R7());
+const glow = document.createElement('canvas'); glow.width = glow.height = 48;
+{ const g = glow.getContext('2d'), gr = g.createRadialGradient(24, 24, 0, 24, 24, 24); gr.addColorStop(0, 'rgba(255,232,170,1)'); gr.addColorStop(.28, 'rgba(255,214,130,.5)'); gr.addColorStop(1, 'rgba(255,214,130,0)'); g.fillStyle = gr; g.fillRect(0, 0, 48, 48); }
+const pulse = (u, c) => Math.exp(-(((u - c) / .045) ** 2));
+function renderS7(p, t) {
+  const { ctx, w, h } = prep(c7), F = frameOf(w, h), Z = zone(F, w, h), fs = fsOf(F, w); paper(ctx, w, h);
+  bar(cntBar, p > .06 && p < .96);
+  if (!userCnt) cntIn.value = String(Math.round(lerp(1, 900, ease(p, .1, .68))));
+  const n = +cntIn.value, lab = n + ' / 900'; txt(cntOut, lab); if (cntIn._v !== n) { cntIn._v = n; cntIn.setAttribute('aria-valuetext', n + ' of 900 lights lit'); }
+  const D = area(Z, fs), { g, gx, gy } = gridOf(Z, D, fs), s = g * 2.3, core = Math.max(1.6, g * .2);
+  ctx.fillStyle = 'rgba(150,180,220,.32)'; for (let i = 0; i < 900; i++) ctx.fillRect(gx + (i % 30) * g - .8, gy + ((i / 30) | 0) * g - .8, 1.6, 1.6);
+  const clock = t / 6000; // every light keeps the same rhythm: flash, flash, dark
+  for (let k = 0; k < n; k++) { const i = ORDER[k], x = gx + (i % 30) * g, y = gy + ((i / 30) | 0) * g, u = frac(clock + PHASE[i]); ctx.globalAlpha = reduce ? .8 : .42 + .58 * Math.max(pulse(u, .12), pulse(u, .3)); ctx.drawImage(glow, x - s / 2, y - s / 2, s, s); }
+  ctx.globalAlpha = 1; ctx.fillStyle = '#fff1c9'; for (let k = 0; k < n; k++) { const i = ORDER[k]; ctx.fillRect(gx + (i % 30) * g - core / 2, gy + ((i / 30) | 0) * g - core / 2, core, core); }
+  mono(ctx, n === 1 ? '1 keeper at the flame' : `${n} keepers at their flames`, Z.cx, D.a, BONE, 'center', fs);
+  mono(ctx, n === 900 ? 'nine hundred: a coast nobody takes' : `${900 - n} apprentices to go`, Z.cx, D.b, AMBER, 'center', fs + 1);
+}
+
+/* ---------- the loop ---------- */
+const scenes = [renderS1, renderS2, renderS3, renderS4, renderS5, renderS6, renderS7].map((render, i) => ({ el: document.getElementById('s' + (i + 1)), render }));
+const hero = document.getElementById('hero');
+function frame(t) {
+  const vh = window.innerHeight;
+  const hr = hero.getBoundingClientRect();
+  if (hr.bottom > 0) renderHero(t, 1 - ramp(-hr.top, 0, vh * 0.9));
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -2 || r.top > vh + 2) continue;
+    s.render(clamp(-r.top / Math.max(1, r.height - vh), 0, 1), t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

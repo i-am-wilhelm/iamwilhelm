@@ -40,4 +40,5 @@ export const SEEN_AI_LINE = SEEN_AI_LINE_SOURCE;
  */
 export const SEEN_SOURCES: Record<string, string> = {
   'due-space': '_incoming/due-space/due-space.html',
+  'nine-hundred-lights': '_incoming/elsewhere/nine-hundred-lights.html',
 };
