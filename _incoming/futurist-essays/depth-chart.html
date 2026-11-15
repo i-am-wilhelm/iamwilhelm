@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Depth Chart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=DM+Mono:wght@400;500&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: one borehole log. Night sky and a meteor above the ground line, a paper log
+     sheet below it, a core column down the left edge of the dig, dark rock under the
+     dollar line, and a rig readout pinned to the bottom edge. Single theme by choice. */
+  --sky: #0e1419;
+  --paper: #e7eae4;
+  --ink: #141a1c;
+  --faint: #56615f;
+  --rule: #b4bcb5;
+  --flag: #e2491f;
+  --gold: #c9a23c;
+  --usd: #2c6a50;
+  --rock: #15191b;
+  --rock-ink: #e3e6df;
+  --rock-faint: #9aa5a1;
+  --display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --rail: 34px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16.5px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  padding-bottom: 76px;
+}
+p { margin: 0; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+a { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
+a:hover { text-decoration-style: solid; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--flag); outline-offset: 2px; }
+sup { line-height: 0; }
+sup a { font: 500 0.68rem var(--mono); text-decoration: none; padding: 0 1px; opacity: 0.75; }
+sup a::before { content: "["; }
+sup a::after { content: "]"; }
+.wrap { max-width: 44rem; margin: 0 auto; padding: 0 16px; }
+.tag {
+  font: 500 0.72rem/1.3 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* Sky */
+.sky { position: relative; background: var(--sky); color: var(--paper); overflow: hidden; }
+.sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sky .wrap { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding-top: 46px; padding-bottom: 38px; }
+.sky .tag { color: var(--rock-faint); }
+h1 {
+  font: 800 clamp(4.4rem, 24vw, 11rem)/0.82 var(--display);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+h1 span { display: block; }
+h1 span + span { color: var(--flag); }
+.dek { font: 600 clamp(1.5rem, 5.4vw, 2.1rem)/1.12 var(--display); letter-spacing: 0.01em; max-width: 24ch; }
+.lead { max-width: 58ch; color: var(--rock-ink); }
+.ground {
+  position: relative;
+  height: 16px;
+  border-top: 2px solid var(--paper);
+  background: repeating-linear-gradient(-45deg, transparent 0 6px, rgba(231, 234, 228, 0.5) 6px 7px), var(--sky);
+}
+.groundtag {
+  background: var(--sky);
+  color: var(--rock-faint);
+  font: 500 0.66rem/1 var(--mono);
+  letter-spacing: 0.16em;
+  padding: 0 16px 10px;
+  text-align: right;
+}
+
+/* Log sheet sections */
+.sheet { padding: 46px 0; }
+.sheet + .sheet { border-top: 1px solid var(--rule); }
+.sheet .wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+h2 {
+  font: 800 clamp(2.3rem, 9vw, 3.6rem)/0.95 var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+}
+.sheet p { max-width: 62ch; }
+.kick { font: 600 clamp(1.35rem, 4.6vw, 1.7rem)/1.2 var(--display); letter-spacing: 0.01em; max-width: 32ch; }
+
+/* 01 Incoming */
+.big {
+  font: 800 clamp(6.5rem, 34vw, 12rem)/0.8 var(--display);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.big small { font-size: 0.5em; letter-spacing: 0; }
+.buck { margin: 0; display: grid; gap: 8px; }
+.buck-bar {
+  height: 34px;
+  border: 1.5px solid var(--ink);
+  background: repeating-linear-gradient(-45deg, var(--flag) 0 3px, transparent 3px 7px);
+}
+.buck-bar span { display: block; height: 100%; width: 12%; background: var(--usd); border-right: 1.5px solid var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 500 0.74rem var(--mono); letter-spacing: 0.04em; }
+.legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; border: 1.5px solid var(--ink); }
+.legend .k { background: var(--usd); }
+.legend .g { background: repeating-linear-gradient(-45deg, var(--flag) 0 2px, transparent 2px 4px); }
+
+/* 02 The rig */
+.tl { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--rule); }
+.tl li { display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); gap: 14px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.tl time { font: 500 0.78rem/1.6 var(--mono); letter-spacing: 0.06em; }
+.tl .due time { color: var(--ink); font-weight: 500; }
+.tl .due time::after { content: "DEADLINE"; display: block; width: max-content; margin-top: 4px; padding: 1px 5px; background: var(--flag); color: var(--ink); font-size: 0.62rem; letter-spacing: 0.12em; }
+.spec { margin: 0; border: 1.5px solid var(--ink); }
+.spec div { display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); }
+.spec div + div { border-top: 1.5px solid var(--ink); }
+.spec dt { background: var(--ink); color: var(--paper); font: 500 0.7rem/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 10px; }
+.spec dd { margin: 0; padding: 10px 12px; }
+.loop { margin: 0; display: grid; gap: 10px; }
+.loop svg { width: 100%; max-width: 400px; height: auto; display: block; }
+.loop .bx { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.loop .bt { font: 500 13px var(--mono); letter-spacing: 0.1em; fill: var(--ink); }
+.loop .bn { font: 500 11px var(--mono); fill: var(--flag); }
+.loop .lb { font: 400 11.5px var(--mono); fill: var(--ink); }
+.loop .ar { stroke: var(--ink); stroke-width: 1.5; }
+.loop .ahp { fill: var(--ink); }
+.loop .fl { stroke: var(--flag); }
+.loop text.fl { fill: var(--flag); stroke: none; }
+.loop .ahf { fill: var(--flag); }
+.loop figcaption { font-size: 0.92rem; color: var(--faint); max-width: 52ch; }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5px; background: var(--ink); border: 1.5px solid var(--ink); }
+.tiles div { background: var(--paper); padding: 14px 12px; display: grid; gap: 4px; align-content: start; }
+.tiles b { font: 800 clamp(2rem, 8.4vw, 2.7rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+.tiles span { font-size: 0.82rem; line-height: 1.35; color: var(--faint); }
+
+/* 03 The core */
+.strata { position: relative; max-width: 46rem; margin: 26px auto 0; }
+.bit-track { position: absolute; top: 0; bottom: 0; left: 0; width: var(--rail); pointer-events: none; z-index: 2; }
+.bit { position: sticky; top: 44vh; height: 0; }
+.bit::before { content: ""; position: absolute; left: 0; right: 0; top: -1.5px; height: 3px; background: var(--flag); }
+.bit::after { content: ""; position: absolute; left: 100%; top: -6px; border: 6px solid transparent; border-right-color: var(--flag); margin-left: -2px; }
+.stratum, .dline { display: grid; grid-template-columns: var(--rail) minmax(0, 1fr); }
+.rail { position: relative; }
+.rail::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  width: 7px;
+  background: repeating-linear-gradient(to bottom, rgba(20, 26, 28, 0.75) 0 1px, transparent 1px 14px);
+}
+.deep .rail::after { background: repeating-linear-gradient(to bottom, rgba(227, 230, 223, 0.6) 0 1px, transparent 1px 14px); }
+.rail b {
+  position: sticky;
+  top: 10px;
+  display: block;
+  width: max-content;
+  margin: 10px auto 10px 4px;
+  padding: 1px 3px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 500 0.62rem/1.3 var(--mono);
+}
+.s1 .rail { background: #8d7d60 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='2' cy='3' r='1' fill='%23141a1c' fill-opacity='.5'/%3E%3Ccircle cx='8' cy='9' r='1.2' fill='%23141a1c' fill-opacity='.4'/%3E%3C/svg%3E"); }
+.s2 .rail { background: #946f58 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpath d='M1 2h6M8 6h5' stroke='%23141a1c' stroke-opacity='.5'/%3E%3C/svg%3E"); }
+.s3 .rail { background: #a3aba3 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12'%3E%3Cpath d='M0 .5h16M0 6.5h16M4 .5v6M12 6.5v6' stroke='%23141a1c' stroke-opacity='.45' fill='none'/%3E%3C/svg%3E"); }
+.s4 .rail { background: #2a2f31 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M-2 12L12 -2M5 16L16 5' stroke='%23c9a23c' stroke-opacity='.85'/%3E%3C/svg%3E"); }
+.s5 .rail { background: #0f1213 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M3 1v4M1 3h4M10 8v4M8 10h4' stroke='%23e3e6df' stroke-opacity='.4'/%3E%3Ccircle cx='11' cy='3' r='.9' fill='%23c9a23c'/%3E%3C/svg%3E"); }
+.entry { display: grid; gap: 16px; padding: 26px 16px 32px 18px; border-top: 1.5px solid var(--ink); }
+.deep .entry { background: var(--rock); color: var(--rock-ink); border-top-color: #000; }
+.deep .tag, .deep .row b, .deep .chain .k, .deep .read dt { color: var(--rock-faint); }
+h3 { font: 800 clamp(2.2rem, 9.4vw, 3.2rem)/0.95 var(--display); text-transform: uppercase; }
+.deep h3 { color: var(--gold); }
+.row { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 12px; }
+.row b, .chain .k, .read dt {
+  font: 500 0.68rem/1.5 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding-top: 3px;
+}
+.chain { display: grid; gap: 8px; }
+.chain ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.chain li { border: 1.5px solid currentColor; border-radius: 999px; padding: 3px 10px; font: 500 0.78rem/1.5 var(--mono); }
+.chain li.none { border-style: dashed; opacity: 0.75; }
+.read { margin: 0; border-top: 1px solid var(--rule); }
+.deep .read { border-top-color: #333a3d; }
+.read div { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.deep .read div { border-bottom-color: #333a3d; }
+.read dd { margin: 0; }
+.sw { display: inline-block; width: 11px; height: 11px; margin-right: 7px; vertical-align: -1px; border: 1.5px solid currentColor; }
+.sw.usd { background: var(--usd); }
+.sw.au { background: var(--gold); }
+.assay { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; border: 1.5px solid currentColor; padding: 10px 12px; }
+.assay b { font: 800 clamp(1.7rem, 7vw, 2.2rem)/1 var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.assay span { font-size: 0.86rem; line-height: 1.4; }
+.dline { border-top: 3px dashed var(--ink); border-bottom: 3px dashed var(--ink); background: var(--flag); color: var(--ink); }
+.dline .rail { background: repeating-linear-gradient(-45deg, var(--ink) 0 5px, var(--flag) 5px 10px); }
+.dline .rail::after { display: none; }
+.dline > div:last-child { display: grid; gap: 8px; padding: 22px 16px 24px 18px; }
+.dline h3 { font-size: clamp(2.4rem, 10.5vw, 3.6rem); }
+.dline p { font-weight: 600; max-width: 46ch; }
+
+/* 04 The gauge */
+.gauge { border: 1.5px solid var(--ink); padding: 16px 14px 18px; display: grid; gap: 16px; }
+.gauge label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; font-weight: 600; }
+.gauge output { font: 800 2.6rem/1 var(--display); font-variant-numeric: tabular-nums; min-width: 2.6ch; }
+.gauge input[type="range"] { width: 100%; height: 34px; margin: 0; accent-color: var(--flag); }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; }
+.presets button {
+  font: 500 0.76rem/1.2 var(--mono);
+  padding: 10px 11px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+.presets button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.bars { display: grid; gap: 12px; }
+.bar { display: grid; grid-template-columns: minmax(0, 1fr) 4.6rem; gap: 4px 10px; align-items: center; }
+.bar .bl { grid-column: 1 / -1; font: 500 0.72rem/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.track { height: 24px; border: 1.5px solid var(--ink); background: repeating-linear-gradient(-45deg, var(--flag) 0 3px, transparent 3px 7px); }
+.fill { display: block; height: 100%; width: 82%; background: var(--usd); border-right: 1.5px solid var(--ink); transition: width 0.25s ease; }
+.val { font: 800 1.55rem/1 var(--display); text-align: right; font-variant-numeric: tabular-nums; }
+.bar.out .track { background: #2a2f31 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M-2 12L12 -2M5 16L16 5' stroke='%23c9a23c' stroke-opacity='.85'/%3E%3C/svg%3E"); }
+.bar.out .val { font: 500 0.66rem/1.25 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.barline { display: flex; align-items: center; gap: 10px; font: 500 0.66rem var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.barline::before, .barline::after { content: ""; flex: 1; border-top: 2px dashed var(--flag); }
+.readout { font: 600 1.3rem/1.2 var(--display); letter-spacing: 0.01em; }
+.note { font-size: 0.9rem; color: var(--faint); }
+
+/* 05 Who is digging */
+.finds { display: grid; }
+.finds article { display: grid; gap: 6px; padding: 18px 0; border-top: 1.5px solid var(--ink); }
+.finds b { font: 800 clamp(2.4rem, 10vw, 3.2rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+
+/* 06 The play */
+.q { list-style: none; margin: 0; padding: 0; counter-reset: q; display: grid; }
+.q li { counter-increment: q; display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 4px 10px; padding: 14px 0; border-top: 1.5px solid var(--ink); }
+.q li::before { content: counter(q); grid-row: span 2; font: 800 3.2rem/0.85 var(--display); color: var(--flag); }
+.q strong { font: 800 1.7rem/1.05 var(--display); text-transform: uppercase; }
+.q span { color: var(--faint); }
+
+/* Sources */
+.src { margin: 0; padding-left: 1.5rem; display: grid; gap: 8px; font-size: 0.84rem; line-height: 1.45; }
+.src li:target { background: #d5dacf; outline: 4px solid #d5dacf; }
+.src a { word-break: break-word; }
+.fine { font: 400 0.76rem/1.5 var(--mono); color: var(--faint); }
+
+/* Rig readout */
+.hud {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  gap: 12px;
+  padding: 9px 14px 11px;
+  background: #0a0e11;
+  color: var(--rock-ink);
+  border-top: 2px solid var(--flag);
+}
+.hud div { display: grid; gap: 2px; min-width: 0; }
+.hud span { font: 500 0.56rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rock-faint); }
+.hud b { font: 500 0.78rem/1.25 var(--mono); }
+.hud[data-zone="usd"] #hudPriced { color: #86d3ad; }
+.hud[data-zone="out"] #hudPriced { color: var(--gold); }
+
+@media (min-width: 700px) {
+  :root { --rail: 72px; }
+  body { font-size: 17.5px; }
+  .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .entry, .dline > div:last-child { padding-left: 28px; padding-right: 28px; }
+  .rail b { margin-left: 8px; font-size: 0.72rem; }
+  .finds article { grid-template-columns: 12rem minmax(0, 1fr); gap: 4px 24px; }
+  .finds article p:last-child { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .hud { padding-left: max(14px, calc(50vw - 22rem)); padding-right: max(14px, calc(50vw - 22rem)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fill { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="sky" data-depth="Surface" data-priced="&ndash;" data-sw="&ndash;">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="tag">Borehole log &middot; The new money &middot; Logged 14 Nov 2026</p>
+    <h1><span>Depth</span><span>Chart</span></h1>
+    <p class="dek">A core sample of where your money sits when the dollar takes a hit.</p>
+    <p class="lead">Something is inbound. Sound money people have tracked it for 55 years. This log drills straight down through the five places a saver can stand when it lands. At each depth it reads off three things: what the money is priced in, whose promise holds it up, and who can switch it off.</p>
+  </div>
+  <div class="ground" aria-hidden="true"></div>
+</header>
+<div class="groundtag" aria-hidden="true">GROUND SURFACE</div>
+
+<main>
+
+<section class="sheet" id="incoming" data-depth="Surface" data-priced="&ndash;" data-sw="&ndash;">
+  <div class="wrap">
+    <p class="tag">01 &middot; Incoming</p>
+    <h2>The meteor has been falling since 1971</h2>
+    <p class="big" aria-hidden="true">88<small>%</small></p>
+    <p>88% of the dollar's 1971 buying power is gone. What $1.00 bought in the year the gold window closed costs $8.25 today, by the government's own price index.<sup><a href="#s1">1</a></sup></p>
+    <figure class="buck" role="img" aria-label="Of one 1971 dollar, 12 cents of buying power remain and 88 cents are gone.">
+      <div class="buck-bar"><span></span></div>
+      <figcaption class="legend"><span><i class="k"></i>12&cent; still buys</span><span><i class="g"></i>88&cent; gone since 1971</span></figcaption>
+    </figure>
+    <p>That is the slow version, and it is policy. The Fed's own 2% target takes 18% off a dollar every ten years.</p>
+    <p>The fast version is the one people argue about: a break in confidence that does in a year what inflation did in fifty. Most economists rate a full collapse as unlikely, and one review of reserve-currency history turned up long slides with no sudden collapse among them.<sup><a href="#s2">2</a></sup> Others say the break is close.</p>
+    <p class="kick">Slow or fast, the question for a saver is the same. Where are you standing?</p>
+  </div>
+</section>
+
+<section class="sheet" id="rig" data-depth="Surface" data-priced="&ndash;" data-sw="&ndash;">
+  <div class="wrap">
+    <p class="tag">02 &middot; The rig</p>
+    <h2>The new rails are built. Read what they carry.</h2>
+    <p>Two claims travel together online. One: central banks and the well informed are moving value to places a falling dollar cannot reach. Two: stablecoins are that place. The record backs the first. The second runs into the fine print of the law.</p>
+    <p>Two bills get named as the infrastructure. One of them is finished.</p>
+    <ol class="tl">
+      <li><time datetime="2025-07-18">18 JUL 2025</time><span>The GENIUS Act is signed. It is the first federal law for dollar stablecoins.<sup><a href="#s3">3</a></sup></span></li>
+      <li><time datetime="2026-09-15">15 SEP 2026</time><span>The CLARITY Act, the wider market-structure bill, fails a Senate vote 49 to 50. It is stalled.<sup><a href="#s4">4</a></sup></span></li>
+      <li><time datetime="2026-11-03">3 NOV 2026</time><span>The midterms flip both chambers of Congress. The new members sit on January 3.<sup><a href="#s4">4</a></sup></span></li>
+      <li class="due"><time datetime="2027-01-18">18 JAN 2027</time><span>GENIUS takes effect by this date at the latest.<sup><a href="#s3">3</a></sup></span></li>
+    </ol>
+    <p>Here is what GENIUS requires of anyone who issues a dollar stablecoin in the United States.</p>
+    <dl class="spec">
+      <div><dt>Reserves</dt><dd>One for one, in cash and short-term Treasuries.<sup><a href="#s3">3</a></sup></dd></div>
+      <div><dt>Interest</dt><dd>The issuer may pay the holder none.<sup><a href="#s5">5</a></sup></dd></div>
+      <div><dt>Off switch</dt><dd>No license without the built-in ability to freeze, seize or burn tokens on a lawful order.<sup><a href="#s3">3</a></sup></dd></div>
+    </dl>
+    <figure class="loop">
+      <svg viewBox="0 0 320 318" role="img" aria-labelledby="loopT loopD">
+        <title id="loopT">How one stablecoin dollar moves</title>
+        <desc id="loopD">You pay one dollar to the issuer and get one token. The issuer uses the dollar to buy Treasury bills. The Treasury pays interest to the issuer, and the issuer keeps it.</desc>
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahp" d="M0 0L10 5L0 10z"/></marker>
+          <marker id="ahf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahf" d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <rect class="bx" x="60" y="8" width="200" height="46"/>
+        <text class="bt" x="160" y="36" text-anchor="middle">YOU</text>
+        <rect class="bx" x="60" y="130" width="200" height="60"/>
+        <text class="bt" x="160" y="156" text-anchor="middle">ISSUER</text>
+        <text class="bn" x="160" y="175" text-anchor="middle">keeps the interest</text>
+        <rect class="bx" x="60" y="266" width="200" height="46"/>
+        <text class="bt" x="160" y="294" text-anchor="middle">U.S. TREASURY</text>
+        <line class="ar" x1="124" y1="58" x2="124" y2="126" marker-end="url(#ah)"/>
+        <line class="ar" x1="124" y1="194" x2="124" y2="262" marker-end="url(#ah)"/>
+        <line class="ar" x1="196" y1="126" x2="196" y2="58" marker-end="url(#ah)"/>
+        <line class="ar fl" x1="196" y1="262" x2="196" y2="194" marker-end="url(#ahf)"/>
+        <text class="lb" x="114" y="96" text-anchor="end">you pay $1</text>
+        <text class="lb" x="206" y="96">you get 1 token</text>
+        <text class="lb" x="114" y="232" text-anchor="end">$1 buys T-bills</text>
+        <text class="lb fl" x="206" y="232">pays interest</text>
+      </svg>
+      <figcaption>You hand over a dollar and get a token. The issuer lends your dollar to Washington and keeps what Washington pays. The token is a dollar the whole time.</figcaption>
+    </figure>
+    <div class="tiles">
+      <div><b>$285B</b><span>in stablecoins outstanding on Nov 14, 2026, down from a May peak near $310B<sup><a href="#s6">6</a></sup></span></div>
+      <div><b>99.76%</b><span>of that supply is pegged to the U.S. dollar<sup><a href="#s7">7</a></sup></span></div>
+      <div><b>$132.4B</b><span>in Treasury exposure at Tether, the largest issuer<sup><a href="#s8">8</a></sup></span></div>
+      <div><b>$4.5B</b><span>operating profit at Tether in nine months, by its own unattested figure<sup><a href="#s8">8</a></sup></span></div>
+    </div>
+    <p>Treasury describes the goal in the open. Secretary Bessent has said this market could grow tenfold by the end of the decade, with demand for Treasury bills rising alongside it. Issuers hold under 1% of outstanding Treasuries today.<sup><a href="#s9">9</a></sup></p>
+    <p class="kick">The rails carry the dollar. A crash that herds people onto stablecoins herds them onto a faster dollar with a switch on it.</p>
+    <p>To find what sits outside the dollar, keep drilling.</p>
+  </div>
+</section>
+
+<section id="core" aria-labelledby="coreH">
+  <div class="sheet" style="padding-bottom:0" data-depth="Surface" data-priced="&ndash;" data-sw="&ndash;">
+    <div class="wrap">
+      <p class="tag">03 &middot; The core</p>
+      <h2 id="coreH">Five layers, top to bedrock</h2>
+      <p>Each layer down strips something away. The log records what you hold, the promises that have to hold for you to get your value back, and three readings.</p>
+    </div>
+  </div>
+
+  <div class="strata">
+    <div class="bit-track" aria-hidden="true"><div class="bit"></div></div>
+
+    <article class="stratum s1" data-depth="L1 Bank deposit" data-priced="US dollars" data-sw="Bank, court" data-zone="usd">
+      <div class="rail" aria-hidden="true"><b>L1</b></div>
+      <div class="entry">
+        <p class="tag">Layer 1 &middot; Topsoil</p>
+        <h3>Bank deposit</h3>
+        <p class="row"><b>You hold</b><span>A bank's IOU. The bank lends your money out and promises to have it when you ask.</span></p>
+        <div class="chain">
+          <p class="k">Promises that have to hold</p>
+          <ul><li>Borrowers repay</li><li>The bank stays liquid</li><li>The insurer covers a failure</li><li>The dollar keeps its value</li></ul>
+        </div>
+        <dl class="read">
+          <div><dt>Priced in</dt><dd><i class="sw usd"></i>U.S. dollars</dd></div>
+          <div><dt>Off switch</dt><dd>The bank, a court, a regulator</dd></div>
+          <div><dt>Pays you</dt><dd>Interest, at the bank's rate</dd></div>
+        </dl>
+        <p class="assay"><b>$250,000</b><span>FDIC insurance limit per depositor, per bank, per ownership category<sup><a href="#s10">10</a></sup></span></p>
+        <p class="row"><b>When the dollar drops</b><span>Full hit. Every dollar here loses what the dollar loses.</span></p>
+      </div>
+    </article>
+
+    <article class="stratum s2" data-depth="L2 Stablecoin" data-priced="US dollars" data-sw="The issuer" data-zone="usd">
+      <div class="rail" aria-hidden="true"><b>L2</b></div>
+      <div class="entry">
+        <p class="tag">Layer 2 &middot; Clay</p>
+        <h3>Stablecoin</h3>
+        <p class="row"><b>You hold</b><span>An issuer's token, redeemable for one dollar. The issuer keeps your dollar in cash and Treasury bills.</span></p>
+        <p class="row"><b>Came off</b><span>The lending. This is a full-reserve dollar, something sound money people have wanted from banks for generations. The reserve is government debt.</span></p>
+        <p class="row"><b>Went on</b><span>An off switch written into the license, and a rule that sends the interest on your dollar to the issuer.</span></p>
+        <div class="chain">
+          <p class="k">Promises that have to hold</p>
+          <ul><li>The Treasury repays</li><li>The issuer redeems at par</li><li>The dollar keeps its value</li></ul>
+        </div>
+        <dl class="read">
+          <div><dt>Priced in</dt><dd><i class="sw usd"></i>U.S. dollars</dd></div>
+          <div><dt>Off switch</dt><dd>The issuer, by statute</dd></div>
+          <div><dt>Pays you</dt><dd>Nothing from the issuer, by law. Some exchanges pay rewards for now.<sup><a href="#s5">5</a></sup></dd></div>
+        </dl>
+        <p class="assay"><b>$4.4B+</b><span>frozen by Tether to date, by its own count. Circle froze about $109M from 2023 through 2025.<sup><a href="#s11">11</a></sup></span></p>
+        <p class="row"><b>When the dollar drops</b><span>Full hit. A stablecoin tracks the dollar by design, so it follows the dollar down.</span></p>
+      </div>
+    </article>
+
+    <article class="stratum s3" data-depth="L3 Tokenized Treasuries" data-priced="US dollars" data-sw="Fund gatekeeper" data-zone="usd">
+      <div class="rail" aria-hidden="true"><b>L3</b></div>
+      <div class="entry">
+        <p class="tag">Layer 3 &middot; Limestone</p>
+        <h3>Tokenized Treasuries</h3>
+        <p class="row"><b>You hold</b><span>A share of a fund that owns Treasury bills, recorded as a token.</span></p>
+        <p class="row"><b>Came off</b><span>The issuer's cut. The interest reaches you.</span></p>
+        <div class="chain">
+          <p class="k">Promises that have to hold</p>
+          <ul><li>The Treasury repays</li><li>The fund keeps honest books</li><li>The dollar keeps its value</li></ul>
+        </div>
+        <dl class="read">
+          <div><dt>Priced in</dt><dd><i class="sw usd"></i>U.S. dollars</dd></div>
+          <div><dt>Off switch</dt><dd>The fund's gatekeeper. A transfer to an unapproved wallet fails.</dd></div>
+          <div><dt>Pays you</dt><dd>Treasury-bill yield</dd></div>
+        </dl>
+        <p class="assay"><b>$14.9B</b><span>in tokenized Treasury funds on Oct 6, 2026. BlackRock's fund takes $5M to enter.<sup><a href="#s12">12</a></sup></span></p>
+        <p class="row"><b>When the dollar drops</b><span>Full hit, softened by the yield. It is still a loan to Washington, repaid in dollars.</span></p>
+      </div>
+    </article>
+
+    <div class="dline" data-depth="The dollar line" data-priced="Changes here" data-sw="&ndash;">
+      <div class="rail" aria-hidden="true"></div>
+      <div>
+        <h3>The dollar line</h3>
+        <p>Everything above this line is the U.S. dollar in a different wrapper. A dollar shock runs through all three layers at full strength.</p>
+      </div>
+    </div>
+
+    <article class="stratum s4 deep" data-depth="L4 Tokenized gold" data-priced="Ounces of gold" data-sw="Token issuer" data-zone="out">
+      <div class="rail" aria-hidden="true"><b>L4</b></div>
+      <div class="entry">
+        <p class="tag">Layer 4 &middot; Vein</p>
+        <h3>Tokenized gold</h3>
+        <p class="row"><b>You hold</b><span>A claim on bars in a vault, recorded as a token. Your claim is on the issuer, who keeps the bars with a vault company.</span></p>
+        <p class="row"><b>Came off</b><span>The dollar.</span></p>
+        <div class="chain">
+          <p class="k">Promises that have to hold</p>
+          <ul><li>The vault holds the bars</li><li>The issuer honors the claim</li></ul>
+        </div>
+        <dl class="read">
+          <div><dt>Priced in</dt><dd><i class="sw au"></i>Ounces of gold</dd></div>
+          <div><dt>Off switch</dt><dd>The issuer. Both big gold tokens can be frozen.<sup><a href="#s13">13</a></sup></dd></div>
+          <div><dt>Pays you</dt><dd>Nothing</dd></div>
+        </dl>
+        <p class="assay"><b>$4.7B</b><span>in tokenized gold on-chain, mid-2026<sup><a href="#s14">14</a></sup></span></p>
+        <p class="row"><b>When the dollar drops</b><span>The drop passes through. Gold then rides its own market: a record above $5,400 in January 2026, about $4,050 by late June.<sup><a href="#s15">15</a></sup></span></p>
+      </div>
+    </article>
+
+    <article class="stratum s5 deep" data-depth="L5 Bedrock" data-priced="Itself" data-sw="None" data-zone="out">
+      <div class="rail" aria-hidden="true"><b>L5</b></div>
+      <div class="entry">
+        <p class="tag">Layer 5 &middot; Bedrock</p>
+        <h3>The thing itself</h3>
+        <p class="row"><b>You hold</b><span>Coin in your hand. Bitcoin in a wallet only you can open. Land. Tools. Skill.</span></p>
+        <p class="row"><b>Came off</b><span>The custodian. That was the last promise.</span></p>
+        <div class="chain">
+          <p class="k">Promises that have to hold</p>
+          <ul><li class="none">None</li></ul>
+        </div>
+        <dl class="read">
+          <div><dt>Priced in</dt><dd><i class="sw"></i>Itself</dd></div>
+          <div><dt>Off switch</dt><dd>None</dd></div>
+          <div><dt>Pays you</dt><dd>Nothing, unless you put it to work</dd></div>
+        </dl>
+        <p class="assay"><b>0</b><span>counterparties. Also zero help desks.</span></p>
+        <p class="row"><b>When the dollar drops</b><span>The drop passes through. What remains is yours to carry: theft, loss, a forgotten key, a slow sale, a price that swings.</span></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="sheet" id="gauge" data-depth="Back at the rig" data-priced="&ndash;" data-sw="&ndash;">
+  <div class="wrap">
+    <p class="tag">04 &middot; The gauge</p>
+    <h2>Drop the meteor</h2>
+    <p>Set how much buying power the dollar loses. Read what is left of $1,000 at each depth.</p>
+    <div class="gauge">
+      <label for="hit">Dollar loses <output id="hitOut" for="hit">18%</output> of its buying power</label>
+      <input type="range" id="hit" min="0" max="90" step="1" value="18">
+      <div class="presets" role="group" aria-label="Preset hits">
+        <button type="button" id="p18" data-v="18" aria-pressed="true">Fed target, ten years &middot; 18%</button>
+        <button type="button" id="p50" data-v="50" aria-pressed="false">Halved &middot; 50%</button>
+        <button type="button" id="p88" data-v="88" aria-pressed="false">1971 to now &middot; 88%</button>
+      </div>
+      <div class="bars">
+        <div class="bar" data-usd="1"><span class="bl">L1 Bank deposit</span><span class="track"><span class="fill"></span></span><span class="val">$820</span></div>
+        <div class="bar" data-usd="1"><span class="bl">L2 Stablecoin</span><span class="track"><span class="fill"></span></span><span class="val">$820</span></div>
+        <div class="bar" data-usd="1"><span class="bl">L3 Tokenized Treasuries</span><span class="track"><span class="fill"></span></span><span class="val">$820</span></div>
+        <p class="barline">The dollar line</p>
+        <div class="bar out"><span class="bl">L4 Tokenized gold</span><span class="track"></span><span class="val">Outside the dollar</span></div>
+        <div class="bar out"><span class="bl">L5 Bedrock</span><span class="track"></span><span class="val">Outside the dollar</span></div>
+      </div>
+      <p class="legend"><span><i class="k"></i>buying power left</span><span><i class="g"></i>lost to the hit</span></p>
+      <p class="readout" id="readout" aria-live="polite">On layers 1 to 3, $1,000 now buys what $820 buys today.</p>
+    </div>
+    <p class="note">Layers 4 and 5 sit off this gauge because they are priced in something else. They carry their own swings: gold dropped about 25% between its January 2026 record and late June.<sup><a href="#s15">15</a></sup> Interest softens the hit on layers 1 and 3. Layer 2 pays none by law.<sup><a href="#s5">5</a></sup></p>
+  </div>
+</section>
+
+<section class="sheet" id="digging" data-depth="Back at the rig" data-priced="&ndash;" data-sw="&ndash;">
+  <div class="wrap">
+    <p class="tag">05 &middot; Who is already digging</p>
+    <h2>The parties closest to the dollar are stacking below the line</h2>
+    <div class="finds">
+      <article>
+        <p class="tag">Central banks</p>
+        <b>289 t</b>
+        <p>of gold bought in the second quarter of 2026, a quarterly record, in a quarter when the price fell about 16%. The buying comes in bursts: the first half as a whole was the slowest since 2022.<sup><a href="#s16">16</a></sup> A record 45% of central banks surveyed plan to add more within a year.<sup><a href="#s17">17</a></sup></p>
+      </article>
+      <article>
+        <p class="tag">Reserve managers</p>
+        <b>56.7%</b>
+        <p>of the world's currency reserves sit in dollars, down from a 2001 peak above 71%.<sup><a href="#s18">18</a></sup> Gold passed Treasuries as a share of official reserves in 2025, a shift the IMF puts down almost entirely to gold's price.<sup><a href="#s19">19</a></sup> The dollar's share has stayed above half through the whole record.<sup><a href="#s20">20</a></sup></p>
+      </article>
+      <article>
+        <p class="tag">The stablecoin issuer</p>
+        <b>$19.1B</b>
+        <p>in precious metals, mostly physical gold, sits on Tether's own reserve sheet beside $8.4B in bitcoin.<sup><a href="#s8">8</a></sup> The company that sells the digital dollar keeps part of its backing below the dollar line.</p>
+      </article>
+    </div>
+    <p>A crash date is still anyone's guess. Where informed money sits is on the record.</p>
+  </div>
+</section>
+
+<section class="sheet" id="play" data-depth="Back at the rig" data-priced="&ndash;" data-sw="&ndash;">
+  <div class="wrap">
+    <p class="tag">06 &middot; The play</p>
+    <h2>The play is knowing your depth</h2>
+    <p>Tokenization puts all five layers on one screen. A stablecoin, a Treasury token and a gold token look alike in a wallet. They sit at very different depths, and most of what is tokenized today sits above the line: roughly three dollars of government debt for every dollar of gold.<sup><a href="#s12">12</a></sup><sup><a href="#s14">14</a></sup></p>
+    <p>Three questions sort any place you keep value.</p>
+    <ol class="q">
+      <li><strong>What is it priced in?</strong><span>Above the dollar line or below it.</span></li>
+      <li><strong>Whose promise is it?</strong><span>Read the chain. Count the links.</span></li>
+      <li><strong>Who holds the off switch?</strong><span>A bank, an issuer, a gatekeeper, a vault, or you.</span></li>
+    </ol>
+    <p>Depth has a price. Each layer down trades the dollar's slow leak for something else: a market that swings, a vault you have to trust, a key you can lose, a sale that takes time. Zero promises also means zero help.</p>
+    <p class="kick">Know your depth before impact.</p>
+  </div>
+</section>
+
+<section class="sheet" id="sources" data-depth="Back at the rig" data-priced="&ndash;" data-sw="&ndash;">
+  <div class="wrap">
+    <p class="tag">Sources</p>
+    <ol class="src">
+      <li id="s1">Official Data Foundation, from Bureau of Labor Statistics CPI: <a href="https://www.officialdata.org/us/inflation/1971?amount=1">$1 in 1971 is worth $8.25 today</a>.</li>
+      <li id="s2">Advisor Perspectives, <a href="https://www.advisorperspectives.com/articles/2026/06/15/could-dollar-be-trouble-so-what-then">Could the Dollar Be in Trouble?</a> (June 2026); LendEDU, <a href="https://lendedu.com/blog/us-dollar-collapse/">Will the U.S. Dollar Collapse?</a></li>
+      <li id="s3">GENIUS Act summaries: Sphinx, <a href="https://sphinxhq.com/blog-posts/stablecoin-compliance-requirements">Stablecoin Compliance Requirements Under the GENIUS Act</a>; Winston &amp; Strawn, <a href="https://www.winston.com/print/v2/content/1102430/real-genius-landmark-us-federal-payment-stablecoin-legislation.pdf">Landmark U.S. Federal Payment Stablecoin Legislation</a>.</li>
+      <li id="s4">FinTech Weekly, <a href="https://www.fintechweekly.com/news/what-is-the-clarity-act-digital-asset-market-structure-explained-2026">CLARITY Act Tracker</a>; CryptoTicker, <a href="https://cryptoticker.io/en/clarity-act-explained/">CLARITY Act explained</a> (updated Nov 6, 2026).</li>
+      <li id="s5">Congressional Research Service, <a href="https://www.everycrsreport.com/reports/IF13174.html">The Stablecoin Yield Debate</a> (March 2026).</li>
+      <li id="s6">DefiLlama, <a href="https://defillama.com/stablecoins">Stablecoin market cap</a> (Nov 14, 2026); Crypto Briefing, <a href="https://cryptobriefing.com/stablecoin-market-cap-drops-21b-since-may/">Stablecoin market cap drops $21B since May 2026 peak</a>.</li>
+      <li id="s7">CoinDesk via KuCoin, <a href="https://www.kucoin.com/news/flash/non-dollar-stablecoins-struggle-to-exceed-0-5-market-share">Non-Dollar Stablecoins Struggle to Exceed 0.5% Market Share</a> (April 2026 data).</li>
+      <li id="s8">Tether Q3 2026 attestation, as reported by Stablecoin Insider, <a href="https://stablecoininsider.org/tether-q3-2026-attestation/">Buffer Doubles, Cash Thins</a>, and Startup Fortune, <a href="https://startupfortune.com/tether-posted-a-15-billion-quarterly-profit-and-19-billion-in-gold/">Tether posted a $1.5 billion quarterly profit and $19 billion in gold</a>.</li>
+      <li id="s9">PYMNTS, <a href="https://pymnts.com/blockchain/2026/us-looks-to-stablecoins-to-bolster-dollars-reserve-status">US Looks to Stablecoins to Bolster Dollar's Reserve Status</a>.</li>
+      <li id="s10">FDIC, <a href="https://www.fdic.gov/resources/deposit-insurance/understanding-deposit-insurance">Understanding Deposit Insurance</a>.</li>
+      <li id="s11">Decrypt, <a href="https://decrypt.co/365278/tether-freezes-344-million-usdt-stablecoins-flagged-illicit-activity">Tether Freezes $344 Million in USDT</a> (April 2026); Stablecoin Insider, <a href="https://stablecoininsider.org/can-stablecoins-be-frozen/">Can Stablecoins Be Frozen?</a></li>
+      <li id="s12">Eco, <a href="https://eco.com/support/en/articles/15483226-what-is-buidl-blackrock-s-tokenized-treasury-fund">What Is BUIDL? BlackRock's Tokenized Treasury Fund</a> (RWA.xyz data, Oct 6, 2026).</li>
+      <li id="s13">Sentora Research, <a href="https://sentora.com/research/articles/tokenized-gold-how-it-works-and-why-it-became-the-second-largest-rwa-category">Tokenized Gold: How It Works</a>.</li>
+      <li id="s14">The Cryptonomist, <a href="https://en.cryptonomist.ch/2026/07/08/tokenized-real-world-assets-market/">Tokenized real-world assets hit $32B</a> (July 2026).</li>
+      <li id="s15">Statistics of the World, <a href="https://statisticsoftheworld.com/blog/gold-price-5000-2026-central-banks-dedollarization-record">Gold price 2026</a> (LBMA high, Jan 28, 2026); GoldSilver, <a href="https://goldsilver.com/article/gold-worst-week-2026-central-banks-record-buy-signal/">Gold's Worst Week of 2026</a> (June 26, 2026).</li>
+      <li id="s16">SMM, <a href="https://news.metal.com/newscontent/104042350-central-banks-buy-record-amount-of-gold-in-the-very-quarter-prices-fell">Central Banks Buy Record Amount of Gold in the Very Quarter Prices Fell</a> (Aug 2026).</li>
+      <li id="s17">GoldSilver, <a href="https://goldsilver.com/industry-news/article/why-central-banks-buying-gold-2026/">Why Are Central Banks Buying So Much Gold in 2026?</a> (World Gold Council survey).</li>
+      <li id="s18">IMF, <a href="https://data.imf.org/news/imf%20data%20brief%20september%2030">Currency Composition of Official Foreign Exchange Reserves, Q2 2026</a>; bne IntelliNews, <a href="https://www.intellinews.com/dollar-s-grip-on-global-reserves-slips-to-lowest-level-this-century-454331/">Dollar's grip on global reserves slips</a>.</li>
+      <li id="s19">IMF, <a href="https://data.imf.org/en/news/imf%20data%20brief%20july%201">Data Brief, July 1, 2026</a>.</li>
+      <li id="s20">Briefs, <a href="https://www.briefs.co/?p=5891">The Dollar Was 72% Of Global Reserves In 2001</a> (May 2026).</li>
+    </ol>
+    <p class="fine">Compiled 14 November 2026 from public records. Figures move; check the source before you rely on one. This is education. Nothing here is financial advice, and the decisions are yours.</p>
+  </div>
+</section>
+
+</main>
+
+<div class="hud" id="hud" aria-hidden="true">
+  <div><span>Depth</span><b id="hudDepth">Surface</b></div>
+  <div><span>Priced in</span><b id="hudPriced">&ndash;</b></div>
+  <div><span>Off switch</span><b id="hudSwitch">&ndash;</b></div>
+</div>
+
+<script>
+(function () {
+  function byId(id) { return document.getElementById(id); }
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Sky: fixed stars and one meteor on a loop */
+  (function () {
+    var c = byId('sky');
+    if (!c || !c.getContext) return;
+    var x = c.getContext('2d');
+    var w = 0, h = 0, stars = [], seen = true, t0 = 0;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var FLY = 2600, CYCLE = 7400;
+    function seeded(n) { var s = n; return function () { s = (s * 16807) % 2147483647; return s / 2147483647; }; }
+    function size() {
+      var r = c.getBoundingClientRect();
+      w = r.width; h = r.height;
+      c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+      x.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var rnd = seeded(7919), n = Math.round(w * h / 5200);
+      stars = [];
+      for (var i = 0; i < n; i++) stars.push([rnd() * w, rnd() * h * 0.94, rnd() * 1.1 + 0.3, rnd()]);
+      if (still) draw(0.58);
+    }
+    function draw(p) {
+      x.clearRect(0, 0, w, h);
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        x.fillStyle = 'rgba(231,234,228,' + (0.2 + 0.5 * s[3]).toFixed(2) + ')';
+        x.fillRect(s[0], s[1], s[2], s[2]);
+      }
+      if (p < 0 || p > 1) return;
+      var sx = w * 1.04, sy = -h * 0.08, ex = w * 0.3, ey = h * 1.0;
+      var e = p * p * (3 - 2 * p) * 0.35 + p * 0.65;
+      var hx = sx + (ex - sx) * e, hy = sy + (ey - sy) * e;
+      var te = Math.max(0, e - 0.3);
+      var tx = sx + (ex - sx) * te, ty = sy + (ey - sy) * te;
+      var g = x.createLinearGradient(tx, ty, hx, hy);
+      g.addColorStop(0, 'rgba(226,73,31,0)');
+      g.addColorStop(0.7, 'rgba(226,73,31,0.55)');
+      g.addColorStop(1, 'rgba(255,220,180,1)');
+      x.lineCap = 'round';
+      x.strokeStyle = g;
+      x.globalAlpha = 0.35; x.lineWidth = 8;
+      x.beginPath(); x.moveTo(tx, ty); x.lineTo(hx, hy); x.stroke();
+      x.globalAlpha = 1; x.lineWidth = 2.4;
+      x.beginPath(); x.moveTo(tx, ty); x.lineTo(hx, hy); x.stroke();
+      x.shadowColor = '#e2491f'; x.shadowBlur = 18;
+      x.fillStyle = '#ffe3c6';
+      x.beginPath(); x.arc(hx, hy, 3.4, 0, 6.2832); x.fill();
+      x.shadowBlur = 0;
+      if (p > 0.93) {
+        var k = (p - 0.93) / 0.07;
+        var rg = x.createRadialGradient(ex, ey, 0, ex, ey, 30 + 90 * k);
+        rg.addColorStop(0, 'rgba(255,220,180,' + (0.8 * (1 - k)).toFixed(2) + ')');
+        rg.addColorStop(1, 'rgba(226,73,31,0)');
+        x.fillStyle = rg;
+        x.fillRect(0, 0, w, h);
+      }
+    }
+    function frame(now) {
+      if (!t0) t0 = now;
+      if (seen && !document.hidden) draw(((now - t0) % CYCLE) / FLY);
+      requestAnimationFrame(frame);
+    }
+    size();
+    window.addEventListener('resize', size);
+    if (!still) {
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { seen = es[0].isIntersecting; }).observe(c);
+      }
+      requestAnimationFrame(frame);
+    }
+  })();
+
+  /* Rig readout follows the section crossing mid-screen */
+  (function () {
+    var hud = byId('hud');
+    if (!hud || !('IntersectionObserver' in window)) return;
+    var d = byId('hudDepth'), p = byId('hudPriced'), s = byId('hudSwitch');
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var m = e.target;
+        d.textContent = m.getAttribute('data-depth');
+        p.textContent = m.getAttribute('data-priced');
+        s.textContent = m.getAttribute('data-sw');
+        hud.setAttribute('data-zone', m.getAttribute('data-zone') || '');
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-depth]'), function (m) { io.observe(m); });
+  })();
+
+  /* Shock gauge */
+  (function () {
+    var hit = byId('hit'), out = byId('hitOut'), read = byId('readout');
+    if (!hit) return;
+    var fills = document.querySelectorAll('.bar[data-usd] .fill');
+    var vals = document.querySelectorAll('.bar[data-usd] .val');
+    var btns = document.querySelectorAll('.presets button');
+    function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+    function set(v) {
+      v = Math.max(0, Math.min(90, Math.round(Number(v) || 0)));
+      hit.value = v;
+      out.textContent = v + '%';
+      var left = 1000 * (1 - v / 100), i;
+      for (i = 0; i < fills.length; i++) fills[i].style.width = (100 - v) + '%';
+      for (i = 0; i < vals.length; i++) vals[i].textContent = money(left);
+      for (i = 0; i < btns.length; i++) btns[i].setAttribute('aria-pressed', String(Number(btns[i].getAttribute('data-v')) === v));
+      read.textContent = v === 0
+        ? 'No hit. $1,000 buys what $1,000 buys today.'
+        : 'On layers 1 to 3, $1,000 now buys what ' + money(left) + ' buys today.';
+    }
+    hit.addEventListener('input', function () { set(hit.value); });
+    Array.prototype.forEach.call(btns, function (b) {
+      b.addEventListener('click', function () { set(b.getAttribute('data-v')); });
+    });
+    set(hit.value);
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 /**
  * The Futurist pages mounted exactly as their approved source files (in
- * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward and
- * The Receipts, the third and fourth Futurist installments.
+ * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward, The
+ * Receipts and Depth Chart, the third, fourth and fifth Futurist
+ * installments.
  *
  * `sha256` is the approved file's hash: the build stops if the file on
  * record is not the file that was approved. `night` is the page's own
@@ -18,6 +19,11 @@ export const FUTURIST_SOURCES = {
     sha256: 'a51be4be6b8d801e4e397c023c684f50c104c1cb55a9345e2172f6cf074e5899',
     night: '#22262b',
     preload: ['/fonts/doto-latin-wght-normal.woff2', '/fonts/ibm-plex-mono-latin-400-normal.woff2'],
+  },
+  'depth-chart': {
+    sha256: '7b0d2bd8c2e9611cb020980130e177d2fa3236af82b5b0bcb785a633b6e6dddd',
+    night: '#0e1419',
+    preload: ['/fonts/barlow-condensed-latin-800-normal.woff2', '/fonts/public-sans-latin-wght-normal.woff2'],
   },
 } as const;
 

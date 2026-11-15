@@ -43,7 +43,10 @@ export default function twins(): AstroIntegration {
           const title = unescapeAttr(m[1].match(TITLE)?.[1] ?? '');
           const twin = twinFromHtml(readFileSync(pageFile, 'utf8'), title || undefined);
           if (!twin.html.trim()) throw new Error(`twins: ${slug} reduced to nothing.`);
-          writeFileSync(twinFile, twinHtml.replace(PLACEHOLDER, `$1\n${twin.html}\n$2`));
+          /* A replacer function, not a replacement string: the piece's own text
+             can hold $1, $2 or $& (Depth Chart's "$1.00"), which a string would
+             read as back-references. */
+          writeFileSync(twinFile, twinHtml.replace(PLACEHOLDER, (_m, open: string, close: string) => `${open}\n${twin.html}\n${close}`));
           filled++;
           logger.info(`${slug}: ${twin.headings} headings, ${twin.exhibits.length} exhibits`);
         }

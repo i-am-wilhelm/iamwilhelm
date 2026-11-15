@@ -14,7 +14,7 @@
  *     the link to the plain-text twin, the share card (the page's own
  *     render, public/og/<slug>.jpg) and the Article schema;
  *   - LINKS holds the two cross-links between Face Forward and The
- *     Receipts, each one a named, exact replacement;
+ *     Receipts, each one a named, exact replacement (Depth Chart has none);
  *   - FIXES holds the repairs made since the files were approved, each one
  *     a named, exact replacement (the source files stay as approved);
  *   - the links back, as Everyone, Searchable carries them: the series label
@@ -41,9 +41,10 @@ const LATIN =
   'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD';
 const face = (family: string, weight: number, file: string) =>
   `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};font-display:swap;src:url('/fonts/${file}.woff2') format('woff2');unicode-range:${LATIN}}`;
-/* Each Google Fonts link in the source files, and the faces it stood for:
-   one per weight asked for, as Google declares them (a variable file is
-   named once per weight). */
+/* Each family a Google Fonts link in the source files asks for, and the
+   faces it stood for: one per weight asked for, as Google declares them (a
+   variable file is named once per weight). Depth Chart asks for its three
+   families in one link. */
 const FACES: Record<string, string[]> = {
   'Big+Shoulders+Display:wght@600;700;800;900': [600, 700, 800, 900].map((w) =>
     face('Big Shoulders Display', w, 'big-shoulders-display-latin-wght-normal'),
@@ -52,6 +53,9 @@ const FACES: Record<string, string[]> = {
   'Black+Ops+One': [face('Black Ops One', 400, 'black-ops-one-latin-400-normal')],
   'IBM+Plex+Mono:wght@400;500;600': [400, 500, 600].map((w) => face('IBM Plex Mono', w, `ibm-plex-mono-latin-${w}-normal`)),
   'Doto:wght@700;900': [700, 900].map((w) => face('Doto', w, 'doto-latin-wght-normal')),
+  'Barlow+Condensed:wght@600;800': [600, 800].map((w) => face('Barlow Condensed', w, `barlow-condensed-latin-${w}-normal`)),
+  'DM+Mono:wght@400;500': [400, 500].map((w) => face('DM Mono', w, `dm-mono-latin-${w}-normal`)),
+  'Public+Sans:wght@400;600;700': [400, 600, 700].map((w) => face('Public Sans', w, 'public-sans-latin-wght-normal')),
 };
 
 /**
@@ -59,7 +63,7 @@ const FACES: Record<string, string[]> = {
  * The link in The Receipts' header takes the line's own colour and no
  * underline, so the line looks as it did.
  */
-const LINKS: Record<FuturistSlug, [string, string, string]> = {
+const LINKS: Partial<Record<FuturistSlug, [string, string, string]>> = {
   'face-forward': [
     'the footer note',
     'The channels, sponsors and videos on this page are invented.</p>',
@@ -111,6 +115,7 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
       '      if ((window.pageYOffset || document.documentElement.scrollTop || 0) > 0 && items[i].getBoundingClientRect().top < line) {',
     ],
   ],
+  'depth-chart': [],
 };
 
 /**
@@ -126,11 +131,18 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
  * colour. It gives up ScrollFoot's z-index so the register bar (fixed,
  * later in the page) always rides above it, and it ends with the same
  * clearance the page leaves for the bar under the tape.
+ *
+ * Depth Chart: after <main>, on the log sheet under the sources, in the
+ * sheet's 44rem column, with its small type in the page's mono. It gives up
+ * ScrollFoot's z-index so the rig readout (fixed, later in the page) always
+ * rides above it; the body's own bottom padding already keeps the readout
+ * clear of the foot's last line.
  */
 /* The source text the foot follows: [what, the exact text]. */
 const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
   'face-forward': ["the page's own footer", '</footer>\n'],
   'the-receipts': ['the end of <main>', '</main>\n'],
+  'depth-chart': ['the end of <main>', '</main>\n'],
 };
 const FOOT_CSS: Record<FuturistSlug, string> = {
   'face-forward':
@@ -138,6 +150,7 @@ const FOOT_CSS: Record<FuturistSlug, string> = {
     'background:rgba(9,13,26,0.92);border:1px solid rgba(236,230,216,0.14);border-radius:4px;color:var(--bone)}',
   'the-receipts':
     '.scroll-foot.site-foot{--log:var(--body);z-index:auto;max-width:30rem;margin-top:0;padding-bottom:104px;color:var(--paper)}',
+  'depth-chart': '.scroll-foot.site-foot{--log:var(--mono);z-index:auto;max-width:44rem;margin-top:0;border-top-color:var(--rule)}',
 };
 const FOOT_MARK = '<!--futurist:foot-->';
 
@@ -148,6 +161,15 @@ const FOOT_MARK = '<!--futurist:foot-->';
  */
 const back = (slug: FuturistSlug, label: string, href: string): [string, string, string] => {
   const a = 'style="color:inherit;white-space:nowrap"';
+  if (slug === 'depth-chart') {
+    return [
+      'the hero tag',
+      '    <p class="tag">Borehole log &middot; The new money &middot; Logged 14 Nov 2026</p>\n',
+      '    <p class="tag">Borehole log &middot; The new money &middot; Logged 14 Nov 2026</p>\n' +
+        `    <p class="tag"><a href="${href}" ${a}>${esc(label)}</a> &middot; <span style="white-space:nowrap">By <a href="/" rel="author" ${a}>Michael Wilhelm</a></span>` +
+        `<span data-og-hide data-twin-skip> &middot; <a href="/gallery/" ${a}>The Gallery</a></span></p>\n`,
+    ];
+  }
   if (slug === 'face-forward') {
     return [
       'the byline',
@@ -196,10 +218,13 @@ export async function futuristDocument(slug: FuturistSlug): Promise<[string, str
   html = swap(html, '<link rel="preconnect" href="https://fonts.googleapis.com">\n', '', 'the fonts.googleapis.com preconnect', slug);
   html = swap(html, '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n', '', 'the fonts.gstatic.com preconnect', slug);
   const faces: string[] = [];
-  html = html.replace(/<link href="https:\/\/fonts\.googleapis\.com\/css2\?family=([^"&]+)&display=swap" rel="stylesheet">\n/g, (_m, family: string) => {
-    if (!FACES[family]) throw new Error(`futurist: ${slug}: no self-hosted copy of ${family}.`);
+  html = html.replace(/<link href="https:\/\/fonts\.googleapis\.com\/css2\?((?:family=[^"&]+&)+)display=swap" rel="stylesheet">\n/g, (_m, query: string) => {
     const first = faces.length === 0;
-    faces.push(...FACES[family]);
+    for (const part of query.split('&').filter(Boolean)) {
+      const family = part.replace(/^family=/, '');
+      if (!FACES[family]) throw new Error(`futurist: ${slug}: no self-hosted copy of ${family}.`);
+      faces.push(...FACES[family]);
+    }
     return first ? '<!--futurist-fonts-->' : '';
   });
   if (/fonts\.g(oogleapis|static)\.com/.test(html)) throw new Error(`futurist: ${slug}: a Google Fonts reference was left in the page.`);
@@ -277,8 +302,8 @@ export async function futuristDocument(slug: FuturistSlug): Promise<[string, str
     slug,
   );
 
-  const [what, find, put] = LINKS[slug];
-  html = swap(html, find, put, what, slug);
+  const link = LINKS[slug];
+  if (link) html = swap(html, link[1], link[2], link[0], slug);
   for (const [fixed, from, to] of FIXES[slug]) html = swap(html, from, to, fixed, slug);
   if (!piece.label) throw new Error(`futurist: ${slug}: the gallery entry needs a series number.`);
   const [backWhat, backFrom, backTo] = back(slug, piece.label, s.href);
