@@ -19,7 +19,8 @@
  *     the text cards (liftControls), so a card scrolling past on a phone
  *     passes under the bar instead of covering it;
  *   - FIXES holds the few per-page repairs made since the files were
- *     approved, each one a named, exact replacement.
+ *     approved, and the in-page links to other pieces moved onto the
+ *     site's own routes, each one a named, exact replacement.
  *
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
@@ -129,6 +130,16 @@ const FIXES: Record<string, [string, string, string][]> = {
       'the belly slider reading',
       'const b = +bellyIn.value / 62.5, contrast = Math.abs(1 - b);',
       "const b = +bellyIn.value / 62.5, contrast = Math.abs(1 - b); { const vt = (lang === 'es' ? 'contraste ' : 'contrast ') + contrast.toFixed(2); if (bellyIn._vt !== vt) { bellyIn._vt = vt; bellyIn.setAttribute('aria-valuetext', vt); } }",
+    ],
+  ],
+  'nine-hundred-lights': [
+    /* The source credits its lighthouse drawings to How to Throw a Flame
+       Twenty Miles with an absolute link to the live site. On the site it
+       is the site's own route, so it works on a preview and in dev too. */
+    [
+      'the link to How to Throw a Flame Twenty Miles',
+      '<a href="https://iamwilhelm.com/gallery/how-to-throw-a-flame-twenty-miles/" rel="noopener">',
+      '<a href="/gallery/how-to-throw-a-flame-twenty-miles/">',
     ],
   ],
 };
