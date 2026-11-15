@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum Banking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=DM+Mono:wght@400;500&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: a banknote under two lights. Vault-dark hero with an engraved rosette, a paper
+     ledger below it. Everything about money prints in intaglio green; everything about the
+     record of you prints in ultraviolet, the ink a note only shows under the lamp.
+     A counter pinned to the bottom edge writes rows to the twin as you read. Single theme by choice. */
+  --vault: #0c1814;
+  --paper: #e8ebe5;
+  --ink: #12201b;
+  --faint: #55635d;
+  --rule: #b3bdb6;
+  --green: #1f5a45;
+  --uv: #5a3ee0;
+  --uv-soft: #d9d3f6;
+  --flag: #e2491f;
+  --vault-ink: #e3e8e1;
+  --vault-faint: #94a39c;
+  --display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--body); font-size: 16.5px; line-height: 1.6;
+  -webkit-text-size-adjust: 100%; padding-bottom: 64px;
+}
+p { margin: 0; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+a { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
+a:hover { text-decoration-style: solid; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--uv); outline-offset: 2px; }
+sup { line-height: 0; }
+sup a { font: 500 0.68rem var(--mono); text-decoration: none; padding: 0 1px; opacity: 0.8; }
+sup a::before { content: "["; }
+sup a::after { content: "]"; }
+.wrap { max-width: 44rem; margin: 0 auto; padding: 0 16px; }
+.tag { font: 500 0.72rem/1.3 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+
+/* Hero */
+.hero { position: relative; background: var(--vault); color: var(--paper); overflow: hidden; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero .wrap { position: relative; display: grid; gap: 18px; padding-top: 46px; padding-bottom: 40px; }
+.hero .tag { color: var(--vault-faint); }
+h1 {
+  font: 800 clamp(4rem, 21vw, 10rem)/0.84 var(--display);
+  letter-spacing: -0.01em; text-transform: uppercase;
+  text-shadow: 0.045em 0.045em 0 var(--uv);
+}
+h1 span { display: block; }
+.dek { font: 600 clamp(1.5rem, 5.4vw, 2.1rem)/1.12 var(--display); letter-spacing: 0.01em; max-width: 24ch; }
+.lead { max-width: 58ch; color: var(--vault-ink); }
+.edge { height: 14px; background: repeating-linear-gradient(90deg, var(--vault) 0 3px, var(--paper) 3px 4px, var(--vault) 4px 9px, var(--uv) 9px 10px); }
+
+/* Sections */
+.sheet { padding: 46px 0; }
+.sheet + .sheet { border-top: 1px solid var(--rule); }
+.sheet .wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+h2 { font: 800 clamp(2.3rem, 9vw, 3.6rem)/0.95 var(--display); text-transform: uppercase; letter-spacing: 0.005em; }
+.sheet p { max-width: 62ch; }
+.kick { font: 600 clamp(1.35rem, 4.6vw, 1.7rem)/1.2 var(--display); letter-spacing: 0.01em; max-width: 32ch; }
+.note { font-size: 0.9rem; color: var(--faint); }
+
+/* 01 Scoreboard */
+.board { list-style: none; margin: 0; padding: 0; border: 1.5px solid var(--ink); }
+.board li { display: grid; grid-template-columns: 6.4rem minmax(0, 1fr); gap: 4px 14px; padding: 12px; }
+.board li + li { border-top: 1.5px solid var(--ink); }
+.pill { align-self: start; justify-self: start; font: 500 0.66rem/1 var(--mono); letter-spacing: 0.12em; padding: 5px 7px; border: 1.5px solid var(--ink); }
+.pill.on { background: var(--green); color: var(--paper); border-color: var(--green); }
+.pill.off { background: var(--flag); color: var(--ink); border-color: var(--ink); }
+.pill.soon { background: transparent; border-style: dashed; }
+.board b { font: 800 1.45rem/1.05 var(--display); text-transform: uppercase; display: block; }
+.board span { font-size: 0.92rem; line-height: 1.45; display: block; margin-top: 3px; }
+.board time { font: 500 0.7rem var(--mono); letter-spacing: 0.06em; color: var(--faint); display: block; margin-top: 4px; }
+
+/* 02 Three dollars */
+.spec { margin: 0; border: 1.5px solid var(--ink); }
+.spec div { display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); }
+.spec div + div { border-top: 1.5px solid var(--ink); }
+.spec dt { background: var(--ink); color: var(--paper); font: 500 0.7rem/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 10px; }
+.spec dd { margin: 0; padding: 10px 12px; }
+.spec dd b { display: block; font: 800 1.3rem/1.1 var(--display); text-transform: uppercase; margin-bottom: 2px; }
+.rig { border: 1.5px solid var(--ink); padding: 16px 14px 18px; display: grid; gap: 16px; }
+.rig h3 { font: 800 1.7rem/1 var(--display); text-transform: uppercase; }
+.ctl { display: grid; gap: 4px; }
+.ctl label { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 10px; font-weight: 600; }
+.ctl output { font: 800 1.9rem/1 var(--display); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; height: 34px; margin: 0; accent-color: var(--green); }
+.hops { display: grid; gap: 5px; }
+.hop { display: grid; grid-template-columns: 4.4rem minmax(0, 1fr) 4rem; gap: 8px; align-items: center; font: 500 0.72rem var(--mono); letter-spacing: 0.04em; }
+.hop i { display: block; height: 16px; background: var(--green); border: 1.5px solid var(--ink); transition: width 0.2s ease; }
+.hop:first-child i { background: var(--ink); }
+.hop em { font-style: normal; text-align: right; font-variant-numeric: tabular-nums; }
+.sum { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5px; background: var(--ink); border: 1.5px solid var(--ink); }
+.sum div { background: var(--paper); padding: 12px; display: grid; gap: 2px; align-content: start; }
+.sum b { font: 800 clamp(2rem, 8.4vw, 2.7rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+.sum span { font-size: 0.82rem; line-height: 1.35; color: var(--faint); }
+
+/* 03 Quantum */
+.q3 { list-style: none; margin: 0; padding: 0; counter-reset: q; display: grid; }
+.q3 li { counter-increment: q; display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 4px 10px; padding: 14px 0; border-top: 1.5px solid var(--ink); }
+.q3 li::before { content: counter(q); grid-row: span 2; font: 800 3.2rem/0.85 var(--display); color: var(--uv); }
+.q3 strong { font: 800 1.7rem/1.05 var(--display); text-transform: uppercase; }
+
+/* 04 Twin */
+.uvband { background: var(--uv); color: #fff; padding: 14px 16px; font-weight: 600; }
+.uvband .tag { color: #fff; opacity: 0.85; display: block; margin-bottom: 4px; }
+.twin { border: 1.5px solid var(--ink); display: grid; }
+.twin-head { padding: 14px; display: grid; gap: 4px; border-bottom: 1.5px solid var(--ink); }
+.twin-head h3 { font: 800 1.7rem/1 var(--display); text-transform: uppercase; }
+.streams { list-style: none; margin: 0; padding: 0; }
+.streams li + li { border-top: 1px solid var(--rule); }
+.streams label { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 11px 14px; cursor: pointer; min-height: 48px; }
+.streams input { width: 20px; height: 20px; margin: 0; accent-color: var(--uv); }
+.streams small { display: block; font-size: 0.8rem; color: var(--faint); line-height: 1.35; }
+.streams em { font: 800 1.35rem/1 var(--display); font-style: normal; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.twin-out { border-top: 1.5px solid var(--ink); padding: 14px; display: grid; gap: 12px; }
+.meter { display: grid; gap: 4px; }
+.meter .ml { display: flex; justify-content: space-between; gap: 10px; font: 500 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.meter .track { height: 22px; border: 1.5px solid var(--ink); background: repeating-linear-gradient(-45deg, var(--rule) 0 2px, transparent 2px 6px); }
+.meter .fill { display: block; height: 100%; border-right: 1.5px solid var(--ink); transition: width 0.25s ease; }
+.meter .fill.g { background: var(--green); }
+.meter .fill.u { background: var(--uv); }
+.readout { font: 600 1.3rem/1.2 var(--display); letter-spacing: 0.01em; }
+
+/* 05 Three ways */
+.ways { display: grid; gap: 0; }
+.ways article { display: grid; gap: 10px; padding: 20px 0; border-top: 1.5px solid var(--ink); }
+.ways h3 { font: 800 clamp(2.1rem, 9vw, 3rem)/0.95 var(--display); text-transform: uppercase; }
+.read { margin: 0; border-top: 1px solid var(--rule); }
+.read div { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--rule); }
+.read dt { font: 500 0.68rem/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); padding-top: 3px; }
+.read dd { margin: 0; }
+
+/* 06 Game tree */
+.tree { display: grid; gap: 12px; }
+.branch { border: 1.5px solid var(--ink); display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); }
+.branch > b { background: var(--ink); color: var(--paper); font: 800 2.4rem/1 var(--display); display: grid; place-items: center; }
+.branch > div { padding: 12px; display: grid; gap: 6px; }
+.branch h3 { font: 800 1.55rem/1.05 var(--display); text-transform: uppercase; }
+.branch .odds { font: 500 0.7rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); }
+.branch.base { border-color: var(--green); box-shadow: 4px 4px 0 var(--green); }
+.branch.base > b { background: var(--green); }
+.tl { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--rule); }
+.tl li { display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); gap: 14px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.tl time { font: 500 0.78rem/1.6 var(--mono); letter-spacing: 0.06em; }
+
+/* 07 Plays */
+.plays { list-style: none; margin: 0; padding: 0; counter-reset: p; display: grid; }
+.plays li { counter-increment: p; display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 4px 10px; padding: 14px 0; border-top: 1.5px solid var(--ink); }
+.plays li::before { content: counter(p); grid-row: span 2; font: 800 3.2rem/0.85 var(--display); color: var(--green); }
+.plays strong { font: 800 1.7rem/1.05 var(--display); text-transform: uppercase; }
+
+/* Sources */
+.src { margin: 0; padding-left: 1.5rem; display: grid; gap: 8px; font-size: 0.84rem; line-height: 1.45; }
+.src li:target { background: var(--uv-soft); outline: 4px solid var(--uv-soft); }
+.src a { word-break: break-word; }
+
+/* Twin counter */
+.counter {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: var(--vault); color: var(--vault-ink); border-top: 2px solid var(--uv);
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 10px 16px; font: 500 0.7rem/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+}
+.counter .bar { height: 8px; background: #22332d; }
+.counter .bar i { display: block; height: 100%; width: 0; background: var(--uv); }
+.counter b { font: 800 1.3rem/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="rosette" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="tag">Money file · status checked 14 November 2026</p>
+    <h1><span>Quantum</span><span>Banking</span></h1>
+    <p class="dek">The bill stalled. The bank got built anyway.</p>
+    <p class="lead">The CLARITY Act fell eleven votes short in the Senate in September. Inside the same eight weeks, regulators and the largest banks switched on the machinery the bill was written to govern. This is a map of that machine, a name for what it grows into, and a game plan for living next to it.</p>
+  </div>
+</header>
+<div class="edge" aria-hidden="true"></div>
+
+<section class="sheet" id="scoreboard">
+  <div class="wrap">
+    <p class="tag">01 · The scoreboard</p>
+    <h2>One statute stuck. Five pieces live.</h2>
+    <p>Start with the facts, because the headline most people carry is wrong. The CLARITY Act passed the House 294 to 134 in July 2025 and cleared the Senate Banking Committee 15 to 9 in May 2026. On 15 September the Senate voted 49 to 50 on the motion to take it up, with 60 needed.<sup><a href="#s1">1</a></sup><sup><a href="#s2">2</a></sup> Democrats then won both chambers on 3 November and take their seats on 3 January. The bill dies with this Congress unless the lame-duck session revives it, and prediction markets priced that in the low single digits.<sup><a href="#s3">3</a></sup><sup><a href="#s4">4</a></sup></p>
+    <ul class="board">
+      <li><span class="pill off">STALLED</span><div><b>CLARITY Act</b><span>Market-structure law: who regulates which token, and what stablecoin rewards may look like. Passed the House, blocked in the Senate, likely rewritten in 2027.</span><time>Cloture failed 15 Sep 2026</time></div></li>
+      <li><span class="pill on">LAW</span><div><b>GENIUS Act</b><span>Federal stablecoin statute. Issuers hold one-for-one reserves and carry bank-grade anti-money-laundering duties. Takes full effect by 18 January 2027.</span><time>Signed 18 Jul 2025 · OCC final rule 21 Oct 2026</time></div></li>
+      <li><span class="pill on">LIVE</span><div><b>Tokenized stock trading</b><span>SEC exemption lets tokenized versions of listed stocks trade on-chain for five years. Holders keep shareholder rights. Companies get 30 days to object.</span><time>Effective 17 Sep 2026</time></div></li>
+      <li><span class="pill on">LIVE</span><div><b>DTCC Tokenization Service</b><span>The depository that holds $114 trillion in securities now mints token versions for its members. Twenty signed up, including JPMorgan, Citi, Bank of America and State Street.</span><time>Launched 28 Oct 2026</time></div></li>
+      <li><span class="pill on">LIVE</span><div><b>Bank deposit tokens</b><span>JPMorgan and Citi already move client dollars as tokens around the clock. Wells Fargo committed for corporate clients this fall.</span><time>In production 2026</time></div></li>
+      <li><span class="pill on">LIVE</span><div><b>Basis reporting</b><span>Brokers report cost basis to the IRS on digital assets bought from 1 January 2026. The first forms carrying it land in early 2027.</span><time>Form 1099-DA, tax year 2026</time></div></li>
+      <li><span class="pill soon">PLANNED</span><div><b>Shared deposit-token network</b><span>The Clearing House, owned by the big banks, plans an interbank network for tokenized deposits tied into existing payment rails.</span><time>Target: first half 2027</time></div></li>
+    </ul>
+    <p>Read it top to bottom. The row that needed sixty senators is stuck. Every row that needed an agency or a bank consortium is moving.<sup><a href="#s5">5</a></sup><sup><a href="#s6">6</a></sup><sup><a href="#s7">7</a></sup><sup><a href="#s8">8</a></sup><sup><a href="#s9">9</a></sup></p>
+    <p>One precision point on tokenized stock. The company still issues the share, and the SEC exemption covers trading only: no new shares may be sold on these venues.<sup><a href="#s6">6</a></sup> Banks and custodians mint the token that stands for a share sitting at the depository, and they carry it on their rails. That is the larger story. Whoever holds the token ledger holds the record of who owns what, minute by minute.</p>
+  </div>
+</section>
+
+<section class="sheet" id="dollars">
+  <div class="wrap">
+    <p class="tag">02 · Money mechanics</p>
+    <h2>Three dollars</h2>
+    <p class="kick">The same dollar now ships in three builds, and each one multiplies differently.</p>
+    <dl class="spec">
+      <div><dt>Build 1</dt><dd><b>Payment stablecoin</b>Backed one for one, mostly by short Treasuries. Pays the holder no interest by statute. Every coin in circulation is a small loan to the government. This is narrow money: it moves fast and creates no credit on its own.</dd></div>
+      <div><dt>Build 2</dt><dd><b>Tokenized deposit</b>An ordinary bank deposit recorded on a shared ledger. The bank still lends against it, deposit insurance is proposed to apply the same way, and it settles at 3 a.m. on a Sunday.<sup><a href="#s9">9</a></sup></dd></div>
+      <div><dt>Build 3</dt><dd><b>Tokenized collateral</b>A share, a Treasury or a fund unit as a token. It can be pledged, released and pledged again in minutes where the paper version took days. DTCC plans a dedicated collateral chain early next year.<sup><a href="#s7">7</a></sup></dd></div>
+    </dl>
+    <p>The Chicago Fed's old booklet, <i>Modern Money Mechanics</i>, taught the deposit multiplier: a bank keeps a fraction, lends the rest, and the loan lands as a deposit somewhere else. The reserve requirement has been zero since March 2020, so that ratio stopped binding years ago.<sup><a href="#s10">10</a></sup> Credit today is limited by capital rules, liquidity rules and collateral. Tokenization leaves the capital rules alone and takes the friction out of collateral. The same asset can back a loan at nine, margin at noon and an overnight repo.</p>
+    <p>The reuse is already enormous on the slow rails. At 30 September, JPMorgan held $2.10 trillion of collateral it was permitted to re-pledge and had re-pledged $1.71 trillion of it, about 81 percent.<sup><a href="#s11">11</a></sup> Now make every hop in that chain instant and always open.</p>
+
+    <div class="rig">
+      <h3>Run the chain</h3>
+      <p class="note">One $100 share token gets pledged. The lender advances the value less a haircut, then re-pledges what it received. Set the haircut and the number of hops.</p>
+      <div class="ctl">
+        <label for="hair">Haircut at each hop <output id="hairOut" for="hair">15%</output></label>
+        <input type="range" id="hair" min="2" max="50" step="1" value="15">
+      </div>
+      <div class="ctl">
+        <label for="hopN">Times the token is re-pledged <output id="hopOut" for="hopN">4</output></label>
+        <input type="range" id="hopN" min="1" max="8" step="1" value="4">
+      </div>
+      <div class="hops" id="hops"></div>
+      <div class="sum">
+        <div><b id="credit">$0</b><span>credit resting on one $100 token</span></div>
+        <div><b id="ceiling">$0</b><span>ceiling if the chain never stopped</span></div>
+      </div>
+      <p class="note">Arithmetic only. Real chains are capped by re-pledging rules and by how much each counterparty will accept. The point is the shape: speed adds hops, and hops add credit.</p>
+    </div>
+
+    <p>That shape repeats at every scale, which is why fractal is the right word. A household borrows against a tokenized brokerage account. The broker pledges that position to a bank. The bank pledges its book to the central bank. Same pattern, larger each time, and after tokenization all of it clears on one clock.</p>
+    <p>Meanwhile the money layer is speeding up without growing. Stablecoin supply sat flat near $305 billion through the third quarter while quarterly transfers reached $891 billion, four times the level of early 2023, by one industry count.<sup><a href="#s12">12</a></sup> Citi projects that bank deposit tokens could carry $100 to $140 trillion a year by 2030.<sup><a href="#s9">9</a></sup> The pool stays the same size. The water moves faster.</p>
+  </div>
+</section>
+
+<section class="sheet" id="quantum">
+  <div class="wrap">
+    <p class="tag">03 · The name</p>
+    <h2>Why call it quantum</h2>
+    <p>The word here is a working metaphor. No quantum computer is involved. Three properties earn the name.</p>
+    <ol class="q3">
+      <li><strong>Quantized</strong><span>Value moves in the smallest unit anyone cares to define. A thousandth of a share. A tenth of a cent. One second of interest.</span></li>
+      <li><strong>Superposed</strong><span>One asset holds several jobs at once: savings, collateral, settlement balance. A settlement event fixes its state, and then it is free again.</span></li>
+      <li><strong>Entangled</strong><span>The money and the record of who moved it travel as one object. Touch one and the other updates, wherever it is stored.</span></li>
+    </ol>
+    <p>Fractional banking multiplied deposits. Quantum banking multiplies states. The third property is the one that reaches into your kitchen.</p>
+  </div>
+</section>
+
+<section class="sheet" id="twin">
+  <div class="wrap">
+    <p class="tag">04 · The twin</p>
+    <h2>Every token writes a row</h2>
+    <p>The base layer of this system is identity-bound by law. Stablecoin issuers are financial institutions under the Bank Secrecy Act: they file suspicious-activity reports and screen every transfer against sanctions lists.<sup><a href="#s13">13</a></sup> They must be able to freeze a token on lawful order. Brokers report your proceeds, and from this year your cost basis.<sup><a href="#s8">8</a></sup> A cash purchase left no entry. A token purchase leaves a row with a name on it.</p>
+    <p>Now look at the clause the Senate fought over longest. The compromise text barred any reward that works like interest on a bank deposit, and allowed rewards tied to activity on a platform. Banks pressed to tighten it further.<sup><a href="#s14">14</a></sup><sup><a href="#s15">15</a></sup> Follow the incentive. A perk for holding is off the table. A perk for doing stays legal. Doing is data.</p>
+    <div class="uvband"><span class="tag">From here down: projection</span>No rule on the books creates a registry or ties benefits to data. What follows is the incentive gradient, gamed forward.</div>
+    <p>The prototype already runs at the grocery store and the gas pump. The shelf shows two prices, and the lower one costs a phone number. Our parents clipped coupons. We scan a membership. The next version attaches to the money itself, and it scales to rent, insurance, utilities, transit and benefits.</p>
+    <p>Suppose a basic-income or expanded welfare program arrives on these rails. It lands as a programmable balance with the reward layer already attached. Small registries stack up quietly: verify your identity for lower fees, share your meter for a utility credit, link your pharmacy for a premium discount. For a household on one or two incomes, taking every discount becomes the only arithmetic that works. Collecting turns into a pastime with streaks, tiers and quests. Compliance arrives as a game people enjoy playing.</p>
+    <p>Your digital twin is the sum of those rows. Each one has a stored value, because each one prices a risk or predicts a purchase. The twin is a balance sheet you fill and someone else reads.</p>
+
+    <div class="twin">
+      <div class="twin-head">
+        <h3>Price the veil</h3>
+        <p class="note">Tick the data streams a household hands over. Dollar figures are invented for illustration, sized against a $4,200 monthly budget.</p>
+      </div>
+      <ul class="streams" id="streams">
+        <li><label><input type="checkbox" id="st1" data-v="85" checked><span>Purchase history<small>Member pricing on groceries and fuel</small></span><em>$85</em></label></li>
+        <li><label><input type="checkbox" id="st2" data-v="60" checked><span>Location and driving<small>Telematics insurance rate</small></span><em>$60</em></label></li>
+        <li><label><input type="checkbox" id="st3" data-v="25" checked><span>Verified-identity wallet<small>Lower payment and transfer fees</small></span><em>$25</em></label></li>
+        <li><label><input type="checkbox" id="st4" data-v="30"><span>Home energy meter<small>Utility credit for load sharing</small></span><em>$30</em></label></li>
+        <li><label><input type="checkbox" id="st5" data-v="70"><span>Wearable and pharmacy feed<small>Health premium discount</small></span><em>$70</em></label></li>
+        <li><label><input type="checkbox" id="st6" data-v="20"><span>Contacts and referrals<small>Sign-up and streak bonuses</small></span><em>$20</em></label></li>
+      </ul>
+      <div class="twin-out">
+        <div class="meter"><div class="ml"><span>Saved per month</span><span id="saveV">$0</span></div><div class="track"><span class="fill g" id="saveF"></span></div></div>
+        <div class="meter"><div class="ml"><span>Twin completeness</span><span id="twinV">0%</span></div><div class="track"><span class="fill u" id="twinF"></span></div></div>
+        <p class="readout" id="twinR"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="ways">
+  <div class="wrap">
+    <p class="tag">05 · The field</p>
+    <h2>Three ways to live next to it</h2>
+    <div class="ways">
+      <article>
+        <h3>Collectors</h3>
+        <p>The large majority. One or two wage incomes, possibly a transfer payment, and every discount switched on because the budget requires it.</p>
+        <dl class="read">
+          <div><dt>Income</dt><dd>Wages plus programmable benefits</dd></div>
+          <div><dt>Privacy</dt><dd>Traded away in small, pleasant increments</dd></div>
+          <div><dt>Status</dt><dd>Tier level, streak length, points balance</dd></div>
+        </dl>
+      </article>
+      <article>
+        <h3>The veiled</h3>
+        <p>People who value privacy enough to pay for it. They keep a curtain here and there: a cash habit, a second wallet, a full-price shelf tag. On the money itself the veil is thin, because the rails know who they are.</p>
+        <dl class="read">
+          <div><dt>Income</dt><dd>Usually more than one stream</dd></div>
+          <div><dt>Privacy</dt><dd>Bought at list price, month after month</dd></div>
+          <div><dt>Status</dt><dd>What they can afford to keep unrecorded</dd></div>
+        </dl>
+      </article>
+      <article>
+        <h3>Operators</h3>
+        <p>The builders and managers of the rails: people who run a node, a ledger, a compliant payment service, a clean set of entities. Their edge is small and real. Selling data is unnecessary for them. A tight ship is the whole business.</p>
+        <dl class="read">
+          <div><dt>Income</dt><dd>Several streams, each through its own entity</dd></div>
+          <div><dt>Privacy</dt><dd>Structural: fewer events to report, each one documented</dd></div>
+          <div><dt>Status</dt><dd>Books that reconcile to the cent, on demand</dd></div>
+        </dl>
+      </article>
+    </div>
+    <p>The old status was the visible purchase. The new status is the clean ledger: few taxable events, every one accounted for, nothing an auditor could find that you had failed to find first.</p>
+  </div>
+</section>
+
+<section class="sheet" id="tree">
+  <div class="wrap">
+    <p class="tag">06 · The game tree</p>
+    <h2>Three branches from here</h2>
+    <div class="tree">
+      <div class="branch"><b>A</b><div><p class="odds">Long shot</p><h3>Lame-duck revival</h3><p>The motion to reconsider gets floor time before 3 January, or the bill rides on a must-pass funding or defense measure. As of this week nothing signals it.<sup><a href="#s1">1</a></sup></p></div></div>
+      <div class="branch base"><b>B</b><div><p class="odds">My base case for 2027 to 2028</p><h3>The rewrite</h3><p>A Democratic Congress drafts its own market-structure bill with heavier investor protection and ethics terms. The fight over who supervises and how rewards work starts again.<sup><a href="#s4">4</a></sup></p></div></div>
+      <div class="branch base"><b>C</b><div><p class="odds">Already happening</p><h3>Rule by agency</h3><p>No statute. The SEC exemption runs five years, the banking regulators finish the stablecoin rules, and private consortia set the standards. Law arrives later to ratify what exists.<sup><a href="#s5">5</a></sup></p></div></div>
+    </div>
+    <p>The rails get built on every branch. What varies is the supervisor, the reward rule, and how much consumer protection is bolted on. Branch C is running now and branch B is the likeliest thing to land on top of it. That is my read, and reasonable people weigh it differently.</p>
+    <ul class="tl">
+      <li><time>14 Dec 2026</time><span>CFTC consultation on digital-asset markets closes<sup><a href="#s3">3</a></sup></span></li>
+      <li><time>3 Jan 2027</time><span>New Congress seated; unpassed bills expire</span></li>
+      <li><time>18 Jan 2027</time><span>Latest date the stablecoin statute takes full effect<sup><a href="#s16">16</a></sup></span></li>
+      <li><time>Early 2027</time><span>First 1099-DA forms with cost basis; DTCC collateral chain due</span></li>
+      <li><time>H1 2027</time><span>Target for the banks' shared deposit-token network</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sheet" id="plays">
+  <div class="wrap">
+    <p class="tag">07 · The plays</p>
+    <h2>Six moves for a tight ship</h2>
+    <ol class="plays">
+      <li><strong>Make the books the asset</strong><span>Track basis on every digital holding from 1 January 2026 forward, and reconcile it yourself. Assets moved between platforms arrive with no broker-reported basis, so your own record is the only one.<sup><a href="#s8">8</a></sup></span></li>
+      <li><strong>Count your taxable events</strong><span>Selling, swapping one token for another, and spending an appreciated token are each a reportable disposition. Holding is none. Fewer events means fewer rows and fewer bills.</span></li>
+      <li><strong>Know how the wealthy use Build 3</strong><span>Borrowing against an asset raises cash without a sale. Tokenized collateral brings that tool down-market. It also brings liquidation risk at machine speed, so size it for a bad week.</span></li>
+      <li><strong>Own a small toll booth</strong><span>The durable income sits in running a piece of infrastructure well: settlement for a niche, compliant payments for a community, bookkeeping that speaks token. Margins are thin and steady.</span></li>
+      <li><strong>Price your data on purpose</strong><span>Take a discount when you have decided the row is worth the money. Keep household spending and business flows in separate identities and separate wallets.</span></li>
+      <li><strong>Watch one clause</strong><span>Whatever bill comes next, read the stablecoin rewards section first. The line between rewarding holding and rewarding activity decides how hard the twin gets fed.</span></li>
+    </ol>
+    <p class="note">This is a map of incentives. It is general information, and tax or investment decisions belong with your own licensed adviser.</p>
+  </div>
+</section>
+
+<section class="sheet" id="other">
+  <div class="wrap">
+    <p class="tag">08 · The other reading</p>
+    <h2>What the optimists see</h2>
+    <p>Supporters of this buildout describe the same machine in brighter terms, and their case has weight. Instant settlement cuts cost for small businesses and for families sending money abroad. Full reserves make stablecoins safer than the uninsured balances many people already hold. Tokenized stock under the SEC's terms keeps shareholder rights intact and lets a company refuse. Reporting rules close gaps that mostly served evasion.</p>
+    <p>Critics on the other flank argue the rules are too loose: thin investor protection, conflict-of-interest gaps, and a risk that deposits leave community banks.<sup><a href="#s15">15</a></sup> A rewritten bill could add consumer-data limits that blunt the whole projection in section four.</p>
+    <p>Three things would prove this piece wrong: a rewards rule that bans activity-based perks outright, a privacy statute with teeth, or stablecoin use stalling as supply already has. Watch for them.</p>
+  </div>
+</section>
+
+<section class="sheet" id="sources">
+  <div class="wrap">
+    <p class="tag">Sources</p>
+    <ol class="src">
+      <li id="s1">Forbes, <a href="https://www.forbes.com/sites/digital-assets/2026/11/11/the-clarity-act-is-effectively-tabled-until-january-after-a-49-50-senate-defeat-and-a-democratic-midterm-sweep/">What Comes Next For The CLARITY Act After The Midterms</a>, 11 Nov 2026</li>
+      <li id="s2">Crypto Infrastructure, <a href="https://cryptoinfrastructure.io/clarity-act/">CLARITY Act Explained: Status and Big Changes</a>, checked 14 Oct 2026</li>
+      <li id="s3">CryptoTicker, <a href="https://cryptoticker.io/en/clarity-act-explained/">CLARITY Act explained: what it does and where it stands</a>, updated 8 Nov 2026; passage odds via <a href="https://www.cryptoryancy.com/clarity-act-status-2026/">Cryptoryancy</a>, 3 Nov 2026</li>
+      <li id="s4">PYMNTS, <a href="https://www.pymnts.com/cryptocurrency/2026/clarity-act-faces-rewrite-but-retains-bipartisan-opening/">Clarity Act Faces Rewrite but Retains Bipartisan Opening</a>, 9 Nov 2026</li>
+      <li id="s5">CNBC, <a href="https://www.cnbc.com/2026/09/17/sec-clears-path-for-tokenized-stocks-bringing-24/7-trading-closer.html">SEC clears path for tokenized stocks</a>, 17 Sep 2026; Winston Taylor, <a href="https://www.winstontaylor.com/insights/occ-finalizes-genius-act-rules-for-stablecoin-issuers">OCC finalizes GENIUS Act rules for stablecoin issuers</a>, 29 Oct 2026</li>
+      <li id="s6">Davis Polk, <a href="https://www.davispolk.com/insights/client-update/sec-s-innovation-exemption-opens-path-tokenized-stock-trading">SEC's innovation exemption opens a path for tokenized stock trading</a>, Oct 2026</li>
+      <li id="s7">Ledger Insights, <a href="https://www.ledgerinsights.com/alpaca-citi-jp-morgan-among-early-adopters-as-dtcc-tokenization-service-goes-live/">DTCC Tokenization Service goes live</a>, 28 Oct 2026</li>
+      <li id="s8">IRS, <a href="https://www.irs.gov/instructions/i1099da">Instructions for Form 1099-DA</a>; Harness, <a href="https://www.harness.co/articles/new-1099-da-broker-reporting-rules-for-2026-what-crypto-investors-need-to-know">New 1099-DA broker reporting rules for 2026</a>, 17 Aug 2026</li>
+      <li id="s9">Frame, <a href="https://frame.xyz/insights/deposit-token-landscape/">Bank deposit tokens: who is building what</a>, 2026; crypto.news, <a href="https://crypto.news/tokenize-wall-street-jpmorgan-citi-wells-fargo-settlement/">The race to tokenize Wall Street</a>, Aug 2026</li>
+      <li id="s10">Federal Reserve Board, <a href="https://www.federalreserve.gov/monetarypolicy/reservereq.htm">Reserve Requirements</a></li>
+      <li id="s11">JPMorgan Chase, <a href="https://www.sec.gov/Archives/edgar/data/0000019617/000162828026069523/jpm-20260930.htm">Form 10-Q for 30 September 2026</a>, Note 23</li>
+      <li id="s12">Crypto Briefing, <a href="https://cryptobriefing.com/stablecoin-transfers-quadruple-891b-us-banks/">Stablecoin transfers quadruple to $891B</a>, 20 Oct 2026, reporting a Coinbase and The Block study</li>
+      <li id="s13">Finance Magnates, <a href="https://www.financemagnates.com/cryptocurrency/regulation/ten-days-to-the-genius-act-deadline-what-the-draft-rules-already-reveal/">Ten Days to the GENIUS Act Deadline</a>, Jul 2026</li>
+      <li id="s14">Payment Expert, <a href="https://paymentexpert.com/2026/05/05/clarity-act-moves-forward-yield/">Stablecoin yield compromise pushes Clarity Act forward</a>, 5 May 2026</li>
+      <li id="s15">Finance Magnates, <a href="https://www.financemagnates.com/cryptocurrency/regulation/us-banks-target-clarity-act-stablecoin-rewards-in-fight-over-deposit-flight/">US Banks Target CLARITY Act Stablecoin Rewards</a>, 14 Jul 2026</li>
+      <li id="s16">Daeryun Law, <a href="https://us-comp.daeryunlaw.com/practices/detail/stablecoin-regulation">Stablecoin regulation under the GENIUS Act</a></li>
+    </ol>
+  </div>
+</section>
+
+<div class="counter" aria-hidden="true">
+  <span>Twin rows written</span>
+  <span class="bar"><i id="cBar"></i></span>
+  <b id="cNum">0</b>
+</div>
+
+<script>
+(function () {
+  var money = function (n) { return "$" + Math.round(n).toLocaleString("en-US"); };
+
+  /* Hero rosette: engraved guilloche in green, its twin offset in ultraviolet */
+  var cv = document.getElementById("rosette");
+  function rosette() {
+    var box = cv.parentElement.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(box.width * dpr));
+    cv.height = Math.max(1, Math.round(box.height * dpr));
+    var c = cv.getContext("2d");
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.clearRect(0, 0, box.width, box.height);
+    var R = Math.min(box.width, box.height) * 0.62;
+    var cx = box.width * 0.78, cy = box.height * 0.5;
+    function ring(ox, oy, color, alpha) {
+      c.strokeStyle = color; c.globalAlpha = alpha; c.lineWidth = 0.7;
+      for (var j = 0; j < 22; j++) {
+        c.beginPath();
+        for (var i = 0; i <= 720; i++) {
+          var t = (i / 720) * Math.PI * 2;
+          var r = R * (0.55 + 0.02 * j) * (1 + 0.16 * Math.sin(9 * t + j * 0.29) + 0.05 * Math.cos(23 * t - j * 0.5));
+          var x = cx + ox + r * Math.cos(t), y = cy + oy + r * Math.sin(t);
+          if (i === 0) { c.moveTo(x, y); } else { c.lineTo(x, y); }
+        }
+        c.stroke();
+      }
+    }
+    ring(0, 0, "#3f8f72", 0.34);
+    ring(9, 9, "#7a5cff", 0.3);
+    c.globalAlpha = 1;
+  }
+  rosette();
+  var rt;
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(rosette, 150); });
+
+  /* Collateral chain */
+  var hair = document.getElementById("hair"), hopN = document.getElementById("hopN");
+  var hopsEl = document.getElementById("hops");
+  function chain() {
+    var h = Number(hair.value) / 100, n = Number(hopN.value);
+    document.getElementById("hairOut").textContent = hair.value + "%";
+    document.getElementById("hopOut").textContent = n;
+    var rows = '<div class="hop"><span>Token</span><i style="width:100%"></i><em>$100</em></div>';
+    var total = 0;
+    for (var k = 1; k <= n; k++) {
+      var v = 100 * Math.pow(1 - h, k);
+      total += v;
+      rows += '<div class="hop"><span>Loan ' + k + '</span><i style="width:' + v.toFixed(1) + '%"></i><em>' + money(v) + "</em></div>";
+    }
+    hopsEl.innerHTML = rows;
+    document.getElementById("credit").textContent = money(total);
+    document.getElementById("ceiling").textContent = money(100 * (1 - h) / h);
+  }
+  hair.addEventListener("input", chain);
+  hopN.addEventListener("input", chain);
+  chain();
+
+  /* Twin ledger */
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("#streams input"));
+  var maxSave = boxes.reduce(function (a, b) { return a + Number(b.dataset.v); }, 0);
+  function twin() {
+    var on = boxes.filter(function (b) { return b.checked; });
+    var save = on.reduce(function (a, b) { return a + Number(b.dataset.v); }, 0);
+    var pct = Math.round((on.length / boxes.length) * 100);
+    document.getElementById("saveV").textContent = money(save) + " of " + money(maxSave);
+    document.getElementById("saveF").style.width = (save / maxSave * 100) + "%";
+    document.getElementById("twinV").textContent = pct + "%";
+    document.getElementById("twinF").style.width = pct + "%";
+    var msg;
+    if (on.length === 0) { msg = "Full veil. You pay list price on everything: " + money(maxSave * 12) + " a year for privacy."; }
+    else if (on.length === boxes.length) { msg = "Full collector. " + money(save * 12) + " a year saved, and the twin is complete."; }
+    else { msg = money(save * 12) + " a year saved. The veil on the rest costs " + money((maxSave - save) * 12) + " a year."; }
+    document.getElementById("twinR").textContent = msg;
+  }
+  boxes.forEach(function (b) { b.addEventListener("change", twin); });
+  twin();
+
+  /* Bottom counter: rows written while you read */
+  var cBar = document.getElementById("cBar"), cNum = document.getElementById("cNum");
+  function count() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    cBar.style.width = (p * 100) + "%";
+    cNum.textContent = Math.round(p * 1440).toLocaleString("en-US");
+  }
+  window.addEventListener("scroll", count, { passive: true });
+  count();
+})();
+</script>
+</body>
+</html>

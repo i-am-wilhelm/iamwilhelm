@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Off Soundings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: one sticky nautical chart; notes scroll over it, lower half on phones, left rail on wide screens. Single theme by choice. */
+  --paper:#fbf9f1;
+  --margin:#f0ebdd;
+  --ink:#17222e;
+  --soft:#566679;
+  --water:#2c5f86;
+  --land:#eddcab;
+  --magenta:#b3207c;
+  --display:"Libre Caslon Display","Libre Caslon Text",Georgia,serif;
+  --serif:"Libre Caslon Text",Georgia,serif;
+  --body:"Libre Franklin","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--margin);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--magenta);outline-offset:3px}
+
+.scrolly{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--margin)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.veil{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(240,235,221,0) 46%,rgba(240,235,221,.9) 57%,rgba(240,235,221,.97) 100%)}
+.stage::after{content:"";position:absolute;left:0;right:0;top:0;height:46px;pointer-events:none;background:linear-gradient(to bottom,rgba(240,235,221,.96) 0%,rgba(240,235,221,.9) 55%,rgba(240,235,221,0) 100%)}
+.sheet-tag{position:absolute;z-index:1;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;gap:12px;font:600 10px/1.3 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.sheet-tag span:last-child{text-align:right}
+
+.steps{position:relative;z-index:2;margin-top:-100vh;margin-top:-100svh;padding:0 18px;pointer-events:none}
+.step{min-height:88vh;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5vh}
+.step:first-child{min-height:100vh;min-height:100svh;padding-bottom:4vh}
+.step:last-child{padding-bottom:30vh}
+
+.card{pointer-events:auto;position:relative;width:100%;max-width:426px;background:rgba(255,253,246,.97);border:1px solid var(--ink);outline:1px solid var(--ink);outline-offset:3px;padding:14px 16px 15px}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;font:700 10px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.q{border:1px solid currentColor;padding:3px 6px 2px;font-size:9.5px;letter-spacing:.12em;color:var(--ink);white-space:nowrap}
+.q.hz{color:var(--magenta)}
+.card h2{font:400 30px/1.04 var(--display);margin:0 0 8px;text-wrap:balance}
+.card p{margin:0 0 9px;font-size:15.2px;line-height:1.48}
+.card p:last-child{margin-bottom:0}
+.fn{font:600 9.5px/1 var(--body);color:var(--magenta);text-decoration:none;vertical-align:super;padding:0 1px}
+.fn:hover{text-decoration:underline}
+.read{margin:10px 0 0;padding:9px 0 0;border-top:1px solid rgba(23,34,46,.28);display:grid;gap:6px}
+.read div{display:grid;grid-template-columns:56px 1fr;gap:9px;align-items:baseline}
+.read dt{font:700 9.5px/1.5 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.read dd{margin:0;font-size:13.7px;line-height:1.4}
+.read .hz dt{color:var(--magenta)}
+
+.cover h1{font:400 clamp(52px,14.5vw,84px)/.9 var(--display);margin:2px 0 11px;letter-spacing:-.005em}
+.cover .deck{font:italic 400 16.5px/1.42 var(--serif);margin:0 0 13px}
+.set{margin:0 0 11px;padding:9px 0 0;border-top:1px solid rgba(23,34,46,.28);display:grid;gap:4px;font:600 10.5px/1.35 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.set div{display:grid;grid-template-columns:62px 1fr;gap:8px}
+.set b{font-weight:700;color:var(--ink)}
+.set .now b{color:var(--magenta)}
+.hint{font:700 10px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--magenta)}
+
+.rose-grid{display:grid;grid-template-columns:1fr 1fr;margin:2px 0 9px;border:1px solid var(--ink)}
+.rose-grid button{font:inherit;text-align:left;padding:8px 10px 7px;background:transparent;color:var(--ink);border:0;border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);cursor:pointer;display:grid;gap:1px}
+.rose-grid button:nth-child(2n){border-right:0}
+.rose-grid button:nth-child(n+3){border-bottom:0}
+.rose-grid b{font:700 10px/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase}
+.rose-grid span{font:italic 400 15px/1.2 var(--serif)}
+.rose-grid button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.qout{min-height:4.4em;font-size:14.2px!important;line-height:1.42!important}
+
+.close{position:relative;z-index:3;background:var(--paper);border-top:1px solid var(--ink);padding:56px 20px 72px}
+.wrap{max-width:660px;margin:0 auto}
+.eyebrow{font:700 10.5px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--magenta);margin:0 0 12px}
+.close h2{font:400 42px/1.02 var(--display);margin:0 0 12px;text-wrap:balance}
+.close .lede{font:italic 400 17px/1.5 var(--serif);margin:0 0 24px;max-width:56ch}
+.plan{list-style:none;counter-reset:b;padding:0;margin:0 0 34px;display:grid;gap:13px}
+.plan li{counter-increment:b;display:grid;grid-template-columns:34px 1fr;gap:10px;font-size:15.5px;line-height:1.5}
+.plan li::before{content:counter(b,decimal-leading-zero);font:700 11.5px/2.05 var(--body);color:var(--magenta);letter-spacing:.08em}
+.plan b{font-weight:700}
+.note{border:1px solid var(--magenta);color:#5b1244;padding:14px 16px;font-size:14px;line-height:1.5;margin:0 0 44px}
+.close h3{font:700 10.5px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:0 0 14px}
+.src{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:9px;font-size:13px;line-height:1.45;color:#2b3a49}
+.src li{counter-increment:s;display:grid;grid-template-columns:26px 1fr;gap:6px;padding:2px 0}
+.src li::before{content:counter(s);font:700 10.5px/1.85 var(--body);color:var(--magenta)}
+.src a{text-underline-offset:2px;text-decoration-color:rgba(23,34,46,.4)}
+.src li.hit{outline:1px solid var(--magenta);outline-offset:4px}
+.colophon{margin:40px 0 0;font:600 10px/1.5 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+
+@media (min-width:900px){
+  .veil{background:linear-gradient(to right,rgba(240,235,221,.97) 0%,rgba(240,235,221,.9) 31%,rgba(240,235,221,0) 46%)}
+  .sheet-tag{top:18px;left:max(34px,5vw);right:28px;font-size:10.5px}
+  .steps{padding:0 0 0 max(34px,5vw)}
+  .step{align-items:center;justify-content:flex-start;min-height:92vh;padding-bottom:0}
+  .step:first-child{padding-bottom:0}
+  .card{max-width:440px;padding:19px 21px 20px;transition:opacity .35s}
+  .card h2{font-size:35px}
+  .card p{font-size:15.8px}
+  .read dd{font-size:14.2px}
+}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+</head>
+<body>
+
+<main>
+<section class="scrolly" aria-label="Off Soundings, a scroll-driven chart">
+  <div class="stage">
+    <canvas id="cv" role="img" aria-label="Nautical chart: a home shore on the west, a foreign shore on the east, a compass rose in deep water between them, and a ship's track that visits nine stations as you scroll."></canvas>
+    <div class="veil"></div>
+    <div class="sheet-tag"><span id="tagL">Off Soundings · review draft</span><span id="tagR"></span></div>
+  </div>
+
+  <div class="steps">
+
+    <article class="step">
+      <div class="card cover">
+        <div class="meta"><span>Chart No. 3</span><span>Nov 2026</span></div>
+        <h1>Off Soundings</h1>
+        <p class="deck">Where the money goes once the river meets the sea. A pilot chart for value leaving the dollar's home waters.</p>
+        <div class="set">
+          <div><span>Chart 1</span><b>Depth Chart · what the money is</b></div>
+          <div><span>Chart 2</span><b>Fall Line · who holds it</b></div>
+          <div class="now"><span>Chart 3</span><b>Off Soundings · where it sits</b></div>
+        </div>
+        <div class="hint">Scroll to cast off ↓</div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>General notes</span></div>
+        <h2>Past the hundred-fathom line</h2>
+        <p>A ship is on soundings while her lead line can still find bottom. Past the hundred-fathom line she is off soundings, and the chart goes white.</p>
+        <p>Depth Chart sounded the home harbor: five layers of money and a dollar line. Fall Line built the vessel: a trust that outlives its builder. This chart takes both out of port.</p>
+        <p>Black ink is law and data. Magenta marks hazards, the way a working chart prints them.</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>General notes</span></div>
+        <h2>Two dials, one compass</h2>
+        <p>Private and offshore get used as one word. They are two dials. East and west say where a thing's legal home is. North and south say who can see it and who can get in. Every quarter is occupied.</p>
+        <div class="rose-grid" role="group" aria-label="Quarters of the compass">
+          <button type="button" data-q="nw" id="q-nw" aria-pressed="false"><b>Private</b><span>Onshore</span></button>
+          <button type="button" data-q="ne" id="q-ne" aria-pressed="true"><b>Private</b><span>Offshore</span></button>
+          <button type="button" data-q="sw" id="q-sw" aria-pressed="false"><b>Public</b><span>Onshore</span></button>
+          <button type="button" data-q="se" id="q-se" aria-pressed="false"><b>Public</b><span>Offshore</span></button>
+        </div>
+        <p class="qout" id="qout" aria-live="polite"></p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 1</span><span class="q">Public · Onshore</span></div>
+        <h2>Currency Roads</h2>
+        <p>You can leave the dollar without leaving the dock. Currency trading runs $9.6 trillion a day, and the dollar sits on one side of 89% of it.<a class="fn" href="#s1">1</a> One large U.S. broker lets a client hold eight currencies and trade twelve foreign markets direct. Another lists 28 currencies.<a class="fn" href="#s2">2</a></p>
+        <dl class="read">
+          <div><dt>Buys</dt><dd>Other currencies and foreign shares, inside U.S. custody.</dd></div>
+          <div><dt>Toll</dt><dd>Your usual tax forms. A euro balance in New York counts as domestic.<a class="fn" href="#s9">9</a></dd></div>
+          <div class="hz"><dt>Hazard</dt><dd>Leverage, capped at 50 to 1. At one U.S. dealer, 69% of retail accounts lost money in the first quarter of 2026.<a class="fn" href="#s3">3</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 2</span><span class="q">Public · Both shores</span></div>
+        <h2>Dollar Bank</h2>
+        <p>Stablecoins look like open water. Depth Chart found 99.76% of them pegged to the dollar.<a class="fn" href="#s4">4</a> The whole non-dollar market runs near $1.6 billion, and its largest token is a sanctioned ruble coin.<a class="fn" href="#s5">5</a> Sailing off this bank means euro tokens under Europe's rulebook, tokenized gold, or bitcoin.</p>
+        <dl class="read">
+          <div><dt>Toll</dt><dd>Every swap is a taxable sale. The IRS treats a stablecoin as property, and brokers report cost basis from 2026.<a class="fn" href="#s6">6</a></dd></div>
+          <div class="hz"><dt>Hazard</dt><dd>The issuer's off switch travels with the token. A peg can slip too: USDC touched 87 cents in March 2023.<a class="fn" href="#s7">7</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 3</span><span class="q hz">Hazard</span></div>
+        <h2>PFIC Reef</h2>
+        <p>The first reef lies just past the shelf. Buy a fund domiciled abroad, a London-listed ETF or a Dublin index fund, and U.S. law calls it a passive foreign investment company. The default rule spreads your gain across every year you held it, taxes each slice at that year's top rate, and adds compounding interest.<a class="fn" href="#s8">8</a></p>
+        <dl class="read">
+          <div><dt>Passage</dt><dd>The same foreign stocks inside a U.S.-domiciled fund clear the reef.<a class="fn" href="#s8">8</a></dd></div>
+          <div class="hz"><dt>Toll</dt><dd>Form 8621, one for each fund, each year.<a class="fn" href="#s8">8</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 4</span><span class="q">Public · Offshore</span></div>
+        <h2>Port Account</h2>
+        <p>A bank or brokerage account in another country. Location makes it foreign: a dollar account in London is foreign, a euro account in New York is domestic.<a class="fn" href="#s9">9</a> It buys a second banking system and a second set of courts.</p>
+        <dl class="read">
+          <div><dt>Toll</dt><dd>An FBAR once all foreign accounts together pass $10,000 on any day. Form 8938 from $50,000 for a single U.S. resident.<a class="fn" href="#s9">9</a></dd></div>
+          <div class="hz"><dt>Hazard</dt><dd>Willful failure to file can cost the greater of $165,353 or half the balance.<a class="fn" href="#s9">9</a></dd></div>
+          <div><dt>Off forms</dt><dd>Real estate in your own name. Bullion held directly. A custodial metal account is reportable.<a class="fn" href="#s10">10</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 5</span><span class="q">The sailor moves</span></div>
+        <h2>Exit Roads</h2>
+        <p>Some courses relocate the sailor. Puerto Rico gives bona fide residents 0% island tax on gains earned after the move, for decrees filed by December 31, 2026. File later and the rate is 4%.<a class="fn" href="#s11">11</a> Abroad, an exclusion covers $132,900 of earned income in 2026.<a class="fn" href="#s12">12</a></p>
+        <dl class="read">
+          <div><dt>Toll</dt><dd>A U.S. citizen files on worldwide income from anywhere. Gains built before the move stay taxable.<a class="fn" href="#s11">11</a></dd></div>
+          <div class="hz"><dt>Hazard</dt><dd>Handing in the passport triggers an exit tax at $2 million of net worth, a line unchanged since 2008.<a class="fn" href="#s12">12</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 6</span><span class="q">Private · Offshore</span></div>
+        <h2>Trust Islands</h2>
+        <p>Here Fall Line's basin moves to the Cook Islands, Nevis or Belize. A creditor has to sue there, within about two years, and prove intent to defraud beyond reasonable doubt. Local courts ignore foreign judgments. Setup starts near $15,000.<a class="fn" href="#s13">13</a></p>
+        <dl class="read">
+          <div><dt>Buys</dt><dd>Distance from a future lawsuit. Zero tax savings, since the IRS treats the settlor as owner.<a class="fn" href="#s15">15</a></dd></div>
+          <div><dt>Toll</dt><dd>Forms 3520 and 3520-A. A missed one costs the greater of $10,000 or 35% of what moved.<a class="fn" href="#s15">15</a></dd></div>
+          <div class="hz"><dt>Hazard</dt><dd>Wreck, 1998. A U.S. judge jailed the Andersons for contempt while the money stayed in Rarotonga.<a class="fn" href="#s14">14</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 7</span><span class="q">Private · Either shore</span></div>
+        <h2>Policy Light</h2>
+        <p>Fall Line's tank, at ocean scale. Private placement life insurance wraps a custom portfolio inside a policy, so gains compound untaxed and the death benefit passes tax-free. A Senate report counted at least $40 billion of it among a few thousand holders.<a class="fn" href="#s18">18</a></p>
+        <dl class="read">
+          <div><dt>Buys</dt><dd>A wrapper for heavily taxed assets. Entry runs to a few million dollars.<a class="fn" href="#s18">18</a></dd></div>
+          <div><dt>Toll</dt><dd>The owner gives up investment control. The portfolio stays diversified.<a class="fn" href="#s18">18</a></dd></div>
+          <div class="hz"><dt>Hazard</dt><dd>A bill to end the tax treatment was filed in April 2026.<a class="fn" href="#s18">18</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 8</span><span class="q">Private · Onshore</span></div>
+        <h2>Dakota Sound</h2>
+        <p>The course bends home. The United States never joined the account-sharing standard that more than 100 countries use, and the Tax Justice Network ranks it first in the world for financial secrecy. South Dakota has allowed perpetual trusts since 1983.<a class="fn" href="#s17">17</a> Fall Line's dam already stands in this water.</p>
+        <dl class="read">
+          <div><dt>Buys</dt><dd>Privacy from the public and a trust built to run for centuries, under U.S. law.</dd></div>
+          <div><dt>Toll</dt><dd>About 20 states allow self-settled protection trusts. Most keep the door open to divorce and support claims.<a class="fn" href="#s16">16</a></dd></div>
+          <div class="hz"><dt>Hazard</dt><dd>A transfer made after a claim exists can be unwound.<a class="fn" href="#s16">16</a></dd></div>
+        </dl>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Stn 9</span><span class="q">All four quarters</span></div>
+        <h2>Off soundings</h2>
+        <p>Now assemble the engine. The trust sits onshore, in the deepest home water. What it owns sits in every quarter: a brokerage holding several currencies, an account under a second flag, metal below the dollar line, a policy around the taxable parts. Each piece answers to a different switch.</p>
+        <p>Harry Schultz called this flag theory in the 1960s: passport, address and assets under separate flags.<a class="fn" href="#s21">21</a> The trust engine does it on paper, and every piece of it is reported.</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Tidal notes</span></div>
+        <h2>Set and drift</h2>
+        <p>Two currents cross this chart. One ebbs east. The dollar's share of world reserves has slid to 56.7%, and central banks bought a record 289 tonnes of gold in a single quarter of 2026.<a class="fn" href="#s20">20</a></p>
+        <p>The other floods home. The dollar index stands near 103, up about 4% this year and at its highest since April 2025.<a class="fn" href="#s19">19</a> Gold fell roughly a quarter between January and June.<a class="fn" href="#s20">20</a> A course off the dollar is a position, and positions lose too.</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="card">
+        <div class="meta"><span>Notices to mariners</span><span class="q hz">Read before sailing</span></div>
+        <h2>Five corrections</h2>
+        <p><b>Tax follows the citizen.</b> Offshore changes the court and leaves the tax bill where it was.</p>
+        <p><b>The forms are the reef.</b> Penalties out here are sized to the balance.</p>
+        <p><b>Timing is the hull.</b> Built before trouble, it holds. Built after, it gets unwound.</p>
+        <p><b>Control is the anchor chain.</b> Keep the power to bring money home and a judge can order you to use it.</p>
+        <p><b>Draft matters.</b> Four stations take any boat. The islands cost five figures. The light takes millions.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="close">
+  <div class="wrap">
+    <p class="eyebrow">Passage plan</p>
+    <h2>Shortest draft first</h2>
+    <p class="lede">The same course, in the order a household would sail it. Each line is a question to carry to a cross-border tax attorney before any money moves.</p>
+    <ol class="plan">
+      <li><span><b>Sound your own harbor.</b> Run Depth Chart's three questions on everything you hold. Then add two from this chart: which flag is it under, and who can see it.</span></li>
+      <li><span><b>Leave the dollar from the dock first.</b> Currency and foreign shares inside a U.S. account add no new forms.</span></li>
+      <li><span><b>Steer wide of foreign-domiciled funds.</b> The same exposure through a U.S. fund clears the reef.</span></li>
+      <li><span><b>Open the port account on purpose.</b> Know the $10,000 line before the wire goes out, and file every year.</span></li>
+      <li><span><b>Build the trust at home before looking abroad.</b> Fall Line's basin and charter come first, and the strongest privacy law on this chart is domestic.</span></li>
+      <li><span><b>Sail for the islands early or skip them.</b> They protect against the lawsuit that has yet to happen. They need counsel on both shores and a settlor willing to let go of the controls.</span></li>
+      <li><span><b>Treat every figure as perishable.</b> The rates, thresholds and bills on this chart are dated November 2026.</span></li>
+    </ol>
+    <p class="note">Not for navigation. This chart is general education on U.S. federal rules as of November 2026, and cross-border mistakes carry penalties sized to the asset. It is no substitute for a tax attorney and a licensed adviser, and nothing on it recommends buying anything.</p>
+
+    <h3>Sources</h3>
+    <ol class="src">
+      <li id="s1"><span><a href="https://www.bis.org/statistics/rpfx25_fx.htm" rel="noopener">Bank for International Settlements, Triennial Survey: OTC foreign exchange turnover in April 2025</a>.</span></li>
+      <li id="s2"><span><a href="https://content.schwab.com/web/retail/cc/global_investing/foreignCurrencies.html" rel="noopener">Schwab, foreign currencies in the Global Account</a> and <a href="https://www.interactivebrokers.com/en/trading/international-lp.php" rel="noopener">Interactive Brokers, international trading</a>. What two U.S. brokers offer.</span></li>
+      <li id="s3"><span><a href="https://www.forex.com/en-us/terms-and-policies/disclosures-and-risk-warning" rel="noopener">FOREX.com, required dealer disclosures</a> (quarter ending March 31, 2026) and <a href="https://www.nber.org/system/files/working_papers/w24176/revisions/w24176.rev0.pdf?sy=176" rel="noopener">NBER working paper 24176</a> on the 50:1 retail leverage cap.</span></li>
+      <li id="s4"><span><a href="https://www.spark.money/research/stablecoin-non-dollar-euro-yen-growth" rel="noopener">Spark, “Non-Dollar Stablecoins”</a>. Dollar share of stablecoin supply, mid-2026. Also source 7 in Depth Chart.</span></li>
+      <li id="s5"><span><a href="https://stablecoininsider.org/whats-happening-with-multi-currency-stablecoins/" rel="noopener">Stablecoin Insider, multi-currency stablecoins</a> (September 2026). Size of the non-dollar market and the sanctioned ruble token.</span></li>
+      <li id="s6"><span><a href="https://tokentax.co/blog/how-are-stablecoins-taxed" rel="noopener">TokenTax, “How Are Stablecoins Taxed?”</a> Property treatment and Form 1099-DA basis reporting.</span></li>
+      <li id="s7"><span><a href="https://cointelegraph.com/news/usdc-depegs-as-circle-confirms-3-3b-stuck-with-silicon-valley-bank" rel="noopener">Cointelegraph on the March 2023 USDC depeg</a> and <a href="https://stablecoininsider.org/can-stablecoins-be-frozen/" rel="noopener">Stablecoin Insider, “Can Stablecoins Be Frozen?”</a></span></li>
+      <li id="s8"><span>Taxes for Expats, <a href="https://www.taxesforexpats.com/articles/pfic/form-8621.html" rel="noopener">Form 8621 guide</a> and <a href="https://www.taxesforexpats.com/articles/investments/excess-distribution-section-1291.html" rel="noopener">Section 1291 excess distribution rules</a>.</span></li>
+      <li id="s9"><span><a href="https://brighttax.com/blog/fbar-filing-requirements-americans-living-abroad/" rel="noopener">Bright!Tax, FBAR filing</a> (2026 penalty figures), <a href="https://www.taxesforexpats.com/articles/fbar/fincen-form-114.html" rel="noopener">Taxes for Expats, FinCEN Form 114</a> (what counts as foreign) and <a href="https://www.sdocpa.com/fbar-filing-guide/" rel="noopener">SDO CPA, FBAR guide</a> (Form 8938 thresholds).</span></li>
+      <li id="s10"><span><a href="https://goldsilver.com/industry-news/article/fbar-fatca-rules-gold-foreign-vault/" rel="noopener">GoldSilver, FBAR and FATCA rules for gold in a foreign vault</a> and <a href="https://www.greenbacktaxservices.com/tax-qa/is-gold-reportable-on-fbar/" rel="noopener">Greenback, “Do I have to report gold on my FBAR?”</a></span></li>
+      <li id="s11"><span><a href="https://www.hklaw.com/en/insights/publications/2026/06/act-60-tax-compliance-irs-scrutiny" rel="noopener">Holland &amp; Knight on Act 60 and Act 38-2026</a> (June 2026) and <a href="https://www.jdsupra.com/legalnews/individual-resident-investor-tax-7160309/" rel="noopener">JD Supra on the four-percent rate</a>.</span></li>
+      <li id="s12"><span><a href="https://www.taxesforexpats.com/articles/expatriation/us-exit-tax.html" rel="noopener">Taxes for Expats, U.S. exit tax</a> (2026 thresholds), <a href="https://www.nsktglobal.com/blog/us-exit-tax-calculation" rel="noopener">NSKT Global on the fixed $2 million line</a> and <a href="https://getwherenext.com/glossary/expatriation-tax" rel="noopener">WhereNext glossary</a> (2026 earned-income exclusion).</span></li>
+      <li id="s13"><span><a href="https://www.alperlaw.com/wp-content/uploads/charts/offshore-trust-jurisdiction-rankings-2026.pdf" rel="noopener">Alper Law, offshore trust jurisdiction chart 2026</a>, <a href="https://www.blakeharrislaw.com/articles/cook-islands-international-trusts-act-1984" rel="noopener">Blake Harris Law on the Cook Islands International Trusts Act</a> and <a href="https://www.libertymundo.com/cook-islands-trust/" rel="noopener">Liberty Mundo</a> (costs).</span></li>
+      <li id="s14"><span><a href="https://law.justia.com/cases/federal/appellate-courts/ca9/98-16378/98-16378.html" rel="noopener">FTC v. Affordable Media, 179 F.3d 1228 (9th Cir. 1999)</a> and <a href="https://www.alperlaw.com/offshore/cook-islands-trust/litigation/ftc-v-affordable-media/" rel="noopener">Alper Law's case analysis</a>.</span></li>
+      <li id="s15"><span><a href="https://www.taxesforexpats.com/articles/foreign-business/form-3520-late-filing-penalty-abatement.html" rel="noopener">Taxes for Expats, Form 3520 penalties</a> and <a href="https://www.thetaxadviser.com/issues/2020/may/foreign-trust-reporting-late-filing-penalties/" rel="noopener">The Tax Adviser on foreign trust reporting</a>.</span></li>
+      <li id="s16"><span><a href="https://www.alperlaw.com/asset-protection/domestic-asset-protection-trusts/" rel="noopener">Alper Law, Domestic Asset Protection Trusts</a> (September 2026).</span></li>
+      <li id="s17"><span><a href="https://www.imidaily.com/analysis/crs-explained-and-how-the-wealthy-legally-structure-it/" rel="noopener">IMI Daily on the Common Reporting Standard</a> (2025 Financial Secrecy Index) and <a href="https://www.axios.com/2021/10/06/south-dakota-global-tax-haven" rel="noopener">Axios, “How South Dakota became a global tax haven”</a>.</span></li>
+      <li id="s18"><span><a href="https://www.finance.senate.gov/imo/media/doc/ppli_report_final.pdf" rel="noopener">Senate Finance Committee staff report on private placement life insurance</a> (February 2024), <a href="https://natlawreview.com/article/wydens-pplippva-deja-vu-proposal-tax-shelter-narrative-far-broader-statutory-rule" rel="noopener">National Law Review on S. 4279</a> (May 2026) and <a href="https://tax.thomsonreuters.com/news/wyden-takes-aim-at-life-insurance-tax-shelter/" rel="noopener">Thomson Reuters on investor control</a>.</span></li>
+      <li id="s19"><span><a href="https://www.fxstreet.com/news/10308-us-dollar-index-hits-a-fresh-year-to-date-high-as-fed-hike-bets-build-202611121252" rel="noopener">FXStreet, dollar index at a year-to-date high</a> (Nov. 12, 2026) and <a href="https://www.tokenpost.com/news/investing/54381" rel="noopener">TokenPost, year-to-date change</a>.</span></li>
+      <li id="s20"><span><a href="https://data.imf.org/news/imf%20data%20brief%20september%2030" rel="noopener">IMF, currency composition of reserves, Q2 2026</a>, <a href="https://news.metal.com/newscontent/104042350-central-banks-buy-record-amount-of-gold-in-the-very-quarter-prices-fell" rel="noopener">SMM on central-bank gold buying</a> and <a href="https://goldsilver.com/article/gold-worst-week-2026-central-banks-record-buy-signal/" rel="noopener">GoldSilver on gold's 2026 price</a>. Carried over from Depth Chart.</span></li>
+      <li id="s21"><span><a href="https://en.wikipedia.org/wiki/Perpetual_traveler" rel="noopener">Wikipedia, “Perpetual traveler”</a>. Harry Schultz's three flags and W.G. Hill's five.</span></li>
+    </ol>
+    <p class="colophon">Off Soundings · Chart No. 3 · Review draft · Nov 2026 · Not for navigation</p>
+  </div>
+</section>
+</main>
+
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s);
+const cv=$('#cv'),ctx=cv.getContext('2d'),stageEl=$('.stage');
+const stepEls=[...document.querySelectorAll('.step')],cards=stepEls.map(s=>s.querySelector('.card'));
+const tagL=$('#tagL'),tagR=$('#tagR');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={paper:'#fbf9f1',margin:'#f0ebdd',sa:'#e6f1f6',sb:'#d3e6f0',sc:'#bcd9e9',land:'#eddcab',edge:'#7d6a35',ink:'#17222e',soft:'#566679',water:'#2c5f86',mag:'#b3207c',iso:'#6f9dbd'};
+const TAU=Math.PI*2;
+const clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,t)=>a+(b-a)*t,smooth=t=>t*t*(3-2*t);
+let seed=20261115;
+const rnd=()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+
+let W=1,H=1,DPR=1,wide=false;
+const stageR={x:0,y:0,w:1,h:1};
+const cam={s:.15,cx:1200,cy:850,ox:0,oy:0,init:false};
+let pe=0,stepIdx=0,quarter='ne',qa=0,T0=performance.now(),tNow=0,shipD=0;
+const rv=k=>clamp(pe-(k-1),0,1);
+
+/* ---------- geography (world units: 2400 x 1700) ---------- */
+const WEST=[[520,-40],[500,90],[455,170],[470,240],[430,290],[330,300],[260,330],[250,380],[300,410],[400,405],[470,430],[520,500],[505,600],[540,700],[520,800],[560,900],[530,1000],[500,1080],[440,1130],[360,1150],[300,1200],[290,1270],[330,1330],[410,1350],[480,1340],[540,1380],[560,1460],[520,1560],[540,1740]];
+const EAST=[[1990,-40],[2010,120],[2060,230],[2040,360],[2090,480],[2070,600],[2120,720],[2100,840],[2060,940],[2080,1040],[2030,1130],[2060,1200],[2130,1230],[2170,1290],[2150,1360],[2080,1390],[2020,1380],[1980,1440],[2000,1540],[1960,1740]];
+function blob(cx,cy,r,n){const p=[];for(let i=0;i<n;i++){const a=i/n*TAU,rr=r*(0.8+rnd()*0.4);p.push([cx+Math.cos(a)*rr*1.14,cy+Math.sin(a)*rr*0.86]);}return p;}
+const ISL=[{c:[1690,330],r:48},{c:[1815,480],r:34},{c:[1585,475],r:30},{c:[1760,1000],r:30},{c:[1232,206],r:15}].map(o=>({c:o.c,r:o.r,p:blob(o.c[0],o.c[1],o.r,9)}));
+const WPOLY=WEST.concat([[-120,1740],[-120,-40]]),EPOLY=EAST.concat([[2520,1740],[2520,-40]]);
+function inPoly(x,y,P){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const xi=P[i][0],yi=P[i][1],xj=P[j][0],yj=P[j][1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;}return c;}
+function segD(px,py,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy;let t=l?((px-a[0])*dx+(py-a[1])*dy)/l:0;t=clamp(t,0,1);return Math.hypot(px-a[0]-t*dx,py-a[1]-t*dy);}
+function coastD(x,y){let d=1e9;for(const P of [WEST,EAST])for(let i=1;i<P.length;i++)d=Math.min(d,segD(x,y,P[i-1],P[i]));for(const I of ISL)d=Math.min(d,Math.hypot(x-I.c[0],y-I.c[1])-I.r);return d;}
+const RC=[1250,830],RR=190;
+const SND=[];
+for(let gx=70;gx<2360;gx+=104)for(let gy=70;gy<1660;gy+=94){
+  const x=gx+rnd()*64-32,y=gy+rnd()*56-28;
+  if(inPoly(x,y,WPOLY)||inPoly(x,y,EPOLY))continue;
+  const d=coastD(x,y);if(d<24)continue;
+  if(Math.hypot(x-RC[0],y-RC[1])<RR+46)continue;
+  let v,deep=false;
+  if(d<65)v=2+Math.floor(d/9);else if(d<150)v=10+Math.floor((d-65)/2.4);else if(d<260)v=46+Math.floor((d-150)/2.1);else{deep=true;v=100*(1+Math.floor((d-260)/55))+(rnd()<.5?50:0);}
+  SND.push({x,y,v:String(v),deep});
+}
+function smoothOpen(p){ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<p.length-1;i++)ctx.quadraticCurveTo(p[i][0],p[i][1],(p[i][0]+p[i+1][0])/2,(p[i][1]+p[i+1][1])/2);const l=p[p.length-1];ctx.lineTo(l[0],l[1]);}
+function smoothClosed(p){const n=p.length;ctx.moveTo((p[n-1][0]+p[0][0])/2,(p[n-1][1]+p[0][1])/2);for(let i=0;i<n;i++){const a=p[i],b=p[(i+1)%n];ctx.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2);}ctx.closePath();}
+function quad(out,a,c,b,n){for(let j=1;j<=n;j++){const t=j/n,u=1-t;out.push([u*u*a[0]+2*u*t*c[0]+t*t*b[0],u*u*a[1]+2*u*t*c[1]+t*t*b[1]]);}}
+function denseOpen(p){const out=[[p[0][0],p[0][1]]];let a=p[0];for(let i=1;i<p.length-1;i++){const b=[(p[i][0]+p[i+1][0])/2,(p[i][1]+p[i+1][1])/2];quad(out,a,p[i],b,8);a=b;}out.push(p[p.length-1]);return out;}
+function denseClosed(p){const n=p.length;let a=[(p[n-1][0]+p[0][0])/2,(p[n-1][1]+p[0][1])/2];const out=[a];for(let i=0;i<n;i++){const b=[(p[i][0]+p[(i+1)%n][0])/2,(p[i][1]+p[(i+1)%n][1])/2];quad(out,a,p[i],b,7);a=b;}return out;}
+const WD=denseOpen(WEST),ED=denseOpen(EAST),ID=ISL.map(I=>denseClosed(I.p));
+function poly(p,close){ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<p.length;i++)ctx.lineTo(p[i][0],p[i][1]);if(close)ctx.closePath();}
+function coasts(){poly(WD);poly(ED);for(const p of ID)poly(p,true);}
+function lands(){poly(WD);ctx.lineTo(-120,1740);ctx.lineTo(-120,-40);ctx.closePath();poly(ED);ctx.lineTo(2520,1740);ctx.lineTo(2520,-40);ctx.closePath();for(const p of ID)poly(p,true);}
+
+/* ---------- track ---------- */
+const TRK=[[400,1250,0],[540,1300,-1],[700,1330,1],[930,1400,2],[1130,1420,-1],[1330,1390,3],[1700,1340,-1],[1950,1300,-1],[2060,1300,4],[1975,1262,-1],[1930,1100,-1],[1930,900,5],[1900,700,-1],[1800,560,-1],[1730,450,6],[1610,400,-1],[1420,275,-1],[1260,250,7],[1000,268,-1],[760,318,-1],[560,345,-1],[350,360,8],[560,402,-1],[800,560,-1],[1050,720,-1],[1250,830,9]];
+function mkPath(pts){const seg=[];let len=0;for(let i=1;i<pts.length;i++){const dx=pts[i][0]-pts[i-1][0],dy=pts[i][1]-pts[i-1][1],l=Math.hypot(dx,dy)||1e-6;seg.push({x:pts[i-1][0],y:pts[i-1][1],dx:dx/l,dy:dy/l,l,s:len});len+=l;}return{pts,seg,len};}
+function at(p,d,o){const sg=p.seg;d=clamp(d,0,p.len);let lo=0,hi=sg.length-1;while(lo<hi){const m=(lo+hi+1)>>1;if(sg[m].s<=d)lo=m;else hi=m-1;}const s=sg[lo],u=d-s.s;o.x=s.x+s.dx*u;o.y=s.y+s.dy*u;o.a=Math.atan2(s.dy,s.dx);}
+const SMP=[],CIX=[];
+(function(){const P=TRK,SEG=14;for(let i=0;i<P.length-1;i++){const p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(P.length-1,i+2)];CIX.push(SMP.length);
+  for(let j=0;j<SEG;j++){const t=j/SEG,t2=t*t,t3=t2*t,f=k=>0.5*((2*p1[k])+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3);SMP.push([f(0),f(1)]);}}
+  CIX.push(SMP.length);SMP.push([P[P.length-1][0],P[P.length-1][1]]);})();
+const TP=mkPath(SMP);
+const SD=[],ST=[];
+TRK.forEach((p,i)=>{if(p[2]>=0){const k=CIX[i];SD[p[2]]=k>=TP.seg.length?TP.len:TP.seg[k].s;ST[p[2]]=[p[0],p[1]];}});
+const STEP_ST=[0,0,0,1,2,3,4,5,6,7,8,9,9,9];
+const QTXT=['','General notes','General notes','Public · Onshore','Public · Both shores','Hazard','Public · Offshore','The sailor moves','Private · Offshore','Private · Either shore','Private · Onshore','All four quarters','Tidal notes','Notices to mariners'];
+const F=[[-60,-60,2460,1760],[150,900,1150,1620],[880,500,1620,1160],[300,1080,1020,1560],[600,1140,1320,1620],[1040,1180,1760,1650],[1640,1060,2360,1560],[1520,640,2300,1180],[1360,150,2100,700],[880,40,1620,520],[120,120,880,640],[120,120,2300,1600],[560,360,1940,1300],[-60,-60,2460,1760]];
+
+/* ---------- chart layers ---------- */
+function bands(){
+  const s=cam.s;ctx.lineJoin='round';ctx.lineCap='round';
+  for(const b of [[520,C.sa],[300,C.sb],[130,C.sc]]){
+    const all=[[WD,false],[ED,false]].concat(ID.map(p=>[p,true]));
+    ctx.globalAlpha=1;ctx.strokeStyle='#a9c6da';ctx.lineWidth=b[0]+2.2/s;for(const c of all){ctx.beginPath();poly(c[0],c[1]);ctx.stroke();}
+    ctx.strokeStyle=b[1];ctx.lineWidth=b[0];for(const c of all){ctx.beginPath();poly(c[0],c[1]);ctx.stroke();}
+  }
+}
+function shoals(){
+  const s=cam.s;ctx.save();
+  ctx.fillStyle=C.sc;ctx.globalAlpha=.8;ctx.beginPath();ctx.ellipse(930,1447,176,62,0,0,TAU);ctx.fill();
+  ctx.globalAlpha=.7;ctx.beginPath();ctx.ellipse(1140,1300,50,22,0,0,TAU);ctx.fill();
+  ctx.globalAlpha=.8;ctx.strokeStyle=C.iso;ctx.lineWidth=1.1/s;ctx.setLineDash([2/s,3.5/s]);
+  ctx.beginPath();ctx.ellipse(930,1447,176,62,0,0,TAU);ctx.moveTo(1190,1300);ctx.ellipse(1140,1300,50,22,0,0,TAU);ctx.stroke();ctx.restore();
+}
+const REEF=[];for(let i=0;i<16;i++){const a=rnd()*TAU,r=Math.sqrt(rnd());REEF.push([1390+Math.cos(a)*r*132,1478+Math.sin(a)*r*40]);}
+function reef(){
+  const s=cam.s,k=Math.max(5,3/s);ctx.save();ctx.fillStyle=C.mag;ctx.globalAlpha=.07;ctx.beginPath();ctx.ellipse(1390,1478,152,54,0,0,TAU);ctx.fill();
+  ctx.globalAlpha=.9;ctx.strokeStyle=C.mag;ctx.lineWidth=1.2/s;ctx.setLineDash([2/s,3.5/s]);ctx.beginPath();ctx.ellipse(1390,1478,152,54,0,0,TAU);ctx.stroke();
+  ctx.setLineDash([]);ctx.beginPath();for(const p of REEF){ctx.moveTo(p[0]-k,p[1]);ctx.lineTo(p[0]+k,p[1]);ctx.moveTo(p[0],p[1]-k);ctx.lineTo(p[0],p[1]+k);}ctx.stroke();ctx.restore();
+}
+function wreck(x,y){
+  const s=cam.s,k=Math.max(11,6.5/s);ctx.save();ctx.translate(x,y);ctx.strokeStyle=C.mag;ctx.lineWidth=1.3/s;ctx.beginPath();ctx.moveTo(-k,0);ctx.lineTo(k,0);
+  for(const dx of [-k*.55,0,k*.55]){ctx.moveTo(dx,-k*.45);ctx.lineTo(dx,k*.45);}ctx.stroke();
+  ctx.setLineDash([2/s,3/s]);ctx.beginPath();ctx.ellipse(0,0,k*1.75,k*1.05,0,0,TAU);ctx.stroke();ctx.restore();
+}
+function light(x,y,t,ph){
+  const s=cam.s,k=Math.max(8,4.5/s);ctx.save();ctx.translate(x,y);
+  if(!reduce){const an=t*0.8+ph;ctx.fillStyle=C.mag;ctx.globalAlpha=.12;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,190,an-0.17,an+0.17);ctx.closePath();ctx.fill();}
+  ctx.globalAlpha=.9;ctx.fillStyle=C.mag;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(k*1.7,-k*1.0,k*2.7,-k*2.7);ctx.quadraticCurveTo(k*1.0,-k*1.7,0,0);ctx.fill();
+  ctx.globalAlpha=1;ctx.fillStyle=C.ink;ctx.beginPath();ctx.arc(0,0,k*.5,0,TAU);ctx.fill();ctx.restore();
+}
+function land(){
+  const s=cam.s;ctx.save();ctx.beginPath();lands();ctx.fillStyle=C.land;ctx.fill();
+  ctx.save();ctx.clip();ctx.beginPath();coasts();ctx.strokeStyle=C.edge;ctx.globalAlpha=.16;ctx.lineWidth=46;ctx.lineJoin='round';ctx.stroke();ctx.restore();
+  ctx.beginPath();coasts();ctx.strokeStyle=C.edge;ctx.lineWidth=1.4/s;ctx.lineJoin='round';ctx.stroke();
+  /* Fall Line river into the home harbor */
+  ctx.strokeStyle=C.water;ctx.lineWidth=1.6/s;ctx.beginPath();ctx.moveTo(-10,1206);ctx.bezierCurveTo(70,1180,110,1236,170,1214);ctx.bezierCurveTo(215,1198,250,1238,296,1234);ctx.stroke();
+  ctx.lineWidth=1.3/s;ctx.beginPath();for(const x of [96,150,204]){ctx.moveTo(x-5,1196);ctx.lineTo(x+5,1232);}ctx.stroke();
+  /* ports on the foreign shore */
+  ctx.fillStyle=C.ink;for(const p of [[2196,1296],[2112,650],[2096,300]]){ctx.beginPath();ctx.arc(p[0],p[1],Math.max(4,2.4/s),0,TAU);ctx.fill();}
+  ctx.globalAlpha=.55;ctx.fillStyle=C.edge;ctx.textBaseline='alphabetic';ctx.textAlign='left';
+  ctx.font='400 40px "Libre Caslon Display",Georgia,serif';ctx.fillText('OFF SOUNDINGS',2046,1640);
+  ctx.font='600 12px "Libre Franklin",Arial,sans-serif';ctx.fillText('CHART NO. 3  ·  NOT FOR NAVIGATION  ·  NOV 2026',2048,1664);
+  ctx.restore();
+}
+function gyre(t){
+  const s=cam.s;ctx.save();ctx.strokeStyle=C.iso;ctx.globalAlpha=.55;ctx.lineWidth=1/s;ctx.setLineDash([9/s,13/s]);ctx.lineDashOffset=reduce?0:-(t*15)/s;
+  for(const e of [[330,215],[470,300],[610,390]]){ctx.beginPath();ctx.ellipse(RC[0],RC[1],e[0],e[1],0,0,TAU);ctx.stroke();}ctx.restore();
+}
+const QA={nw:[Math.PI,1.5*Math.PI],ne:[1.5*Math.PI,TAU],se:[0,.5*Math.PI],sw:[.5*Math.PI,Math.PI]};
+function wedge(){
+  if(qa<=0.02||!quarter)return;const a=QA[quarter];ctx.save();ctx.globalAlpha=.2*qa;ctx.fillStyle=C.mag;ctx.beginPath();ctx.moveTo(RC[0],RC[1]);ctx.arc(RC[0],RC[1],335,a[0],a[1]);ctx.closePath();ctx.fill();ctx.restore();
+}
+function rose(){
+  const s=cam.s,R=RR;ctx.save();ctx.translate(RC[0],RC[1]);
+  ctx.fillStyle=C.paper;ctx.globalAlpha=.86;ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.fill();ctx.globalAlpha=1;
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.3/s;ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.moveTo(R-18,0);ctx.arc(0,0,R-18,0,TAU);ctx.stroke();
+  ctx.lineWidth=1/s;ctx.beginPath();for(let d=0;d<360;d+=5){const a=d*Math.PI/180,l=d%45===0?18:d%15===0?12:7,r0=R-18;ctx.moveTo(Math.cos(a)*r0,Math.sin(a)*r0);ctx.lineTo(Math.cos(a)*(r0-l),Math.sin(a)*(r0-l));}ctx.stroke();
+  const L=R-46;
+  for(const odd of [1,0])for(let k=0;k<8;k++){if(k%2!==odd)continue;const a=k*Math.PI/4-Math.PI/2,len=odd?L*.52:L,b=odd?11:17,tx=Math.cos(a)*len,ty=Math.sin(a)*len,nx=-Math.sin(a)*b,ny=Math.cos(a)*b;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-nx,-ny);ctx.lineTo(tx,ty);ctx.closePath();ctx.fillStyle=C.paper;ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(nx,ny);ctx.lineTo(tx,ty);ctx.closePath();ctx.fillStyle=C.ink;ctx.fill();ctx.stroke();}
+  /* variation: the dollar's pull, 89% of trades */
+  const va=Math.PI+0.2,vl=R-58;ctx.strokeStyle=C.mag;ctx.lineWidth=1.6/s;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(va)*vl,Math.sin(va)*vl);
+  const hx=Math.cos(va)*vl,hy=Math.sin(va)*vl;ctx.moveTo(hx,hy);ctx.lineTo(hx-Math.cos(va-.42)*20,hy-Math.sin(va-.42)*20);ctx.stroke();
+  ctx.fillStyle=C.mag;ctx.beginPath();ctx.arc(0,0,Math.max(4,2.4/s),0,TAU);ctx.fill();
+  ctx.restore();
+}
+const NODES=[[700,1330,'BROKERAGE'],[1040,1218,'METAL'],[2060,1300,'SECOND FLAG'],[1260,250,'POLICY'],[1730,450,'ISLAND TRUST']];
+function engine(t){
+  const e=rv(11);if(e<=0.02)return;const s=cam.s,hub=ST[8];ctx.save();ctx.globalAlpha=e;ctx.strokeStyle=C.ink;ctx.lineWidth=1.5/s;
+  NODES.forEach((n,i)=>{ctx.setLineDash(i===4?[3/s,6/s]:[13/s,8/s]);ctx.lineDashOffset=reduce?0:-(t*34)/s;ctx.beginPath();ctx.moveTo(hub[0],hub[1]);ctx.lineTo(n[0],n[1]);ctx.stroke();});
+  ctx.setLineDash([]);
+  const r=Math.max(11,6.5/s);
+  for(const n of NODES){ctx.fillStyle=C.paper;ctx.beginPath();ctx.arc(n[0],n[1],r,0,TAU);ctx.fill();ctx.stroke();ctx.fillStyle=C.ink;ctx.beginPath();ctx.arc(n[0],n[1],r*.45,0,TAU);ctx.fill();}
+  const pu=reduce?0.5:(t*0.7)%1;ctx.strokeStyle=C.mag;ctx.lineWidth=2/s;ctx.globalAlpha=e*(1-pu);ctx.beginPath();ctx.arc(hub[0],hub[1],r*(1.2+pu*2.6),0,TAU);ctx.stroke();
+  ctx.globalAlpha=e;ctx.fillStyle=C.mag;ctx.beginPath();ctx.arc(hub[0],hub[1],r*1.05,0,TAU);ctx.fill();
+  ctx.restore();
+}
+function currents(){
+  const c=rv(12)*(1-rv(13));if(c<=0.02)return;const s=cam.s,h=Math.max(20,11/s);ctx.save();ctx.globalAlpha=c;ctx.strokeStyle=C.ink;ctx.fillStyle=C.ink;ctx.lineWidth=2/s;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(900,560);ctx.lineTo(1600,560);ctx.stroke();ctx.beginPath();ctx.moveTo(1600,560);ctx.lineTo(1600-h,560-h*.5);ctx.lineTo(1600-h,560+h*.5);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(1600,1100);ctx.lineTo(900,1100);for(let k=0;k<3;k++){const x=1600-k*h*.8;ctx.moveTo(x,1100);ctx.lineTo(x+h*.7,1100-h*.7);}ctx.stroke();
+  ctx.beginPath();ctx.moveTo(900,1100);ctx.lineTo(900+h,1100-h*.5);ctx.lineTo(900+h,1100+h*.5);ctx.closePath();ctx.fill();ctx.restore();
+}
+function track(t){
+  const s=cam.s,o={};
+  ctx.save();ctx.lineJoin='round';ctx.lineCap='butt';
+  ctx.strokeStyle=C.ink;ctx.globalAlpha=.28;ctx.lineWidth=1.1/s;ctx.setLineDash([2/s,6/s]);ctx.beginPath();ctx.moveTo(SMP[0][0],SMP[0][1]);for(let i=1;i<SMP.length;i++)ctx.lineTo(SMP[i][0],SMP[i][1]);ctx.stroke();
+  ctx.globalAlpha=1;ctx.lineWidth=1.9/s;ctx.setLineDash([10/s,5/s]);ctx.beginPath();ctx.moveTo(SMP[0][0],SMP[0][1]);
+  for(let i=1;i<SMP.length;i++){const sg=TP.seg[i-1];if(sg.s+sg.l<=shipD)ctx.lineTo(SMP[i][0],SMP[i][1]);else{at(TP,shipD,o);ctx.lineTo(o.x,o.y);break;}}
+  ctx.stroke();ctx.setLineDash([]);
+  const cur=STEP_ST[stepIdx],r=Math.max(12,8/s);
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='700 '+(r*1.15)+'px "Libre Franklin",Arial,sans-serif';
+  for(let i=1;i<ST.length;i++){const p=ST[i],done=SD[i]<=shipD+1;
+    if(i===cur&&!reduce){const pu=(t*0.8)%1;ctx.strokeStyle=C.mag;ctx.globalAlpha=1-pu;ctx.lineWidth=2/s;ctx.beginPath();ctx.arc(p[0],p[1],r*(1.15+pu*1.5),0,TAU);ctx.stroke();ctx.globalAlpha=1;}
+    ctx.fillStyle=done?C.ink:C.paper;ctx.strokeStyle=i===cur?C.mag:C.ink;ctx.lineWidth=(i===cur?2.2:1.4)/s;ctx.beginPath();ctx.arc(p[0],p[1],r,0,TAU);ctx.fill();ctx.stroke();
+    ctx.fillStyle=done?C.paper:C.ink;ctx.fillText(String(i),p[0],p[1]+r*.06);}
+  at(TP,shipD,o);const k=Math.max(17,10.5/s);ctx.translate(o.x,o.y);ctx.rotate(o.a);
+  ctx.fillStyle=C.ink;ctx.strokeStyle=C.paper;ctx.lineWidth=1.6/s;ctx.beginPath();ctx.moveTo(k*1.3,0);ctx.quadraticCurveTo(k*.3,-k*.66,-k,-k*.44);ctx.lineTo(-k,k*.44);ctx.quadraticCurveTo(k*.3,k*.66,k*1.3,0);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle=C.mag;ctx.beginPath();ctx.arc(-k*.12,0,k*.22,0,TAU);ctx.fill();
+  ctx.restore();
+}
+function neatline(){
+  const s=cam.s;ctx.save();ctx.strokeStyle=C.ink;ctx.lineWidth=1/s;ctx.strokeRect(0,0,2400,1700);ctx.lineWidth=2.6/s;ctx.strokeRect(-26,-26,2452,1752);
+  ctx.lineWidth=1/s;ctx.beginPath();for(let x=0;x<=2400;x+=50){const l=x%200===0?26:x%100===0?17:9;ctx.moveTo(x,0);ctx.lineTo(x,-l);ctx.moveTo(x,1700);ctx.lineTo(x,1700+l);}
+  for(let y=0;y<=1700;y+=50){const l=y%200===0?26:y%100===0?17:9;ctx.moveTo(0,y);ctx.lineTo(-l,y);ctx.moveTo(2400,y);ctx.lineTo(2400+l,y);}ctx.stroke();ctx.restore();
+}
+
+/* ---------- screen-space text ---------- */
+const sx=x=>(x-cam.cx)*cam.s+cam.ox,sy=y=>(y-cam.cy)*cam.s+cam.oy;
+function soundings(){
+  const fs=wide?10.5:9,visW=stageR.w/cam.s,thin=visW>1500;ctx.save();
+  ctx.beginPath();ctx.rect(sx(0),sy(0),2400*cam.s,1700*cam.s);ctx.clip();
+  ctx.font='italic 400 '+fs+'px "Libre Franklin",Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=C.soft;ctx.strokeStyle=C.soft;ctx.lineWidth=.8;
+  const o={};at(TP,shipD,o);const shx=sx(o.x),shy=sy(o.y);
+  for(let i=0;i<SND.length;i++){if(thin&&i%3)continue;const p=SND[i],x=sx(p.x),y=sy(p.y);if(x<-20||x>W+20||y<-20||y>H+20)continue;if(Math.hypot(x-shx,y-shy)<26)continue;
+    ctx.globalAlpha=p.deep?.5:.72;ctx.fillText(p.v,x,y);
+    if(p.deep&&!thin){const w=ctx.measureText(p.v).width/2+1;ctx.beginPath();ctx.moveTo(x-w,y-fs*.72);ctx.lineTo(x+w,y-fs*.72);ctx.stroke();ctx.beginPath();ctx.arc(x,y-fs*.72-2.4,.9,0,TAU);ctx.fill();}}
+  ctx.restore();
+}
+const LBL=[];
+const L=(x,y,txt,from,o={})=>LBL.push({x,y,txt,from,to:o.to===undefined?from:o.to,t:o.t||'n',al:o.al||'center',lod:o.lod||'d',maxW:o.maxW||1700});
+/* compass words and shores: always on */
+L(1250,612,'PRIVATE',0,{to:13,t:'c',lod:'a'});L(1250,1050,'PUBLIC',0,{to:13,t:'c',lod:'a'});L(1034,830,'ONSHORE',0,{to:13,t:'c',lod:'a',al:'right'});L(1466,830,'OFFSHORE',0,{to:13,t:'c',lod:'a',al:'left'});
+L(24,800,'HOME\nSHORE',0,{to:13,t:'l',lod:'w',al:'left'});L(2378,800,'FOREIGN\nSHORE',0,{to:13,t:'l',lod:'w',al:'right'});L(1250,1150,'Off Soundings',0,{to:13,t:'w',lod:'w'});
+/* step 1: home harbor */
+L(416,1196,'Home Harbor',1,{t:'w'});L(150,1158,'Fall Line R.',1,{t:'w'});L(230,1000,'HOME SHORE',1,{t:'l'});L(760,1130,'100 FATHOMS',1,{t:'n'});
+/* step 2: compass */
+L(1105,912,'VAR 89% · THE DOLLAR',2,{t:'h'});
+/* stations */
+L(700,1288,'Currency Roads',3,{t:'w'});L(826,1198,'$9.6 TRILLION A DAY',3,{t:'n'});L(650,1412,'LEVERAGE 50:1 · 69% LOSE',3,{t:'h'});
+L(930,1462,'Dollar Bank',4,{t:'w'});L(930,1490,'99.76% USD',4,{t:'n'});L(1140,1262,'Euro Shoal',4,{t:'w'});L(1040,1196,'Gold Deep',4,{t:'w'});L(770,1562,'Wk USDC 2023 · 87¢',4,{t:'h'});
+L(1390,1556,'PFIC REEF · FOREIGN FUNDS',5,{t:'h'});L(1330,1344,'U.S.-DOMICILED FUNDS PASS',5,{t:'n'});
+L(2075,1250,'Port Account',6,{t:'w'});L(1860,1392,'FBAR LINE · $10,000',6,{t:'h'});L(2262,1300,'ZÜRICH',6,{t:'l'});L(2262,1470,'SINGAPORE',6,{t:'l'});
+L(1832,856,'Exit Roads',7,{t:'w'});L(1760,1056,'Puerto Rico · Act 60',7,{t:'w'});L(1716,742,'EXIT TAX · $2M NET WORTH',7,{t:'h'});L(2224,650,'LONDON',7,{t:'l'});
+L(1690,262,'Cook Is.',8,{t:'w'});L(1856,534,'Nevis',8,{t:'w'});L(1560,528,'Belize',8,{t:'w'});L(1880,268,'Wk ANDERSON 1998',8,{t:'h'});L(1500,340,'FORM 3520 · 35%',8,{t:'h'});
+L(1232,150,'Policy Light',9,{t:'w'});L(1262,336,'$40 BILLION · A FEW THOUSAND HOLDERS',9,{t:'n'});L(1470,196,'S. 4279 PENDING',9,{t:'h'});
+L(640,296,'Dakota Sound',10,{t:'w'});L(170,500,'DYNASTY\nCOAST',10,{t:'l'});L(650,470,'FIRST IN FINANCIAL SECRECY',10,{t:'n'});
+/* engine */
+L(520,300,'THE TRUST',11,{t:'h',lod:'w',al:'left'});L(700,1420,'BROKERAGE',11,{t:'n',lod:'w'});L(1040,1300,'METAL',11,{t:'n',lod:'w'});L(1930,1392,'SECOND FLAG',11,{t:'n',lod:'w'});L(1260,170,'POLICY',11,{t:'n',lod:'w'});L(1730,560,'ISLAND TRUST',11,{t:'n',lod:'w'});
+/* currents */
+L(1250,524,'EBB · reserves 56.7% in dollars',12,{t:'n'});L(1250,1140,'FLOOD · dollar index 103, up 4% in 2026',12,{t:'n'});
+
+function labels(){
+  const base=wide?12:10.5,visW=stageR.w/cam.s;ctx.textBaseline='middle';ctx.textAlign='left';
+  for(const l of LBL){
+    let a=l.from===0?1:rv(l.from)*(1-rv(l.to+1));if(a<0.03)continue;
+    if(l.lod==='w')a*=clamp((visW-1400)/250,0,1);else if(l.lod==='d')a*=clamp((l.maxW-visW)/250,0,1);
+    if(a<0.03)continue;
+    if(l.t==='c'){const rx=sx(RC[0]),ry=sy(RC[1]);if(rx<stageR.x-30||rx>stageR.x+stageR.w+30||ry<stageR.y-30||ry>stageR.y+stageR.h+30)continue;}
+    const x=sx(l.x),y=sy(l.y);if(x<-260||x>W+260||y<-40||y>H+40)continue;
+    let fs=base,col=C.ink,back=.84;
+    if(l.t==='w'){fs=base+3;ctx.font='italic 400 '+fs+'px "Libre Caslon Text",Georgia,serif';col=C.water;back=.62;}
+    else if(l.t==='c'){ctx.font='700 '+fs+'px "Libre Franklin",Arial,sans-serif';back=.7;}
+    else if(l.t==='l'){ctx.font='700 '+fs+'px "Libre Franklin",Arial,sans-serif';col='#6b5825';back=0;}
+    else{ctx.font='600 '+(fs-.5)+'px "Libre Franklin",Arial,sans-serif';if(l.t==='h')col=C.mag;}
+    if('letterSpacing' in ctx)ctx.letterSpacing=l.t==='w'?'0px':'1px';
+    const lines=l.txt.split('\n'),lh=fs*1.28;let w=0;for(const s of lines)w=Math.max(w,ctx.measureText(s).width);
+    const x0=l.al==='left'?x:l.al==='right'?x-w:x-w/2,y0=y-lines.length*lh/2;
+    if(back){ctx.globalAlpha=a*back;ctx.fillStyle=C.paper;ctx.fillRect(x0-4,y0-1,w+8,lines.length*lh+2);}
+    ctx.globalAlpha=a;ctx.fillStyle=col;
+    for(let i=0;i<lines.length;i++){const lw=ctx.measureText(lines[i]).width,lx=l.al==='left'?x0:l.al==='right'?x0+w-lw:x0+(w-lw)/2;ctx.fillText(lines[i],lx,y0+lh*(i+.5));}
+  }
+  if('letterSpacing' in ctx)ctx.letterSpacing='0px';ctx.globalAlpha=1;
+}
+
+/* ---------- state ---------- */
+function update(dt){
+  const i=Math.min(Math.floor(pe),F.length-1),f=pe-i,A=F[i],B=F[Math.min(i+1,F.length-1)];
+  const fw=Math.exp(lerp(Math.log(A[2]-A[0]),Math.log(B[2]-B[0]),f)),fh=Math.exp(lerp(Math.log(A[3]-A[1]),Math.log(B[3]-B[1]),f));
+  const tcx=lerp((A[0]+A[2])/2,(B[0]+B[2])/2,f),tcy=lerp((A[1]+A[3])/2,(B[1]+B[3])/2,f),ts=Math.min(stageR.w/fw,stageR.h/fh);
+  const k=(reduce||!cam.init)?1:1-Math.exp(-dt*9);
+  cam.s=lerp(cam.s,ts,k);cam.cx=lerp(cam.cx,tcx,k);cam.cy=lerp(cam.cy,tcy,k);cam.ox=stageR.x+stageR.w/2;cam.oy=stageR.y+stageR.h/2;
+  const j=Math.min(i+1,STEP_ST.length-1),td=lerp(SD[STEP_ST[i]],SD[STEP_ST[j]],f);
+  shipD=cam.init?lerp(shipD,td,k):td;cam.init=true;
+  const qt=stepIdx===2?1:0;qa+=(qt-qa)*(reduce?1:clamp(dt*6,0,1));
+}
+function render(t){
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.globalAlpha=1;ctx.fillStyle=C.margin;ctx.fillRect(0,0,W,H);
+  const s=cam.s;ctx.setTransform(s*DPR,0,0,s*DPR,(cam.ox-cam.cx*s)*DPR,(cam.oy-cam.cy*s)*DPR);
+  ctx.save();ctx.beginPath();ctx.rect(0,0,2400,1700);ctx.clip();
+  ctx.fillStyle=C.paper;ctx.fillRect(0,0,2400,1700);
+  bands();gyre(t);shoals();land();wedge();engine(t);currents();rose();reef();wreck(770,1528);wreck(1800,292);
+  light(548,1078,t,0);light(1232,196,t,2.1);track(t);
+  ctx.restore();neatline();
+  ctx.setTransform(DPR,0,0,DPR,0,0);soundings();labels();
+}
+function frame(now){
+  const t=(now-T0)/1000,dt=Math.min(0.05,Math.max(0,t-tNow));tNow=t;
+  if(stageEl.getBoundingClientRect().bottom>-20){update(dt);render(t);}
+  if(!reduce)requestAnimationFrame(frame);
+}
+function onScroll(){
+  const ref=H*(wide?0.5:0.74),cs=cards.map(c=>{const r=c.getBoundingClientRect();return{b:r.bottom,c:(r.top+r.bottom)/2};});
+  let i=0;for(let k=0;k<cs.length;k++)if(cs[k].c<=ref)i=k;
+  let f=0;if(i<cs.length-1&&cs[i].c<=ref)f=(ref-cs[i].c)/Math.max(1,cs[i+1].c-cs[i].c);
+  pe=i+smooth(clamp((f-0.22)/0.56,0,1));stepIdx=Math.round(pe);
+  for(let k=0;k<cards.length;k++){const o=wide?(k===stepIdx?1:0.34):clamp((cs[k].b-H*0.5)/(H*0.2),0,1);cards[k].style.opacity=o;cards[k].style.pointerEvents=o<0.15?'none':'auto';}
+  const st=STEP_ST[stepIdx];
+  tagL.textContent=stepIdx===0?'Off Soundings · review draft':'Off Soundings';
+  tagR.textContent=stepIdx===0?'':(stepIdx>=3&&stepIdx<=11?'Stn '+st+' · ':'')+QTXT[stepIdx];
+  if(reduce)requestAnimationFrame(frame);
+}
+function resize(){
+  const r=stageEl.getBoundingClientRect();W=r.width;H=r.height;DPR=Math.min(window.devicePixelRatio||1,2);
+  cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);wide=W>=900;
+  if(wide){stageR.x=W*0.45;stageR.y=64;stageR.w=W*0.55-34;stageR.h=H-112;}
+  else{stageR.x=14;stageR.y=42;stageR.w=W-28;stageR.h=H*0.5-52;}
+  cam.init=false;onScroll();
+}
+const QOUT={
+  nw:'A South Dakota dynasty trust. A Wyoming LLC. A private placement policy written in the States. Closed to the public, inside the reach of U.S. courts.',
+  ne:'A Cook Islands trust. A Cayman fund. Closed to the public and outside the reach of U.S. courts. Reported to the IRS in full.',
+  sw:'Your brokerage account, even when it holds euros and Tokyo-listed shares. Open, regulated, simple.',
+  se:'A plain bank account in Zurich or Singapore. Another country\'s system, reported home every year once balances pass $10,000.'
+};
+function setQ(q){quarter=q;for(const k of ['nw','ne','sw','se'])$('#q-'+k).setAttribute('aria-pressed',k===q);$('#qout').textContent=QOUT[q];if(reduce)requestAnimationFrame(frame);}
+for(const k of ['nw','ne','sw','se'])$('#q-'+k).addEventListener('click',()=>setQ(k));
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a.fn');if(!a)return;e.preventDefault();
+  const el=document.getElementById(a.getAttribute('href').slice(1));if(!el)return;
+  el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),1800);
+});
+addEventListener('scroll',onScroll,{passive:true});
+addEventListener('resize',resize);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(resize);
+setQ('ne');resize();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

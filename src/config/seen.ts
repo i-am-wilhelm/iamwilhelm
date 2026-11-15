@@ -36,12 +36,17 @@ export const SEEN_AI_LINE = SEEN_AI_LINE_SOURCE;
 
 /**
  * Pages built on the same system (hero, pinned stages, cards) that were
- * delivered on their own, outside the batch folder: slug to source file.
+ * delivered on their own, outside the batch: slug to source file.
  * src/lib/seen.ts mounts them the same way. Such a file may carry no meta
  * description; the gallery entry's `description` is printed in its place.
+ * Fall Line and Off Soundings are filed beside the batch's sources and
+ * shelved in Seen, but stand outside SEEN_CHAIN: their colophons name no
+ * previous piece and carry no making-of line.
  */
 export const SEEN_SOURCES: Record<string, string> = {
   'due-space': '_incoming/due-space/due-space.html',
   'nine-hundred-lights': '_incoming/elsewhere/nine-hundred-lights.html',
   'per-my-last-memo': '_incoming/elsewhere/per-my-last-memo.html',
+  'fall-line': '_incoming/art-scrollies/fall-line.html',
+  'off-soundings': '_incoming/art-scrollies/off-soundings.html',
 };

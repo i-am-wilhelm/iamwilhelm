@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fall Line</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: one sticky cyanotype drawing; notes scroll over it, lower half on phones, left rail on wide screens. */
+  --paper:#0f3157;
+  --paper-deep:#0a2342;
+  --line:#dceaf7;
+  --line-dim:#8fb0d1;
+  --water:#9be4ff;
+  --brass:#e8b95a;
+  --pencil:#ff806a;
+  --display:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper-deep);color:var(--line);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+.scrolly{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--paper)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.veil{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(10,35,66,0) 45%,rgba(10,35,66,.88) 58%,rgba(10,35,66,.95) 100%)}
+.sheet-tag{position:absolute;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;gap:12px;font:500 10.5px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--line-dim)}
+
+.steps{position:relative;z-index:2;margin-top:-100vh;margin-top:-100svh;padding:0 16px;pointer-events:none}
+.step{min-height:88vh;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5vh}
+.step:first-child{min-height:100vh;min-height:100svh;padding-bottom:4vh}
+.step:last-child{padding-bottom:30vh}
+
+.card{pointer-events:auto;position:relative;width:100%;max-width:430px;background:rgba(10,35,66,.94);border:1px solid rgba(220,234,247,.26);padding:15px 17px 16px}
+.card::before,.card::after{content:"";position:absolute;width:11px;height:11px;border:solid var(--brass);border-width:0}
+.card::before{top:-1px;left:-1px;border-top-width:2px;border-left-width:2px}
+.card::after{bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:9px;font:500 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--line-dim)}
+.stamp{border:1px solid currentColor;padding:3px 6px 2px;font-size:9.5px;letter-spacing:.14em;white-space:nowrap}
+.stamp.rec{color:var(--line)}
+.stamp.model{color:var(--brass);border-style:dashed}
+.stamp.insp{color:var(--pencil)}
+.card h2{font:400 30px/1.04 var(--display);margin:0 0 9px;text-wrap:balance;letter-spacing:.005em}
+.card p{margin:0 0 10px;font-size:15.5px;line-height:1.5;color:#e9f1fa}
+.card p:last-child{margin-bottom:0}
+.fn{font:500 10px/1 var(--mono);color:var(--brass);text-decoration:none;vertical-align:super;padding:0 1px}
+.fn:hover{text-decoration:underline}
+
+.hero h1{font:400 clamp(60px,17vw,92px)/.86 var(--display);margin:2px 0 12px;letter-spacing:-.01em}
+.hero .deck{font-size:16.5px;line-height:1.42;margin:0 0 14px}
+.sheets{margin:0 0 12px;padding:10px 0 0;border-top:1px solid rgba(220,234,247,.22);display:grid;gap:5px;font:500 11px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--line-dim)}
+.sheets div{display:grid;grid-template-columns:74px 1fr;gap:8px}
+.sheets b{font-weight:500;color:var(--line)}
+.hint{font:500 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+
+.seg{display:flex;margin:2px 0 10px}
+.seg button{flex:1;font:500 11.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:10px 8px;background:transparent;color:var(--line);border:1px solid rgba(220,234,247,.5);cursor:pointer}
+.seg button+button{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--line);color:var(--paper-deep)}
+.btn{font:500 11.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:11px 14px;background:transparent;color:var(--brass);border:1px solid var(--brass);cursor:pointer;margin-top:2px}
+.btn:hover{background:rgba(232,185,90,.12)}
+[hidden]{display:none!important}
+
+.close{position:relative;z-index:3;background:var(--paper-deep);border-top:1px solid rgba(220,234,247,.25);padding:56px 20px 72px}
+.wrap{max-width:660px;margin:0 auto}
+.eyebrow{font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin:0 0 12px}
+.close h2{font:400 42px/1 var(--display);margin:0 0 12px;text-wrap:balance}
+.close .lede{font-size:16px;color:#d5e3f1;margin:0 0 24px;max-width:58ch}
+.build{list-style:none;counter-reset:b;padding:0;margin:0 0 34px;display:grid;gap:14px}
+.build li{counter-increment:b;display:grid;grid-template-columns:34px 1fr;gap:10px;font-size:15.5px;line-height:1.5}
+.build li::before{content:counter(b,decimal-leading-zero);font:500 12px/1.95 var(--mono);color:var(--brass);letter-spacing:.08em}
+.build b{font-weight:600;color:#fff}
+.note{border:1px dashed rgba(220,234,247,.38);padding:14px 16px;font-size:14px;line-height:1.5;color:#cfdfef;margin:0 0 44px}
+.close h3{font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--line-dim);margin:0 0 14px}
+.src{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:9px;font-size:13px;line-height:1.45;color:#c4d6e9}
+.src li{counter-increment:s;display:grid;grid-template-columns:26px 1fr;gap:6px;padding:2px 0}
+.src li::before{content:counter(s);font:500 11px/1.75 var(--mono);color:var(--brass)}
+.src a{text-underline-offset:2px;text-decoration-color:rgba(220,234,247,.45)}
+.src li.hit{outline:1px solid var(--brass);outline-offset:4px}
+.colophon{margin:40px 0 0;font:500 10.5px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--line-dim)}
+
+@media (min-width:900px){
+  .veil{background:linear-gradient(to right,rgba(10,35,66,.95) 0%,rgba(10,35,66,.88) 30%,rgba(10,35,66,0) 47%)}
+  .sheet-tag{top:18px;left:max(32px,5vw);right:28px;font-size:11px}
+  .steps{padding:0 0 0 max(32px,5vw)}
+  .step{align-items:center;justify-content:flex-start;min-height:92vh;padding-bottom:0}
+  .step:first-child{padding-bottom:0}
+  .card{max-width:440px;padding:20px 22px 21px;transition:opacity .35s}
+  .card h2{font-size:36px}
+  .card p{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+</head>
+<body>
+
+<main>
+<section class="scrolly" aria-label="Fall Line, a scroll-driven drawing">
+  <div class="stage">
+    <canvas id="cv" role="img" aria-label="Blueprint drawing of a waterworks: a spring, a ledge, a catch basin, a tank and a cascade, built up as you scroll."></canvas>
+    <div class="veil"></div>
+    <div class="sheet-tag"><span id="tagL">Fall Line · review draft</span><span id="tagR"></span></div>
+  </div>
+
+  <div class="steps">
+
+    <article class="step" data-num="">
+      <div class="card hero">
+        <div class="meta"><span>Drawing RW-01</span><span>Nov 2026</span></div>
+        <h1>Fall Line</h1>
+        <p class="deck">The Rockefeller waterfall, drawn as plumbing. Built once for a house with a mortgage, then again at full scale.</p>
+        <div class="sheets">
+          <div><span>Sheet 1</span><b>One household</b></div>
+          <div><span>Sheet 2</span><b>The estate</b></div>
+          <div><span>Sheet 3</span><b>Inspection</b></div>
+        </div>
+        <div class="hint">Scroll to build ↓</div>
+      </div>
+    </article>
+
+    <article class="step" data-num="0.1">
+      <div class="card">
+        <div class="meta"><span>0.1</span><span>General notes</span></div>
+        <h2>Where the money drops</h2>
+        <p>A fall line is the ledge where a river drops. Mill towns grew along it, because falling water does work once a wheel sits under it. Family money has one too. It arrives at every death.</p>
+        <p>Two stamps mark what follows. <span class="stamp rec">On the record</span> is documented history and current law. <span class="stamp model">As taught</span> is the method the way planners and insurance agents sell it. The family's books are closed to researchers,<a class="fn" href="#s1">1</a> so the stamps matter.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.1">
+      <div class="card">
+        <div class="meta"><span>1.1</span><span>Sheet 1</span></div>
+        <h2>The spring</h2>
+        <p>Paychecks arrive at the spring. Whatever outlasts the month collects in the pond: the house, the savings, the retirement accounts.</p>
+        <p>Every part downstream moves water. This is the only part that makes any.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.2">
+      <div class="card">
+        <div class="meta"><span>1.2</span><span class="stamp rec">On the record</span></div>
+        <h2>The drop</h2>
+        <p>At death the pond goes over the ledge. With nothing built below, it lands on rock.</p>
+        <p>A court supervises the estate in public, and settlement commonly costs 3% to 8% of it.<a class="fn" href="#s8">8</a> If minor children have no named guardian, a judge chooses one. What survives is handed over outright.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.3">
+      <div class="card">
+        <div class="meta"><span>1.3</span><span class="stamp rec">On the record</span></div>
+        <h2>The catch basin</h2>
+        <p>The first part is a revocable living trust, plus a will that pours stragglers into it. You run it while you live. Your successor takes over at the drop, and the water skips the court. A lawyer-drafted plan typically runs $1,500 to $4,000.<a class="fn" href="#s9">9</a></p>
+        <p>Know its limits. It saves no estate tax, stops no creditor, and catches only what you retitle into it.<a class="fn" href="#s9">9</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.4">
+      <div class="card">
+        <div class="meta"><span>1.4</span><span class="stamp rec">On the record</span></div>
+        <h2>The charter</h2>
+        <p>The second part is free. Bolt the rules to the basin wall: what this money is for, who decides, what gets lent and what gets given.</p>
+        <p>The Rockefellers gather twice a year, often more than a hundred in one room, and bring members into the meetings at 21.<a class="fn" href="#s7">7</a> The household edition is one page and one dinner a year.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.5">
+      <div class="card">
+        <div class="meta"><span>1.5</span><span class="stamp rec">On the record</span><span class="stamp model">As taught</span></div>
+        <h2>The tank</h2>
+        <p>The third part is life insurance that pays the trust. A thin pipe of premiums fills a tank with one valve, and the valve opens at death.</p>
+        <div class="seg" role="group" aria-label="Kind of policy">
+          <button type="button" id="mode-term" data-mode="term" aria-pressed="false">Term</button>
+          <button type="button" id="mode-whole" data-mode="whole" aria-pressed="true">Whole life</button>
+        </div>
+        <p id="txt-term" hidden>A rented tank. Large, cheap, and it expires. In one Consumer Reports comparison the term policy cost $660 a year.<a class="fn" href="#s10">10</a> Critics of the method buy this one and invest the difference.</p>
+        <p id="txt-whole">An owned tank. Permanent, with a sight glass of cash value to borrow against. The same comparison priced it at $6,760 a year.<a class="fn" href="#s10">10</a> The method as taught runs on this one.<a class="fn" href="#s5">5</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.6">
+      <div class="card">
+        <div class="meta"><span>1.6</span><span class="stamp rec">On the record</span><span class="stamp model">As taught</span></div>
+        <h2>The family bank</h2>
+        <p>The fourth part is a gate and a return pipe. The trust lends to family on written terms, for purposes the charter names, and the loan flows back with interest.</p>
+        <p>The IRS posts a floor rate each month. For loans made in November 2026 it runs 4.67% to 5.52% by term, and loans of $10,000 or less are generally exempt.<a class="fn" href="#s15">15</a> In the insurance edition, the borrowing happens against the policy's cash value.<a class="fn" href="#s6">6</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.7">
+      <div class="card">
+        <div class="meta"><span>1.7</span><span class="stamp model">As taught</span></div>
+        <h2>The waterfall</h2>
+        <p>Now run it. A parent dies, the valve opens, the basin fills. The trustee buys a tank on the next generation and keeps the gate working. Each drop refills the trust that funds the next.</p>
+        <p>One trust, a policy on every generation, a family that borrows from itself. That loop is the Rockefeller waterfall as it is sold.<a class="fn" href="#s5">5</a></p>
+        <button type="button" class="btn" id="valve">Open the valve again</button>
+      </div>
+    </article>
+
+    <article class="step" data-num="1.8">
+      <div class="card">
+        <div class="meta"><span>1.8</span><span class="stamp rec">On the record</span></div>
+        <h2>Sheet 1, bill of materials</h2>
+        <p>A will. A funded revocable trust. A one-page charter. Coverage that pays the trust. A loan ledger.</p>
+        <p>Nothing on this sheet touches estate tax, because the federal line sits at $15 million a person in 2026.<a class="fn" href="#s13">13</a> Twelve states and D.C. draw their own lines lower: Oregon at $1 million, Massachusetts at $2 million, Washington at $3 million.<a class="fn" href="#s14">14</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.1">
+      <div class="card">
+        <div class="meta"><span>2.1</span><span class="stamp rec">On the record</span></div>
+        <h2>The source</h2>
+        <p>Same drawing, bigger pipe. The Rockefeller spring was Standard Oil. The trusts that followed held shares in its successor companies, other investments and real estate.<a class="fn" href="#s1">1</a></p>
+        <p>The plumbing on this sheet kept a fortune together. Oil made it.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.2">
+      <div class="card">
+        <div class="meta"><span>2.2</span><span class="stamp rec">On the record</span></div>
+        <h2>The toll gate</h2>
+        <p>At this scale the fall line charges a toll. Federal estate tax takes 40% of everything above $15 million a person, $30 million for a married couple.<a class="fn" href="#s13">13</a></p>
+        <p>A fortune that follows the natural channel pays at every generation.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.3">
+      <div class="card">
+        <div class="meta"><span>2.3</span><span class="stamp rec">On the record</span></div>
+        <h2>The dam</h2>
+        <p>So John D. Rockefeller Jr. built above the gate. In 1934 he set up irrevocable trusts for his six children, and in 1952 a second set for his grandchildren.<a class="fn" href="#s2">2</a> Chase administers them with a trust committee.<a class="fn" href="#s1">1</a></p>
+        <p>Principal stays behind the wall. Income leaves through the outlet. The builder gives the water up for good, and that surrender buys the bypass.<a class="fn" href="#s3">3</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.4">
+      <div class="card">
+        <div class="meta"><span>2.4</span><span class="stamp rec">On the record</span></div>
+        <h2>The cornerstone</h2>
+        <p>Congress later added a second toll on transfers that skip a generation. The 1934 trusts were poured first and were grandfathered.<a class="fn" href="#s3">3</a></p>
+        <p>A dam built today rests on a different cornerstone, each person's $15 million generation-skipping exemption,<a class="fn" href="#s13">13</a> in a state that lets a trust run for centuries or forever. South Dakota, Nevada, Delaware, Alaska and Wyoming are the usual sites.<a class="fn" href="#s3">3</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.5">
+      <div class="card">
+        <div class="meta"><span>2.5</span><span class="stamp rec">On the record</span><span class="stamp model">As taught</span></div>
+        <h2>The tank, inside the wall</h2>
+        <p>At estate scale the tank moves into an irrevocable life insurance trust. The trust buys the policy, so the payout lands outside the taxable estate. Premiums arrive as gifts within the $19,000 annual exclusion, and every gift needs a written notice to the beneficiaries.<a class="fn" href="#s16">16</a></p>
+        <p>The sales version calls this tank the Rockefeller engine. The record shows oil stock and real estate, and one careful source says only that the family is “thought to use” the method.<a class="fn" href="#s4">4</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.6">
+      <div class="card">
+        <div class="meta"><span>2.6</span><span class="stamp rec">On the record</span></div>
+        <h2>The control house</h2>
+        <p>A dam needs operators. The family office moved in 1933 to the 56th floor of 30 Rockefeller Plaza, and the door number, 5600, became its name. Investments, accounting, legal work and philanthropy ran through it, with nearly 400 people at its height.<a class="fn" href="#s2">2</a></p>
+        <p>Trustees work the valves.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.7">
+      <div class="card">
+        <div class="meta"><span>2.7</span><span class="stamp rec">On the record</span></div>
+        <h2>The irrigation canal</h2>
+        <p>One channel leaves the watershed on purpose. The Rockefeller Foundation, chartered in 1913, and the Rockefeller Brothers Fund, founded in 1940, carry water to fields the family will never own.</p>
+        <p>David Rockefeller Jr. told CNBC the family has no shared business to fight over. Shared values and giving do the binding.<a class="fn" href="#s7">7</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="2.8">
+      <div class="card">
+        <div class="meta"><span>2.8</span><span class="stamp rec">On the record</span></div>
+        <h2>Seven generations</h2>
+        <p>Follow the cascade down. Seven generations and more than 200 descendants later, the water is still inside the works.<a class="fn" href="#s19">19</a></p>
+        <p>The Vanderbilts built mansions at their fall line. The famous line says 120 of them gathered in 1973 without a millionaire in the room. That count is disputed.<a class="fn" href="#s18">18</a> The Fifth Avenue mansions are gone either way.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="3.1">
+      <div class="card">
+        <div class="meta"><span>3.1</span><span class="stamp insp">Inspection</span></div>
+        <h2>Leak one, the owned tank</h2>
+        <p>Whole life fills slowly. In the Consumer Reports comparison the guaranteed cash value earned about 1.5% a year,<a class="fn" href="#s10">10</a> and cash value can take ten to fifteen years to catch up with premiums paid.<a class="fn" href="#s20">20</a><a class="fn" href="#s11">11</a></p>
+        <p>Borrow against it and interest accrues. An unpaid loan comes out of the death benefit. Fill the tank too fast in the first seven years and the loans become taxable.<a class="fn" href="#s12">12</a></p>
+      </div>
+    </article>
+
+    <article class="step" data-num="3.2">
+      <div class="card">
+        <div class="meta"><span>3.2</span><span class="stamp insp">Inspection</span></div>
+        <h2>Leak two, the wall</h2>
+        <p>An irrevocable trust keeps its own tax table. In 2026 trust income reaches the 37% bracket above $16,000. A single filer gets there at $640,600.<a class="fn" href="#s17">17</a></p>
+        <p>The paperwork is structural. One estate firm calls missing gift notices the most common defect it sees in older insurance trusts, and a policy moved in within three years of death falls back into the estate.<a class="fn" href="#s16">16</a> The builder never gets the water back.</p>
+      </div>
+    </article>
+
+    <article class="step" data-num="3.3">
+      <div class="card">
+        <div class="meta"><span>3.3</span><span class="stamp insp">Inspection</span></div>
+        <h2>Leak three, the spring</h2>
+        <p>The largest leak sits at the top of Sheet 1. Every part on these drawings moves water. None of them makes any.</p>
+        <p>The Rockefellers had oil. A household has a paycheck, a business, a skill. Sheet 2 solves a tax most families will never owe. Sheet 1 is the one to build, and it starts at the spring.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="close">
+  <div class="wrap">
+    <p class="eyebrow">Construction sequence</p>
+    <h2>Build order for one household</h2>
+    <p class="lede">Sheet 1, in the order the parts go in. Each line is also a question to bring to a licensed professional in your state.</p>
+    <ol class="build">
+      <li><span><b>Name guardians and sign a will.</b> The court stops choosing.</span></li>
+      <li><span><b>Set up the revocable trust and retitle into it.</b> House, accounts, beneficiary forms. An empty basin catches nothing.</span></li>
+      <li><span><b>Point coverage at the trust.</b> Price the rented tank and the owned tank side by side before signing either.</span></li>
+      <li><span><b>Write the one-page charter.</b> Then hold the dinner.</span></li>
+      <li><span><b>Keep a loan ledger.</b> A written note, a schedule, and at least the federal floor rate on anything over $10,000.</span></li>
+      <li><span><b>Call the dam builders when the numbers say so.</b> Your state's estate-tax line, or the federal one, is the trigger for irrevocable work.</span></li>
+    </ol>
+    <p class="note">This drawing is general education on U.S. federal rules as of November 2026. State law varies and the figures change every year. It is no substitute for an estate attorney and a fee-only planner licensed where you live.</p>
+
+    <h3>Sources</h3>
+    <ol class="src">
+      <li id="s1"><span><a href="https://en.wikipedia.org/wiki/Rockefeller_family" rel="noopener">Wikipedia, “Rockefeller family”</a>. The 1934 and 1952 trusts, their holdings, Chase and the trust committee, closed family records.</span></li>
+      <li id="s2"><span><a href="https://jwatte.com/blog/rockefeller-dynasty/" rel="noopener">J.A. Watte, “The Archetype: How the Rockefellers Made a Fortune Outlive Its Family”</a> (July 2026). Room 5600, staffing, the two sets of trusts.</span></li>
+      <li id="s3"><span><a href="https://247wallst.com/personal-finance/2026/08/24/the-rockerfellers-have-moved-the-same-fortune-through-six-generations-without-a-single-estate-tax-bill-the-1934-trusts-they-used-are-still-legal-and-still-for-sale/" rel="noopener">24/7 Wall St.</a> (Aug. 2026). Dynasty trusts, the grandfathered 1934 trusts, perpetual-trust states.</span></li>
+      <li id="s4"><span><a href="https://moneylion.com/trending/money/ways-rockefeller-family-created-generational-wealth-after-getting-rich" rel="noopener">MoneyLion, “5 Ways the Famous Rockefeller Family Created Generational Wealth”</a>. The “thought to use” wording on the waterfall concept.</span></li>
+      <li id="s5"><span><a href="https://gardainsurance.com/rockefeller-method" rel="noopener">Garda Insurance, “The Rockefeller Method”</a>. The method as an insurance agency presents it: a trust that owns whole life on each family member.</span></li>
+      <li id="s6"><span><a href="https://sobrief.com/books/what-would-the-rockefellers-do" rel="noopener">SoBrief summary of Garrett Gunderson, <i>What Would the Rockefellers Do?</i></a> The book that popularized the term, with cash value used as loan collateral.</span></li>
+      <li id="s7"><span><a href="https://www.celebritynetworth.com/articles/billionaire-news/rockefeller-familys-four-secrets-preserving-family-wealth/" rel="noopener">Celebrity Net Worth on David Rockefeller Jr.'s CNBC interview</a>. Twice-yearly family meetings, values and giving.</span></li>
+      <li id="s8"><span><a href="https://www.kiplinger.com/taxes/which-trust-type-saves-your-kids-the-most-money" rel="noopener">Kiplinger, “Which Trust Type Saves Your Kids The Most Money?”</a> Probate settlement costs, will versus trust.</span></li>
+      <li id="s9"><span>LegalZoom, <a href="https://www.legalzoom.com/articles/cost-to-set-up-a-living-trust" rel="noopener">“How Much Does a Living Trust Cost?”</a> and <a href="https://aaa-ace.legalzoom.com/articles/what-does-a-living-trust-do" rel="noopener">“What Does a Living Trust Do?”</a> Attorney price range, funding, and the limits of a revocable trust.</span></li>
+      <li id="s10"><span><a href="https://www.consumerreports.org/cro/news/2015/04/is-whole-life-insurance-right-for-you/index.htm" rel="noopener">Consumer Reports, “Is whole life insurance right for you?”</a> (2015). The $6,760 and $660 premium comparison and the 1.5% guaranteed return.</span></li>
+      <li id="s11"><span><a href="https://www.whitecoatinvestor.com/how-to-evaluate-your-own-whole-life-policy/" rel="noopener">White Coat Investor, “How to Evaluate Your Own Whole Life Policy”</a>. A worked break-even on a real policy.</span></li>
+      <li id="s12"><span><a href="https://northwesternmutual.com/life-and-money/modified-endowment-contract-mec" rel="noopener">Northwestern Mutual, “What Is a Modified Endowment Contract?”</a> and <a href="https://www.thinkadvisor.com/2017/05/01/modified-endowment-contracts-and-the-7-pay-test/" rel="noopener">ThinkAdvisor on the 7-pay test</a>. Overfunding and taxable loans.</span></li>
+      <li id="s13"><span><a href="https://www.nelsonmullins.com/insights/blogs/tax-reports/all/2026-estate-and-gift-tax-update" rel="noopener">Nelson Mullins, “2026 Estate and Gift Tax Update”</a> (Feb. 2026). The $15 million exemption, 40% rate, generation-skipping exemption.</span></li>
+      <li id="s14"><span><a href="https://www.nerdwallet.com/taxes/learn/estate-tax" rel="noopener">NerdWallet, state estate tax table</a> and <a href="https://www.aarp.org/money/retirement/states-with-estate-inheritance-taxes/" rel="noopener">AARP on state estate taxes</a>. 2026 state thresholds.</span></li>
+      <li id="s15"><span><a href="https://www.nationalfamilymortgage.com/afr-rates/" rel="noopener">National Family Mortgage, IRS Applicable Federal Rates</a> and <a href="https://aaronhall.com/intrafamily-loan-afr-compliance/" rel="noopener">Aaron Hall on intrafamily loans</a>. November 2026 rates and the $10,000 exception.</span></li>
+      <li id="s16"><span><a href="https://opelon.com/irrevocable-life-insurance-trust-ilit/" rel="noopener">Opelon LLP, ILIT guide</a> (June 2026) and <a href="https://www.aetrust.com/blog/ilit-trustee-duties/" rel="noopener">AE Trust on trustee duties</a>. Gift notices, the three-year rule.</span></li>
+      <li id="s17"><span><a href="https://q3adv.com/how-are-irrevocable-trusts-taxed/" rel="noopener">Q3 Advisors, “How Are Irrevocable Trusts Taxed?”</a> 2026 trust brackets from Rev. Proc. 2025-32.</span></li>
+      <li id="s18"><span><a href="https://skeptics.stackexchange.com/questions/56429/did-cornelius-vanderbilts-descendants-lose-their-family-wealth-by-1973" rel="noopener">Skeptics Stack Exchange on the 1973 Vanderbilt reunion</a> and <a href="https://en.wikipedia.org/wiki/Vanderbilt_family" rel="noopener">Wikipedia, “Vanderbilt family”</a>.</span></li>
+      <li id="s19"><span><a href="https://grunge.com/713337/the-rockefeller-family-tree-explained" rel="noopener">Grunge, “The Rockefeller Family Tree Explained”</a>. Family size and generations.</span></li>
+      <li id="s20"><span><a href="https://insurancenewsnet.com/innarticle/whole-life-vs-term-life" rel="noopener">InsuranceNewsNet, “Whole life vs. term life”</a>. Break-even timing on cash value.</span></li>
+    </ol>
+    <p class="colophon">Fall Line · Drawing RW-01 · Review draft · Nov 2026</p>
+  </div>
+</section>
+</main>
+
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s);
+const cv=$('#cv'),ctx=cv.getContext('2d'),stageEl=$('.stage');
+const stepEls=[...document.querySelectorAll('.step')],cards=stepEls.map(s=>s.querySelector('.card'));
+const tagL=$('#tagL'),tagR=$('#tagR');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={paper:'#0f3157',line:'#dceaf7',water:'#9be4ff',brass:'#e8b95a',pencil:'#ff806a'};
+const OY=1700;
+const clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,t)=>a+(b-a)*t,smooth=t=>t*t*(3-2*t);
+let seed=20261114;
+const rnd=()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+
+let W=1,H=1,DPR=1,wide=false;
+const stageR={x:0,y:0,w:1,h:1};
+const cam={s:1,cx:600,cy:400,ox:0,oy:0,init:false};
+let pe=0,heroK=1,stepIdx=0,tankMode='whole',modeNow='whole',surge=0,surgeOn=false,T0=performance.now(),tNow=0;
+const lv={pond:.9,t1:.85,b2:.6,t2:.85,b3:0,t3:.85,b4:0,res:0};
+
+const s2=(a,b,c,d)=>[a,b+OY,c,d+OY];
+const F=[
+  [30,30,1210,740],[30,30,1210,740],
+  [30,40,560,390],[270,190,870,740],[380,360,900,740],[420,380,960,740],
+  [60,40,860,720],[440,340,1250,760],[20,20,1960,1180],[20,20,2310,1480],
+  s2(30,60,800,440),s2(500,160,1320,900),s2(600,60,1900,900),s2(1000,240,1820,900),
+  s2(820,30,1480,560),s2(1380,120,1960,720),s2(1560,160,2300,760),s2(1540,240,2310,1010),
+  [220,60,900,720],s2(980,180,1840,900),[20,30,580,400]
+];
+const rv=k=>clamp(pe-(k-1),0,1);
+const R=k=>Math.max(rv(k),heroK);
+
+/* ---------- stroke helpers (world units, pixel line weights) ---------- */
+function S(build,r,col=C.line,wpx=1.5,len=0,dash=false){
+  const s=cam.s;
+  if(r<0.985){ctx.save();ctx.globalAlpha=0.3;ctx.setLineDash([5/s,5/s]);ctx.lineWidth=1/s;ctx.strokeStyle=col;ctx.beginPath();build();ctx.stroke();ctx.restore();}
+  if(r>0.01){ctx.save();ctx.lineJoin='round';ctx.lineWidth=wpx/s;ctx.strokeStyle=col;
+    if(len&&r<0.999){ctx.setLineDash([len*r,len*3]);}else{ctx.globalAlpha=len?1:r;if(dash)ctx.setLineDash([7/s,5/s]);}
+    ctx.beginPath();build();ctx.stroke();ctx.restore();}
+}
+function trace(pts){ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);}
+function PL(pts,r,col=C.line,wpx=1.5){
+  let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
+  S(()=>trace(pts),r,col,wpx,len);
+}
+function pipe(pts,w,r,col=C.line){
+  const s=cam.s;
+  if(r<0.985){ctx.save();ctx.globalAlpha=0.3;ctx.setLineDash([5/s,5/s]);ctx.lineWidth=1/s;ctx.strokeStyle=col;ctx.beginPath();trace(pts);ctx.stroke();ctx.restore();}
+  if(r>0.01){ctx.save();ctx.lineJoin='miter';ctx.lineCap='butt';ctx.globalAlpha=r;
+    ctx.strokeStyle=col;ctx.lineWidth=w+2.8/s;ctx.beginPath();trace(pts);ctx.stroke();
+    ctx.strokeStyle=C.paper;ctx.lineWidth=w;ctx.beginPath();trace(pts);ctx.stroke();ctx.restore();}
+}
+function hatchH(x0,x1,y,r){ctx.save();ctx.globalAlpha=0.1+0.3*r;ctx.strokeStyle=C.line;ctx.lineWidth=1/cam.s;ctx.beginPath();
+  for(let x=x0+10;x<x1;x+=18){ctx.moveTo(x,y+3);ctx.lineTo(x-9,y+14);}ctx.stroke();ctx.restore();}
+function hatchV(x,y0,y1,r,side){ctx.save();ctx.globalAlpha=0.1+0.3*r;ctx.strokeStyle=C.line;ctx.lineWidth=1/cam.s;ctx.beginPath();
+  for(let y=y0+12;y<y1;y+=18){ctx.moveTo(x+3*side,y);ctx.lineTo(x+14*side,y+9);}ctx.stroke();ctx.restore();}
+function body(x0,x1,floorY,surfY,a,t){
+  if(a<=0.02||surfY>=floorY-0.6)return;
+  const n=Math.max(4,Math.round((x1-x0)/14)),wy=x=>surfY+Math.sin(x*0.09+t*2.2)*1.3;
+  ctx.save();ctx.globalAlpha=0.2*a;ctx.fillStyle=C.water;ctx.beginPath();ctx.moveTo(x0,floorY);
+  for(let i=0;i<=n;i++){const x=x0+(x1-x0)*i/n;ctx.lineTo(x,wy(x));}
+  ctx.lineTo(x1,floorY);ctx.closePath();ctx.fill();
+  ctx.globalAlpha=0.95*a;ctx.strokeStyle=C.water;ctx.lineWidth=1.3/cam.s;ctx.beginPath();
+  for(let i=0;i<=n;i++){const x=x0+(x1-x0)*i/n;i?ctx.lineTo(x,wy(x)):ctx.moveTo(x,wy(x));}
+  ctx.stroke();ctx.restore();
+}
+function tank(x0,y0,x1,y1,legY,r,level,dashed){
+  if(r>0.02&&level>0.01){const h=(y1-y0)*clamp(level,0,1);ctx.save();ctx.globalAlpha=0.22*r;ctx.fillStyle=C.water;ctx.fillRect(x0+1,y1-h,x1-x0-2,h);
+    ctx.globalAlpha=0.9*r;ctx.strokeStyle=C.water;ctx.lineWidth=1.2/cam.s;ctx.beginPath();ctx.moveTo(x0+1,y1-h);ctx.lineTo(x1-1,y1-h);ctx.stroke();ctx.restore();}
+  S(()=>{ctx.moveTo(x0,y1);ctx.lineTo(x0,y0);ctx.bezierCurveTo(x0,y0-20,x1,y0-20,x1,y0);ctx.lineTo(x1,y1);ctx.closePath();},r,C.line,1.8,0,dashed);
+  S(()=>{const a=y0+(y1-y0)/3,b=y0+2*(y1-y0)/3;ctx.moveTo(x0,a);ctx.lineTo(x1,a);ctx.moveTo(x0,b);ctx.lineTo(x1,b);},r*0.45,C.line,1);
+  if(legY>y1+1)S(()=>{ctx.moveTo(x0+10,y1);ctx.lineTo(x0+10,legY);ctx.moveTo(x1-10,y1);ctx.lineTo(x1-10,legY);ctx.moveTo(x0+10,y1);ctx.lineTo(x1-10,legY);ctx.moveTo(x1-10,y1);ctx.lineTo(x0+10,legY);},r,C.line,1.2);
+}
+function valve(x,y,r,vert){
+  if(r<=0.02)return;ctx.save();ctx.translate(x,y);if(vert)ctx.rotate(Math.PI/2);ctx.globalAlpha=r;const k=10;
+  ctx.fillStyle=C.paper;ctx.strokeStyle=C.brass;ctx.lineWidth=1.6/cam.s;ctx.lineJoin='round';ctx.beginPath();
+  ctx.moveTo(-k,-k*.75);ctx.lineTo(0,0);ctx.lineTo(-k,k*.75);ctx.closePath();ctx.moveTo(k,-k*.75);ctx.lineTo(0,0);ctx.lineTo(k,k*.75);ctx.closePath();
+  ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-k*1.5);ctx.moveTo(-k*.7,-k*1.5);ctx.lineTo(k*.7,-k*1.5);ctx.stroke();ctx.restore();
+}
+function mask(x,y,w,h,r){if(r<=0.02)return;ctx.save();ctx.globalAlpha=r;ctx.fillStyle=C.paper;ctx.fillRect(x,y,w,h);ctx.restore();}
+
+/* ---------- flows ---------- */
+function mkPath(pts){const seg=[];let len=0;for(let i=1;i<pts.length;i++){const dx=pts[i][0]-pts[i-1][0],dy=pts[i][1]-pts[i-1][1],l=Math.hypot(dx,dy)||1;seg.push({x:pts[i-1][0],y:pts[i-1][1],dx:dx/l,dy:dy/l,l,s:len});len+=l;}return{pts,seg,len};}
+function at(p,d,o){const sg=p.seg;let i=0;while(i<sg.length-1&&d>sg[i].s+sg[i].l)i++;const s=sg[i],u=d-s.s;o.x=s.x+s.dx*u;o.y=s.y+s.dy*u;o.nx=-s.dy;o.ny=s.dx;}
+const FLOWS=[];
+function flow(pts,o){
+  if(o.s2)pts=pts.map(p=>[p[0],p[1]+OY]);
+  const n=o.n||40,ph=new Float32Array(n),off=new Float32Array(n);
+  for(let i=0;i<n;i++){ph[i]=rnd();off[i]=rnd()*2-1;}
+  FLOWS.push({p:mkPath(pts),n,speed:o.speed||150,jit:o.jit||3,size:o.size||1.7,amt:o.amt,clip:o.clip||null,col:o.col||C.water,ph,off});
+}
+const surf={b2:()=>640-96*lv.b2,b3:()=>980-116*lv.b3,b4:()=>1320-136*lv.b4,res:()=>OY+640-300*lv.res};
+const win=(s,a,b,f=.45)=>clamp((s-a)/f,0,1)*clamp((b-s)/f,0,1);
+const sg=()=>surgeOn?surge:-9;
+const resUp=()=>clamp((lv.res-0.3)/0.3,0,1);
+/* sheet 1 */
+flow([[160,150],[160,298]],{n:14,jit:2.5,amt:()=>R(2),clip:()=>300-22*lv.pond});
+flow([[250,283],[262,294],[456,295],[470,312],[473,638]],{n:46,jit:2.4,speed:170,amt:()=>R(3),clip:()=>R(4)>.5?surf.b2():640});
+flow([[120,112],[120,80],[370,80],[370,150]],{n:16,jit:.8,size:1.3,speed:70,amt:()=>R(6)});
+flow([[440,250],[520,250],[520,292],[522,638]],{n:90,jit:4,size:2,speed:240,amt:()=>win(sg(),.3,3.2),clip:surf.b2});
+flow([[780,612],[970,612],[970,490],[750,490],[750,600]],{n:60,jit:3,speed:110,amt:()=>R(7),clip:surf.b2});
+flow([[780,634],[1156,634],[1170,650],[1174,978]],{n:80,jit:3,speed:230,amt:()=>clamp((sg()-2.4)/.6,0,1)*(.45+.55*clamp((9-sg())/2,0,1)),clip:surf.b3});
+flow([[1140,598],[1215,598],[1215,636],[1217,978]],{n:90,jit:4,size:2,speed:240,amt:()=>win(sg(),3.8,6.6),clip:surf.b3});
+flow([[1540,974],[1856,974],[1870,990],[1874,1318]],{n:80,jit:3,speed:230,amt:()=>clamp((sg()-6.2)/.6,0,1)*(.45+.55*clamp((13-sg())/2,0,1)),clip:surf.b4});
+flow([[1840,938],[1915,938],[1915,976],[1917,1318]],{n:90,jit:4,size:2,speed:240,amt:()=>win(sg(),7.5,10.2),clip:surf.b4});
+/* sheet 2 */
+flow([[172,246],[214,246],[214,274]],{s2:1,n:12,jit:2,amt:()=>rv(10)});
+flow([[214,285],[700,285]],{s2:1,n:120,jit:9,speed:120,amt:()=>rv(10)});
+flow([[700,285],[756,285],[770,302],[774,814]],{s2:1,n:90,jit:5,speed:230,amt:()=>rv(11)*(1-rv(12))});
+flow([[786,442],[986,468]],{s2:1,n:36,jit:3,speed:120,col:C.pencil,amt:()=>rv(11)*(1-rv(12))});
+flow([[700,269],[1056,269],[1066,286],[1068,638]],{s2:1,n:90,jit:5,speed:170,amt:()=>rv(12),clip:surf.res});
+flow([[1640,566],[1800,566],[1800,694]],{s2:1,n:40,jit:3,speed:150,amt:()=>rv(12)*resUp()});
+flow([[980,260],[980,90],[1160,90],[1160,112]],{s2:1,n:18,jit:.8,size:1.3,speed:70,amt:()=>rv(14)});
+flow([[1700,322],[2250,322]],{s2:1,n:70,jit:4,speed:110,amt:()=>rv(16)*resUp()});
+flow([[1810,692],[1862,690],[1872,694],[1874,756],[1962,754],[1972,758],[1974,820],[2062,818],[2072,822],[2074,884],[2162,882],[2172,886],[2174,948],[2262,946],[2272,950],[2292,978]],{s2:1,n:120,jit:2.4,speed:150,amt:()=>rv(17)*resUp()});
+
+function drawFlows(t){
+  const o={};
+  for(const f of FLOWS){
+    const a=f.amt();if(a<=0.01)continue;
+    const cy=f.clip?f.clip():1e9;
+    ctx.save();ctx.beginPath();ctx.rect(-1e5,-1e5,2e5,cy+1e5);ctx.clip();
+    ctx.globalAlpha=0.17*a;ctx.strokeStyle=f.col;ctx.lineWidth=f.jit*2+1.5/cam.s;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();trace(f.p.pts);ctx.stroke();
+    ctx.fillStyle=f.col;const z=Math.max(f.size,1.2/cam.s);
+    for(let i=0;i<f.n;i++){
+      const u=(f.ph[i]+t*f.speed/f.p.len)%1;at(f.p,u*f.p.len,o);
+      const x=o.x+o.nx*f.off[i]*f.jit,y=o.y+o.ny*f.off[i]*f.jit;
+      ctx.globalAlpha=a*(0.5+0.5*((i*37%10)/10));ctx.fillRect(x-z/2,y-z/2,z,z*1.4);
+    }
+    ctx.restore();
+  }
+}
+const sp1=[],sp2=[];
+function emit(arr,x,y,amt,dt){arr.acc=(arr.acc||0)+amt*dt*70;while(arr.acc>1){arr.acc--;if(arr.length<170)arr.push({x,y,vx:(rnd()*2-0.45)*95,vy:-(40+rnd()*150),l:1});}}
+function stepSplash(arr,dt,floorY){for(let i=arr.length-1;i>=0;i--){const p=arr[i];p.vy+=420*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt*1.1;if(p.l<=0||p.y>floorY+4)arr.splice(i,1);}}
+function drawSplash(arr,col){ctx.fillStyle=col;const z=Math.max(2.2,1.3/cam.s);for(const p of arr){ctx.globalAlpha=clamp(p.l,0,1)*.9;ctx.fillRect(p.x-z/2,p.y-z/2,z,z);}ctx.globalAlpha=1;}
+
+/* ---------- sheet 1: one household ---------- */
+function sheet1(t){
+  const a2=R(2),a3=R(3),a4=R(4),a5=R(5),a6=R(6),a7=R(7),a8=R(8),whole=modeNow==='whole';
+  body(92,248,300,300-22*lv.pond,a2,t);
+  body(482,778,640,surf.b2(),a4,t);
+  body(1182,1538,980,surf.b3(),a8,t);
+  body(1882,2268,1320,surf.b4(),a8,t);
+  PL([[40,300],[460,300]],a2,C.line,2);hatchH(40,460,300,a2);
+  PL([[460,300],[460,640],[1160,640]],a3,C.line,2);hatchV(460,300,640,a3,-1);hatchH(460,1160,640,a3);
+  PL([[1160,640],[1160,980],[1860,980]],a8,C.line,2);hatchV(1160,640,980,a8,-1);hatchH(1160,1860,980,a8);
+  PL([[1860,980],[1860,1320],[2290,1320]],a8,C.line,2);hatchV(1860,980,1320,a8,-1);hatchH(1860,2290,1320,a8);
+  pipe([[40,120],[160,120],[160,150]],13,a2);
+  PL([[90,258],[90,300]],a2,C.line,1.8);PL([[250,279],[250,300]],a2,C.line,1.8);
+  PL([[480,522],[480,640]],a4,C.line,2.2);PL([[780,538],[780,640]],a4,C.line,2.2);
+  S(()=>{for(const y of [612,588,564]){ctx.moveTo(480,y);ctx.lineTo(496,y);}},a5,C.brass,1.4);
+  S(()=>{ctx.rect(800,528,100,64);ctx.moveTo(780,542);ctx.lineTo(800,542);ctx.moveTo(780,580);ctx.lineTo(800,580);ctx.moveTo(810,543);ctx.lineTo(890,543);
+    for(const y of [555,565,575]){ctx.moveTo(812,y);ctx.lineTo(868,y);}ctx.moveTo(890,578);ctx.arc(884,578,6,0,6.3);},a5,C.brass,1.4);
+  pipe([[120,113],[120,80],[370,80],[370,146]],4,a6);
+  tank(300,160,440,270,300,a6,lv.t1,!whole);
+  pipe([[440,250],[520,250],[520,290]],10,a6);
+  if(whole){S(()=>ctx.rect(281,172,10,90),a6,C.brass,1.2);
+    if(a6>0.02){const h=84*(0.06+0.55*((t*0.035)%1));ctx.save();ctx.globalAlpha=0.6*a6;ctx.fillStyle=C.brass;ctx.fillRect(283,260-h,6,h);ctx.restore();}}
+  else if(a6>0.02){S(()=>{ctx.moveTo(478,148);ctx.arc(462,148,16,0,6.3);ctx.moveTo(462,148);ctx.lineTo(462,136);ctx.moveTo(462,148);ctx.lineTo(471,153);},a6,C.brass,1.4);}
+  pipe([[780,612],[970,612],[970,490],[750,490],[750,548]],10,a7);
+  S(()=>{ctx.rect(806,596,12,32);ctx.moveTo(812,596);ctx.lineTo(812,584);ctx.moveTo(804,584);ctx.lineTo(820,584);},a7,C.brass,1.5);
+  mask(955,541,30,26,a7);
+  S(()=>{ctx.rect(955,541,30,26);ctx.moveTo(950,541);ctx.lineTo(970,523);ctx.lineTo(990,541);},a7,C.line,1.5);
+  tank(1010,505,1140,612,640,a8,lv.t2,false);pipe([[1140,598],[1215,598],[1215,632]],10,a8);
+  PL([[1180,848],[1180,980]],a8,C.line,2.2);PL([[1540,868],[1540,980]],a8,C.line,2.2);
+  tank(1710,845,1840,952,980,a8,lv.t3,false);pipe([[1840,938],[1915,938],[1915,972]],10,a8);
+  PL([[1880,1168],[1880,1320]],a8,C.line,2.2);PL([[2270,1192],[2270,1320]],a8,C.line,2.2);
+}
+function over1(){valve(480,250,R(6));valve(1178,598,R(8));valve(1878,938,R(8));}
+
+/* ---------- sheet 2: the estate ---------- */
+const STIP=[];while(STIP.length<160){const x=1640+rnd()*130,y=300+rnd()*340;if(x>1644&&x<1700+(y-300)/340*70-4)STIP.push([x,y]);}
+const TER=[[1770,640],[1770,700]];for(let k=0;k<5;k++){const y=700+64*k,x1=1870+100*k;TER.push([x1,y]);if(k<4)TER.push([x1,y+64]);}TER.push([2290,956]);
+function arch(a,b){const m=(a+b)/2,rad=(b-a)/2;ctx.moveTo(a,281+rad);ctx.arc(m,281+rad,rad,Math.PI,2*Math.PI);}
+function sheet2(t){
+  const b10=rv(10),b11=rv(11),b12=rv(12),b13=rv(13),b14=rv(14),b15=rv(15),b16=rv(16),b17=rv(17);
+  if(b10+b11<=0&&pe<9.2)return;
+  ctx.save();ctx.translate(0,OY);
+  body(206,758,300,273,b10,t);
+  if(b12>0.02){ctx.save();ctx.globalAlpha=0.5*b12;ctx.fillStyle=C.brass;ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.font='400 112px "Instrument Serif",Georgia,serif';ctx.fillText('1934',1345,560);ctx.font='400 58px "Instrument Serif",Georgia,serif';ctx.fillText('1952',1345,622);ctx.restore();}
+  body(1056,1640,640,640-300*lv.res,b12,t);
+  for(let k=0;k<5;k++){const y=700+64*k;body(1774+100*k,1861+100*k,y,y-8,b17*resUp(),t);}
+  PL([[40,300],[760,300]],b10,C.line,2);hatchH(40,760,300,b10);
+  PL([[204,262],[204,300]],b10,C.line,1.8);
+  S(()=>{const bx0=88,bx1=192,by=300,tx0=128,tx1=152,ty=120;ctx.moveTo(bx0,by);ctx.lineTo(tx0,ty);ctx.lineTo(tx1,ty);ctx.lineTo(bx1,by);
+    for(let k=1;k<=5;k++){const u=k/5,u0=(k-1)/5,y=lerp(by,ty,u),y0=lerp(by,ty,u0),xa=lerp(bx0,tx0,u),xb=lerp(bx1,tx1,u),xa0=lerp(bx0,tx0,u0),xb0=lerp(bx1,tx1,u0);
+      ctx.moveTo(xa,y);ctx.lineTo(xb,y);ctx.moveTo(xa0,y0);ctx.lineTo(xb,y);ctx.moveTo(xb0,y0);ctx.lineTo(xa,y);}
+    ctx.rect(tx0-6,ty-11,tx1-tx0+12,11);},b10,C.line,1.4);
+  pipe([[172,246],[214,246],[214,262]],7,b10);
+  PL([[760,300],[760,820],[1040,820],[1040,640]],b11,C.line,2);hatchV(760,300,820,b11,-1);hatchH(760,1040,820,b11);hatchV(1040,640,820,b11,1);
+  S(()=>{ctx.moveTo(764,424);ctx.lineTo(792,424);ctx.lineTo(778,446);ctx.closePath();},b11,C.brass,1.5);
+  pipe([[786,442],[986,468]],9,b11,C.brass);
+  S(()=>{ctx.rect(986,452,54,72);ctx.moveTo(996,470);ctx.lineTo(1030,470);ctx.moveTo(996,482);ctx.lineTo(1030,482);},b11,C.brass,1.5);
+  pipe([[700,269],[1058,269]],16,b12);
+  S(()=>{for(const x of [860,950]){ctx.moveTo(x-5,279);ctx.lineTo(x-5,820);ctx.moveTo(x+5,279);ctx.lineTo(x+5,820);}arch(760,855);arch(865,945);arch(955,1040);},b12,C.line,1.3);
+  PL([[1040,640],[1040,286],[1054,286],[1054,640]],b12,C.line,1.8);
+  PL([[1040,640],[1770,640]],b12,C.line,2);hatchH(1040,1770,640,b12);
+  S(()=>{ctx.moveTo(1640,640);ctx.lineTo(1640,300);ctx.lineTo(1700,300);ctx.lineTo(1770,640);},b12,C.line,2.2);
+  if(b12>0.02){ctx.save();ctx.globalAlpha=0.4*b12;ctx.fillStyle=C.line;const z=Math.max(1.6,1/cam.s);for(const p of STIP)ctx.fillRect(p[0],p[1],z,z);ctx.restore();}
+  pipe([[1640,566],[1800,566],[1800,606]],10,b12);
+  S(()=>{ctx.rect(1180,668,330,92);ctx.rect(1188,676,314,76);},b13,C.brass,1.5);
+  if(b13>0.02){ctx.save();ctx.globalAlpha=b13;ctx.fillStyle=C.brass;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='500 27px "IBM Plex Mono",ui-monospace,Menlo,monospace';ctx.fillText('GST EXEMPT · $15M',1345,715);ctx.restore();}
+  S(()=>{ctx.moveTo(1100,640);ctx.lineTo(1100,235);ctx.moveTo(1220,640);ctx.lineTo(1220,235);
+    for(let y=235;y<600;y+=135){ctx.moveTo(1100,y);ctx.lineTo(1220,y+135);ctx.moveTo(1220,y);ctx.lineTo(1100,y+135);}},b14,C.line,1.1);
+  mask(1090,104,140,131,b14);
+  tank(1090,120,1230,235,235,b14,.85,false);
+  pipe([[1160,235],[1160,300]],10,b14);
+  pipe([[980,260],[980,90],[1160,90],[1160,106]],4,b14);
+  S(()=>{for(const x of [1030,1090]){ctx.rect(x,58,28,19);ctx.moveTo(x,58);ctx.lineTo(x+14,69);ctx.lineTo(x+28,58);}},b14,C.brass,1.3);
+  mask(1632,236,76,64,b15);
+  S(()=>{ctx.rect(1632,236,76,64);ctx.moveTo(1624,236);ctx.lineTo(1670,206);ctx.lineTo(1716,236);ctx.rect(1642,272,14,28);ctx.moveTo(1696,256);ctx.arc(1686,256,10,0,6.3);},b15,C.line,1.5);
+  if(b15>0.02){const an=-Math.PI/2+Math.sin(t*1.3)*0.7;ctx.save();ctx.globalAlpha=b15;ctx.strokeStyle=C.brass;ctx.lineWidth=1.6/cam.s;ctx.beginPath();ctx.moveTo(1686,256);ctx.lineTo(1686+Math.cos(an)*8,256+Math.sin(an)*8);ctx.stroke();ctx.restore();}
+  pipe([[1700,322],[2252,322]],13,b16);
+  S(()=>{const ys=[[1800,700],[1900,764],[2000,828],[2100,892],[2200,956]];for(const p of ys){ctx.moveTo(p[0],330);ctx.lineTo(p[0],p[1]);}},b16*0.55,C.line,1);
+  S(()=>{for(let x=1880;x<=2240;x+=30){ctx.moveTo(x,314);ctx.lineTo(x,298);ctx.moveTo(x,305);ctx.lineTo(x-6,296);ctx.moveTo(x,305);ctx.lineTo(x+6,296);}},b16,C.brass,1.3);
+  PL(TER,b17,C.line,2);
+  S(()=>{for(let k=0;k<5;k++){const y=700+64*k,x=1862+100*k;ctx.moveTo(x,y);ctx.lineTo(x,y-11);}},b17,C.line,1.6);
+  ctx.restore();
+}
+function over2(t){
+  ctx.save();ctx.translate(0,OY);
+  valve(1160,268,rv(14),true);
+  const b15=rv(15);
+  if(b15>0.02){ctx.save();ctx.globalAlpha=b15;ctx.fillStyle=C.paper;ctx.strokeStyle=C.brass;ctx.lineWidth=1.7/cam.s;ctx.beginPath();ctx.arc(1722,566,16,0,6.3);ctx.fill();ctx.stroke();
+    ctx.beginPath();for(let k=0;k<3;k++){const a=k*Math.PI/3+(reduce?0:t*0.35);ctx.moveTo(1722-Math.cos(a)*16,566-Math.sin(a)*16);ctx.lineTo(1722+Math.cos(a)*16,566+Math.sin(a)*16);}ctx.stroke();ctx.restore();}
+  ctx.restore();
+}
+
+/* ---------- sheet 3: red pencil ---------- */
+const WOB=[];for(let i=0;i<64;i++)WOB.push(rnd());
+function ell(cx,cy,rx,ry,r){
+  if(r<=0.01)return;ctx.save();ctx.strokeStyle=C.pencil;ctx.lineWidth=2/cam.s;ctx.lineCap='round';ctx.lineJoin='round';
+  const ga=ctx.globalAlpha;for(let pass=0;pass<2;pass++){ctx.globalAlpha=ga*(pass?0.45:0.92);ctx.beginPath();const n=64,m=Math.floor(n*1.07*r);
+    for(let i=0;i<=m;i++){const a=-2.3+i/n*Math.PI*2,w=1+(WOB[(i+pass*17)%64]-.5)*0.05+pass*0.035,x=cx+Math.cos(a)*rx*w,y=cy+Math.sin(a)*ry*w;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+    ctx.stroke();}
+  ctx.restore();
+}
+function pencil(){ctx.save();ctx.globalAlpha=1-0.72*rv(20);ell(385,205,140,118,rv(18));ctx.restore();ell(1370,OY+470,410,255,rv(19));ell(150,180,125,128,rv(20));}
+
+/* ---------- labels (fixed pixel size) ---------- */
+const LBL=[];
+const L=(x,y,txt,from,o={})=>LBL.push({x,y:y+(o.s2?OY:0),txt,from,to:o.to||from,al:o.al||'center',c:o.c||C.line,lod:o.lod||'d',maxW:o.maxW||1700,when:o.when||null});
+L(178,100,'SPRING · income',2,{al:'left'});
+L(170,330,'POND · what you own',2);
+L(446,470,'THE FALL LINE',3,{al:'right',c:C.brass});
+L(540,528,'PROBATE COURT',3,{al:'left',c:C.pencil});
+L(610,566,'ON THE PUBLIC RECORD',3,{al:'left',c:C.pencil});
+L(680,604,'3–8% IN COSTS',3,{al:'left',c:C.pencil});
+L(630,690,'CATCH BASIN · revocable living trust',4);
+L(850,512,'CHARTER',5,{c:C.brass});
+L(502,612,'SCHOOL',5,{al:'left',c:C.brass,maxW:900});
+L(502,588,'FIRST HOME',5,{al:'left',c:C.brass,maxW:900});
+L(502,564,'SEED MONEY',5,{al:'left',c:C.brass,maxW:900});
+L(245,62,'PREMIUMS',6);
+L(452,190,'TANK · life insurance',6,{al:'left'});
+L(534,232,'VALVE · opens at death',6,{al:'left',c:C.brass});
+L(272,216,'CASH\nVALUE',6,{al:'right',c:C.brass,when:()=>modeNow==='whole'});
+L(462,118,'EXPIRES',6,{c:C.brass,when:()=>modeNow==='term'});
+L(992,490,'BACK + INTEREST',7,{al:'left'});
+L(1000,551,'BORROWER',7,{al:'left'});
+L(992,612,'LENT ON TERMS',7,{al:'left'});
+L(850,512,'CHARTER',7,{c:C.brass});
+L(250,345,'GEN 1',8,{to:9,lod:'w'});L(810,690,'GEN 2',8,{to:9,lod:'w'});L(1510,1030,'GEN 3',8,{to:9,lod:'w'});L(2075,1370,'GEN 4',8,{to:9,lod:'w'});
+L(630,500,'THE TRUST',8,{to:9,lod:'w',c:C.brass});L(1360,822,'THE TRUST',8,{to:9,lod:'w',c:C.brass});L(2075,1140,'THE TRUST',8,{to:9,lod:'w',c:C.brass});
+L(140,88,'STANDARD OIL',10,{s2:1});
+L(480,244,'THE SOURCE',10,{s2:1,c:C.brass});
+L(900,416,'ESTATE TAX · 40% above $15M',11,{s2:1,c:C.pencil});
+L(1013,546,'TREASURY',11,{s2:1,c:C.pencil});
+L(905,790,'THE REST LANDS OUTRIGHT',11,{s2:1});
+L(880,232,'ONE-WAY IN',12,{s2:1,c:C.brass});
+L(1345,430,'PRINCIPAL STAYS',12,{s2:1});
+L(1800,742,'INCOME OUT',12,{s2:1});
+L(1345,802,'RUNS FOR CENTURIES · SD NV DE AK WY',13,{s2:1,c:C.brass});
+L(1245,172,'THE TRUST OWNS\nTHE POLICY',14,{s2:1,al:'left'});
+L(966,172,'GIFTS WITHIN\n$19,000 / YR',14,{s2:1,al:'right'});
+L(1074,40,'A NOTICE WITH EVERY GIFT',14,{s2:1,c:C.brass});
+L(1670,184,'ROOM 5600 · family office',15,{s2:1});
+L(1722,502,'TRUSTEES WORK\nTHE VALVE',15,{s2:1,c:C.brass});
+L(2050,258,'ROCKEFELLER FOUNDATION · 1913\nBROTHERS FUND · 1940',16,{s2:1,c:C.brass});
+for(let k=0;k<5;k++)L(1820+100*k,724+64*k,'G'+(k+3),17,{s2:1});L(556,112,'COSTS ~10× TERM',18,{al:'left',c:C.pencil});
+L(556,152,'CASH VALUE LAGS 10+ YRS',18,{al:'left',c:C.pencil});
+L(556,192,'LOANS SHRINK THE PAYOUT',18,{al:'left',c:C.pencil});
+L(1370,196,'TOP TAX RATE ABOVE $16,000',19,{s2:1,c:C.pencil});
+L(1370,862,'NO TAKING IT BACK',19,{s2:1,c:C.pencil});
+L(300,66,'NO SPRING, NO WATERFALL',20,{al:'left',c:C.pencil});
+
+function labels(){
+  const fs=wide?12:10.5,lh=fs*1.3;
+  ctx.font='500 '+fs+'px "IBM Plex Mono",ui-monospace,Menlo,monospace';ctx.textBaseline='middle';ctx.textAlign='left';
+  const visW=stageR.w/cam.s;
+  for(const l of LBL){
+    let a=rv(l.from)*(1-rv(l.to+1));if(a<0.03)continue;
+    if(l.when&&!l.when())continue;
+    a*=l.lod==='w'?clamp((visW-1400)/250,0,1):clamp((l.maxW-visW)/250,0,1);if(a<0.03)continue;
+    const sx=(l.x-cam.cx)*cam.s+cam.ox,sy=(l.y-cam.cy)*cam.s+cam.oy;
+    if(sx<-260||sx>W+260||sy<-40||sy>H+40)continue;
+    const lines=l.txt.split('\n');let w=0;for(const s of lines)w=Math.max(w,ctx.measureText(s).width);
+    const x0=l.al==='left'?sx:l.al==='right'?sx-w:sx-w/2,y0=sy-lines.length*lh/2;
+    ctx.globalAlpha=a*0.8;ctx.fillStyle=C.paper;ctx.fillRect(x0-4,y0-1,w+8,lines.length*lh+2);
+    ctx.globalAlpha=a;ctx.fillStyle=l.c;
+    for(let i=0;i<lines.length;i++){const lw=ctx.measureText(lines[i]).width,lx=l.al==='left'?x0:l.al==='right'?x0+w-lw:x0+(w-lw)/2;ctx.fillText(lines[i],lx,y0+lh*(i+.5));}
+  }
+  ctx.globalAlpha=1;
+}
+
+/* ---------- paper ---------- */
+function grid(){
+  const s=cam.s,x0=cam.cx-cam.ox/s,x1=cam.cx+(W-cam.ox)/s,y0=cam.cy-cam.oy/s,y1=cam.cy+(H-cam.oy)/s,st=100;
+  ctx.save();ctx.strokeStyle=C.line;ctx.lineWidth=1/s;
+  for(let x=Math.floor(x0/st)*st;x<x1;x+=st){ctx.globalAlpha=(x%500===0)?0.085:0.04;ctx.beginPath();ctx.moveTo(x,y0);ctx.lineTo(x,y1);ctx.stroke();}
+  for(let y=Math.floor(y0/st)*st;y<y1;y+=st){ctx.globalAlpha=(y%500===0)?0.085:0.04;ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x1,y);ctx.stroke();}
+  ctx.restore();
+}
+function borders(){
+  ctx.save();ctx.strokeStyle=C.line;ctx.lineWidth=1.2/cam.s;ctx.globalAlpha=.3;ctx.strokeRect(30,30,2270,1440);ctx.strokeRect(30,OY+30,2270,1120);
+  ctx.globalAlpha=.42;ctx.fillStyle=C.line;ctx.font='500 30px "IBM Plex Mono",ui-monospace,Menlo,monospace';ctx.textBaseline='alphabetic';ctx.textAlign='left';
+  ctx.fillText('SHEET 1 · ONE HOUSEHOLD',56,1446);ctx.fillText('SHEET 2 · THE ESTATE',56,OY+1126);ctx.restore();
+}
+
+/* ---------- state ---------- */
+function update(dt){
+  heroK=clamp(1-pe,0,1);
+  modeNow=(stepIdx===6||stepIdx===7)?tankMode:'whole';
+  const i=Math.min(Math.floor(pe),F.length-1),f=pe-i,A=F[i],B=F[Math.min(i+1,F.length-1)];
+  const fw=Math.exp(lerp(Math.log(A[2]-A[0]),Math.log(B[2]-B[0]),f)),fh=Math.exp(lerp(Math.log(A[3]-A[1]),Math.log(B[3]-B[1]),f));
+  const tcx=lerp((A[0]+A[2])/2,(B[0]+B[2])/2,f),tcy=lerp((A[1]+A[3])/2,(B[1]+B[3])/2,f),ts=Math.min(stageR.w/fw,stageR.h/fh);
+  const k=(reduce||!cam.init)?1:1-Math.exp(-dt*9);
+  cam.s=lerp(cam.s,ts,k);cam.cx=lerp(cam.cx,tcx,k);cam.cy=lerp(cam.cy,tcy,k);cam.ox=stageR.x+stageR.w/2;cam.oy=stageR.y+stageR.h/2;cam.init=true;
+  if(stepIdx===8||stepIdx===9){if(!surgeOn){surgeOn=true;surge=-0.6;}else surge+=dt;if(reduce)surge=20;}
+  else if(stepIdx<8)surgeOn=false;
+  const T={pond:.9,t1:.85,b2:0,t2:.85,b3:0,t3:.85,b4:0,res:rv(12)>0.3?.84:0};
+  if(heroK>0.5)T.b2=.6;else{T.b2=rv(4)>0.5?.42:0;if(stepIdx>=7)T.b2=.5;}
+  if(stepIdx===8||stepIdx===9){const s=surge;
+    if(s>0.3){T.t1=.05;T.b2=.94;}if(s>3.0)T.b3=.9;if(s>3.8)T.t2=.05;if(s>7.0)T.b4=.88;if(s>7.5)T.t3=.05;}
+  else if(stepIdx>=10){T.b2=.55;T.b3=.45;T.b4=.35;}
+  const q=reduce?1:clamp(dt*1.3,0,1),q2=reduce?1:clamp(dt*2.2,0,1);
+  for(const key in T)lv[key]+=(T[key]-lv[key])*((key[0]==='t')?q2:q);
+  if(!reduce){
+    emit(sp1,474,636,rv(3)*(1-rv(4)),dt);stepSplash(sp1,dt,640);
+    emit(sp2,776,OY+816,rv(11)*(1-rv(12)),dt);stepSplash(sp2,dt,OY+820);
+  }
+}
+function render(t){
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.globalAlpha=1;ctx.fillStyle=C.paper;ctx.fillRect(0,0,W,H);
+  const s=cam.s;ctx.setTransform(s*DPR,0,0,s*DPR,(cam.ox-cam.cx*s)*DPR,(cam.oy-cam.cy*s)*DPR);
+  grid();borders();sheet1(t);sheet2(t);drawFlows(reduce?3.3:t);
+  drawSplash(sp1,C.pencil);drawSplash(sp2,C.pencil);
+  over1();over2(t);pencil();
+  ctx.setTransform(DPR,0,0,DPR,0,0);labels();
+}
+function frame(now){
+  const t=(now-T0)/1000,dt=Math.min(0.05,Math.max(0,t-tNow));tNow=t;
+  if(stageEl.getBoundingClientRect().bottom>-20){update(dt);render(t);}
+  if(!reduce)requestAnimationFrame(frame);
+}
+const SHEETS=['Fall Line · review draft','Sheet 1 / 3 · One household','Sheet 2 / 3 · The estate','Sheet 3 / 3 · Inspection'];
+function onScroll(){
+  const ref=H*(wide?0.5:0.74),cs=cards.map(c=>{const r=c.getBoundingClientRect();return{b:r.bottom,c:(r.top+r.bottom)/2};});
+  let i=0;for(let k=0;k<cs.length;k++)if(cs[k].c<=ref)i=k;
+  let f=0;if(i<cs.length-1&&cs[i].c<=ref)f=(ref-cs[i].c)/Math.max(1,cs[i+1].c-cs[i].c);
+  pe=i+smooth(clamp((f-0.22)/0.56,0,1));stepIdx=Math.round(pe);
+  for(let k=0;k<cards.length;k++){const o=wide?(k===stepIdx?1:0.36):clamp((cs[k].b-H*0.5)/(H*0.2),0,1);cards[k].style.opacity=o;cards[k].style.pointerEvents=o<0.15?'none':'auto';}
+  const sh=stepIdx<2?0:stepIdx<=9?1:stepIdx<=17?2:3;
+  tagL.textContent=SHEETS[sh];tagR.textContent=stepEls[stepIdx].dataset.num||'';
+  if(reduce)requestAnimationFrame(frame);
+}
+function resize(){
+  const r=stageEl.getBoundingClientRect();W=r.width;H=r.height;DPR=Math.min(window.devicePixelRatio||1,2);
+  cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);wide=W>=900;
+  if(wide){stageR.x=W*0.44;stageR.y=60;stageR.w=W*0.56-32;stageR.h=H-104;}
+  else{stageR.x=12;stageR.y=40;stageR.w=W-24;stageR.h=H*0.5-48;}
+  cam.init=false;onScroll();
+}
+function setMode(m){
+  tankMode=m;$('#mode-term').setAttribute('aria-pressed',m==='term');$('#mode-whole').setAttribute('aria-pressed',m==='whole');
+  $('#txt-term').hidden=m!=='term';$('#txt-whole').hidden=m!=='whole';onScroll();
+}
+$('#mode-term').addEventListener('click',()=>setMode('term'));
+$('#mode-whole').addEventListener('click',()=>setMode('whole'));
+$('#valve').addEventListener('click',()=>{surgeOn=true;surge=-1.5;});
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a.fn');if(!a)return;e.preventDefault();
+  const el=document.getElementById(a.getAttribute('href').slice(1));if(!el)return;
+  el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),1800);
+});
+addEventListener('scroll',onScroll,{passive:true});
+addEventListener('resize',resize);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(resize);
+resize();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

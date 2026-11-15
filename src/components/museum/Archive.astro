@@ -362,10 +362,17 @@ const firstBay = bays[0];
     background: color-mix(in srgb, var(--accent) 70%, #f4e6c4);
     box-shadow: 0 1px #00000059;
   }
+  /* The number card. A two-digit number ("No. 17") is 3.72em of the mono,
+     which fits the card on a full-width box and ran out of it once the
+     longest shelf (Seen, 14) or a phone brought the boxes down to their
+     narrowest: the card read "No. 1" for No. 10 to No. 17. On a narrow box
+     the card takes more of the box's width and its type comes down a
+     little (9px to about 8.4px at the narrowest), so every number shows.
+     On a full-width box nothing changes. */
   .arc-box__card {
     display: grid;
     place-items: center;
-    width: calc(100% - 9px);
+    width: min(calc(100% - 4px), 2.3125rem);
     min-height: 1.25rem;
     margin-top: 0.55rem;
     padding: 1px 0 0;
@@ -376,7 +383,7 @@ const firstBay = bays[0];
       0 0 0 1px #00000052,
       0 1px 2px #0006;
     font-family: var(--font-mono);
-    font-size: 0.5625rem;
+    font-size: min(0.5625rem, calc((var(--box-w) - 6px) / 3.8));
     letter-spacing: 0.02em;
     line-height: 1;
     white-space: nowrap;
