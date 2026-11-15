@@ -1,6 +1,8 @@
 ---
 /**
- * The homepage: a walk through a small museum. A foyer, the featured work
+ * The homepage: a walk through a small museum. A foyer, the threshold
+ * (Threshold: "What brought you here?", Janus and six doors, #welcome),
+ * the featured work
  * now on view (FeatureMimics: Mimics & Mythmakers), three numbered rooms
  * divided by Greek meander keylines (the Treasury, the Gallery kept as the
  * Archive, the Reading Room), and a colophon. The previous homepage lives
@@ -17,6 +19,7 @@
 import Museum from '../layouts/Museum.astro';
 import Meander from '../components/museum/Meander.astro';
 import Foyer from '../components/museum/rooms/Foyer.astro';
+import Threshold from '../components/museum/rooms/Threshold.astro';
 import FeatureMimics from '../components/museum/rooms/FeatureMimics.astro';
 import RoomBackGold from '../components/museum/rooms/RoomBackGold.astro';
 import RoomGallery from '../components/museum/rooms/RoomGallery.astro';
@@ -26,6 +29,7 @@ import Colophon from '../components/museum/Colophon.astro';
 
 <Museum home>
   <Foyer />
+  <Threshold />
   <FeatureMimics />
   <Meander mark="I" />
   <RoomBackGold />
