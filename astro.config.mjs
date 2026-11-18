@@ -19,7 +19,8 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'ignore',
   // A short address for the Threshold ("What brought you here?"), for bios
-  // and cards: /welcome lands on the homepage at #welcome.
+  // and cards: /welcome lands on the homepage at #welcome, which opens the
+  // Threshold's popup.
   redirects: {
     '/welcome': '/#welcome',
   },

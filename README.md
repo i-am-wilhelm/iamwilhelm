@@ -21,10 +21,9 @@ custom domain in the Cloudflare dashboard.
 
 ## The museum (public homepage)
 
-The homepage is a walk through a small museum: a foyer, the threshold
-("What brought you here?"), three numbered rooms
+The homepage is a walk through a small museum: a foyer, three numbered rooms
 (the Treasury, the Gallery, Writings) divided by Greek meander keylines, and a
-colophon. Warm ivory walls, charcoal
+colophon, with the threshold ("What brought you here?") as a popup over it. Warm ivory walls, charcoal
 ink, gilt as the one shared accent, paper grain from an SVG noise tile, and
 text that settles into place on scroll (same 7/8 meter as the poem pages).
 No WebGL, no dithering, no audio on these pages.
@@ -35,8 +34,16 @@ No WebGL, no dithering, no audio on these pages.
   commissions page for scrollies), `/scrollbrief` (Room V, the studio page),
   `/what-is-a-scrolly` (Room IV, the glossary), the plain-text twins, and 404.
 - The Threshold (`rooms/Threshold.astro`, `#welcome`; `/welcome` redirects
-  there, set in `astro.config.mjs`): the doorway between the Foyer and Now
-  on view, and the site's wayfinding. It asks "What brought you here?" and
+  there, set in `astro.config.mjs`): the doorkeeper and the site's
+  wayfinding, shown as a popup (a modal `<dialog>`; a bottom sheet on a
+  phone) and kept out of the page's flow. It greets a new arrival by itself
+  once per browser session, a moment after the Foyer settles (`GREET_MS` in
+  the component; it stays quiet if the visitor arrived at a room's anchor
+  or is already down the page), and it opens from every link to `#welcome`:
+  the Foyer's "Begin the tour", the footer's "The front door", and an
+  arrival at `/#welcome` from any other page. Close, Escape, a click on the
+  veil, or a door closes it. Without script it falls back into the page as
+  a plain section after the Foyer. It asks "What brought you here?" and
   offers six answers, three on each side of a Janus coin, each a door to
   the room that fits it. The elder's side is the work done for others
   (BackGold, Scrollbrief, Commissions); the youth's side is the work made
@@ -47,8 +54,9 @@ No WebGL, no dithering, no audio on these pages.
   the face that looks toward it. The last door taken is kept in
   localStorage (`iw:threshold`, this browser only) and offered back in one
   line on the next visit. To add or move a door, edit the arrays at the top
-  of the component; a door's `id` is what the page remembers. The Foyer's
-  "Begin the tour" leads here.
+  of the component; a door's `id` is what the page remembers. To stop the
+  popup greeting on its own, remove the `GREET_MS` timer at the foot of the
+  component's script; the links still open it.
 - The coin (`Janus.astro`, geometry in `janus.ts`): a Roman as in hairline
   gilt, Janus on the obverse and a ship's prow on the reverse, with 365
   marks on the rim. It is a button: it turns over, and the reverse's

@@ -1,9 +1,20 @@
 ---
 /**
- * The Threshold (#welcome): the doorway between the Foyer and the rooms,
- * and the one place the museum asks the visitor a question. "What brought
- * you here?" has six answers, three on each side of Janus, and each answer
- * is a door to the room that fits it.
+ * The Threshold (#welcome): the doorkeeper, and the one place the museum
+ * asks the visitor a question. "What brought you here?" has six answers,
+ * three on each side of Janus, and each answer is a door to the room that
+ * fits it.
+ *
+ * It is a popup (a modal <dialog>), kept out of the page's flow. It opens
+ *   - by itself, once per browser session, a moment after the Foyer has
+ *     settled (GREET_MS below), unless the visitor arrived at a room's
+ *     anchor or has already started down the page;
+ *   - from any link to #welcome on the homepage: the Foyer's "Begin the
+ *     tour" and the footer's "The front door";
+ *   - on arrival at /#welcome (the foot of every scroll page, the footer
+ *     on every other page, and the /welcome short address).
+ * It closes on its Close button, Escape, a click on the veil, or a door.
+ * On a phone it is a bottom sheet, like the Archive's reading table.
  *
  * The plan follows the couplet at its foot (Ovid, Fasti 1.135-136): every
  * door has two fronts, one looking out at the people and one looking in at
@@ -17,7 +28,9 @@
  *
  * The page remembers the last door taken, in localStorage and nowhere
  * else, and on the next visit offers it back in one line: the face that
- * looks behind. Nothing here needs script to work; every door is a link.
+ * looks behind. Without script the popup is laid back into the page as a
+ * plain section between the Foyer and Now on view (the <noscript> rules at
+ * the foot of the markup), so every door is still a link.
  *
  * To change where an answer leads, edit the arrays below. `id` is what the
  * page remembers, so keep it stable once it has shipped.
@@ -128,16 +141,20 @@ const wings = [
 ];
 ---
 
-<section id="welcome" class="thr" aria-labelledby="welcome-title" data-threshold>
-  <div class="thr__wayfinding wrap" aria-hidden="true">
-    <span class="thr__label">The Threshold</span>
-    <span class="thr__rule"></span>
-    <JanusMark size={30} class="thr__mark" />
+<dialog id="welcome" class="thr" aria-labelledby="welcome-title" data-threshold>
+  <div class="thr__bar">
+    <JanusMark size={26} class="thr__mark" />
+    <span class="thr__label" aria-hidden="true">The Threshold</span>
+    <span class="thr__rule" aria-hidden="true"></span>
+    <button class="thr__close" type="button" data-thr-close>
+      <span class="smallcaps">Close</span>
+      <span class="thr__x" aria-hidden="true"></span>
+    </button>
   </div>
 
-  <div class="thr__inner wrap">
-    <header class="thr__head" data-reveal>
-      <h2 class="thr__title display" id="welcome-title">What brought you here?</h2>
+  <div class="thr__scroll" data-thr-scroll>
+    <header class="thr__head">
+      <h2 class="thr__title display" id="welcome-title" tabindex="-1" data-thr-title>What brought you here?</h2>
       <p class="thr__lede lede">
         The doorkeeper has two faces. One looks out at the work to be done, the other in at the hearth. Give him
         your answer and he will point.
@@ -151,7 +168,7 @@ const wings = [
     <nav class="thr__plan" aria-labelledby="welcome-title">
       {
         wings.map((wing) => (
-          <div class:list={['thr__wing', `thr__wing--${wing.key}`]} data-reveal>
+          <div class:list={['thr__wing', `thr__wing--${wing.key}`]}>
             <p class="thr__wing-head" id={`thr-${wing.key}`}>
               <span class="thr__wing-title smallcaps">{wing.title}</span>
               <span class="thr__wing-tag mono" lang="la" title={wing.gloss}>
@@ -183,18 +200,18 @@ const wings = [
         ))
       }
 
-      <div class="thr__coin" data-reveal>
+      <div class="thr__coin">
         <Janus />
       </div>
 
-      <p class="thr__between" data-reveal>
+      <p class="thr__between">
         <span class="thr__between-k smallcaps">Neither face?</span>
         <a class="thr__between-a" href="#now-on-view" data-door="looking" data-again="a look around">Only looking</a>
         <a class="thr__between-a" href="#contact" data-door="michael" data-again="Michael">Looking for Michael</a>
       </p>
     </nav>
 
-    <figure class="thr__epigraph" data-reveal>
+    <figure class="thr__epigraph">
       <blockquote lang="la">
         <p>omnis habet geminas, hinc atque hinc, ianua frontes,</p>
         <p>e quibus haec populum spectat, at illa Larem.</p>
@@ -207,63 +224,346 @@ const wings = [
       <figcaption class="mono">Janus, to Ovid &middot; Fasti 1.135&ndash;136</figcaption>
     </figure>
   </div>
-</section>
+</dialog>
+
+{/* Without script the popup can never open, so it is laid back into the
+    page as a plain section and #welcome is an ordinary anchor again. */}
+<noscript>
+  <style is:inline>
+    #welcome.thr {
+      display: block;
+      position: relative;
+      inset: auto;
+      width: auto;
+      max-width: none;
+      height: auto;
+      max-height: none;
+      margin: 0;
+      padding-block: 3rem 4rem;
+      border: 0;
+      box-shadow: none;
+      overflow: visible;
+      background: linear-gradient(180deg, transparent, rgba(227, 217, 198, 0.55) 12%, rgba(227, 217, 198, 0.55) 88%, transparent);
+    }
+    #welcome.thr::before,
+    #welcome.thr .thr__close {
+      display: none;
+    }
+    #welcome.thr .thr__bar,
+    #welcome.thr .thr__scroll {
+      max-width: var(--page);
+      margin-inline: auto;
+      overflow: visible;
+    }
+  </style>
+</noscript>
 
 <script>
-  /* The face that looks behind: remember the last door taken (in this
-     browser only) and offer it back on the next visit. */
+  /*
+   * The Threshold is a popup. This opens and closes it, and keeps the
+   * face that looks behind: the last door taken is remembered (in this
+   * browser only) and offered back on the next visit.
+   */
   const KEY = 'iw:threshold';
-  const root = document.querySelector<HTMLElement>('[data-threshold]');
-  if (root) {
-    const doors = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-door]'));
-    const again = root.querySelector<HTMLElement>('[data-thr-again]');
+  /** Set once the popup has opened in this browser session. */
+  const GREETED = 'iw:threshold-greeted';
+  /** How long after load the doorkeeper waits before greeting a new arrival. */
+  const GREET_MS = 1400;
+  /** Matches the is-leaving animation below. */
+  const LEAVE_MS = 240;
+
+  const root = document.documentElement;
+  const dlg = document.querySelector<HTMLDialogElement>('[data-threshold]');
+
+  if (dlg) {
+    const doors = Array.from(dlg.querySelectorAll<HTMLAnchorElement>('[data-door]'));
+    const again = dlg.querySelector<HTMLElement>('[data-thr-again]');
     const what = again?.querySelector<HTMLElement>('[data-thr-what]');
     const same = again?.querySelector<HTMLAnchorElement>('[data-thr-same]');
+
+    /* The face that looks behind. */
     try {
       const id = localStorage.getItem(KEY);
       const last = id ? doors.find((d) => d.dataset.door === id) : undefined;
       if (last && again && what && same) {
         what.textContent = last.dataset.again ?? '';
         same.href = last.getAttribute('href') ?? '#welcome';
+        same.dataset.door = last.dataset.door;
         again.hidden = false;
         last.classList.add('is-last');
       }
     } catch {
       /* Storage is closed to this page. The doors still open. */
     }
-    for (const door of doors) {
-      door.addEventListener('click', () => {
-        try {
-          localStorage.setItem(KEY, door.dataset.door ?? '');
-        } catch {
-          /* Nothing to remember with. */
+  }
+
+  if (dlg && typeof dlg.showModal === 'function') {
+    const scroller = dlg.querySelector<HTMLElement>('[data-thr-scroll]');
+    const title = dlg.querySelector<HTMLElement>('[data-thr-title]');
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+    let leaving = 0;
+
+    const show = () => {
+      if (dlg.open) return;
+      dlg.classList.remove('is-leaving');
+      root.style.setProperty('--thr-sbw', `${Math.max(0, window.innerWidth - root.clientWidth)}px`);
+      root.classList.add('thr-locked');
+      dlg.showModal();
+      /* The question is read first; Tab then moves on to Close and the doors. */
+      title?.focus({ preventScroll: true });
+      if (scroller) scroller.scrollTop = 0;
+      try {
+        sessionStorage.setItem(GREETED, '1');
+      } catch {
+        /* Nothing to remember with. */
+      }
+    };
+
+    const closeNow = () => {
+      window.clearTimeout(leaving);
+      leaving = 0;
+      dlg.classList.remove('is-leaving');
+      if (dlg.open) dlg.close();
+      root.classList.remove('thr-locked');
+    };
+
+    const hide = () => {
+      if (!dlg.open || leaving) return;
+      if (still.matches) return closeNow();
+      dlg.classList.add('is-leaving');
+      leaving = window.setTimeout(closeNow, LEAVE_MS);
+    };
+
+    /** A plain left click, with nothing held that would open a new tab. */
+    const plain = (e: MouseEvent) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+    /** A link whose target is on this page (#room), as opposed to another page. */
+    const here = (a: HTMLAnchorElement) => {
+      const url = new URL(a.href, location.href);
+      return url.origin === location.origin && url.pathname === location.pathname && url.hash.length > 1
+        ? url.hash
+        : '';
+    };
+
+    dlg.querySelector('[data-thr-close]')?.addEventListener('click', hide);
+    /* Escape: leave the same way the Close button does. */
+    dlg.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      hide();
+    });
+    dlg.addEventListener('close', () => root.classList.remove('thr-locked'));
+
+    dlg.addEventListener('click', (e) => {
+      const target = e.target as Element;
+      const link = target.closest<HTMLAnchorElement>('a[href]');
+      if (link) {
+        if (link.dataset.door) {
+          try {
+            localStorage.setItem(KEY, link.dataset.door);
+          } catch {
+            /* Nothing to remember with. */
+          }
         }
-      });
+        /* A door to a room on this page: step aside at once, so the
+           browser's own jump to the room is what moves the page and the
+           keyboard's place in it. Doors to other pages just leave. */
+        if (plain(e) && here(link)) closeNow();
+        return;
+      }
+      /* A click on the veil (outside the panel) closes it. */
+      if (target === dlg) {
+        const r = dlg.getBoundingClientRect();
+        const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+        if (!inside) hide();
+      }
+    });
+
+    /* Every link to #welcome on this page opens the popup. */
+    document.addEventListener('click', (e) => {
+      if (!plain(e) || e.defaultPrevented) return;
+      const link = (e.target as Element).closest?.<HTMLAnchorElement>('a[href]');
+      if (!link || dlg.contains(link) || here(link) !== '#welcome') return;
+      e.preventDefault();
+      show();
+    });
+
+    /* Arriving at /#welcome (or /welcome) opens it; the address is then
+       tidied so a reload or a copied link is the plain homepage. */
+    const fromHash = () => {
+      if (location.hash !== '#welcome') return false;
+      show();
+      history.replaceState(history.state, '', location.pathname + location.search);
+      return true;
+    };
+    addEventListener('hashchange', fromHash);
+
+    if (!fromHash() && !location.hash) {
+      let greeted = false;
+      try {
+        greeted = sessionStorage.getItem(GREETED) === '1';
+      } catch {
+        /* No session memory: greet on every arrival. */
+      }
+      if (!greeted) {
+        window.setTimeout(() => {
+          /* Already down the page, or busy with another popup: let them be. */
+          if (window.scrollY > window.innerHeight * 0.5) return;
+          if (document.querySelector('dialog[open]')) return;
+          show();
+        }, GREET_MS);
+      }
     }
   }
 </script>
 
 <style>
+  /* ---- The panel ---------------------------------------------------- */
   .thr {
     --room-accent: var(--gilt-ink);
-    position: relative;
-    padding-block: clamp(3rem, 2.25rem + 3.5vw, 5.5rem) clamp(3.5rem, 2.5rem + 5vw, 7.5rem);
-    /* The deeper wall tone, so the doorway reads as its own space between
-       the Foyer and what is on view. */
-    background: linear-gradient(
-      180deg,
-      transparent,
-      rgba(227, 217, 198, 0.55) 12%,
-      rgba(227, 217, 198, 0.55) 88%,
-      transparent
-    );
+    --thr-pad: clamp(1.25rem, 0.6rem + 2.4vw, 2.75rem);
+    /* One thirty-second note at the site tempo: the popup's parts arrive
+       on the same 7/8 count as the page's reveals, twice as fast. */
+    --thr-step: calc(var(--beat) / 8);
+    position: fixed;
+    inset: 0;
+    width: min(71rem, calc(100vw - 2rem));
+    max-width: none;
+    height: fit-content;
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--gilt);
+    background:
+      radial-gradient(120% 70% at 50% 0%, rgba(255, 252, 244, 0.9), transparent 70%),
+      var(--wall);
+    color: var(--ink);
+    overflow: hidden;
+    box-shadow:
+      0 50px 90px -40px rgba(20, 14, 6, 0.7),
+      0 18px 40px -22px rgba(20, 14, 6, 0.45);
   }
-  .thr__wayfinding {
+  /* Closed means gone, stated here as well so a browser that does not
+     know <dialog> cannot leave the panel stuck on screen. */
+  .thr:not([open]) {
+    display: none;
+  }
+  .thr[open] {
+    display: flex;
+    flex-direction: column;
+    animation: thr-rise calc(var(--beat) * 0.9) var(--ease-settle) both;
+  }
+  /* A second gilt hairline inside the first, like the mount of a label. */
+  .thr::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid color-mix(in srgb, var(--gilt) 38%, transparent);
+    pointer-events: none;
+  }
+  .thr::backdrop {
+    background: #18120a99;
+  }
+  .thr[open]::backdrop {
+    animation: thr-dim calc(var(--beat) * 0.9) ease both;
+  }
+  .thr.is-leaving {
+    animation: thr-leave 0.24s ease-in both;
+  }
+  .thr.is-leaving::backdrop {
+    animation: thr-dim 0.24s ease reverse both;
+  }
+  /* The page behind holds still while the popup is up. The scrollbar's
+     width (measured in the script) is padded back in, so nothing shifts
+     sideways when it goes. */
+  :global(html.thr-locked) {
+    overflow: hidden;
+    padding-right: var(--thr-sbw, 0px);
+  }
+
+  @keyframes thr-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes thr-leave {
+    to {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+  }
+  @keyframes thr-up {
+    from {
+      transform: translate3d(0, 100%, 0);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes thr-down {
+    to {
+      transform: translate3d(0, 100%, 0);
+    }
+  }
+  @keyframes thr-dim {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes thr-settle {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Each part settles in turn: 2, 2, 3 steps apart, then again. */
+  .thr[open] :is(.thr__head, .thr__coin, .thr__wing, .thr__between, .thr__epigraph) {
+    animation: thr-settle calc(var(--beat) * 1.1) var(--ease-settle) both;
+    animation-delay: calc(var(--thr-step) * var(--thr-at, 0));
+  }
+  .thr__head {
+    --thr-at: 1;
+  }
+  .thr__coin {
+    --thr-at: 3;
+  }
+  .thr__wing--out {
+    --thr-at: 5;
+  }
+  .thr__wing--in {
+    --thr-at: 8;
+  }
+  .thr__between {
+    --thr-at: 10;
+  }
+  .thr__epigraph {
+    --thr-at: 12;
+  }
+
+  /* ---- The bar: where you are, and the way out ----------------------- */
+  .thr__bar {
+    flex: none;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: clamp(1.75rem, 1.4rem + 1.4vw, 2.75rem);
+    gap: 0.9rem;
+    padding: 0.85rem calc(var(--thr-pad) - 0.5rem) 0 var(--thr-pad);
     color: var(--room-accent);
+  }
+  .thr :global(.thr__mark) {
+    flex: none;
+    color: var(--gilt-ink);
   }
   .thr__label {
     font-family: var(--font-display);
@@ -279,24 +579,78 @@ const wings = [
     background: linear-gradient(90deg, var(--gilt), transparent);
     opacity: 0.7;
   }
-  .thr :global(.thr__mark) {
+  .thr__close {
     flex: none;
-    color: var(--gilt-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    padding: 0 0.5rem;
+    border: 0;
+    background: none;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: color 300ms ease;
+  }
+  .thr__close:hover,
+  .thr__close:focus-visible {
+    color: var(--ink);
+  }
+  .thr__x {
+    position: relative;
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+  .thr__x::before,
+  .thr__x::after {
+    content: '';
+    position: absolute;
+    inset: 50% -12% auto;
+    height: 1px;
+    background: currentColor;
+    transform: rotate(45deg);
+    transition: transform 500ms var(--ease-settle);
+  }
+  .thr__x::after {
+    transform: rotate(-45deg);
+  }
+  .thr__close:hover .thr__x::before {
+    transform: rotate(135deg);
+  }
+  .thr__close:hover .thr__x::after {
+    transform: rotate(45deg);
+  }
+
+  /* ---- The body: scrolls inside the panel when the window is short --- */
+  .thr__scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(0.5rem, 0.2rem + 1vw, 1.25rem) var(--thr-pad) clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
   }
 
   .thr__head {
     display: grid;
     justify-items: center;
-    gap: clamp(0.9rem, 0.7rem + 0.6vw, 1.4rem);
-    margin-bottom: clamp(2rem, 1.5rem + 2.2vw, 3.5rem);
+    gap: clamp(0.6rem, 0.45rem + 0.5vw, 1rem);
+    margin-bottom: clamp(1.4rem, 1rem + 1.4vw, 2.25rem);
     text-align: center;
   }
   .thr__title {
-    font-size: clamp(2.4rem, 1.5rem + 4.2vw, 4.8rem);
+    font-size: clamp(2.1rem, 1.35rem + 3vw, 3.75rem);
     color: var(--ink);
   }
+  /* The title takes focus when the popup opens so it is read first; it is
+     not a control, so it wears no ring. */
+  .thr__title:focus {
+    outline: none;
+  }
   .thr__lede {
-    max-width: 40rem;
+    max-width: 38rem;
+    font-size: clamp(1.0625rem, 0.98rem + 0.4vw, 1.25rem);
     text-wrap: balance;
   }
   .thr__again {
@@ -313,12 +667,12 @@ const wings = [
   /* The plan: a wing either side of the coin, each face toward its own. */
   .thr__plan {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(12rem, 8rem + 10vw, 17rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) clamp(10.5rem, 6.5rem + 9vw, 14.5rem) minmax(0, 1fr);
     grid-template-areas:
       'out coin in'
       'out between in';
-    column-gap: clamp(1.5rem, 0.25rem + 3.5vw, 4rem);
-    row-gap: 1.1rem;
+    column-gap: clamp(1.25rem, 0.25rem + 3vw, 3.25rem);
+    row-gap: 0.75rem;
     align-items: start;
   }
   .thr__wing--out {
@@ -342,7 +696,7 @@ const wings = [
     flex-wrap: wrap;
     align-items: baseline;
     gap: 0.1rem 0.8rem;
-    margin-bottom: 0.9rem;
+    margin-bottom: 0.7rem;
   }
   .thr__wing--out .thr__wing-head {
     flex-direction: row-reverse;
@@ -378,8 +732,8 @@ const wings = [
   .door {
     position: relative;
     display: grid;
-    gap: 0.25rem;
-    padding: clamp(0.85rem, 0.7rem + 0.5vw, 1.2rem) 0 clamp(0.95rem, 0.8rem + 0.5vw, 1.3rem);
+    gap: 0.15rem;
+    padding: clamp(0.6rem, 0.5rem + 0.35vw, 0.9rem) 0 clamp(0.7rem, 0.6rem + 0.35vw, 1rem);
     border-top: 1px solid var(--rule);
     color: inherit;
     text-decoration: none;
@@ -406,7 +760,7 @@ const wings = [
     font-family: var(--font-display);
     font-style: italic;
     font-weight: 400;
-    font-size: clamp(1.45rem, 1.15rem + 1.1vw, 2rem);
+    font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.8rem);
     line-height: 1.15;
     color: var(--ink);
     text-wrap: balance;
@@ -434,8 +788,8 @@ const wings = [
   }
   .door__gloss {
     color: var(--ink-soft);
-    font-size: 0.98rem;
-    line-height: 1.4;
+    font-size: 0.95rem;
+    line-height: 1.35;
     text-wrap: pretty;
   }
   /* The door taken last time: one gilt point beside its answer. */
@@ -477,7 +831,7 @@ const wings = [
     padding-inline: 0.5rem;
     font-family: var(--font-display);
     font-style: italic;
-    font-size: clamp(1.2rem, 1.1rem + 0.4vw, 1.4rem);
+    font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
     color: var(--ink-soft);
     text-decoration: underline;
     text-decoration-color: color-mix(in srgb, var(--gilt) 70%, transparent);
@@ -488,7 +842,7 @@ const wings = [
       text-decoration-color 300ms ease;
   }
   .thr__between-a + .thr__between-a {
-    margin-top: -0.5rem;
+    margin-top: -0.6rem;
   }
   .thr__between-a:hover,
   .thr__between-a:focus-visible {
@@ -499,30 +853,79 @@ const wings = [
   .thr__epigraph {
     display: grid;
     justify-items: center;
-    gap: 0.7rem;
-    margin-top: clamp(2.5rem, 2rem + 3vw, 5rem);
+    gap: 0.35rem;
+    margin-top: clamp(1.25rem, 0.9rem + 1.4vw, 2.25rem);
     text-align: center;
   }
   .thr__epigraph blockquote {
     font-family: var(--font-display);
     font-style: italic;
-    font-size: clamp(1.15rem, 1.05rem + 0.5vw, 1.45rem);
-    line-height: 1.35;
+    font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.25rem);
+    line-height: 1.3;
     color: var(--ink);
   }
   .thr__gloss {
     max-width: 30rem;
     color: var(--ink-soft);
-    font-size: 0.98rem;
-    line-height: 1.45;
+    font-size: 0.92rem;
+    line-height: 1.4;
     text-wrap: balance;
   }
   .thr__epigraph figcaption {
     color: var(--ink-faint);
   }
 
-  /* Between phone and desktop the wings are narrow: each heading stacks
-     its Latin under its title, so both lists start on the same line. */
+  /* Short windows (most laptops), in three trims, so the six doors stay
+     in view without scrolling: first the couplet lets its gloss go, then
+     the couplet goes, then the type and the doors draw in. */
+  @media (min-width: 621px) and (max-height: 820px) {
+    .thr__gloss {
+      display: none;
+    }
+  }
+  @media (min-width: 861px) and (max-height: 770px) {
+    .thr__epigraph {
+      display: none;
+    }
+    .thr__head {
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .thr__title {
+      font-size: clamp(2rem, 1.2rem + 2.4vw, 3rem);
+    }
+  }
+  @media (min-width: 861px) and (max-height: 690px) {
+    .thr__bar {
+      padding-top: 0.5rem;
+    }
+    .thr__scroll {
+      padding-top: 0.25rem;
+      padding-bottom: 1.25rem;
+    }
+    .thr__head {
+      margin-bottom: 0.9rem;
+    }
+    .thr__title {
+      font-size: 2.3rem;
+    }
+    .thr__lede {
+      max-width: 46rem;
+      font-size: 1.0625rem;
+    }
+    .thr__plan {
+      grid-template-columns: minmax(0, 1fr) 10.5rem minmax(0, 1fr);
+    }
+    .door {
+      padding: 0.4rem 0 0.5rem;
+    }
+    .door__answer {
+      font-size: 1.4rem;
+    }
+  }
+
+  /* Narrower panels: each heading stacks its Latin under its title, so
+     both lists start on the same line. */
   @media (min-width: 861px) and (max-width: 1080px) {
     .thr__wing-head,
     .thr__wing--out .thr__wing-head {
@@ -538,20 +941,19 @@ const wings = [
     }
   }
 
-  /* Narrow screens: the coin first, then each wing in turn, read down the page. */
+  /* Tablet: the coin on top, a wing either side beneath it. */
   @media (max-width: 860px) {
     .thr__plan {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       grid-template-areas:
-        'coin'
-        'out'
-        'in'
-        'between';
-      row-gap: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
+        'coin coin'
+        'out in'
+        'between between';
+      row-gap: clamp(1.1rem, 0.8rem + 1.4vw, 1.75rem);
     }
-    .thr__coin {
-      justify-self: center;
-      width: min(13.5rem, 62vw);
+    /* The coin draws in; its caption keeps the full width. */
+    .thr__coin :global(.coin__turn) {
+      width: min(9.5rem, 38vw);
     }
     .thr__wing--out {
       text-align: left;
@@ -559,8 +961,16 @@ const wings = [
     .thr__wing--out .thr__wing-head {
       flex-direction: row;
     }
-    .thr__wing--out .thr__wing-rule {
-      background: linear-gradient(90deg, var(--gilt), transparent);
+    .thr__wing-head {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      gap: 0;
+    }
+    .thr__wing--out .thr__wing-head {
+      flex-direction: column;
+    }
+    .thr__wing-rule {
+      display: none;
     }
     .thr__wing--out .door::before {
       transform-origin: left;
@@ -568,8 +978,64 @@ const wings = [
     .thr__wing--out .door__dest {
       justify-content: flex-start;
     }
-    .thr__between {
-      grid-auto-flow: row;
+  }
+
+  /* Phone: a bottom sheet, like the Archive's reading table. The coin
+     first, then each wing in turn, read down the sheet. */
+  @media (max-width: 620px) {
+    .thr {
+      inset: auto 0 0;
+      width: 100%;
+      max-height: 92dvh;
+      margin: 0;
+      border: 0;
+      border-top: 2px solid var(--gilt);
+      box-shadow: 0 -30px 60px -20px #140e068c;
+    }
+    .thr::before {
+      display: none;
+    }
+    .thr[open] {
+      animation-name: thr-up;
+      animation-duration: calc(var(--beat) * 0.8);
+    }
+    .thr.is-leaving {
+      animation-name: thr-down;
+    }
+    .thr__bar {
+      padding-top: 0.35rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .thr__scroll {
+      padding-top: 1.1rem;
+      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    }
+    .thr__plan {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'coin'
+        'out'
+        'in'
+        'between';
+    }
+    /* A seal under the question, so the doors come up fast. */
+    .thr__coin :global(.coin__turn) {
+      width: min(6rem, 30vw);
+    }
+    .thr__coin :global(.coin) {
+      gap: 0.6rem;
+    }
+    .thr__wing-head,
+    .thr__wing--out .thr__wing-head {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.1rem 0.8rem;
+    }
+    .thr__wing-rule {
+      display: block;
+    }
+    .thr__wing--out .thr__wing-rule {
+      background: linear-gradient(90deg, var(--gilt), transparent);
     }
   }
 </style>
