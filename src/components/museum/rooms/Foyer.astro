@@ -3,8 +3,8 @@
  * The foyer: the headline, the name, one line of roles, and the gilt zodiac
  * ring turning slowly behind. The headline settles in with CSS alone (no
  * script), so it paints at first render and stays the page's LCP. The tour
- * begins at the Threshold (#welcome), where the visitor is asked what
- * brought them.
+ * begins at the Threshold (#welcome): "Begin the tour" opens the
+ * doorkeeper's popup, where the visitor is asked what brought them.
  */
 import ZodiacRing from '../ZodiacRing.astro';
 ---
@@ -24,7 +24,7 @@ import ZodiacRing from '../ZodiacRing.astro';
         <span>Writer</span>
       </p>
     </div>
-    <a class="foyer__enter" href="#welcome">
+    <a class="foyer__enter" href="#welcome" aria-haspopup="dialog">
       <span class="smallcaps">Begin the tour</span>
       <span class="foyer__arrow" aria-hidden="true"></span>
     </a>
