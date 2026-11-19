@@ -3,7 +3,8 @@
  * The footer: a quiet credit line, the typefaces, and the outbound links.
  * The first link is the front door: the Threshold's popup on the homepage
  * (/#welcome opens it), under Janus's mark, for anyone who came in by a
- * side one.
+ * side one. The mark is a link of its own, to the essay on Janus (Before
+ * and Behind).
  */
 import JanusMark from './JanusMark.astro';
 import { ALM_URL, BACKGOLD_URL, FEEDS, SCROLLBRIEF_URL } from '../../config/site';
@@ -17,7 +18,7 @@ const year = new Date().getFullYear();
       <span class="site-footer__year">© {year}</span>
     </p>
     <nav class="site-footer__links" aria-label="Footer">
-      <a href="/#welcome" class="site-footer__door"><JanusMark size={18} />The front door</a>
+      <span class="site-footer__door"><JanusMark size={18} link /><a href="/#welcome">The front door</a></span>
       <a href="/gallery/">Gallery</a>
       <a href="/writings/">Writings</a>
       <a href="/services/">Commissions</a>
@@ -76,10 +77,21 @@ const year = new Date().getFullYear();
     color: var(--ink);
     text-decoration: underline;
   }
-  /* The way back to the Threshold, under the doorkeeper's mark. */
+  /* The way back to the Threshold, under the doorkeeper's mark; the mark
+     itself opens his essay. */
   .site-footer__links .site-footer__door {
-    gap: 0.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
     color: var(--gilt-ink);
+  }
+  .site-footer__links .site-footer__door a {
+    color: var(--gilt-ink);
+  }
+  /* The mark sits flush with the rows under it. */
+  .site-footer__links .site-footer__door :global(.janus-link) {
+    justify-content: flex-start;
+    min-width: 1.75rem;
   }
   /* A filename among the rooms: set in the mono, no small caps. */
   .site-footer__links .site-footer__cats {
