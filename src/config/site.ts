@@ -6,6 +6,14 @@
 export const SITE_URL = 'https://iamwilhelm.com';
 export const SITE_NAME = 'Michael Wilhelm';
 
+/**
+ * Before and Behind, the Janus essay (In the Original, No. 5). The Janus
+ * mark links here wherever it stands on a page: the site footer, the foot
+ * of every scroll page, and the Threshold's bar (JanusMark's `link`).
+ */
+export const JANUS_ESSAY = '/gallery/before-and-behind/';
+export const JANUS_ESSAY_TITLE = 'Before and Behind';
+
 export const DEFAULT_TITLE = 'Michael Wilhelm · Please touch the exhibits.';
 export const DEFAULT_DESCRIPTION =
   'Michael Wilhelm: CEO and cofounder of BackGold, founder of Advancing Liberty Media, and a writer of visualized poetry. A small museum of his work and writing.';

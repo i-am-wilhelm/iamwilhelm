@@ -10,6 +10,8 @@
  * Under it, the way to the front door: most readers arrive on a piece from
  * a shared link and have never seen the homepage, so the foot points them
  * to the Threshold (/#welcome), where the rest of the work is laid out.
+ * The Janus mark beside that line opens the essay on Janus (Before and
+ * Behind), on every page but that one.
  *
  * Self-contained: everything inherits the page's colour and text face, and
  * the small type reads the page's mono variable (--font-mono, --log or
@@ -20,6 +22,7 @@ import NewsletterForm from '../museum/NewsletterForm.astro';
 import JanusMark from '../museum/JanusMark.astro';
 import { series as registry } from '../../config/series';
 import { getPiece, nextInSeries, type PieceKind } from '../../lib/pieces';
+import { JANUS_ESSAY } from '../../config/site';
 
 interface Props {
   id: string;
@@ -89,7 +92,7 @@ const uid = `sf-${id}`;
     )}
     Pieces like these are built to order. <a href="/services/">Commissions &rarr;</a>
     <span class="scroll-foot__front">
-      <JanusMark size={16} />
+      <JanusMark size={16} link={p.path !== JANUS_ESSAY} />
       <span>Came in by a side door? <a href="/#welcome">The front door &rarr;</a></span>
     </span>
   </p>
@@ -307,6 +310,11 @@ const uid = `sf-${id}`;
   }
   .scroll-foot__front svg {
     flex: none;
+  }
+  /* The mark's link keeps a full-height target without making the row taller. */
+  .scroll-foot__front .janus-link {
+    margin-block: -14px;
+    margin-inline: -0.35rem -0.25rem;
   }
   @media print {
     .scroll-foot {

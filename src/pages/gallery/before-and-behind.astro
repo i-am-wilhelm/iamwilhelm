@@ -1,0 +1,1667 @@
+---
+/**
+ * Before and Behind, the fifth "in the original" essay: Janus, the god
+ * Greece never had, read through the Greek that surrounds him (χάος,
+ * πρόσσω καὶ ὀπίσσω, στροφή), the nymph Cranaë who tried to lose him, and
+ * the hinge he paid her with (Ovid, Fasti 1 and 6). One reading column on
+ * a dark sill lit from two sides: dusk blue for the face that looks behind
+ * and for every Greek word, dawn gold for the face that looks before and
+ * for every Latin one. A doorway on a fixed canvas swings with each
+ * section's data-p; eight figures in the column each give the reader one
+ * thing to touch (the ball that settles into a face, the coin, the Greek
+ * doorkeepers, the direction of the future, the nymph's play, the hinge,
+ * the cardinal wheel, the gates of war), and a wall of modern references
+ * and a source ledger close it. Every claim is tagged text, reading or
+ * disputed.
+ *
+ * Ported from the owner's Claude artifact
+ * (claude.ai/artifact/A9QaADVPQnED6gs3yRNBqf); the essay text and its look
+ * are the design of record. Its stylesheet is scoped under body.limen so
+ * Poem.astro's line and section globals cannot reach it, and its script
+ * ships as written (is:inline). The site's Janus mark links here
+ * (JANUS_ESSAY, src/config/site.ts).
+ */
+import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
+---
+
+<Poem
+  title="Before and Behind"
+  description="A visualized essay by Michael Wilhelm: Janus, the god Greece never had, the nymph who tried to lose him, and the hinge he paid her with."
+  year="2026"
+  night="#0e0d11"
+  accent="#e9b45c"
+  genre="Essay"
+  bodyClass="limen"
+  preload={['/fonts/cormorant-garamond-latin-500-normal.woff2', '/fonts/cormorant-garamond-latin-400-normal.woff2']}
+>
+  <canvas id="sill" class="stage" aria-hidden="true" data-twin="A fixed canvas behind the essay holds an arched doorway, lit dusk blue from the left and dawn gold from the right. Its two leaves swing wider or shut with each section, and motes drift through it in both directions."></canvas>
+  <div id="bar" aria-hidden="true"><i id="bar-i"></i></div>
+  <aside id="rail" aria-hidden="true">
+    <span class="v" id="r-top">read</span>
+    <span class="tube"><span class="fill" id="fill"></span></span>
+    <span class="v" id="r-bot">to come</span>
+    <span class="v" id="state">outside</span>
+  </aside>
+
+  <main class="page"><div class="wrap">
+
+  <header class="hero" data-p='{"open":0.35,"east":0.85,"west":0.85,"veil":0.1}'>
+    <p class="log">
+      <span>God <b class="gk" lang="grc">Ἰανός</b></span>
+      <span>Faculty <b class="gk" lang="grc">ἅμα πρόσσω καὶ ὀπίσσω</b></span>
+      <span>Price <b class="la" lang="la">ius cardinis</b></span>
+    </p>
+    <div class="headfig" data-twin="A head with two bearded faces looking in opposite directions. The left face is lit dusk blue and marked ὀπίσσω, behind; the right is lit dawn gold and marked πρόσσω, before."><svg id="hero-head" viewBox="-1.62 -1.1 3.24 2.2" role="img" aria-label="A head with two bearded faces looking in opposite directions, the left face lit blue and marked opissō, behind, the right face lit gold and marked prossō, before"></svg></div>
+    <h1><span class="e">Before</span> and<br /><em>Behind</em></h1>
+    <p class="deck">Janus, the god Greece never had, the nymph who tried to lose him, and the hinge he paid her with.</p>
+    <p class="log sig"><span>an essay · <Byline /></span><span><SeriesMark id="before-and-behind" /></span></p>
+    <div class="legend">
+      <span><span class="k">Colors.</span> Greek is set in dusk blue, Latin in dawn gold.</span>
+      <span><span class="tag" data-k="text" style="margin-left:0">text</span> an ancient source says it, cited at the foot. <span class="tag" data-k="reading">reading</span> my interpretation. <span class="tag" data-k="disputed">disputed</span> scholars argue the point.</span>
+    </div>
+  </header>
+
+  <hr>
+
+  <!-- I -->
+  <section data-p='{"open":1,"east":0.55,"west":0.55,"veil":0.3}'>
+    <div class="body" style="--ml:0">
+      <p class="eyebrow"><span class="gk" lang="grc">ΧΑΟΣ</span><span class="tr">chaos</span><span class="gl">the gape, the first opening</span></p>
+      <p class="lede">Ovid opens the Roman year by telling Janus that Greece has no god like him. Janus answers with a Greek word.</p>
+      <p>The question comes at the start of the <em>Fasti</em>, on the first of January. <span class="la" lang="la">Quem tamen esse deum te dicam, Iane biformis? Nam tibi par nullum Graecia numen habet.</span> What god shall I call you, two-formed Janus, when Greece has no divinity to match you?<span class="tag" data-k="text">text</span> Every handbook since has repeated the line, and it holds. No Greek city built him a temple, and Homer and Hesiod never speak his name.</p>
+      <p>Then the god speaks, and the first thing he says about himself is this: <span class="la" lang="la">me Chaos antiqui, nam sum res prisca, vocabant.</span> The ancients called me Chaos, for I am an old thing.<span class="tag" data-k="text">text</span></p>
+      <p>Chaos is Hesiod's word. <span class="gr" lang="grc">ἤτοι μὲν πρώτιστα Χάος γένετ᾽</span>: first of all, Chaos came to be. In Greek the word carries none of our mess and noise. <span class="gr" lang="grc">χάος</span> grows from the same root as <span class="gr" lang="grc">χάσκω</span>, to gape, and <span class="gr" lang="grc">χάσμα</span>, a chasm. It names a gap standing open.<span class="tag" data-k="text">text</span> The Roman lexicon of Festus makes the join out loud: from Chaos the Greeks say <span class="gr" lang="grc">χάσκειν</span> and we say <span class="la" lang="la">hiare</span>, to yawn, and from that, with the breath dropped, comes <span class="la" lang="la">Ianus</span>, the first of all things.<span class="tag" data-k="text">text</span> Linguists now trace <span class="la" lang="la">ianus</span> to a root for going and passage, and leave Festus his pun.<span class="tag" data-k="disputed">disputed</span></p>
+      <p>The pun still shows how Rome read its own god. Asked where Janus stands in Greek, the tradition points to line 116 of the <em>Theogony</em>. Before Earth, before Eros, something opens. <span class="vein">Rome gave that opening a face on each side and a key.</span><span class="tag" data-k="reading">reading</span></p>
+
+      <figure class="fig" data-twin="Fig. I, From a ball to a face: a slider settles a plain circle into a head with two faces. Ovid's Janus says that while fire, air, water and earth were one heap he was globus et sine imagine moles, a ball, a mass without a likeness, and that when the four settled he came back into a face. The matching front and back are the one mark the old shape left on him. Fasti 1.105–114.">
+        <figcaption class="figk"><b>Fig. I</b> · From a ball to a face</figcaption>
+        <svg id="globus" viewBox="-1.25 -1.15 2.5 2.3" role="img" aria-label="A circle that settles into a head with two faces as the slider moves right"></svg>
+        <label class="ctl" for="settle">Settle the elements
+          <input type="range" id="settle" min="0" max="100" value="100">
+          <span class="ends"><span>globus</span><span>Ianus</span></span>
+        </label>
+        <p class="eq" id="globus-eq">r(θ) = (1 − t)·R + t·f(θ) · t = 1.00</p>
+        <p class="cap">Ovid's Janus on his own beginning: while fire, air, water and earth were one heap he was <span class="la" lang="la">globus et sine imagine moles</span>, a ball, a mass without a likeness. When the four settled into their places, <span class="la" lang="la">in faciem redii</span>, I came back into a face. The matching front and back are the one mark the old shape left on him. <em>Fasti</em> 1.105–114.</p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- II -->
+  <section data-p='{"open":0.55,"east":0.9,"west":0.4,"veil":0.35}'>
+    <div class="body" style="--ml:6%">
+      <p class="eyebrow"><span class="gk" lang="grc">ΠΕΡΡΑΙΒΙΑ</span><span class="tr">Perrhaibia</span><span class="gl">the Thessalian country he is said to have left</span></p>
+      <p class="lede">The Greeks who wrote about him gave him a passport.</p>
+      <p>Plutarch was a Greek and a priest at Delphi, and in his <em>Roman Questions</em> he asks why Janus is shown with two faces. His first answer: because he was by birth a Greek from Perrhaebia, under Olympus, who crossed to Italy, settled among the people there, and changed his language and his way of living.<span class="tag" data-k="text">text</span> Two faces for two lives. One for the tongue he was born into, one for the tongue he learned.</p>
+      <p>His second answer turns the faces outward. Janus changed the Italians, from wild living to farming and civic order, and the second face is theirs. In the <em>Life of Numa</em> Plutarch leaves it open whether he was a daimon or a king.<span class="tag" data-k="text">text</span></p>
+      <p>Draco of Corcyra, quoted by Athenaeus, fills in the papers. Janus invented garlands, rafts and ships. He struck the first bronze coin, which is why cities in Greece, Italy and Sicily stamp a two-faced head on one side and a ship, a raft or a garland on the other. He married his sister Camese, sailed for Italy, and settled the hill that kept his name, the Janiculum.<span class="tag" data-k="text">text</span></p>
+      <p>The coins bear some of it out. Tenedos, the island in sight of Troy, was striking a double head by about 500 BC: a woman facing one way, a bearded man the other, a double axe on the back.<span class="tag" data-k="text">text</span> Rome's bronze <span class="la" lang="la">as</span>, with Janus on the front and a ship's prow behind, came nearly three centuries later. The ship, Ovid has Janus explain, belongs to Saturn, the exiled god who arrived by boat and whom Janus took in. Posterity stamped it in bronze to witness the guest.<span class="tag" data-k="text">text</span></p>
+
+      <figure class="fig" data-twin="Fig. II, Heads or ships: a coin the reader can toss. The Roman bronze as of about 225 BC carries Janus in front and, behind him, the prow of the ship that brought Saturn up the Tiber; Roman boys tossed it and called capita aut navia, heads or ships (Fasti 1.229–240; Macrobius, Saturnalia 1.7.22). The silver of Tenedos, about 500 BC, carries a woman and a bearded man joined at the back of the skull, with a double axe on the reverse. Nobody in Greece called the pair Janus.">
+        <figcaption class="figk"><b>Fig. II</b> · Heads or ships</figcaption>
+        <div class="seg" role="group" aria-label="Choose a coin">
+          <button class="btn" id="coin-rome" aria-pressed="true">Rome · c. 225 BC</button>
+          <button class="btn" id="coin-ten" aria-pressed="false">Tenedos · c. 500 BC</button>
+        </div>
+        <div class="coinbox" id="coinbox"><div class="coin" id="coin"><div class="side obv" id="obv"></div><div class="side rev" id="rev"></div></div></div>
+        <div class="row"><button class="btn go" id="toss">Toss it</button><p class="out" id="coin-out" aria-live="polite">capita · heads</p></div>
+        <p class="cap" id="coin-cap"></p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- III -->
+  <section data-p='{"open":0.3,"swing":1,"east":0.6,"west":0.8,"veil":0.35}'>
+    <div class="body" style="--ml:1%">
+      <p class="eyebrow"><span class="gk" lang="grc">ΣΤΡΟΦΑΙΟΣ</span><span class="tr">strophaios</span><span class="gl">of the hinge; also, the twisty one</span></p>
+      <p class="lede">Greece kept the door. It split the job three ways.</p>
+      <p>At the pivot stood Hermes Strophaios, Hermes of the Hinge. Aristophanes puts him on stage asking for the post, and the slave Cario hears the other meaning in the word and tells him the house has no use for twists.<span class="tag" data-k="text">text</span> In front of the door stood Apollo Thyraios, Apollo of the Door, whose altars the Greeks set before their houses as lord of going out and coming in. The Roman antiquarian Macrobius points to him as the Greek match.<span class="tag" data-k="text">text</span> At the gate and where three roads met stood Hekate, with three faces to Janus's two.</p>
+      <p>The Etruscans next door had a two-faced gate god of their own, Culsans.<span class="tag" data-k="text">text</span> Greece carved double heads on herms and wine cups and coins, and never built the two faces a temple.</p>
+      <p>More than eight centuries after Aristophanes, the account is settled in Greek. Proclus, head of Plato's school at Athens, writes one hymn to two gods: <span class="gr" lang="grc">χαῖρ᾽, Ἑκάτη προθύραιε … χαῖρ᾽, Ἴανε προπάτορ.</span> Hail, Hekate before the door. Hail, Janus, forefather.<span class="tag" data-k="text">text</span> In the next breath he calls him Zeus. <span class="vein">A successor of Plato prays to the Roman door in Homer's meter.</span></p>
+
+      <figure class="fig" data-twin="Fig. III, Who keeps a Greek door: a doorway with three stations the reader can light. At the hinge, Hermes Strophaios, whose name also means twisty (Aristophanes, Wealth 1153–1154). Before the door, Apollo Thyraios, with a pillar or an altar in front of the house (Macrobius, Saturnalia 1.9.6). At the gate and the meeting of three roads, Hekate Before-the-Door (Proclus, Hymn 6). Lit together they are Janus: the hinge, the door, the gate and the passage itself in one body with two faces. Rome needed one name where Greece used three.">
+        <figcaption class="figk"><b>Fig. III</b> · Who keeps a Greek door</figcaption>
+        <svg id="keepers" viewBox="0 0 360 190" role="img" aria-label="A doorway with three stations marked: the hinge, a pillar in front of the door, and a meeting of three roads">
+          <line x1="8" y1="160" x2="352" y2="160" stroke="rgba(236,229,214,.35)"/>
+          <g fill="none" stroke="rgba(236,229,214,.55)" stroke-width="1.2">
+            <path d="M150 160V46h78v114"/><path d="M142 46h94v-9h-94z"/>
+          </g>
+          <g class="gz" id="z-hinge">
+            <path d="M150 50l36 9v97l-36 4z" fill="rgba(147,166,220,.14)" stroke="#93a6dc" stroke-width="1.2"/>
+            <circle cx="150" cy="52" r="5" fill="#93a6dc"/><circle cx="150" cy="158" r="5" fill="#93a6dc"/>
+            <path d="M150 158c-14 10-28 12-42 12" fill="none" stroke="#93a6dc" stroke-dasharray="2 3"/>
+            <text x="104" y="184" text-anchor="end" class="svgl" style="fill:#93a6dc">στροφεύς</text>
+          </g>
+          <g class="gz" id="z-before">
+            <path d="M268 160l11-62 11 62z" fill="rgba(147,166,220,.14)" stroke="#93a6dc" stroke-width="1.2"/>
+            <path d="M260 160h38" stroke="#93a6dc" stroke-width="2.4"/>
+            <path d="M274 96c2-8 8-8 10 0" fill="none" stroke="#93a6dc"/>
+            <text x="279" y="184" text-anchor="middle" class="svgl" style="fill:#93a6dc">πρὸ θυρῶν</text>
+          </g>
+          <g class="gz" id="z-cross">
+            <circle cx="62" cy="92" r="40" fill="rgba(147,166,220,.08)" stroke="#93a6dc" stroke-dasharray="2 4"/>
+            <path d="M62 92V56M62 92L32 116M62 92l30 24" fill="none" stroke="#93a6dc" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+            <circle cx="62" cy="92" r="6.5" fill="#0e0d11" stroke="#93a6dc" stroke-width="1.4"/>
+            <text x="62" y="150" text-anchor="middle" class="svgl" style="fill:#93a6dc">τρίοδος</text>
+          </g>
+        </svg>
+        <div class="seg" role="group" aria-label="Choose a station">
+          <button class="btn" data-z="hinge" aria-pressed="true">The hinge</button>
+          <button class="btn" data-z="before" aria-pressed="false">Before the door</button>
+          <button class="btn" data-z="cross" aria-pressed="false">Gate and crossroads</button>
+          <button class="btn" data-z="all" aria-pressed="false">All of it</button>
+        </div>
+        <div class="panel" id="keeper-panel" aria-live="polite"></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- IV -->
+  <section id="sec-prosso" data-p='{"open":0.7,"east":1,"west":1,"veil":0.3}'>
+    <div class="body" style="--ml:8%">
+      <p class="eyebrow"><span class="gk" lang="grc">ΠΡΟΣΣΩ ΚΑΙ ΟΠΙΣΣΩ</span><span class="tr">prossō kai opissō</span><span class="gl">before and behind</span></p>
+      <p class="lede">Homer has the faculty and no god to hang it on.</p>
+      <p>Four times in the epics a man is praised, or damned, by one formula. Achilles says Agamemnon has no idea how to think <span class="gr" lang="grc">ἅμα πρόσσω καὶ ὀπίσσω</span>, before and behind at once. Menelaus wants old Priam at the oath because an old man looks before and behind. Polydamas, the one Trojan who reads the war correctly, gets the line whole: <span class="gr" lang="grc">ὃ γὰρ οἶος ὅρα πρόσσω καὶ ὀπίσσω</span>, for he alone saw before and behind. Halitherses on Ithaca gets it again.<span class="tag" data-k="text">text</span> It is Homer's phrase for the counselor worth hearing. Calchas the seer gets the long form: he knew what is, what will be, and what was before.<span class="tag" data-k="text">text</span></p>
+      <p>Now the turn inside the word. <span class="gr" lang="grc">ὀπίσσω</span> means behind you in space. In time it means hereafter.<span class="tag" data-k="text">text</span> Homer's people say the future lies at the back, and many readers take the picture as drawn: the Greeks faced what had happened, because it can be seen, and walked backward into what had yet to arrive. Linguists argue over how hard to press the image.<span class="tag" data-k="disputed">disputed</span> The dictionary fact stands either way. In Homer's Greek, the word for what is at your back is the word for what is coming.</p>
+      <p>Give that to a god with a face on the back of his head. <span class="vein">In Latin his second face guards his rear. In Greek it watches tomorrow.</span><span class="tag" data-k="reading">reading</span></p>
+
+      <figure class="fig" data-twin="Fig. IV, Which way is the future: a walking figure on a line of time, shown three ways. In English he faces what is coming. In Homer he faces what has happened, πρόσσω, before the eyes, and what is coming arrives at his back, ὀπίσσω. Janus has a face for each, and the face on the back of his head is the one that watches tomorrow.">
+        <figcaption class="figk"><b>Fig. IV</b> · Which way is the future</figcaption>
+        <div class="seg" role="group" aria-label="Choose a way of facing time">
+          <button class="btn" data-o="english" aria-pressed="false">English</button>
+          <button class="btn" data-o="homer" aria-pressed="true">Homer</button>
+          <button class="btn" data-o="janus" aria-pressed="false">Janus</button>
+        </div>
+        <div class="orient">
+          <div class="zone west" id="z-west"><span class="w" id="zw-w"></span><span id="zw-t"></span></div>
+          <svg id="walker" viewBox="0 0 84 130" role="img" aria-label="A walking figure"></svg>
+          <div class="zone east" id="z-east"><span class="w" id="ze-w"></span><span id="ze-t"></span></div>
+        </div>
+        <p class="flow"><span>time carries you this way</span><i></i></p>
+        <p class="out" id="orient-out" aria-live="polite"></p>
+      </figure>
+    </div>
+  </section>
+
+  <div class="still" data-p='{"open":0.5,"east":1,"west":1,"veil":0.05}'>
+    <p class="big">Every door has two fronts.</p>
+    <p class="ref"><span class="la" lang="la" style="font-size:1.3em">omnis habet geminas, hinc atque hinc, ianua frontes</span><br />Janus to the poet · <em>Fasti</em> 1.135</p>
+  </div>
+
+  <!-- V -->
+  <section data-p='{"open":0.08,"east":0.3,"west":0.55,"veil":0.45}'>
+    <div class="body" style="--ml:3%">
+      <p class="eyebrow"><span class="gk" lang="grc">ΑΝΤΡΟΝ</span><span class="tr">antron</span><span class="gl">a cave</span></p>
+      <p class="lede">He has one love story, and Ovid saves it for the first of June.</p>
+      <p>By the Tiber stands the old grove of Alernus, where the pontiffs still carry offerings. A nymph was born there. Earlier generations, Ovid says, called her Cranaë.<span class="tag" data-k="text">text</span> She ran the fields with javelins and stretched her knotted nets across the valleys, and although she carried no quiver, people took her for Apollo's sister. Many men asked. None got anywhere, because she had a method.</p>
+      <p>Whenever a young man spoke love to her, she gave the same reply.</p>
+      <div class="q">
+        <p class="la" lang="la">Haec loca lucis habent nimis, et cum luce pudoris: si secreta magis ducis in antra, sequor.</p>
+        <p class="en">This place has too much light, and with the light too much shame. Lead me to a more hidden cave and I follow.</p>
+        <p class="ref">Fasti 6.115–116</p>
+      </div>
+      <p>He would go ahead, believing her. She would reach the brush, stop, and be gone, to be found by no means at all.<span class="tag" data-k="text">text</span></p>
+      <p>Janus saw her and wanted her. Ovid allows him one line of courtship: he used soft words on the hard girl. She ran the play she always ran, sent him ahead to find the cave, and dropped behind. Then the poet turns and speaks to her himself.</p>
+      <div class="q">
+        <p class="la" lang="la">Stulta! videt Ianus quae post sua terga gerantur.</p>
+        <p class="en">Foolish girl. Janus sees what is done behind his back.</p>
+        <p class="ref">Fasti 6.123</p>
+      </div>
+      <p>He takes her under the rock where she is hiding. The Latin is blunt: he seizes her in his arms, has what he hoped for, and only then speaks. Modern commentators name the scene plainly as a rape, and the poem's own vocabulary agrees. She is quarry, and then she is paid.<span class="tag" data-k="text">text</span> The wooing took one line. The rest was a hunt, and she lost it.</p>
+
+      <figure class="fig" data-twin="Fig. V, Run her play: a path from the grove past a rock to the cave, walked twice. Led by a suitor, the nymph follows, stops at the brush, and is gone when he turns at the cave mouth: nullo est invenienda modo, to be found by no means. Led by Janus, the rear face watches her stop: latebras respicit ille tuas, he looks back on your hiding place. Fasti 6.105–126.">
+        <figcaption class="figk"><b>Fig. V</b> · Run her play</figcaption>
+        <svg id="play" viewBox="0 0 360 200" role="img" aria-label="A path from a grove past a rock to a cave. One figure leads, the nymph follows and hides at the rock.">
+          <line x1="6" y1="170" x2="354" y2="170" stroke="rgba(236,229,214,.35)"/>
+          <g fill="rgba(236,229,214,.04)" stroke="rgba(236,229,214,.5)">
+            <path d="M20 170v-28m0 0c-9 0-13-20 0-44c13 24 9 44 0 44z"/>
+            <path d="M38 170v-36m0 0c-10 0-14-24 0-50c14 26 10 50 0 50z"/>
+            <path d="M56 170v-26m0 0c-8 0-12-18 0-40c12 22 8 40 0 40z"/>
+          </g>
+          <text x="38" y="190" text-anchor="middle" class="svgl">lucus</text>
+          <path d="M276 170c0-54 20-88 50-88s30 46 30 88z" fill="#15131a" stroke="rgba(236,229,214,.4)"/>
+          <path d="M302 170v-26a15 15 0 0 1 30 0v26z" fill="#050408" stroke="rgba(236,229,214,.5)"/>
+          <text x="317" y="190" text-anchor="middle" class="svgl">antrum</text>
+          <polygon id="cone-f" fill="rgba(233,180,92,.17)"/>
+          <polygon id="cone-b" fill="rgba(147,166,220,.22)"/>
+          <path d="M160 170l5-27 16-11 20 6 9 17 3 15z" fill="#1c1921" stroke="rgba(236,229,214,.55)"/>
+          <path d="M150 170c1-12 4-17 7-21M155 170c0-9 3-16 7-20M218 170c-1-10 1-15 4-18M224 170c0-7 2-11 4-13" fill="none" stroke="rgba(236,229,214,.4)"/>
+          <text x="186" y="190" text-anchor="middle" class="svgl">rupes</text>
+          <g id="nymph" stroke="#ece5d6" stroke-width="1.6" fill="none" stroke-linecap="round">
+            <path d="M-5 0L0-15L5 0M0-15V-33"/><circle cy="-40" r="6.5" fill="#0e0d11"/><path d="M7-36a11 11 0 0 1 0 18"/>
+          </g>
+          <circle id="spot" r="19" fill="none" stroke="#93a6dc" stroke-width="1.4" stroke-dasharray="3 4" opacity="0"/>
+          <g id="leader" stroke="#ece5d6" stroke-width="1.8" fill="none" stroke-linecap="round">
+            <path d="M-6 0L0-19L6 0M0-19V-42"/><circle cy="-51" r="8.5" fill="#0e0d11"/>
+            <path id="nose-f" d="M8.5-54l7 3-7 3" stroke="#e9b45c"/><path id="nose-b" d="M-8.5-54l-7 3 7 3" stroke="#93a6dc"/>
+          </g>
+          <text id="qm" x="292" y="96" text-anchor="middle" style="font-family:var(--display);font-style:italic;font-size:22px;fill:#e9b45c" opacity="0">?</text>
+        </svg>
+        <div class="seg" role="group" aria-label="Choose who walks ahead of her">
+          <button class="btn go" id="play-suitor">Lead as a suitor</button>
+          <button class="btn go" id="play-janus">Lead as Janus</button>
+        </div>
+        <p class="out" id="play-out" aria-live="polite">Pick who walks ahead of her.</p>
+        <p class="cap">Gold marks the sight of the face in front, blue the face behind. <em>Fasti</em> 6.105–126.</p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- VI -->
+  <section data-p='{"open":0.45,"swing":1,"east":0.85,"west":0.6,"veil":0.35}'>
+    <div class="body" style="--ml:0">
+      <p class="eyebrow"><span class="gk" lang="grc">ΣΤΡΟΦΗ</span><span class="tr">strophē</span><span class="gl">a turn, a dodge, the swing of a door</span></p>
+      <p class="lede">What he says next is the reason the story exists.</p>
+      <div class="q">
+        <p class="la" lang="la">Ius pro concubitu nostro tibi cardinis esto: hoc pretium positae virginitatis habe.</p>
+        <p class="en">For our lying together, let the right of the hinge be yours. Take this as the price of the maidenhood you have laid down.</p>
+        <p class="ref">Fasti 6.127–128</p>
+      </div>
+      <p>Then he hands her a branch of whitethorn, with the power to drive harm from doorways. Ovid's nouns are legal and commercial: <span class="la" lang="la">ius</span>, a right; <span class="la" lang="la">pretium</span>, a price. Nobody asks her. A god sets the terms after the fact, and the calendar records the result. The first of June belongs to Carna, goddess of the hinge. <span class="la" lang="la">Numine clausa aperit, claudit aperta suo.</span> By her power she opens what is shut and shuts what is open.<span class="tag" data-k="text">text</span></p>
+
+      <figure class="fig" data-twin="Fig. VI, The right of the hinge: a door the reader swings on its two pivots, with a sprig of whitethorn over the lintel. Opening it lights clausa aperit, she opens what is shut; closing it lights claudit aperta, she shuts what is open. Latin calls the pivot cardo, Greek στροφεύς. The whitethorn, spina alba, is her ward against whatever comes to a door at night.">
+        <figcaption class="figk"><b>Fig. VI</b> · The right of the hinge</figcaption>
+        <div class="doorway" id="doorway">
+          <svg class="sprig" viewBox="0 0 150 40" aria-hidden="true">
+            <path d="M6 30C40 14 96 12 144 26" fill="none" stroke="#7c8a5e" stroke-width="1.6"/>
+            <path d="M30 22l-4-9M58 16l2-10M92 15l5-9M120 20l6-8M44 19l-6 8M76 14l-2 9M106 17l-3 9" stroke="#7c8a5e" stroke-width="1.1" fill="none"/>
+            <defs><g id="blossom"><circle cx="0" cy="-3.2" r="2.4"/><circle cx="3" cy="-1" r="2.4"/><circle cx="1.9" cy="2.6" r="2.4"/><circle cx="-1.9" cy="2.6" r="2.4"/><circle cx="-3" cy="-1" r="2.4"/></g></defs>
+            <use href="#blossom" x="26" y="11" fill="#f4efe2"/><use href="#blossom" x="60" y="5" fill="#f4efe2"/><use href="#blossom" x="98" y="5" fill="#f4efe2"/><use href="#blossom" x="127" y="11" fill="#f4efe2"/><use href="#blossom" x="76" y="25" fill="#f4efe2"/>
+            <g fill="#e9b45c"><circle cx="26" cy="11" r="1"/><circle cx="60" cy="5" r="1"/><circle cx="98" cy="5" r="1"/><circle cx="127" cy="11" r="1"/><circle cx="76" cy="25" r="1"/></g>
+          </svg>
+          <div class="beyond"></div>
+          <div class="leaf" id="leaf"></div>
+          <span class="pin t"></span><span class="pin b"></span>
+          <span class="pivot" lang="la">cardo</span>
+        </div>
+        <p class="hingeline" aria-live="polite"><span id="hl-open">clausa aperit</span><span id="hl-shut">claudit aperta</span></p>
+        <label class="ctl" for="hinge">Turn the hinge
+          <input type="range" id="hinge" min="0" max="100" value="36">
+          <span class="ends"><span>shut</span><span>open</span></span>
+        </label>
+        <p class="cap">A Roman door hung on two pivots, top and bottom, each turning in a socket. Latin calls the pivot <span class="la" lang="la">cardo</span>, Greek <span class="gr" lang="grc">στροφεύς</span>. Over the lintel, the whitethorn: <span class="la" lang="la">spina alba</span>, her ward against whatever comes to a door at night.</p>
+      </figure>
+
+      <h3 class="run">The right changes hands.</h3>
+      <p>Five books earlier, in January, Janus told the poet what he owned. <span class="la" lang="la">Me penes est unum vasti custodia mundi, et ius vertendi cardinis omne meum est.</span> The keeping of the wide world is mine alone, and the whole right of turning the hinge is mine.<span class="tag" data-k="text">text</span> The phrase returns in June: <span class="la" lang="la">ius cardinis</span>. In January he holds all of it. In June he signs it over. He keeps the seeing and gives away the turning.<span class="tag" data-k="reading">reading</span></p>
+
+      <h3 class="run">Her trick was already a hinge.</h3>
+      <p>She was open, then shut. I follow; gone. Greek has one family of words for the move. <span class="gr" lang="grc">στροφή</span> is a turn, and it is a dodge, a wrestler's twist, a liar's swerve. <span class="gr" lang="grc">στροφεύς</span> is the socket a door pivots in. Hermes Strophaios is the hinge god and the twister in a single epithet.<span class="tag" data-k="text">text</span> The nymph who lived by the <span class="gr" lang="grc">στροφή</span> is handed the <span class="gr" lang="grc">στροφεύς</span>. A dodge works until someone sees it. A hinge works every time, in plain sight, for whoever comes to the door.<span class="tag" data-k="reading">reading</span></p>
+
+      <h3 class="run">Where she hid.</h3>
+      <p>Behind. <span class="gr" lang="grc">ὀπίσσω</span>. The suitors walk toward what they want and lose it at their backs, which in Greek is where the future is kept. They face one way, so everything she does next is invisible to them. Janus is a door, and a door has two fronts. He cannot be sent ahead, because for him no ahead leaves a behind.<span class="tag" data-k="reading">reading</span> Her old name carries the ending inside it. <span class="gr" lang="grc">κραναή</span> is Homer's word for rocky Ithaca, and the rock is where she is found.<span class="tag" data-k="reading">reading</span></p>
+
+      <h3 class="run">What she becomes.</h3>
+      <p>She loses the open country, the nets, the long line of men left standing at cave mouths. She gains a post. When the <span class="la" lang="la">striges</span>, the screech-owls that drink from cradles, come through the window for the five-day-old Proca, she touches the doorposts three times with arbutus, pays the birds off with the entrails of a sow, and sets Janus's whitethorn in the window. The child lives to be a king of Alba.<span class="tag" data-k="text">text</span> <span class="vein">The one who vanished at every threshold now decides what crosses one.</span></p>
+
+      <h3 class="run">The seam.</h3>
+      <p>Ovid has very likely joined two goddesses here. Carna, in the older accounts, looks after the heart and the liver and takes beans and bacon on her day. Cardea is the hinge, and the Church Fathers list her beside Forculus of the door-leaves and Limentinus of the sill.<span class="tag" data-k="text">text</span> Many scholars think the nymph and her capture are the poet's own invention, made to weld the two names.<span class="tag" data-k="disputed">disputed</span> If so, the tale performs its subject. One name is turned on a pivot and comes out as another.</p>
+
+      <h3 class="run">Everything else that turns.</h3>
+      <p>Latin kept the word working. <span class="la" lang="la">Cardo</span> is the pivot of a door, then the pole the sky turns on, then the north–south line a surveyor draws across a new town, then the decisive moment: Virgil has Venus warn that Juno will not sit idle <span class="la" lang="la">tanto cardine rerum</span>, at so great a hinge of things.<span class="tag" data-k="text">text</span> English keeps it in <em>cardinal</em>. Roman astrologers called the four angles of a birth chart the <span class="la" lang="la">cardines</span>.<span class="tag" data-k="text">text</span> All of it is Carna's fee, still being collected.</p>
+
+      <figure class="fig" data-twin="Fig. VII, What turns on the hinge: a circle with four hinge points around the word cardo, relabeled five ways. Compass: north, east, south, west. Year: Aries, Cancer, Libra and Capricorn, the signs where each season turns; January opens a few days after the lowest of them. Birth chart: Ascendant, Midheaven, Descendant and Imum Coeli, which Manilius and Firmicus call the cardines. Roman town: the cardo running north to south and the decumanus crossing it east to west. Virtues: prudence, justice, fortitude and temperance, named cardinal by Ambrose.">
+        <figcaption class="figk"><b>Fig. VII</b> · What turns on the hinge</figcaption>
+        <div class="seg" role="group" aria-label="Choose what the four hinges hold">
+          <button class="btn" data-w="compass" aria-pressed="false">Compass</button>
+          <button class="btn" data-w="year" aria-pressed="true">Year</button>
+          <button class="btn" data-w="chart" aria-pressed="false">Birth chart</button>
+          <button class="btn" data-w="town" aria-pressed="false">Roman town</button>
+          <button class="btn" data-w="virtue" aria-pressed="false">Virtues</button>
+        </div>
+        <svg id="wheel" viewBox="-200 -150 400 300" role="img" aria-label="A circle with four hinge points and labels that change with the buttons above">
+          <circle r="88" fill="none" stroke="rgba(236,229,214,.4)"/>
+          <path d="M0-88V88M-88 0H88" stroke="rgba(236,229,214,.2)" stroke-dasharray="2 5"/>
+          <g fill="#e9b45c"><circle cy="-88" r="5"/><circle cx="88" r="5"/><circle cy="88" r="5"/><circle cx="-88" r="5"/></g>
+          <text class="c" y="6">cardo</text>
+          <text id="w-n" y="-112"></text><text id="w-n2" y="-128"></text>
+          <text id="w-s" y="122"></text><text id="w-s2" y="139"></text>
+          <text id="w-e" x="146" y="-3"></text><text id="w-e2" x="146" y="15"></text>
+          <text id="w-w" x="-146" y="-3"></text><text id="w-w2" x="-146" y="15"></text>
+        </svg>
+        <p class="cap" id="wheel-cap" aria-live="polite"></p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- VII -->
+  <section id="sec-gates" data-p='{"open":1,"east":0.7,"west":0.7,"veil":0.35}'>
+    <div class="body" style="--ml:5%">
+      <p class="eyebrow"><span class="gk" lang="grc">ΔΙΘΥΡΟΣ</span><span class="tr">dithyros</span><span class="gl">two-doored</span></p>
+      <p class="lede">His public house in Rome was a passage with a door at each end, and the doors kept the city's count.</p>
+      <p>Plutarch's Greek for it is <span class="gr" lang="grc">νεὼς δίθυρος</span>, a two-doored shrine, which they call the gate of war.<span class="tag" data-k="text">text</span> Open, Rome was in arms. Shut, Rome was at peace. Livy says Numa built it as the index of the one and the other, and that after Numa it was shut twice: once when the first war with Carthage was over, and once by Augustus after Actium.<span class="tag" data-k="text">text</span> Augustus had the arithmetic cut in bronze. Shut twice in all the years before me; three times under me.<span class="tag" data-k="text">text</span></p>
+      <p>The poets disagree about what the doors hold in. Virgil chains Fury inside, on a heap of weapons, and bolts the gates on him.<span class="tag" data-k="text">text</span> Ovid's Janus says the reverse: I stand open in war so the people who marched out can come home, and I bar the doors in peace so that Peace cannot leave.<span class="tag" data-k="text">text</span> One passage, two fronts, and the meaning depends on the side you stand on.</p>
+
+      <figure class="fig" data-twin="Fig. VIII, The gates, 753 BC to AD 14: a pair of gates the reader can shut, over a bar of 766 years drawn to one scale. The doors stand open for nearly all of it. They are shut for Numa's reign, forty-three years by Plutarch's count (715–673 BC by the traditional dates); briefly in 235 BC, after the first war with Carthage; in 29 BC, after Actium and Alexandria; in 25 BC, after the Cantabrian campaign; and a third time under Augustus, in a year the sources leave open.">
+        <figcaption class="figk"><b>Fig. VIII</b> · The gates, 753 BC to AD 14</figcaption>
+        <div class="gates open" id="gates"><div class="gate gate--l"></div><div class="gate gate--r"></div></div>
+        <div class="row"><button class="btn go" id="gate-btn">Shut the gates</button><p class="out" id="gate-out" aria-live="polite">Open. Rome is in arms.</p></div>
+        <div class="years">
+          <div class="track" role="img" aria-label="A bar of 766 years, almost entirely open, with one band of 43 years shut near the start and three thin marks later">
+            <span class="mk" style="left:4.96%;width:5.48%"></span>
+            <span class="mk tick" style="left:67.62%"></span>
+            <span class="mk tick" style="left:94.52%"></span>
+            <span class="mk tick" style="left:95.3%"></span>
+          </div>
+          <div class="ends"><span>753 BC · the founding</span><span>AD 14 · Augustus dies</span></div>
+          <div class="key"><span><i style="background:#4a2f1c"></i>doors open</span><span><i style="background:var(--ink)"></i>doors shut</span></div>
+        </div>
+        <ol class="closures">
+          <li>Numa's reign, forty-three years by Plutarch's count. <small>715–673 BC, traditional dates · Numa 20</small></li>
+          <li>After the first war with Carthage, briefly. <small>235 BC, T. Manlius consul · Livy 1.19</small></li>
+          <li>After Actium and Alexandria. <small>29 BC</small></li>
+          <li>After the Cantabrian campaign. <small>25 BC</small></li>
+          <li>A third time under Augustus, in a year the sources leave open. <small>not drawn · Res Gestae 13</small></li>
+        </ol>
+        <p class="cap">One scale, 766 years. The three later closures are drawn as ticks because nobody recorded how long they lasted.</p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- VIII -->
+  <section data-p='{"open":0.6,"east":0.9,"west":0.5,"veil":0.45}'>
+    <div class="body" style="--ml:0;max-width:none">
+      <p class="eyebrow"><span class="gk" lang="grc">ΙΑΝΟΥΑΡΙΟΣ</span><span class="tr">Ianouarios</span><span class="gl">January, as Greek spells it</span></p>
+      <p class="lede" style="max-width:30em">He was never retired. Two thousand years on, his name still goes on anything with two fronts.</p>
+      <div class="seg" role="group" aria-label="Filter the references" id="filters">
+        <button class="btn" data-f="all" aria-pressed="true">All</button>
+        <button class="btn" data-f="words" aria-pressed="false">Words</button>
+        <button class="btn" data-f="sky" aria-pressed="false">Sky and nature</button>
+        <button class="btn" data-f="lab" aria-pressed="false">Lab</button>
+        <button class="btn" data-f="mind" aria-pressed="false">Mind</button>
+        <button class="btn" data-f="screen" aria-pressed="false">Screen</button>
+        <button class="btn" data-f="machine" aria-pressed="false">Machines</button>
+      </div>
+      <div class="cards" id="cards">
+        <article class="card" data-c="words"><p class="kk">Words · 153 BC</p><h3>January</h3><p><span class="la" lang="la">Ianuarius</span>, his month. Numa is said to have set it ahead of March, peace before war. From 153 BC the consuls took office on its first day, and the civil year has opened there since.</p></article>
+        <article class="card" data-c="words"><p class="kk">Words</p><h3>Janitor</h3><p>Latin <span class="la" lang="la">ianitor</span>, keeper of the <span class="la" lang="la">ianua</span>. Ovid's Janus takes the title at full rank: <span class="la" lang="la">caelestis ianitor aulae</span>, doorkeeper of the court of heaven.</p></article>
+        <article class="card" data-c="words"><p class="kk">Words · c. AD 430</p><h3>Heads or tails</h3><p>Roman boys flipping a coin called <span class="la" lang="la">capita aut navia</span>, heads or ships, after the two sides of the Janus <span class="la" lang="la">as</span>. Macrobius records the call long after the coin itself was gone.</p></article>
+        <article class="card" data-c="words"><p class="kk">Words · 1600s</p><h3>Janus-faced</h3><p>English for a person who shows one face and keeps another. The god's two faces meant full sight. The insult kept the anatomy and reversed the virtue.</p></article>
+        <article class="card" data-c="words"><p class="kk">Words</p><h3>Janus words</h3><p>Words that carry their own opposite: cleave, sanction, oversight, dust. Each one opens what it shuts.</p></article>
+        <article class="card" data-c="sky"><p class="kk">Sky · 1966</p><h3>Janus, moon of Saturn</h3><p>Found by Audouin Dollfus on 15 December 1966. It shares an orbit with Epimetheus, the Titan named Afterthought, fifty kilometers apart, and every four years the two trade places. It circles the planet named for the exile Janus took in.</p></article>
+        <article class="card" data-c="sky"><p class="kk">Nature</p><h3>Janus cats</h3><p>The name for cats born with two faces. One of them, Frank and Louie, lived fifteen years.</p></article>
+        <article class="card" data-c="lab"><p class="kk">Lab · 1989–91</p><h3>Janus kinase</h3><p>JAK first stood for just another kinase. It was renamed for its two near-identical domains set back to back, one that works and one that governs the first. JAK inhibitors now treat rheumatoid arthritis and eczema.</p></article>
+        <article class="card" data-c="lab"><p class="kk">Lab · 1991</p><h3>Janus particles</h3><p>Pierre-Gilles de Gennes, Nobel lecture: grains with one side that takes to water and one that refuses it. Packed along a surface they leave gaps, and in his phrase “the skin can breathe.”</p></article>
+        <article class="card" data-c="mind"><p class="kk">Mind · 1971</p><h3>Janusian thinking</h3><p>The psychiatrist Albert Rothenberg's name for a move he kept finding in creative work: holding two opposed ideas as true in the same moment and building from both.</p></article>
+        <article class="card" data-c="mind"><p class="kk">Mind · 1978</p><h3>Koestler's <em>Janus</em></h3><p>Arthur Koestler's summing-up takes the god as the emblem of the holon. Every living unit shows one face to the parts it governs and another to the whole it serves.</p></article>
+        <article class="card" data-c="screen"><p class="kk">Screen · 1956</p><h3>Janus Films</h3><p>The American distributor that carried Bergman, Fellini and Kurosawa into art houses, under a two-faced medallion that still opens its prints.</p></article>
+        <article class="card" data-c="screen"><p class="kk">Screen · 1995</p><h3><em>GoldenEye</em></h3><p>The syndicate after the satellite is called Janus, and the man behind it was once agent 006.</p></article>
+        <article class="card" data-c="machine"><p class="kk">Machines · 2024</p><h3>DeepSeek Janus</h3><p>A model with two visual pathways behind one mind: one for understanding pictures, one for making them.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- IX -->
+  <section data-p='{"open":1,"east":1,"west":0.9,"veil":0.2}'>
+    <div class="body" style="--ml:4%">
+      <p class="eyebrow"><span class="gk" lang="grc">ΑΡΧΗ</span><span class="tr">archē</span><span class="gl">a beginning; also, command</span></p>
+      <p class="lede">Rome put him first in every prayer, whichever god the prayer was for.</p>
+      <p>Ovid asks why, and Janus answers like a porter: so that through me, who keep the thresholds, you can reach whichever gods you want.<span class="tag" data-k="text">text</span> On his Kalends people gave each other dates, figs and honey so the year would run sweet, and each did a little of his own trade so the year would be worked. Ovid asks about that too, and gets the line the whole calendar turns on. <span class="la" lang="la">Omina principiis inesse solent.</span> Omens tend to live in beginnings.<span class="tag" data-k="text">text</span></p>
+      <p>Gather the Greek. <span class="gr" lang="grc">χάος</span> for what he is: the first opening. <span class="gr" lang="grc">πρόσσω καὶ ὀπίσσω</span> for what he does. <span class="gr" lang="grc">στροφή</span> for what he caught and what he paid. Greece had every word and never assembled the god. Rome set the words in one body, stood it in a doorway, and told one story about it: a woman who knew how to disappear behind a man, and the one figure who has no behind.</p>
+      <p>The story is unkind to her, and Ovid lets it be. It is also exact. What you chase goes where you are not looking. Sight that takes in its own back ends the chase. <span class="vein">And the thing caught at the turn becomes the thing every door turns on.</span></p>
+    </div>
+  </section>
+
+  <hr>
+
+  <footer class="colophon" data-p='{"open":0.2,"east":0.5,"west":0.5,"veil":0.55}'>
+    <h2>Sources, in the original</h2>
+    <ul>
+      <li>Ovid, <i>Fasti</i> 1.63–294, Janus on the Kalends of January: 1.89–90 (no Greek equal), 1.103 (Chaos), 1.105–114 (ball to face), 1.117–120 (<i>ius vertendi cardinis</i>), 1.135 (two fronts), 1.139–140 (<i>ianitor</i>), 1.165–188 (first work, first words, sweet gifts; 1.178 <i>omina principiis</i>), 1.229–240 (the ship), 1.279–282 (why open, why shut)</li>
+      <li>Ovid, <i>Fasti</i> 6.101–168, Carna on the Kalends of June: 101–102 (goddess of the hinge), 105–118 (Cranaë and her reply), 119–126 (Janus), 127–130 (the price, the whitethorn), 131–168 (Proca and the <i>striges</i>)</li>
+      <li>Hesiod, <i>Theogony</i> 116 (<span class="gr" lang="grc">χάος</span>)</li>
+      <li>Paulus, epitome of Festus, s.v. <i>Chaos</i> (<span class="gr" lang="grc">χάσκειν</span>, <i>hiare</i>, <i>Ianus</i>); de Vaan, <i>Etymological Dictionary of Latin</i>, s.v. <i>ianus</i> (the root of going)</li>
+      <li>Plutarch, <i>Roman Questions</i> 19 (January first), 22 (the Greek from Perrhaebia), 41 (the coin); <i>Numa</i> 19–20 (daimon or king; <span class="gr" lang="grc">νεὼς δίθυρος</span>; forty-three years)</li>
+      <li>Athenaeus 15.692d–e, citing Draco of Corcyra (garlands, rafts, ships, bronze coin, Camese, the Janiculum)</li>
+      <li>Coins: Tenedos, silver, janiform head and double axe, late sixth century BC onward; Rome, cast bronze <i>as</i>, Janus and prow, c. 225 BC</li>
+      <li>Aristophanes, <i>Wealth</i> 1153–1154 (Hermes Strophaios and the pun)</li>
+      <li>Macrobius, <i>Saturnalia</i> 1.7.22 (<i>capita aut navia</i>), 1.9.6 (Apollo Thyraios), 1.12.31–33 (Carna, beans and bacon)</li>
+      <li>Proclus, <i>Hymn</i> 6, to Hekate and Janus</li>
+      <li>Homer, <i>Iliad</i> 1.70, 1.343, 3.109–110, 18.250; <i>Odyssey</i> 24.452; <i>Iliad</i> 3.201 (<span class="gr" lang="grc">κραναή</span>). On <span class="gr" lang="grc">ὀπίσσω</span> and the future: Bartolotta, “Spatial representations of future in Homeric Greek” (2015); Keyer, “Why Does the Future Lie Behind?”</li>
+      <li>Livy 1.19.2–3; Augustus, <i>Res Gestae</i> 13; Cassius Dio 51.20, 53.27; Virgil, <i>Aeneid</i> 1.293–296, 1.672, 7.607–615</li>
+      <li>Cicero, <i>On the Nature of the Gods</i> 2.67 (Janus first in sacrifice)</li>
+      <li>Augustine, <i>City of God</i> 4.8 (Cardea, Forculus, Limentinus). On the Carna and Cardea seam and the scene as rape: Wissowa (1888); Newlands, <i>Playing with Time</i> (1995)</li>
+      <li>Manilius, <i>Astronomica</i> 2.788 ff.; Firmicus Maternus, <i>Mathesis</i> 2.14–15 (the <i>cardines</i> of a chart)</li>
+      <li>Moderns: Dollfus (1966); Wilks (1989, 1991); de Gennes, “Soft Matter” (Nobel lecture, 1991); Rothenberg, “The Process of Janusian Thinking in Creativity” (1971); Koestler, <i>Janus: A Summing Up</i> (1978)</li>
+    </ul>
+    <p>Translations from the Latin and Greek are the author's own.</p>
+    <MethodLink />
+    <p class="log sig"><span><a href="/gallery/">The Gallery</a></span><span><SeriesMark id="before-and-behind" /></span></p>
+    <ScrollFoot id="before-and-behind" class="limen-sf" />
+  </footer>
+
+  </div></main>
+</Poem>
+
+<style is:global>
+  /* Cormorant Garamond 500 is the essay's text weight (Poem.astro declares
+     400 and 600). 'Limen Mono' is JetBrains Mono's greek subset, for the θ
+     in the equation under Fig. I; the site's mono file carries no Greek. */
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-500-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: italic;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/fonts/cormorant-garamond-latin-500-italic.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Limen Mono';
+    font-style: normal;
+    font-weight: 400 500;
+    font-display: swap;
+    src: url('/fonts/jetbrains-mono-greek-wght-normal.woff2') format('woff2');
+    unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+  }
+
+  /* Layout: one reading column on a dark sill, lit from two sides. Dusk
+     (blue) is the face that looks behind and the colour of every Greek
+     word; dawn (gold) is the face that looks before and the colour of
+     every Latin one. Figures sit in the column; a doorway turns behind
+     everything. */
+  .limen {
+    --stone:#0e0d11;
+    --slab:#17151c;
+    --ink:#ece5d6;
+    --eos:#e9b45c;
+    --hesper:#93a6dc;
+    --bronze:#b07a43;
+    --mute:#a6a198;
+    --rule:#2b2731;
+    --display:'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif;
+    --greek:'EB Garamond Greek','Cormorant Garamond',Georgia,serif;
+    --mono:'Limen Mono','JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+    color-scheme:dark;
+  }
+  .limen * {
+    box-sizing:border-box;
+  }
+  .limen {
+    background:var(--stone);
+    color:var(--ink);
+    font-family:var(--display);
+    font-weight:500;
+    font-size:clamp(19px,calc(15px + 1vw),23px);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  .limen #sill {
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    display:block;
+  }
+  .limen #bar {
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:2px;
+    z-index:4;
+  }
+  .limen #bar i {
+    display:block;
+    height:100%;
+    width:0;
+    background:linear-gradient(90deg,var(--hesper),var(--eos));
+  }
+  .limen .page {
+    position:relative;
+    z-index:1;
+    padding-inline:max(18px,env(safe-area-inset-left,0px)) max(18px,env(safe-area-inset-right,0px));
+  }
+  .limen .wrap {
+    max-width:46rem;
+    margin:0 auto;
+    padding-block:5vh 10vh;
+  }
+  .limen p {
+    margin:0;
+  }
+  .limen :focus-visible {
+    outline:2px solid var(--eos);
+    outline-offset:3px;
+  }
+  .limen .log {
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem 1.8rem;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.68rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--mute);
+  }
+  .limen .log b {
+    font-weight:500;
+    color:var(--ink);
+    text-transform:none;
+    letter-spacing:.02em;
+    font-size:.78rem;
+  }
+  .limen .log b.gk {
+    font-family:var(--greek);
+    font-size:1.02rem;
+    color:var(--hesper);
+  }
+  .limen .log b.la {
+    font-family:var(--display);
+    font-style:italic;
+    font-size:1.02rem;
+    color:var(--eos);
+  }
+  .limen .sig {
+    justify-content:space-between;
+  }
+  .limen .hero {
+    display:grid;
+    gap:1.2rem;
+    padding-block:3vh 7vh;
+  }
+  .limen .headfig {
+    width:min(100%,430px);
+    justify-self:center;
+    margin:.2rem 0 -.6rem;
+  }
+  .limen .headfig svg {
+    display:block;
+    width:100%;
+    height:auto;
+    overflow:visible;
+  }
+  .limen h1 {
+    font-weight:400;
+    font-size:clamp(3.2rem,15vw,7rem);
+    line-height:.9;
+    letter-spacing:-.015em;
+    margin:0;
+  }
+  .limen h1 .e {
+    color:var(--eos);
+  }
+  .limen h1 em {
+    font-style:italic;
+    color:var(--hesper);
+  }
+  .limen .deck {
+    font-style:italic;
+    font-size:1.24em;
+    line-height:1.3;
+    max-width:24em;
+    text-wrap:balance;
+  }
+  .limen .legend {
+    display:grid;
+    gap:.45rem;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.72rem;
+    line-height:1.55;
+    color:var(--mute);
+    padding-top:.9rem;
+    border-top:1px solid var(--rule);
+  }
+  .limen .legend span.k {
+    color:var(--ink);
+  }
+@media (min-width:900px) {
+  .limen .hero {
+    grid-template-columns:1fr 400px;
+    column-gap:2rem;
+    align-items:end;
+  }
+  .limen .hero>* {
+    grid-column:1;
+  }
+  .limen .hero .headfig {
+    grid-column:2;
+    grid-row:1 / span 4;
+    align-self:center;
+    margin:0;
+  }
+  .limen .hero .legend,
+  .limen .hero .sig {
+    grid-column:1 / -1;
+  }
+}
+  .limen hr {
+    border:0;
+    border-top:1px solid var(--rule);
+    margin:0;
+  }
+  .limen section {
+    padding-block:8vh;
+  }
+  .limen .body {
+    max-width:62ch;
+    margin-left:var(--ml,0);
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:1.05rem;
+  }
+  .limen .eyebrow {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:.3rem .9rem;
+    margin-bottom:.5rem;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.7rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--mute);
+  }
+  .limen .eyebrow .gk {
+    font-family:var(--greek);
+    font-size:1.4rem;
+    letter-spacing:.08em;
+    color:var(--hesper);
+    text-transform:none;
+  }
+  .limen .eyebrow .tr {
+    font-family:var(--display);
+    font-style:italic;
+    font-size:1.02rem;
+    letter-spacing:0;
+    text-transform:none;
+    color:var(--ink);
+  }
+  .limen .eyebrow .gl {
+    text-transform:none;
+    letter-spacing:.03em;
+    font-size:.76rem;
+  }
+  .limen .lede {
+    font-size:1.22em;
+    line-height:1.3;
+    text-wrap:pretty;
+  }
+  .limen .gr {
+    font-family:var(--greek);
+    font-weight:400;
+    color:var(--hesper);
+  }
+  .limen .la {
+    font-style:italic;
+    color:var(--eos);
+  }
+  .limen .vein {
+    font-style:italic;
+    color:var(--ink);
+    border-bottom:1px solid rgba(233,180,92,.45);
+  }
+  .limen .q {
+    border-left:1px solid var(--eos);
+    padding-left:1rem;
+    margin:.3rem 0;
+    display:grid;
+    gap:.35rem;
+  }
+  .limen .q .la {
+    font-size:1.08em;
+    line-height:1.35;
+  }
+  .limen .q .en {
+    color:var(--ink);
+  }
+  .limen .q .ref {
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.7rem;
+    color:var(--mute);
+    letter-spacing:.04em;
+  }
+  .limen h3.run {
+    font:inherit;
+    font-style:italic;
+    color:var(--eos);
+    margin:.5rem 0 -.6rem;
+    font-size:1.08em;
+  }
+  .limen .tag {
+    font-family:var(--mono);
+    font-weight:400;
+    font-style:normal;
+    font-size:.56em;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    white-space:nowrap;
+    vertical-align:.22em;
+    margin-left:.3em;
+    padding:.08em .42em;
+    border-radius:2px;
+    color:var(--mute);
+    border:1px solid #4a4552;
+  }
+  .limen .tag[data-k="reading"] {
+    color:var(--stone);
+    background:var(--mute);
+    border-color:var(--mute);
+  }
+  .limen .tag[data-k="disputed"] {
+    border-style:dashed;
+    color:var(--ink);
+    border-color:var(--ink);
+  }
+  .limen .still {
+    padding-block:13vh;
+    text-align:left;
+  }
+  .limen .still p.big {
+    font-style:italic;
+    font-size:clamp(1.9rem,7.4vw,3.1rem);
+    line-height:1.08;
+    max-width:12em;
+    text-wrap:balance;
+  }
+  .limen .still p.ref {
+    margin-top:1rem;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.72rem;
+    color:var(--mute);
+    line-height:1.6;
+  }
+  .limen .fig {
+    margin:.5rem 0 0;
+    padding:1.05rem 1.05rem 1.15rem;
+    background:rgba(23,21,28,.86);
+    border:1px solid var(--rule);
+    border-radius:3px;
+    display:flex;
+    flex-direction:column;
+    gap:.85rem;
+    min-width:0;
+  }
+  .limen .figk {
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.68rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--mute);
+  }
+  .limen .figk b {
+    font-weight:500;
+    color:var(--ink);
+  }
+  .limen .cap {
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.72rem;
+    line-height:1.65;
+    color:var(--mute);
+  }
+  .limen .cap .la,
+  .limen .cap .gr {
+    font-size:1.25em;
+  }
+  .limen .fig svg {
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  .limen .svgl {
+    font-family:var(--display);
+    font-style:italic;
+    font-size:12px;
+    fill:var(--mute);
+  }
+  .limen .seg {
+    display:flex;
+    flex-wrap:wrap;
+    gap:.45rem;
+  }
+  .limen .btn {
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:.7rem;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--ink);
+    background:transparent;
+    border:1px solid #4a4552;
+    border-radius:2px;
+    min-height:44px;
+    padding:.5rem .85rem;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .limen .btn:hover {
+    border-color:var(--ink);
+  }
+  .limen .btn[aria-pressed="true"] {
+    border-color:var(--eos);
+    color:var(--eos);
+    background:rgba(233,180,92,.09);
+  }
+  .limen .btn.go {
+    border-color:var(--eos);
+    color:var(--stone);
+    background:var(--eos);
+  }
+  .limen .btn.go:hover {
+    background:#f3c676;
+  }
+  .limen .out {
+    font-style:italic;
+    font-size:1.05em;
+    min-height:1.5em;
+  }
+  .limen .ctl {
+    display:grid;
+    gap:.1rem;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.7rem;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--mute);
+  }
+  .limen .ctl .ends {
+    display:flex;
+    justify-content:space-between;
+    text-transform:none;
+    letter-spacing:.02em;
+    font-family:var(--display);
+    font-style:italic;
+    font-size:1rem;
+    color:var(--ink);
+  }
+  .limen input[type=range] {
+    width:100%;
+    min-height:44px;
+    margin:0;
+    accent-color:var(--eos);
+    background:transparent;
+  }
+  .limen .eq {
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.74rem;
+    color:var(--hesper);
+    font-variant-numeric:tabular-nums;
+  }
+  .limen .row {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:.8rem 1.1rem;
+  }
+  .limen #globus {
+    max-width:300px;
+    align-self:center;
+  }
+  .limen .coinbox {
+    perspective:900px;
+    display:grid;
+    place-items:center;
+    padding:.5rem 0 .2rem;
+  }
+  .limen .coinbox.air {
+    animation:limen-air 1.2s cubic-bezier(.3,.6,.4,1);
+  }
+@keyframes limen-air {0%{transform:translateY(0) scale(1)}45%{transform:translateY(-22px) scale(1.07)}100%{transform:translateY(0) scale(1)}}
+  .limen .coin {
+    width:min(60vw,210px);
+    aspect-ratio:1;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform 1.2s cubic-bezier(.25,.8,.25,1);
+    cursor:pointer;
+  }
+  .limen .side {
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    filter:drop-shadow(0 8px 14px rgba(0,0,0,.55));
+  }
+  .limen .side.rev {
+    transform:rotateY(180deg);
+  }
+  .limen #keepers .gz {
+    opacity:.3;
+    transition:opacity .4s;
+  }
+  .limen #keepers .gz.on {
+    opacity:1;
+  }
+  .limen .panel {
+    display:grid;
+    gap:.3rem;
+    min-height:6.2em;
+  }
+  .limen .panel .nm {
+    font-size:1.2em;
+    line-height:1.2;
+  }
+  .limen .panel .nm .gr {
+    font-size:1.02em;
+  }
+  .limen .orient {
+    display:grid;
+    grid-template-columns:1fr 84px 1fr;
+    gap:.5rem;
+    align-items:stretch;
+  }
+  .limen .zone {
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding:.6rem .55rem;
+    display:grid;
+    align-content:center;
+    gap:.25rem;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.68rem;
+    line-height:1.45;
+    color:var(--mute);
+    transition:background .5s,border-color .5s,color .5s;
+  }
+  .limen .zone .w {
+    font-family:var(--greek);
+    font-size:1.15rem;
+    color:var(--mute);
+    min-height:1.3em;
+  }
+  .limen .zone.lit {
+    color:var(--ink);
+  }
+  .limen .zone.lit.blue {
+    background:rgba(147,166,220,.14);
+    border-color:rgba(147,166,220,.6);
+  }
+  .limen .zone.lit.gold {
+    background:rgba(233,180,92,.13);
+    border-color:rgba(233,180,92,.6);
+  }
+  .limen .zone.lit.blue .w {
+    color:var(--hesper);
+  }
+  .limen .zone.lit.gold .w {
+    color:var(--eos);
+  }
+  .limen .zone.east {
+    text-align:right;
+  }
+  .limen .flow {
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.68rem;
+    letter-spacing:.08em;
+    color:var(--mute);
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .limen .flow i {
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,var(--rule),var(--mute));
+    position:relative;
+  }
+  .limen .flow i::after {
+    content:"";
+    position:absolute;
+    right:-2px;
+    top:-4px;
+    border:4.5px solid transparent;
+    border-left:8px solid var(--mute);
+    border-right:0;
+  }
+  .limen .doorway {
+    position:relative;
+    width:min(52vw,190px);
+    aspect-ratio:2/3;
+    margin:2.6rem auto .3rem;
+    perspective:800px;
+  }
+  .limen .doorway .beyond {
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg,rgba(147,166,220,.34),rgba(233,180,92,.6));
+    box-shadow:0 0 0 7px #201c25,0 0 0 8px rgba(236,229,214,.3);
+  }
+  .limen .doorway .leaf {
+    position:absolute;
+    inset:0;
+    transform-origin:left center;
+    transform:rotateY(calc(var(--a,28) * 1deg));
+    background:linear-gradient(90deg,#3a2716,#5b3d22 55%,#3d2a18);
+    border:1px solid var(--bronze);
+  }
+  .limen .doorway .leaf::before {
+    content:"";
+    position:absolute;
+    inset:9% 12%;
+    border:1px solid rgba(233,180,92,.4);
+    background:radial-gradient(circle at 50% 50%,rgba(233,180,92,.5) 0 2.4px,transparent 3px) 0 0/33.3% 25%;
+  }
+  .limen .doorway .pin {
+    position:absolute;
+    left:-5px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--eos);
+    box-shadow:0 0 10px var(--eos);
+  }
+  .limen .doorway .pin.t {
+    top:5px;
+  }
+  .limen .doorway .pin.b {
+    bottom:5px;
+  }
+  .limen .doorway .pivot {
+    position:absolute;
+    left:-4.4rem;
+    bottom:0;
+    font-style:italic;
+    color:var(--eos);
+    font-size:1rem;
+  }
+  .limen .doorway .sprig {
+    position:absolute;
+    left:50%;
+    top:-2.5rem;
+    width:150px;
+    transform:translateX(-50%);
+  }
+  .limen .hingeline {
+    display:flex;
+    flex-wrap:wrap;
+    gap:.2rem 1.4rem;
+    justify-content:center;
+    font-style:italic;
+    font-size:1.12em;
+  }
+  .limen .hingeline span {
+    color:var(--mute);
+    transition:color .3s;
+  }
+  .limen .hingeline span.on {
+    color:var(--eos);
+  }
+  .limen #wheel {
+    max-width:420px;
+    align-self:center;
+  }
+  .limen #wheel text {
+    font-family:var(--display);
+    font-size:15px;
+    fill:var(--ink);
+    text-anchor:middle;
+  }
+  .limen #wheel text.c {
+    font-style:italic;
+    fill:var(--eos);
+    font-size:17px;
+  }
+  .limen .gates {
+    display:flex;
+    justify-content:center;
+    perspective:700px;
+    padding:.6rem 0 .1rem;
+  }
+  .limen .gates .gate {
+    width:64px;
+    height:128px;
+    background:linear-gradient(90deg,#3a2716,#5b3d22 55%,#3d2a18);
+    border:1px solid var(--bronze);
+    transition:transform 1.1s cubic-bezier(.3,.7,.2,1);
+    background-image:radial-gradient(circle,rgba(233,180,92,.5) 0 2px,transparent 2.6px),linear-gradient(90deg,#3a2716,#5b3d22 55%,#3d2a18);
+    background-size:50% 25%,100% 100%;
+  }
+  .limen .gates .gate--l {
+    transform-origin:left center;
+  }
+  .limen .gates .gate--r {
+    transform-origin:right center;
+  }
+  .limen .gates.open .gate--l {
+    transform:rotateY(74deg);
+  }
+  .limen .gates.open .gate--r {
+    transform:rotateY(-74deg);
+  }
+  .limen .gates {
+    position:relative;
+  }
+  .limen .gates::before {
+    content:"";
+    position:absolute;
+    left:50%;
+    top:.6rem;
+    width:128px;
+    height:128px;
+    transform:translateX(-50%);
+    background:linear-gradient(90deg,rgba(147,166,220,.3),rgba(233,180,92,.5));
+    box-shadow:0 0 0 5px #201c25,0 0 0 6px rgba(236,229,214,.3);
+  }
+  .limen .gates .gate {
+    position:relative;
+  }
+  .limen .years {
+    display:grid;
+    gap:.4rem;
+  }
+  .limen .track {
+    position:relative;
+    height:26px;
+    background:#4a2f1c;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .limen .track .mk {
+    position:absolute;
+    top:0;
+    bottom:0;
+    background:var(--ink);
+  }
+  .limen .track .mk.tick {
+    width:2px;
+  }
+  .limen .ends {
+    display:flex;
+    justify-content:space-between;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.68rem;
+    color:var(--mute);
+  }
+  .limen .key {
+    display:flex;
+    flex-wrap:wrap;
+    gap:.3rem 1.2rem;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.68rem;
+    color:var(--mute);
+  }
+  .limen .key i {
+    display:inline-block;
+    width:.8em;
+    height:.8em;
+    margin-right:.45em;
+    vertical-align:-.05em;
+    border-radius:1px;
+  }
+  .limen ol.closures {
+    margin:0;
+    padding-left:1.3rem;
+    display:grid;
+    gap:.35rem;
+    font-size:.95em;
+    line-height:1.4;
+  }
+  .limen ol.closures small {
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.66rem;
+    color:var(--mute);
+    letter-spacing:.02em;
+  }
+  .limen .cards {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(15.5rem,1fr));
+    gap:.6rem;
+    margin-top:.4rem;
+  }
+  .limen .card {
+    padding:.9rem 1rem 1rem;
+    border:1px solid var(--rule);
+    border-left:2px solid var(--eos);
+    background:rgba(23,21,28,.86);
+    display:grid;
+    gap:.3rem;
+    align-content:start;
+  }
+  .limen .card:nth-child(even) {
+    border-left-color:var(--hesper);
+  }
+  .limen .card[hidden] {
+    display:none;
+  }
+  .limen .card .kk {
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.66rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--mute);
+  }
+  .limen .card h3 {
+    font-weight:500;
+    font-size:1.3em;
+    line-height:1.1;
+    margin:0;
+  }
+  .limen .card p {
+    font-size:.93em;
+    line-height:1.4;
+  }
+  .limen .colophon {
+    padding-block:7vh 0;
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:.72rem;
+    line-height:1.7;
+    color:var(--mute);
+    display:flex;
+    flex-direction:column;
+    gap:.9rem;
+  }
+  .limen .colophon h2 {
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:.68rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink);
+    margin:.6rem 0 0;
+  }
+  .limen .colophon ul {
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));
+    gap:.4rem 2rem;
+  }
+  .limen .colophon li {
+    min-width:0;
+  }
+  .limen .colophon i {
+    font-style:italic;
+    color:var(--ink);
+  }
+  .limen #rail {
+    position:fixed;
+    right:max(18px,env(safe-area-inset-right,0px));
+    top:50%;
+    transform:translateY(-50%);
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.6rem;
+    font-family:var(--mono);
+    font-size:.62rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--mute);
+  }
+  .limen #rail .v {
+    writing-mode:vertical-rl;
+  }
+  .limen #rail .gk {
+    font-family:var(--greek);
+    font-size:1rem;
+    letter-spacing:.05em;
+    text-transform:none;
+  }
+  .limen #rail #r-top {
+    color:var(--hesper);
+  }
+  .limen #rail #r-bot {
+    color:var(--eos);
+  }
+  .limen #rail .tube {
+    width:3px;
+    height:9rem;
+    border-radius:2px;
+    background:var(--rule);
+    position:relative;
+    overflow:hidden;
+  }
+  .limen #rail .fill {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:4%;
+    background:linear-gradient(180deg,var(--hesper),var(--eos));
+  }
+@media (max-width:1180px) {
+  .limen #rail {
+    display:none;
+  }
+}
+@media (max-width:820px) {
+  .limen .body {
+    margin-left:0;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .limen * {
+    animation:none!important;
+    transition:none!important;
+  }
+}
+
+  /* site: Poem.astro's globals step aside, and the shared pieces take the page's voice */
+  .limen {
+    --fg: var(--ink);
+    --dim: var(--mute);
+  }
+  .limen main.page {
+    max-width: none;
+    margin: 0;
+    padding-block: 0;
+  }
+  .limen section,
+  .limen header.hero,
+  .limen footer {
+    min-height: 0;
+  }
+  .limen section {
+    display: block;
+  }
+  .limen .out .gr,
+  .limen .cap .gr {
+    font-style: normal;
+  }
+  .limen .colophon .gr {
+    font-size: 1.2em;
+  }
+  .limen .colophon a {
+    color: inherit;
+    text-underline-offset: 0.3em;
+  }
+  /* Past the Homer section the rail's words turn Greek, and the colours
+     turn with them: what is read is πρόσσω, before the eyes. */
+  .limen #rail #r-top.gk {
+    color: var(--eos);
+  }
+  .limen #rail #r-bot.gk {
+    color: var(--hesper);
+  }
+  .limen .limen-sf {
+    font-family: var(--display);
+    font-weight: 500;
+    color: var(--ink);
+  }
+</style>
+
+<script is:inline>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var INK='#ece5d6',EOS='#e9b45c',HES='#93a6dc';
+function each(sel,fn){[].forEach.call(document.querySelectorAll(sel),fn);}
+function press(group,el){[].forEach.call(group,function(b){b.setAttribute('aria-pressed',b===el?'true':'false');});}
+
+/* ---------- the two-faced head: one outline, drawn everywhere ---------- */
+var BEARD=[[0,-1],[.2,-.99],[.4,-.92],[.55,-.8],[.63,-.64],[.67,-.48],[.7,-.36],[.67,-.29],[.73,-.16],[.81,-.03],[.72,.03],[.7,.08],[.74,.13],[.69,.17],[.73,.22],[.69,.28],[.74,.38],[.76,.52],[.68,.66],[.52,.72],[.4,.64],[.36,.78],[.4,.92],[.46,1]];
+var YOUNG=[[0,-1],[.2,-.99],[.4,-.92],[.55,-.8],[.63,-.64],[.67,-.48],[.7,-.36],[.67,-.29],[.73,-.16],[.81,-.03],[.72,.03],[.7,.08],[.74,.13],[.69,.17],[.73,.22],[.68,.28],[.71,.37],[.64,.46],[.48,.5],[.38,.56],[.34,.7],[.35,.82],[.39,.92],[.45,1]];
+function ring(R,L){var pts=R.slice();pts.push([.23,1],[0,1],[-.23,1]);for(var i=L.length-1;i>0;i--)pts.push([-L[i][0],L[i][1]]);return pts;}
+function morph(pts,t,rad){return pts.map(function(p){var a=Math.atan2(p[1],p[0]);return [(1-t)*rad*Math.cos(a)+t*p[0],(1-t)*rad*Math.sin(a)+t*p[1]];});}
+function n3(n){return Math.round(n*1000)/1000;}
+function spline(pts,cor,t){
+  var n=pts.length,d='',k=6;
+  for(var i=0;i<n;i++){
+    var p0=pts[(i-1+n)%n],p1=pts[i],p2=pts[(i+1)%n],p3=pts[(i+2)%n];
+    var sh=Math.max(0,(t-.85)/.15),c1=cor.indexOf(i)>-1?sh:0,c2=cor.indexOf((i+1)%n)>-1?sh:0; /* corners sharpen as the head settles */
+    if(i===0)d+='M'+n3(p1[0])+' '+n3(p1[1]);
+    d+='C'+n3(p1[0]+(1-c1)*(p2[0]-p0[0])/k)+' '+n3(p1[1]+(1-c1)*(p2[1]-p0[1])/k)+' '+n3(p2[0]-(1-c2)*(p3[0]-p1[0])/k)+' '+n3(p2[1]-(1-c2)*(p3[1]-p1[1])/k)+' '+n3(p2[0])+' '+n3(p2[1]);
+  }
+  return d+'Z';
+}
+function marks(s,beard,col){
+  var g='<path d="M'+(s*.44)+' -.3Q'+(s*.52)+' -.37 '+(s*.61)+' -.3Q'+(s*.52)+' -.25 '+(s*.44)+' -.3Z" fill="none" stroke="'+col+'" stroke-width=".014"/>'+
+        '<circle cx="'+(s*.55)+'" cy="-.3" r=".018" fill="'+col+'"/>'+
+        '<path d="M'+(s*.42)+' -.4Q'+(s*.54)+' -.47 '+(s*.66)+' -.4" fill="none" stroke="'+col+'" stroke-width=".014"/>'+
+        '<path d="M'+(s*.54)+' -.8C'+(s*.4)+' -.6 '+(s*.3)+' -.4 '+(s*.3)+' -.12C'+(s*.3)+' .05 '+(s*.36)+' .2 '+(s*.5)+' .27" fill="none" stroke="'+col+'" stroke-width=".012" opacity=".5"/>';
+  if(beard){[[.5,.36,.56,.56],[.58,.34,.66,.56],[.44,.4,.46,.6]].forEach(function(b){g+='<path d="M'+(s*b[0])+' '+b[1]+'Q'+(s*(b[0]+.06))+' '+((b[1]+b[3])/2)+' '+(s*b[2])+' '+b[3]+'" fill="none" stroke="'+col+'" stroke-width=".012" opacity=".55"/>';});}
+  return g;
+}
+function head(o){
+  var R=o.R||BEARD,L=o.L||BEARD,t=o.t==null?1:o.t,col=o.col||INK;
+  var d=spline(morph(ring(R,L),t,o.rad||.92),[R.length-1,R.length+3],t);
+  var s='<path d="'+d+'" fill="'+(o.fill||'none')+'" stroke="'+o.stroke+'" stroke-width="'+(o.sw||.02)+'" stroke-linejoin="round"/>';
+  var m=t>.8?(t-.8)/.2:0;
+  if(m>0)s+='<g opacity="'+n3(m)+'">'+marks(1,R===BEARD,col)+marks(-1,L===BEARD,col)+'<path d="M0 -.72V.7" stroke="'+col+'" stroke-width=".008" opacity=".35" stroke-dasharray=".03 .03"/><path d="M-.56 -.78Q0 -.62 .56 -.78" fill="none" stroke="'+col+'" stroke-width=".012" opacity=".55"/></g>';
+  return s;
+}
+var GRAD='<linearGradient id="GID" x1="0" x2="1"><stop offset="0" stop-color="'+HES+'"/><stop offset=".5" stop-color="'+INK+'"/><stop offset="1" stop-color="'+EOS+'"/></linearGradient>';
+
+/* hero: the head, with a line of sight from each face */
+$('hero-head').innerHTML='<defs>'+GRAD.replace('GID','hg')+
+  '<radialGradient id="gw"><stop offset="0" stop-color="'+HES+'" stop-opacity=".2"/><stop offset="1" stop-color="'+HES+'" stop-opacity="0"/></radialGradient>'+
+  '<radialGradient id="ge"><stop offset="0" stop-color="'+EOS+'" stop-opacity=".22"/><stop offset="1" stop-color="'+EOS+'" stop-opacity="0"/></radialGradient></defs>'+
+  '<circle cx="-1.05" cy="-.2" r="1.05" fill="url(#gw)"/><circle cx="1.05" cy="-.2" r="1.05" fill="url(#ge)"/>'+
+  head({stroke:'url(#hg)',fill:'rgba(236,229,214,.045)',sw:.022})+
+  '<path d="M-.86 -.3H-1.58" stroke="'+HES+'" stroke-width=".012" stroke-dasharray=".035 .035"/><path d="M.86 -.3H1.58" stroke="'+EOS+'" stroke-width=".012" stroke-dasharray=".035 .035"/>'+
+  '<text x="-1.58" y="-.38" style="font-family:var(--greek);font-size:.135px;fill:'+HES+'">ὀπίσσω</text><text x="-1.58" y="-.15" style="font-family:var(--mono);font-size:.07px;letter-spacing:.012px;fill:var(--mute)">BEHIND</text>'+
+  '<text x="1.58" y="-.38" text-anchor="end" style="font-family:var(--greek);font-size:.135px;fill:'+EOS+'">πρόσσω</text><text x="1.58" y="-.15" text-anchor="end" style="font-family:var(--mono);font-size:.07px;letter-spacing:.012px;fill:var(--mute)">BEFORE</text>';
+
+/* fig I: ball to face */
+(function(){
+  var svg=$('globus'),sl=$('settle'),eq=$('globus-eq'),touched=false,ran=false;
+  function paint(t){svg.innerHTML='<defs>'+GRAD.replace('GID','gg')+'</defs>'+head({t:t,stroke:'url(#gg)',fill:'rgba(236,229,214,.05)'});eq.textContent='r(θ) = (1 − t)·R + t·f(θ) · t = '+t.toFixed(2);}
+  sl.addEventListener('input',function(){touched=true;paint(sl.value/100);});
+  paint(1);
+  if(!reduce&&'IntersectionObserver' in window){
+    new IntersectionObserver(function(en,ob){
+      if(!en[0].isIntersecting||ran)return;ran=true;ob.disconnect();
+      var t0=null;(function step(now){if(touched)return;if(!t0)t0=now;var u=Math.min(1,(now-t0)/2600),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;sl.value=Math.round(e*100);paint(e);if(u<1)requestAnimationFrame(step);})(performance.now());
+    },{threshold:.6}).observe(svg);
+  }
+})();
+
+/* fig II: the coin */
+(function(){
+  var coin=$('coin'),box=$('coinbox'),out=$('coin-out'),cap=$('coin-cap'),rot=0,kind='rome';
+  var DK='rgba(34,20,9,.85)',LT='rgba(255,246,228,.16)';
+  function disc(id,ag){var g=ag?['#ecebe6','#a7a9ae','#5b5d64']:['#d9a263','#8f5c30','#452b17'];
+    return '<defs><radialGradient id="'+id+'" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="'+g[0]+'"/><stop offset=".55" stop-color="'+g[1]+'"/><stop offset="1" stop-color="'+g[2]+'"/></radialGradient></defs><circle r="1.24" fill="url(#'+id+')"/><circle r="1.12" fill="none" stroke="rgba(0,0,0,.3)" stroke-width=".022" stroke-dasharray=".02 .055"/>';}
+  function wrap(s){return '<svg viewBox="-1.3 -1.3 2.6 2.6" aria-hidden="true">'+s+'</svg>';}
+  var T='font-family:Cormorant Garamond,Georgia,serif;font-weight:600;fill:'+DK+';';
+  var prow='<g fill="'+LT+'" stroke="'+DK+'" stroke-width=".03" stroke-linejoin="round"><path d="M-.92 -.08H.4C.58 -.08 .66 -.24 .68 -.56C.8 -.48 .82 -.3 .76 -.1V.02L1 .16V.28L.72 .27C.5 .44 .1 .5 -.92 .42Z"/><path d="M-.62 -.08V-.32H.08V-.08M-.44 -.32V-.08M-.26 -.32V-.08M-.08 -.32V-.08" fill="none"/><path d="M-.92 .1H.72M-.92 .26H.7" fill="none" stroke-width=".02"/><circle cx=".5" cy=".18" r=".05" fill="'+DK+'" stroke="none"/></g>'+
+    '<text y="-.62" text-anchor="middle" style="'+T+'font-size:.34px">I</text><text y=".92" text-anchor="middle" style="'+T+'font-size:.27px;letter-spacing:.08px">ROMA</text>';
+  var axe='<rect x="-.86" y="-.86" width="1.72" height="1.72" fill="rgba(0,0,0,.2)" stroke="rgba(0,0,0,.35)" stroke-width=".02"/><g fill="'+LT+'" stroke="'+DK+'" stroke-width=".03" stroke-linejoin="round"><path d="M-.045 -.5C-.3 -.56 -.55 -.68 -.7 -.78C-.86 -.5 -.86 -.12 -.7 .16C-.55 .06 -.3 -.06 -.045 -.12Z"/><path d="M.045 -.5C.3 -.56 .55 -.68 .7 -.78C.86 -.5 .86 -.12 .7 .16C.55 .06 .3 -.06 .045 -.12Z"/><path d="M-.045 -.74H.045V.74H-.045Z"/></g>'+
+    '<text x="-.5" y=".62" text-anchor="middle" style="'+T+'font-size:.32px">T</text><text x=".5" y=".62" text-anchor="middle" style="'+T+'font-size:.32px">E</text>';
+  var CAP={
+    rome:'Cast bronze <span class="la" lang="la">as</span>. Janus in front; behind him the prow of the ship that brought Saturn up the Tiber. Roman boys tossed it and called <span class="la" lang="la">capita aut navia</span>, heads or ships. <em>Fasti</em> 1.229–240; Macrobius, <em>Saturnalia</em> 1.7.22.',
+    ten:'Silver of Tenedos, off the Trojan coast: a woman and a bearded man joined at the back of the skull, and a double axe on the reverse. Nobody in Greece called the pair Janus.'};
+  var NAME={rome:['capita · heads','navia · ships'],ten:['the two heads','the double axe']};
+  function paint(){
+    var ag=kind==='ten';
+    $('obv').innerHTML=wrap(disc('cd1',ag)+'<g transform="translate(0 .03) scale(.82)">'+head({R:BEARD,L:ag?YOUNG:BEARD,stroke:DK,fill:LT,sw:.034,col:DK})+'</g>');
+    $('rev').innerHTML=wrap(disc('cd2',ag)+(ag?axe:prow));
+    cap.innerHTML=CAP[kind];say();
+  }
+  function say(){out.textContent=NAME[kind][Math.round(rot/180)%2];}
+  function toss(n){rot+=180*n;coin.style.transform='rotateY('+rot+'deg)';if(n>1&&!reduce){box.classList.remove('air');void box.offsetWidth;box.classList.add('air');}out.textContent='…';setTimeout(say,reduce?0:1150);}
+  $('toss').addEventListener('click',function(){toss(Math.random()<.5?5:6);});
+  coin.addEventListener('click',function(){toss(1);});
+  function pick(k){kind=k;press([$('coin-rome'),$('coin-ten')],$(k==='rome'?'coin-rome':'coin-ten'));paint();}
+  $('coin-rome').addEventListener('click',function(){pick('rome');});
+  $('coin-ten').addEventListener('click',function(){pick('ten');});
+  paint();
+})();
+
+/* fig III: the Greek doorkeepers */
+(function(){
+  var P={
+    hinge:['<span class="gr" lang="grc">Ἑρμῆς Στροφαῖος</span> · Hermes Strophaios','Stationed at the pivot, the <span class="gr" lang="grc">στροφεύς</span>. The same word means twisty, and Aristophanes plays it for the laugh.','Wealth 1153–1154'],
+    before:['<span class="gr" lang="grc">Ἀπόλλων Θυραῖος</span> · Apollo Thyraios','Of the Door. A pillar or an altar set in front of the house, for going out and coming in.','Macrobius, Saturnalia 1.9.6'],
+    cross:['<span class="gr" lang="grc">Ἑκάτη προθύραιε</span> · Hekate Before-the-Door','Keeper of gates and of the <span class="gr" lang="grc">τρίοδος</span>, the place where three roads meet. Three faces, one for each road.','Proclus, Hymn 6'],
+    all:['<span class="la" lang="la">Ianus</span>','The hinge, the door, the gate and the passage itself, in one body with two faces. Rome needed one name where Greece used three.','Fasti 1.117–140']};
+  var btns=document.querySelectorAll('[data-z]'),panel=$('keeper-panel');
+  function show(z){['hinge','before','cross'].forEach(function(k){$('z-'+k).classList.toggle('on',z==='all'||z===k);});
+    panel.innerHTML='<p class="nm">'+P[z][0]+'</p><p>'+P[z][1]+'</p><p class="cap">'+P[z][2]+'</p>';}
+  [].forEach.call(btns,function(b){b.addEventListener('click',function(){press(btns,b);show(b.getAttribute('data-z'));});});
+  show('hinge');
+})();
+
+/* fig IV: which way is the future */
+(function(){
+  var btns=document.querySelectorAll('[data-o]'),w=$('walker');
+  /* r, l: color of the face looking right or left (null for none). Gold is the front face, blue the rear. */
+  var M={
+    english:{r:EOS,l:null,ww:'',wt:'behind you: what has happened',ew:'',et:'ahead of you: what is coming',out:'English walks facing forward. The future is the thing you look at.'},
+    homer:{r:null,l:EOS,ww:'πρόσσω',wt:'before the eyes: what has happened',ew:'ὀπίσσω',et:'at the back: what is coming',out:'Homer’s word for behind is his word for hereafter. You watch what has happened, and what is coming arrives at your back.'},
+    janus:{r:HES,l:EOS,ww:'πρόσσω',wt:'what has happened, in view',ew:'ὀπίσσω',et:'what is coming, in view',out:'<span class="gr" lang="grc">ἅμα πρόσσω καὶ ὀπίσσω.</span> The face on the back of his head is the one that watches tomorrow.'}};
+  function show(k){var m=M[k];
+    w.innerHTML='<g stroke="'+INK+'" stroke-width="2" fill="none" stroke-linecap="round"><path d="M42 58V96M42 96L30 126M42 96L56 126M42 68L28 84M42 68L57 80"/><circle cx="42" cy="38" r="17" fill="#0e0d11"/>'+
+      (m.r?'<path d="M59 33l12 5-12 5" stroke="'+m.r+'"/><circle cx="50" cy="34" r="1.8" fill="'+m.r+'" stroke="none"/>':'')+
+      (m.l?'<path d="M25 33l-12 5 12 5" stroke="'+m.l+'"/><circle cx="34" cy="34" r="1.8" fill="'+m.l+'" stroke="none"/>':'')+'</g>';
+    var zw=$('z-west'),ze=$('z-east');
+    zw.className='zone west'+(m.l?' lit '+(m.l===EOS?'gold':'blue'):'');ze.className='zone east'+(m.r?' lit '+(m.r===EOS?'gold':'blue'):'');
+    $('zw-w').textContent=m.ww;$('zw-t').textContent=m.wt;$('ze-w').textContent=m.ew;$('ze-t').textContent=m.et;$('orient-out').innerHTML=m.out;}
+  [].forEach.call(btns,function(b){b.addEventListener('click',function(){press(btns,b);show(b.getAttribute('data-o'));});});
+  show('homer');
+})();
+
+/* fig V: run her play */
+(function(){
+  var L=$('leader'),N=$('nymph'),cf=$('cone-f'),cb=$('cone-b'),nf=$('nose-f'),nb=$('nose-b'),spot=$('spot'),qm=$('qm'),out=$('play-out'),raf=0;
+  var X0=74,X1=292,HY=119,ROCK=216;
+  function cone(el,x,dir,len){if(!len){el.setAttribute('points','');return;}el.setAttribute('points',(x+dir*8)+','+HY+' '+(x+dir*len)+','+(HY-36)+' '+(x+dir*len)+','+(HY+44));}
+  function render(mode,u){
+    var janus=mode==='janus',stop=janus?.716:1;
+    var e=Math.min(u/.82,1);e=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;
+    var lx=X0+(X1-X0)*Math.min(e,stop);
+    var hide=Math.max(0,Math.min(1,(lx-204)/26));
+    var nx=hide>0?168+hide*20:lx-36;
+    var turned=!janus&&u>.9,caught=janus&&hide>=1;
+    L.setAttribute('transform','translate('+n3(lx)+' 170)');
+    N.setAttribute('transform','translate('+n3(nx)+' 170)');
+    N.setAttribute('opacity',janus?1:n3(1-hide*.72));
+    nf.setAttribute('opacity',turned?0:1);nb.setAttribute('opacity',janus||turned?1:0);nb.setAttribute('stroke',turned?EOS:HES);
+    if(turned)cf.setAttribute('points',(lx-8)+','+HY+' '+ROCK+','+(HY-26)+' '+ROCK+','+(HY+40));else cone(cf,lx,1,112);
+    cone(cb,lx,-1,janus?112:0);
+    spot.setAttribute('cx',n3(nx));spot.setAttribute('cy',148);spot.setAttribute('opacity',janus&&hide>0?1:0);
+    qm.setAttribute('opacity',turned?1:0);
+    var msg;
+    if(mode==='rest')msg='Pick who walks ahead of her.';
+    else if(caught)msg='The rear face watched her stop. Latebras respicit ille tuas: he looks back on your hiding place.';
+    else if(turned)msg='He turns at the cave mouth and the path is empty. Nullo est invenienda modo: to be found by no means.';
+    else if(hide>0)msg=janus?'She reaches the brush and stops. He has it in view.':'She reaches the brush and stops. He keeps walking.';
+    else msg='“Lead me to a more hidden cave and I follow.” He goes ahead.';
+    if(out.textContent!==msg)out.textContent=msg;
+  }
+  function run(mode){cancelAnimationFrame(raf);if(reduce){render(mode,1);return;}
+    var t0=null;(function step(now){if(!t0)t0=now;var u=Math.min(1,(now-t0)/6000);render(mode,u);if(u<1)raf=requestAnimationFrame(step);})(performance.now());}
+  $('play-suitor').addEventListener('click',function(){run('suitor');});
+  $('play-janus').addEventListener('click',function(){run('janus');});
+  render('rest',0);
+})();
+
+/* fig VI: the hinge */
+(function(){
+  var sl=$('hinge'),leaf=$('leaf'),o=$('hl-open'),s=$('hl-shut'),last=+sl.value;
+  function set(v,dir){leaf.style.setProperty('--a',n3(v*.8));o.classList.toggle('on',dir>0);s.classList.toggle('on',dir<0);}
+  sl.addEventListener('input',function(){var v=+sl.value;if(v!==last)set(v,v>last?1:-1);last=v;});
+  set(last,1);
+})();
+
+/* fig VII: what turns on the hinge */
+(function(){
+  var S={
+    compass:{n:['north'],e:['east'],s:['south'],w:['west'],cap:'The cardinal points. Latin first calls the two poles cardines, the pivots the sky turns on, and then lends the word to east and west.'},
+    year:{n:['Cancer','summer solstice'],e:['Libra','autumn equinox'],s:['Capricorn','winter solstice'],w:['Aries','spring equinox'],cap:'The cardinal signs, where each season turns, laid out like a day: spring rises at the left, summer stands at noon, winter sits at midnight. January opens a few days after that lowest hinge.'},
+    chart:{n:['Midheaven'],e:['Descendant'],s:['Imum Coeli'],w:['Ascendant'],cap:'The four angles of a nativity. Manilius and Firmicus call them the cardines, and everything in the chart is read from them.'},
+    town:{n:['north gate'],e:['decumanus','east'],s:['south gate'],w:['decumanus','west'],cap:'Roman surveyors named the north–south street of a camp or a town the cardo, after the axis the sky turns on. The decumanus crosses it east to west.'},
+    virtue:{n:['prudence'],e:['justice'],s:['temperance'],w:['fortitude'],cap:'The cardinal virtues, so named by Ambrose in the fourth century: the four the rest of a life swings on.'}};
+  var btns=document.querySelectorAll('[data-w]');
+  function show(k){var d=S[k];
+    $('w-n').textContent=d.n[1]||d.n[0];$('w-n2').textContent=d.n[1]?d.n[0]:'';
+    $('w-s').textContent=d.s[0];$('w-s2').textContent=d.s[1]||'';
+    $('w-e').textContent=d.e[0];$('w-e2').textContent=d.e[1]||'';
+    $('w-w').textContent=d.w[0];$('w-w2').textContent=d.w[1]||'';
+    $('wheel-cap').textContent=d.cap;}
+  [].forEach.call(btns,function(b){b.addEventListener('click',function(){press(btns,b);show(b.getAttribute('data-w'));});});
+  show('year');
+})();
+
+/* fig VIII: the gates */
+var gatesOpen=true;
+(function(){
+  var g=$('gates'),b=$('gate-btn'),o=$('gate-out'),sec=$('sec-gates');
+  b.addEventListener('click',function(){
+    gatesOpen=!gatesOpen;g.classList.toggle('open',gatesOpen);
+    b.textContent=gatesOpen?'Shut the gates':'Open the gates';
+    o.textContent=gatesOpen?'Open. Rome is in arms.':'Shut. Peace on land and sea, for now.';
+    sec.setAttribute('data-p',JSON.stringify({open:gatesOpen?1:0,east:.7,west:.7,veil:.35}));onScroll();
+  });
+})();
+
+/* the wall of modern references */
+(function(){
+  var btns=document.querySelectorAll('[data-f]');
+  [].forEach.call(btns,function(b){b.addEventListener('click',function(){press(btns,b);var f=b.getAttribute('data-f');each('#cards .card',function(c){c.hidden=!(f==='all'||c.getAttribute('data-c')===f);});});});
+})();
+
+/* ---------- the sill: a doorway behind the page, lit from both sides ---------- */
+var cv=$('sill'),cx=cv.getContext('2d'),W=0,H=0,DPR=1,t0=performance.now();
+var P={open:.35,east:.85,west:.85,veil:.1,swing:0},T={open:.35,east:.85,west:.85,veil:.1,swing:0};
+function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);}
+addEventListener('resize',function(){size();if(reduce)draw(performance.now());});size();
+var motes=[];for(var i=0;i<64;i++)motes.push({x:Math.random(),y:Math.random(),s:.012+Math.random()*.03,d:i%2?1:-1,r:.6+Math.random()*1.1,ph:Math.random()*6.28});
+var lastT=0;
+function draw(now){
+  var t=(now-t0)/1000,dt=Math.min(.05,t-lastT);lastT=t;
+  var k=reduce?1:.05;['open','east','west','veil','swing'].forEach(function(q){P[q]+=((T[q]||0)-P[q])*k;});
+  cx.fillStyle='#0e0d11';cx.fillRect(0,0,W,H);
+  var big=Math.max(W,H),g;
+  g=cx.createRadialGradient(-W*.12,H*.58,0,-W*.12,H*.58,big*.85);g.addColorStop(0,'rgba(147,166,220,'+(.2*P.west)+')');g.addColorStop(1,'rgba(147,166,220,0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  g=cx.createRadialGradient(W*1.12,H*.42,0,W*1.12,H*.42,big*.85);g.addColorStop(0,'rgba(233,180,92,'+(.2*P.east)+')');g.addColorStop(1,'rgba(233,180,92,0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+
+  var wide=W>1100,ax=wide?W*.8:W*.5,aw=Math.min(W*(wide?.2:.6),H*.4),r=aw/2,base=H*(wide?.9:.965),top=base-aw*2.05;
+  function arch(){cx.beginPath();cx.moveTo(ax-r,base);cx.lineTo(ax-r,top+r);cx.arc(ax,top+r,r,Math.PI,0);cx.lineTo(ax+r,base);cx.closePath();}
+  var th=Math.max(0,Math.min(1.42,P.open*1.4+(reduce?0:Math.sin(t*.55)*.16*P.swing)));
+  cx.save();arch();cx.clip();
+  g=cx.createLinearGradient(ax-r,0,ax+r,0);g.addColorStop(0,'rgba(147,166,220,'+(.03+.2*P.open*P.west)+')');g.addColorStop(1,'rgba(233,180,92,'+(.03+.22*P.open*P.east)+')');cx.fillStyle=g;cx.fillRect(ax-r,top,aw,base-top);
+  var lw=r*Math.cos(th),sk=r*Math.sin(th)*.14;
+  [[-1],[1]].forEach(function(a){var s=a[0],jx=ax+s*r,fx=jx-s*lw;
+    cx.beginPath();cx.moveTo(jx,top-4);cx.lineTo(fx,top-4+sk);cx.lineTo(fx,base-sk*.5);cx.lineTo(jx,base);cx.closePath();
+    cx.fillStyle='rgba(58,39,22,.62)';cx.fill();cx.strokeStyle='rgba(176,122,67,.55)';cx.lineWidth=1;cx.stroke();
+    for(var j=1;j<4;j++){var yy=top+(base-top)*j/4;cx.beginPath();cx.moveTo(jx,yy);cx.lineTo(fx,yy+sk*(1-j/4));cx.strokeStyle='rgba(176,122,67,.22)';cx.stroke();}
+  });
+  cx.restore();
+  arch();cx.strokeStyle='rgba(236,229,214,.2)';cx.lineWidth=1.2;cx.stroke();
+  cx.beginPath();cx.arc(ax,top+r,r+9,Math.PI,0);cx.moveTo(ax-r-9,top+r);cx.lineTo(ax-r-9,base);cx.moveTo(ax+r+9,top+r);cx.lineTo(ax+r+9,base);cx.strokeStyle='rgba(236,229,214,.09)';cx.stroke();
+  cx.beginPath();cx.moveTo(ax-r*1.7,base);cx.lineTo(ax+r*1.7,base);cx.moveTo(ax-r*2.1,base+10);cx.lineTo(ax+r*2.1,base+10);cx.strokeStyle='rgba(236,229,214,'+(wide?.16:.1)+')';cx.stroke();
+
+  for(var i=0;i<motes.length;i++){var m=motes[i];if(!reduce){m.x+=m.d*m.s*dt;if(m.x>1.05)m.x=-.05;if(m.x<-.05)m.x=1.05;}
+    var mx=m.x*W,my=base-(.08+m.y*.9)*(base-top)+Math.sin(t*.4+m.ph)*8,near=1-Math.min(1,Math.abs(mx-ax)/(W*.6));
+    cx.beginPath();cx.arc(mx,my,m.r,0,6.283);cx.fillStyle=(m.d>0?'rgba(233,180,92,':'rgba(147,166,220,')+(.1+.3*near*P.open)+')';cx.fill();}
+  cx.fillStyle='rgba(14,13,17,'+Math.min(.7,P.veil+(wide?0:.22))+')';cx.fillRect(0,0,W,H);
+  if(!reduce)requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+/* scroll: nearest block sets the doorway; the rail keeps both directions */
+var blocks=[].slice.call(document.querySelectorAll('[data-p]')),fill=$('fill'),bar=$('bar-i'),state=$('state'),rt=$('r-top'),rb=$('r-bot'),flip=$('sec-prosso');
+function onScroll(){
+  var mid=innerHeight*.5,best=null,bd=1e9;
+  blocks.forEach(function(b){var r=b.getBoundingClientRect(),d=r.top<=mid&&r.bottom>=mid?0:Math.min(Math.abs(r.top-mid),Math.abs(r.bottom-mid));if(d<bd){bd=d;best=b;}});
+  if(best){try{var p=JSON.parse(best.getAttribute('data-p'));T={open:p.open,east:p.east,west:p.west,veil:p.veil,swing:p.swing||0};}catch(e){}}
+  var total=document.documentElement.scrollHeight-innerHeight,pr=total>0?Math.min(1,Math.max(0,scrollY/total)):0;
+  fill.style.height=(4+pr*96)+'%';bar.style.width=(pr*100)+'%';
+  state.textContent=pr<.12?'outside':pr<.45?'on the sill':pr<.8?'under the lintel':'through';
+  var greek=flip.getBoundingClientRect().top<innerHeight*.5;
+  rt.textContent=greek?'πρόσσω':'read';rb.textContent=greek?'ὀπίσσω':'to come';rt.classList.toggle('gk',greek);rb.classList.toggle('gk',greek);
+  if(reduce)draw(performance.now());
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>

@@ -9,12 +9,15 @@
  * played with this coin (capita aut navia, "heads or ships"; Macrobius,
  * Saturnalia 1.7.22) and opens the one door the plan does not list, /earl/.
  * Without script the coin shows its obverse and the caption says only that.
+ * The obverse caption names him, and the name opens his essay (Before and
+ * Behind, JANUS_ESSAY).
  *
  * The two faces carry classes (janus__face--out, janus__face--in) so the
  * section that mounts the coin can wake the face that looks toward
  * whatever the visitor is pointing at.
  */
 import { ELDER, FACE, PROW, RIM, SHARED, YOUTH } from './janus';
+import { JANUS_ESSAY, JANUS_ESSAY_TITLE } from '../../config/site';
 
 const C = 120;
 ---
@@ -79,7 +82,11 @@ const C = 120;
   </button>
   <p class="coin__caption mono" id="coin-caption" aria-live="polite">
     <span data-coin-obverse>
-      Obverse<span class="coin__dot" aria-hidden="true"> &middot; </span>Janus, both ways.
+      Obverse<span class="coin__dot" aria-hidden="true"> &middot; </span><a
+        class="coin__essay"
+        href={JANUS_ESSAY}
+        title={`${JANUS_ESSAY_TITLE}: the essay on Janus`}>Janus, both ways</a
+      >.
       <span class="coin__hint" data-coin-hint hidden>It turns over.</span>
     </span>
     <span data-coin-reverse hidden>
@@ -261,6 +268,10 @@ const C = 120;
   .coin__boat {
     color: var(--gilt-ink);
     white-space: nowrap;
+  }
+  .coin__essay {
+    color: var(--gilt-ink);
+    text-underline-offset: 0.25em;
   }
   .coin__boat::after {
     content: ' \2192';
