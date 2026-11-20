@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" data-phase="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Won't</title>
+<meta name="description" content="A nervous system can be hijacked. That was already true in 1879. What survives the hijack, where it lives, and the thing on a long orbit that keeps getting closer.">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+@property --bg{syntax:'<color>';inherits:true;initial-value:#0a0c11}
+@property --fg{syntax:'<color>';inherits:true;initial-value:#e8e3d6}
+@property --fg-soft{syntax:'<color>';inherits:true;initial-value:#b4b7c1}
+@property --acc{syntax:'<color>';inherits:true;initial-value:#e4492f}
+@property --ally{syntax:'<color>';inherits:true;initial-value:#d8b25a}
+:root{
+  /* Layout: a night instrument. One fixed sky sits behind the whole page and carries three things: the reader's trace, a long orbit, and a body closing on it. Step cards ride over the sky; reading passages sit on opaque bands. Bone is you, ember is them, gold is the veto. The page stays night until the reader holds still, then lifts to marble. One visual world, single theme by choice. */
+  --night:#0a0c11;
+  --bone:#e8e3d6;
+  --ash:#b4b7c1;
+  --ember:#e4492f;
+  --gold:#d8b25a;
+  --marble:#efebe2;
+  --ink:#17181c;
+  --display:"Alegreya","Vollkorn","Rockwell",Georgia,serif;
+  --body:"Newsreader","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --typed:"Courier Prime","Courier New",Courier,monospace;
+  --greek:"Alegreya","Noto Serif","Times New Roman",serif;
+  --bar:44px;--bw:500;
+  --bg:var(--night);--fg:var(--bone);--fg-soft:var(--ash);--acc:var(--ember);--ally:var(--gold);
+  color-scheme:dark;
+  transition:--bg 1.5s ease,--fg 1.5s ease,--fg-soft 1.5s ease,--acc 1.2s ease,--ally 1.5s ease;
+}
+:root[data-phase="ally"]{--acc:var(--gold)}
+:root[data-phase="dawn"]{--bg:var(--marble);--fg:var(--ink);--fg-soft:#4e5058;--acc:#8f6410;--ally:#8f6410;--bw:440;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  --rule:color-mix(in srgb,var(--fg) 18%,transparent);
+  --panel:color-mix(in srgb,var(--bg) 91%,transparent);
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:var(--body);font-weight:var(--bw);font-size:clamp(18px,1rem + .35vw,21px);line-height:1.55;text-rendering:optimizeLegibility;
+}
+h1,h2,h3{margin:0;font-weight:900;text-wrap:balance}
+p{margin:0}
+a{color:inherit;text-underline-offset:.18em}
+:focus-visible{outline:2px solid var(--ally);outline-offset:3px;border-radius:2px}
+.title,.chap h2,.chap-n,.gate h2,.ring-n,.coda-line,.rooms .rn,.card .big,.prose .pull{font-variant-numeric:lining-nums}
+.gk{font-family:var(--greek);font-weight:600;font-size:1.04em;letter-spacing:.01em}
+
+/* the sky */
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.eq{position:fixed;z-index:0;top:calc(var(--bar) + 14px);left:46vw;display:grid;gap:1px;font-family:var(--typed);font-size:12px;line-height:1.36;color:var(--fg-soft);text-align:left;pointer-events:none;opacity:0;transition:opacity .5s ease}
+:root[data-eq="on"] .eq{opacity:1}
+.eq span{opacity:0;transition:opacity .5s ease;white-space:nowrap}
+.eq span.on{opacity:1}
+.eq i{font-style:normal;color:var(--acc);margin-left:.7em}
+.eq .rein{color:var(--ally)}
+.eq .rein i{color:var(--ally)}
+@media (max-width:899px){
+  .eq{left:max(14px,4vw);max-width:min(62vw,250px);display:flex;flex-wrap:wrap;gap:1px 12px}
+  .eq .m{display:none}
+  .eq i{margin-left:0}
+  .eq span[data-t]:not(.rein) i::before{content:"+ "}
+  .eq .rein i{margin-left:.6em}
+}
+.hero,main,.tail{position:relative;z-index:1}
+
+/* top bar */
+.bar{position:fixed;inset:0 0 auto;height:var(--bar);z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 max(16px,4vw);background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);font-family:var(--typed);font-size:13px;letter-spacing:.06em;color:var(--fg)}
+.bar-title{text-transform:uppercase;letter-spacing:.14em;color:var(--fg-soft)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--acc)}
+.toc{position:relative}
+.toc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 0;text-transform:uppercase;letter-spacing:.12em;white-space:nowrap}
+.toc summary::-webkit-details-marker{display:none}
+#now{display:block;min-width:0;max-width:58vw;overflow:hidden;text-overflow:ellipsis}
+.chev{width:8px;height:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
+.toc[open] .chev{transform:translateY(2px) rotate(-135deg)}
+.toc ol{position:absolute;top:calc(100% + 6px);left:0;margin:0;padding:8px;list-style:none;min-width:290px;background:var(--bg);color:var(--fg);border:1px solid var(--rule);box-shadow:0 14px 34px rgba(0,0,0,.4)}
+.toc a{display:grid;grid-template-columns:44px 1fr;padding:8px 10px;text-decoration:none;text-transform:none;letter-spacing:.02em;font-size:14px}
+.toc a:hover,.toc a:focus-visible{background:color-mix(in srgb,var(--fg) 9%,transparent)}
+.toc a span:first-child{color:var(--acc);font-weight:700}
+.gauge{display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-soft);font-size:12px}
+.gauge b{font-weight:400;margin-right:6px}
+.gauge i{display:block;width:16px;height:9px;border:1px solid currentColor;transition:background-color .4s ease,border-color .4s ease}
+.gauge i.on{background:var(--acc);border-color:var(--acc)}
+@media (max-width:899px){.bar-title{display:none}}
+
+/* hero */
+.hero{max-width:1240px;margin:0 auto;padding:calc(var(--bar) + clamp(40px,8vh,96px)) max(20px,4vw) clamp(48px,9vh,110px)}
+.kicker{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--typed);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-soft)}
+.title{font-family:var(--display);font-size:clamp(72px,23vw,236px);line-height:.86;letter-spacing:-.005em;text-transform:uppercase;margin:.2em 0 .26em}
+.title span{display:block}
+.title .vh{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.title .struck{position:relative;width:max-content;color:color-mix(in srgb,var(--fg) 32%,transparent)}
+.title .struck::after{content:"";position:absolute;left:-3%;right:-3%;top:50%;height:.09em;background:var(--ember);transform-origin:0 50%;animation:strike 1.1s .45s cubic-bezier(.7,0,.2,1) both}
+@keyframes strike{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.title .wont{font-style:italic;color:var(--gold);letter-spacing:0;padding-right:.06em}
+.dek{font-size:clamp(21px,1.1rem + .9vw,30px);line-height:1.32;max-width:34ch}
+.win{height:clamp(130px,22vh,190px);margin-top:clamp(24px,4vh,40px);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.win-cap{margin-top:8px;display:flex;justify-content:space-between;gap:16px;font-family:var(--typed);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft)}
+.epigraph{margin:clamp(28px,5vh,48px) 0 0;max-width:44ch;padding-left:18px;border-left:2px solid var(--acc);font-style:italic;font-size:clamp(19px,1rem + .4vw,23px)}
+.epigraph cite{display:block;margin-top:6px;font-style:normal;font-family:var(--typed);font-size:13px;letter-spacing:.08em;color:var(--fg-soft)}
+.cue{margin-top:clamp(28px,5vh,44px);display:flex;align-items:center;gap:12px;font-family:var(--typed);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft)}
+.cue::before{content:"";width:1px;height:32px;background:currentColor;transform-origin:top;animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+
+/* share card (the site adds .og when it photographs the opening frame) */
+html.og .hero{padding-top:40px;padding-bottom:26px}
+html.og .title{font-size:150px;margin:.1em 0 .14em}
+html.og .title span[aria-hidden]{display:inline-block;margin-right:.2em}
+html.og .title .wont{display:block}
+html.og .dek,html.og .epigraph,html.og .cue{display:none}
+html.og .win{height:176px;margin-top:6px}
+
+/* bands: opaque reading passages that cover the sky */
+.band{position:relative;background:var(--bg);padding:0 max(20px,4vw)}
+.band::before,.band::after{content:"";position:absolute;left:0;right:0;height:110px;pointer-events:none}
+.band::before{bottom:100%;background:linear-gradient(to bottom,transparent,var(--bg))}
+.band::after{top:100%;background:linear-gradient(to top,transparent,var(--bg))}
+.band-in{max-width:1240px;margin:0 auto}
+.chapter{scroll-margin-top:var(--bar)}
+.chap{padding:clamp(72px,13vh,150px) 0 clamp(20px,3vh,36px);display:grid;grid-template-columns:auto 1fr;align-items:end;gap:0 clamp(16px,2vw,28px)}
+.chap-n{font-family:var(--display);font-weight:900;font-size:clamp(72px,10vw,150px);line-height:.8;color:var(--acc)}
+.chap h2{font-family:var(--display);font-size:clamp(40px,5.8vw,88px);line-height:.92;text-transform:uppercase;letter-spacing:-.005em;overflow-wrap:break-word}
+@media (max-width:520px){.chap{grid-template-columns:minmax(0,1fr)}.chap-n{margin-bottom:12px}}
+.chap-of{grid-column:1 / -1;margin-top:16px;padding-top:10px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:4px 22px;font-family:var(--typed);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft)}
+.chap-of b{font-weight:700;color:var(--acc)}
+.prose{max-width:62ch;padding:clamp(8px,2vh,20px) 0 clamp(36px,7vh,80px);display:grid;gap:.9em;font-size:clamp(19px,1rem + .45vw,23px);line-height:1.5}
+.prose .pull{font-family:var(--display);font-style:italic;font-weight:800;font-size:clamp(28px,1.2rem + 2vw,46px);line-height:1.08;color:var(--ally);text-wrap:balance}
+
+/* scenes: steps over the sky */
+.scene{position:relative;padding:0 max(20px,4vw)}
+.steps{max-width:1240px;margin:0 auto;padding:8vh 0 30vh}
+.step{min-height:78vh;display:flex;align-items:center}
+.card{max-width:36ch;font-size:clamp(19px,1rem + .4vw,22px);line-height:1.5;transition:opacity .4s ease}
+.card p+p{margin-top:.75em}
+.card .yr{display:block;margin-bottom:8px;font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.card .big{font-family:var(--display);font-style:italic;font-weight:800;font-size:clamp(30px,1.2rem + 2.2vw,48px);line-height:1.04;color:var(--ally);text-wrap:balance}
+.card .terms{display:grid;gap:.35em}
+.js .step:not(.is-active) .card{opacity:.28}
+@media (max-width:899px){
+  .steps{padding:2svh 0 30svh}
+  .step{min-height:92svh;align-items:flex-end;padding-bottom:6svh}
+  .card{max-width:none;width:100%;font-size:17.5px;background:var(--panel);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);border:1px solid var(--rule);box-shadow:0 12px 30px rgba(0,0,0,.28);padding:16px 18px}
+  .js .step:not(.is-active) .card{opacity:1}
+}
+
+/* rigs: the two things you can operate */
+.rig{margin:0 0 clamp(48px,9vh,110px);padding:18px clamp(14px,2vw,24px) 20px;border:1px solid var(--rule);max-width:780px}
+.rig h3{font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px}
+.rig h3 small{font-weight:400;color:var(--fg-soft);font-size:13px}
+.rig p{margin-top:10px;max-width:58ch;font-size:clamp(17px,1rem + .15vw,19px);line-height:1.45}
+.rig canvas{display:block;width:100%;height:220px;margin:16px 0 14px}
+.rig-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+.btn{font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:13px 18px;min-height:46px;border:1px solid var(--fg);background:transparent;color:var(--fg);cursor:pointer;border-radius:0}
+.btn:hover{background:color-mix(in srgb,var(--fg) 10%,transparent)}
+.btn.go,.btn[aria-pressed="true"]{background:var(--ally);border-color:var(--ally);color:var(--bg)}
+.btn.go:hover{filter:brightness(1.08)}
+.seg{display:inline-flex}
+.seg .btn+.btn{border-left:0}
+.out{font-family:var(--typed);font-size:14px;line-height:1.4;color:var(--fg-soft);flex:1 1 220px;min-height:2.8em;display:flex;align-items:center}
+.tally{font-family:var(--typed);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft);margin-top:12px}
+
+/* the lodge rooms */
+.rooms{list-style:none;margin:0 0 clamp(40px,7vh,80px);padding:0;border-top:2px solid var(--fg);max-width:780px}
+.rooms li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.rooms .rn{font-family:var(--display);font-weight:900;font-size:42px;line-height:.9;color:var(--ally)}
+.rooms b{display:block;font-family:var(--typed);font-size:14px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+@media (max-width:899px){.rooms li{grid-template-columns:50px minmax(0,1fr)}.rooms .rn{font-size:34px}}
+
+/* the gate */
+.gate{scroll-margin-top:var(--bar)}
+.gate-in{max-width:1240px;margin:0 auto;padding:clamp(72px,14vh,150px) 0 clamp(72px,14vh,150px);display:grid;justify-items:start;gap:22px}
+.gate h2{font-family:var(--display);font-size:clamp(40px,6.4vw,92px);line-height:.94;text-transform:uppercase;max-width:12ch}
+.gate p{max-width:40ch;font-size:clamp(19px,1rem + .45vw,23px)}
+.ring{position:relative;width:132px;height:132px;margin-top:6px}
+.ring svg{display:block;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:var(--rule);stroke-width:4}
+.ring-fill{fill:none;stroke:var(--ally);stroke-width:4;stroke-dasharray:339.292;stroke-dashoffset:339.292;stroke-linecap:butt}
+.ring-n{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--typed);font-weight:700;font-size:40px;color:var(--ally)}
+.gate .out{flex:none;min-height:1.4em;font-size:15px;color:var(--fg)}
+.gate .skip{font-family:var(--typed);font-size:13px;letter-spacing:.06em;background:none;border:0;padding:8px 0;color:var(--fg-soft);text-decoration:underline;text-underline-offset:.2em;cursor:pointer}
+.js:not(.is-open) .gated{display:none}
+.is-open .gate .skip{display:none}
+html:not(.js) .gate{display:none}
+
+/* coda and sources */
+.coda-in{max-width:1240px;margin:0 auto;padding:clamp(80px,16vh,180px) 0 clamp(64px,10vh,120px)}
+.coda-line{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(60px,12.5vw,176px);line-height:.9;letter-spacing:-.005em;max-width:9ch;color:var(--fg)}
+.coda-line em{font-style:italic;color:var(--ally)}
+.coda-by{margin-top:28px;font-family:var(--typed);font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-soft)}
+.sources{max-width:1240px;margin:0 auto;padding:clamp(48px,8vh,96px) 0 72px;border-top:1px solid var(--rule);display:grid;grid-template-columns:minmax(160px,240px) minmax(0,1fr);gap:24px;scroll-margin-top:var(--bar)}
+.sources h2{font-family:var(--typed);font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.sources ol{margin:0;padding-left:1.6em;display:grid;gap:10px;font-size:16px;line-height:1.4}
+.sources .note{grid-column:2;font-size:15px;line-height:1.5;color:var(--fg-soft)}
+@media (max-width:700px){.sources{grid-template-columns:minmax(0,1fr)}.sources .note{grid-column:1}}
+
+.bar,.toc a,.gauge,.gauge b,.kicker,.win-cap,.cue,.chap-of,.epigraph cite,.eq,.out,.tally,.rig h3 small,.coda-by,.gate .skip,.sources .note{font-weight:700}
+.sources ol{font-weight:500}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  :root{transition:none}
+  *,*::before,*::after{transition-duration:.01ms!important;transition-delay:0s!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="eq" id="eq" aria-hidden="true">
+  <span class="on">y = sin x</span>
+  <span data-t="light"><b class="m">+ 0.34 sin 2.3x</b><i>light 1879</i></span>
+  <span data-t="idea"><b class="m">+ 0.22 sin 5.2x</b><i>idea 1929</i></span>
+  <span data-t="chem"><b class="m">+ 0.18 sin 9.1x</b><i>chemistry</i></span>
+  <span data-t="feed"><b class="m">+ 0.13 sgn sin 13x</b><i>the feed</i></span>
+  <span data-t="samp"><b class="m">sampled every &#916;x</b><i>sensors</i></span>
+  <span data-t="wave"><b class="m">+ pulse(t)</b><i>waves 2026</i></span>
+  <span data-t="rein" class="rein">|y| &#8804; 1.18<i>veto</i></span>
+</div>
+
+<div class="bar" data-og-hide data-twin-skip>
+  <details class="toc">
+    <summary><span class="chev" aria-hidden="true"></span><span id="now">Contents</span></summary>
+    <ol>
+      <li><a href="#the-hack"><span>I</span><span>The Hack Is Old</span></a></li>
+      <li><a href="#the-veto"><span>II</span><span>The Veto</span></a></li>
+      <li><a href="#the-lodge"><span>III</span><span>The Lodge</span></a></li>
+      <li><a href="#closer"><span>IV</span><span>Something Getting Closer</span></a></li>
+      <li><a href="#gate" id="toc-v"><span>V</span><span id="toc-v-t">Opens when you stop</span></a></li>
+      <li><a href="#sources"><span>&#183;</span><span>Sources</span></a></li>
+    </ol>
+  </details>
+  <span class="bar-title">Free Won&#8217;t</span>
+  <span class="gauge" aria-hidden="true"><b>Closer</b><i></i><i></i><i></i><i></i><i></i></span>
+  <span class="progress" aria-hidden="true"></span>
+</div>
+
+<header class="hero" id="top" data-og-frame>
+  <p class="kicker"><span>By Michael Wilhelm</span><span>November 2026</span></p>
+  <h1 class="title"><span class="vh">Free Won't</span><span aria-hidden="true">Free</span><span class="struck" aria-hidden="true">Will</span><span class="wont" aria-hidden="true">Won&#8217;t</span></h1>
+  <p class="dek">A nervous system can be hijacked. That was already true in 1879. This is about what survives the hijack, where it lives, and the thing on a long orbit that keeps getting closer.</p>
+  <div class="win" id="win" role="img" aria-label="A single steady wave crosses the screen. Far off, a small ember-colored body sits on a long dotted orbit."></div>
+  <p class="win-cap" aria-hidden="true"><span>You</span><span>Something on a long orbit</span></p>
+  <blockquote class="epigraph"><p>&#8220;We are now hackable animals.&#8221;</p><cite>Yuval Noah Harari, Davos, January 2020</cite></blockquote>
+  <p class="cue" data-twin-skip>Scroll. It is already moving.</p>
+</header>
+
+<main>
+
+<!-- I -->
+<section class="chapter" id="the-hack" data-chapter data-num="I" data-title="The Hack Is Old">
+  <div class="band"><div class="band-in">
+    <header class="chap"><span class="chap-n" aria-hidden="true">I</span><h2>The Hack Is Old</h2><p class="chap-of"><span>Chapter I of V</span><b>1879 to now</b></p></header>
+  </div></div>
+  <div class="scene">
+    <div class="steps">
+      <div class="step" data-k="you"><div class="card"><p>This line is you. One nervous system, humming along, running its own rhythm.</p></div></div>
+      <div class="step" data-k="light"><div class="card"><span class="yr">1879 &#183; Menlo Park</span><p>Edison&#8217;s lamp hands the night to anyone with a switch. Light after dark holds back melatonin, the hormone that tells the body it is night.</p><p>Nobody voted on the new bedtime.</p></div></div>
+      <div class="step" data-k="idea"><div class="card"><span class="yr">1929 &#183; Fifth Avenue</span><p>Edward Bernays, Freud&#8217;s nephew, sends young women into New York&#8217;s Easter parade to light cigarettes for the cameras. The press is told to watch for torches of freedom. The client is American Tobacco.</p><p>Marketing is just that. An idea gets planted, and it feels like your own.</p></div></div>
+      <div class="step" data-k="chem"><div class="card"><span class="yr">The body</span><p>For most of a century, leaded gasoline, paint and pipes dose children with a neurotoxin tied to weaker impulse control. Food labs tune sweetness to a bliss point, the level where the hand keeps going back to the bag.</p><p>Chemistry sets the mood before you form an opinion.</p></div></div>
+      <div class="step" data-k="feed"><div class="card"><span class="yr">The feed</span><p>Then the screen. The feed pays out on a slot machine&#8217;s schedule, built to keep the thumb moving.</p><p>You are scrolling right now. Notice that.</p></div></div>
+      <div class="step" data-k="samp"><div class="card"><span class="yr">The sensors</span><p>The phone sells its own trail. Brokers have traded the movements of hundreds of millions of devices, fine enough to follow one to a clinic or a church.</p><p>The television can capture what is on its screen hundreds of times a minute. The watch reads your pulse.</p></div></div>
+      <div class="step" data-k="skin"><div class="card"><span class="yr">2021 &#183; 60 Minutes</span><p>Yuval Noah Harari names the next step. &#8220;The next phase is surveillance going under our skin.&#8221;</p><p>He had already given Davos the formula. Biological knowledge, times computing power, times data, equals the ability to hack a human being.</p></div></div>
+      <div class="step" data-k="wave"><div class="card"><span class="yr">January 2026</span><p>Now the waves themselves. A president brags about a secret weapon he calls the Discombobulator. A senior official says he is probably blending several tools under one name.</p><p>That same month, reports say the Pentagon spent a year testing a backpack-sized device that emits pulsed radio waves, hoping to explain Havana Syndrome. That question is still open. The appetite is on the record.</p></div></div>
+      <div class="step" data-k="ask"><div class="card"><p>So ask it straight. In a world where a nervous system can be hijacked, is free will dead?</p><p>Then ask the follow-up. Was it already dead in 1879?</p></div></div>
+      <div class="step" data-k="machine"><div class="card"><span class="yr">Circa 1915 &#183; Moscow</span><p>A century before anyone said hackable, G. I. Gurdjieff said it flatter. &#8220;Man is a machine.&#8221; Things happen to him, and he calls it doing.</p><p>He also taught a way out, in small closed groups. It began with one act. Remember yourself.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- II -->
+<section class="chapter" id="the-veto" data-chapter data-num="II" data-title="The Veto">
+  <div class="band"><div class="band-in">
+    <header class="chap"><span class="chap-n" aria-hidden="true">II</span><h2>The Veto</h2><p class="chap-of"><span>Chapter II of V</span><b>550 milliseconds</b></p></header>
+  </div></div>
+  <div class="scene">
+    <div class="steps">
+      <div class="step" data-k="libet"><div class="card"><span class="yr">1983 &#183; San Francisco</span><p>Benjamin Libet wires volunteers to an EEG and asks them to flick a wrist whenever the urge comes.</p><p>The brain starts ramping up about 550 milliseconds before the hand moves. The feeling of deciding arrives near 200.</p></div></div>
+      <div class="step" data-k="head"><div class="card"><p>The headlines wrote themselves. The brain decides, you find out later, free will is dead.</p><p>Libet never signed on. He pointed at what was left on the clock, which was time to cancel. The nickname that stuck was free won&#8217;t.</p></div></div>
+      <div class="step" data-k="weather"><div class="card"><span class="yr">2012 &#183; Saclay, France</span><p>Aaron Schurger rereads the ramp. Brain activity drifts up and down all day, like weather. Told to move whenever, people tend to move as the drift nears a threshold.</p><p>Average a few hundred of those moments and the weather looks like a decision made in advance.</p></div></div>
+      <div class="step" data-k="berlin"><div class="card"><span class="yr">2016 &#183; Berlin</span><p>A team at the Charit&#233; stages a duel. A computer reads the ramp live and flashes a stop light when it sees a move coming. People could still cancel after the ramp began.</p><p>The door shut about 200 milliseconds before the move. They named it the point of no return.</p></div></div>
+      <div class="step" data-k="veto"><div class="card"><p>So the will keeps hours. It is open while an impulse is still climbing, and it closes a fifth of a second before the body commits.</p><p>Free will only exists in the present moment.</p><p class="big">Will lives in the veto.</p></div></div>
+      <div class="step" data-k="greek"><div class="card"><p>The old schools had words for guarding that window.</p><p class="terms"><span><span class="gk" lang="grc">&#954;&#945;&#953;&#961;&#972;&#962;</span>, kairos, the opening that can be seized.</span><span><span class="gk" lang="grc">&#957;&#8134;&#968;&#953;&#962;</span>, nepsis, the desert monks&#8217; sober watch.</span><span><span class="gk" lang="grc">&#960;&#961;&#959;&#963;&#959;&#967;&#942;</span>, prosoche, the Stoics&#8217; attention to oneself.</span></p><p>They were training the exact muscle the hackers go after.</p></div></div>
+    </div>
+  </div>
+  <div class="band"><div class="band-in">
+    <figure class="rig" id="veto-rig" style="margin-top:clamp(40px,7vh,80px)" data-twin="A scope you can operate, slowed ten times. Start an impulse, wait for the line to begin climbing toward the threshold, and press Veto before the red mark at 200 milliseconds from the move. Press in time and the line falls back in gold. Press late, or never, and the hand moves.">
+      <h3><span>Try the window</span><small>Slowed ten times</small></h3>
+      <p>Start an impulse and watch the line. Once it begins to climb you can cancel it, up to the red mark. Past that, the move is already on its way.</p>
+      <canvas id="veto-canvas" role="img" aria-label="A scope showing a brain signal. After a wait it ramps toward a threshold over 550 milliseconds. A red mark at 200 milliseconds before the move shows the point of no return."></canvas>
+      <div class="rig-row">
+        <button class="btn go" id="veto-btn" type="button">Start an impulse</button>
+        <p class="out" id="veto-out" role="status" aria-live="polite" style="margin:0">Press start, then watch. Nothing happens until the line begins to climb.</p>
+      </div>
+      <p class="tally" id="veto-tally">Vetoed 0 &#183; Moved 0</p>
+    </figure>
+  </div></div>
+</section>
+
+<!-- III -->
+<section class="chapter" id="the-lodge" data-chapter data-num="III" data-title="The Lodge">
+  <div class="band"><div class="band-in">
+    <header class="chap"><span class="chap-n" aria-hidden="true">III</span><h2>The Lodge</h2><p class="chap-of"><span>Chapter III of V</span><b>Parallel systems</b></p></header>
+    <div class="prose">
+      <p>The law runs behind. A remedy needs a harm somebody has already noticed, and the tech ships first. So this piece keeps its eyes on the tech.</p>
+      <p>The hope will come through parallel systems.</p>
+      <p class="pull">Secret societies, in a time where secrets don&#8217;t exist.</p>
+      <p>That only sounds impossible until you see where the secret went. It moved into places the dragnet cannot read. Five of them are already built.</p>
+    </div>
+    <ol class="rooms">
+      <li><span class="rn" aria-hidden="true">I</span><div><b>The math</b>A zero-knowledge proof lets you prove one fact and reveal nothing else. Old enough to drink. A member. Good for the money. Cryptographers have had the idea since 1985. It is the lodge password rebuilt in arithmetic. The doorkeeper learns that you belong, and that is all he learns.</div></li>
+      <li><span class="rn" aria-hidden="true">II</span><div><b>Your own machine</b>A model that runs on hardware you own does its thinking about you at home. Point it outward and it strips trackers, reads the fine print and feeds the profilers junk. AI will be necessary to guard you against AI. Brunton and Nissenbaum wrote the field manual in 2015 and called it <em>Obfuscation</em>.</div></li>
+      <li><span class="rn" aria-hidden="true">III</span><div><b>Parallel pipes</b>Mesh radios pass a message from device to device with no tower in the loop. Open relay protocols carry posts with no company at the center to lean on. The circle owns its own wire.</div></li>
+      <li><span class="rn" aria-hidden="true">IV</span><div><b>The meaning</b>A sensor captures the signal. The circle holds the context. Thieves&#8217; cant, hobo signs, Polari, every scene&#8217;s slang. A dense shared language works like a cipher, and the model on the other end can only guess.</div></li>
+      <li><span class="rn" aria-hidden="true">V</span><div><b>The room</b>Phones in a box. Faces around a table. Cryptographers already made a ritual of it. At a key-signing party, strangers meet in person, check each other&#8217;s papers and vouch with a signature. That is an initiation.</div></li>
+    </ol>
+    <figure class="rig" id="view-rig" data-twin="A field of two hundred identical dots with two buttons. Their view shows every dot alike. The circle's view turns twelve of them gold and links them into a ring while the rest fade. The dots are the same in both views.">
+      <h3><span>Same data, two views</span><small>Two hundred dots</small></h3>
+      <canvas id="view-canvas" role="img" aria-label="A field of two hundred identical dots. In the circle's view, twelve of them turn gold and link into a ring while the rest fade."></canvas>
+      <div class="rig-row">
+        <div class="seg" role="group" aria-label="Choose a view">
+          <button class="btn" id="view-theirs" type="button" aria-pressed="true">Their view</button>
+          <button class="btn" id="view-circle" type="button" aria-pressed="false">The circle&#8217;s view</button>
+        </div>
+        <p class="out" id="view-out" role="status" aria-live="polite" style="margin:0">Two hundred dots, all alike.</p>
+      </div>
+    </figure>
+    <div class="prose">
+      <p>The lineage is long. Scholars in the 1600s ran a Republic of Letters on private mail. Soviet readers retyped banned books through carbon paper, passed the copies hand to hand, and called it samizdat. In 1993 Eric Hughes gave the cypherpunks their line. &#8220;Cypherpunks write code.&#8221;</p>
+      <p>Each one was a parallel system, and each one guarded the same thing. A room where a person could still hear their own veto.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- IV -->
+<section class="chapter" id="closer" data-chapter data-num="IV" data-title="Getting Closer">
+  <div class="band"><div class="band-in">
+    <header class="chap"><span class="chap-n" aria-hidden="true">IV</span><h2>Something Getting Closer</h2><p class="chap-of"><span>Chapter IV of V</span><b>On approach</b></p></header>
+  </div></div>
+  <div class="scene">
+    <div class="steps">
+      <div class="step" data-k="dot"><div class="card"><p>Look at the dot on the long orbit. It has been closing since the first line you read.</p><p>It moved while you scrolled, and it moved while you stopped.</p></div></div>
+      <div class="step" data-k="guess"><div class="card"><p>You probably took it for the machine. The sensors, the feed and the waves, all arriving at once.</p><p>That was a fair guess.</p></div></div>
+      <div class="step" data-k="name"><div class="card"><p>It has a name, and the name is old. <span class="gk" lang="grc">&#925;&#941;&#956;&#949;&#963;&#953;&#962;</span>.</p><p>Nemesis, from <em>nemein</em>, to deal out what is due. The Greeks also called her Adrasteia, the one nobody outruns.</p></div></div>
+      <div class="step" data-k="star"><div class="card"><span class="yr">1984</span><p>Astronomers borrowed her name for a dark companion star they suspected was circling the Sun and sending comets our way every 26 million years. Sky surveys have found nothing there.</p><p>She has always been easier to feel than to see.</p></div></div>
+      <div class="step" data-k="hubris"><div class="card"><p>Her beat is hubris, <span class="gk" lang="grc">&#8021;&#946;&#961;&#953;&#962;</span>. She comes for mortals who decide they are gods.</p><p>The man who called us hackable animals titled his book about upgrading the species <em>Homo Deus</em>. Read it as a forecast if you like. A Greek would hear a summons.</p></div></div>
+      <div class="step" data-k="hymn"><div class="card"><span class="yr">Second century &#183; Hadrian&#8217;s court</span><p>Mesomedes, court musician to the emperor Hadrian, wrote her a hymn. She tips the scales of a life. A wheel turns under her. She checks the swagger of mortals with a bridle that does not give.</p><p>A Renaissance emblem adds a measuring rod. His hymn is one of four that survive with their musical notation, so her tune is still on the page.</p></div></div>
+      <div class="step" data-k="turn"><div class="card"><p>Now look at your own line. Two gold rails went up when you learned the veto. A limit and a rein.</p><p>A measuring rod and a bridle. <span class="gk" lang="grc">&#960;&#8134;&#967;&#965;&#962;</span>. <span class="gk" lang="grc">&#967;&#945;&#955;&#953;&#957;&#972;&#962;</span>.</p><p>She is coming for the overreach, and she is carrying the two tools you already picked up.</p></div></div>
+      <div class="step" data-k="ally"><div class="card"><p class="big">Dread, meet your ally.</p><p>Every room in the lodge runs one of her errands. Measure. Restraint. What is due, dealt out.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- the gate -->
+<section class="gate band" id="gate" data-twin="Here the page holds its last chapter shut until the reader stops scrolling for five seconds, which is twenty-five veto windows laid end to end. When the hold completes, the night lifts to daylight and the last chapter opens.">
+  <div class="gate-in">
+    <h2>The last chapter opens when you stop.</h2>
+    <p>Hold still for five seconds. That is twenty-five veto windows laid end to end.</p>
+    <div class="ring" aria-hidden="true">
+      <svg viewBox="0 0 120 120"><circle class="ring-track" cx="60" cy="60" r="54"/><circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="54"/></svg>
+      <span class="ring-n" id="ring-n">5</span>
+    </div>
+    <p class="out" id="gate-out" role="status" aria-live="polite">Waiting for stillness.</p>
+    <button class="skip" id="gate-skip" type="button">Open it without the wait</button>
+  </div>
+</section>
+
+<!-- V -->
+<section class="chapter gated" id="grace" data-chapter data-num="V" data-title="Grace">
+  <div class="band"><div class="band-in">
+    <header class="chap"><span class="chap-n" aria-hidden="true">V</span><h2>Grace</h2><p class="chap-of"><span>Chapter V of V</span><b>Daylight</b></p></header>
+  </div></div>
+  <div class="scene">
+    <div class="steps">
+      <div class="step" data-k="g1"><div class="card"><p>You stopped. That was the whole lesson, done with a thumb.</p></div></div>
+      <div class="step" data-k="g2"><div class="card"><p>Now the second half of the sentence.</p><p>Free will only exists in the present moment, and we are still subject to the consequences of others&#8217; actions.</p></div></div>
+      <div class="step" data-k="g3"><div class="card"><p>Everyone you meet today runs a nervous system tuned by forces they never chose. The lamp, the ad, the lead, the feed. Some of them have never once found the window.</p><p>Their choices land on you anyway, and yours land on them.</p></div></div>
+      <div class="step" data-k="g4"><div class="card"><p>So the veto has a second job. Your first read of another person is usually a verdict, built from data with no context. Veto that one too.</p><p>Hold the window open for them a beat longer than they have learned to hold it for themselves. That is grace, and it runs on a clock like everything else here.</p></div></div>
+      <div class="step" data-k="g5"><div class="card"><p>Find grace. Know grace. Be grace. But don&#8217;t be gullible.</p><p class="big">She arrives. The bridle is in your hand.</p></div></div>
+    </div>
+  </div>
+  <div class="band"><div class="coda-in">
+    <p class="coda-line">Will lives in the <em>veto.</em></p>
+    <p class="coda-by">Michael Wilhelm &#183; November 2026</p>
+  </div></div>
+</section>
+
+</main>
+
+<footer class="tail band">
+  <section class="sources" id="sources">
+    <h2>Sources</h2>
+    <ol>
+      <li>Yuval Noah Harari, <a href="https://www.weforum.org/stories/2020/01/yuval-hararis-warning-davos-speech-future-predications/">&#8220;How to Survive the 21st Century,&#8221;</a> World Economic Forum, Davos, January 2020.</li>
+      <li><a href="https://www.cbsnews.com/news/yuval-harari-sapiens-60-minutes-2021-10-29/">Yuval Noah Harari on 60 Minutes</a>, CBS News, October 31, 2021.</li>
+      <li>A. J. Lewy and others, &#8220;Light Suppresses Melatonin Secretion in Humans,&#8221; <em>Science</em> 210 (1980).</li>
+      <li><a href="https://www.historytoday.com/miscellanies/original-influencer">&#8220;Edward Bernays: The Original Influencer,&#8221;</a> <em>History Today</em>, on the Easter parade of March 31, 1929.</li>
+      <li>Michael Moss, <em>Salt Sugar Fat</em> (2013), on Howard Moskowitz and the bliss point. <a href="https://www.npr.org/transcripts/172969363">NPR interview</a>.</li>
+      <li><a href="https://scienceblog.cincinnatichildrens.org/long-term-study-documents-link-between-adult-crime-and-brain-damage-from-childhood-lead-exposure/">Cincinnati Lead Study</a>, Cincinnati Children&#8217;s, on childhood lead exposure and impulse control.</li>
+      <li><a href="https://www.yalejreg.com/nc/ftcs-kochava-settlement-advances-data-privacy-enforcement-but-leaves-critical-gaps-in-protecting-consumers/"><em>FTC v. Kochava</em></a>, Yale Journal on Regulation, on location data from hundreds of millions of devices.</li>
+      <li><a href="https://www.androidauthority.com/samsung-smart-tv-spying-allegations-3630608">Automated content recognition on smart TVs</a>, Android Authority, January 2026.</li>
+      <li><a href="https://www.pbs.org/newshour/nation/trump-says-u-s-used-secret-discombobulator-on-venezuelan-equipment-during-maduro-raid">&#8220;Trump says U.S. used secret &#8216;discombobulator&#8217;,&#8221;</a> PBS NewsHour and the Associated Press, January 26, 2026.</li>
+      <li><a href="https://www.cbsnews.com/news/havana-syndrome-device-what-to-know">&#8220;What to know about Havana Syndrome and a device that might be linked to it,&#8221;</a> CBS News, January 2026, following CNN&#8217;s report.</li>
+      <li>P. D. Ouspensky, <em>In Search of the Miraculous</em> (1949), for Gurdjieff&#8217;s talks.</li>
+      <li>Benjamin Libet and others, &#8220;Time of Conscious Intention to Act in Relation to Onset of Cerebral Activity,&#8221; <em>Brain</em> 106 (1983).</li>
+      <li>Aaron Schurger, Jacobo Sitt and Stanislas Dehaene, <em>PNAS</em> 109 (2012); Schurger and others, <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8192467">&#8220;What Is the Readiness Potential?&#8221;</a> (2021).</li>
+      <li>Matthias Schultze-Kraft and others, <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4743787">&#8220;The Point of No Return in Vetoing Self-Initiated Movements,&#8221;</a> <em>PNAS</em> 113 (2016).</li>
+      <li>Shafi Goldwasser, Silvio Micali and Charles Rackoff, &#8220;The Knowledge Complexity of Interactive Proof-Systems&#8221; (1985).</li>
+      <li>Finn Brunton and Helen Nissenbaum, <em>Obfuscation</em> (MIT Press, 2015).</li>
+      <li>Eric Hughes, &#8220;A Cypherpunk&#8217;s Manifesto&#8221; (1993).</li>
+      <li><a href="https://en.wikipedia.org/wiki/Mesomedes">Mesomedes of Crete</a>, Hymn to Nemesis, second century.</li>
+      <li>Andrea Alciato, <em>Emblemata</em> (1531), the Nemesis emblem. <a href="https://pulterproject.northwestern.edu/curations/c13-nemesis-goddess-of-retribution.html">The Pulter Project</a>.</li>
+      <li>Marc Davis, Piet Hut and Richard Muller, <em>Nature</em> 308 (1984); <a href="https://www.space.com/22538-nemesis-star.html">the Nemesis star and the WISE survey</a>, Space.com.</li>
+    </ol>
+    <p class="note">The official&#8217;s remark about blended tools ran in wire coverage the weekend of January 24, 2026. Greek terms are given in dictionary form, and no line of the hymn is quoted. Summaries are the author&#8217;s reading of each source.</p>
+  </section>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var root=document.documentElement;
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function $(s,c){return (c||document).querySelector(s)}
+function $$(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
+function clamp(v,a,b){a=a===undefined?0:a;b=b===undefined?1:b;return Math.min(b,Math.max(a,v))}
+function lerp(a,b,t){return a+(b-a)*t}
+function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+function mix(a,b,t){return [lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t)]}
+function rgba(c,a){return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+a+')'}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+var BONE=[232,227,214],ASH=[180,183,193],EMBER=[228,73,47],GOLD=[216,178,90],INK=[23,24,28],DGOLD=[143,100,16],STAR=[205,210,226];
+
+/* ---------- step states ---------- */
+var ZERO={light:0,idea:0,chem:0,feed:0,samp:0,wave:0,rein:0,turn:0,glow:0,spot:0,named:0};
+var ORDER=['light','idea','chem','feed','samp','wave'];
+function S(n,scale,extra){var o={},k;for(k in ZERO)o[k]=0;for(var i=0;i<n;i++)o[ORDER[i]]=scale;o.samp=n>=5?Math.min(1,scale*1.25):0;if(extra)for(k in extra)o[k]=extra[k];return o}
+var KEYS={
+  you:S(0,1),light:S(1,1),idea:S(2,1),chem:S(3,1),feed:S(4,1),samp:S(5,1),skin:S(5,1),wave:S(6,1),ask:S(6,1),machine:S(6,1),
+  libet:S(6,1),head:S(6,1),weather:S(6,1),berlin:S(6,1,{rein:.45}),veto:S(6,1,{rein:1,glow:.5}),greek:S(6,.8,{rein:1}),
+  dot:S(6,.6,{rein:1,spot:1}),guess:S(6,.6,{rein:1,spot:.4}),name:S(6,.6,{rein:1,named:1}),star:S(6,.6,{rein:1,named:1}),
+  hubris:S(6,.6,{rein:1,named:1}),hymn:S(6,.6,{rein:1,named:1}),turn:S(6,.5,{rein:1,named:1,turn:1,glow:1}),ally:S(6,.45,{rein:1,named:1,turn:1,glow:.4}),
+  g1:S(6,.3,{rein:1,named:1,turn:1}),g2:S(6,.25,{rein:1,named:1,turn:1}),g3:S(6,.2,{rein:1,named:1,turn:1}),g4:S(6,.12,{rein:1,named:1,turn:1}),g5:S(6,.04,{rein:1,named:1,turn:1,glow:1})
+};
+var cur=S(0,1),tgt=KEYS.you;
+
+/* ---------- elements ---------- */
+var sky=$('#sky'),sx=sky.getContext('2d'),cw=0,ch=0,dpr=1;
+var hero=$('.hero'),win=$('#win'),gate=$('#gate'),progress=$('.progress'),nowEl=$('#now');
+var steps=$$('.step'),chapters=$$('[data-chapter]'),pips=$$('.gauge i'),eqSpans=$$('#eq span[data-t]');
+var opened=false,dawn=0,dawnT=0,arrive=0,pBase=0,T=0,last=0,heroH=1;
+
+var rs=rng(7),stars=[];
+for(var i=0;i<150;i++)stars.push({x:rs(),y:rs(),r:rs()<.85?1:1.8,a:.25+rs()*.55,sp:.4+rs()*1.6,ph:rs()*6.28});
+
+function fitSky(){
+  dpr=Math.min(window.devicePixelRatio||1,2);cw=window.innerWidth;ch=window.innerHeight;
+  sky.width=Math.round(cw*dpr);sky.height=Math.round(ch*dpr);sx.setTransform(dpr,0,0,dpr,0,0);
+  heroH=hero.offsetHeight||1;
+}
+
+function softclip(y,L){var a=Math.abs(y);if(a<=1)return y;return (y<0?-1:1)*(1+(L-1)*Math.tanh((a-1)/(L-1)))}
+var RAIL=1.18;
+function yAt(u,t,s){
+  var y=Math.sin(u-t*.9);
+  y+=s.light*.34*Math.sin(2.3*u+t*.5);
+  y+=s.idea*.22*Math.sin(5.2*u-t*1.3+1);
+  y+=s.chem*.18*Math.sin(9.1*u+t*1.9);
+  y+=s.feed*.13*(Math.sin(13*u-t*2.6)>0?1:-1);
+  if(s.wave>.01){var c=((t*1.5)%14)-7,env=Math.exp(-Math.pow(u-c,2)/.8);y+=s.wave*.6*env*Math.sin(24*u-t*18)}
+  if(s.rein>.001)y=lerp(y,softclip(y,RAIL),s.rein);
+  return y;
+}
+
+function geom(){
+  var W=cw,H=ch,mobile=W<900,bar=44,g={};
+  if(mobile){g.youX=W*.22;g.sceneY=Math.max(bar+140,H*.30);g.x0s=0;g.x1=W;g.A=Math.min(H*.058,50);g.rmax=W*.72;g.dir=[.96,-.28];g.lam=W/(6.283*1.6);g.Rn=9;g.side=1}
+  else{g.youX=W*.60;g.sceneY=H*.52;g.x0s=W*.44;g.x1=W;g.A=Math.min(H*.082,84);g.rmax=Math.min(W*.36,H*.60);g.dir=[.80,-.60];g.lam=(W*.56)/(6.283*2.2);g.Rn=12;g.side=1}
+  var r=win.getBoundingClientRect(),heroY=r.top+r.height/2,k=ease(clamp(window.scrollY/(heroH*.72)));
+  g.k=k;g.youY=Math.max(bar+g.A*1.5,lerp(heroY,g.sceneY,k));g.x0=lerp(0,g.x0s,k);g.mobile=mobile;
+  return g;
+}
+
+function drawSky(t){
+  var W=cw,H=ch,s=cur,d=dawn,i,x,q;
+  sx.clearRect(0,0,W,H);
+  if(d<.98){for(i=0;i<stars.length;i++){var st=stars[i];sx.fillStyle=rgba(STAR,(st.a*(.62+.38*Math.sin(t*st.sp+st.ph))*(1-d)).toFixed(3));sx.fillRect(st.x*W,st.y*H,st.r,st.r)}}
+  var g=geom(),A=g.A,yY=g.youY;
+  var trace=mix(BONE,INK,d),them=mix(mix(EMBER,GOLD,s.turn),DGOLD,d),rail=mix(GOLD,DGOLD,d),soft=mix(ASH,[92,94,102],d),hack=mix(EMBER,[190,60,40],d);
+
+  /* orbit */
+  var e=.8,a=g.rmax/(1+e),b=a*Math.sqrt(1-e*e)*lerp(.5,1,g.k),dx=g.dir[0],dy=g.dir[1],px=dy*g.side,py=-dx*g.side;
+  var cx=g.youX+dx*a*e,cy=yY+dy*a*e;
+  function P(q){return [cx+a*Math.cos(q)*dx+b*Math.sin(q)*px,cy+a*Math.cos(q)*dy+b*Math.sin(q)*py]}
+  var qn=lerp(Math.PI*.75*pBase,Math.PI,ease(arrive)),p;
+  sx.lineWidth=1.6;sx.setLineDash([3,6]);sx.strokeStyle=rgba(them,.45);sx.beginPath();
+  for(q=0;q<=6.3;q+=.06){p=P(q);if(q===0)sx.moveTo(p[0],p[1]);else sx.lineTo(p[0],p[1])}
+  sx.stroke();sx.setLineDash([]);
+  sx.lineWidth=2.2;sx.strokeStyle=rgba(them,.85);sx.beginPath();
+  for(q=0;q<=qn;q+=.04){p=P(q);if(q===0)sx.moveTo(p[0],p[1]);else sx.lineTo(p[0],p[1])}
+  var bp=P(qn);sx.lineTo(bp[0],bp[1]);sx.stroke();
+
+  /* rails: the limit and the rein */
+  if(s.rein>.01){
+    var ra=s.rein*(.5+.5*s.glow),yt=yY-RAIL*A,yb=yY+RAIL*A;
+    sx.strokeStyle=rgba(rail,ra.toFixed(3));sx.lineWidth=2.2+s.glow*.8;
+    sx.beginPath();sx.moveTo(g.x0,yt);sx.lineTo(g.x1,yt);sx.moveTo(g.x0,yb);sx.lineTo(g.x1,yb);sx.stroke();
+    sx.lineWidth=1.5;sx.strokeStyle=rgba(rail,(ra*.9).toFixed(3));sx.beginPath();
+    for(x=Math.ceil(g.x0/12)*12,i=0;x<g.x1;x+=12,i++){sx.moveTo(x,yt);sx.lineTo(x,yt-(i%5===0?8:4))}
+    sx.stroke();
+    if(s.turn>.05){
+      sx.font='700 16px "Alegreya","Noto Serif","Times New Roman",serif';sx.textAlign='right';sx.fillStyle=rgba(rail,s.turn.toFixed(3));
+      sx.fillText('πῆχυς',g.x1-10,yt-15);sx.fillText('χαλινός',g.x1-10,yb+23);sx.textAlign='left';
+    }
+  }
+
+  /* waves arriving */
+  if(s.wave>.05){
+    for(i=0;i<3;i++){var rad=((t*80+i*90)%270)+20;sx.strokeStyle=rgba(hack,((1-rad/290)*.4*s.wave).toFixed(3));sx.lineWidth=1;sx.beginPath();sx.arc(g.x1+30,yY,rad,2.55,3.73);sx.stroke()}
+  }
+
+  /* the trace */
+  var load=s.light+s.idea+s.chem+s.feed+s.wave,stepx=2,n=0,xs=[],ys=[],yc=[];
+  for(x=g.x0;x<=g.x1+stepx;x+=stepx){var u=(x-g.youX)/g.lam;xs.push(x);ys.push(yY-yAt(u,t,s)*A);yc.push(yY-Math.sin(u-t*.9)*A);n++}
+  if(load>.02){
+    sx.fillStyle=rgba(hack,(.13*(1-.5*s.rein)).toFixed(3));sx.beginPath();sx.moveTo(xs[0],ys[0]);
+    for(i=1;i<n;i++)sx.lineTo(xs[i],ys[i]);for(i=n-1;i>=0;i--)sx.lineTo(xs[i],yc[i]);sx.closePath();sx.fill();
+    sx.strokeStyle=rgba(soft,.42);sx.lineWidth=1.3;sx.beginPath();sx.moveTo(xs[0],yc[0]);for(i=1;i<n;i++)sx.lineTo(xs[i],yc[i]);sx.stroke();
+  }
+  sx.strokeStyle=rgba(trace,1);sx.lineWidth=2.5;sx.lineJoin='round';sx.beginPath();sx.moveTo(xs[0],ys[0]);for(i=1;i<n;i++)sx.lineTo(xs[i],ys[i]);sx.stroke();
+  if(s.samp>.02){
+    sx.strokeStyle=rgba(hack,(.75*s.samp*(1-.6*s.turn)).toFixed(3));sx.fillStyle=sx.strokeStyle;sx.lineWidth=1.6;sx.beginPath();
+    for(i=7;i<n;i+=13){sx.moveTo(xs[i],ys[i]-9);sx.lineTo(xs[i],ys[i]+9)}sx.stroke();
+    for(i=7;i<n;i+=13)sx.fillRect(xs[i]-1.5,ys[i]-1.5,3,3);
+  }
+  var yd=yY-yAt(0,t,s)*A;
+  sx.fillStyle=rgba(trace,1);sx.beginPath();sx.arc(g.youX,yd,4,0,6.3);sx.fill();
+  sx.strokeStyle=rgba(trace,.6);sx.lineWidth=1.5;sx.beginPath();sx.arc(g.youX,yd,8,0,6.3);sx.stroke();
+  sx.font='bold 12px "Courier Prime","Courier New",monospace';sx.fillStyle=rgba(soft,1);sx.fillText('YOU',g.youX+13,yd-10);
+
+  /* the body on approach */
+  var rr=Math.sqrt(Math.pow(bp[0]-g.youX,2)+Math.pow(bp[1]-yY,2)),rmin=a*(1-e),c=clamp(1-(rr-rmin)/(g.rmax-rmin)),R=lerp(2.2,g.Rn,Math.pow(c,1.4));
+  if(s.spot>.02&&!reduce){for(i=0;i<2;i++){var kk=((t*.6+i*.5)%1);sx.strokeStyle=rgba(them,((1-kk)*.7*s.spot).toFixed(3));sx.lineWidth=1;sx.beginPath();sx.arc(bp[0],bp[1],R+4+kk*30,0,6.3);sx.stroke()}}
+  var gr=sx.createRadialGradient(bp[0],bp[1],0,bp[0],bp[1],R*6);gr.addColorStop(0,rgba(them,.5));gr.addColorStop(1,rgba(them,0));
+  sx.fillStyle=gr;sx.beginPath();sx.arc(bp[0],bp[1],R*6,0,6.3);sx.fill();
+  sx.fillStyle=rgba(them,1);sx.beginPath();sx.arc(bp[0],bp[1],R,0,6.3);sx.fill();
+  if(s.named>.03){sx.font='700 16px "Alegreya","Noto Serif","Times New Roman",serif';sx.fillStyle=rgba(them,s.named.toFixed(3));sx.fillText('ΝΕΜΕΣΙΣ',bp[0]+R+8,bp[1]-R-6)}
+}
+
+/* ---------- scroll bookkeeping ---------- */
+function shown(el){return el.offsetParent!==null}
+function update(){
+  var H=window.innerHeight,y=window.scrollY,doc=document.documentElement.scrollHeight-H;
+  progress.style.transform='scaleX('+clamp(doc>0?y/doc:0)+')';
+  var gr=gate.getBoundingClientRect(),gateDoc=gr.top+y;
+  pBase=clamp(y/Math.max(1,gateDoc-H*.5));
+  var line=H*(cw<900?.72:.55),act=null,inside=false,i,r;
+  for(i=0;i<steps.length;i++){if(!shown(steps[i]))continue;r=steps[i].getBoundingClientRect();if(r.top<=line){act=steps[i];inside=r.bottom>line}}
+  for(i=0;i<steps.length;i++)steps[i].classList.toggle('is-active',steps[i]===act&&inside);
+  tgt=act?(KEYS[act.dataset.k]||KEYS.you):KEYS.you;
+  root.dataset.eq=act&&inside&&act.closest('#the-hack,#the-veto')?'on':'off';
+  for(i=0;i<eqSpans.length;i++)eqSpans[i].classList.toggle('on',tgt[eqSpans[i].dataset.t]>.4);
+  var isDawn=opened&&gr.top<H*.6;
+  dawnT=isDawn?1:0;
+  root.dataset.phase=isDawn?'dawn':(tgt.turn>.5?'ally':'night');
+  var label='Contents';
+  for(i=0;i<chapters.length;i++){if(!shown(chapters[i]))continue;if(chapters[i].getBoundingClientRect().top<=H*.5)label=chapters[i].dataset.num+' · '+chapters[i].dataset.title}
+  if(nowEl.textContent!==label)nowEl.textContent=label;
+  var near=isDawn?5:Math.floor(pBase*4.99);
+  for(i=0;i<pips.length;i++)pips[i].classList.toggle('on',i<near);
+}
+
+/* ---------- the gate ---------- */
+var ringFill=$('#ring-fill'),ringN=$('#ring-n'),gateOut=$('#gate-out'),lastMove=0,entered=0,gateP=0,gateMsg='idle',HOLD=5000,GRACE=450,CIRC=339.292;
+function say(k,n){
+  if(k===gateMsg&&k!=='hold')return;gateMsg=k;
+  var m={idle:'Waiting for stillness.',moved:'You moved. Start again.',hold:'Holding.',open:'Open. Keep going.'}[k];
+  if(gateOut.textContent!==m)gateOut.textContent=m;
+}
+function ring(p){ringFill.style.strokeDashoffset=(CIRC*(1-p)).toFixed(2);ringN.textContent=p>=1?'0':String(Math.max(1,Math.ceil((1-p)*5)))}
+function moved(){lastMove=performance.now()}
+['scroll','wheel','touchmove','keydown'].forEach(function(ev){window.addEventListener(ev,moved,{passive:true})});
+function gateTick(now){
+  if(opened)return;
+  var r=gate.getBoundingClientRect(),vis=r.top<ch*.7&&r.bottom>ch*.3;
+  if(!vis){entered=0;if(gateP>0){gateP=0;ring(0)}if(gateMsg!=='idle')say('idle');return}
+  if(!entered)entered=now;
+  var p=clamp((now-Math.max(lastMove,entered)-GRACE)/HOLD);
+  if(p<=0){if(gateP>.1)say('moved');gateP=0;ring(0)}
+  else{gateP=p;ring(p);say('hold');if(p>=1)openGate()}
+}
+function openGate(){
+  if(opened)return;opened=true;root.classList.add('is-open');ring(1);say('open');
+  var a=$('#toc-v');a.setAttribute('href','#grace');$('#toc-v-t').textContent='Grace';
+  steps=$$('.step');update();
+}
+$('#gate-skip').addEventListener('click',openGate);
+
+/* ---------- the loop ---------- */
+function frame(now){
+  var dt=Math.min(.05,(now-last)/1000||0);last=now;if(!reduce)T+=dt;
+  var k=reduce?1:1-Math.exp(-dt*4.5),key;
+  for(key in cur)cur[key]+=(tgt[key]-cur[key])*k;
+  dawn+=(dawnT-dawn)*(reduce?1:1-Math.exp(-dt*1.5));
+  arrive+=(dawnT-arrive)*(reduce?1:1-Math.exp(-dt*.8));
+  gateTick(now);drawSky(reduce?2.2:T);
+  requestAnimationFrame(frame);
+}
+
+/* ---------- rig: the veto window ---------- */
+(function(){
+  var c=$('#veto-canvas'),x=c.getContext('2d'),btn=$('#veto-btn'),out=$('#veto-out'),tally=$('#veto-tally');
+  var D=5500,PNR=3500,st='idle',t0=0,waitEnd=0,ph=[0,0,0],tv=-1,held=0,went=0,raf=0,w=0,h=0,doneAt=0,result='';
+  function fit(){var r=Math.min(window.devicePixelRatio||1,2);w=c.clientWidth;h=c.clientHeight;c.width=Math.round(w*r);c.height=Math.round(h*r);x.setTransform(r,0,0,r,0,0)}
+  function noise(tau){return 5*Math.sin(tau*29+ph[0])+3.5*Math.sin(tau*61+ph[1])+2.5*Math.sin(tau*113+ph[2])}
+  function draw(now){
+    var padL=10,padR=10,top=30,base=h-40,xs=padL+w*.17,xe=w-padR,xp=xs+(xe-xs)*(PNR/D),i,tau,yy;
+    x.clearRect(0,0,w,h);
+    x.fillStyle=rgba(GOLD,.09);x.fillRect(xs,top,xp-xs,base-top);
+    x.fillStyle=rgba(EMBER,.1);x.fillRect(xp,top,xe-xp,base-top);
+    x.strokeStyle=rgba(ASH,.75);x.lineWidth=1.5;x.beginPath();x.moveTo(padL,base);x.lineTo(xe,base);x.stroke();
+    x.setLineDash([4,5]);x.beginPath();x.moveTo(padL,top);x.lineTo(xe,top);x.stroke();x.setLineDash([]);
+    x.strokeStyle=rgba(EMBER,.95);x.lineWidth=2;x.beginPath();x.moveTo(xp,top-10);x.lineTo(xp,base+6);x.stroke();
+    x.font='bold 12px "Courier Prime","Courier New",monospace';x.fillStyle=rgba(ASH,1);
+    x.textAlign='left';x.fillText('THRESHOLD: THE HAND MOVES',padL,top-10);
+    x.fillText('−550 ms',xs-4,base+22);
+    x.textAlign='center';x.fillStyle=rgba(EMBER,1);x.fillText('−200',xp,base+22);
+    x.textAlign='right';x.fillStyle=rgba(ASH,1);x.fillText('0',xe,base+22);
+    x.fillStyle=rgba(GOLD,.95);x.textAlign='left';x.fillText('VETO WINDOW',xs+6,top+16);
+    x.textAlign='left';
+    /* pre-roll noise */
+    var tt=(st==='idle'||st==='done')?0:(now-t0)/1000;
+    x.strokeStyle=rgba(BONE,1);x.lineWidth=2.4;x.beginPath();
+    for(i=padL;i<=xs;i+=2){yy=base-4-noise((i-padL)/260+tt*.35)*.6;if(i===padL)x.moveTo(i,yy);else x.lineTo(i,yy)}
+    var el=0,endTau=0;
+    if(st==='ramp')el=now-waitEnd;else if(st==='done')el=doneAt;
+    if(st==='ramp'||st==='done'){
+      endTau=clamp((tv>=0&&result==='held'?tv:el)/D);
+      for(tau=0;tau<=endTau;tau+=.004){yy=base-4-Math.pow(tau,1.7)*(base-top-4)-noise(tau)*(1-tau)*.6;x.lineTo(xs+(xe-xs)*tau,yy)}
+    }
+    x.stroke();
+    if(st==='done'&&result==='held'){
+      var x0=xs+(xe-xs)*endTau,y0=base-4-Math.pow(endTau,1.7)*(base-top-4);
+      x.strokeStyle=rgba(GOLD,1);x.lineWidth=2.2;x.beginPath();x.moveTo(x0,y0);
+      for(i=0;i<=70;i+=2)x.lineTo(x0+i,base-4-(base-4-y0)*Math.exp(-i/14));
+      x.stroke();x.fillStyle=rgba(GOLD,1);x.beginPath();x.arc(x0,y0,4,0,6.3);x.fill();
+    }
+    if(st==='done'&&result!=='held'){x.fillStyle=rgba(EMBER,1);x.beginPath();x.arc(xe,top,5,0,6.3);x.fill()}
+  }
+  function finish(res,msg){st='done';result=res;if(res==='held')held++;else went++;out.textContent=msg;btn.textContent='Again';tally.textContent='Vetoed '+held+' · Moved '+went;draw(performance.now())}
+  function loop(now){
+    if(st==='wait'&&now>=waitEnd){st='ramp';out.textContent='Rising.'}
+    if(st==='ramp'){
+      var el=now-waitEnd;
+      if(el>=D){doneAt=D;finish(tv>=0?'late':'none',tv>=0?'Too late. Past the red mark the move was already on its way.':'It moved, and nobody stopped it.');return}
+    }
+    draw(now);
+    if(st==='wait'||st==='ramp')raf=requestAnimationFrame(loop);
+  }
+  btn.addEventListener('click',function(){
+    var now=performance.now();
+    if(st==='idle'||st==='done'){
+      st='wait';t0=now;tv=-1;result='';ph=[Math.random()*6,Math.random()*6,Math.random()*6];waitEnd=now+700+Math.random()*1900;
+      btn.textContent='Veto';out.textContent='Watching. Nothing rising yet.';cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
+    }else if(st==='wait'){out.textContent='Nothing to veto yet. Keep watching.'}
+    else if(st==='ramp'){
+      var el=now-waitEnd;
+      if(tv<0){
+        tv=el;
+        if(el<=PNR){doneAt=el;cancelAnimationFrame(raf);finish('held','Vetoed, with '+Math.round((PNR-el)/10)+' milliseconds to spare at real speed.')}
+        else out.textContent='Too late. Watch it finish.';
+      }
+    }
+  });
+  window.addEventListener('resize',function(){fit();draw(performance.now())});
+  fit();draw(performance.now());
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){draw(performance.now())});
+})();
+
+/* ---------- rig: two views ---------- */
+(function(){
+  var c=$('#view-canvas'),x=c.getContext('2d'),bT=$('#view-theirs'),bC=$('#view-circle'),out=$('#view-out');
+  var r=rng(41),N=200,dots=[],mem=[],k=0,kt=0,w=0,h=0,raf=0,lastT=0,vis=false,i;
+  for(i=0;i<N;i++)dots.push({x:.04+r()*.92,y:.06+r()*.88,ph:r()*6.28,sp:.5+r()*1.4,m:-1});
+  var pick=[];while(pick.length<12){var j=Math.floor(r()*N);if(pick.indexOf(j)<0)pick.push(j)}
+  pick.sort(function(a,b){return Math.atan2(dots[a].y-.5,dots[a].x-.5)-Math.atan2(dots[b].y-.5,dots[b].x-.5)});
+  for(i=0;i<12;i++){dots[pick[i]].m=i;mem.push(dots[pick[i]])}
+  function fit(){var q=Math.min(window.devicePixelRatio||1,2);w=c.clientWidth;h=c.clientHeight;c.width=Math.round(w*q);c.height=Math.round(h*q);x.setTransform(q,0,0,q,0,0)}
+  function draw(t){
+    var e=ease(k),R=Math.min(w,h)*.33,pos=[],d,i,px,py,jx,jy,a;
+    x.clearRect(0,0,w,h);
+    for(i=0;i<N;i++){
+      d=dots[i];jx=reduce?0:Math.sin(t*d.sp+d.ph)*5*(1-e);jy=reduce?0:Math.cos(t*d.sp*.8+d.ph)*5*(1-e);
+      px=d.x*w+jx;py=d.y*h+jy;
+      if(d.m>=0){a=-1.5708+d.m/12*6.2832;px=lerp(px,w/2+Math.cos(a)*R,e);py=lerp(py,h/2+Math.sin(a)*R,e);pos[d.m]=[px,py]}
+      else{x.fillStyle=rgba(BONE,lerp(.78,.14,e).toFixed(3));x.beginPath();x.arc(px,py,2.3,0,6.3);x.fill()}
+    }
+    if(e>.02){
+      x.strokeStyle=rgba(GOLD,(.7*e).toFixed(3));x.lineWidth=1.5;x.beginPath();
+      for(i=0;i<12;i++){x.moveTo(pos[i][0],pos[i][1]);x.lineTo(pos[(i+1)%12][0],pos[(i+1)%12][1]);x.moveTo(pos[i][0],pos[i][1]);x.lineTo(pos[(i+5)%12][0],pos[(i+5)%12][1])}
+      x.stroke();
+    }
+    for(i=0;i<12;i++){x.fillStyle=rgba(mix(BONE,GOLD,e),lerp(.78,1,e).toFixed(3));x.beginPath();x.arc(pos[i][0],pos[i][1],lerp(2.3,4.8,e),0,6.3);x.fill()}
+  }
+  function loop(now){
+    var dt=Math.min(.05,(now-lastT)/1000||0);lastT=now;
+    k+=(kt-k)*(reduce?1:1-Math.exp(-dt*3.2));if(Math.abs(kt-k)<.002)k=kt;
+    draw(now/1000);
+    if(vis&&(!reduce||k!==kt))raf=requestAnimationFrame(loop);else raf=0;
+  }
+  function kick(){if(!raf)raf=requestAnimationFrame(loop)}
+  function set(v){kt=v;bT.setAttribute('aria-pressed',v?'false':'true');bC.setAttribute('aria-pressed',v?'true':'false');out.textContent=v?'Same dots. Twelve of them know each other.':'Two hundred dots, all alike.';kick()}
+  bT.addEventListener('click',function(){set(0)});bC.addEventListener('click',function(){set(1)});
+  if('IntersectionObserver' in window){new IntersectionObserver(function(en){vis=en[0].isIntersecting;if(vis)kick()}).observe(c)}else{vis=true}
+  window.addEventListener('resize',function(){fit();draw(performance.now()/1000)});
+  fit();draw(0);
+})();
+
+/* ---------- boot ---------- */
+$$('.toc a').forEach(function(a){a.addEventListener('click',function(){$('.toc').open=false})});
+var ticking=false;
+function onScroll(){if(ticking)return;ticking=true;requestAnimationFrame(function(){ticking=false;update()})}
+window.addEventListener('scroll',onScroll,{passive:true});
+window.addEventListener('resize',function(){fitSky();update()});
+function start(data){
+  fitSky();lastMove=performance.now();
+  if(data&&data.open)openGate();
+  update();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){heroH=hero.offsetHeight||1;update()});
+  requestAnimationFrame(frame);
+}
+var hot=window.claude&&window.claude.hot;
+if(hot&&hot.snapshot)hot.snapshot(function(){return {open:opened}});
+if(hot&&hot.ready)hot.ready(start);else start((hot&&hot.data)||{});
+})();
+</script>
+</body>
+</html>
