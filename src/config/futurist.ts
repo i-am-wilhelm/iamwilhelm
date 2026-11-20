@@ -1,16 +1,13 @@
 /**
  * The Futurist pages mounted exactly as their approved source files (in
  * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward, The
- * Receipts, Depth Chart and Quantum Banking, the third to sixth Futurist
- * installments.
+ * Receipts, Depth Chart, Quantum Banking and Free Won't, the third to
+ * seventh Futurist installments.
  *
  * `sha256` is the approved file's hash: the build stops if the file on
  * record is not the file that was approved. `night` is the page's own
  * background, for the browser's theme colour. `preload` names the font
- * files the opening frame is set in. `dir` names the folder under _incoming/
- * when the file is filed somewhere other than futurist-essays/: Free Won't
- * (Mythmaking No. 3) arrived as one whole document like these, so the same
- * function mounts it from _incoming/mythmaking/.
+ * files the opening frame is set in.
  */
 export const FUTURIST_SOURCES = {
   'face-forward': {
@@ -34,7 +31,6 @@ export const FUTURIST_SOURCES = {
     preload: ['/fonts/barlow-condensed-latin-800-normal.woff2', '/fonts/public-sans-latin-wght-normal.woff2'],
   },
   'free-wont': {
-    dir: 'mythmaking',
     sha256: '501aa9169d4266e3dc249b8f13c1572b5800a25f4d1141bd879e497cf3187696',
     night: '#0a0c11',
     preload: ['/fonts/alegreya-latin-wght-normal.woff2', '/fonts/alegreya-latin-wght-italic.woff2'],
