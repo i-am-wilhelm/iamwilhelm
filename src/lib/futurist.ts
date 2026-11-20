@@ -30,12 +30,6 @@
  * No wrapper element is added around the page.
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
- *
- * Free Won't (Mythmaking No. 3) arrived the same way, as one whole
- * document, so it is mounted here too. Its source is filed with its series
- * (_incoming/mythmaking/, the `dir` on its entry in src/config/futurist.ts);
- * the series label, the feed and the foot follow its gallery entry, as
- * they do for every page.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -317,8 +311,7 @@ function swap(html: string, find: string, put: string, what: string, slug: strin
 }
 
 export function futuristSource(slug: FuturistSlug): string {
-  const dir = (FUTURIST_SOURCES[slug] as { dir?: string }).dir ?? 'futurist-essays';
-  const bytes = readFileSync(resolve(process.cwd(), '_incoming', dir, `${slug}.html`));
+  const bytes = readFileSync(resolve(process.cwd(), '_incoming/futurist-essays', `${slug}.html`));
   const sha = createHash('sha256').update(bytes).digest('hex');
   if (sha !== FUTURIST_SOURCES[slug].sha256) {
     throw new Error(`futurist: ${slug}: the source file is not the approved one (sha256 ${sha.slice(0, 16)}…).`);
