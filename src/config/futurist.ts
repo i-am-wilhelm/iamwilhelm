@@ -7,7 +7,10 @@
  * `sha256` is the approved file's hash: the build stops if the file on
  * record is not the file that was approved. `night` is the page's own
  * background, for the browser's theme colour. `preload` names the font
- * files the opening frame is set in.
+ * files the opening frame is set in. `dir` names the folder under _incoming/
+ * when the file is filed somewhere other than futurist-essays/: Free Won't
+ * (Mythmaking No. 3) arrived as one whole document like these, so the same
+ * function mounts it from _incoming/mythmaking/.
  */
 export const FUTURIST_SOURCES = {
   'face-forward': {
@@ -29,6 +32,12 @@ export const FUTURIST_SOURCES = {
     sha256: '8c5bdb978bd96a258261cee2465e690622b9eb0b9808c2a4ce00673e03afeebe',
     night: '#0c1814',
     preload: ['/fonts/barlow-condensed-latin-800-normal.woff2', '/fonts/public-sans-latin-wght-normal.woff2'],
+  },
+  'free-wont': {
+    dir: 'mythmaking',
+    sha256: '501aa9169d4266e3dc249b8f13c1572b5800a25f4d1141bd879e497cf3187696',
+    night: '#0a0c11',
+    preload: ['/fonts/alegreya-latin-wght-normal.woff2', '/fonts/alegreya-latin-wght-italic.woff2'],
   },
 } as const;
 

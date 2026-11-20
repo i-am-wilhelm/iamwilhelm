@@ -30,6 +30,12 @@
  * No wrapper element is added around the page.
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
+ *
+ * Free Won't (Mythmaking No. 3) arrived the same way, as one whole
+ * document, so it is mounted here too. Its source is filed with its series
+ * (_incoming/mythmaking/, the `dir` on its entry in src/config/futurist.ts);
+ * the series label, the feed and the foot follow its gallery entry, as
+ * they do for every page.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -44,6 +50,13 @@ const LATIN =
   'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD';
 const face = (family: string, weight: number, file: string) =>
   `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};font-display:swap;src:url('/fonts/${file}.woff2') format('woff2');unicode-range:${LATIN}}`;
+/* Free Won't: variable files (a weight range), an italic, and the greek and
+   greek-ext subsets its Greek words are set in, each under the
+   unicode-range Google declares for that subset. */
+const GREEK = 'U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF';
+const GREEK_EXT = 'U+1F00-1FFF';
+const faceOf = (family: string, style: 'normal' | 'italic', weight: string, file: string, range = LATIN) =>
+  `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:swap;src:url('/fonts/${file}.woff2') format('woff2');unicode-range:${range}}`;
 /* Each family a Google Fonts link in the source files asks for, and the
    faces it stood for: one per weight asked for, as Google declares them (a
    variable file is named once per weight). Depth Chart asks for its three
@@ -60,6 +73,18 @@ const FACES: Record<string, string[]> = {
   'Barlow+Condensed:wght@600;800': [600, 800].map((w) => face('Barlow Condensed', w, `barlow-condensed-latin-${w}-normal`)),
   'DM+Mono:wght@400;500': [400, 500].map((w) => face('DM Mono', w, `dm-mono-latin-${w}-normal`)),
   'Public+Sans:wght@400;600;700': [400, 600, 700].map((w) => face('Public Sans', w, 'public-sans-latin-wght-normal')),
+  /* Free Won't asks for its three families in one link. */
+  'Alegreya:ital,wght@0,400..900;1,400..900': [
+    faceOf('Alegreya', 'normal', '400 900', 'alegreya-latin-wght-normal'),
+    faceOf('Alegreya', 'italic', '400 900', 'alegreya-latin-wght-italic'),
+    faceOf('Alegreya', 'normal', '400 900', 'alegreya-greek-wght-normal', GREEK),
+    faceOf('Alegreya', 'normal', '400 900', 'alegreya-greek-ext-wght-normal', GREEK_EXT),
+  ],
+  'Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600': [
+    faceOf('Newsreader', 'normal', '400 600', 'newsreader-latin-opsz-normal'),
+    faceOf('Newsreader', 'italic', '400 600', 'newsreader-latin-opsz-italic'),
+  ],
+  'Courier+Prime:wght@400;700': [400, 700].map((w) => face('Courier Prime', w, `courier-prime-latin-${w}-normal`)),
 };
 
 /**
@@ -122,6 +147,10 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
     ],
   ],
   'depth-chart': [],
+  /* Free Won't ships as delivered: its file already carries the twin's
+     sentences (data-twin), the share-card frame (data-og-frame) and the
+     marks that keep its top bar out of both. */
+  'free-wont': [],
   /* Quantum Banking: the hero rosette is drawn once, at load, into a canvas
      sized to the hero as it stands then, and the canvas is shown at the
      hero's full size. On a phone the web fonts arrive after that and the
@@ -198,6 +227,12 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
  * 44rem column, same mono). It gives up ScrollFoot's z-index so the twin
  * counter (fixed, later in the page) always rides above it; the body's own
  * bottom padding keeps the counter clear of the foot's last line.
+ *
+ * Free Won't: inside the page's closing band, after the sources, so it
+ * sits on the band's opaque ground above the fixed sky and takes the
+ * page's colours as they turn from night to daylight. It runs the width of
+ * the sources column, and its small labels are set bold like every other
+ * label on the page.
  */
 /* The source text the foot follows: [what, the exact text]. */
 const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
@@ -205,6 +240,7 @@ const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
   'the-receipts': ['the end of <main>', '</main>\n'],
   'depth-chart': ['the end of <main>', '</main>\n'],
   'quantum-banking': ['the end of the sources sheet', '    </ol>\n  </div>\n</section>\n'],
+  'free-wont': ['the end of the sources', 'reading of each source.</p>\n  </section>\n'],
 };
 const FOOT_CSS: Record<FuturistSlug, string> = {
   'face-forward':
@@ -214,6 +250,10 @@ const FOOT_CSS: Record<FuturistSlug, string> = {
     '.scroll-foot.site-foot{--log:var(--body);z-index:auto;max-width:30rem;margin-top:0;padding-bottom:104px;color:var(--paper)}',
   'depth-chart': '.scroll-foot.site-foot{--log:var(--mono);z-index:auto;max-width:44rem;margin-top:0;border-top-color:var(--rule)}',
   'quantum-banking': '.scroll-foot.site-foot{--log:var(--mono);z-index:auto;max-width:44rem;margin-top:0;border-top-color:var(--rule)}',
+  'free-wont':
+    '.scroll-foot.site-foot{--log:var(--typed);max-width:1240px;margin-top:0;padding-left:0;padding-right:0;border-top-color:var(--rule)}' +
+    '.scroll-foot.site-foot .scroll-foot__k,.scroll-foot.site-foot .scroll-foot__status,.scroll-foot.site-foot .scroll-foot__btn,' +
+    '.scroll-foot.site-foot .scroll-foot__next-label,.scroll-foot.site-foot .scroll-foot__commission,.scroll-foot.site-foot .scroll-foot__door{font-weight:700;opacity:.92}',
 };
 const FOOT_MARK = '<!--futurist:foot-->';
 
@@ -224,6 +264,14 @@ const FOOT_MARK = '<!--futurist:foot-->';
  */
 const back = (slug: FuturistSlug, label: string, href: string): [string, string, string] => {
   const a = 'style="color:inherit;white-space:nowrap"';
+  if (slug === 'free-wont') {
+    return [
+      'the kicker',
+      '  <p class="kicker"><span>By Michael Wilhelm</span><span>November 2026</span></p>\n',
+      `  <p class="kicker"><span><a href="${href}" ${a}>${esc(label)}</a></span><span>By <a href="/" rel="author" ${a}>Michael Wilhelm</a></span><span>November 2026</span>` +
+        `<span data-og-hide data-twin-skip><a href="/gallery/" ${a}>The Gallery</a></span></p>\n`,
+    ];
+  }
   if (slug === 'depth-chart') {
     return [
       'the hero tag',
@@ -269,7 +317,8 @@ function swap(html: string, find: string, put: string, what: string, slug: strin
 }
 
 export function futuristSource(slug: FuturistSlug): string {
-  const bytes = readFileSync(resolve(process.cwd(), '_incoming/futurist-essays', `${slug}.html`));
+  const dir = (FUTURIST_SOURCES[slug] as { dir?: string }).dir ?? 'futurist-essays';
+  const bytes = readFileSync(resolve(process.cwd(), '_incoming', dir, `${slug}.html`));
   const sha = createHash('sha256').update(bytes).digest('hex');
   if (sha !== FUTURIST_SOURCES[slug].sha256) {
     throw new Error(`futurist: ${slug}: the source file is not the approved one (sha256 ${sha.slice(0, 16)}…).`);
