@@ -40,6 +40,16 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   <p class="deck">A sky clock you can read. Cast a chart, lay two together, and watch which gods are talking.</p>
 </header>
 
+<section id="start" class="start" aria-label="Start">
+  <h2>Whose sky?</h2>
+  <p>Nothing is loaded yet. Cast your own chart, or pick one from the library.</p>
+  <div class="start-go">
+    <button class="big" data-start="self">Enter your birth details<small>Kept in this tab, never sent, never saved</small></button>
+    <button class="big" data-start="lib">Choose a chart<small>Historical figures by field, or the sky right now</small></button>
+  </div>
+  <p class="fine"><button class="chip" data-start="house">Open the house chart</button></p>
+</section>
+
 <div class="rig">
   <div class="bench" role="region" aria-label="The chart">
     <div id="slots" class="slots"></div>
@@ -273,6 +283,9 @@ body.natal .lib header{position:sticky;top:0;z-index:2;display:flex;align-items:
 body.natal .lib h2{margin:0;font-size:1.3rem}
 body.natal .lib header button{width:44px;height:44px;font-size:1.6rem;color:var(--mute)}
 body.natal .lib-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}
+body.natal .start{max-width:640px;margin:0 auto;padding:18px 14px 34px;text-align:center}body.natal .start h2{margin:0 0 6px;font-size:1.5rem}body.natal .start>p{margin:0 0 16px;color:var(--mute)}body.natal .start-go{display:grid;gap:10px;margin:0 0 14px}
+body.natal .ne-main.is-empty .rig{display:none}body.natal .ne-main:not(.is-empty) .start{display:none}
+@media(min-width:620px){body.natal .start-go{grid-template-columns:1fr 1fr}}
 body.natal .big{border:1px solid var(--ichor);border-radius:12px;padding:12px;text-align:left;font-weight:700;font-size:1.02rem;line-height:1.2;background:rgba(242,197,107,.06)}
 body.natal .big small{display:block;margin-top:5px;font-size:.64rem;line-height:1.45;color:var(--mute);font-weight:500}
 body.natal .lib-h{margin:20px 0 8px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ichor)}

@@ -809,6 +809,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   function size() { const r = cv.parentElement.getBoundingClientRect(); dpr = Math.min(2, window.devicePixelRatio || 1); W = Math.round(r.width); H = Math.round(r.height); cv.width = W * dpr; cv.height = H * dpr; FONT.dpr = dpr; }
   function stars() { ctx.save(); for (let i = 0; i < 70; i++) { const x = (Math.sin(i * 12.9898) * 43758.5453) % 1, y = (Math.sin(i * 78.233) * 12345.678) % 1; ctx.fillStyle = 'rgba(239,232,216,' + (0.1 + 0.25 * Math.abs(Math.sin(i * 3.3))) + ')'; ctx.fillRect(Math.abs(x) * W, Math.abs(y) * H, 1.2, 1.2); } ctx.restore(); }
   function draw(now) {
+    if (!S.charts.length) return;
     const t = S.still ? 2.4 : (now - t0) / 1000;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); stars(); hits = []; hits.lines = []; hits.geom = null;
     const vc = curCharts, links = curLinks; if (!vc.length || !vc[0]) return;
@@ -818,6 +819,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   }
   function loop(now) { draw(now); if (!S.still) requestAnimationFrame(loop); }
   function redraw() {
+    if (!S.charts.length) return;
     curCharts = viewCharts(); curLinks = curCharts[0] ? viewLinks(curCharts) : [];
     for (const L of curLinks) L.key = S.slotOf(curCharts[L.ia]) + ':' + L.a + '|' + S.slotOf(curCharts[L.ib]) + ':' + L.b;
     setFoc(); if (S.still) draw(performance.now());
@@ -1376,7 +1378,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     $('#body').innerHTML = body; markRows();
     cv.setAttribute('aria-label', (VIEWS.find((x) => x[0] === S.view)[1]) + ' view of ' + vc.map((c) => c.name).join(' and ') + '. ' + links.length + ' aspect lines. Full positions are in the tables below.');
   }
-  function renderAll() { S.hov = null; hideTip(); cv.parentElement.dataset.mode = S.view; renderSlots(); renderViews(); size(); redraw(); renderPanel(); }
+  function renderAll() { S.hov = null; hideTip(); const empty = !S.charts.length; $('.ne-main').classList.toggle('is-empty', empty); if (empty) return; cv.parentElement.dataset.mode = S.view; renderSlots(); renderViews(); size(); redraw(); renderPanel(); }
 
   /* ---------------- the library ---------------- */
   const dlg = $('#library');
@@ -1444,7 +1446,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
 
   /* ---------------- wiring ---------------- */
   document.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-pick],[data-drop],[data-view],[data-focus],[data-tog],[data-sel],[data-clear],[data-tab],[data-tone]'); if (!b || dlg.contains(b)) return;
+    const b = e.target.closest('[data-start],[data-pick],[data-drop],[data-view],[data-focus],[data-tog],[data-sel],[data-clear],[data-tab],[data-tone]'); if (!b || dlg.contains(b)) return;
+    if (b.dataset.start) { if (b.dataset.start === 'house') { const sp = M.specOf(Object.assign({}, figById('wilhelm'), { private: true })); sp.meta = L.FIGURES[0]; return setSlot(0, sp); } openLibrary(0); if (b.dataset.start === 'self') { $('#lib-body').hidden = true; $('#self').hidden = false; $('#f-name').focus(); } return; }
     if (b.dataset.pick != null) return openLibrary(+b.dataset.pick);
     if (b.dataset.drop != null) return dropSlot(+b.dataset.drop);
     if (b.dataset.view) { S.view = b.dataset.view; S.sel = null; return renderAll(); }
@@ -1478,8 +1481,9 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   addEventListener('resize', () => { size(); redraw(); });
   if (window.ResizeObserver) new ResizeObserver(() => { size(); redraw(); }).observe(cv.parentElement);
 
-  S.specs = [M.specOf(Object.assign({}, figById('wilhelm'), { private: true }))];
-  L.FIGURES[0].private = true; S.specs[0].meta = L.FIGURES[0];
+  /* Nothing is cast until the visitor enters their own details or chooses a chart. */
+  S.specs = [];
+  L.FIGURES[0].private = true;
   recast(); renderLibrary(); size(); syncTuning(); renderAll();
   if (S.still) draw(performance.now()); else requestAnimationFrame(loop);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (S.still) draw(performance.now()); });
