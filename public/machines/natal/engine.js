@@ -474,6 +474,10 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   }
   const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; };
 
+  /* Focus: what the pointer or a selection has lit. inFoc: is this point lit; linkFoc: null when nothing is lit, else whether this line is. */
+  const inFoc = (S, slot, id) => !!(S.foc && S.foc.pts.has(slot + ':' + id));
+  const linkFoc = (S, L, sa, sb) => { const f = S.foc; if (!f) return null; return f.link ? f.link === L.key : f.pts.has(sa + ':' + L.a) || f.pts.has(sb + ':' + L.b); };
+
   /* Screen position for an ecliptic longitude: the rotation longitude sits at
      nine o'clock and the zodiac runs counterclockwise, as on a printed chart. */
   function at(cx, cy, r, lon, rot) { const a = (180 + lon - rot) * RAD; return { x: cx + r * Math.cos(a), y: cy - r * Math.sin(a), a }; }
@@ -533,6 +537,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   function beam(ctx, A, B, link, t, o) {
     const tone = COL[link.tone], w = link.w, dim = o.dim ? 0.1 : 1, hot = o.hot;
     const qx = o.ctrl ? o.ctrl.x : (A.x + B.x) / 2, qy = o.ctrl ? o.ctrl.y : (A.y + B.y) / 2;
+    if (o.reg) o.reg.push({ ax: A.x, ay: A.y, bx: B.x, by: B.y, qx: o.ctrl ? qx : null, qy: o.ctrl ? qy : null, link });
     ctx.save();
     const q = o.quiet && !hot ? 0.55 : 1;
     ctx.strokeStyle = rgba(tone, (0.12 + 0.5 * w) * dim * (hot ? 1.5 : 1) * q); ctx.lineWidth = (0.9 + 1.7 * w) * (hot ? 1.4 : 1) * (q < 1 ? 0.8 : 1);
@@ -576,11 +581,13 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   function wheel(ctx, cx, cy, R, charts, links, S, t, hits, F) {
     const main = charts[0], two = charts.length > 1, rot = main.timeKnown ? main.asc : 0;
     const rIn = R * 0.86, rA = two ? R * 0.585 : R * 0.7, rB = R * 0.765, rAsp = two ? R * 0.47 : R * 0.56;
+    hits.geom = { cx, cy, R, rIn, rAsp, rot, ch: main, slot: S.slotOf(main) };
+    const hs = S.hov && S.hov.kind === 'sign' ? S.hov.sign : -1, hh = S.hov && S.hov.kind === 'house' ? S.hov.house : 0;
     // zodiac band
     for (let s = 0; s < 12; s++) {
       const a0 = (180 + s * 30 - rot) * RAD, a1 = (180 + s * 30 + 30 - rot) * RAD;
       ctx.beginPath(); ctx.arc(cx, cy, R, -a0, -a1, true); ctx.arc(cx, cy, rIn, -a1, -a0, false); ctx.closePath();
-      ctx.fillStyle = rgba(ELCOL[C.ELEMENT[s % 4]], s % 2 ? 0.085 : 0.05); ctx.fill();
+      ctx.fillStyle = rgba(ELCOL[C.ELEMENT[s % 4]], hs === s ? 0.3 : s % 2 ? 0.085 : 0.05); ctx.fill();
       ctx.strokeStyle = rgba(ELCOL[C.ELEMENT[s % 4]], 0.6); ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(cx, cy, R + 2.5, -a0 - 0.012, -a1 + 0.012, true); ctx.stroke();
       const p = at(cx, cy, (R + rIn) / 2, s * 30 + 15, rot);
       glyph(ctx, ZG[s], p.x, p.y, Math.max(13, R * 0.085), ELCOL[C.ELEMENT[s % 4]], 0.95, 1.6);
@@ -595,12 +602,13 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (main.timeKnown) {
       for (let i = 0; i < 12; i++) {
         const lon = main.cusps[i], ang = i % 3 === 0, a = at(cx, cy, rAsp, lon, rot), b = at(cx, cy, rIn, lon, rot);
+        if (hh === i + 1) { const a0 = (180 + lon - rot) * RAD, a1 = (180 + lon + C.norm(main.cusps[(i + 1) % 12] - lon) - rot) * RAD; ctx.beginPath(); ctx.arc(cx, cy, rIn, -a0, -a1, true); ctx.arc(cx, cy, rAsp, -a1, -a0, false); ctx.closePath(); ctx.fillStyle = rgba(COL.ichor, 0.11); ctx.fill(); }
         ctx.strokeStyle = rgba(ang ? COL.ichor : COL.ink, ang ? 0.8 : 0.2); ctx.lineWidth = ang ? 1.6 : 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
         const mid = lon + C.norm(main.cusps[(i + 1) % 12] - lon) / 2, hp = at(cx, cy, rAsp + (two ? R * 0.04 : R * 0.045), mid, rot);
         ctx.fillStyle = rgba(COL.mute, 0.75); ctx.font = '500 ' + Math.max(9, R * 0.045) + 'px ' + F.mono; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(i + 1), hp.x, hp.y);
       }
       const lab = [['AS', main.asc], ['MC', main.mc], ['DS', main.asc + 180], ['IC', main.mc + 180]];
-      for (const [tx, lon] of lab) { const p = at(cx, cy, R + Math.max(11, R * 0.06), lon, rot); ctx.fillStyle = COL.ichor; ctx.font = '600 ' + Math.max(10, R * 0.05) + 'px ' + F.mono; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(tx, p.x, p.y); }
+      for (const [tx, lon] of lab) { const p = at(cx, cy, R + Math.max(11, R * 0.06), lon, rot); ctx.fillStyle = COL.ichor; ctx.font = '600 ' + Math.max(10, R * 0.05) + 'px ' + F.mono; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(tx, p.x, p.y); hits.push({ x: p.x, y: p.y, r: 15, kind: 'angle', id: tx, slot: S.slotOf(main) }); }
     }
     // lay out the planets of each ring
     const place = (ch, slot, r, minSep) => {
@@ -614,8 +622,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     // beams
     for (const L of links) {
       const A = pos[L.ia][L.a], B = pos[L.ib][L.b]; if (!A || !B) continue;
-      const sel = S.sel, involved = sel && ((sel.slot === A.slot && sel.id === L.a) || (sel.slot === B.slot && sel.id === L.b));
-      beam(ctx, { x: A.ax, y: A.ay }, { x: B.ax, y: B.ay }, L, t, { dim: sel && !involved, hot: involved, still: S.still, scale: Math.min(1.15, R / 190) });
+      const involved = linkFoc(S, L, A.slot, B.slot);
+      beam(ctx, { x: A.ax, y: A.ay }, { x: B.ax, y: B.ay }, L, t, { dim: involved === false, hot: involved === true, reg: hits.lines, still: S.still, scale: Math.min(1.15, R / 190) });
     }
     // stems, orbs, glyphs
     pos.forEach((ring, k) => {
@@ -623,7 +631,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
       for (const id of ORDER) {
         const p = ring[id]; if (!p) continue;
         if (p.angle && !(two && outer)) continue; // the main chart's angles are already the gold cusp lines
-        const sel = S.sel && S.sel.slot === slot && S.sel.id === id;
+        const sel = inFoc(S, slot, id);
         ctx.strokeStyle = rgba(PCOL[id], 0.4); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p.ax, p.ay); ctx.lineTo(p.x, p.y); ctx.stroke();
         if (!p.angle) { const k0 = at(cx, cy, rIn, p.lon, rot), k1 = at(cx, cy, rIn - R * (outer ? 0.03 : 0.045), p.lon, rot); ctx.strokeStyle = rgba(two ? SLOTCOL[slot] : PCOL[id], 0.95); ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(k0.x, k0.y); ctx.lineTo(k1.x, k1.y); ctx.stroke(); }
         const base = Math.max(3.2, R * 0.018) * PT[id].size;
@@ -645,6 +653,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
           const p = at(cx, cy, rIn - R * 0.075, disp[i], rot), k0 = at(cx, cy, rIn, lon, rot), k1 = at(cx, cy, rIn - R * 0.02, lon, rot);
           ctx.strokeStyle = rgba(COL.mute, 0.7); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(k0.x, k0.y); ctx.lineTo(k1.x, k1.y); ctx.stroke();
           if (PG[gid]) glyph(ctx, PG[gid], p.x, p.y, qs, PCOL[gid] || COL.mute, PCOL[gid] ? 0.8 : 0.9, 1.4); else pointGlyph(ctx, gid, p.x, p.y, qs * 1.25, COL.mute, 0.95, F.mono);
+          hits.push({ x: p.x, y: p.y, r: 11, kind: 'mark', id: gid, slot, lon });
         });
       }
     });
@@ -672,10 +681,10 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     for (const L of links) { const A = pos.get(charts[L.ia])[L.a], B = pos.get(charts[L.ib])[L.b]; if (A && B) { A.n += L.w; B.n += L.w; } }
     const draw = (L, inner) => {
       const A = pos.get(charts[L.ia])[L.a], B = pos.get(charts[L.ib])[L.b]; if (!A || !B) return;
-      const sel = S.sel, involved = sel && ((sel.slot === A.slot && sel.id === L.a) || (sel.slot === B.slot && sel.id === L.b));
+      const involved = linkFoc(S, L, A.slot, B.slot);
       let ctrl = null;
       if (!inner) { const dx = B.x - A.x, dy = B.y - A.y, len = Math.hypot(dx, dy) || 1, bend = (L.seed - 0.5) * Math.min(26, len * 0.16); ctrl = { x: (A.x + B.x) / 2 - (dy / len) * bend, y: (A.y + B.y) / 2 + (dx / len) * bend }; }
-      beam(ctx, A, B, L, t, { ctrl, dim: sel && !involved, hot: involved, still: S.still, scale: Math.min(1, rc / 95), fast: inner ? 1.6 : 1, quiet: true });
+      beam(ctx, A, B, L, t, { ctrl, dim: involved === false, hot: involved === true, reg: hits.lines, still: S.still, scale: Math.min(1, rc / 95), fast: inner ? 1.6 : 1, quiet: true });
     };
     for (const L of links) if (L.ia !== L.ib) draw(L, false);
     for (const ch of charts) { // each chart's own disc sits over the long lines, so its inside stays readable
@@ -692,11 +701,11 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
       const map = pos.get(ch), slot = S.slotOf(ch), small = ch === dav;
       for (const id of ORDER) {
         const p = map[id]; if (!p) continue;
-        const sel = S.sel && S.sel.slot === slot && S.sel.id === id, base = Math.max(3, rc * 0.045) * PT[id].size * (small ? 0.8 : 1) * (1 + Math.min(0.45, p.n * 0.1));
+        const sel = inFoc(S, slot, id), base = Math.max(3, rc * 0.045) * PT[id].size * (small ? 0.8 : 1) * (1 + Math.min(0.45, p.n * 0.1));
         if (id === 'asc' || id === 'mc') { ctx.fillStyle = SLOTCOL[slot]; ctx.beginPath(); ctx.arc(p.x, p.y, sel ? 4.5 : 3, 0, TAU); ctx.fill(); if (sel) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, TAU); ctx.stroke(); } }
         else orb(ctx, p.x, p.y, base, PCOL[id], t, id, sel);
         const g = small ? gs * 0.72 : gs, off = g * 0.8 + base + 2, gx = p.x - Math.cos(p.a) * off, gy = p.y + Math.sin(p.a) * off; // glyph inside the ring
-        pointGlyph(ctx, id, gx, gy, g, COL.ink, sel || !S.sel ? 1 : 0.55, F.mono);
+        pointGlyph(ctx, id, gx, gy, g, COL.ink, sel || !S.foc ? 1 : 0.55, F.mono);
         hits.push({ x: p.x, y: p.y, r: 19, slot, id }, { x: gx, y: gy, r: 14, slot, id });
       }
     }
@@ -710,14 +719,15 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     ctx.font = '600 ' + Math.max(9, cell * 0.3) + 'px ' + F.mono; ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
     ctx.fillStyle = SLOTCOL[sb]; ctx.fillText((B.name || 'B').toUpperCase().slice(0, 28) + '  →', x0 + (cell * cols) / 2, y0 - cell * 1.55);
     ctx.save(); ctx.translate(x0 - cell * 1.5, y0 + (cell * rows) / 2); ctx.rotate(-Math.PI / 2); ctx.fillStyle = SLOTCOL[sa]; ctx.fillText((A.name || 'A').toUpperCase().slice(0, 28) + '  →', 0, 0); ctx.restore();
-    pb.forEach((p, j) => { const sel = S.sel && S.sel.slot === sb && S.sel.id === p.id; pointGlyph(ctx, p.id, x0 + cell * (j + 0.5), y0 - cell * 0.55, cell * 0.62, sel ? '#fff' : PCOL[p.id], 1, F.mono); hits.push({ x: x0 + cell * (j + 0.5), y: y0 - cell * 0.55, r: cell * 0.5, slot: sb, id: p.id }); });
-    pa.forEach((p, i) => { const sel = S.sel && S.sel.slot === sa && S.sel.id === p.id; pointGlyph(ctx, p.id, x0 - cell * 0.55, y0 + cell * (i + 0.5), cell * 0.62, sel ? '#fff' : PCOL[p.id], 1, F.mono); hits.push({ x: x0 - cell * 0.55, y: y0 + cell * (i + 0.5), r: cell * 0.5, slot: sa, id: p.id }); });
+    pb.forEach((p, j) => { const sel = inFoc(S, sb, p.id); pointGlyph(ctx, p.id, x0 + cell * (j + 0.5), y0 - cell * 0.55, cell * 0.62, sel ? '#fff' : PCOL[p.id], 1, F.mono); hits.push({ x: x0 + cell * (j + 0.5), y: y0 - cell * 0.55, r: cell * 0.5, slot: sb, id: p.id }); });
+    pa.forEach((p, i) => { const sel = inFoc(S, sa, p.id); pointGlyph(ctx, p.id, x0 - cell * 0.55, y0 + cell * (i + 0.5), cell * 0.62, sel ? '#fff' : PCOL[p.id], 1, F.mono); hits.push({ x: x0 - cell * 0.55, y: y0 + cell * (i + 0.5), r: cell * 0.5, slot: sa, id: p.id }); });
     for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) {
       const x = x0 + cell * j, y = y0 + cell * i, L = by[pa[i].id + '|' + pb[j].id];
-      const on = S.sel && ((S.sel.slot === sa && S.sel.id === pa[i].id) || (S.sel.slot === sb && S.sel.id === pb[j].id));
+      const f = S.foc, on = !!f && (f.link ? !!L && f.link === L.key : f.pts.has(sa + ':' + pa[i].id) || f.pts.has(sb + ':' + pb[j].id));
+      hits.push({ x: x + cell / 2, y: y + cell / 2, r: cell / 2, sq: true, kind: 'cell', a: pa[i].id, b: pb[j].id, link: L || null });
       ctx.fillStyle = rgba(COL.ink, on ? 0.09 : 0.028); ctx.fillRect(x + 1, y + 1, cell - 2, cell - 2);
       if (!L) continue;
-      const c = COL[L.tone], dim = S.sel && !on ? 0.25 : 1, breathe = S.still ? 1 : 0.85 + 0.15 * Math.sin(t * 1.6 + L.seed * 9);
+      const c = COL[L.tone], dim = S.foc && !on ? 0.25 : 1, breathe = S.still ? 1 : 0.85 + 0.15 * Math.sin(t * 1.6 + L.seed * 9);
       ctx.fillStyle = rgba(c, (0.1 + 0.34 * L.w) * dim * breathe); ctx.fillRect(x + 1, y + 1, cell - 2, cell - 2);
       ctx.save(); ctx.globalAlpha = (0.55 + 0.45 * L.w) * dim; ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = Math.max(1.5, cell * 0.07); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
       const mx = x + cell / 2, my = y + cell / 2, q = cell * 0.2;
@@ -752,7 +762,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     ['davison', 'Davison', 'The midpoint of two births, in time and in place, cast as a chart of its own.'],
   ];
   const S = {
-    specs: [], charts: [], view: 'wheel', focus: 0, sel: null, hsys: 'P', tight: 1, tones: { flow: true, grind: true, fuse: true },
+    specs: [], charts: [], view: 'wheel', focus: 0, sel: null, hov: null, foc: null, hsys: 'P', tight: 1, tones: { flow: true, grind: true, fuse: true },
     inner: false, webDav: false, greek: false, minor: false, still: matchMedia('(prefers-reduced-motion: reduce)').matches, tab: 'aspects', pickSlot: 0, selfN: 0,
     slotOf(ch) { const i = S.charts.indexOf(ch); return i < 0 ? 4 : i; },
   };
@@ -800,22 +810,129 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   function stars() { ctx.save(); for (let i = 0; i < 70; i++) { const x = (Math.sin(i * 12.9898) * 43758.5453) % 1, y = (Math.sin(i * 78.233) * 12345.678) % 1; ctx.fillStyle = 'rgba(239,232,216,' + (0.1 + 0.25 * Math.abs(Math.sin(i * 3.3))) + ')'; ctx.fillRect(Math.abs(x) * W, Math.abs(y) * H, 1.2, 1.2); } ctx.restore(); }
   function draw(now) {
     const t = S.still ? 2.4 : (now - t0) / 1000;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); stars(); hits = [];
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); stars(); hits = []; hits.lines = []; hits.geom = null;
     const vc = curCharts, links = curLinks; if (!vc.length || !vc[0]) return;
     if (S.view === 'web') D.web(ctx, W, H, vc, links, S, t, hits, FONT);
     else if (S.view === 'grid') D.grid(ctx, W, H, vc[0], vc[1], links, S, t, hits, FONT);
     else { const R = Math.min(W, H) / 2 - Math.max(22, Math.min(W, H) * 0.075); D.wheel(ctx, W / 2, H / 2, R, vc, links, S, t, hits, FONT); }
   }
   function loop(now) { draw(now); if (!S.still) requestAnimationFrame(loop); }
-  function redraw() { curCharts = viewCharts(); curLinks = curCharts[0] ? viewLinks(curCharts) : []; if (S.still) draw(performance.now()); }
+  function redraw() {
+    curCharts = viewCharts(); curLinks = curCharts[0] ? viewLinks(curCharts) : [];
+    for (const L of curLinks) L.key = S.slotOf(curCharts[L.ia]) + ':' + L.a + '|' + S.slotOf(curCharts[L.ib]) + ':' + L.b;
+    setFoc(); if (S.still) draw(performance.now());
+  }
   let down = null;
   cv.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY }; });
+  /* ---------------- what is under the pointer, and what to say about it ---------------- */
+  const COPY = {
+    sun: 'The centre of the chart: what you are here to be, and where you shine without trying.', moon: 'What you need to feel safe, and how you react before you think.',
+    mercury: 'How you think, talk, trade and joke.', venus: 'What you love, how you draw it in, and what you find beautiful.', mars: 'How you go after things, and what you do when crossed.',
+    jupiter: 'Where life opens up: luck, appetite, belief, the long view.', saturn: 'Where life asks for work: duty, time, fear, and what you finally master.',
+    uranus: 'Where you break the pattern, and where the pattern breaks you.', neptune: 'Where the edges go soft: imagination, longing, confusion, grace.', pluto: 'Where things go underground and come back changed.',
+    chiron: 'The sore spot that turns into the thing you can teach.', ceres: 'How you feed and are fed, and what you grieve when it is taken.', pallas: 'The pattern-seer: craft, strategy, the clever fix.',
+    juno: 'What you ask of a partner, and what you will put up with.', vesta: 'The flame you tend alone: focus, devotion, what you keep sacred.',
+    asc: 'The sign rising in the east at birth. The front door of the chart: body, manner, first impression.', mc: 'The top of the sky at birth: calling, reputation, what you are seen doing.',
+    dsc: 'The setting point, across from the Ascendant: the other person, partners and open rivals.', ic: 'The bottom of the sky: home, roots, family, the private floor.',
+    nn: 'The Moon’s north node: the direction of growth, where the chart leans forward. Mean position.', lilith: 'The Black Moon, the far point of the Moon’s orbit: what will not be tamed or made polite. Mean position.',
+    vertex: 'A point on the western side of the chart that astrologers read for fated meetings.', fortune: 'The body, luck, and what comes to you. Cast from the Ascendant by the arc between Sun and Moon.',
+    spirit: 'Will and vocation: what you go and do. Fortune’s mirror image.', eros: 'Desire, and what you reach for. Cast from the arc between Spirit and Venus.',
+  };
+  const MARKNAME = { asc: 'Ascendant', mc: 'Midheaven', dsc: 'Descendant', ic: 'Imum Coeli', nn: 'North Node', lilith: 'Black Moon Lilith', vertex: 'Vertex', fortune: 'Lot of Fortune', spirit: 'Lot of Spirit', eros: 'Lot of Eros' };
+  const SIGNCOPY = [
+    ['Cardinal fire · ruled by Mars', 'Starts things. Direct, quick, first through the door.'], ['Fixed earth · ruled by Venus', 'Holds things. Patient, sensual, slow to move and hard to shift.'],
+    ['Mutable air · ruled by Mercury', 'Connects things. Curious, verbal, two of everything.'], ['Cardinal water · ruled by the Moon', 'Shelters things. Protective, moody, loyal to its own.'],
+    ['Fixed fire · ruled by the Sun', 'Warms things. Proud, generous, made to be seen.'], ['Mutable earth · ruled by Mercury', 'Refines things. Exacting, useful, at its best with a task.'],
+    ['Cardinal air · ruled by Venus', 'Balances things. Graceful, fair, shaped by the other person.'], ['Fixed water · ruled by Mars, and Pluto', 'Goes to the bottom of things. Intense, private, all or nothing.'],
+    ['Mutable fire · ruled by Jupiter', 'Widens things. Restless, frank, after meaning.'], ['Cardinal earth · ruled by Saturn', 'Builds things. Disciplined, dry, plays the long game.'],
+    ['Fixed air · ruled by Saturn, and Uranus', 'Rethinks things. Cool, principled, loyal to the idea.'], ['Mutable water · ruled by Jupiter, and Neptune', 'Dissolves things. Porous, kind, half in another world.'],
+  ];
+  const HOUSECOPY = ['Self, body, the way you arrive.', 'Money, possessions, what you value.', 'Siblings, neighbours, short trips, everyday speech.', 'Home, family, roots, the end of things.', 'Play, romance, children, what you make for joy.', 'Work, health, routines, service.', 'Partners, marriage, open rivals.', 'Shared money, sex, death, what binds you to others.', 'Travel, study, belief, the far country.', 'Career, standing, what you are known for.', 'Friends, allies, hopes.', 'Solitude, the hidden, what works behind the scenes.'];
+  const ASPCOPY = { conjunction: 'Conjunction: two points in the same place. They act as one.', opposition: 'Opposition: two points across the wheel. A tug of war that wants a balance.', trine: 'Trine: a third of the wheel apart, same element. Easy flow, often taken for granted.', square: 'Square: a quarter of the wheel apart. Friction that gets things done.', sextile: 'Sextile: a sixth of the wheel apart. An opening that works if you use it.' };
+  const tip = $('#tip');
+  const chartOfSlot = (s) => (s === 4 ? dav : S.charts[s]);
+  const lonOf = (ch, id) => (ch.bodies[id] ? ch.bodies[id].lon : id === 'dsc' ? C.norm(ch.asc + 180) : id === 'ic' ? C.norm(ch.mc + 180) : ch[id] != null ? ch[id] : ch.lots ? ch.lots[id] : 0);
+  const tipHead = (g, title, meta) => '<div class="tip-h">' + g + '<div><b>' + title + '</b>' + (meta ? '<span>' + meta + '</span>' : '') + '</div></div>';
+  const who = (ch) => (curCharts.length > 1 || (ch.meta && ch.meta.davison) ? esc(shortName(ch)) + ' · ' : '');
+  const ptsWhere = (ch, slot, test) => C.points(ch).filter((p) => test(p.lon)).map((p) => slot + ':' + p.id);
+  function inList(ch, test) { const names = C.points(ch).filter((p) => !p.angle && test(p.lon)).map((p) => D.PT[p.id].n); return names.length ? 'Here: ' + names.join(', ') + '.' : 'Empty in this chart.'; }
+  function tipHtml(h) {
+    const ch = h.slot != null ? chartOfSlot(h.slot) : null;
+    if (h.kind === 'point' && ch) {
+      const P = D.PT[h.id], b = ch.bodies[h.id], k = h.slot + ':' + h.id, n = curLinks.filter((L) => L.key.split('|').includes(k)).length;
+      return tipHead(pg(h.id), P.n + ' <i lang="grc">' + P.g + '</i>', who(ch) + pos(lonOf(ch, h.id)) + (b && b.house ? ' · house ' + b.house : '') + (b && b.retro ? ' · retrograde' : '')) + '<p>' + COPY[h.id] + '</p><p class="tip-n">' + (n ? 'Touches ' + n + (n === 1 ? ' line' : ' lines') + ' here, lit in the list.' : 'No lines at this tightness.') + '</p>';
+    }
+    if ((h.kind === 'line' || h.kind === 'cell') && h.link) { const L = h.link; return tipHead('<span class="gl tx tone-' + L.tone + '">' + ASYM[L.kind] + '</span>', D.PT[L.a].n + ' ' + L.kind + ' ' + D.PT[L.b].n, L.off.toFixed(1) + '° from exact' + (L.applying === true ? ' · closing' : '')) + '<p>' + sentence(L, curCharts) + '</p><p class="tip-n">' + ASPCOPY[L.kind] + '</p>'; }
+    if (h.kind === 'cell') return tipHead('<span class="gl tx">·</span>', D.PT[h.a].n + ' and ' + D.PT[h.b].n, '') + '<p>No aspect between these two within the orb.</p>';
+    if (h.kind === 'sign' && ch) return tipHead(svg(D.ZG[h.sign], 'zs'), C.SIGNS[h.sign], SIGNCOPY[h.sign][0]) + '<p>' + SIGNCOPY[h.sign][1] + '</p><p class="tip-n">' + inList(ch, (l) => Math.floor(l / 30) === h.sign) + '</p>';
+    if (h.kind === 'house' && ch) return tipHead('<span class="gl tx">' + h.house + '</span>', 'House ' + h.house, 'cusp at ' + pos(ch.cusps[h.house - 1])) + '<p>' + HOUSECOPY[h.house - 1] + '</p><p class="tip-n">' + inList(ch, (l) => C.houseOf(l, ch.cusps) === h.house) + '</p>';
+    if (h.kind === 'angle' && ch) { const id = { AS: 'asc', MC: 'mc', DS: 'dsc', IC: 'ic' }[h.id]; return tipHead('<span class="gl tx">' + h.id + '</span>', MARKNAME[id], pos(lonOf(ch, id))) + '<p>' + COPY[id] + '</p>'; }
+    if (h.kind === 'mark' && ch) { const P = D.PT[h.id]; return tipHead(pg(h.id), P ? P.n + ' <i lang="grc">' + P.g + '</i>' : MARKNAME[h.id], pos(h.lon)) + '<p>' + COPY[h.id] + '</p>' + (P ? '<p class="tip-n">Switch it into the lines under Tuning.</p>' : ''); }
+    return '';
+  }
+  function distLine(ln, x, y) {
+    const seg = (x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, l = dx * dx + dy * dy || 1, u = Math.max(0, Math.min(1, ((x - x1) * dx + (y - y1) * dy) / l)); return Math.hypot(x - x1 - u * dx, y - y1 - u * dy); };
+    if (ln.qx == null) return seg(ln.ax, ln.ay, ln.bx, ln.by);
+    let best = 1e9, px = ln.ax, py = ln.ay;
+    for (let i = 1; i <= 14; i++) { const u = i / 14, v = 1 - u, qx = v * v * ln.ax + 2 * v * u * ln.qx + u * u * ln.bx, qy = v * v * ln.ay + 2 * v * u * ln.qy + u * u * ln.by; best = Math.min(best, seg(px, py, qx, qy)); px = qx; py = qy; }
+    return best;
+  }
+  /** What sits under a canvas position: a point, a quiet mark, an angle label, a grid square, a line, a sign or a house. */
+  function probe(x, y) {
+    let best = null, bd = 1e9;
+    for (const h of hits) { const d = h.sq ? Math.max(Math.abs(h.x - x), Math.abs(h.y - y)) : Math.hypot(h.x - x, h.y - y); if (d < h.r && d < bd) { bd = d; best = h; } }
+    if (best) return best.kind ? Object.assign({}, best) : { kind: 'point', slot: best.slot, id: best.id };
+    let bl = null; bd = 7; for (const ln of hits.lines || []) { const d = distLine(ln, x, y); if (d < bd) { bd = d; bl = ln; } }
+    if (bl) return { kind: 'line', link: bl.link };
+    const g = hits.geom; if (!g) return null;
+    const dx = x - g.cx, dy = g.cy - y, r = Math.hypot(dx, dy), lon = C.norm((Math.atan2(dy, dx) * 180) / Math.PI - 180 + g.rot);
+    if (r <= g.R + 4 && r >= g.rIn) { const s = Math.floor(lon / 30); return { kind: 'sign', sign: s, slot: g.slot, pts: ptsWhere(g.ch, g.slot, (l) => Math.floor(l / 30) === s) }; }
+    if (r < g.rIn && r > g.rAsp && g.ch.timeKnown) { const n = C.houseOf(lon, g.ch.cusps); return { kind: 'house', house: n, slot: g.slot, pts: ptsWhere(g.ch, g.slot, (l) => C.houseOf(l, g.ch.cusps) === n) }; }
+    return null;
+  }
+  const hovKey = (h) => (h ? h.kind + ':' + (h.slot == null ? '' : h.slot) + ':' + (h.link ? h.link.key : h.id != null ? h.id : h.sign != null ? h.sign : h.house != null ? h.house : h.a + h.b) : '');
+  function setFoc() {
+    const h = S.hov; let f = null;
+    if (h) {
+      if (h.link) f = { link: h.link.key, pts: new Set() };
+      else if (h.kind === 'point') f = { pts: new Set([h.slot + ':' + h.id]) };
+      else if (h.kind === 'sign' || h.kind === 'house') f = { pts: new Set(h.pts) };
+      else if (h.kind === 'angle' && (h.id === 'AS' || h.id === 'MC')) f = { pts: new Set([h.slot + ':' + (h.id === 'AS' ? 'asc' : 'mc')]) };
+      else if (h.kind === 'cell') f = { pts: new Set(), link: '-' };
+    }
+    if (!f && S.sel) f = { pts: new Set([S.sel.slot + ':' + S.sel.id]) };
+    S.foc = f;
+  }
+  /* Light the list rows the lit thing touches. From the canvas they also rise to the top of the list. */
+  function markRows() {
+    const f = S.foc, body = $('#body'); let any = false;
+    $$('.lk[data-k]', body).forEach((li) => { const k = li.dataset.k; let on = false; if (f) { if (f.link) on = f.link === k; else { const ab = k.split('|'); on = f.pts.has(ab[0]) || f.pts.has(ab[1]); } } li.classList.toggle('hot', on); any = any || on; });
+    $$('tr[data-sel]', body).forEach((tr) => tr.classList.toggle('hot', !!f && !f.link && f.pts.has(tr.dataset.sel)));
+    body.classList.toggle('has-hot', any && !(S.hov && S.hov.src === 'list')); body.classList.toggle('lift', any && !!S.hov && S.hov.src !== 'list');
+  }
+  function showTip(h, x, y) {
+    if (!h) { tip.hidden = true; tip.dataset.k = ''; return; }
+    const k = hovKey(h); if (tip.dataset.k !== k) { tip.innerHTML = tipHtml(h); tip.dataset.k = k; }
+    if (!tip.innerHTML) { tip.hidden = true; return; }
+    tip.hidden = false; const tw = tip.offsetWidth, th = tip.offsetHeight; let lx = x + 16, ly = y + 18;
+    if (lx + tw > W - 6) lx = x - tw - 14; if (lx < 6) lx = Math.max(6, Math.min(W - tw - 6, x - tw / 2));
+    if (ly + th > H - 6) ly = y - th - 14; if (ly < 6) ly = 6;
+    tip.style.transform = 'translate(' + Math.round(lx) + 'px,' + Math.round(ly) + 'px)';
+  }
+  function hideTip() { tip.hidden = true; tip.dataset.k = ''; }
+  function setHov(h, x, y, src) {
+    if (hovKey(h) !== hovKey(S.hov)) { S.hov = h; if (h) h.src = src || 'canvas'; setFoc(); if (S.still) draw(performance.now()); markRows(); }
+    if (src === 'list' || !h) hideTip(); else showTip(h, x, y);
+  }
+  cv.addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; setHov(probe(x, y), x, y); });
+  cv.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') setHov(null); });
   cv.addEventListener('pointerup', (e) => {
     if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 10) return; down = null;
-    const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; let best = null, bd = 1e9;
-    for (const h of hits) { const d = Math.hypot(h.x - x, h.y - y); if (d < h.r && d < bd) { bd = d; best = h; } }
-    S.sel = best && !(S.sel && S.sel.slot === best.slot && S.sel.id === best.id) ? { slot: best.slot, id: best.id } : null;
-    redraw(); renderPanel();
+    const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, h = probe(x, y);
+    if (h && h.kind === 'point') S.sel = S.sel && S.sel.slot === h.slot && S.sel.id === h.id ? null : { slot: h.slot, id: h.id };
+    else if (!h) S.sel = null;
+    if (e.pointerType === 'mouse') { redraw(); renderPanel(); return; }
+    S.hov = null; redraw(); renderPanel(); setHov(h && !(h.kind === 'point' && !S.sel) ? h : null, x, y); // a tap stands in for the hover
   });
 
   /* ---------------- small formatters ---------------- */
@@ -877,7 +994,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const many = vc.length > 1, sa = S.slotOf(vc[Lk.ia]), sb = S.slotOf(vc[Lk.ib]);
     const who = (i, id, slot) => '<button class="pt" data-sel="' + slot + ':' + id + '">' + (many ? '<em style="color:' + D.SLOTCOL[slot] + '">' + (slot === 4 ? 'Dv' : LET[slot]) + '</em>' : '') + pg(id) + '<span>' + pname(id) + '</span></button>';
     const left = flip ? who(Lk.ib, Lk.b, sb) : who(Lk.ia, Lk.a, sa), right = flip ? who(Lk.ia, Lk.a, sa) : who(Lk.ib, Lk.b, sb);
-    return '<li class="lk tone-' + Lk.tone + '"><div class="lk-top">' + left + '<span class="as" title="' + Lk.kind + '">' + ASYM[Lk.kind] + '<small>' + Lk.kind + '</small></span>' + right + '<span class="orb">' + Lk.off.toFixed(1) + '°' + (Lk.applying === true ? ' · closing' : Lk.applying === false && Lk.ia === Lk.ib ? ' · parting' : '') + '</span></div><p>' + sentence(Lk, vc) + '</p><span class="meter"><i style="width:' + Math.round(Lk.w * 100) + '%"></i></span></li>';
+    return '<li class="lk tone-' + Lk.tone + '" data-k="' + Lk.key + '"><div class="lk-top">' + left + '<span class="as" title="' + Lk.kind + '">' + ASYM[Lk.kind] + '<small>' + Lk.kind + '</small></span>' + right + '<span class="orb">' + Lk.off.toFixed(1) + '°' + (Lk.applying === true ? ' · closing' : Lk.applying === false && Lk.ia === Lk.ib ? ' · parting' : '') + '</span></div><p>' + sentence(Lk, vc) + '</p><span class="meter"><i style="width:' + Math.round(Lk.w * 100) + '%"></i></span></li>';
   }
   function placements(ch) {
     let h = '<table class="pl-t"><tbody>';
@@ -918,10 +1035,10 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (S.tab === 'aspects') body = links.length ? '<ul class="lks">' + links.slice(0, 40).map((x) => linkRow(x, vc)).join('') + '</ul>' + (links.length > 40 ? '<p class="fine">Showing the 40 tightest of ' + links.length + '.</p>' : '') : '<p class="fine">No lines at this tightness. Loosen the orbs under Tuning.</p>';
     else if (S.tab === 'placements') body = vc.map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + placements(ch)).join('');
     else body = energies(vc, links);
-    $('#body').innerHTML = body;
+    $('#body').innerHTML = body; markRows();
     cv.setAttribute('aria-label', (VIEWS.find((x) => x[0] === S.view)[1]) + ' view of ' + vc.map((c) => c.name).join(' and ') + '. ' + links.length + ' aspect lines. Full positions are in the tables below.');
   }
-  function renderAll() { cv.parentElement.dataset.mode = S.view; renderSlots(); renderViews(); size(); redraw(); renderPanel(); }
+  function renderAll() { S.hov = null; hideTip(); cv.parentElement.dataset.mode = S.view; renderSlots(); renderViews(); size(); redraw(); renderPanel(); }
 
   /* ---------------- the library ---------------- */
   const dlg = $('#library');
@@ -1003,6 +1120,23 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   function syncTuning() { $$('[data-tone]').forEach((b) => b.setAttribute('aria-pressed', S.tones[b.dataset.tone])); $$('#tuning [data-tog]').forEach((b) => b.setAttribute('aria-pressed', !!S[b.dataset.tog])); $('#tightv').textContent = Math.round(S.tight * 100) + '%'; }
   $('#tight').addEventListener('input', (e) => { S.tight = +e.target.value; syncTuning(); redraw(); renderPanel(); });
   $('#hsys').addEventListener('change', (e) => { S.hsys = e.target.value; recast(); renderAll(); });
+  /* a list row under the mouse lights its line on the chart */
+  $('#body').addEventListener('pointerover', (e) => { if (e.pointerType !== 'mouse') return; const li = e.target.closest('.lk[data-k]'), L = li && curLinks.find((x) => x.key === li.dataset.k); setHov(L ? { kind: 'line', link: L } : null, 0, 0, 'list'); });
+  $('#body').addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') setHov(null); });
+  /* opening Tuning brings it into view with the chart: on a wide screen the chart shrinks to make room, on a phone the page scrolls */
+  const tuning = $('#tuning'), bench = $('.bench');
+  tuning.addEventListener('toggle', () => {
+    bench.classList.toggle('tune-open', tuning.open); setHov(null);
+    requestAnimationFrame(() => {
+      bench.style.setProperty('--tune-h', (tuning.open ? tuning.offsetHeight : 0) + 'px'); size(); redraw();
+      if (!tuning.open) return;
+      requestAnimationFrame(() => {
+        const smooth = S.still ? 'auto' : 'smooth';
+        if (matchMedia('(min-width:960px)').matches) window.scrollTo({ top: bench.getBoundingClientRect().top + window.scrollY - 10, behavior: smooth });
+        else tuning.scrollIntoView({ block: 'end', behavior: smooth });
+      });
+    });
+  });
   addEventListener('resize', () => { size(); redraw(); });
   if (window.ResizeObserver) new ResizeObserver(() => { size(); redraw(); }).observe(cv.parentElement);
 

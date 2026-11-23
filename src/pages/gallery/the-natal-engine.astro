@@ -46,7 +46,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <div id="views" class="views" role="tablist" aria-label="Views"></div>
     <p id="hint" class="hint"></p>
     <div id="focus" class="focus"></div>
-    <div class="ne-stage" data-twin="A chart wheel drawn on a night field: the zodiac as a ring of twelve signs, the house lines, the planets as orbs of colored light, and lines between them for the aspects, each carrying a moving signal. Other views lay two charts together as rings, as wired wheels, as a grid, or as one Davison chart."><canvas id="sky" role="img" aria-label="Chart"></canvas></div>
+    <div class="ne-stage" data-twin="A chart wheel drawn on a night field: the zodiac as a ring of twelve signs, the house lines, the planets as orbs of colored light, and lines between them for the aspects, each carrying a moving signal. Other views lay two charts together as rings, as wired wheels, as a grid, or as one Davison chart."><canvas id="sky" role="img" aria-label="Chart"></canvas><div id="tip" class="tip" role="status" hidden></div></div>
     <details id="tuning" class="tuning">
       <summary>Tuning</summary>
       <div class="tune">
@@ -172,7 +172,7 @@ body.natal .chip[aria-pressed=true]{border-color:var(--c,var(--ichor));color:var
 body.natal .ne-stage{position:relative;width:100%;aspect-ratio:1/1.06;max-height:74vh;margin:6px 0 0;border:1px solid var(--rule);border-radius:14px;background:radial-gradient(120% 90% at 50% 40%,#16131f 0%,#0b0a10 70%);overflow:hidden;touch-action:pan-y}
 body.natal .ne-stage[data-mode=web]{aspect-ratio:1/1.3;max-height:84vh}body.natal .ne-stage[data-mode=grid]{aspect-ratio:1/1.02}
 body.natal #sky{position:absolute;inset:0;width:100%;height:100%;display:block}
-body.natal .tuning{margin:10px 0 0;border:1px solid var(--rule);border-radius:10px;background:var(--slab)}
+body.natal .tuning{scroll-margin-bottom:12px;margin:10px 0 0;border:1px solid var(--rule);border-radius:10px;background:var(--slab)}
 body.natal .tuning summary{padding:11px 14px;font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);cursor:pointer;min-height:44px}
 body.natal .tune{padding:2px 14px 14px;display:grid;gap:12px}
 body.natal .tune-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -202,7 +202,19 @@ body.natal #tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin
 body.natal #tabs button{padding:10px 12px 9px;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;min-height:44px}
 body.natal #tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ink)}
 body.natal .lks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-body.natal .lk{position:relative;border:1px solid var(--rule);border-left:3px solid var(--t);border-radius:8px;padding:9px 11px 11px;background:var(--slab)}
+body.natal .tip{position:absolute;left:0;top:0;z-index:3;max-width:min(272px,80%);padding:10px 12px;border:1px solid #4a4456;border-radius:10px;background:rgba(21,19,28,.97);box-shadow:0 8px 28px rgba(0,0,0,.55);pointer-events:none;font-size:.86rem;line-height:1.4}
+body.natal .tip[hidden]{display:none}
+body.natal .tip-h{display:flex;gap:9px;align-items:center}
+body.natal .tip-h>.gl{width:24px;height:24px;flex:none;color:var(--ichor)}body.natal .tip-h>.gl.tx{width:auto;height:auto;min-width:22px;text-align:center;font-size:.8rem}
+body.natal .tip-h>.gl.tx.tone-flow,body.natal .tip-h>.gl.tx.tone-grind,body.natal .tip-h>.gl.tx.tone-fuse{color:var(--t);font-size:1.15rem}
+body.natal .tip-h b{display:block;font-size:.98rem;line-height:1.2}body.natal .tip-h i{font-style:normal;font-weight:400;color:var(--ichor);margin-left:4px}
+body.natal .tip-h div span{display:block;font-family:var(--mono);font-weight:500;font-size:.66rem;color:var(--mute);margin-top:2px}
+body.natal .tip p{margin:7px 0 0}body.natal .tip .tip-n{font-family:var(--mono);font-weight:500;font-size:.66rem;color:var(--mute)}
+body.natal .has-hot .lk:not(.hot){opacity:.34}
+body.natal .lk.hot{box-shadow:0 0 0 1px var(--t),0 0 24px -8px var(--t)}
+body.natal .lift .lk.hot{order:-1}
+body.natal .pl-t tr.hot{background:rgba(242,197,107,.13)}
+body.natal .lk{transition:opacity .15s;position:relative;border:1px solid var(--rule);border-left:3px solid var(--t);border-radius:8px;padding:9px 11px 11px;background:var(--slab)}
 body.natal .tone-flow{--t:var(--flow)}body.natal .tone-grind{--t:var(--grind)}body.natal .tone-fuse{--t:var(--fuse)}
 body.natal .lk-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px}
 body.natal .pt{display:inline-flex;align-items:center;gap:5px;font-weight:600;font-size:.98rem;padding:3px 0;min-height:32px}
@@ -264,6 +276,7 @@ body.natal .go{background:var(--ichor);color:#0b0a10;font-weight:700;border-radi
   body.natal .rig{grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);gap:28px;align-items:start;padding:10px 18px 0}
   body.natal .bench{position:sticky;top:10px}
   body.natal .ne-stage,body.natal .ne-stage[data-mode=web],body.natal .ne-stage[data-mode=grid]{aspect-ratio:auto;height:min(calc(100vh - 350px),720px);min-height:440px;max-height:none}
+  body.natal .bench.tune-open .ne-stage{height:min(calc(100vh - 215px - var(--tune-h,230px)),720px);min-height:260px}
   body.natal .slot i{display:inline}body.natal .slot span{max-width:none}
   body.natal .top{padding:22px 18px 6px}body.natal .deck{font-size:1.08rem}
   body.natal dialog{height:auto;max-height:88vh;margin:6vh auto;border-radius:14px;overflow:auto}body.natal .lib{border:1px solid var(--rule);border-radius:14px;min-height:0}
