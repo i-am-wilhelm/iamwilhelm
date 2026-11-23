@@ -1,0 +1,828 @@
+---
+/**
+ * The God Inside, the sixth "in the original" essay: ἔνθεος, the Greek word
+ * for a person with a god in them, followed from Aeschylus's war-mad
+ * soldier through Cassandra, Semele and the Bacchae to Sappho's symptom
+ * chart and Plato's lover (Phaedrus, Symposium, Ion), with the stories the
+ * word travels with: the net of Hephaestus, the procession of the gods, the
+ * two horses, Pygmalion, Psyche, the split humans, the avenging Anteros,
+ * the birth of Eros, the cicadas. A night field pinned beside the text
+ * holds two figures drawn in Greek letters and the gods as orbs; each card
+ * sets a scene on it, and four cards hand the reader a control (the
+ * distance between the pair, crowd view, the choice of god, where the god
+ * stands). Every card is tagged text, reading or disputed and opens on its
+ * source. Modern synastry is quoted in one card and left there.
+ *
+ * Ported from the owner's Claude artifact
+ * (claude.ai/artifact/SHCZkthsThP5jaagd9r75v); the essay text and its look
+ * are the design of record. Its stylesheet is scoped under body.entheos so
+ * Poem.astro's main, section and .stage globals cannot reach it, and its
+ * script ships as written (is:inline). The canvas language here (letter
+ * figures lit from inside, ringed orbs, the four beam grammars) is the
+ * reference for the Natal Engine's refinement.
+ */
+import Poem from '../../layouts/Poem.astro';
+import SeriesMark from '../../components/scroll/SeriesMark.astro';
+import Byline from '../../components/scroll/Byline.astro';
+import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
+import MethodLink from '../../components/scroll/MethodLink.astro';
+---
+
+<Poem
+  title="The God Inside"
+  description="A visualized essay by Michael Wilhelm: entheos, the Greek word for a person with a god in them, and what the Greeks said happens to anyone with a crush."
+  year="2026"
+  night="#0b0a10"
+  accent="#f2c56b"
+  genre="Essay"
+  bodyClass="entheos"
+  exit={false}
+  preload={['/fonts/literata-latin-opsz-normal.woff2', '/fonts/literata-greek-ext-opsz-normal.woff2']}
+>
+  <main class="eth-main">
+  <header class="top">
+  <p class="eyebrow"><span>an essay · <Byline /></span><span><SeriesMark id="the-god-inside" /></span></p>
+  <h1>The God Inside</h1>
+  <p class="h1gk" lang="grc">ἔνθεος</p>
+  <p class="deck">What the Greeks said happens to a person with a crush, read in their own words.</p>
+  <div class="legend">
+    <p><span class="tg" data-k="text">text</span> what the Greek says. <span class="tg" data-k="reading">reading</span> an interpretation. <span class="tg" data-k="disputed">disputed</span> scholars split, or the text does.</p>
+    <p>Scroll. Open a card's source line to see where it comes from. Where a card offers a control, use it.</p>
+  </div>
+</header>
+
+  <div class="scrolly">
+  <div class="eth-stage" id="stage" data-twin="A pinned night field holds two figures in profile, drawn in Greek letters, and the gods as orbs of colored light. As the reader scrolls, an orb enters the lover's chest, changes color with each god, sends beams and streams to the beloved, grows wings, and at last hangs between the two.">
+    <canvas id="sky" role="img" aria-label="One golden orb drifts in the dark beside a figure in profile, drawn in Greek letters."></canvas>
+    <div class="screen" aria-hidden="true"><p class="gk" id="gk" lang="grc">ἔνθεος</p><p class="gl" id="gl">entheos</p></div>
+    <p class="hint" id="hint" aria-hidden="true"></p>
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  </div>
+
+  <div class="steps">
+    <div class="step on">
+      <p class="c">You have had a crush. You stopped eating, or you ate everything. You reread a four-word text for an hour. Your friends watched you turn into somebody else and said so. The Greeks had a word for what happened to you, and it is a bigger word than ours.</p>
+    </div>
+
+    <div class="step">
+      <p class="c">In, god. That is the whole word: <i>entheos</i>, a person with a god in them. English kept it as “enthusiasm” and now spends it on people who love spreadsheets.</p>
+      <p class="c">Greek had a wardrobe for being occupied. <i>Nympholēptos</i>, taken by the nymphs. <i>Theophorētos</i>, carried by a god. <i>Enthousiazōn</i>, in the middle of being godded. Every one of these words describes a tenant.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>“Enthusiasm” descends from <span class="g" lang="grc">ἐνθουσιασμός</span>, built on <span class="g" lang="grc">ἔνθεος</span>, “having a god within.” <a href="https://www.dictionary.com/browse/enthusiasms">Dictionary.com</a>. <span class="g" lang="grc">νυμφόληπτος</span>: Plato, Phaedrus 238d. <span class="g" lang="grc">θεοφόρητος</span>: Aeschylus, Agamemnon 1140. <span class="g" lang="grc">ἐνθουσιάζων</span>: Phaedrus 249d.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">The first man we meet wearing the word is a soldier. Aeschylus, 467 BCE: a champion at the gates of Thebes screams his war cry “full of Ares,” raving like a maenad with fear in his eyes. The scout who reports it admits that he shuddered.</p>
+      <p class="c">The word comes with a name attached. Possession always has an owner.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Aeschylus, Seven Against Thebes 497–498: <span class="g" lang="grc">ἔνθεος δ᾽ Ἄρει βακχᾷ πρὸς ἀλκὴν Θυιὰς ὣς φόβον βλέπων</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0085/tlg004/perseus-grc2/495-500">Greek text, Perseus</a>. The last line of the card is the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Then there is Cassandra. Apollo wanted her and gave her prophecy as his opening bid. She took the gift and refused the god, so he left the sight in her and removed the part where anyone believes it.</p>
+      <p class="c">When she starts screaming about the murders inside the house of Atreus, the old men of the chorus have a word ready: <i>theophorētos</i>, god-carried, out of her mind. They are right about the god and wrong about everything else.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Aeschylus, Agamemnon 1140: <span class="g" lang="grc">φρενομανής τις εἶ θεοφόρητος</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0085/tlg005/perseus-grc2/1140-1142">Greek text, Perseus</a>. Apollo's bargain is told later in the same scene.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Semele got the literal version. She was carrying Zeus's child and asked to see her lover as he really is. Hera put her up to it. He showed her.</p>
+      <p class="c">Euripides needs three words for the result: she gave birth “by lightning-borne fire.” Zeus pulled the baby out of the ashes and finished the pregnancy in his own thigh. Her tomb in Thebes was still smoking when that baby came home grown. His name was Dionysus.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Euripides, Bacchae 1–3: <span class="g" lang="grc">Σεμέλη λοχευθεῖσ᾽ ἀστραπηφόρῳ πυρί</span>. Lines 6–8 describe her tomb and the house still smoldering. <a href="https://cts.perseids.org/read/greekLit/tlg0006/tlg017/perseus-grc2/1-9">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Dionysus is the god of exactly this. In the Bacchae the blind seer Teiresias explains him to a king who wants him arrested: “When the god comes into the body in force, he makes the maddened tell what is coming.”</p>
+      <p class="c">The king, Pentheus, is unimpressed. He goes to spy on the women on the mountain, and his own mother, full of the god, takes him for a lion and carries his head home. The play has one rule. The god is coming in. Your only say is over the welcome.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Euripides, Bacchae 298–301: <span class="g" lang="grc">ὅταν γὰρ ὁ θεὸς ἐς τὸ σῶμ᾽ ἔλθῃ πολύς, λέγειν τὸ μέλλον τοὺς μεμηνότας ποιεῖ</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0006/tlg017/perseus-grc2/298-301">Greek text, Perseus</a>. The rule is the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Plato has a picture for how it spreads. Take the stone “Euripides called the Magnet.” It pulls an iron ring, and it also puts its own power into the ring, so that ring pulls another, until a long chain hangs in the air from one stone.</p>
+      <p class="c">The Muse works the same way, he says. She makes one person <i>entheos</i>, and from that person hangs a chain of others catching it: poet, performer, crowd. You have been the last ring at a concert.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Ion 533d–e: <span class="g" lang="grc">ἡ Μοῦσα ἐνθέους μὲν ποιεῖ αὐτή</span>; <span class="g" lang="grc">διὰ δὲ τῶν ἐνθέων τούτων ἄλλων ἐνθουσιαζόντων ὁρμαθὸς ἐξαρτᾶται</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg027/perseus-grc2/533">Greek text, Perseus</a>. The three rings are named at 535e–536a.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Now the god this piece is about. In Hesiod, Eros is there almost at the start, right after Chaos and Earth: “most beautiful among the immortal gods, limb-loosener.”</p>
+      <p class="c">The next line is the alarming one. He “overpowers the mind and the careful plans in the chest of every god and every human.” The gods get no exemption. Hold on to that.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Hesiod, Theogony 120–122: <span class="g" lang="grc">ἠδ᾽ Ἔρος, ὃς κάλλιστος ἐν ἀθανάτοισι θεοῖσι, λυσιμελής</span>; <span class="g" lang="grc">δάμναται ἐν στήθεσσι νόον καὶ ἐπίφρονα βουλήν</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0020/tlg001/perseus-grc2/116-122">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">The first full symptom chart comes from Sappho, around 600 BCE. A man sits across from the woman she loves, and to Sappho he “seems equal to the gods,” since he can sit that close and stay in one piece.</p>
+      <p class="c">She cannot. Her tongue breaks. A thin fire runs under her skin. Her eyes go dark, her ears roar, sweat pours, she shakes, she turns greener than grass, and she seems to herself a short step from dead. Every doctor after her is copying her notes.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Sappho, fragment 31: <span class="g" lang="grc">φαίνεταί μοι κῆνος ἴσος θέοισιν</span>; <span class="g" lang="grc">χλωροτέρα δὲ ποίας</span>. It survives because a later critic quoted it in On the Sublime. <a href="https://en.wikipedia.org/wiki/Sappho_31">Sappho 31</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Even the goddess who owns the weapon gets shot with it. Aphrodite had made a sport of pairing gods with mortals. So Zeus “threw sweet longing into her own heart” for a herdsman named Anchises, alone with his cattle on Mount Ida.</p>
+      <p class="c">She came to him dressed as a girl. When he woke and saw what he had slept beside, he begged her: “do not leave me to live strengthless among men.” A man who lies with goddesses, he says, does not thrive.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Homeric Hymn to Aphrodite 45–46: <span class="g" lang="grc">τῇ δὲ καὶ αὐτῇ Ζεὺς γλυκὺν ἵμερον ἔμβαλε θυμῷ</span>. 188–190: <span class="g" lang="grc">μή με ζῶντ᾽ ἀμενηνὸν ἐν ἀνθρώποισιν ἐάσῃς</span>; <span class="g" lang="grc">οὐ βιοθάλμιος ἀνήρ</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0013/tlg005/perseus-grc2/45-55">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Her most famous affair is with Ares, and it ends in public. The Sun saw them and told her husband. Hephaestus, the smith, forged chains “fine as spider webs,” hung them over the bed, and pretended to leave town.</p>
+      <p class="c">The trap closed on the two of them and he called every god to come and look. “Unquenchable laughter rose among the blessed gods.” Then Apollo asked Hermes whether he would trade places with Ares. Hermes said he would take three times the chains.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Homer, Odyssey 8.266–366: <span class="g" lang="grc">ἠύτ᾽ ἀράχνια λεπτά</span> (280); <span class="g" lang="grc">Ἠέλιος γάρ οἱ σκοπιὴν ἔχεν</span> (302); <span class="g" lang="grc">ἄσβεστος δ᾽ ἄρ᾽ ἐνῶρτο γέλως</span> (326); <span class="g" lang="grc">δεσμοὶ μὲν τρὶς τόσσοι</span> (340). <a href="https://cts.perseids.org/read/greekLit/tlg0012/tlg002/perseus-grc2/8.266-8.345">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">All of this is in the air on one hot afternoon outside Athens. Socrates and a young man named Phaedrus walk out along the Ilissus and lie down in the grass under a plane tree, with the cicadas going overhead.</p>
+      <p class="c">Phaedrus asks whether this is the spot where the North Wind grabbed the girl Oreithyia. Socrates looks around, says the place seems divine, and warns that he may end up “nymph-seized” before he is done talking.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 229b: <span class="g" lang="grc">Βορέας τὴν Ὠρείθυιαν ἁρπάσαι</span>. 238c–d: <span class="g" lang="grc">θεῖος ἔοικεν ὁ τόπος εἶναι</span>; <span class="g" lang="grc">νυμφόληπτος</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/238">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">First he embarrasses himself. Phaedrus has brought a speech arguing that you should give yourself to someone who is cool about you, since lovers are a mess. Socrates tops it with a better one, delivered with his cloak over his head for shame.</p>
+      <p class="c">On his way to the river his divine sign stops him. He has slandered a god. He remembers the poet Stesichorus, struck blind for slandering Helen, who got his eyes back by singing a retraction: “that story is not true.” So Socrates bares his head and starts over. Everything that follows is an apology to Eros.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 242b–243b: <span class="g" lang="grc">τὸ δαιμόνιόν τε καὶ τὸ εἰωθὸς σημεῖον</span>; <span class="g" lang="grc">οὐκ ἔστ᾽ ἔτυμος λόγος οὗτος</span>; <span class="g" lang="grc">τὴν καλουμένην Παλινῳδίαν</span>; <span class="g" lang="grc">γυμνῇ τῇ κεφαλῇ</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/242-244">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">The apology opens with something reckless. “The greatest goods come to us through madness,” provided a god is the one handing it out. Look at Delphi, he says. The priestess there has done Greece enormous good while out of her mind, “and little or nothing” in her right one.</p>
+      <p class="c">He even makes a pun of it. Prophecy was the <i>manic</i> art until some tasteless modern slipped in a T and called it <i>mantic</i>.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 244a: <span class="g" lang="grc">τὰ μέγιστα τῶν ἀγαθῶν ἡμῖν γίγνεται διὰ μανίας</span>. 244b: <span class="g" lang="grc">σωφρονοῦσαι δὲ βραχέα ἢ οὐδέν</span>. 244c: <span class="g" lang="grc">τὸ ταῦ ἐπεμβάλλοντες μαντικὴν ἐκάλεσαν</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/244">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Apollo owns the prophet's madness. Dionysus owns the rite. The Muses own the poet. The fourth belongs to Aphrodite and Eros, and Plato ranks it first: <span class="g" lang="grc">ἀρίστην</span>, the best one.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 265b: <span class="g" lang="grc">τετάρτην δὲ Ἀφροδίτης καὶ Ἔρωτος</span>, and <span class="g" lang="grc">ἐρωτικὴν μανίαν ἐφήσαμέν τε ἀρίστην εἶναι</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/265">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Where does the fourth madness come from? Plato answers with a parade. Before you were born your soul had wings and marched behind a god. Zeus goes first in a winged chariot. Eleven companies follow, since Hestia stays home to mind the hearth.</p>
+      <p class="c">They climb to the rim of the sky and look out at “the place beyond heaven,” where the real things are, Beauty among them. Your soul got one good look, lost its footing, and fell into a body. You have been homesick ever since.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 246e–247c: <span class="g" lang="grc">μέγας ἡγεμὼν ἐν οὐρανῷ Ζεύς</span>; <span class="g" lang="grc">μένει γὰρ Ἑστία ἐν θεῶν οἴκῳ μόνη</span>; <span class="g" lang="grc">τὸν δὲ ὑπερουράνιον τόπον</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/246-247">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">He gives the soul a shape too. It is a charioteer with two winged horses. One is upright and white, “a lover of honor,” and runs on a word. The other is “crooked, heavy, dark,” shaggy around the ears, deaf, and barely answers the whip.</p>
+      <p class="c">When the driver sees the beloved's face “flashing like lightning,” the good horse holds back out of shame. The dark horse bolts. Every crush you have had was a fight for the reins.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Plato, Phaedrus 253d–254b: <span class="g" lang="grc">λευκὸς ἰδεῖν</span>; <span class="g" lang="grc">τιμῆς ἐραστὴς μετὰ σωφροσύνης</span>; <span class="g" lang="grc">σκολιός, πολύς … μελάγχρως … κωφός</span>; <span class="g" lang="grc">σκιρτῶν δὲ βίᾳ φέρεται</span>; <span class="g" lang="grc">ἀστράπτουσαν</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/253-254">Greek text, Perseus</a>. The last line of the card is the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Here is Plato's version of Sappho's chart. You see them and you shudder. Then comes “sweat and a strange heat.” A stream pours in through your eyes. He calls the stream <i>himeros</i> and says Zeus coined the word while he was gone on Ganymede, the prince he carried off “for his beauty” to pour wine for the gods.</p>
+      <p class="c">Where the stream lands, the soul's old wings start to push through, and it feels like teething. Your crush is a new tooth.</p>
+      <div class="ctl"><label for="dist">Bring them closer</label><input type="range" id="dist" min="0" max="100" value="35"><div class="ends"><span>apart</span><span>close</span></div></div>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 251a: <span class="g" lang="grc">πρῶτον μὲν ἔφριξε</span>; <span class="g" lang="grc">ἱδρὼς καὶ θερμότης ἀήθης</span>. 251c: <span class="g" lang="grc">τὸ τῶν ὀδοντοφυούντων πάθος</span>. 255c: <span class="g" lang="grc">ὃν ἵμερον Ζεὺς Γανυμήδους ἐρῶν ὠνόμασε</span>. Hymn to Aphrodite 203: <span class="g" lang="grc">ἥρπασε ὃν διὰ κάλλος</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/251">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Everyone else sees a person acting strange. The god inside “escapes the many.” The verb is the one buried in Lethe. The crowd forgets what it is looking at.</p>
+      <div class="row"><button class="btn" type="button" id="crowd" aria-pressed="false">Crowd view</button></div>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Plato, Phaedrus 249d: <span class="g" lang="grc">ἐνθουσιάζων δὲ λέληθεν τοὺς πολλούς</span>. <span class="g" lang="grc">λέληθεν</span> is the perfect of <span class="g" lang="grc">λανθάνω</span>, “to escape notice,” the verb behind Lethe. <a href="https://atlas.perseus.tufts.edu/dictionaries/entry/urn:cite2:scaife-viewer:dictionary-entries.atlas_v1:middle-liddell.perseus-eng2-n19294">Middle Liddell, λανθάνω</a>. The last sentence is the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">At a drinking party in Athens, the same Phaedrus gives the first speech in praise of Love, and he argues by scorecard. Alcestis died in her husband's place, “she alone was willing,” and the gods were so impressed they sent her soul back up.</p>
+      <p class="c">Orpheus went down for his wife alive, with a lyre and a plan. The gods “showed him a phantom” of her and sent him home empty, since a singer who will not die for it “seemed soft.” Achilles avenged Patroclus knowing it would kill him. The gods sent him to the Isles of the Blessed.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Symposium 179b–e: <span class="g" lang="grc">ἐθελήσασα μόνη ὑπὲρ τοῦ αὑτῆς ἀνδρὸς ἀποθανεῖν</span>; <span class="g" lang="grc">φάσμα δείξαντες τῆς γυναικός</span>; <span class="g" lang="grc">μαλθακίζεσθαι ἐδόκει, ἅτε ὢν κιθαρῳδός</span>; <span class="g" lang="grc">εἰς μακάρων νήσους ἀπέπεμψαν</span>. <a href="https://www.physics.ntua.gr/%7Emourmouras/greats/platon/symposion.pdf">Greek text</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Then the sentence this whole piece hangs on. Achilles, Phaedrus says, was the beloved of the pair, and the gods prize devotion from that side most. Why? “The lover is the more divine of the two, for the god is in him.”</p>
+      <p class="c">The beautiful one is only beautiful. The one with the crush is the temple.</p>
+      <p class="aside">In Plato's Athens the <i>erastēs</i> was a grown man and his beloved an adolescent boy, inside a custom the city regulated. That is the history. What this piece keeps is the lover's inner state, and carrying it over to adults in love is our move.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Symposium 180a–b: <span class="g" lang="grc">Αἰσχύλος δὲ φλυαρεῖ φάσκων Ἀχιλλέα Πατρόκλου ἐρᾶν</span>; <span class="g" lang="grc">θειότερον γὰρ ἐραστὴς παιδικῶν· ἔνθεος γάρ ἐστι</span>. The speaker is Phaedrus, a character in the dialogue. On the institution: <a href="https://plato.stanford.edu/entries/plato-friendship/">Stanford Encyclopedia, Plato on Friendship and Eros</a>.</p></details>
+    </div>
+
+    <div class="step" data-og-frame>
+      <p class="c">Which god? Back under the plane tree, Socrates says every soul loves in the style of the god it once marched behind. Zeus's people want a philosopher who can lead. Hera's want royalty. Ares's people, when they feel slighted, turn murderous. You go looking for your god in someone's face.</p>
+      <div class="row" role="group" aria-label="Choose a god">
+        <button class="btn god" type="button" data-g="zeus" aria-pressed="false">Zeus</button>
+        <button class="btn god" type="button" data-g="hera" aria-pressed="false">Hera</button>
+        <button class="btn god" type="button" data-g="ares" aria-pressed="false">Ares</button>
+        <button class="btn god" type="button" data-g="apollo" aria-pressed="false">Apollo</button>
+      </div>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 252c–253b: <span class="g" lang="grc">τῶν μὲν οὖν Διὸς ὀπαδῶν</span>; <span class="g" lang="grc">Διὸς δῖόν τινα</span>; <span class="g" lang="grc">φιλόσοφός τε καὶ ἡγεμονικός</span>; <span class="g" lang="grc">βασιλικὸν ζητοῦσι</span>; <span class="g" lang="grc">φονικοί</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/252">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Then the turn. Hunting for the god in them, you find him in yourself. You pick up his habits “as far as a human can share in god.” You give the beloved all the credit and pour it back over them like a bacchant with a full jug.</p>
+      <p class="c">You build them into an <i>agalma</i>, a shrine statue, and you would sacrifice to it if nobody were watching.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 253a: <span class="g" lang="grc">καθ᾽ ὅσον δυνατὸν θεοῦ ἀνθρώπῳ μετασχεῖν</span>. 251a: <span class="g" lang="grc">θύοι ἂν ὡς ἀγάλματι καὶ θεῷ τοῖς παιδικοῖς</span>. 252d: <span class="g" lang="grc">οἷον ἄγαλμα τεκταίνεταί τε καὶ κατακοσμεῖ</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/253">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">One man took the statue part literally. The story reaches most of us through Ovid's Latin, where Pygmalion is a sculptor who carves his ideal woman.</p>
+      <p class="c">The older Greek version is stranger. There he is a Cypriot who fell in love with an ivory image of Aphrodite herself, the goddess's own statue. Plato's lover builds a god's image out of a person. Pygmalion fell for the image and skipped the person.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Clement of Alexandria, Exhortation to the Greeks 4, citing Philostephanus on Cyprus. <a href="https://www.ellopos.net/elpenor/greek-texts/fathers/clement-alexandria/exhortation-heathen.asp?pg=57">English text</a>. Ovid tells his version in Metamorphoses 10. The comparison with Plato is the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Mortals call him Eros. The gods, Plato reports, call him Pteros: wing-grower, by necessity. He admits the verse is outrageous and limps. It comes from “the laid-away verses,” which may be a polite way of saying Plato wrote it himself.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="disputed">disputed</span></summary>
+        <p>Plato, Phaedrus 252b: <span class="g" lang="grc">ἀθάνατοι δὲ Πτέρωτα, διὰ πτεροφύτορ᾽ ἀνάγκην</span>, from <span class="g" lang="grc">ἐκ τῶν ἀποθέτων ἐπῶν</span>. Translators render <span class="g" lang="grc">ἀποθέτων</span> as “spurious,” “secret” or “stored away.” That Plato wrote the lines himself is a suspicion.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">You may know the love story of Cupid and Psyche: the girl, the god who visits in the dark, the lamp. That one is Latin, written by Apuleius in the second century of our era.</p>
+      <p class="c">The Greek underneath it is older and smaller. <i>Psychē</i> means soul, and it is also the everyday word for a butterfly. Aristotle uses it for the creature that breaks out of the chrysalis. Five centuries before the novel, Plato already had the soul growing wings at the sight of a face.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Apuleius, Metamorphoses 4–6. Aristotle, History of Animals 551a, on the winged creature “we call the psyche.” <a href="https://www.ellopos.net/elpenor/greek-texts/ancient-greece/aristotle/history-animals-b.asp?pg=26">English text</a>. <a href="https://www.britannica.com/EBchecked/topic/481523/Psyche">Britannica, Psyche</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">At that same party the comedian Aristophanes tells the story everyone still repeats, after nearly missing his turn with the hiccups. People were once round, he says, with four hands, four legs and “two faces on one neck,” and so strong that the gods got nervous.</p>
+      <p class="c">Zeus sliced each one down the middle “the way you cut an egg with a hair.” Each of us is a <i>symbolon</i>, half of a broken token, hunting its match. “The name for the desire and pursuit of the whole is love.” It is the soulmate story, and Plato hands it to the comic. In that version you are missing something. In the version this piece follows, you have a guest.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Plato, Symposium 185c, 189e–193a: <span class="g" lang="grc">λύγγα</span>; <span class="g" lang="grc">πρόσωπα δύ᾽ ἐπ᾽ αὐχένι κυκλοτερεῖ</span>; <span class="g" lang="grc">ὥσπερ οἱ τὰ ᾠὰ ταῖς θριξίν</span>; <span class="g" lang="grc">ἀνθρώπου σύμβολον</span>; <span class="g" lang="grc">τοῦ ὅλου οὖν τῇ ἐπιθυμίᾳ καὶ διώξει ἔρως ὄνομα</span>. The last two sentences are the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Back by the river, the stream overflows and bounces off the lover like an echo off stone. Now the beloved is flooded and has no idea with what. He sees himself in the lover “as in a mirror.” Plato names it <i>anterōs</i>, return-love, an image of love. The beloved calls it friendship.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Phaedrus 255c–e: <span class="g" lang="grc">πάλιν εἰς τὸν καλὸν διὰ τῶν ὀμμάτων ἰόν</span>; <span class="g" lang="grc">ὥσπερ δὲ ἐν κατόπτρῳ ἐν τῷ ἐρῶντι ἑαυτὸν ὁρῶν λέληθεν</span>; <span class="g" lang="grc">εἴδωλον ἔρωτος ἀντέρωτα ἔχων</span>; <span class="g" lang="grc">οὐκ ἔρωτα ἀλλὰ φιλίαν</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/255">Greek text, Perseus</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Athens knew a darker Anteros. The traveler Pausanias saw his altar in the city and got the story. An Athenian named Meles was loved by a foreign resident, Timagoras, and mocked him: go climb the rock and jump. Timagoras did.</p>
+      <p class="c">Meles, sick with it, climbed the same rock and followed him down. The foreigners of Athens raised the altar to Anteros as “the avenging spirit of Timagoras.” One word, two jobs: the love that answers, and the love that collects.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Pausanias 1.30.1: <span class="g" lang="grc">βωμὸν καλούμενον Ἀντέρωτος</span>; <span class="g" lang="grc">δαίμονα Ἀντέρωτα τὸν ἀλάστορα τὸν Τιμαγόρου</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0525/tlg001/perseus-grc2/1.30.1">Greek text, Perseus</a>. The last sentence is the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Late in the party Socrates reports what a priestess named Diotima taught him, and she starts with a birth. The gods were feasting the day Aphrodite was born. Poros, Plenty, got drunk on nectar and fell asleep in Zeus's garden. Penia, Poverty, lay down beside him and conceived Eros.</p>
+      <p class="c">So he takes after both. He is “always poor,” tough, “barefoot and homeless,” asleep in doorways and on roads. He is also a hunter, forever weaving schemes after whatever is beautiful: “a fearsome sorcerer, drug-mixer and sophist.”</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span></summary>
+        <p>Plato, Symposium 203b–d: <span class="g" lang="grc">ὁ τῆς Μήτιδος ὑὸς Πόρος</span>; <span class="g" lang="grc">ἐκύησε τὸν Ἔρωτα</span>; <span class="g" lang="grc">ἀνυπόδητος καὶ ἄοικος</span>; <span class="g" lang="grc">δεινὸς γόης καὶ φαρμακεὺς καὶ σοφιστής</span>. <a href="https://www.physics.ntua.gr/%7Emourmouras/greats/platon/symposion.pdf">Greek text</a>.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">That birth is a demotion. Eros, says Diotima, is a great <i>daimōn</i>, something between god and mortal, “interpreting and ferrying across.” So the god is inside you, or he is the boat between you. Plato lets both stand.</p>
+      <div class="ctl"><label for="daim">Where the god stands</label><input type="range" id="daim" min="0" max="100" value="0"><div class="ends"><span>inside</span><span>between</span></div></div>
+      <details class="src"><summary><span class="tg" data-k="disputed">disputed</span></summary>
+        <p>Plato, Symposium 202e: <span class="g" lang="grc">δαίμων μέγας</span>; <span class="g" lang="grc">πᾶν τὸ δαιμόνιον μεταξύ ἐστι θεοῦ τε καὶ θνητοῦ</span>; <span class="g" lang="grc">ἑρμηνεῦον καὶ διαπορθμεῦον</span>. The Symposium holds both pictures, the god inside at 180b and the daimon between at 202e.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Read any modern book on synastry, the art of laying one birth chart over another. Liz Greene titles a chapter “The Inner Partner.” The guides talk about “the Venus person” and warn that your partner can “become a mirror.” A study of the Renaissance astrologer Ficino is called <i>The Planets Within</i>. Jung put it bluntly: “The gods have become diseases.” I'll set those next to Plato and say nothing.</p>
+      <details class="src"><summary><span class="tg" data-k="reading">reading</span></summary>
+        <p>Liz Greene, <a href="https://www.abebooks.co.uk/9780877284185/Relating-Astrological-Guide-Living-Small-0877284180/plp">Relating</a> (1977), chapter 5. <a href="https://advanced-astrology.com/venus-in-7th-house-synastry/">A popular synastry guide</a>. Thomas Moore, <a href="https://www.florisbooks.co.uk/books/9780940262287">The Planets Within</a> (1982). C. G. Jung, Collected Works vol. 13, as cited <a href="https://www.seba.health/concepts/gods-as-diseases">here</a>. Left open on purpose.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">Under the plane tree it is past noon and the cicadas are still at it. Socrates tells Phaedrus where they came from. They were people once, before there were Muses. Then the Muses were born, song arrived, and some of those people were so struck with pleasure that they sang, “neglected food and drink,” and died without noticing.</p>
+      <p class="c">The Muses turned them into creatures that need no food and sing until they drop. Afterwards they report to the Muses on who down here honors them. The first enthusiasts overdosed. The gods gave them a job.</p>
+      <details class="src"><summary><span class="tg" data-k="text">text</span><span class="tg" data-k="reading">reading</span></summary>
+        <p>Plato, Phaedrus 259b–c: <span class="g" lang="grc">ᾁδοντες ἠμέλησαν σίτων τε καὶ ποτῶν, καὶ ἔλαθον τελευτήσαντες αὑτούς</span>; <span class="g" lang="grc">τὸ τεττίγων γένος</span>. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/259">Greek text, Perseus</a>. The last two sentences are the reading.</p></details>
+    </div>
+
+    <div class="step">
+      <p class="c">So the next time someone tells you that you are being a lot about a person, agree with them. You are <i>entheos</i>. The open question is whose.</p>
+    </div>
+  </div>
+</div>
+
+  <div class="after">
+    <div>
+      <h2>Sources, in the original</h2>
+      <ul>
+      <li>Plato, Phaedrus 229b, 238c–d, 242b–244c, 246e–247c, 249d–e, 251a–c, 252b–254b, 255c–e, 259b–c, 265b. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg012/perseus-grc2/253">Greek text, Perseus</a>.</li>
+      <li>Plato, Symposium 179b–180b, 185c, 189e–193a, 202e–203d. <a href="https://www.physics.ntua.gr/%7Emourmouras/greats/platon/symposion.pdf">Greek text</a>. Plato, Ion 533d–e. <a href="https://cts.perseids.org/read/greekLit/tlg0059/tlg027/perseus-grc2/533">Greek text, Perseus</a>.</li>
+      <li>Aeschylus, Seven Against Thebes 497–498 and Agamemnon 1140. Euripides, Bacchae 1–9 and 298–301. Greek texts on Perseus, linked in the cards.</li>
+      <li>Homer, Odyssey 8.266–366. Homeric Hymn to Aphrodite 45–55 and 185–206. Hesiod, Theogony 120–122. Sappho, fragment 31. Pausanias 1.30.1.</li>
+      <li>Clement of Alexandria, Exhortation to the Greeks 4. Aristotle, History of Animals 551a. Apuleius, Metamorphoses 4–6.</li>
+      <li><a href="https://atlas.perseus.tufts.edu/dictionaries/entry/urn:cite2:scaife-viewer:dictionary-entries.atlas_v1:middle-liddell.perseus-eng2-n19294">Middle Liddell, λανθάνω</a>, <a href="https://www.dictionary.com/browse/enthusiasms">Dictionary.com, enthusiasm</a>, and the <a href="https://plato.stanford.edu/entries/plato-friendship/">Stanford Encyclopedia, Plato on Friendship and Eros</a>.</li>
+      <li>Liz Greene, Relating (1977). Thomas Moore, The Planets Within (1982). C. G. Jung, Collected Works vol. 13.</li>
+    </ul>
+      <p>Greek checked against the Perseus texts. Drawn in code, with AI assistance.</p>
+    </div>
+    <MethodLink />
+    <p class="eyebrow"><span><a class="eth-back" href="/gallery/">The Gallery</a></span><span><SeriesMark id="the-god-inside" /></span></p>
+    <ScrollFoot id="the-god-inside" class="eth-sf" />
+  </div>
+  </main>
+</Poem>
+
+<style is:global>
+@font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-normal.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+@font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+@font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Literata';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-ext-opsz-italic.woff2') format('woff2');unicode-range:U+1F00-1FFF}
+@font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-greek-opsz-italic.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+@font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-ext-opsz-italic.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Literata';font-style:italic;font-weight:200 900;font-display:swap;src:url('/fonts/literata-latin-opsz-italic.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Entheos Mono';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Entheos Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url('/fonts/jetbrains-mono-greek-wght-normal.woff2') format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+
+/* Layout: one pinned night field holds two figures drawn in Greek letters and the gods as orbs; the text walks past it in cards. Gold is ichor, the gods' blood, and the color of every Greek word. */
+body.entheos{
+  --night:#0b0a10;
+  --slab:#15131c;
+  --ink:#efe8d8;
+  --mute:#aaa49b;
+  --rule:#2d2935;
+  --ichor:#f2c56b;
+  --display:'Literata',Georgia,'Times New Roman',serif;
+  --mono:'Entheos Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+body.entheos *{box-sizing:border-box}
+
+
+body.entheos{background:var(--night);color:var(--ink);font-family:var(--display);font-size:clamp(17px,calc(14px + .7vw),20px);line-height:1.55}
+body.entheos p{margin:0}
+body.entheos a{color:var(--ichor)}
+body.entheos :focus-visible{outline:2px solid var(--ichor);outline-offset:3px}
+
+body.entheos .top{max-width:44rem;margin:0 auto;padding:30px 20px 34px;display:grid;gap:.9rem}
+body.entheos .eyebrow{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center;font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+body.entheos .chip{border:1px dashed var(--mute);border-radius:2px;padding:.1em .5em;letter-spacing:.08em}
+body.entheos h1{font-weight:700;font-size:clamp(2.6rem,11vw,5rem);line-height:.98;letter-spacing:-.01em;margin:0;text-wrap:balance}
+body.entheos .h1gk{font-weight:700;color:var(--ichor);font-size:clamp(1.6rem,6vw,2.4rem);line-height:1.1}
+body.entheos .deck{font-style:italic;font-size:1.15em;max-width:30em;text-wrap:balance}
+body.entheos .legend{display:grid;gap:.5rem;font-family:var(--mono);font-size:.74rem;line-height:1.6;color:var(--mute);border-top:1px solid var(--rule);padding-top:.9rem}
+body.entheos .tg{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:.12em .5em;border-radius:2px;border:1px solid #57515f;color:var(--mute);white-space:nowrap}
+body.entheos .tg[data-k="reading"]{background:var(--mute);color:var(--night);border-color:var(--mute)}
+body.entheos .tg[data-k="disputed"]{border-style:dashed;border-color:var(--ink);color:var(--ink)}
+
+body.entheos .scrolly{position:relative}
+body.entheos .eth-stage{position:sticky;top:0;height:56vh;height:56svh;z-index:2;background:var(--night);border-bottom:1px solid var(--rule);overflow:hidden}
+body.entheos #sky{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+body.entheos .screen{position:absolute;left:0;right:0;top:0;padding:14px 18px 0;display:grid;gap:.3rem;justify-items:center;text-align:center;pointer-events:none}
+body.entheos .gk{font-weight:700;color:var(--ichor);font-size:clamp(1.25rem,5.2vw,2.2rem);line-height:1.15;text-wrap:balance;text-shadow:0 0 18px rgba(242,197,107,.35)}
+body.entheos .gl{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--mute)}
+body.entheos .gl .w{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:0;color:var(--ink)}
+body.entheos .hint{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);pointer-events:none}
+body.entheos .bar{position:absolute;left:0;right:0;top:0;height:2px}
+body.entheos .bar i{display:block;height:100%;width:0;background:var(--ichor);transition:width .4s}
+body.entheos .flash{animation:eth-flash .7s ease-out}
+@keyframes eth-flash{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+body.entheos .tau{display:inline-block;color:#fff;animation:eth-tau 1.6s cubic-bezier(.3,1.4,.5,1) .5s both}
+@keyframes eth-tau{from{opacity:0;transform:translateY(-1.3em)}to{opacity:1;transform:none}}
+body.entheos .pt{display:inline-block;color:#fff;transform-origin:left bottom;animation:eth-pt 1.4s ease-out .4s both}
+@keyframes eth-pt{from{opacity:0;transform:rotate(-70deg)}to{opacity:1;transform:none}}
+
+body.entheos .steps{position:relative;z-index:1;max-width:36rem;margin:0 auto;padding:6vh 20px 30vh;display:flex;flex-direction:column;gap:8vh}
+body.entheos .step{min-height:40vh;display:flex;flex-direction:column;gap:.85rem;opacity:.5;transition:opacity .4s}
+body.entheos .step.on{opacity:1}
+body.entheos .step .n{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+body.entheos .step h2{font-weight:700;font-size:1.45em;line-height:1.15;margin:0;text-wrap:balance}
+body.entheos .step p{max-width:34em}
+body.entheos .aside{border-left:2px solid var(--ichor);padding-left:.9rem;font-size:.93em;color:#d8d1c2}
+body.entheos .next{font-family:var(--mono);font-size:.76rem;line-height:1.6;color:var(--mute);border:1px solid var(--rule);border-radius:3px;padding:.7rem .9rem}
+body.entheos .next b{color:var(--ichor);font-weight:500}
+body.entheos details.src{font-family:var(--mono);font-size:.74rem;line-height:1.65;color:var(--mute)}
+body.entheos details.src summary{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;min-height:44px;cursor:pointer;list-style:none}
+body.entheos details.src summary::-webkit-details-marker{display:none}
+body.entheos details.src summary::after{content:'source +';letter-spacing:.08em}
+body.entheos details.src[open] summary::after{content:'source \2212'}
+body.entheos details.src p{padding:.1rem 0 .5rem;max-width:none}
+body.entheos .g{font-family:var(--display);font-size:1.22em;color:var(--ichor)}
+body.entheos .ctl{display:grid;gap:.25rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+body.entheos .ends{display:flex;justify-content:space-between;text-transform:none;letter-spacing:.02em}
+body.entheos input[type=range]{width:100%;min-height:44px;margin:0;accent-color:var(--ichor);background:transparent}
+body.entheos .row{display:flex;flex-wrap:wrap;gap:.5rem}
+body.entheos .btn{font-family:var(--mono);font-weight:500;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:transparent;border:1px solid #57515f;border-radius:2px;min-height:44px;padding:.5rem .9rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+body.entheos .btn:hover{border-color:var(--ink)}
+body.entheos .btn[aria-pressed="true"]{border-color:var(--ichor);color:var(--ichor);background:rgba(242,197,107,.1)}
+
+@media (min-width:900px){
+  body.entheos .scrolly{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}
+  body.entheos .eth-stage{height:100vh;border-bottom:0;border-right:1px solid var(--rule)}
+  body.entheos .steps{margin:0;padding:34vh 4vw 60vh 3rem;gap:22vh}
+  body.entheos .step{min-height:46vh}
+}
+
+body.entheos .after{max-width:44rem;margin:0 auto;padding:8vh 20px 12vh;display:grid;gap:2.4rem}
+body.entheos .after h2{font-size:1.5em;line-height:1.15;margin:0 0 .7rem}
+body.entheos .after h3{font-size:1.05em;margin:1rem 0 .2rem;color:var(--ichor)}
+body.entheos #plain{display:grid;gap:.8rem}
+body.entheos .after ul{margin:0;padding-left:1.1rem;display:grid;gap:.5rem}
+body.entheos .plain summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-family:var(--mono);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+body.entheos .note{border:1px dashed var(--mute);border-radius:3px;padding:1rem 1.1rem;display:grid;gap:.6rem}
+body.entheos .note h2{font-size:1.15em;margin:0}
+body.entheos .colophon{font-family:var(--mono);font-size:.74rem;line-height:1.7;color:var(--mute);border-top:1px solid var(--rule);padding-top:1rem}
+@media (prefers-reduced-motion:reduce){body.entheos .flash,body.entheos .tau,body.entheos .pt{animation:none}body.entheos .step{transition:none}}
+
+body.entheos main.eth-main{position:relative;z-index:1;padding:0;max-width:none;margin:0}
+body.entheos h1{margin:0}
+body.entheos .eth-back{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em}
+body.entheos .eth-sf{margin-top:1.5rem}
+</style>
+
+<script is:inline>
+(()=>{'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const TAU=Math.PI*2, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stage=$('#stage'), cv=$('#sky'), ctx=cv.getContext('2d'), gkEl=$('#gk'), glEl=$('#gl'), hintEl=$('#hint'), steps=$$('.step');
+const hit=document.createElement('canvas').getContext('2d');
+const FONT="'Literata',Georgia,serif", MONO="'Entheos Mono',ui-monospace,Menlo,Consolas,monospace";
+const SRC='ἔνθεοςθειότερονγὰρἐραστὴςπαιδικῶνἵμεροςΠτέρωςἀντέρωςδαίμωνμέγαςμανίακάλλοςψυχή';
+const COL={gold:[242,197,107],ares:[236,86,62],rose:[240,128,150],zeus:[150,186,255],hera:[88,206,182],apollo:[255,226,132],wine:[176,116,226],silver:[204,216,236],ink:[239,232,216],grey:[150,146,140],pale:[216,222,255],white:[255,255,255]};
+const GODS={zeus:{name:'Zeus',col:COL.zeus,beam:'glide'},hera:{name:'Hera',col:COL.hera,beam:'wave'},ares:{name:'Ares',col:COL.ares,beam:'spark'},apollo:{name:'Apollo',col:COL.apollo,beam:'pulse'}};
+const GKEYS=Object.keys(GODS);
+const PHR=['“The Inner Partner”','“the Venus person”','“become a mirror”','The Planets Within','“The gods have become diseases”'];
+const rgba=(c,a)=>'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+(a<0?0:a>1?1:a).toFixed(3)+')';
+const lerp=(a,b,t)=>a+(b-a)*t, clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v, ease=t=>t*t*(3-2*t);
+const mix=(a,b,t)=>[lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t)];
+const rnd=i=>{const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x)};
+
+/* ---------- the fifteen beats ---------- */
+const Z={orbIn:0,bel:0,sparks:0,four:0,stream:0,teeth:0,rays:0,choose:0,beam:0,flood:0,plinth:0,wings:0,mirror:0,daimon:0,wheels:0,chain:0,net:0,train:0,team:0,swap:0,blaze:0,cic:0,fig:1};
+const B=o=>Object.assign({},Z,o);
+const BEATS=[
+ B({col:'gold',gk:'ἔνθεος',gl:'entheos',aria:'One golden orb drifts in the dark beside a figure in profile, drawn in Greek letters.'}),
+ B({orbIn:1,col:'gold',gk:'ἐν + θεός',gl:'in + god',aria:'The orb has crossed into the figure’s chest. The letters around it glow gold.'}),
+ B({orbIn:1,col:'ares',sparks:1,gk:'ἔνθεος δ᾽ Ἄρει',gl:'full of the god Ares',aria:'The orb burns red for Ares. Sparks jump from the figure.'}),
+ B({orbIn:1,col:'apollo',rays:.6,gk:'θεοφόρητος',gl:'carried by a god',aria:'The orb turns Apollo’s yellow and light leaks from the figure.'}),
+ B({orbIn:1,col:'zeus',blaze:1,gk:'ἀστραπηφόρῳ πυρί',gl:'by lightning-borne fire',aria:'A bolt strikes the figure, which blazes white from inside.'}),
+ B({orbIn:1,col:'wine',sparks:.35,gk:'ὅταν ὁ θεὸς ἐς τὸ σῶμ᾽ ἔλθῃ πολύς',gl:'when the god comes into the body in force',aria:'The orb glows wine purple for Dionysus, throwing small sparks.'}),
+ B({orbIn:1,col:'gold',chain:1,gk:'ὁρμαθός',gl:'a chain of rings',aria:'A chain of three iron rings hangs and sways beneath a silver orb labeled the Muse: poet, performer, you.'}),
+ B({orbIn:1,col:'rose',teeth:.4,gk:'λυσιμελής',gl:'the limb-loosener',aria:'The orb turns rose and beats like a heart.'}),
+ B({orbIn:1,col:'rose',bel:1,stream:.8,teeth:1,gk:'ἴσος θέοισιν',gl:'equal to the gods',aria:'A second figure appears. A stream of particles runs from its eyes into the first figure’s eyes.'}),
+ B({orbIn:1,col:'rose',bel:1,flood:.85,stream:.5,gk:'γλυκὺν ἵμερον ἔμβαλε θυμῷ',gl:'he threw sweet longing into her heart',aria:'Rose light fills the second figure as well.'}),
+ B({orbIn:1,col:'rose',net:1,gk:'ἄσβεστος γέλως',gl:'unquenchable laughter',aria:'A red orb and a rose orb sit together under a fine golden web. A small sun watches from the corner.'}),
+ B({col:'gold',cic:1,gk:'θεῖος ἔοικεν ὁ τόπος εἶναι',gl:'the place seems divine',aria:'The orb drifts outside the figure again. A row of small lights chirps overhead.'}),
+ B({orbIn:1,col:'gold',rays:.35,gk:'οὐκ ἔστ᾽ ἔτυμος λόγος οὗτος',gl:'“that story is not true”',aria:'The orb returns to the chest and the figure brightens.'}),
+ B({orbIn:1,col:'gold',gk:'διὰ μανίας',gl:'through madness · <span class="w" lang="grc">μαν<span class="tau">τ</span>ική</span>',aria:'The orb glows steadily in the chest while a letter tau drops into the word above.'}),
+ B({orbIn:1,col:'gold',four:1,gk:'τετάρτην δὲ Ἀφροδίτης καὶ Ἔρωτος',gl:'and the fourth, Aphrodite’s and Eros’s',aria:'Four orbs light in turn: Apollo, Dionysus, the Muses, then Aphrodite and Eros, which beats like a heart.'}),
+ B({orbIn:1,col:'gold',train:1,gk:'μέγας ἡγεμὼν ἐν οὐρανῷ Ζεύς',gl:'the great leader in heaven, Zeus',aria:'Eleven small orbs travel in a line along an arc across the sky, Zeus first. One warm orb, Hestia, stays below.'}),
+ B({orbIn:1,col:'rose',bel:1,team:1,gk:'λευκός · μελάγχρως',gl:'the white horse · the dark horse',aria:'Two small orbs strain ahead of the lover on reins. The white one holds. The dark one lunges toward the beloved.'}),
+ B({orbIn:1,col:'rose',bel:1,stream:1,teeth:1,gk:'ἵμερος',gl:'himeros · the stream',hint:'use the slider to bring them closer',aria:'A stream of particles runs from the beloved’s eyes into the lover’s. Sparks prick at the lover’s shoulder.'}),
+ B({orbIn:1,col:'rose',bel:1,stream:.6,teeth:.5,ctl:'crowd',gk:'ἐνθουσιάζων δὲ λέληθεν τοὺς πολλούς',gl:'god-possessed, he escapes the many',hint:'switch on crowd view',aria:'The same two figures. In crowd view the orb and the stream vanish and only a restless figure remains.'}),
+ B({orbIn:1,col:'rose',bel:.55,stream:.25,rays:.45,gk:'φάσμα',gl:'a phantom',aria:'The beloved fades to a faint outline while the lover glows.'}),
+ B({orbIn:1,col:'rose',bel:.55,rays:1,stream:.25,gk:'θειότερον γὰρ ἐραστὴς παιδικῶν· ἔνθεος γάρ ἐστι',gl:'the lover is the more divine, for the god is in him',aria:'The lover shines brighter than the beloved. Light leaves the chest through the gaps between letters.'}),
+ B({orbIn:1,col:'god',bel:1,choose:1,beam:1,ctl:'choose',gk:'Διὸς δῖον · βασιλικόν · φονικοί',gl:'Zeus-like · kingly · murderous',hint:'tap a god',aria:'Four orbs wait above the pair: Zeus, Hera, Ares and Apollo. The chosen one enters the lover and sets the style of the beam between them.'}),
+ B({orbIn:1,col:'god',bel:1,beam:1,flood:1,plinth:1,gk:'καθ᾽ ὅσον δυνατὸν θεοῦ ἀνθρώπῳ μετασχεῖν',gl:'as far as a human can share in god',aria:'The lover’s color crosses the beam and fills the beloved, who now stands on a plinth like a statue.'}),
+ B({orbIn:1,col:'god',bel:1,beam:.5,flood:1,plinth:1,gk:'ἄγαλμα',gl:'a shrine image',aria:'The beloved stands lit on the plinth, a statue.'}),
+ B({orbIn:1,col:'god',bel:1,beam:.4,flood:.6,plinth:.5,wings:1,teeth:.3,near:1,gk:'Ἔρως → <span class="pt">Πτ</span>έρως',gl:'Eros → Pteros, the wing-grower',aria:'Wings of light open from the lover’s shoulders.'}),
+ B({orbIn:1,col:'god',bel:1,flood:.6,plinth:.25,wings:1,near:1,gk:'ψυχή',gl:'soul · butterfly',aria:'The wings stay open, beating slowly.'}),
+ B({orbIn:1,col:'god',bel:1,swap:1,gk:'ἀνθρώπου σύμβολον',gl:'half of a human token',aria:'The two figures slide together back to back into one body with two faces, and a bolt runs down the join.'}),
+ B({orbIn:1,col:'god',bel:1,flood:.5,stream:1,mirror:1,wings:.45,gk:'ὥσπερ ἐν κατόπτρῳ',gl:'as in a mirror',aria:'The stream rebounds from the lover into the beloved, where a faint copy of the orb appears.'}),
+ B({orbIn:1,col:'ares',bel:1,mirror:.7,sparks:.3,gk:'Ἀντέρως',gl:'love returned · love avenged',aria:'The orb and its copy turn red.'}),
+ B({orbIn:1,col:'god',bel:1,flood:.3,daimon:1,gk:'Πόρος · Πενία',gl:'Plenty · Poverty',aria:'The orb leaves the chest and drifts into the space between the two figures.'}),
+ B({orbIn:1,col:'god',bel:1,flood:.3,daimon:1,wings:.2,ctl:'daimon',gk:'δαίμων μέγας',gl:'a great daimon',hint:'drag the orb sideways, or use the slider',aria:'The orb can sit inside the lover or hang between the two figures, carrying particles both ways.'}),
+ B({orbIn:1,col:'god',bel:1,wheels:1,fig:.12,gk:'σύν + ἄστρον',gl:'with + star · synastry',aria:'Two astrological chart wheels face each other with beams crossing between their planets. Modern phrases surface and fade.'}),
+ B({orbIn:1,col:'god',bel:.4,cic:1,wings:.3,gk:'τέττιγες',gl:'the cicadas',aria:'A row of small lights chirps above the figures.'}),
+ B({orbIn:1,col:'god',bel:.4,wings:.6,flood:.2,gk:'ἔνθεος',gl:'the open question is whose',aria:'The chosen orb rests in the lover’s chest and keeps time.'})
+];
+
+/* ---------- state ---------- */
+const S=Object.assign({},Z,{crowd:0,dist:.35,d:0}), C={col:COL.gold.slice()}, homes={};
+let step=-1, stepStart=0, now=0, god=null, crowd=false, dist=.35, dTouched=false, dUser=0, flight=null, drag=false;
+let W=0,H=0,DPR=1,figs=null,bg=null,running=true;
+const colOf=k=>k==='god'?(god?GODS[god].col:COL.rose):COL[k];
+
+/* ---------- 7/8 knock and the heartbeat ---------- */
+const E8=.27;
+function knock(t){const b=(t/E8)%7;let k=0;for(const a of [0,2,4]){const d=b-a;if(d>=0)k=Math.max(k,Math.exp(-d*2.4)*(a?.6:1));}return k;}
+function heart(t){const p=(t*52/60)%1;return Math.max(Math.exp(-p*9),p>.18?.7*Math.exp(-(p-.18)*11):0);}
+
+/* ---------- figures: a profile bust filled with letters ---------- */
+function bust(x0,y0,s,flip){
+  const P=new Path2D(), X=u=>x0+(flip?1-u:u)*s, Y=v=>y0+v*s;
+  P.moveTo(X(0),Y(1.34));
+  P.bezierCurveTo(X(.02),Y(1.04),X(.29),Y(.99),X(.31),Y(.85));
+  P.lineTo(X(.31),Y(.73));
+  P.bezierCurveTo(X(.13),Y(.67),X(.06),Y(.51),X(.1),Y(.34));
+  P.bezierCurveTo(X(.14),Y(.12),X(.34),Y(.02),X(.52),Y(.03));
+  P.bezierCurveTo(X(.68),Y(.03),X(.79),Y(.12),X(.81),Y(.27));
+  P.lineTo(X(.93),Y(.5));
+  P.quadraticCurveTo(X(.9),Y(.545),X(.83),Y(.535));
+  P.quadraticCurveTo(X(.875),Y(.575),X(.855),Y(.6));
+  P.lineTo(X(.82),Y(.615));
+  P.quadraticCurveTo(X(.87),Y(.645),X(.84),Y(.675));
+  P.quadraticCurveTo(X(.8),Y(.705),X(.83),Y(.76));
+  P.bezierCurveTo(X(.82),Y(.825),X(.72),Y(.835),X(.66),Y(.815));
+  P.bezierCurveTo(X(.63),Y(.9),X(.66),Y(.97),X(.74),Y(1));
+  P.bezierCurveTo(X(.92),Y(1.06),X(1),Y(1.16),X(1),Y(1.34));
+  P.closePath(); return P;
+}
+function build(){
+  const r=stage.getBoundingClientRect(); W=Math.max(280,r.width); H=Math.max(240,r.height); DPR=Math.min(2,window.devicePixelRatio||1);
+  cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
+  const s=Math.min(W*.36,(H*.6)/1.34), g=Math.max(6.5,s/24), pad=Math.ceil(g);
+  figs=[false,true].map(flip=>{
+    const w=Math.ceil(s+pad*2), h=Math.ceil(1.34*s+pad*2);
+    const glyph=document.createElement('canvas'), tmp=document.createElement('canvas');
+    glyph.width=tmp.width=Math.round(w*DPR); glyph.height=tmp.height=Math.round(h*DPR);
+    const path=bust(pad,pad,s,flip), gx=glyph.getContext('2d');
+    gx.scale(DPR,DPR); gx.font='700 '+(g*1.18).toFixed(1)+'px '+FONT; gx.textAlign='center'; gx.textBaseline='middle';
+    const cols=Math.floor(w/g), rows=Math.floor(h/g), inside=(i,j)=>hit.isPointInPath(path,(i+.5)*g,(j+.5)*g);
+    for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){
+      if(!inside(i,j))continue;
+      const edge=!(inside(i-1,j)&&inside(i+1,j)&&inside(i,j-1)&&inside(i,j+1)), q=rnd(i*31+j*57+(flip?9:0));
+      if(!edge&&q<.1)continue;
+      gx.fillStyle='rgba(255,255,255,'+(edge?1:.38+.5*q).toFixed(2)+')';
+      gx.fillText(SRC[(i*7+j*13+(flip?5:0))%SRC.length],(i+.5)*g,(j+.5)*g);
+    }
+    return {glyph,tmp,tx:tmp.getContext('2d'),path,w,h,pad,s};
+  });
+  bg=document.createElement('canvas'); bg.width=cv.width; bg.height=cv.height;
+  const b=bg.getContext('2d'); b.scale(DPR,DPR);
+  const v=b.createRadialGradient(W*.5,H*.62,0,W*.5,H*.62,Math.max(W,H)*.8); v.addColorStop(0,'#17131f'); v.addColorStop(1,'#0b0a10');
+  b.fillStyle=v; b.fillRect(0,0,W,H);
+  for(let i=0;i<150;i++){b.fillStyle='rgba(239,232,216,'+(.07+.33*rnd(i*3+1)).toFixed(2)+')'; b.beginPath(); b.arc(rnd(i)*W,rnd(i+500)*H,.4+rnd(i+900)*.9,0,TAU); b.fill();}
+}
+function layout(){
+  const s=Math.min(W*.36,(H*.6)/1.34), base=H-Math.max(36,H*.08), gap=lerp(W*.26,W*.05,S.dist);
+  const lx=lerp(W/2-gap/2-s,W/2-.08*s,S.swap), bx=lerp(W/2+gap/2,W/2-.92*s,S.swap), y0=base-1.34*s;
+  return {s,y0,lx,bx,base,
+    le:{x:lx+.74*s,y:y0+.37*s}, lc:{x:lx+.5*s,y:y0+1.1*s}, lw:{x:lx+.24*s,y:y0+.93*s},
+    be:{x:bx+.26*s,y:y0+.37*s}, bc:{x:bx+.5*s,y:y0+1.1*s}};
+}
+
+/* ---------- drawing primitives ---------- */
+function dot(x,y,r,c,a){if(a<.01)return;ctx.fillStyle=rgba(c,a);ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();ctx.fillStyle=rgba(c,a*.22);ctx.beginPath();ctx.arc(x,y,r*2.8,0,TAU);ctx.fill();}
+function label(txt,x,y,a,font,col){if(a<.02)return;ctx.save();ctx.font=font;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=rgba(col,a);ctx.fillText(txt,x,y);ctx.restore();}
+function orb(x,y,r,c,a,t){
+  if(a<.01)return; ctx.save(); ctx.globalCompositeOperation='lighter';
+  let g=ctx.createRadialGradient(x,y,0,x,y,r*6); g.addColorStop(0,rgba(c,.5*a)); g.addColorStop(.22,rgba(c,.2*a)); g.addColorStop(1,rgba(c,0));
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r*6,0,TAU); ctx.fill();
+  ctx.fillStyle=rgba([255,90,90],.16*a); ctx.beginPath(); ctx.arc(x-r*.2,y,r*1.25,0,TAU); ctx.fill();
+  ctx.fillStyle=rgba([90,150,255],.16*a); ctx.beginPath(); ctx.arc(x+r*.2,y,r*1.25,0,TAU); ctx.fill();
+  g=ctx.createRadialGradient(x,y,0,x,y,r*1.3); g.addColorStop(0,rgba(COL.white,a)); g.addColorStop(.5,rgba(mix(c,COL.white,.45),.9*a)); g.addColorStop(1,rgba(c,0));
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r*1.3,0,TAU); ctx.fill();
+  ctx.lineWidth=1; ctx.strokeStyle=rgba(c,.55*a);
+  for(let k=0;k<2;k++){ctx.beginPath(); ctx.ellipse(x,y,r*(2.1+k*.9),r*(.62+k*.3),t*(k?-.31:.42)+k*1.1,.4,.4+TAU*.64); ctx.stroke();}
+  for(let k=0;k<3;k++){const ph=t*(.9+k*.35)+k*2.1, rr=r*(2.1+k*.55); ctx.fillStyle=rgba(mix(c,COL.white,.5),.85*a); ctx.beginPath(); ctx.arc(x+Math.cos(ph)*rr,y+Math.sin(ph)*rr*.42,Math.max(.8,r*.13),0,TAU); ctx.fill();}
+  ctx.restore();
+}
+function orbSmall(x,y,r,c,a){if(a<.01)return;ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,r*4);g.addColorStop(0,rgba(mix(c,COL.white,.5),a));g.addColorStop(.3,rgba(c,.5*a));g.addColorStop(1,rgba(c,0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*4,0,TAU);ctx.fill();ctx.restore();}
+
+/* the four beam grammars: glide, spark, wave, pulse */
+function beam(A,Bp,kind,c,a,t){
+  if(a<.01)return; const dx=Bp.x-A.x, dy=Bp.y-A.y, L=Math.hypot(dx,dy)||1, nx=-dy/L, ny=dx/L, amp=Math.min(16,L*.12);
+  const P=(s,o)=>[A.x+dx*s+nx*o,A.y+dy*s+ny*o];
+  ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.lineCap='round';
+  if(kind==='glide'){
+    for(let l=-1;l<=1;l++){const off=s=>Math.sin(s*Math.PI)*(amp*.8*l+Math.sin(s*7+t*1.4+l)*2);
+      ctx.beginPath(); for(let i=0;i<=28;i++){const s=i/28,[x,y]=P(s,off(s)); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+      ctx.strokeStyle=rgba(c,(l?.22:.4)*a); ctx.lineWidth=l?1:1.4; ctx.stroke();
+      for(let k=0;k<7;k++){const s=(t*.16+k/7+l*.05+1)%1,[x,y]=P(s,off(s)); dot(x,y,1.5,c,.9*a*Math.sin(s*Math.PI));}}
+  }else if(kind==='spark'){
+    const seed=Math.floor(t*11);
+    for(let b=0;b<2;b++){ctx.beginPath(); for(let i=0;i<=14;i++){const s=i/14,[x,y]=P(s,(rnd(seed*17+i*3+b*91)-.5)*amp*2.2*Math.sin(s*Math.PI)); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+      ctx.strokeStyle=rgba(b?c:mix(c,COL.white,.5),(b?.35:.75)*a*(.55+.45*rnd(seed+b))); ctx.lineWidth=b?1:1.6; ctx.stroke();}
+    for(let k=0;k<9;k++){const [x,y]=P(rnd(seed*5+k),(rnd(seed+k*7)-.5)*amp*3); dot(x,y,1.2,mix(c,COL.white,.6),a*rnd(seed*3+k));}
+  }else if(kind==='wave'){
+    const ph=Math.cos(t*2.6);
+    for(const m of [1,-1]){
+      ctx.beginPath(); for(let i=0;i<=36;i++){const s=i/36,[x,y]=P(s,m*amp*Math.sin(s*3*Math.PI)*ph); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.strokeStyle=rgba(c,.6*a); ctx.lineWidth=1.5; ctx.stroke();
+      ctx.beginPath(); for(let i=0;i<=36;i++){const s=i/36,[x,y]=P(s,m*amp*Math.sin(s*3*Math.PI)); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.strokeStyle=rgba(c,.13*a); ctx.lineWidth=1; ctx.stroke();}
+    for(const s of [1/3,2/3]){const [x,y]=P(s,0); dot(x,y,2.4,mix(c,COL.white,.5),a);}
+  }else{
+    ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(Bp.x,Bp.y); ctx.strokeStyle=rgba(c,.16*a); ctx.lineWidth=1; ctx.stroke();
+    for(let k=0;k<3;k++){const s=(t*.55+k/3)%1,[x0,y0]=P(Math.max(0,s-.1),0),[x1,y1]=P(s,0), g=ctx.createLinearGradient(x0,y0,x1,y1);
+      g.addColorStop(0,rgba(c,0)); g.addColorStop(1,rgba(mix(c,COL.white,.5),a)); ctx.strokeStyle=g; ctx.lineWidth=2.4; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); dot(x1,y1,2.6,COL.white,a);}
+  }
+  ctx.restore();
+}
+function stream(A,Bp,arch,c,a,t,n,spread,sp,seed){
+  if(a<.01)return; ctx.save(); ctx.globalCompositeOperation='lighter';
+  const mx=(A.x+Bp.x)/2, my=(A.y+Bp.y)/2-arch;
+  for(let k=0;k<n;k++){const s=(rnd(seed+k)+t*sp*(.6+.8*rnd(seed+k*7+3)))%1, u=1-s, w=Math.sin(s*Math.PI);
+    dot(u*u*A.x+2*u*s*mx+s*s*Bp.x, u*u*A.y+2*u*s*my+s*s*Bp.y+(rnd(seed+k*13+5)-.5)*spread*w, .7+1.3*rnd(seed+k*5), c, a*(.35+.65*rnd(seed+k*11))*w);}
+  ctx.restore();
+}
+function wings(R,s,g,c,a,t){
+  if(g<.01||a<.01)return; ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.lineCap='round';
+  for(let w=0;w<2;w++){const ox=R.x-(w?.07*s:0), al=w?.4:1;
+    for(let i=0;i<7;i++){const th=(-66-i*12+(w?7:0))*Math.PI/180+Math.sin(t*.9+i*.5)*.03, L=s*(1.28-.1*i)*ease(clamp(g*1.3-i*.05));
+      if(L<1)continue;
+      const ex=ox+Math.cos(th)*L, ey=R.y+Math.sin(th)*L, cx=ox+Math.cos(th-.5)*L*.55, cy=R.y+Math.sin(th-.5)*L*.55;
+      const gr=ctx.createLinearGradient(ox,R.y,ex,ey); gr.addColorStop(0,rgba(c,.05*a*al)); gr.addColorStop(.5,rgba(c,.5*a*al)); gr.addColorStop(1,rgba(mix(c,COL.white,.6),.75*a*al));
+      ctx.strokeStyle=gr; ctx.lineWidth=1.3; ctx.beginPath(); ctx.moveTo(ox,R.y); ctx.quadraticCurveTo(cx,cy,ex,ey); ctx.stroke();
+      const at=u=>{const q=1-u;return [q*q*ox+2*q*u*cx+u*u*ex,q*q*R.y+2*q*u*cy+u*u*ey];};
+      for(let k=1;k<=6;k++){const u=k/7,[px,py]=at(u); ctx.strokeStyle=rgba(c,.24*a*al*u); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+Math.cos(th+1.25)*L*.09*u,py+Math.sin(th+1.25)*L*.09*u); ctx.stroke();}
+      const u=(t*.22+i*.13)%1,[px,py]=at(u); dot(px,py,1.3,mix(c,COL.white,.6),a*al*Math.sin(u*Math.PI));
+    }}
+  ctx.restore();
+}
+function sparksOut(Cp,s,c,a,t){
+  const seed=Math.floor(t*9); ctx.save(); ctx.globalCompositeOperation='lighter';
+  for(let k=0;k<7;k++){const th=rnd(seed*7+k)*TAU, L=s*(.35+.6*rnd(seed+k*3)); let x=Cp.x,y=Cp.y; ctx.beginPath(); ctx.moveTo(x,y);
+    for(let i=1;i<=5;i++){x=Cp.x+Math.cos(th)*L*i/5+(rnd(seed*3+k*11+i)-.5)*s*.14; y=Cp.y+Math.sin(th)*L*i/5+(rnd(seed*5+k*13+i)-.5)*s*.14; ctx.lineTo(x,y);}
+    ctx.strokeStyle=rgba(mix(c,COL.white,.4),a*(.3+.6*rnd(seed+k))); ctx.lineWidth=1.3; ctx.stroke(); dot(x,y,1.6,[255,240,220],a*.8);}
+  ctx.restore();
+}
+function rays(Cp,s,c,a,t,k){
+  ctx.save(); ctx.globalCompositeOperation='lighter';
+  for(let i=0;i<18;i++){const th=i/18*TAU+t*.05, L=s*(.9+.5*rnd(i)+.25*k), ex=Cp.x+Math.cos(th)*L, ey=Cp.y+Math.sin(th)*L, g=ctx.createLinearGradient(Cp.x,Cp.y,ex,ey);
+    g.addColorStop(0,rgba(c,0)); g.addColorStop(.35,rgba(c,.28*a)); g.addColorStop(1,rgba(c,0));
+    ctx.strokeStyle=g; ctx.lineWidth=1+2*rnd(i+40); ctx.beginPath(); ctx.moveTo(Cp.x,Cp.y); ctx.lineTo(ex,ey); ctx.stroke();}
+  ctx.restore();
+}
+function plinth(G,a){
+  if(a<.01)return; ctx.save(); ctx.strokeStyle=rgba(COL.gold,.8*a); ctx.fillStyle=rgba(COL.gold,.08*a); ctx.lineWidth=1.2;
+  for(const [dx,dy,w,h] of [[-.04,0,1.08,.045],[-.1,.045,1.2,.06]]){ctx.beginPath(); ctx.rect(G.bx+dx*G.s,G.base+dy*G.s,w*G.s,h*G.s); ctx.fill(); ctx.stroke();}
+  ctx.restore();
+}
+function wheels(G,a,t){
+  if(a<.01)return; const r=G.s*.5, cy=G.y0+.72*G.s, cs=[{x:G.lx+.5*G.s,y:cy},{x:G.bx+.5*G.s,y:cy}], pts=[];
+  const PL=[[.35,'gold'],[1.4,'silver'],[2.3,'rose'],[3.5,'ares'],[4.4,'zeus'],[5.5,'hera']];
+  ctx.save(); ctx.lineWidth=1;
+  cs.forEach((c,w)=>{const rot=t*.03*(w?-1:1)+w*.6;
+    ctx.strokeStyle=rgba(COL.ink,.5*a); ctx.beginPath(); ctx.arc(c.x,c.y,r,0,TAU); ctx.stroke();
+    ctx.strokeStyle=rgba(COL.ink,.24*a); ctx.beginPath(); ctx.arc(c.x,c.y,r*.76,0,TAU); ctx.stroke();
+    for(let i=0;i<12;i++){const th=rot+i/12*TAU; ctx.beginPath(); ctx.moveTo(c.x+Math.cos(th)*r*.76,c.y+Math.sin(th)*r*.76); ctx.lineTo(c.x+Math.cos(th)*r,c.y+Math.sin(th)*r); ctx.stroke();}
+    pts[w]=PL.map(([ang,k])=>{const th=rot+ang+w*1.3; return {x:c.x+Math.cos(th)*r*.6,y:c.y+Math.sin(th)*r*.6,col:COL[k]};});});
+  ctx.restore();
+  for(const [i,j,k] of [[0,1,'glide'],[2,3,'spark'],[4,5,'wave'],[1,2,'pulse'],[3,0,'glide']]) beam(pts[0][i],pts[1][j],k,mix(pts[0][i].col,pts[1][j].col,.5),.7*a,t);
+  for(const w of [0,1]) for(const p of pts[w]) orbSmall(p.x,p.y,Math.max(2.5,r*.06),p.col,a);
+}
+/* new scenes: the magnet chain, the net, the procession, the two horses */
+function chainFx(G,a,t){
+  if(a<.01)return; const x0=W*.68,y0=H*.3,rr=Math.max(11,G.s*.115),nm=['the Muse','poet','performer','you'];
+  orb(x0,y0,Math.max(4,G.s*.05),COL.silver,a,t); label(nm[0],x0,y0-rr*2.5,a,'500 10px '+MONO,COL.grey);
+  let x=x0,y=y0+rr*.9;
+  for(let i=1;i<4;i++){const th=reduce?0:Math.sin(t*1.1-i*.55)*.2*i/3; x+=Math.sin(th)*rr*1.7; y+=Math.cos(th)*rr*1.7;
+    orbSmall(x,y,rr*.3,COL.gold,a*(.7-.15*i));
+    ctx.save(); ctx.lineWidth=2; ctx.strokeStyle=rgba(mix(COL.gold,COL.grey,i/4),a*(1-.18*i)); ctx.beginPath(); ctx.ellipse(x,y,rr*.7,rr,th,0,TAU); ctx.stroke(); ctx.restore();
+    label(nm[i],x+rr*1.4+24,y,a*.9,'500 10px '+MONO,COL.grey);}
+}
+function netFx(G,a,t){
+  if(a<.01)return; const cx=W*.7,cy=H*.56,rr=Math.max(4,G.s*.05),ax=cx,ay=cy-G.s*.6,R=G.s*.95,w=reduce?0:Math.sin(t*.8)*2;
+  orb(cx-rr*1.7+w,cy,rr,COL.ares,a,t); orb(cx+rr*1.7-w,cy,rr,COL.rose,a,t+2);
+  ctx.save(); ctx.strokeStyle=rgba(COL.gold,.55*a); ctx.lineWidth=.8;
+  for(let i=-6;i<=6;i++){const th=Math.PI/2+i*.11; ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ax+Math.cos(th)*R,ay+Math.sin(th)*R); ctx.stroke();}
+  for(let k=1;k<=6;k++){ctx.beginPath(); ctx.arc(ax,ay,R*k/6,Math.PI/2-.66,Math.PI/2+.66); ctx.stroke();}
+  ctx.restore();
+  orbSmall(W*.88,H*.32,Math.max(3,G.s*.04),COL.apollo,a); label('Helios sees',W*.88,H*.32+18,a,'500 10px '+MONO,COL.grey);
+}
+function trainFx(G,a,t){
+  if(a<.01)return; const P=u=>[W*(.06+.88*u),H*(.52-.24*Math.sin(u*Math.PI))], cs=[COL.zeus,COL.ares,COL.hera,COL.apollo,COL.rose,COL.silver,COL.wine,COL.gold,COL.pale,COL.hera,COL.apollo];
+  ctx.save(); ctx.strokeStyle=rgba(COL.ink,.24*a); ctx.lineWidth=1; ctx.setLineDash([2,6]); ctx.beginPath();
+  for(let i=0;i<=40;i++){const [x,y]=P(i/40); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke(); ctx.restore();
+  for(let i=0;i<11;i++){const u=((reduce?.12:t*.025)+(10-i)*.075)%1,[x,y]=P(u), w=Math.sin(u*Math.PI);
+    orbSmall(x,y,Math.max(2.5,G.s*(i?.03:.046)),cs[i],a*(.25+.75*w)); if(!i)label('Zeus',x,y-15,a*w,'500 10px '+MONO,COL.zeus);}
+  orbSmall(W*.6,H*.66,Math.max(3,G.s*.04),[255,170,90],a); label('Hestia stays home',W*.6,H*.66+18,a,'500 10px '+MONO,COL.grey);
+}
+function teamFx(G,a,t){
+  if(a<.01)return; const s=G.s, C0=G.lc, lunge=reduce?.5:Math.pow(Math.max(0,Math.sin(t*1.25)),3);
+  const wh={x:C0.x+s*.3,y:C0.y-s*.1}, dk={x:C0.x+s*(.3+.42*lunge),y:C0.y+s*.1};
+  ctx.save(); ctx.lineWidth=1; ctx.strokeStyle=rgba(COL.ink,.5*a);
+  for(const h of [wh,dk]){ctx.beginPath(); ctx.moveTo(C0.x,C0.y); ctx.lineTo(h.x,h.y); ctx.stroke();} ctx.restore();
+  orbSmall(wh.x,wh.y,Math.max(3,s*.04),COL.white,a);
+  ctx.save(); ctx.globalCompositeOperation='lighter'; const g=ctx.createRadialGradient(dk.x,dk.y,0,dk.x,dk.y,s*.17);
+  g.addColorStop(0,rgba([130,50,170],.9*a)); g.addColorStop(.5,rgba([210,40,60],.4*a*(.4+.6*lunge))); g.addColorStop(1,rgba([210,40,60],0));
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(dk.x,dk.y,s*.17,0,TAU); ctx.fill(); ctx.restore();
+  ctx.fillStyle=rgba([18,8,28],.92*a); ctx.beginPath(); ctx.arc(dk.x,dk.y,Math.max(3,s*.036),0,TAU); ctx.fill();
+}
+function lantern(F,x,y,c,a,Cp){
+  if(a<.01)return; ctx.save(); ctx.translate(x-F.pad,y-F.pad); ctx.clip(F.path);
+  const lx=Cp.x-x+F.pad, ly=Cp.y-y+F.pad, g=ctx.createRadialGradient(lx,ly,0,lx,ly,F.s*1.05); g.addColorStop(0,rgba(c,a)); g.addColorStop(1,rgba(c,0));
+  ctx.fillStyle=g; ctx.fillRect(0,0,F.w,F.h); ctx.restore();
+}
+function drawFig(F,x,y,alpha,baseCol,baseA,lights,jx){
+  if(alpha<.01)return; const t=F.tx, w=F.tmp.width, h=F.tmp.height;
+  t.setTransform(1,0,0,1,0,0); t.globalCompositeOperation='source-over'; t.clearRect(0,0,w,h);
+  t.fillStyle=rgba(baseCol,baseA); t.fillRect(0,0,w,h); t.globalCompositeOperation='lighter';
+  for(const L of lights){if(L.a<.01)continue;
+    const lx=(L.x-x+F.pad)*DPR, ly=(L.y-y+F.pad)*DPR, g=t.createRadialGradient(lx,ly,0,lx,ly,L.r*DPR);
+    g.addColorStop(0,rgba(mix(L.col,COL.white,.35),L.a)); g.addColorStop(.5,rgba(L.col,L.a*.55)); g.addColorStop(1,rgba(L.col,0));
+    t.fillStyle=g; t.fillRect(0,0,w,h);}
+  t.globalCompositeOperation='destination-in'; t.drawImage(F.glyph,0,0);
+  ctx.globalAlpha=alpha; ctx.drawImage(F.tmp,x-F.pad+jx,y-F.pad,F.w,F.h);
+  ctx.translate(x-F.pad+jx,y-F.pad); ctx.strokeStyle=rgba(COL.ink,.22); ctx.lineWidth=1; ctx.stroke(F.path); ctx.translate(-(x-F.pad+jx),-(y-F.pad));
+  ctx.globalAlpha=1;
+}
+function eye(p,s,a,tilt){if(a<.02)return;ctx.fillStyle=rgba(COL.ink,.85*a);ctx.beginPath();ctx.ellipse(p.x,p.y,s*.04,s*.017,tilt,0,TAU);ctx.fill();}
+
+/* ---------- one frame ---------- */
+function draw(t,dt){
+  const Tg=BEATS[step], k=reduce?1:1-Math.exp(-dt*4.5), tau=reduce?5:t-stepStart;
+  for(const key in Z)S[key]=lerp(S[key],Tg[key],k);
+  S.crowd=lerp(S.crowd,crowd&&Tg.ctl==='crowd'?1:0,k); S.dist=lerp(S.dist,Tg.near!=null?Tg.near:dist,k);
+  C.col=mix(C.col,colOf(Tg.col),k);
+  const dT=Tg.daimon?(dTouched?dUser:reduce?0:.25-.25*Math.cos(tau*.7)):0; S.d=lerp(S.d,dT,reduce?1:Math.min(1,k*1.6));
+
+  const G=layout(), s=G.s, kn=reduce?.5:knock(t), hb=reduce?.5:heart(t), div=1-S.crowd, c=C.col, LF=figs[0], BF=figs[1];
+  ctx.setTransform(DPR,0,0,DPR,0,0); ctx.globalCompositeOperation='source-over'; ctx.globalAlpha=1;
+  ctx.drawImage(bg,0,0,W,H);
+  wheels(G,S.wheels,t);
+  trainFx(G,S.train*(1-S.crowd),t); chainFx(G,S.chain*(1-S.crowd),t); netFx(G,S.net*(1-S.crowd),t);
+
+  const between=ease(clamp(S.d*2))*S.daimon, inL=S.orbIn*(1-between)*div, figA=S.fig, ba=S.bel*figA;
+  const pulse=(Tg.col==='rose'||(Tg.col==='god'&&!god))?hb:kn;
+  const out={x:W*.74+Math.sin(t*.5)*W*.05,y:H*.44+Math.cos(t*.37)*H*.04}, e=ease(clamp(S.orbIn)), M={x:W/2,y:G.le.y+.14*s};
+  const ox=lerp(lerp(out.x,G.lc.x,e),M.x,between), oy=lerp(lerp(out.y,G.lc.y,e),M.y,between), r=Math.max(4,s*.052)*(1+.18*pulse);
+  const jx=S.crowd>.02?(rnd(Math.floor(t*12))-.5)*3.2*S.crowd:0;
+
+  wings(G.lw,s,S.wings,c,div*clamp(figA*1.6),t);
+  lantern(LF,G.lx,G.y0,c,.36*inL*figA*(.8+.2*pulse),G.lc);
+  drawFig(LF,G.lx,G.y0,figA,mix(COL.ink,COL.grey,S.crowd),.3+.1*S.rays,[
+    {x:G.lc.x,y:G.lc.y,r:s*(1+.5*S.rays),col:c,a:(.85+.15*pulse)*inL},
+    {x:G.le.x,y:G.le.y,r:s*.34,col:c,a:.55*Math.max(S.stream,S.mirror)*div},
+    {x:G.lw.x,y:G.lw.y,r:s*.3,col:[255,240,220],a:.5*S.teeth*div*(.5+.5*kn)},
+    {x:G.lc.x,y:G.lc.y,r:s*1.6,col:COL.white,a:.7*S.blaze*div*(.7+.3*kn)}],jx);
+  lantern(BF,G.bx,G.y0,c,.3*S.flood*ba,G.bc);
+  drawFig(BF,G.bx,G.y0,ba,COL.ink,.28,[
+    {x:G.bc.x,y:G.bc.y,r:s,col:c,a:.8*S.flood},
+    {x:G.bc.x,y:G.bc.y,r:s*.5,col:mix(c,COL.pale,.5),a:.5*S.mirror},
+    {x:G.be.x,y:G.be.y,r:s*.3,col:c,a:.45*Math.max(S.stream,S.mirror)*div}],0);
+  eye({x:G.le.x+jx,y:G.le.y},s,figA,-.12); eye(G.be,s,ba,.12);
+  plinth(G,S.plinth*ba);
+
+  beam(G.lc,G.bc,god?GODS[god].beam:'glide',c,S.beam*ba*div*.9,t);
+  stream(G.be,G.le,s*.12,c,S.stream*ba*div,t,Math.round(26+44*S.dist),s*.16,.22,11);
+  stream(G.le,G.be,-s*.14,mix(c,COL.pale,.6),S.mirror*ba,t,34,s*.12,.2,400);
+  if(between>.05){const O={x:ox,y:oy};
+    stream(G.le,O,s*.05,c,between,t,16,s*.06,.3,800); stream(O,G.be,s*.05,c,between,t,16,s*.06,.3,900);
+    stream(G.be,O,-s*.05,COL.pale,between*.7,t,12,s*.06,.26,1000); stream(O,G.le,-s*.05,COL.pale,between*.7,t,12,s*.06,.26,1100);}
+  if(S.sparks>.02)sparksOut(G.lc,s,c,S.sparks*div,t);
+  if(S.rays>.02)rays(G.lc,s,c,S.rays*div,t,kn);
+  if(S.blaze>.02){beam({x:G.lc.x+s*.3,y:-10},G.lc,'spark',COL.white,S.blaze*div,t); rays(G.lc,s*1.25,mix(c,COL.white,.6),S.blaze*div,t,kn);}
+  teamFx(G,S.team*ba*div,t);
+  if(S.swap>.12&&S.swap<.88)beam({x:W/2,y:G.y0-s*.15},{x:W/2,y:G.base},'spark',COL.zeus,Math.sin(S.swap*Math.PI),t);
+  if(S.cic>.02){ctx.save(); ctx.globalCompositeOperation='lighter'; for(let i=0;i<11;i++)dot(W*(.05+.09*i),H*.29+Math.sin(i*1.7)*7,1.4,COL.gold,S.cic*(reduce?.6:.25+.75*Math.max(0,Math.sin(t*9+i*2.1)))); ctx.restore();}
+  if(S.teeth>.02&&div>.05){ctx.save(); ctx.globalCompositeOperation='lighter'; const sd=Math.floor(t*14);
+    for(let i=0;i<5;i++)dot(G.lw.x+(rnd(sd+i*3)-.5)*s*.22,G.lw.y+(rnd(sd+i*7)-.5)*s*.22,1.1,[255,236,210],S.teeth*div*rnd(sd*3+i)); ctx.restore();}
+
+  orb(ox,oy,r,c,div*(1-S.wheels),t);
+  if(S.mirror>.02){orb(G.bc.x,G.bc.y,r*.8,mix(c,COL.pale,.5),.4*S.mirror*ba,t+3); label('ἀντέρως',G.bc.x,G.bc.y-r*4.4,S.mirror*ba,'700 '+Math.max(13,s*.09).toFixed(0)+'px '+FONT,COL.pale);}
+
+  if(S.four>.02){[[.58,.38,'apollo','Apollo','prophecy'],[.85,.38,'wine','Dionysus','the rites'],[.58,.62,'silver','the Muses','poetry'],[.85,.62,'rose','Aphrodite + Eros','love']].forEach((p,i)=>{
+    const lit=reduce?1:clamp(tau*1.1-i*.9), x=W*p[0], y=H*p[1], rr=Math.max(4,s*.045)*(i===3?1.25*(1+.3*hb):1);
+    orb(x,y,rr,COL[p[2]],S.four*(.18+.82*lit),t+i); label(p[3],x,y+rr*3.4+12,S.four*(.4+.6*lit),'500 11px '+MONO,COL.ink); label(p[4],x,y+rr*3.4+26,S.four*(.3+.5*lit),'500 10px '+MONO,COL.grey);});}
+
+  if(S.choose>.02){const rr=Math.max(4,s*.045);
+    GKEYS.forEach((g,i)=>{const x=W*(.17+.22*i), y=H*.36, sel=god===g; homes[g]={x,y};
+      orb(x,y,rr,GODS[g].col,S.choose*(sel?.22:1),t+i*1.7); label(GODS[g].name,x,y+rr*3.4+12,S.choose,'500 11px '+MONO,sel?GODS[g].col:COL.ink);});
+    if(flight){const u=clamp((t-flight.t0)/.7); if(u<1){const e2=ease(u); orb(lerp(flight.x,G.lc.x,e2),lerp(flight.y,G.lc.y,e2)-Math.sin(u*Math.PI)*s*.3,rr*1.2,flight.col,1,t);}else flight=null;}}
+
+  if(S.daimon>.05){label(between<.3?'ἔνθεος':'δαίμων',ox,oy-r*4.4,S.daimon,'700 '+Math.max(14,s*.1).toFixed(0)+'px '+FONT,COL.gold);
+    if(between>=.3)label('μεταξύ · between',ox,oy+r*4.6+6,S.daimon*.85,'500 10px '+MONO,COL.grey);}
+  if(S.wheels>.02){const u=(tau/2.6)%1; label(PHR[reduce?0:Math.floor(tau/2.6)%PHR.length],W/2,G.y0+.06*s,S.wheels*(reduce?1:Math.sin(u*Math.PI)),'italic 400 '+Math.max(15,s*.11).toFixed(0)+'px '+FONT,COL.ink);}
+  if(S.crowd>.02){for(let i=0;i<16;i++){const x=((rnd(i)*W-t*(8+10*rnd(i+5)))%W+W)%W; ctx.fillStyle=rgba(COL.grey,.5*S.crowd); ctx.beginPath(); ctx.arc(x,H*(.28+.5*rnd(i+20)),2.2,0,TAU); ctx.fill();}}
+}
+function frame(ts){
+  const t=ts/1000, dt=Math.min(.05,Math.max(.001,t-now)); now=t;
+  if(figs&&step>=0)draw(reduce?1.3:t,dt);
+  if(!reduce&&running)requestAnimationFrame(frame);
+}
+const redraw=()=>{if(reduce)frame(performance.now());};
+
+/* ---------- scroll: which card is the reader on ---------- */
+function setStep(i){
+  if(i===step)return; step=i; stepStart=now; const Bt=BEATS[i];
+  gkEl.innerHTML=Bt.gk; glEl.innerHTML=Bt.gl;
+  for(const n of [gkEl,glEl]){n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash');}
+  hintEl.textContent=Bt.hint||''; cv.setAttribute('aria-label',Bt.aria); cv.style.cursor=(Bt.ctl==='choose'||Bt.ctl==='daimon')?'pointer':'default'; $('#bar').style.width=((i+1)/steps.length*100)+'%';
+  steps.forEach((el,j)=>el.classList.toggle('on',j===i)); redraw();
+}
+function onScroll(){
+  const sr=stage.getBoundingClientRect(), vh=window.innerHeight, wide=matchMedia('(min-width:900px)').matches;
+  const ref=wide?vh*.5:sr.bottom+(vh-sr.bottom)*.4; let best=0, bd=1e9;
+  steps.forEach((el,i)=>{const r=el.getBoundingClientRect(), d=ref<r.top?r.top-ref:ref>r.bottom?ref-r.bottom:0; if(d<bd){bd=d;best=i;}});
+  setStep(best);
+}
+
+/* ---------- controls ---------- */
+function choose(g){
+  if(god===g)return; const h=homes[g]; god=g; if(h&&!reduce)flight={x:h.x,y:h.y,col:GODS[g].col,t0:now};
+  $$('.god').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.g===g))); redraw();
+}
+$('#dist').addEventListener('input',e=>{dist=e.target.value/100; redraw();});
+$('#crowd').addEventListener('click',e=>{crowd=!crowd; e.currentTarget.setAttribute('aria-pressed',String(crowd)); redraw();});
+$$('.god').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.g)));
+$('#daim').addEventListener('input',e=>{dTouched=true; dUser=e.target.value/200; redraw();});
+function dragTo(e){const r=cv.getBoundingClientRect(), G=layout(); dTouched=true; dUser=clamp((e.clientX-r.left-G.lc.x)/(W/2-G.lc.x))*.5; $('#daim').value=Math.round(dUser*200); redraw();}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top;
+  if(BEATS[step].ctl==='choose'){for(const g of GKEYS){const h=homes[g]; if(h&&Math.hypot(x-h.x,y-h.y)<32){choose(g);return;}}}
+  if(BEATS[step].ctl==='daimon'){drag=true; try{cv.setPointerCapture(e.pointerId);}catch(_){} dragTo(e);}
+});
+cv.addEventListener('pointermove',e=>{if(drag)dragTo(e);});
+for(const ev of ['pointerup','pointercancel'])cv.addEventListener(ev,()=>{drag=false;});
+
+
+/* ---------- start ---------- */
+function start(){
+  build(); onScroll();
+  window.addEventListener('scroll',onScroll,{passive:true}); window.addEventListener('resize',onScroll);
+  new ResizeObserver(()=>{build(); redraw();}).observe(stage);
+  if('IntersectionObserver' in window)new IntersectionObserver(en=>{const v=en[0].isIntersecting; if(v&&!running&&!reduce){running=true; requestAnimationFrame(frame);} running=v;}).observe(stage);
+  if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{build(); redraw();});
+  if(reduce)frame(performance.now()); else requestAnimationFrame(frame);
+}
+const ready=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();
+Promise.race([ready,new Promise(r=>setTimeout(r,1500))]).then(start);
+})();
+</script>
