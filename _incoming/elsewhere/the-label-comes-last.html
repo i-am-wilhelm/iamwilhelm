@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Label Comes Last</title>
+<meta name="description" content="A state takeover in Beaumont, Texas, a teacher called Big Lando, a superintendent gone in 204 days, and the neighbors building the public record first.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@500;700&family=Zilla+Slab:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout idea: a county records-room desk. One column of files. Each chapter pins an
+     index-card exhibit while its copy scrolls past; a strip of embossing tape carries the
+     label each side uses, and peels away to show the record underneath.
+     Palette rule: no red, no blue, anywhere. */
+  --desk:#D3D7CB;
+  --paper:#F5F2E7;
+  --manila:#E2C583;
+  --ink:#191A16;
+  --tape:#141512;
+  --mark:#F2D53C;
+  --stamp:#2E6B4E;
+  --muted:#565B51;
+  --rule:#B4B9AA;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Zilla Slab",Rockwell,Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background-color:var(--desk);color:var(--ink);
+  background-image:radial-gradient(rgba(25,26,22,.06) 1px,transparent 1.3px);background-size:5px 5px;
+  font-family:var(--body);font-size:1.16rem;line-height:1.52;overflow-x:hidden;
+}
+a{color:inherit;text-decoration-color:var(--stamp);text-decoration-thickness:2px;text-underline-offset:3px}
+a:focus-visible{outline:3px solid var(--stamp);outline-offset:2px;border-radius:2px}
+mark{background:linear-gradient(transparent 52%,var(--mark) 52%);color:inherit;padding:0 .1em}
+
+/* ---------- tape ---------- */
+.tape{
+  display:inline-block;background:var(--tape);color:var(--paper);
+  font:700 1.02rem/1 var(--display);letter-spacing:.24em;text-transform:uppercase;white-space:nowrap;
+  padding:.42em .6em .36em .84em;border-radius:2px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 -2px 0 rgba(0,0,0,.65),0 3px 7px rgba(25,26,22,.3);
+  text-shadow:0 1px 0 rgba(0,0,0,.7),0 0 1px rgba(255,255,255,.55);
+}
+.tape.blank{width:7.2em;height:1.78em;padding:0;vertical-align:middle}
+
+/* ---------- hero ---------- */
+.hero{max-width:68rem;margin:0 auto;padding:26px 16px 44px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:4px 20px;margin:0 0 20px;color:var(--muted);
+  font:700 .76rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.titlewrap{position:relative;display:inline-block}
+h1{margin:0;font:800 clamp(4.2rem,20vw,11rem)/.83 var(--display);text-transform:uppercase;letter-spacing:-.012em}
+.rip{position:absolute;z-index:2;transform:rotate(var(--r));
+  animation:rip .75s cubic-bezier(.55,0,.9,.45) forwards;animation-delay:calc(1s + var(--n) * .32s)}
+.rip.t1{--r:-6deg;--n:0;--x:60px;top:5%;left:44%}
+.rip.t2{--r:3deg;--n:1;--x:-50px;top:30%;left:3%}
+.rip.t3{--r:-3deg;--n:2;--x:70px;top:53%;left:52%}
+.rip.t4{--r:5deg;--n:3;--x:-40px;top:76%;left:9%}
+.rip.t5{--r:-4deg;--n:4;--x:55px;top:91%;left:50%}
+@keyframes rip{
+  35%{transform:translate(calc(var(--x) * .15),-10px) rotate(calc(var(--r) * -1.5))}
+  100%{transform:translate(var(--x),150px) rotate(calc(var(--r) + 26deg));opacity:0}
+}
+.dek{max-width:33rem;margin:28px 0 16px;font-size:clamp(1.22rem,3.7vw,1.5rem);line-height:1.38}
+.byline{margin:0 0 26px;color:var(--muted);font:.84rem/1.4 var(--mono)}
+.blankrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.blankrow span:last-child{font:italic 1rem/1.3 var(--body);color:var(--muted)}
+
+/* ---------- chapters ---------- */
+.chapter{--p:1;--q:clamp(0,calc((var(--p) - .06) / .5),1);
+  position:relative;max-width:36rem;margin:0 auto;padding:0 16px}
+.exhibit{position:sticky;top:0;z-index:2;margin:0 -16px;padding:10px 16px 8px;background:var(--desk)}
+.exhibit::after{content:"";position:absolute;left:0;right:0;top:100%;height:22px;pointer-events:none;
+  background:linear-gradient(var(--desk),rgba(211,215,203,0))}
+.copy{padding:20px 0 20vh}
+.copy h2,.plain h2,.foot h2{margin:.15em 0 .5em;font:800 clamp(2.2rem,8.4vw,3.3rem)/.94 var(--display);
+  text-transform:uppercase;text-wrap:balance}
+.copy p,.plain p{margin:0 0 1.05em}
+.copy blockquote,.plain blockquote{margin:0 0 1.05em;padding:0 0 0 14px;border-left:4px solid var(--ink);
+  font:600 1.32rem/1.3 var(--body)}
+.copy blockquote cite,.plain blockquote cite{display:block;margin-top:6px;font:.76rem/1.3 var(--mono);color:var(--muted)}
+
+.card{position:relative;overflow:hidden;background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:10px 14px 9px;box-shadow:0 8px 22px rgba(25,26,22,.15)}
+.card::before{content:"";position:absolute;left:0;right:0;top:40px;border-top:2px solid var(--stamp);opacity:.55}
+.head{min-height:30px;margin:0 0 8px;padding-right:176px;display:flex;align-items:center;color:var(--muted);
+  font:700 .68rem/1.25 var(--mono);letter-spacing:.07em;text-transform:uppercase}
+.card>.tape{position:absolute;top:8px;right:10px;z-index:3;transform-origin:100% 50%;transition:transform .12s linear;
+  transform:translate(calc((1 - var(--q)) * -1 * min(44vw,200px)),calc((1 - var(--q)) * 54px)) rotate(calc(3deg - (1 - var(--q)) * 6deg))}
+.card>.tape.blank{transform:rotate(-2deg)}
+.numrow{display:flex;align-items:flex-end;gap:10px;margin:0 0 9px}
+.num{font:800 clamp(3.3rem,15vw,4.5rem)/.82 var(--display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.num.sm{font-size:clamp(2.7rem,12vw,3.6rem);white-space:nowrap}
+.unit{flex:1;font:600 .98rem/1.2 var(--body);padding-bottom:1px}
+.src{margin:8px 0 0;color:var(--muted);font:.67rem/1.3 var(--mono)}
+.cap{margin:5px 0 0;font:.7rem/1.3 var(--mono);color:var(--muted)}
+
+/* exhibit 1: seats */
+.seats{display:flex;gap:6px}
+.seat{width:26px;height:26px;border-radius:3px;background:var(--ink);opacity:clamp(.16,calc(var(--q) * 7 - var(--i)),1)}
+.suspended{position:relative;margin-top:9px;padding:6px 9px;border:1.5px dashed var(--ink);border-radius:3px;
+  font:700 .74rem/1.25 var(--mono);overflow:hidden}
+.suspended::after{content:"";position:absolute;inset:0;opacity:calc(var(--q) * .2);
+  background:repeating-linear-gradient(135deg,var(--ink) 0 2px,transparent 2px 9px)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0 0}
+.facts div{border-top:1px solid var(--rule);padding-top:4px}
+.facts dt{font:.67rem/1.25 var(--mono);color:var(--muted)}
+.facts dd{margin:0;font:800 1.3rem/1.05 var(--display);text-transform:uppercase}
+
+/* exhibit 2: campus grid + meters */
+.grid26{display:grid;grid-template-columns:repeat(13,1fr);gap:4px}
+.sq{position:relative;aspect-ratio:1;border:1.5px solid var(--stamp);border-radius:2px;background:rgba(46,107,78,.14)}
+.sq.f{border-color:var(--ink);background:transparent}
+.sq.f::after{content:"";position:absolute;inset:0;background:var(--ink);opacity:clamp(0,calc(var(--q) * 23 - var(--i)),1)}
+.meter{display:grid;grid-template-columns:4.2em 1fr 2.6em;align-items:center;gap:8px;margin-top:6px;font:700 .72rem/1 var(--mono)}
+.meter .track{position:relative;height:11px;background:rgba(25,26,22,.1);border-radius:1px}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;background:var(--ink);width:calc(var(--v) * var(--q) * 1%)}
+.meter .goal{position:absolute;left:60%;top:-3px;bottom:-3px;border-left:2px solid var(--stamp)}
+
+/* exhibit 3: school day */
+.day{position:relative;height:16px;margin-top:5px;background:rgba(25,26,22,.07)}
+.day i{position:absolute;top:0;bottom:0;display:block}
+.day .old{left:2.5%;width:75%;border:1.5px dashed var(--ink)}
+.day .new{left:calc(2.5% + var(--q) * 12.5%);width:calc(75% + var(--q) * 5%);background:var(--ink)}
+.dayrow{display:grid;grid-template-columns:3.1em 1fr;align-items:center;gap:8px;font:700 .68rem/1 var(--mono)}
+.dayrow .day{margin-top:4px}
+.ticks{display:flex;justify-content:space-between;margin:3px 0 0 calc(3.1em + 8px);font:.64rem/1 var(--mono);color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips span{border:1px solid var(--ink);border-radius:99px;padding:3px 9px;font:700 .66rem/1.2 var(--mono)}
+
+/* exhibit 4: timeline + sticker */
+.rail{position:relative;margin:0;padding:0 0 0 20px;list-style:none;font:.74rem/1.3 var(--mono)}
+.rail::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--rule)}
+.rail::after{content:"";position:absolute;left:5px;top:6px;width:2px;background:var(--ink);height:calc((100% - 12px) * var(--q))}
+.rail li{position:relative;padding:4px 0}
+.rail li::before{content:"";position:absolute;left:-20px;top:7px;width:12px;height:12px;border-radius:50%;
+  background:var(--ink);border:2px solid var(--paper);z-index:1}
+.rail li.open::before{background:var(--paper);border-color:var(--ink)}
+.rail b{display:inline-block;min-width:4.4em}
+.sticker{position:absolute;right:12px;top:44px;width:72px;height:72px;border-radius:50%;background:var(--mark);
+  border:2px solid var(--ink);display:grid;place-items:center;text-align:center;
+  font:800 .94rem/.9 var(--display);letter-spacing:.03em;text-transform:uppercase;
+  transform:rotate(-11deg) scale(calc(.25 + var(--q) * .75));opacity:var(--q);box-shadow:0 3px 8px rgba(25,26,22,.25)}
+
+/* exhibit 5: drawers */
+.drawers{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.drawer{background:var(--manila);border:1px solid #A98B45;border-radius:3px;padding:5px 6px 12px;position:relative;
+  box-shadow:inset 0 -4px 0 rgba(25,26,22,.09)}
+.drawer::after{content:"";position:absolute;left:50%;bottom:4px;width:22px;height:4px;margin-left:-11px;border-radius:2px;background:rgba(25,26,22,.55)}
+.drawer b{display:block;font:800 1.7rem/.95 var(--display);font-variant-numeric:tabular-nums}
+.drawer span{display:block;background:var(--paper);border:1px solid var(--rule);padding:2px 4px;margin-top:3px;font:700 .6rem/1.2 var(--mono);text-transform:uppercase}
+
+/* exhibit 8: asks */
+.asks{margin:0;padding:0 0 0 1.7em;font:.74rem/1.5 var(--mono)}
+.asks li{opacity:clamp(.22,calc(var(--q) * 7 - var(--i)),1)}
+.asks li::marker{font-weight:700}
+
+/* countdown strip */
+.count{margin:2px 0 0;padding:7px 9px;background:var(--ink);color:var(--paper);border-radius:3px;font:700 .86rem/1.3 var(--mono)}
+.agenda{margin:8px 0 0;font:italic .95rem/1.35 var(--body)}
+
+/* plain section: chart, held cards, scorecard */
+.plain{--p:1;--q:clamp(0,calc((var(--p) - .04) / .34),1);max-width:36rem;margin:0 auto;padding:0 16px 14vh}
+.plain .card{margin:0 0 1.3em}
+.plain .card::before{display:none}
+.chart-title{margin:0 0 8px;font:700 .72rem/1.3 var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.drow{display:grid;grid-template-columns:8.6em 1fr 3.9em;align-items:center;gap:8px;padding:4px 0;font:.72rem/1.15 var(--mono)}
+.drow .track{position:relative;height:15px;
+  background:linear-gradient(90deg,transparent calc(50% - 1px),var(--ink) calc(50% - 1px) calc(50% + 1px),transparent calc(50% + 1px))}
+.drow .bar{position:absolute;top:1px;bottom:1px;width:calc(var(--w) * var(--q) * 1%);transition:width .12s linear}
+.drow .neg{right:50%;background:var(--ink)}
+.drow .pos{left:50%;background:var(--stamp)}
+.drow .val{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.drow.hl{font-weight:700}
+.held{display:grid;gap:10px;margin:0 0 1.3em;padding:0;list-style:none}
+.held li{position:relative;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:12px 14px 12px 14px;
+  box-shadow:0 4px 12px rgba(25,26,22,.1);font-size:1.02rem;line-height:1.45}
+.held li b{display:block;margin-bottom:3px;font:800 1.22rem/1 var(--display);letter-spacing:.02em;text-transform:uppercase}
+.stamp{display:inline-block;margin:2px 0 14px;padding:4px 10px 3px;border:3px solid var(--stamp);border-radius:4px;color:var(--stamp);
+  font:800 1.12rem/1 var(--display);letter-spacing:.14em;text-transform:uppercase;transform:rotate(-3deg)}
+.score{margin:0 0 1.2em;border-top:2px solid var(--ink)}
+.score div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--rule);
+  font:.84rem/1.25 var(--mono)}
+.score dt{margin:0}
+.score dd{margin:0;flex:none;border-radius:99px;padding:3px 10px;font-weight:700;font-size:.72rem;border:1.5px solid var(--stamp)}
+.score .yes{background:var(--stamp);color:var(--paper)}
+.score .gap{color:var(--stamp)}
+.score .part{background:var(--mark);border-color:var(--ink)}
+
+/* footer */
+.foot{max-width:36rem;margin:0 auto;padding:0 16px 64px}
+.close{font-size:1.2rem;line-height:1.5}
+.motto{margin:1.2em 0 2em;font:800 clamp(2.4rem,10vw,3.8rem)/.9 var(--display);text-transform:uppercase}
+.note{border-top:2px solid var(--ink);padding-top:12px;font-size:.95rem;line-height:1.5}
+.sources{margin-top:26px}
+.sources h3{margin:18px 0 6px;font:700 .72rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sources ul{margin:0;padding:0 0 0 1.1em;font-size:.9rem;line-height:1.45}
+.sources li{margin-bottom:5px}
+
+@media (min-width:900px){
+  .hero{padding:44px 32px 70px}
+  .chapter{max-width:70rem;padding:0 32px;display:grid;grid-template-columns:minmax(0,33rem) minmax(340px,27rem);
+    gap:64px;justify-content:center;align-items:start}
+  .exhibit{order:2;top:11vh;margin:0;padding:0;background:none}
+  .exhibit::after{display:none}
+  .copy{order:1;padding:0 0 34vh}
+  .card{padding:14px 18px 12px}
+  .card::before{top:46px}
+  .card>.tape{top:11px;right:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .rip{display:none}
+  .card>.tape,.drow .bar{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="eyebrow"><span>Beaumont, Texas</span><span>Status as of Nov. 20, 2026</span></p>
+  <div class="titlewrap">
+    <h1>The Label<br>Comes Last</h1>
+    <span class="tape rip t1" aria-hidden="true">Failed</span>
+    <span class="tape rip t2" aria-hidden="true">Takeover</span>
+    <span class="tape rip t3" aria-hidden="true">Fear</span>
+    <span class="tape rip t4" aria-hidden="true">Teacher jail</span>
+    <span class="tape rip t5" aria-hidden="true">Resigned</span>
+  </div>
+  <p class="dek">The state took over Beaumont&rsquo;s schools. Hundreds of employees resigned or retired. A teacher the kids call Big Lando went on paid leave. After 204 days the superintendent resigned. Everybody has a label ready. One group of neighbors keeps building the record first.</p>
+  <p class="byline">By Michael Wilhelm</p>
+  <div class="blankrow"><span class="tape blank" role="img" aria-label="A strip of blank label tape"></span><span>This one stays blank on purpose.</span></div>
+</header>
+
+<main>
+
+<!-- 1 -->
+<section class="chapter" data-ch>
+  <div class="exhibit"><div class="card">
+    <span class="tape" aria-hidden="true">Takeover</span>
+    <p class="head">Who governs Beaumont ISD</p>
+    <div class="numrow"><span class="num" data-count="7">7</span><span class="unit">managers, appointed by the state on April 29, 2026</span></div>
+    <div class="seats" aria-hidden="true">
+      <i class="seat" style="--i:0"></i><i class="seat" style="--i:1"></i><i class="seat" style="--i:2"></i><i class="seat" style="--i:3"></i><i class="seat" style="--i:4"></i><i class="seat" style="--i:5"></i><i class="seat" style="--i:6"></i>
+    </div>
+    <div class="suspended">Elected trustees: still in office, powers suspended</div>
+    <dl class="facts">
+      <div><dt>State takeovers since 2014</dt><dd>2</dd></div>
+      <div><dt>Promised exit date</dt><dd>None</dd></div>
+    </dl>
+    <p class="src">Sources: Texas Education Agency; Unlabeled Takeover Tracker</p>
+  </div></div>
+  <div class="copy">
+    <h2>Seven appointed seats</h2>
+    <p>On April 29, 2026, the Texas Education Agency suspended the power of Beaumont ISD&rsquo;s elected school board and seated <mark>seven appointed managers</mark> in its place. The same day, Commissioner Mike Morath named Sandi Massey superintendent. She had been chief of schools in Houston ISD during its own state takeover.</p>
+    <p>Beaumont has been here before. The state ran the district from 2014 to 2020 over finances and governance. This time the trigger is academic. King Middle School and Fehl-Price Elementary each logged a fifth unacceptable rating, and under a 2015 law the commissioner then has to close the schools or replace the board.</p>
+    <p>The elected trustees still hold their titles. Their votes are on ice. The state lists three conditions for handing the district back and promises no date.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="chapter" data-ch>
+  <div class="exhibit"><div class="card">
+    <span class="tape" aria-hidden="true">Failed</span>
+    <p class="head">State ratings, 2025&ndash;26</p>
+    <div class="numrow"><span class="num" data-count="23">23</span><span class="unit">of 26 rated campuses scored a D or an F</span></div>
+    <div class="grid26" role="img" aria-label="26 squares, 23 of them filled in">
+      <i class="sq f" style="--i:0"></i><i class="sq f" style="--i:1"></i><i class="sq f" style="--i:2"></i><i class="sq f" style="--i:3"></i><i class="sq f" style="--i:4"></i><i class="sq f" style="--i:5"></i><i class="sq f" style="--i:6"></i><i class="sq f" style="--i:7"></i><i class="sq f" style="--i:8"></i><i class="sq f" style="--i:9"></i><i class="sq f" style="--i:10"></i><i class="sq f" style="--i:11"></i><i class="sq f" style="--i:12"></i>
+      <i class="sq f" style="--i:13"></i><i class="sq f" style="--i:14"></i><i class="sq f" style="--i:15"></i><i class="sq f" style="--i:16"></i><i class="sq f" style="--i:17"></i><i class="sq f" style="--i:18"></i><i class="sq f" style="--i:19"></i><i class="sq f" style="--i:20"></i><i class="sq f" style="--i:21"></i><i class="sq f" style="--i:22"></i><i class="sq"></i><i class="sq"></i><i class="sq"></i>
+    </div>
+    <p class="cap">Third graders at grade level, spring 2026 (preliminary). Green tick marks the 60% math goal.</p>
+    <div class="meter"><span>Reading</span><span class="track"><i class="fill" style="--v:27"></i></span><span>27%</span></div>
+    <div class="meter"><span>Math</span><span class="track"><i class="fill" style="--v:23"></i><i class="goal"></i></span><span>23%</span></div>
+    <p class="src">Sources: Unlabeled Takeover Tracker, from TEA ratings; KFDM; 12News</p>
+  </div></div>
+  <div class="copy">
+    <h2>The state&rsquo;s case</h2>
+    <p>Start where the state starts. For the 2025&ndash;26 school year, <mark>23 of 26 rated campuses</mark> came back with a D or an F. That count comes from Unlabeled&rsquo;s own tracker, built from state ratings. Preliminary spring scores put 27 percent of third graders at grade level in reading and 23 percent in math.</p>
+    <blockquote>&ldquo;This district has failed the city.&rdquo;<cite>Superintendent Sandi Massey, to the board in July, per KFDM</cite></blockquote>
+    <p>Massey counted 19,019 teacher absence days and more than $1.3 million spent on substitutes. Her five-year plan aims to lift third-grade math from 23 percent to 60.</p>
+    <p>Her request of the teachers who met her at the first board meeting was short. She asked them to &ldquo;give me a year.&rdquo;</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="chapter" data-ch>
+  <div class="exhibit"><div class="card">
+    <span class="tape" aria-hidden="true">Fear</span>
+    <p class="head">Who left</p>
+    <div class="numrow"><span class="num" data-count="423">423</span><span class="unit">employee resignations and retirements, as of May 26</span></div>
+    <p class="cap" style="margin:0 0 3px">West Brook High school day, as one teacher describes it</p>
+    <div class="dayrow"><span>Then</span><div class="day"><i class="old"></i></div></div>
+    <div class="dayrow"><span>Now</span><div class="day"><i class="new"></i></div></div>
+    <div class="ticks" aria-hidden="true"><span>7a</span><span>9a</span><span>11a</span><span>1p</span><span>3p</span><span>5p</span></div>
+    <div class="chips"><span>161 open teaching jobs, late May</span><span>34 support roles cut or reshaped</span></div>
+    <p class="src">Sources: BISD response to Unlabeled records request; 12News; Unlabeled</p>
+  </div></div>
+  <div class="copy">
+    <h2>The classroom&rsquo;s case</h2>
+    <p>Then the changes landed. At West Brook High, one teacher describes a day that moved from 7:15 to 2:45 over to 8:30 to 4:30, with 50-minute periods stretched into 90-minute blocks. Librarians were assigned new roles as student success coaches. Unlabeled&rsquo;s tracker counts 34 student-support positions cut or restructured.</p>
+    <p>People left. The district&rsquo;s own count, released to Unlabeled under the Texas Public Information Act, shows <mark>423 employee resignations and retirements</mark> as of May 26. Around then the district&rsquo;s job board listed 161 open teaching positions.</p>
+    <p>Massey&rsquo;s explanation is fear. Teachers resigned out of fear and uncertainty, she told 12News, and she added, &ldquo;I can&rsquo;t be mad at that.&rdquo;</p>
+    <p>By August 22 the district reported 97 percent of teaching slots filled or in process, with 662 of 951 teachers fully certified.</p>
+    <p>In September that West Brook teacher took the public-comment microphone and gave the managers the room&rsquo;s verdict.</p>
+    <blockquote>&ldquo;We just want our school back.&rdquo;<cite>Sept. 24 board meeting, per The Examiner</cite></blockquote>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="chapter" data-ch>
+  <div class="exhibit"><div class="card">
+    <span class="tape" aria-hidden="true">Teacher jail</span>
+    <p class="head">Greg Landry, West Brook High</p>
+    <div class="numrow" style="padding-right:84px"><span class="num" data-count="31">31</span><span class="unit">days out of class as of Nov. 16, Unlabeled&rsquo;s last posted check</span></div>
+    <div class="sticker" aria-hidden="true">Free<br>Big<br>Lando</div>
+    <ul class="rail">
+      <li><b>Oct. 16</b> Last day in his classroom</li>
+      <li><b>Oct. 19</b> Placed on paid leave</li>
+      <li><b>Oct. 22</b> 16 speakers face the board</li>
+      <li class="open"><b>Nov. 16</b> Still out, per Unlabeled</li>
+    </ul>
+    <p class="src">Sources: 12News; KFDM; Unlabeled</p>
+  </div></div>
+  <div class="copy">
+    <h2>Where is Big Lando?</h2>
+    <p>His name is Greg Landry. He teaches psychology and sociology at West Brook, his students call him Big Lando, and he spent the spring and fall telling the managers what the changes looked like from his room.</p>
+    <p><mark>October 16 was his last day in class.</mark> By October 19 he was on paid leave, under written instruction to keep quiet about it with staff, students and parents. He told 12News he believes speaking out, and coaching students on how to address a public meeting, put him there.</p>
+    <blockquote>&ldquo;I&rsquo;m in teacher jail.&rdquo;<cite>Greg Landry, to 12News</cite></blockquote>
+    <p>By his account the road to leave ran through a classroom visit from Massey and a deputy superintendent, then a meeting in the principal&rsquo;s office with that deputy and West Brook&rsquo;s interim principal, Richard Yoes. Keep that second name in mind.</p>
+    <p>The district had not answered 12News&rsquo;s question about why when the story ran. Personnel matters can be legally confidential, and paid leave carries no finding of anything. His students answered with T-shirts.</p>
+    <p>Three days after Landry&rsquo;s leave began, Tamara Richards, a local and regional president of the Association of Texas Professional Educators, stood up with a petition signed by more than 500 parents. &ldquo;Thank you superintendent Massey for bringing this community together,&rdquo; she said. Sixteen people spoke against the superintendent that night.</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="chapter" data-ch>
+  <div class="exhibit"><div class="card">
+    <span class="tape blank" role="img" aria-label="Blank label"></span>
+    <p class="head">Unlabeled&rsquo;s BISD archive</p>
+    <div class="numrow"><span class="num" data-count="421">421</span><span class="unit">items, each linked to its source document</span></div>
+    <div class="drawers">
+      <div class="drawer"><b data-count="28">28</b><span>Board meetings</span></div>
+      <div class="drawer"><b data-count="192">192</b><span>Board decisions</span></div>
+      <div class="drawer"><b data-count="43">43</b><span>Money buckets</span></div>
+      <div class="drawer"><b data-count="107">107</b><span>Pay records</span></div>
+      <div class="drawer"><b data-count="39">39</b><span>Source docs</span></div>
+      <div class="drawer"><b data-count="12">12</b><span>Records requests</span></div>
+    </div>
+    <p class="src">Source: unlabeledtexas.com/archive, compiled from BoardBook and district responses</p>
+  </div></div>
+  <div class="copy">
+    <h2>Enter the people with no label</h2>
+    <p>Brooke Bellanger built Unlabeled on one rule. You meet the candidate before you learn the party.</p>
+    <p>The format is a blind forum. Candidates for local, state and federal office take questions from the room with their party labels held back. The audience votes blind. <mark>The reveal comes last.</mark> The first one ran July 16 at Avenue Axe in Port Neches, free at the door, billed as a first for Texas.</p>
+    <p>No red. No blue. Just Texans. More than 17,000 people now follow the work.</p>
+    <p>The same summer, Unlabeled pointed its rule at the school district. Listen first. Label later.</p>
+    <p>So they started filing. Public Information Act requests for resignations, vacancies, administrator pay and contractor payments. Board agendas pulled and tagged, meeting by meeting. The archive now holds <mark>421 items</mark>, and the house rule is posted at the front door.</p>
+    <blockquote>&ldquo;Every claim should lead you back to the record.&rdquo;<cite>Unlabeled, BISD Start Here</cite></blockquote>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="plain" data-ch>
+  <h2>What the file says so far</h2>
+  <p>Read the district&rsquo;s proposed 2026&ndash;27 budget line by line and one row runs against the rest. Total spending falls. Instruction falls. <mark>General administration rises 18.2 percent.</mark></p>
+  <div class="card">
+    <p class="chart-title">Change in planned spending, FY 2025&ndash;26 to proposed FY 2026&ndash;27</p>
+    <div class="drow"><span>Total plan</span><span class="track"><i class="bar neg" style="--w:10.6"></i></span><span class="val">&minus;4.25%</span></div>
+    <div class="drow"><span>Instruction</span><span class="track"><i class="bar neg" style="--w:10"></i></span><span class="val">&minus;4.0%</span></div>
+    <div class="drow"><span>Instr. support</span><span class="track"><i class="bar neg" style="--w:27.25"></i></span><span class="val">&minus;10.9%</span></div>
+    <div class="drow hl"><span>General admin</span><span class="track"><i class="bar pos" style="--w:45.5"></i></span><span class="val">+18.2%</span></div>
+    <div class="drow"><span>Operations</span><span class="track"><i class="bar neg" style="--w:11.75"></i></span><span class="val">&minus;4.7%</span></div>
+    <div class="drow"><span>Transportation</span><span class="track"><i class="bar pos" style="--w:17.5"></i></span><span class="val">+7.0%</span></div>
+    <p class="src">One scale for every bar; the track edge is 20%. Instruction: $95.69M to $91.86M. General administration: $7.68M to $9.07M. These are spending plans, not cash paid. Source: BISD FY27 proposed budget, compiled by Unlabeled.</p>
+  </div>
+  <h2>What the file refuses to say</h2>
+  <p>The part that won me over is what Unlabeled leaves out.</p>
+  <span class="stamp">Held until verified</span>
+  <ul class="held">
+    <li><b>423 or 261</b>The district says 423 departures. The spreadsheet it released has 261 rows. Unlabeled publishes both numbers and declines to call the gap missing records until BISD explains it.</li>
+    <li><b>The pay sheets</b>Its three-district comparison of administrator pay carries its own warning label: &ldquo;Salary differences alone do not establish waste, excess, or misconduct.&rdquo;</li>
+    <li><b>Big Lando</b>The petition for answers about Landry asks four questions and makes &ldquo;no finding about misconduct, motive, or retaliation.&rdquo; Student accounts stay unpublished until they are checked for accuracy, consent and privacy.</li>
+    <li><b>The polls</b>Thirty-eight people answered Unlabeled&rsquo;s BISD polls. Every result carries its sample size and the same plain caveat. Self-selected. Not representative.</li>
+  </ul>
+  <p>That is what unlabeled means in practice. The number goes up when the document is in hand. The adjective waits.</p>
+</section>
+
+<!-- 7 -->
+<section class="chapter" data-ch>
+  <div class="exhibit"><div class="card">
+    <span class="tape" aria-hidden="true">Resigned</span>
+    <p class="head">Sandi Massey, superintendent</p>
+    <div class="numrow"><span class="num" data-count="204">204</span><span class="unit">days from state appointment to accepted resignation</span></div>
+    <ul class="rail">
+      <li><b>Nov. 16</b> Tells senior staff she will resign</li>
+      <li><b>Nov. 17</b> Governor-elect weighs in</li>
+      <li><b>Nov. 19</b> Board accepts. Yoes named interim.</li>
+      <li><b>Nov. 20</b> West Brook gets a new principal</li>
+    </ul>
+    <div class="chips"><span>$299,000 separation payment, per KFDM</span></div>
+    <p class="src">Sources: KFDM; 12News; Beaumont ISD statements</p>
+  </div></div>
+  <div class="copy">
+    <h2>The empty chair</h2>
+    <p>The Thursday this story was building toward arrived with its ending already announced. By November 13 the agenda had put the superintendent&rsquo;s job into closed session. Council member Cory Crenshaw had called for new leadership. Richards had called for a vote of no confidence.</p>
+    <p>On Monday, November 16, the district said Massey would resign at the meeting. Its statement cited prayerful consideration and talks with her family. KFDM reported that an evaluation of her performance had been planned for that same night, and that its sources said the review could have gone her way.</p>
+    <p>She stayed away Thursday, and KFDM noted her empty seat. About two dozen people spoke. Then the managers accepted her resignation and a separation agreement that KFDM puts at <mark>$299,000, about a year&rsquo;s salary</mark>. Her tenure ran 204 days.</p>
+    <p>The managers named Richard Yoes interim superintendent. He is a former Houston ISD official who joined Beaumont about five months ago, and he is the interim principal Landry places in that October meeting.</p>
+    <p>The labels showed up on schedule. Governor-elect Gina Hinojosa said the state had installed a leader who &ldquo;sowed chaos and disrupted learning.&rdquo; State Board of Education member Julie Pickren put her own on it: &ldquo;Failing schools fail families.&rdquo; The Texas Education Agency thanked Massey and praised her focus on students.</p>
+    <p>Massey gave her own account the next day. In a statement reported by 12News, she said she did not initiate her departure and would have welcomed the chance to keep serving. Once it was clear her time was ending, she said, &ldquo;I chose to accept a peaceful transition.&rdquo;</p>
+    <p>A West Brook senior named Trenden Latham asked for students, parents and teachers to have a voice in what comes next. From the dais, manager Arthur Louis answered the room.</p>
+    <blockquote>&ldquo;Parents, parents, parents. We need you more than ever.&rdquo;<cite>Arthur Louis, Board of Managers, per 12News</cite></blockquote>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="chapter" data-ch>
+  <div class="exhibit"><div class="card">
+    <span class="tape" aria-hidden="true">Interim</span>
+    <p class="head">Unlabeled&rsquo;s transition asks</p>
+    <div class="numrow"><span class="num" data-count="7">7</span><span class="unit">asks, drafted as a 12-section board resolution</span></div>
+    <ol class="asks">
+      <li style="--i:0">A public 30-day transition plan</li>
+      <li style="--i:1">Open criteria for the next hire</li>
+      <li style="--i:2">Keep what works, like locked doors</li>
+      <li style="--i:3">A 60-day review of new programs</li>
+      <li style="--i:4">A written status on Landry</li>
+      <li style="--i:5">A monthly public progress report</li>
+      <li style="--i:6">Shared-services talks with neighbors</li>
+    </ol>
+    <p class="count" id="countdown">Town hall: Dec. 9, 5:30 p.m. Central.</p>
+    <p class="src">Source: Unlabeled, BISD: Accountability &amp; Solutions</p>
+  </div></div>
+  <div class="copy">
+    <h2>Still on the table</h2>
+    <p>One name changed. The seven appointed seats remain, and no change to the schedule or the curriculum has been announced. As of November 16, a full month after his last class, Unlabeled reported that Landry still had not been back.</p>
+    <p>On Friday the district gave West Brook a new principal, Dr. Joseph Bowser, an associate principal there for eight years.</p>
+    <p>The next superintendent is the commissioner&rsquo;s appointment to make. The managers can send names, and State Rep. Christian Manuel says they hope to have someone seated before January. January matters here. Hinojosa takes office on the 19th and has pledged to replace Commissioner Morath, a change the state Senate would have to approve. Pickren notes that a new commissioner could keep these managers or seat new ones.</p>
+    <p>Unlabeled&rsquo;s standing petition asks the state and the managers to explain what is changing, why, where the money goes and how success gets measured, with dated milestones for bringing back an elected board.</p>
+    <blockquote>&ldquo;We deserve a seat at the table.&rdquo;<cite>Unlabeled petition, BISD: We Deserve Answers</cite></blockquote>
+    <p>They grade the district&rsquo;s response in public. The current mark is <mark>Partly</mark>.</p>
+    <dl class="score">
+      <div><dt>Public exit criteria</dt><dd class="yes">Yes</dd></div>
+      <div><dt>Budgets and transactions</dt><dd class="gap">Yes, with gaps</dd></div>
+      <div><dt>Measuring success</dt><dd class="part">Partly</dd></div>
+      <div><dt>Community input</dt><dd class="part">Partly</dd></div>
+    </dl>
+    <p>For the transition they went further. A page called Accountability &amp; Solutions sets out <mark>seven asks</mark> and a twelve-section resolution the managers could adopt as written. Publish the criteria for the next hire. Hold two evening listening sessions, one led by students. Seat a student advisory council by January 31. Review the new programs within 60 days. Report progress every month. Give a written status on Landry within 10 business days.</p>
+    <p>A board can act only on what its posted agenda lists, so the request is a slot on December&rsquo;s.</p>
+    <p>The polls fed the asks. Twenty-four of 29 students said locked classroom doors make them feel safer, so the resolution asks the district to keep them locked. That finding favors a district decision, and it went into the file like everything else.</p>
+    <p>Next on the calendar is Unlabeled&rsquo;s Jefferson County Town Hall, December 9 at 5:30 p.m. in the Neches Room in Beaumont.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <h2>The file stays</h2>
+  <p class="close">A superintendent came and went in 204 days. The file is still here. Beaumont has a source-linked record of the meetings, the decisions, the money and the open questions, built by neighbors who decided the facts go on the table before the name tags do.</p>
+  <p class="close">Someday Beaumont elects its own school board again. Whoever runs will inherit a district and a file. The file is the part the neighbors made.</p>
+  <p class="motto">Listen first.<br>Label later.</p>
+
+  <p class="note"><strong>Disclosure.</strong> I am co-founder and CEO of BackGold, the platform Unlabeled&rsquo;s site, petitions and archive run on. Every figure here traces to a public record or a named news report listed below. This story is moving, and everything above reflects what was public on November 20, 2026.</p>
+
+  <div class="sources">
+    <h3>Official records</h3>
+    <ul>
+      <li><a href="https://tea.texas.gov/about-tea/newsroom/texas-education-agency-appoints-beaumont-isd-board-managers-and-superintendent">Texas Education Agency, appointment of the Board of Managers and superintendent (Apr. 29, 2026)</a></li>
+      <li><a href="https://tea.texas.gov/health-safety-and-discipline/school-boards/school-governance/board-managers/2025-12-11-beaumont-isd-bom-and-conservator.pdf">TEA commissioner&rsquo;s letter to Beaumont ISD (Dec. 11, 2025)</a></li>
+    </ul>
+    <h3>Unlabeled</h3>
+    <ul>
+      <li><a href="https://unlabeledtexas.com/bisd-start-here">BISD Start Here</a> and <a href="https://unlabeledtexas.com/bisd-now">BISD Now</a></li>
+      <li><a href="https://unlabeledtexas.com/bisd-takeover-tracker">BISD Takeover Tracker</a></li>
+      <li><a href="https://unlabeledtexas.com/archive">BISD Public Data Archive</a></li>
+      <li><a href="https://unlabeledtexas.com/records/resignations-and-retirements">Records: resignations and retirements</a></li>
+      <li><a href="https://unlabeledtexas.com/records/west-brook-and-district-teacher-vacancies">Records: West Brook and district teacher vacancies</a></li>
+      <li><a href="https://unlabeledtexas.com/records/administrative-pay-comparison-bisd-pngisd-paisd">Records: administrative pay comparison</a></li>
+      <li><a href="https://unlabeledtexas.com/bisd-where-is-big-lando">Where Is Big Lando?</a> and <a href="https://unlabeledtexas.com/bisd-petition">BISD: We Deserve Answers</a></li>
+      <li><a href="https://unlabeledtexas.com/bisd-accountability-solutions">BISD: Accountability &amp; Solutions</a></li>
+    </ul>
+    <h3>Local reporting</h3>
+    <ul>
+      <li><a href="https://www.yahoo.com/news/politics/articles/sandi-massey-says-she-did-000239369.html">12News: Massey says she did not initiate her departure (Nov. 20, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/welcome-back-to-the-bruin-family-new-west-brook-principal-is-a-familiar-face">KFDM: new West Brook principal (Nov. 20, 2026)</a></li>
+      <li><a href="https://www.yahoo.com/news/us/articles/bisd-community-turns-board-accepts-053024158.html">12News: community turns out as board accepts resignation (Nov. 19, 2026)</a></li>
+      <li><a href="https://www.yahoo.com/news/politics/articles/beaumont-isd-faces-another-leadership-011107317.html">12News: another leadership change as governor-elect prepares to take office (Nov. 19, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/bisd-board-approves-massey-resignation-appoints-richard-yoes-interim-superintendent">KFDM: board approves resignation, appoints interim superintendent (Nov. 19, 2026)</a></li>
+      <li><a href="https://fox4beaumont.com/news/bisd-board-of-managers-charting-a-future-without-sandi-massey-as-superintendent">KFDM/Fox 4: the Nov. 19 meeting (Nov. 19, 2026)</a></li>
+      <li><a href="https://www.yahoo.com/news/politics/articles/governor-elect-gina-hinojosa-criticizes-221838917.html">12News: governor-elect and TEA statements (Nov. 17, 2026)</a></li>
+      <li><a href="https://www.yahoo.com/news/politics/articles/state-rep-christian-manuel-says-224324989.html">12News: state officials on next steps (Nov. 16, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/massey-to-resign-as-bisd-superintendent">KFDM: superintendent to resign (Nov. 16, 2026)</a></li>
+      <li><a href="https://www.yahoo.com/news/politics/articles/im-teacher-jail-west-brook-162059434.html">12News: West Brook teacher on paid leave (Nov. 14, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/bisd-board-agenda-includes-possible-discussion-of-superintendent-behind-closed-doors">KFDM: agenda includes possible closed-door discussion (Nov. 13, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/teachers-students-press-bisd-board-for-changes-air-concerns-about-superintendent">KFDM: teachers and students press the board (Oct. 22, 2026)</a></li>
+      <li><a href="https://www.theexaminer.com/news/we-want-our-school-back-bisd-educators-parents-press-beaumont-isd-conditions-inside-classrooms">The Examiner: &lsquo;We want our school back&rsquo; (Oct. 6, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/beaumont-isd-trustees-vote-3-2-to-end-corporal-punishment-revise-discipline-policy">KFDM: teacher absences and discipline policy (Aug. 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/beaumont-isd-superintendent-says-student-achievement-sorely-lacking-amid-state-data">KFDM: superintendent on student achievement (July 2026)</a></li>
+      <li><a href="https://www.12newsnow.com/article/news/local/beaumont-isd-superintendent-reflects-first-month-amid-sweeping-changes-parent-concerns/502-1c50ab53-e001-422b-97ca-d886cda17dc2">12News: superintendent reflects on first month (May 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/bisd-board-of-managers-taking-up-key-issues-during-thursday-nights-meeting">KFDM: board approves superintendent&rsquo;s contract (May 21, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/local/declare-war-paisd-superintendent-blasts-bisd-supers-comments-bisd-now-responds">KFDM: librarian roles and the Port Arthur remarks (May 2026)</a></li>
+      <li><a href="https://fox4beaumont.com/news/new-beaumont-isd-board-names-leaders-backs-superintendent-in-first-tea-takeover-meeting">Fox 4 Beaumont: first board meeting after the takeover (May 5, 2026)</a></li>
+      <li><a href="https://kfdm.com/news/arc-southeast-texas/meet-political-candidates-without-party-labels-at-this-inaugural-event">KFDM: Unlabeled&rsquo;s first blind forum (July 15, 2026)</a></li>
+      <li><a href="https://www.houstonpublicmedia.org/articles/education/2026/04/30/550531/texas-beaumont-isd-takeover-houston/">Houston Public Media: Houston ISD executive tapped for Beaumont (Apr. 30, 2026)</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* Countdown to Unlabeled's Dec. 9 town hall: 5:30 p.m. Central Standard Time = 23:30 UTC. */
+  var cd=document.getElementById('countdown');
+  var target=Date.UTC(2026,11,9,23,30,0);
+  function tick(){
+    var ms=target-Date.now();
+    if(ms<=0){cd.textContent='The Dec. 9 town hall has been held. Check the record for what came out of it.';return;}
+    var m=Math.floor(ms/6e4),d=Math.floor(m/1440),h=Math.floor((m%1440)/60);
+    cd.textContent='Town hall Dec. 9, 5:30 p.m. CT: '+d+(d===1?' day ':' days ')+h+' hr out';
+  }
+  tick();setInterval(tick,30000);
+
+  /* Scroll-linked exhibits. Without this script, or with reduced motion, every exhibit rests in its final state. */
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var chapters=[].slice.call(document.querySelectorAll('[data-ch]'));
+  var counters=chapters.map(function(ch){return [].slice.call(ch.querySelectorAll('[data-count]'));});
+  var ticking=false,armed=false;
+  function clamp(x){return x<0?0:x>1?1:x;}
+  function update(){
+    ticking=false;
+    var vh=window.innerHeight;
+    chapters.forEach(function(ch,i){
+      var r=ch.getBoundingClientRect();
+      if(r.bottom<-vh||r.top>vh*2)return;
+      var plain=ch.classList.contains('plain');
+      var total=Math.max(r.height-vh*0.4,1);
+      var p=clamp((vh*(plain?0.9:0.6)-r.top)/total);
+      ch.style.setProperty('--p',p.toFixed(4));
+      var q=clamp((p-0.06)/0.5),e=1-Math.pow(1-q,3);
+      counters[i].forEach(function(el){
+        el.textContent=Math.round(+el.getAttribute('data-count')*e).toLocaleString('en-US');
+      });
+    });
+  }
+  function onScroll(){
+    if(!armed){armed=true;}
+    if(!ticking){ticking=true;requestAnimationFrame(update);}
+  }
+  /* Arm only on a real scroll, so a frame that never scrolls keeps every exhibit complete. */
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){if(armed)onScroll();});
+})();
+</script>
+</body>
+</html>

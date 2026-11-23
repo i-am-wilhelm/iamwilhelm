@@ -5,7 +5,7 @@
  * `SEEN_CHAIN` is the reading order of the pages that take their
  * "Previous" and "Next" links from it, by slug: No. 1 to No. 3, then No. 7
  * to No. 15. No. 4 to No. 6 name their own neighbours (SEEN_SOURCES below),
- * and No. 16 and No. 17 name none. The Snowflake Machine is unnumbered and
+ * and No. 16 to No. 18 name none. The Snowflake Machine is unnumbered and
  * stands outside the chain.
  */
 export const SEEN_CHAIN = [
@@ -60,4 +60,9 @@ export const SEEN_SOURCES: Record<string, string> = {
   'those-who-heard-the-sky': '_incoming/elsewhere/those-who-heard-the-sky.html',
   'backgold-scrolly': '_incoming/elsewhere/backgold-scrolly.html',
   'lla-scrolly-homepage': '_incoming/elsewhere/lla-scrolly-homepage.html',
+  /* Seen No. 18, from its published artifact with the approval notes taken
+     out. Like Fall Line and Off Soundings it is shelved in Seen and stands
+     outside SEEN_CHAIN: its foot names no previous piece and carries no
+     making-of line. */
+  'the-label-comes-last': '_incoming/elsewhere/the-label-comes-last.html',
 };
