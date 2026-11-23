@@ -1101,15 +1101,40 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (!ch.lots) return '';
     const L = [['fortune', 'Fortune', 'what comes to you arrives through '], ['spirit', 'Spirit', 'what you go and do is aimed at '], ['eros', 'Eros', 'what you reach for lives in ']];
     let t = L.map(([id, n, say]) => '<b>' + n + '</b> in ' + C.SIGNS[sg(ch.lots[id])] + ': ' + say + hs(C.houseOf(ch.lots[id], ch.cusps)) + '.').join(' ');
-    const near = [['the Vertex', ch.vertex]].concat(C.PLANETS.map((p) => [GOD[p], ch.bodies[p].lon]));
-    for (const [id, n] of L) for (const [who, lon] of near) if (C.sep(ch.lots[id], lon) < 3) t += ' ' + n + ' stands beside ' + who + (who === 'the Vertex' ? ': there, that lot and fate arrive as one event.' : ', who speaks for it.');
     return '<div class="god"><h5>The lots</h5><p class="rd">' + t + '</p></div>';
+  }
+  /* The fate points: gods on the angles, the Vertex and the nodes, the lots and who keeps them, and the direction the chart leans. */
+  const FATE = {
+    asc: (g, x) => '<b>' + g + ', at the door.</b> I rose with you' + x + '. People meet me before they meet you, and you will spend your life growing into my face.',
+    mc: (g, x) => '<b>' + g + ', on the roof.</b> I sit on your Midheaven' + x + '. Whatever you build in public passes through my hands, and you will be known by my name.',
+    dsc: (g, x) => '<b>' + g + ', across the threshold.</b> I was setting as you were born' + x + '. You meet me in other people first: partners arrive wearing my mask.',
+    ic: (g, x) => '<b>' + g + ', under the floor.</b> I hold the root of the chart' + x + '. Home, family and the end of every day belong to me.',
+    vertex: (g, x) => '<b>' + g + ', at the Vertex.</b> I wait on the western side where fated meetings land' + x + '. When I arrive in someone, you will know before you can explain it.',
+    nn: (g, x) => '<b>' + g + ', on the North Node.</b> I stand on the road ahead' + x + '. Walking toward me feels like a dare, and it is the way.',
+    sn: (g, x) => '<b>' + g + ', on the South Node.</b> I am the gift you were born holding' + x + '. Lean on me, then leave the porch.',
+  };
+  const LOTSAY = { fortune: (g, k) => g + ' keeps your Fortune: luck reaches you through ' + k + '.', spirit: (g, k) => g + ' keeps your Spirit: your work in the world runs on ' + k + '.', eros: (g, k) => g + ' keeps your Eros: what you reach for is ' + k + '.' };
+  function fate(ch) {
+    const out = [], P = C.PLANETS.map((id) => [id, ch.bodies[id].lon]);
+    const spots = [['nn', ch.nn, 4], ['sn', C.norm(ch.nn + 180), 4]];
+    if (ch.timeKnown) spots.unshift(['asc', ch.asc, 3], ['mc', ch.mc, 3], ['dsc', C.norm(ch.asc + 180), 3], ['ic', C.norm(ch.mc + 180), 3], ['vertex', ch.vertex, 3]);
+    for (const [k, lon, orb] of spots) for (const [id, pl] of P) { const d = C.sep(lon, pl); if (d < orb) out.push(FATE[k](GOD[id], d < 1 ? ', to the degree' : '')); }
+    if (ch.lots) {
+      for (const k of ['fortune', 'spirit', 'eros']) {
+        for (const [id, pl] of P) if (C.sep(ch.lots[k], pl) < 3) out.push('<b>' + LOTSAY[k](GOD[id], D.PT[id].k) + '</b>');
+        const n = cap(k); if (C.sep(ch.lots[k], ch.vertex) < 3) out.push('<b>' + n + ' stands on the Vertex.</b> ' + (k === 'eros' ? 'Desire and fate arrive as one event, usually on an ordinary day.' : k === 'fortune' ? 'Your luck arrives through other people, at meetings you did not plan.' : 'Your calling is handed to you by someone you were bound to meet.'));
+        for (const [a, lon, nm] of [['asc', ch.asc, 'the Ascendant'], ['mc', ch.mc, 'the Midheaven']]) if (C.sep(ch.lots[k], lon) < 3) out.push('<b>' + n + ' stands on ' + nm + '.</b> It is written on ' + (a === 'asc' ? 'your face' : 'your public life') + ' for anyone to read.');
+      }
+      out.push('<b>The work.</b> Spirit falls in ' + hs(C.houseOf(ch.lots.spirit, ch.cusps)) + ' and the Midheaven is in ' + C.SIGNS[sg(ch.mc)] + '. ' + SIGNCOPY[sg(ch.mc)][1] + ' That is what the world keeps asking you for.');
+    }
+    const ns = sg(ch.nn); out.push('<b>The road.</b> The North Node is in ' + C.SIGNS[ns] + (ch.cusps ? ', in ' + hs(C.houseOf(ch.nn, ch.cusps)) : '') + '. Your growth runs that way, taken ' + MANNER[ns] + '. The South Node in ' + C.SIGNS[(ns + 6) % 12] + ' is the habit you can do in your sleep.');
+    return '<div class="god fate"><h5>Fate and direction</h5>' + out.map((x) => '<p class="rd">' + x + '</p>').join('') + '</div>';
   }
   function reading(ch) {
     const all = C.aspects(ch, S.tight).filter((x) => !C.MINOR.includes(x.a) && !C.MINOR.includes(x.b));
     let h = '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>';
     if (ch.timeKnown) { const r = RULER[sg(ch.asc)]; h += '<p class="rd"><b>' + C.SIGNS[sg(ch.asc)] + ' rises, so ' + GOD[r] + ' holds the keys.</b> The chart sounds in ' + keyOf(ch).name + '. Listen to ' + GOD[r] + ' first.</p>'; }
-    h += patterns(ch) + C.PLANETS.map((id) => godSpeaks(ch, id, all)).join('') + extras(ch) + lotsSpeak(ch);
+    h += fate(ch) + patterns(ch) + C.PLANETS.map((id) => godSpeaks(ch, id, all)).join('') + extras(ch) + lotsSpeak(ch);
     h += inner(ch, all, 'Anima', ['venus', 'moon'], 'Jung’s name for the soul’s feminine face, the one you fall for in other people before you meet her in yourself.');
     h += inner(ch, all, 'Animus', ['mars', 'sun'], 'The soul’s masculine face: the will, the word, the one who acts.');
     return h;
