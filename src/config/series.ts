@@ -79,8 +79,8 @@ export const series = {
     title: 'Machines',
     href: '/writings/machines/',
     accent: '#2f5f73',
-    /* TODO(owner): the series' one-line statement, shown on /writings/machines/ and in its feed. */
-    statement: 'Hands-on pages: instruments to play with rather than read.',
+    /* The series' one-line statement, shown on /writings/machines/ and in its feed. Chosen by the owner, Nov 2026. */
+    statement: 'Instruments for the curious, each one an old idea you can run.',
   },
   readings: {
     name: 'Readings',
