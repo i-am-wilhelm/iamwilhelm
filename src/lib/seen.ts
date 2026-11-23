@@ -107,6 +107,18 @@ const FACES: Record<string, string[]> = {
   ],
   'IBM+Plex+Sans:wght@400;600;700': ['400', '600', '700'].map((w) => face('IBM Plex Sans', 'normal', w, 'ibm-plex-sans-latin-wght-normal')),
   'Caveat:wght@500;700': ['500', '700'].map((w) => face('Caveat', 'normal', w, 'caveat-latin-wght-normal')),
+  /* The Label Comes Last: Barlow Condensed 600, 700 and 800, IBM Plex Mono
+     500 and 700, Zilla Slab 400, 500, 600 and 400 italic, each spec with
+     its own entry since the bare IBM Plex Mono above carries no 700. The
+     Barlow Condensed 600 and 800 and the Plex Mono 500 are the files
+     already here; the 700s and the four Zilla Slab files are new, the
+     latin files of the same Fontsource packages. */
+  'Barlow+Condensed:wght@600;700;800': ['600', '700', '800'].map((w) => face('Barlow Condensed', 'normal', w, `barlow-condensed-latin-${w}-normal`)),
+  'IBM+Plex+Mono:wght@500;700': ['500', '700'].map((w) => face('IBM Plex Mono', 'normal', w, `ibm-plex-mono-latin-${w}-normal`)),
+  'Zilla+Slab:ital,wght@0,400;0,500;0,600;1,400': [
+    ...['400', '500', '600'].map((w) => face('Zilla Slab', 'normal', w, `zilla-slab-latin-${w}-normal`)),
+    face('Zilla Slab', 'italic', '400', 'zilla-slab-latin-400-italic'),
+  ],
 };
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -352,6 +364,35 @@ const FIXES: Record<string, [string, string, string][]> = {
       'the colophon',
       '<p class="colophon">Off Soundings · Chart No. 3 · Review draft · Nov 2026 · Not for navigation</p>',
       '<p class="colophon">Off Soundings · Chart No. 3 · Nov 2026 · Not for navigation</p>',
+    ],
+  ],
+  /* The Label Comes Last: two sentences for the plain-text twin (data-twin,
+     which the page itself never shows). Exhibit 3 draws the old and new
+     school day as two bars on a 7 a.m. to 5 p.m. axis, which the twin would
+     read as the bare words "Then" and "Now"; the hours are the ones the
+     chapter's first paragraph gives, and the bars are drawn to them.
+     And its share card: the five label tapes peel off the title in the
+     page's first three seconds, so a timed shot would catch them anywhere.
+     The title block is marked data-og-frame, and under the `og` class that
+     scripts/og-scrollies.mjs sets, the tapes stay on the title and the
+     byline and blank-tape row, which the card's edge would cut through,
+     are not drawn. A reader's page is untouched. */
+  'the-label-comes-last': [
+    ['the title block', '<div class="titlewrap">', '<div class="titlewrap" data-og-frame>'],
+    [
+      'the end of the stylesheet',
+      '</style>\n</head>',
+      '/* site: the share card (src/lib/seen.ts) */\n.og .rip{animation:none}\n.og .byline,.og .blankrow{visibility:hidden}\n</style>\n</head>',
+    ],
+    [
+      'the old school day',
+      '<div class="dayrow"><span>Then</span>',
+      '<div class="dayrow" data-twin="Then: 7:15 a.m. to 2:45 p.m."><span>Then</span>',
+    ],
+    [
+      'the new school day',
+      '<div class="dayrow"><span>Now</span>',
+      '<div class="dayrow" data-twin="Now: 8:30 a.m. to 4:30 p.m."><span>Now</span>',
     ],
   ],
 };
