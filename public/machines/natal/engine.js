@@ -476,7 +476,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
 
   /* Focus: what the pointer or a selection has lit. inFoc: is this point lit; linkFoc: null when nothing is lit, else whether this line is. */
   const inFoc = (S, slot, id) => !!(S.foc && S.foc.pts.has(slot + ':' + id));
-  const linkFoc = (S, L, sa, sb) => { const f = S.foc; if (!f) return null; return f.link ? f.link === L.key : f.pts.has(sa + ':' + L.a) || f.pts.has(sb + ':' + L.b); };
+  const linkFoc = (S, L, sa, sb) => { const f = S.foc; if (!f) return null; if (f.links) return f.links.has(L.key); return f.link ? f.link === L.key : f.pts.has(sa + ':' + L.a) || f.pts.has(sb + ':' + L.b); };
 
   /* Screen position for an ecliptic longitude: the rotation longitude sits at
      nine o'clock and the zodiac runs counterclockwise, as on a printed chart. */
@@ -582,7 +582,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const main = charts[0], two = charts.length > 1, rot = main.timeKnown ? main.asc : 0;
     const rIn = R * 0.86, rA = two ? R * 0.585 : R * 0.7, rB = R * 0.765, rAsp = two ? R * 0.47 : R * 0.56;
     hits.geom = { cx, cy, R, rIn, rAsp, rot, ch: main, slot: S.slotOf(main) };
-    const hs = S.hov && S.hov.kind === 'sign' ? S.hov.sign : -1, hh = S.hov && S.hov.kind === 'house' ? S.hov.house : 0;
+    const hs = S.hov && S.hov.kind === 'sign' ? S.hov.sign : S.foc && S.foc.sign != null ? S.foc.sign : -1, hh = S.hov && S.hov.kind === 'house' ? S.hov.house : S.foc && S.foc.house ? S.foc.house : 0;
     // zodiac band
     for (let s = 0; s < 12; s++) {
       const a0 = (180 + s * 30 - rot) * RAD, a1 = (180 + s * 30 + 30 - rot) * RAD;
@@ -723,7 +723,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     pa.forEach((p, i) => { const sel = inFoc(S, sa, p.id); pointGlyph(ctx, p.id, x0 - cell * 0.55, y0 + cell * (i + 0.5), cell * 0.62, sel ? '#fff' : PCOL[p.id], 1, F.mono); hits.push({ x: x0 - cell * 0.55, y: y0 + cell * (i + 0.5), r: cell * 0.5, slot: sa, id: p.id }); });
     for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) {
       const x = x0 + cell * j, y = y0 + cell * i, L = by[pa[i].id + '|' + pb[j].id];
-      const f = S.foc, on = !!f && (f.link ? !!L && f.link === L.key : f.pts.has(sa + ':' + pa[i].id) || f.pts.has(sb + ':' + pb[j].id));
+      const f = S.foc, on = !!f && (f.links ? !!L && f.links.has(L.key) : f.link ? !!L && f.link === L.key : f.pts.has(sa + ':' + pa[i].id) || f.pts.has(sb + ':' + pb[j].id));
       hits.push({ x: x + cell / 2, y: y + cell / 2, r: cell / 2, sq: true, kind: 'cell', a: pa[i].id, b: pb[j].id, link: L || null });
       ctx.fillStyle = rgba(COL.ink, on ? 0.09 : 0.028); ctx.fillRect(x + 1, y + 1, cell - 2, cell - 2);
       if (!L) continue;
@@ -763,7 +763,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   ];
   const S = {
     specs: [], charts: [], view: 'wheel', focus: 0, sel: null, hov: null, foc: null, hsys: 'P', tight: 1, tones: { flow: true, grind: true, fuse: true },
-    inner: false, webDav: false, greek: false, minor: false, still: matchMedia('(prefers-reduced-motion: reduce)').matches, tab: 'placements', pickSlot: 0, selfN: 0,
+    inner: false, webDav: false, greek: false, minor: false, still: matchMedia('(prefers-reduced-motion: reduce)').matches, tab: 'placements', pickSlot: 0, selfN: 0, trail: [], at: -1,
     slotOf(ch) { const i = S.charts.indexOf(ch); return i < 0 ? 4 : i; },
   };
   let dav = null, cities = null;
@@ -775,8 +775,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     dav = S.charts.length > 1 ? C.davison(S.charts[0], S.charts[1], S.hsys) : null;
     if (dav) dav.name = 'Davison';
   }
-  function setSlot(i, spec) { S.specs[i] = spec; S.specs = S.specs.filter(Boolean).slice(0, 4); S.sel = null; if (S.focus >= S.specs.length) S.focus = 0; recast(); fixView(); renderAll(); }
-  function dropSlot(i) { S.specs.splice(i, 1); S.sel = null; S.focus = 0; recast(); fixView(); renderAll(); }
+  function setSlot(i, spec) { S.specs[i] = spec; S.specs = S.specs.filter(Boolean).slice(0, 4); S.sel = null; S.trail = []; S.at = -1; if (S.focus >= S.specs.length) S.focus = 0; recast(); fixView(); renderAll(); }
+  function dropSlot(i) { S.specs.splice(i, 1); S.sel = null; S.trail = []; S.at = -1; S.focus = 0; recast(); fixView(); renderAll(); }
   function nowSpec() { return { name: 'The sky right now', jd: Date.now() / 86400000 + 2440587.5, lat: 0, lon: 0, timeKnown: false, meta: { id: 'now', name: 'The sky right now', src: 'now', now: true } }; }
   function fixView() { if (S.charts.length < 2 && S.view !== 'wheel' && S.view !== 'web') S.view = 'wheel'; }
   const shortName = (ch) => { const m = ch.meta || {}; if (m.davison) return 'Davison'; if (m.now) return 'The sky'; return SHORT[m.id] || (ch.name || 'Chart').split(' ')[0]; };
@@ -902,19 +902,19 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
       else if (h.kind === 'angle' && (h.id === 'AS' || h.id === 'MC')) f = { pts: new Set([h.slot + ':' + (h.id === 'AS' ? 'asc' : 'mc')]) };
       else if (h.kind === 'cell') f = { pts: new Set(), link: '-' };
     }
-    if (!f && S.sel) f = { pts: new Set([S.sel.slot + ':' + S.sel.id]) };
+    if (!f) f = stopFoc();
     S.foc = f;
   }
   /* Light the list rows the lit thing touches. From the canvas they also rise to the top of the list. */
   function markRows() {
     const f = S.foc, body = $('#body'); let any = false;
-    $$('.lk[data-k]', body).forEach((li) => { const k = li.dataset.k; let on = false; if (f) { if (f.link) on = f.link === k; else { const ab = k.split('|'); on = f.pts.has(ab[0]) || f.pts.has(ab[1]); } } li.classList.toggle('hot', on); any = any || on; });
+    $$('.lk[data-k]', body).forEach((li) => { const k = li.dataset.k; let on = false; if (f) { if (f.links) on = f.links.has(k); else if (f.link) on = f.link === k; else { const ab = k.split('|'); on = f.pts.has(ab[0]) || f.pts.has(ab[1]); } } li.classList.toggle('hot', on); any = any || on; });
     $$('tr[data-sel]', body).forEach((tr) => tr.classList.toggle('hot', !!f && !f.link && f.pts.has(tr.dataset.sel)));
     body.classList.toggle('has-hot', any && !(S.hov && S.hov.src === 'list')); body.classList.toggle('lift', any && !!S.hov && S.hov.src !== 'list');
   }
   function showTip(h, x, y) {
     if (!h) { tip.hidden = true; tip.dataset.k = ''; return; }
-    const k = hovKey(h); if (tip.dataset.k !== k) { tip.innerHTML = tipHtml(h); tip.dataset.k = k; }
+    const k = hovKey(h); if (tip.dataset.k !== k) { tip.innerHTML = tipHtml(h) + (lastPT === 'mouse' && stopOf(h) ? '<p class="tip-go">Click to follow \u2192</p>' : ''); tip.dataset.k = k; }
     if (!tip.innerHTML) { tip.hidden = true; return; }
     tip.hidden = false; const tw = tip.offsetWidth, th = tip.offsetHeight; let lx = x + 16, ly = y + 18;
     if (lx + tw > W - 6) lx = x - tw - 14; if (lx < 6) lx = Math.max(6, Math.min(W - tw - 6, x - tw / 2));
@@ -931,10 +931,9 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   cv.addEventListener('pointerup', (e) => {
     if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 10) return; down = null;
     const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, h = probe(x, y);
-    if (h && h.kind === 'point') S.sel = S.sel && S.sel.slot === h.slot && S.sel.id === h.id ? null : { slot: h.slot, id: h.id };
-    else if (!h) S.sel = null;
+    const st = h && stopOf(h); if (st) pushStop(st[0], st[1]);
     if (e.pointerType === 'mouse') { redraw(); renderPanel(); return; }
-    S.hov = null; redraw(); renderPanel(); setHov(h && !(h.kind === 'point' && !S.sel) ? h : null, x, y); // a tap stands in for the hover
+    S.hov = null; redraw(); renderPanel(); setHov(h || null, x, y); // a tap stands in for the hover
   });
 
   /* ---------------- small formatters ---------------- */
@@ -996,27 +995,30 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const many = vc.length > 1, sa = S.slotOf(vc[Lk.ia]), sb = S.slotOf(vc[Lk.ib]);
     const who = (i, id, slot) => '<button class="pt" data-sel="' + slot + ':' + id + '">' + (many ? '<em style="color:' + D.SLOTCOL[slot] + '">' + (slot === 4 ? 'Dv' : LET[slot]) + '</em>' : '') + pg(id) + '<span>' + pname(id) + '</span></button>';
     const left = flip ? who(Lk.ib, Lk.b, sb) : who(Lk.ia, Lk.a, sa), right = flip ? who(Lk.ia, Lk.a, sa) : who(Lk.ib, Lk.b, sb);
-    return '<li class="lk tone-' + Lk.tone + '" data-k="' + Lk.key + '"><div class="lk-top">' + left + '<span class="as" title="' + Lk.kind + '">' + ASYM[Lk.kind] + '<small>' + Lk.kind + '</small></span>' + right + '<span class="orb">' + Lk.off.toFixed(1) + '°' + (Lk.applying === true ? ' · closing' : Lk.applying === false && Lk.ia === Lk.ib ? ' · parting' : '') + '</span></div><p>' + sentence(Lk, vc) + '</p><span class="meter"><i style="width:' + Math.round(Lk.w * 100) + '%"></i></span></li>';
+    return '<li class="lk tone-' + Lk.tone + '" data-k="' + Lk.key + '"><div class="lk-top">' + left + '<button class="as" data-go="kind:' + Lk.kind + '" title="What is a ' + Lk.kind + '?">' + ASYM[Lk.kind] + '<small>' + Lk.kind + '</small></button>' + right + '<button class="orb" data-go="term:orb" title="What is an orb?">' + Lk.off.toFixed(1) + '°' + (Lk.applying === true ? ' · closing' : Lk.applying === false && Lk.ia === Lk.ib ? ' · parting' : '') + '</button></div><p>' + sentence(Lk, vc) + '</p><span class="meter"><i style="width:' + Math.round(Lk.w * 100) + '%"></i></span></li>';
   }
+  function posB(lon, sl) { const s = C.signOf(lon); return s.deg + '°' + String(s.min).padStart(2, '0') + '′ <button class="sb" data-go="sign:' + sl + ':' + s.sign + '">' + svg(D.ZG[s.sign], 'zs') + ' ' + s.name + '</button>'; }
+  const hB = (sl, n) => (n ? '<button class="sb" data-go="house:' + sl + ':' + n + '">house ' + n + '</button>' : '');
+  const rB = '<button class="sb" data-go="term:retrograde"><abbr title="retrograde">R</abbr></button>';
   function placements(ch) {
+    const sl = S.slotOf(ch);
     let h = '<table class="pl-t"><tbody>';
-    for (const id of C.PLANETS) { const b = ch.bodies[id]; h += '<tr data-sel="' + S.slotOf(ch) + ':' + id + '"><th>' + pg(id) + pname(id) + '</th><td>' + pos(b.lon) + (b.retro ? ' <abbr title="retrograde">R</abbr>' : '') + '</td><td class="hs">' + (b.house ? 'house ' + b.house : '') + '</td></tr>'; }
-    if (ch.minorOk) for (const id of C.MINOR) { const b = ch.bodies[id]; h += '<tr class="minor" data-sel="' + S.slotOf(ch) + ':' + id + '"><th>' + pg(id) + pname(id) + '</th><td>' + pos(b.lon) + (b.retro ? ' <abbr title="retrograde">R</abbr>' : '') + '</td><td class="hs">' + (b.house ? 'house ' + b.house : '') + '</td></tr>'; }
-    if (ch.timeKnown) for (const [id, n] of [['asc', 'Ascendant'], ['mc', 'Midheaven']]) h += '<tr data-sel="' + S.slotOf(ch) + ':' + id + '"><th>' + pg(id) + n + '</th><td>' + pos(ch[id]) + '</td><td class="hs"></td></tr>';
-    if (ch.timeKnown) for (const [id, n, lon] of [['vertex', 'Vertex', ch.vertex], ['fortune', 'Lot of Fortune', ch.lots.fortune], ['spirit', 'Lot of Spirit', ch.lots.spirit], ['eros', 'Lot of Eros', ch.lots.eros]]) h += '<tr class="quiet"><th>' + pg(id) + n + '</th><td>' + pos(lon) + '</td><td class="hs">house ' + C.houseOf(lon, ch.cusps) + '</td></tr>';
-    h += '<tr class="quiet"><th>' + svg(D.PG.nn, 'pl') + 'North Node</th><td>' + pos(ch.nn) + '</td><td class="hs">mean</td></tr><tr class="quiet"><th>' + svg(D.PG.lilith, 'pl') + 'Black Moon</th><td>' + pos(ch.lilith) + '</td><td class="hs">mean</td></tr>';
+    for (const id of C.PLANETS) { const b = ch.bodies[id]; h += '<tr data-sel="' + sl + ':' + id + '"><th>' + pg(id) + pname(id) + '</th><td>' + posB(b.lon, sl) + (b.retro ? ' ' + rB : '') + '</td><td class="hs">' + hB(sl, b.house) + '</td></tr>'; }
+    if (ch.minorOk) for (const id of C.MINOR) { const b = ch.bodies[id]; h += '<tr class="minor" data-sel="' + sl + ':' + id + '"><th>' + pg(id) + pname(id) + '</th><td>' + posB(b.lon, sl) + (b.retro ? ' ' + rB : '') + '</td><td class="hs">' + hB(sl, b.house) + '</td></tr>'; }
+    if (ch.timeKnown) for (const [id, n] of [['asc', 'Ascendant'], ['mc', 'Midheaven']]) h += '<tr data-sel="' + sl + ':' + id + '"><th>' + pg(id) + n + '</th><td>' + posB(ch[id], sl) + '</td><td class="hs"></td></tr>';
+    if (ch.timeKnown) for (const [id, n, lon] of [['vertex', 'Vertex', ch.vertex], ['fortune', 'Lot of Fortune', ch.lots.fortune], ['spirit', 'Lot of Spirit', ch.lots.spirit], ['eros', 'Lot of Eros', ch.lots.eros]]) h += '<tr class="quiet" data-go="term:' + (id === 'vertex' ? 'vertex' : 'lot') + '"><th>' + pg(id) + n + '</th><td>' + pos(lon) + '</td><td class="hs">house ' + C.houseOf(lon, ch.cusps) + '</td></tr>';
+    h += '<tr class="quiet" data-go="term:node"><th>' + svg(D.PG.nn, 'pl') + 'North Node</th><td>' + pos(ch.nn) + '</td><td class="hs">mean</td></tr><tr class="quiet" data-go="term:lilith"><th>' + svg(D.PG.lilith, 'pl') + 'Black Moon</th><td>' + pos(ch.lilith) + '</td><td class="hs">mean</td></tr>';
     return h + '</tbody></table>' + (ch.timeKnown ? '<p class="fine">' + (ch.day ? 'A day chart: the Sun is above the horizon.' : 'A night chart: the Sun is below the horizon.') + ' Houses: ' + ({ P: 'Placidus', W: 'whole sign', E: 'equal' }[ch.hsys]) + '.' + (ch.minorOk ? '' : ' Chiron and the asteroids are only worked out for 1440 to 2110.') + '</p>' : '<p class="fine">No birth time, so no Ascendant, houses or lots. The Moon can sit up to six or seven degrees either side of where it is drawn.</p>');
   }
-  function bars(obj, colors, total) { return Object.keys(obj).map((k) => '<div class="bar"><span>' + k + '</span><div><i style="width:' + (obj[k] / total) * 100 + '%;background:' + (colors[k] || '#efe8d8') + '"></i></div><b>' + obj[k] + '</b></div>').join(''); }
+  function bars(obj, colors, total, go) { return Object.keys(obj).map((k) => '<' + (go ? 'button data-go="' + go + k + '"' : 'div') + ' class="bar"><span>' + k + '</span><div><i style="width:' + (obj[k] / total) * 100 + '%;background:' + (colors[k] || '#efe8d8') + '"></i></div><b>' + obj[k] + '</b></' + (go ? 'button' : 'div') + '>').join(''); }
   function energies(vc, links) {
     let h = '';
-    for (const ch of vc) { const b = C.balance(ch); h += '<div class="en"><h4 style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4><div class="en-g"><div>' + bars(b.el, D.ELCOL, 10) + '</div><div>' + bars(b.mo, {}, 10) + '</div></div></div>'; }
-    const tally = { flow: 0, grind: 0, fuse: 0 }, load = {};
-    for (const Lk of links) { tally[Lk.tone]++; for (const [i, id] of [[Lk.ia, Lk.a], [Lk.ib, Lk.b]]) { const k = i + ':' + id; load[k] = (load[k] || 0) + Lk.w; } }
-    const top = Object.keys(load).sort((a, b) => load[b] - load[a])[0];
-    h += '<div class="en"><h4>Lines on screen</h4><div class="tally"><span class="tone-flow"><b>' + tally.flow + '</b> flowing</span><span class="tone-grind"><b>' + tally.grind + '</b> grinding</span><span class="tone-fuse"><b>' + tally.fuse + '</b> fused</span></div>';
-    if (top) { const [i, id] = top.split(':'); h += '<p class="fine">Loudest point: ' + (vc.length > 1 ? esc(shortName(vc[+i])) + '’s ' : '') + D.PT[id].n + ', carrying the most line weight.' + (links[0] ? ' Tightest line: ' + D.PT[links.slice().sort((a, b) => a.off - b.off)[0].a].n + ' to ' + D.PT[links.slice().sort((a, b) => a.off - b.off)[0].b].n + '.' : '') + '</p>'; }
-    return h + '</div>';
+    for (const ch of vc) { const b = C.balance(ch), sl = S.slotOf(ch); h += '<div class="en"><h4 style="color:' + D.SLOTCOL[sl] + '">' + esc(ch.name) + '</h4><div class="en-g"><div>' + bars(b.el, D.ELCOL, 10, 'el:' + sl + ':') + '</div><div>' + bars(b.mo, {}, 10, 'mode:' + sl + ':') + '</div></div></div>'; }
+    const tally = { flow: 0, grind: 0, fuse: 0 }; for (const Lk of links) tally[Lk.tone]++;
+    const top = loads(links)[0], tight = links.slice().sort(byOff)[0];
+    h += '<div class="en"><h4>Lines on screen</h4><div class="tally">' + ['flow', 'grind', 'fuse'].map((t) => '<button class="tone-' + t + '" data-go="tone:' + t + '"><b>' + tally[t] + '</b> ' + { flow: 'flowing', grind: 'grinding', fuse: 'fused' }[t] + '</button>').join('') + '</div>';
+    if (top) h += '<p class="fine">Loudest point: <button class="inl" data-go="pt:' + top + '">' + pg(top.split(':')[1]) + nameOf(top) + '</button>, carrying the most <button class="inl" data-go="term:weight">line weight</button>.' + (tight ? ' Tightest line: <button class="inl" data-go="link:' + tight.key + '">' + D.PT[tight.a].n + ' ' + ASYM[tight.kind] + ' ' + D.PT[tight.b].n + '</button>.' : '') + '</p>';
+    return h + '<p class="fine">Tap any count, name, element or line to follow it.</p></div>';
   }
   /* ---------------- the music of the chart, and a written reading ---------------- */
   /* The twelve signs sit on the circle of fifths from Aries = C. The Ascendant's sign is the tonic. */
@@ -1028,7 +1030,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const stepsUp = (t, s) => (((s - t) * 7) % 12 + 12) % 12;
   function music(ch) {
     const k = keyOf(ch), ids = C.PLANETS.concat(ch.minorOk ? C.MINOR : []);
-    let h = '<div class="key"><span>Key of the chart</span><b>' + k.name + '</b><small>' + k.from + (ch.timeKnown ? ' · ' + (ch.day ? 'a day chart sounds major' : 'a night chart sounds minor') : '') + '</small></div><table class="pl-t"><tbody>';
+    let h = '<div class="key"><span>Key of the chart</span><b><button class="inl" data-go="term:tonic">' + k.name + '</button></b><small>' + k.from + (ch.timeKnown ? ' · ' + (ch.day ? 'a day chart sounds major' : 'a night chart sounds minor') : '') + '</small></div><table class="pl-t"><tbody>';
     for (const id of ids) { const s = sg(ch.bodies[id].lon), st = stepsUp(k.t, s); h += '<tr data-sel="' + S.slotOf(ch) + ':' + id + '"><th>' + pg(id) + pname(id) + '</th><td><b class="nt">' + NOTE[s] + '</b> <span class="iv">' + (st ? INTERVAL[st] + ' above the tonic' : 'the tonic') + '</span></td><td class="hs">' + C.SIGNS[s] + '</td></tr>'; }
     const tri = [...new Set([sg(ch.bodies.sun.lon), sg(ch.bodies.moon.lon)].concat(ch.timeKnown ? [sg(ch.asc)] : []).map((s) => NOTE[s]))];
     h += '</tbody></table><p class="fine">Sun, Moon' + (ch.timeKnown ? ' and Ascendant' : '') + ' together sound ' + tri.join(' · ') + '. The signs sit on the circle of fifths from Aries at C, so a trine sounds a major third, a square a minor third or major sixth, a sextile a whole tone, an opposition a tritone, and a conjunction a unison. No sound yet: this is the score.</p>';
@@ -1102,7 +1104,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
       if (hit && hit.a) t += (hit.a === 60 || hit.a === 120 ? ' In you the first voice is the louder one.' : ' In you the second voice is the louder one.');
       t += '</p><p class="rd">In you I stand in ' + C.SIGNS[sg(lon)] + (ch.cusps ? ', in ' + hs(C.houseOf(lon, ch.cusps)) : '') + '. ' + here;
       if (hit) t += ' ' + cap(GOD[hit.p]) + (hit.a === 0 ? ' stands with me, and speaks in my accent.' : hit.a === 60 || hit.a === 120 ? ' is on easy terms with me, and lends a hand to my work.' : hit.a === 90 ? ' crosses me at a right angle, and our argument is part of your work.' : ' faces me from across the sky, and neither of us looks away.');
-      return '<div class="god"><h5>' + (D.PG[id === 'sn' ? 'nn' : id] ? svg(D.PG[id === 'sn' ? 'nn' : id], 'pl') : '') + n + ' <em class="ep" lang="' + lang + '">' + ep + '</em> <span>“' + gl + '” · ' + src + ' · in ' + C.SIGNS[sg(lon)] + '</span></h5><p class="rd">' + t + '</p></div>'; }).join('');
+      return '<div class="god" data-god="' + id + '"><h5>' + (D.PG[id === 'sn' ? 'nn' : id] ? svg(D.PG[id === 'sn' ? 'nn' : id], 'pl') : '') + n + ' <em class="ep" lang="' + lang + '">' + ep + '</em> <span>“' + gl + '” · ' + src + ' · in ' + C.SIGNS[sg(lon)] + '</span></h5><p class="rd">' + t + '</p></div>'; }).join('');
   }
   /* The twelve houses: original Greek name, what gets said about the room, what it is from the inside, and a question to grow by. */
   const HNAME = [['Ὡροσκόπος', 'Hōroskopos', 'the Hour-Marker'], ['Ἅιδου πύλη', 'Haidou pylē', 'the Gate of Hades'], ['Θεά', 'Thea', 'the Goddess'], ['Ὑπόγειον', 'Hypogeion', 'Under the Earth'], ['Ἀγαθὴ Τύχη', 'Agathē Tychē', 'Good Fortune'], ['Κακὴ Τύχη', 'Kakē Tychē', 'Bad Fortune'], ['Δύσις', 'Dysis', 'the Setting'], ['Ἀργός', 'Argos', 'the Idle Place'], ['Θεός', 'Theos', 'the God'], ['Μεσουράνημα', 'Mesouranēma', 'the Midheaven'], ['Ἀγαθὸς Δαίμων', 'Agathos Daimōn', 'the Good Spirit'], ['Κακὸς Δαίμων', 'Kakos Daimōn', 'the Bad Spirit']];
@@ -1204,7 +1206,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
         you += '</p><p class="rd">' + (ten.length ? ten.map((p) => '<b>' + cap(GOD[p]) + ' lives here:</b> ' + TENANT[p] + '.').join(' ') : 'No god lives in this room. It is still fully yours, and ' + GOD[r] + ' speaks for it from the ' + ORDW[rh - 1] + ' house.') + (others.length ? ' Also here: ' + others.join(', ') + '.' : '');
         you += '</p>';
       }
-      h += '<div class="god house"><h5><span class="hn">' + (i + 1) + '</span>' + cap(HNAME[i][2]) + ' <em class="ep" lang="grc">' + HNAME[i][0] + '</em> <span>' + HNAME[i][1] + (HJOY[i] ? ' · where ' + GOD[HJOY[i]] + ' rejoices' : '') + ' · usually reduced to “' + HSAID[i] + '”</span></h5><p class="rd">' + HREAL[i] + '</p>' + you + '<p class="rd hq">' + HASK[i] + '</p></div>';
+      h += '<div class="god house" data-house="' + (i + 1) + '"><h5><span class="hn">' + (i + 1) + '</span>' + cap(HNAME[i][2]) + ' <em class="ep" lang="grc">' + HNAME[i][0] + '</em> <span>' + HNAME[i][1] + (HJOY[i] ? ' · where ' + GOD[HJOY[i]] + ' rejoices' : '') + ' · usually reduced to “' + HSAID[i] + '”</span></h5><p class="rd">' + HREAL[i] + '</p>' + you + '<p class="rd hq">' + HASK[i] + '</p></div>';
     }
     return h + '<p class="fine">Greek names are the ones Hellenistic astrologers used for the twelve places. Key-holders follow the traditional rulerships. The essays are a way of reading, offered as questions to live with.</p>';
   }
@@ -1216,7 +1218,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     for (let i = 0; i < W.length; i++) for (let j = i + 1; j < W.length; j++) for (let k = j + 1; k < W.length; k++) { if (!gt && near(W[i][1], W[j][1], 120, 6) && near(W[j][1], W[k][1], 120, 6) && near(W[i][1], W[k][1], 120, 6)) { gt = 1; out.push('<b>A grand trine in ' + C.ELEMENT[sg(W[i][1]) % 4] + '.</b> ' + cap(W[i][0]) + ', ' + W[j][0] + ' and ' + W[k][0] + ' hold a closed triangle of ease. It runs without effort, which is its gift and its trap.'); } }
     for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) if (near(P[i][1], P[j][1], 180, 7)) for (const c of P) if (!ts && c !== P[i] && c !== P[j] && near(c[1], P[i][1], 90, 6) && near(c[1], P[j][1], 90, 6)) { ts = 1; out.push('<b>A T-square.</b> ' + P[i][0] + ' and ' + P[j][0] + ' pull against each other, and ' + c[0] + ' takes the strain of both. ' + c[0] + ' is where you act.'); }
     const el = C.sep(ch.bodies.sun.lon, ch.bodies.moon.lon); if (el > 168) out.push('<b>Born under a full moon.</b> Helios and Selene look straight at each other: you see yourself best in another person.'); else if (el < 12) out.push('<b>Born at the dark of the moon.</b> Helios and Selene share a seat: what you want and what you need are hard to tell apart.');
-    return out.length ? '<div class="god"><h5>The patterns</h5>' + out.map((x) => '<p class="rd">' + x + '</p>').join('') + '</div>' : '';
+    return out.length ? '<div class="god" data-god="patterns"><h5>The patterns</h5>' + out.map((x) => '<p class="rd">' + x + '</p>').join('') + '</div>' : '';
   }
   /* The daily read: today's sky against the chart, on a card whose design changes with the day. */
   const PHASE = ['new', 'waxing crescent', 'first quarter', 'waxing gibbous', 'full', 'waning gibbous', 'last quarter', 'waning crescent'];
@@ -1238,7 +1240,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
       let i = Math.floor(seed(x.a + x.b + id) * 3) % 3, n = 0; while (us.includes(i) && n++ < 3) i = (i + 1) % 3; us.push(i);
       let j = Math.floor(seed(id + x.b + x.a + 't') * 3) % 3, m = 0; while (ut.includes(j) && m++ < 3) j = (j + 1) % 3; const said = ut.includes(j); ut.push(j);
       t += ' ' + SAY[x.kind][i](GOD[x.a === id ? x.b : x.a], theme(x.a, x.b)) + (said ? '' : ' ' + TELL[id][x.tone][j]) + (x.off < 1 ? ' This is close to exact; it runs through everything.' : ''); }
-    return '<div class="god"><h5 style="color:' + D.PCOL[id] + '">' + pg(id) + GOD[id] + ' <em class="ep" lang="grc">' + OPEN[id][0] + '</em> <span>\u201c' + OPEN[id][1] + '\u201d \u00b7 ' + OPEN[id][2] + ' \u00b7 ' + D.PT[id].n + ' in ' + C.SIGNS[s] + (b.house ? ', house ' + b.house : '') + '</span></h5><p class="rd">' + t + '</p></div>';
+    return '<div class="god" data-god="' + id + '"><h5 style="color:' + D.PCOL[id] + '">' + pg(id) + GOD[id] + ' <em class="ep" lang="grc">' + OPEN[id][0] + '</em> <span>\u201c' + OPEN[id][1] + '\u201d \u00b7 ' + OPEN[id][2] + ' \u00b7 ' + D.PT[id].n + ' in ' + C.SIGNS[s] + (b.house ? ', house ' + b.house : '') + '</span></h5><p class="rd">' + t + '</p></div>';
   }
   function inner(ch, all, name, ids, blurb) {
     const a = ch.bodies[ids[0]], b = ch.bodies[ids[1]], near = all.filter((x) => ids.includes(x.a) || ids.includes(x.b))[0];
@@ -1246,13 +1248,13 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (a.house) t += ' Look for ' + (name === 'Anima' ? 'her' : 'him') + ' in ' + hs(a.house) + (b.house !== a.house ? ' and ' + hs(b.house) : '') + '.';
     if (near) { const me = ids.includes(near.a) ? near.a : near.b, o = me === near.a ? near.b : near.a; t += ' The god nearest ' + (name === 'Anima' ? 'her' : 'him') + ' is ' + GOD[o] + ', by ' + near.kind + ' to ' + GOD[me] + ': ' + D.PT[o].k + ' colours every meeting.'; }
     if (name === 'Anima' && ch.lots) t += ' The Lot of Eros falls in ' + C.SIGNS[sg(ch.lots.eros)] + ', ' + hs(C.houseOf(ch.lots.eros, ch.cusps)) + ': that is where the reaching starts.';
-    return '<div class="god"><h5>' + name + '</h5><p class="rd">' + t + '</p></div>';
+    return '<div class="god" data-god="' + name.toLowerCase() + '"><h5>' + name + '</h5><p class="rd">' + t + '</p></div>';
   }
   function lotsSpeak(ch) {
     if (!ch.lots) return '';
     const L = [['fortune', 'Fortune', 'what comes to you arrives through '], ['spirit', 'Spirit', 'what you go and do is aimed at '], ['eros', 'Eros', 'what you reach for lives in ']];
     let t = L.map(([id, n, say]) => '<b>' + n + '</b> in ' + C.SIGNS[sg(ch.lots[id])] + ': ' + say + hs(C.houseOf(ch.lots[id], ch.cusps)) + '.').join(' ');
-    return '<div class="god"><h5>The lots</h5><p class="rd">' + t + '</p></div>';
+    return '<div class="god" data-god="lots"><h5>The lots</h5><p class="rd">' + t + '</p></div>';
   }
   /* The fate points: gods on the angles, the Vertex and the nodes, the lots and who keeps them, and the direction the chart leans. */
   const FATE = {
@@ -1279,7 +1281,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
       out.push('<b>The work.</b> Spirit falls in ' + hs(C.houseOf(ch.lots.spirit, ch.cusps)) + ' and the Midheaven is in ' + C.SIGNS[sg(ch.mc)] + ': the world keeps asking you ' + SIGNASK[sg(ch.mc)] + '.');
     }
     const ns = sg(ch.nn); out.push('<b>The road.</b> The North Node is in ' + C.SIGNS[ns] + (ch.cusps ? ', in ' + hs(C.houseOf(ch.nn, ch.cusps)) : '') + '. Your growth runs that way, taken ' + MANNER[ns] + '. The South Node in ' + C.SIGNS[(ns + 6) % 12] + ' is the habit you can do in your sleep.');
-    return '<div class="god fate"><h5>Fate and direction</h5>' + out.map((x) => '<p class="rd">' + x + '</p>').join('') + '</div>';
+    return '<div class="god fate" data-god="fate"><h5>Fate and direction</h5>' + out.map((x) => '<p class="rd">' + x + '</p>').join('') + '</div>';
   }
   function reading(ch) {
     const all = C.aspects(ch, S.tight).filter((x) => !C.MINOR.includes(x.a) && !C.MINOR.includes(x.b));
@@ -1337,34 +1339,291 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const GKEY = { 'north node': 'node', 'south node': 'node', nodes: 'node', lots: 'lot', fortune: 'lot', spirit: 'lot', eros: 'lot', 'lot of eros': 'lot', animus: 'anima' };
   const GRX = /\b(grand trine|T-square|North Node|South Node|Lot of Eros|Ascendant|Midheaven|Vertex|Helios|Selene|Hermes|Aphrodite|Ares|Zeus|Kronos|Ouranos|Poseidon|Hades|Demeter|Athena|Hera|Hestia|Chiron|Lilith|Fortune|Spirit|Eros|Anima|Animus|conjunction|opposition|sextile|square|trine|retrograde|house|lots|tonic)\b/g;
   /** Wrap god names and terms in the text of some HTML (never inside a tag) so each opens its glossary note. */
-  function gloss(html) { return html.split(/(<[^>]+>)/).map((part) => (part.charAt(0) === '<' ? part : part.replace(GRX, (m) => { const k = m.toLowerCase(), key = GL[k] ? k : GKEY[k]; return key ? '<button type="button" class="gt" data-g="' + key + '">' + m + '</button>' : m; }))).join(''); }
+  function gloss(html) { return html.split(/(<[^>]+>)/).map((part) => (part.charAt(0) === '<' ? part : part.replace(GRX, (m, g1, off, str) => { if ((m === 'Spirit' || m === 'Fortune') && /(Good|Bad) $/.test(str.slice(Math.max(0, off - 5), off))) return m; const k = m.toLowerCase(), key = GL[k] ? k : GKEY[k]; return key ? '<button type="button" class="gt" data-g="' + key + '">' + m + '</button>' : m; }))).join(''); }
   const gbox = document.createElement('div'); gbox.id = 'gloss'; gbox.className = 'gloss'; gbox.hidden = true; gbox.setAttribute('role', 'tooltip'); document.body.appendChild(gbox);
   function showGloss(el) {
     const g = GL[el.dataset.g]; if (!g) return;
     const pic = D.PG[g[3]] ? '<svg viewBox="0 0 24 24" class="gloss-p"><path d="' + D.PG[g[3]] + '" stroke-width="1.5"/></svg>' : '<svg viewBox="0 0 48 48" class="gloss-p">' + g[3] + '</svg>';
-    gbox.innerHTML = pic + '<div><b>' + g[0] + '</b><span>' + g[1] + '</span><p>' + g[2] + '</p></div>'; gbox.hidden = false;
+    gbox.innerHTML = pic + '<div><b>' + g[0] + '</b><span>' + g[1] + '</span><p>' + g[2] + '</p><button class="nx" data-go="' + termGo(el.dataset.g, focusSlot()) + '">Follow this \u2192</button></div>'; gbox.hidden = false;
     const r = el.getBoundingClientRect(), w = gbox.offsetWidth, h = gbox.offsetHeight; let x = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h - 8; if (y < 8) y = r.bottom + 8;
     gbox.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)'; gbox.dataset.for = el.dataset.g;
   }
   const hideGloss = () => { gbox.hidden = true; };
-  document.addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse') { const el = e.target.closest && e.target.closest('.gt'); if (el) showGloss(el); else hideGloss(); } });
-  document.addEventListener('click', (e) => { const el = e.target.closest && e.target.closest('.gt'); if (el) { e.stopPropagation(); showGloss(el); } else hideGloss(); }, true);
+  let lastPT = 'mouse'; document.addEventListener('pointerdown', (e) => { lastPT = e.pointerType; }, true);
+  document.addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse') { if (e.target.closest && e.target.closest('#gloss')) return; const el = e.target.closest && e.target.closest('.gt'); if (el) showGloss(el); else hideGloss(); } });
+  document.addEventListener('click', (e) => { const el = e.target.closest && e.target.closest('.gt'); if (el) { e.stopPropagation(); if (lastPT === 'mouse') { hideGloss(); const v = termGo(el.dataset.g, focusSlot()), i = v.indexOf(':'); go(v.slice(0, i), v.slice(i + 1), 'list'); } else showGloss(el); } else hideGloss(); }, true);
   addEventListener('scroll', hideGloss, { passive: true });
 
+  /* ---------------- the journey ----------------
+     Every lit thing is a stop. A stop teaches one idea, says what it means in this chart, lights it on the
+     chart, and points to the next stops. The stops visited leave a trail you can walk back along. */
+  const GODX = { chiron: 'Chiron', ceres: 'Demeter', pallas: 'Athena', juno: 'Hera', vesta: 'Hestia' };
+  const gname = (id) => GOD[id] || GODX[id] || (D.PT[id] ? D.PT[id].n : id);
+  const chartOf = (sl) => (+sl === 4 ? dav : S.charts[+sl]);
+  const lonAt = (ch, id) => (ch.bodies[id] ? ch.bodies[id].lon : typeof ch[id] === 'number' ? ch[id] : null);
+  const focusSlot = () => (curCharts[0] ? S.slotOf(curCharts[0]) : 0);
+  const byOff = (a, b) => a.off - b.off;
+  const ends = (k) => k.split('|');
+  const touches = (L, key) => { const e = ends(L.key); return e[0] === key || e[1] === key; };
+  const ordw = (n) => (n <= 12 ? ORDW[n - 1] : n + 'th');
+  const many = () => curCharts.length > 1;
+  const nameOf = (key) => { const [sl, id] = key.split(':'), ch = chartOf(sl); return (many() && ch ? esc(shortName(ch)) + '’s ' : '') + (D.PT[id] ? D.PT[id].n : id); };
+  const TONES = {
+    flow: ['Flowing lines', 'trines and sextiles', 'Flowing lines join planets in signs that get along: the same element, or elements that feed each other, like fire and air. The two parts of you cooperate without being asked. What comes this easily often goes unnoticed, so these are the gifts you are most likely to take for granted.'],
+    grind: ['Grinding lines', 'squares and oppositions', 'Grinding lines join planets at a right angle or straight across the chart. The two parts of you want different things at the same time. The friction is uncomfortable, and it is also where most effort, skill and change come from.'],
+    fuse: ['Fused lines', 'conjunctions', 'A fused line means two planets stand together in the same stretch of sky. Their energies blend so fully that it can be hard to tell which one is speaking. Whether the blend helps or strains depends on who the two are.'],
+  };
+  /* angle, tone, the interval it sounds on the circle of fifths, and the lesson */
+  const KINDS = {
+    conjunction: [0, 'fuse', 'a unison', 'Two planets side by side, usually within eight degrees. They stop acting separately: each colors everything the other does, the way two paints stirred together make a third color.'],
+    sextile: [60, 'flow', 'a whole tone', 'Two signs apart, a sixth of the circle. The elements are friendly (fire with air, earth with water), so the two planets can help each other. The help is real, and it arrives when you reach for it.'],
+    square: [90, 'grind', 'a minor third or a major sixth', 'Three signs apart, a quarter turn. The two signs share a rhythm (both starters, both holders, or both changers) and pull in different directions, like two drivers with one steering wheel. Squares are where pressure turns into effort, and effort into skill.'],
+    trine: [120, 'flow', 'a major third', 'Four signs apart, a third of the circle, in the same element. The two planets understand each other at once. A trine shows natural talent, which still has to be put to use.'],
+    opposition: [180, 'grind', 'a tritone', 'Straight across the chart. The two signs are partners on one axis, like day and night. An opposition swings between its two ends and is often lived out through other people, until you learn to hold both ends yourself.'],
+  };
+  const KORDER = ['conjunction', 'sextile', 'square', 'trine', 'opposition'];
+  const ELES = {
+    fire: ['Fire is the will to act, to be seen and to believe. It moves first and asks later. Astrologers who read Jung pair it with his intuition: the sense of what could be.', 'M12 4L21 19H3Z'],
+    earth: ['Earth is the body and the practical world: what can be touched, built, used and kept. It trusts what works. The Jungian pairing is sensation: the facts in front of you.', 'M12 20L3 5H21ZM6.5 11H17.5'],
+    air: ['Air is thought, speech and connection: ideas moving between people. It needs a little distance to see clearly. The Jungian pairing is thinking: making sense through order and logic.', 'M12 4L21 19H3ZM6.5 13H17.5'],
+    water: ['Water is feeling, memory and attachment. It knows things before it can say them, and it remembers. The Jungian pairing is feeling: the sense of what something is worth.', 'M12 20L3 5H21Z'],
+  };
+  const MODES = {
+    cardinal: ['Cardinal signs open the four seasons, at the equinoxes and solstices. They start things: they set a direction and expect the rest to follow.', 'M4 12H20M14 6L20 12L14 18'],
+    fixed: ['Fixed signs hold the middle of each season, when the weather has settled in. They sustain: loyal, steady, and hard to move once committed.', 'M5 5H19V19H5Z'],
+    mutable: ['Mutable signs close each season and lead into the next. They adapt: they translate, adjust and carry what has been learned into whatever comes next.', 'M3 12C6 5 9 5 12 12S18 19 21 12'],
+  };
+  /* The star myths behind the twelve signs, as the Greek and Roman sky-writers told them. */
+  const SMYTH = [
+    'The golden ram that carried Phrixus to safety over the sea; its fleece later sent Jason and the Argonauts sailing.',
+    'The white bull Zeus became to carry Europa across the sea to Crete.',
+    'The twins Castor and Polydeuces, one mortal and one divine, who chose to share immortality and take turns among the gods and under the earth.',
+    'The crab Hera sent to bite Herakles while he fought the Hydra. He crushed it, and she set it among the stars.',
+    'The Nemean lion, whose hide no blade could cut. Herakles strangled it and wore the skin as his cloak.',
+    'The maiden Justice, Dike, who in Aratus was the last of the immortals to leave the earth when people turned violent.',
+    'The Greeks first called these stars the Claws of the Scorpion. The Romans made them a pair of scales.',
+    'The scorpion that stung the hunter Orion. The two were set on opposite sides of the sky, so one sets as the other rises.',
+    'An archer, half horse, with his arrow drawn at the red star in the Scorpion’s heart.',
+    'Pan, who leapt into the Nile to escape the monster Typhon and turned half into a fish: a goat that climbs and a fish that dives.',
+    'Ganymede, the Trojan boy Zeus carried up to Olympus to pour for the gods.',
+    'Aphrodite and Eros, who escaped Typhon by turning into fish. A cord of stars ties the two fishes so they cannot lose each other.',
+  ];
+  const PLES = {
+    sun: 'The Sun is the center the rest of the chart turns around: the self you are growing into, and the light you want to be seen in. Its sign says how you shine; its house says where you most need to.',
+    moon: 'The Moon is the fastest body in the chart, changing sign every two and a half days. It describes what you need to feel safe, your moods and habits, and the body’s memory of being cared for.',
+    mercury: 'Mercury never strays more than 28° from the Sun, so it always speaks for the self nearby. It is how you think, talk, learn and trade: the messenger between your inner life and everyone else.',
+    venus: 'Venus never strays more than 47° from the Sun. It is what you find beautiful, how you attract and what you value, and how much pleasure you allow yourself.',
+    mars: 'Mars is drive, appetite, anger and courage. It shows where you push, how you fight for what you want, and what happens to heat you never use.',
+    jupiter: 'Jupiter, the largest planet, spends about a year in each sign. It is growth, faith, generosity and excess: where life opens up for you, and where you can overdo it.',
+    saturn: 'Saturn is the farthest planet the eye can see, and spends about two and a half years in each sign. It is time, limits, duty and mastery: where you are tested early and, slowly, become an authority.',
+    uranus: 'Uranus was found by telescope in 1781 and spends about seven years in each sign, so a whole age group shares its sign. Its house and its lines make it personal: where you break the pattern, invent, and need to be free.',
+    neptune: 'Neptune was found in 1846 and spends about fourteen years in each sign. It is longing for something larger: dreams, art and compassion, and also confusion and escape. Its house shows where your edges blur.',
+    pluto: 'Pluto was found in 1930 and spends between about eleven and thirty-two years in a sign. It is power and transformation: what has to be broken down before it can be remade. Its house is where you go deepest.',
+    chiron: 'Chiron is a small icy body between Saturn and Uranus, found in 1977, that circles the Sun about every fifty years. Astrologers read it as the wound that teaches: where you hurt, and where that hurt makes you useful to others.',
+    ceres: 'Ceres was the first asteroid found, in 1801. Named for Demeter, it describes how you nourish and are nourished, and what you grieve when it is taken.',
+    pallas: 'Pallas, found in 1802, is named for Athena. It describes pattern and strategy: how you solve problems and see the whole board.',
+    juno: 'Juno, found in 1804, is named for Hera. It describes committed partnership: what you need from a bond, and what you will not forgive.',
+    vesta: 'Vesta, found in 1807, is named for Hestia. It describes devotion and focus: what you keep burning, and what you guard from everyone.',
+    asc: 'The Ascendant is the degree of the zodiac rising on the eastern horizon at the birth. It moves through a whole sign in about two hours, which is why the birth time matters. It is how you arrive: your body, your manner and the first impression you make.',
+    mc: 'The Midheaven is the highest point the Sun’s path reaches in your sky. It is where a life is most visible: vocation, public standing, and the work you are known for.',
+  };
+  const TERMX = {
+    orb: ['Orb', 'how far from exact', 'An aspect rarely lands on the exact angle. The orb is the gap, in degrees. The smaller it is, the louder the line: under one degree, it runs through everything.', '<circle cx="24" cy="24" r="17" opacity=".35"/><path d="M24 24L41 24M24 24L38.5 15"/><path d="M33 24A9 9 0 0 0 31.8 19.5"/>'],
+    weight: ['Line weight', 'who does the most talking', 'Each line gets a weight from how close to exact it is. Add up the weights of every line touching a point and you see which part of the chart is doing the most talking.', '<path d="M8 38H40M14 38V26M24 38V12M34 38V20"/>'],
+  };
+  const termOf = (key) => GL[key] || TERMX[key];
+  /** Where a glossary term leads: a god to its planet, an aspect to its lesson, anything else to the term itself. */
+  function termGo(key, sl) {
+    if (KINDS[key]) return 'kind:' + key;
+    const ch = chartOf(sl), g = GL[key], id = key === 'ascendant' ? 'asc' : key === 'midheaven' ? 'mc' : g && typeof g[3] === 'string' && D.PT[g[3]] ? g[3] : null;
+    if (id && ch && lonAt(ch, id) != null) return 'pt:' + sl + ':' + id;
+    return 'term:' + key;
+  }
+  const an = (w) => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
+  const nx = (lab, go) => '<button class="nx" data-go="' + go + '">' + lab + '</button>';
+  const nxt = (lab, to) => '<button class="nx to" data-goto="' + to + '">' + lab + ' ↓</button>';
+  const ptChip = (sl, id) => nx(pg(id) + pname(id), 'pt:' + sl + ':' + id);
+  function lineBtn(L, from) {
+    let [ka, kb] = ends(L.key); if (from && from === kb) [ka, kb] = [kb, ka];
+    const nm = (k) => { const [sl, id] = k.split(':'); return (many() ? '<em style="color:' + D.SLOTCOL[sl] + '">' + (+sl === 4 ? 'Dv' : LET[sl]) + '</em>' : '') + pg(id) + pname(id); };
+    return '<button class="lkb tone-' + L.tone + '" data-go="link:' + L.key + '"><span>' + nm(ka) + '</span><span class="as">' + ASYM[L.kind] + '</span><span>' + nm(kb) + '</span><small>' + L.off.toFixed(1) + '°</small></button>';
+  }
+  const lineList = (arr, from) => (arr.length ? '<div class="lkbs">' + arr.slice(0, 6).map((L) => lineBtn(L, from)).join('') + (arr.length > 6 ? '<p class="fine">and ' + (arr.length - 6) + ' more in the Lines tab.</p>' : '') + '</div>' : '');
+  const loads = (arr) => { const load = {}; for (const L of arr) for (const e of ends(L.key)) load[e] = (load[e] || 0) + L.w; return Object.keys(load).sort((a, b) => load[b] - load[a]); };
+  const elGlyph = (e) => svg(ELES[e][1], 'pl');
+
+  function cardPoint(k, links) {
+    const i = k.indexOf(':'), sl = k.slice(0, i), id = k.slice(i + 1), ch = chartOf(sl), P = D.PT[id];
+    if (!ch || !P) return null; const lon = lonAt(ch, id); if (lon == null) return null;
+    const b = ch.bodies[id], s = sg(lon), who = many() || +sl === 4 ? esc(shortName(ch)) + '’s ' : '', ang = id === 'asc' || id === 'mc', minor = C.MINOR.includes(id), O = OPEN[id];
+    const house = b && b.house ? b.house : id === 'asc' ? 1 : id === 'mc' ? 10 : 0, mine = links.filter((L) => touches(L, k)).sort(byOff);
+    let here = who + (ang ? P.n : gname(id)) + ' stands at ' + pos(lon) + (house && !ang ? ', in the ' + ordw(house) + ' house, ' + HNAME[house - 1][2] : '') + '. ';
+    if (!ang) here += 'In ' + C.SIGNS[s] + ' it works ' + MANNER[s] + '. ';
+    if (b && b.retro) here += 'It was retrograde at the birth, so it turns inward first. ';
+    if (ch.timeKnown && ch.cusps && RULER.includes(id)) { const rooms = []; for (let n = 1; n <= 12; n++) if (RULER[sg(ch.cusps[n - 1])] === id) rooms.push(n); if (rooms.length) here += 'It holds the key to the ' + rooms.map(ordw).join(' and ') + ' house' + (rooms.length > 1 ? 's' : '') + ', and as a key-holder it is ' + KVERD[keyCond(ch, id).v] + '. '; }
+    here += mine.length ? mine.length + ' line' + (mine.length > 1 ? 's' : '') + ' touch it on screen.' : 'No lines touch it at this tightness.';
+    const next = [nx('The sign: ' + C.SIGNS[s], 'sign:' + sl + ':' + s)];
+    if (house) next.push(nx('The ' + ordw(house) + ' house', 'house:' + sl + ':' + house));
+    if (mine[0]) next.push(nx('Its tightest line', 'link:' + mine[0].key));
+    if ((O || minor) && !(ch.meta && (ch.meta.now || ch.meta.davison))) next.push(nxt('Hear ' + gname(id) + ' speak', 'reading:' + id));
+    return { col: D.PCOL[id] || 'var(--ichor)', gl: pg(id), eb: ang ? 'An angle' : minor ? (id === 'chiron' ? 'A small body' : 'An asteroid') : id === 'sun' || id === 'moon' ? 'A light' : 'A planet', title: P.n + ' <span lang="grc">' + P.g + '</span>', sub: O ? gname(id) + ' · “' + O[1] + '”' : GODX[id] || '', lesson: PLES[id], here, list: lineList(mine, k), next };
+  }
+  function cardLink(k, links) {
+    const L = links.find((x) => x.key === k); if (!L) return null;
+    const [ka, kb] = ends(k), a = ka.split(':')[1], b = kb.split(':')[1], rank = links.slice().sort(byOff).indexOf(L) + 1, tm = theme(a, b);
+    const lesson = tm !== 'the two of us' ? 'Between ' + gname(a) + ' and ' + gname(b) + ', this ' + L.kind + ' is about ' + tm + '. ' + KINDS[L.kind][3].split('. ')[0] + '.' : KINDS[L.kind][3];
+    let here = sentence(L, curCharts) + ' It is the ' + (rank === 1 ? 'tightest' : ordw(rank) + ' tightest') + ' of ' + links.length + ' lines on screen. ' + (L.off < 1 ? 'Under a degree from exact, so it runs through everything.' : L.off < 3 ? 'Within three degrees, so you feel it often.' : 'A wider line, felt more in some seasons than others.');
+    if (L.applying === true) here += ' The two are still closing in, which old astrologers read as a matter still growing.'; else if (L.applying === false && L.ia === L.ib) here += ' The two are pulling apart: a matter already formed.';
+    const next = [nx(pg(a) + nameOf(ka), 'pt:' + ka), nx(pg(b) + nameOf(kb), 'pt:' + kb), nx('What is ' + an(L.kind) + '?', 'kind:' + L.kind), nx(TONES[L.tone][0], 'tone:' + L.tone), nx('What is an orb?', 'term:orb')];
+    return { col: 'var(--' + L.tone + ')', gl: '<span class="gl tx">' + ASYM[L.kind] + '</span>', eb: 'A line · ' + L.kind, title: pname(a) + ' <span class="as tone-' + L.tone + '">' + ASYM[L.kind] + '</span> ' + pname(b), sub: L.off.toFixed(1) + '° from exact', lesson, here, next };
+  }
+  function cardTone(t, links) {
+    const T = TONES[t]; if (!T) return null; const mine = links.filter((L) => L.tone === t).sort(byOff), top = loads(mine)[0];
+    const here = S.tones[t] ? mine.length + ' of the ' + links.length + ' lines on screen are ' + T[1] + '.' + (top ? ' ' + nameOf(top) + ' carries the most of them.' : '') : 'These lines are switched off under Tuning. Switch them back on to see them.';
+    const next = KORDER.filter((x) => KINDS[x][1] === t).map((x) => nx('What is ' + an(x) + '?', 'kind:' + x));
+    if (top) next.push(nx('Who carries them: ' + nameOf(top), 'pt:' + top)); if (mine[0]) next.push(nx('The tightest one', 'link:' + mine[0].key));
+    Object.keys(TONES).filter((x) => x !== t).forEach((x) => next.push(nx(TONES[x][0], 'tone:' + x)));
+    return { col: 'var(--' + t + ')', gl: '<span class="gl tx">' + { flow: '△', grind: '□', fuse: '☌' }[t] + '</span>', eb: 'A kind of line', title: T[0], sub: T[1], lesson: T[2], here, list: lineList(mine), next };
+  }
+  function cardKind(kind, links) {
+    const K = KINDS[kind]; if (!K) return null; const mine = links.filter((L) => L.kind === kind).sort(byOff), nk = KORDER[(KORDER.indexOf(kind) + 1) % KORDER.length];
+    const here = (mine.length ? mine.length + ' ' + kind + (mine.length > 1 ? 's' : '') + ' on screen.' : 'No ' + kind + 's on screen at this tightness.') + ' On the circle of fifths this angle sounds ' + K[2] + '.';
+    const next = [nx(TONES[K[1]][0], 'tone:' + K[1])]; if (mine[0]) next.push(nx('The tightest ' + kind, 'link:' + mine[0].key));
+    next.push(nx('Next aspect: ' + nk, 'kind:' + nk), nx('What is an orb?', 'term:orb'), nxt('The music of the chart', 'music'));
+    return { col: 'var(--' + K[1] + ')', gl: '<span class="gl tx">' + ASYM[kind] + '</span>', eb: 'An aspect', title: cap(kind), sub: K[0] + '° apart · sounds ' + K[2], lesson: K[3], here, list: lineList(mine), next };
+  }
+  function cardSign(k) {
+    const [sl, ss] = k.split(':'), s = +ss, ch = chartOf(sl); if (!ch) return null;
+    const el = C.ELEMENT[s % 4], mo = C.MODE[s % 3], r = RULER[s], ins = C.points(ch).filter((p) => sg(p.lon) === s), doors = [];
+    if (ch.timeKnown && ch.cusps) for (let n = 1; n <= 12; n++) if (sg(ch.cusps[n - 1]) === s) doors.push(n);
+    let here = ins.length ? (many() ? esc(shortName(ch)) + '’s ' : '') + 'In this sign: ' + ins.map((p) => D.PT[p.id].n).join(', ') + '.' : 'No planet stands in this sign here.';
+    if (doors.length) here += ' It sits on the door of the ' + doors.map(ordw).join(' and ') + ' house' + (doors.length > 1 ? 's' : '') + '.';
+    if (ch.bodies[r]) here += ' Its key-holder, ' + gname(r) + ', stands in ' + C.SIGNS[sg(ch.bodies[r].lon)] + '.';
+    const next = []; if (ch.bodies[r]) next.push(nx('Its key-holder: ' + pg(r) + pname(r), 'pt:' + sl + ':' + r));
+    next.push(nx(cap(el), 'el:' + sl + ':' + el), nx(cap(mo), 'mode:' + sl + ':' + mo)); if (doors[0]) next.push(nx('The ' + ordw(doors[0]) + ' house', 'house:' + sl + ':' + doors[0]));
+    next.push(nx('Across the axis: ' + C.SIGNS[(s + 6) % 12], 'sign:' + sl + ':' + ((s + 6) % 12)), nx('Next sign: ' + C.SIGNS[(s + 1) % 12], 'sign:' + sl + ':' + ((s + 1) % 12)));
+    return { col: D.ELCOL[el], gl: svg(D.ZG[s], 'zs'), eb: cap(mo) + ' ' + el + ' sign', title: C.SIGNS[s], sub: 'Kept by ' + gname(r), lesson: SMYTH[s] + ' Planets here work ' + MANNER[s] + ', and want ' + SIGNASK[s] + '.', here, list: ins.length ? '<div class="next">' + ins.map((p) => ptChip(sl, p.id)).join('') + '</div>' : '', next };
+  }
+  function cardHouse(k) {
+    const [sl, nn] = k.split(':'), n = +nn, ch = chartOf(sl); if (!ch || !n) return null; const H = HNAME[n - 1], nextH = (n % 12) + 1;
+    const base = { col: 'var(--ichor)', gl: '<span class="gl tx">' + n + '</span>', eb: 'House ' + n, title: cap(H[2]), sub: '<span lang="grc">' + H[0] + '</span> · ' + H[1] + (HJOY[n - 1] ? ' · where ' + gname(HJOY[n - 1]) + ' rejoices' : ''), lesson: HREAL[n - 1].match(/[^.]+\./g).slice(0, 2).join('').trim(), q: HASK[n - 1] };
+    if (!(ch.timeKnown && ch.cusps)) return Object.assign(base, { here: 'Houses need a birth time, so this chart has none.', next: [nx('Next house: ' + HNAME[nextH - 1][2], 'house:' + sl + ':' + nextH)] });
+    const cs = sg(ch.cusps[n - 1]), r = RULER[cs], rb = ch.bodies[r], ten = C.points(ch).filter((p) => !p.angle && C.houseOf(p.lon, ch.cusps) === n);
+    let here = (many() ? esc(shortName(ch)) + ': ' : '') + C.SIGNS[cs] + ' is on the door, so you enter this room ' + SIGNWAY[cs] + '. ' + cap(gname(r)) + ' holds the key from the ' + ordw(rb.house) + ' house, and as a key-holder is ' + KVERD[keyCond(ch, r).v] + '. ';
+    here += ten.length ? 'Living here: ' + ten.map((p) => D.PT[p.id].n).join(', ') + '.' : 'No planet lives here; ' + gname(r) + ' speaks for it.';
+    const next = [nx('The key-holder: ' + pg(r) + pname(r), 'pt:' + sl + ':' + r)].concat(ten.slice(0, 3).map((p) => ptChip(sl, p.id)));
+    next.push(nx('The sign on the door: ' + C.SIGNS[cs], 'sign:' + sl + ':' + cs), nxt('Read the whole house', 'houses:' + n), nx('Next house: ' + HNAME[nextH - 1][2], 'house:' + sl + ':' + nextH));
+    return Object.assign(base, { here, next });
+  }
+  function cardEl(k) {
+    const [sl, e] = k.split(':'), ch = chartOf(sl), E = ELES[e]; if (!ch || !E) return null;
+    const ins = C.PLANETS.filter((id) => C.ELEMENT[sg(ch.bodies[id].lon) % 4] === e), order = ['fire', 'earth', 'air', 'water'], ne = order[(order.indexOf(e) + 1) % 4];
+    const here = (many() ? esc(shortName(ch)) + ': ' : '') + ins.length + ' of the ten planets stand in ' + e + ' signs' + (ins.length ? ' (' + ins.map((id) => D.PT[id].n).join(', ') + ')' : '') + '. ' + (ins.length >= 4 ? 'A strong showing: this temperament leads.' : ins.length <= 1 ? 'A light showing: this temperament may feel foreign, or be something you look for in other people.' : 'A middling showing.');
+    const next = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter((s) => C.ELEMENT[s % 4] === e).map((s) => nx(svg(D.ZG[s], 'zs') + C.SIGNS[s], 'sign:' + sl + ':' + s));
+    next.push(nx('Next element: ' + ne, 'el:' + sl + ':' + ne), nxt('The balance of the chart', 'energies'));
+    return { col: D.ELCOL[e], gl: elGlyph(e), eb: 'An element', title: cap(e), sub: 'one of four temperaments', lesson: E[0], here, list: ins.length ? '<div class="next">' + ins.map((id) => ptChip(sl, id)).join('') + '</div>' : '', next };
+  }
+  function cardMode(k) {
+    const [sl, m] = k.split(':'), ch = chartOf(sl), M_ = MODES[m]; if (!ch || !M_) return null;
+    const ins = C.PLANETS.filter((id) => C.MODE[sg(ch.bodies[id].lon) % 3] === m), order = ['cardinal', 'fixed', 'mutable'], nm = order[(order.indexOf(m) + 1) % 3];
+    const here = (many() ? esc(shortName(ch)) + ': ' : '') + ins.length + ' of the ten planets stand in ' + m + ' signs' + (ins.length ? ' (' + ins.map((id) => D.PT[id].n).join(', ') + ')' : '') + '. ' + (ins.length >= 5 ? 'This rhythm leads.' : ins.length <= 1 ? 'This rhythm is scarce, so you may borrow it from other people.' : '');
+    const next = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter((s) => C.MODE[s % 3] === m).map((s) => nx(svg(D.ZG[s], 'zs') + C.SIGNS[s], 'sign:' + sl + ':' + s));
+    next.push(nx('Next mode: ' + nm, 'mode:' + sl + ':' + nm), nxt('The balance of the chart', 'energies'));
+    return { col: 'var(--ichor)', gl: svg(M_[1], 'pl'), eb: 'A mode', title: cap(m), sub: 'one of three rhythms', lesson: M_[0], here, list: ins.length ? '<div class="next">' + ins.map((id) => ptChip(sl, id)).join('') + '</div>' : '', next };
+  }
+  function cardTerm(key, links) {
+    const g = termOf(key); if (!g) return null; const sl = focusSlot(), ch = chartOf(sl), next = []; let here = '', list = '';
+    const at = (lon) => pos(lon) + (ch.timeKnown && ch.cusps ? ', ' + ordw(C.houseOf(lon, ch.cusps)) + ' house' : '');
+    if (key === 'retrograde') { const r = C.PLANETS.filter((id) => ch.bodies[id].retro); here = r.length ? 'Retrograde in this chart: ' + r.map((id) => D.PT[id].n).join(', ') + '.' : 'Nothing is retrograde in this chart.'; list = r.length ? '<div class="next">' + r.map((id) => ptChip(sl, id)).join('') + '</div>' : ''; }
+    else if (key === 'node') { here = 'North Node at ' + at(ch.nn) + '. South Node at ' + at(C.norm(ch.nn + 180)) + '.'; next.push(nxt('Hear the North Node', 'reading:nn'), nxt('Hear the South Node', 'reading:sn')); }
+    else if (key === 'lilith') { here = 'The Black Moon stands at ' + at(ch.lilith) + '.'; next.push(nxt('Hear Lilith', 'reading:lilith')); }
+    else if (key === 'vertex' && ch.timeKnown) { here = 'The Vertex stands at ' + at(ch.vertex) + '.'; next.push(nxt('Fate and direction', 'reading:fate')); }
+    else if (key === 'lot' && ch.lots) { here = 'Fortune at ' + at(ch.lots.fortune) + '. Spirit at ' + at(ch.lots.spirit) + '. Eros at ' + at(ch.lots.eros) + '.'; next.push(nxt('The lots in the reading', 'reading:lots')); }
+    else if (key === 'house' && ch.timeKnown) { here = 'This chart’s houses are drawn with ' + ({ P: 'Placidus', W: 'whole sign', E: 'equal' }[ch.hsys]) + '. You can change that under Tuning.'; next.push(nx('Start at the first house', 'house:' + sl + ':1'), nx('The Sun’s house', 'house:' + sl + ':' + ch.bodies.sun.house), nxt('All twelve houses', 'houses')); }
+    else if (key === 'anima') next.push(nxt('Read the Anima', 'reading:anima'), nxt('Read the Animus', 'reading:animus'));
+    else if (key === 'tonic') { const kk = keyOf(ch); here = 'This chart is in ' + kk.name + ', from the ' + kk.from + '.'; next.push(nxt('The music of the chart', 'music')); }
+    else if (key === 'grand trine' || key === 't-square') next.push(nxt('The patterns in this chart', 'reading:patterns'));
+    else if (key === 'orb') { const t0 = links.slice().sort(byOff)[0]; if (t0) { here = 'The tightest line on screen is ' + t0.off.toFixed(1) + '° from exact.'; next.push(nx('Go to it', 'link:' + t0.key)); } next.push(nx('What is a conjunction?', 'kind:conjunction')); }
+    else if (key === 'weight') { const top = loads(links)[0]; if (top) { here = nameOf(top) + ' carries the most line weight on screen.'; next.push(nx('Go to ' + nameOf(top), 'pt:' + top)); } }
+    const pic = D.PG[g[3]] ? svg(D.PG[g[3]], 'pl') : '<svg class="gl pl" viewBox="0 0 48 48" aria-hidden="true">' + g[3] + '</svg>';
+    return { col: 'var(--ichor)', gl: pic, eb: 'A term', title: g[0], sub: g[1], lesson: g[2], here, list, next };
+  }
+  const CARDS = { pt: cardPoint, link: cardLink, tone: cardTone, kind: cardKind, sign: cardSign, house: cardHouse, el: cardEl, mode: cardMode, term: cardTerm };
+  function stopCard(st, links) {
+    let c = null; try { c = CARDS[st.t] ? CARDS[st.t](st.k, links) : null; } catch (err) { console.error(err); }
+    if (!c) return '<div class="card stop" style="--c:var(--rule)"><div class="card-h"><div><h3>Not on screen</h3><p>This stop is not in the current view or tightness.</p></div><button class="x" data-clear aria-label="End the journey">×</button></div></div>';
+    return '<div class="card stop" style="--c:' + c.col + '"><div class="card-h">' + c.gl + '<div><p class="eb">' + c.eb + '</p><h3>' + c.title + '</h3>' + (c.sub ? '<p>' + c.sub + '</p>' : '') + '</div><button class="x" data-clear aria-label="End the journey">×</button></div>' + (c.lesson ? '<p class="lesson">' + gloss(c.lesson) + '</p>' : '') + (c.here ? '<div class="here"><b>In this chart.</b> ' + gloss(c.here) + '</div>' : '') + (c.q ? '<p class="q">' + c.q + '</p>' : '') + (c.list || '') + (c.next && c.next.length ? '<div class="next"><span>Where next</span>' + c.next.join('') + '</div>' : '') + '</div>';
+  }
+  function crumb(s) {
+    const p = s.k.split(':');
+    if (s.t === 'pt') return D.PT[p[1]] ? pg(p[1]) + (many() ? (+p[0] === 4 ? 'Dv ' : LET[p[0]] + ' ') : '') + D.PT[p[1]].n : '?';
+    if (s.t === 'link') { const [ka, kb] = ends(s.k), L = curLinks.find((x) => x.key === s.k), a = ka.split(':')[1], b = kb.split(':')[1]; return (D.PT[a] ? D.PT[a].n : a) + ' ' + (L ? ASYM[L.kind] : '–') + ' ' + (D.PT[b] ? D.PT[b].n : b); }
+    if (s.t === 'tone') return TONES[s.k] ? TONES[s.k][0] : s.k;
+    if (s.t === 'kind') return cap(s.k);
+    if (s.t === 'sign') return svg(D.ZG[+p[1]], 'zs') + C.SIGNS[+p[1]];
+    if (s.t === 'house') return 'House ' + p[1];
+    if (s.t === 'el' || s.t === 'mode') return cap(p[1]);
+    return (termOf(s.k) || [s.k])[0];
+  }
+  function trailHtml() {
+    if (!S.trail.length) return '';
+    return '<nav class="trail" aria-label="Your path"><button data-crumb="-1"' + (S.at < 0 ? ' aria-current="step"' : '') + '>Start</button>' + S.trail.map((s, i) => '<span aria-hidden="true">›</span><button data-crumb="' + i + '"' + (i === S.at ? ' aria-current="step"' : i > S.at ? ' class="ahead"' : '') + '>' + crumb(s) + '</button>').join('') + '</nav>';
+  }
+  function startCard(links) {
+    const ch = curCharts[0]; if (!ch) return ''; const sl = S.slotOf(ch), sorted = links.slice().sort(byOff), top = loads(links)[0], tally = { flow: 0, grind: 0, fuse: 0 };
+    links.forEach((L) => tally[L.tone]++); const tone = Object.keys(tally).sort((a, b) => tally[b] - tally[a])[0], bal = C.balance(ch), el = Object.keys(bal.el).sort((a, b) => bal.el[b] - bal.el[a])[0];
+    const items = [nx(pg('sun') + 'The Sun', 'pt:' + sl + ':sun'), nx(pg('moon') + 'The Moon', 'pt:' + sl + ':moon'), ch.timeKnown ? nx(pg('asc') + 'The Ascendant', 'pt:' + sl + ':asc') : '', top ? nx('The loudest point: ' + nameOf(top), 'pt:' + top) : '', sorted[0] ? nx('The tightest line', 'link:' + sorted[0].key) : '', tally[tone] ? nx('Most lines are ' + TONES[tone][0].split(' ')[0].toLowerCase(), 'tone:' + tone) : '', nx(elGlyph(el) + 'Strongest element: ' + el, 'el:' + sl + ':' + el)];
+    return '<div class="start-j"><p>Tap anything on the chart or in the lists to follow it. Each stop teaches one idea, shows it in this chart, and points to the next.</p><div class="next"><span>Or start here</span>' + items.join('') + '</div></div>';
+  }
+  /** What a stop lights on the chart. */
+  function stopFoc() {
+    const st = S.trail[S.at]; if (!st) return null; const k = st.k, p = k.split(':'), withEnds = (arr) => ({ links: new Set(arr.map((L) => L.key)), pts: new Set(arr.flatMap((L) => ends(L.key))) });
+    if (st.t === 'pt') return { pts: new Set([k]) };
+    if (st.t === 'link') return { link: k, pts: new Set(ends(k)) };
+    if (st.t === 'tone') return withEnds(curLinks.filter((L) => L.tone === k));
+    if (st.t === 'kind') return withEnds(curLinks.filter((L) => L.kind === k));
+    const ch = chartOf(p[0]); if (!ch) return null;
+    if (st.t === 'sign') return { pts: new Set(ptsWhere(ch, +p[0], (l) => sg(l) === +p[1])), sign: +p[1] };
+    if (st.t === 'house') return ch.cusps ? { pts: new Set(ptsWhere(ch, +p[0], (l) => C.houseOf(l, ch.cusps) === +p[1])), house: +p[1] } : null;
+    if (st.t === 'el') return { pts: new Set(ptsWhere(ch, +p[0], (l) => C.ELEMENT[sg(l) % 4] === p[1])) };
+    if (st.t === 'mode') return { pts: new Set(ptsWhere(ch, +p[0], (l) => C.MODE[sg(l) % 3] === p[1])) };
+    if (st.t === 'term' && k === 'retrograde') { const c0 = chartOf(focusSlot()); return { pts: new Set(C.PLANETS.filter((id) => c0.bodies[id].retro).map((id) => focusSlot() + ':' + id)) }; }
+    return null;
+  }
+  /** What a tap on the chart becomes. */
+  function stopOf(h) {
+    if (h.kind === 'point') { if (D.PT[h.id]) return ['pt', h.slot + ':' + h.id]; const m = { nn: 'node', sn: 'node', lilith: 'lilith', vertex: 'vertex', fortune: 'lot', spirit: 'lot', eros: 'lot' }[h.id]; return m ? ['term', m] : null; }
+    if (h.kind === 'line' && h.link) return ['link', h.link.key];
+    if (h.kind === 'cell') return h.link ? ['link', h.link.key] : null;
+    if (h.kind === 'sign') return ['sign', h.slot + ':' + h.sign];
+    if (h.kind === 'house') return ['house', h.slot + ':' + h.house];
+    if (h.kind === 'angle') { const sl = h.slot == null ? focusSlot() : h.slot; return h.id === 'AS' ? ['pt', sl + ':asc'] : h.id === 'MC' ? ['pt', sl + ':mc'] : h.id === 'DS' ? ['house', sl + ':7'] : h.id === 'IC' ? ['house', sl + ':4'] : null; }
+    return null;
+  }
+  function pushStop(t, k) {
+    const cur = S.trail[S.at]; if (cur && cur.t === t && cur.k === k) return;
+    S.trail = S.trail.slice(0, S.at + 1); S.trail.push({ t, k }); if (S.trail.length > 14) S.trail.shift(); S.at = S.trail.length - 1;
+  }
+  function syncJourney() { setFoc(); if (S.still) draw(performance.now()); renderPanel(); }
+  function go(t, k, src) {
+    pushStop(t, k); syncJourney();
+    if (src !== 'canvas') { const c = $('#card'); if (c.getBoundingClientRect().top < 0 || c.getBoundingClientRect().top > innerHeight * 0.6) c.scrollIntoView({ block: 'start', behavior: S.still ? 'auto' : 'smooth' }); }
+  }
+  /** Jump to a tab and bring one block of it into view. */
+  function goTo(v) {
+    const [tab, tgt] = v.split(':'); S.tab = tab; renderPanel(); let el = null;
+    if (tgt) el = tab === 'houses' ? $('#body [data-house="' + tgt + '"]') : $('#body [data-god="' + tgt + '"]');
+    (el || $('#tabs')).scrollIntoView({ block: 'start', behavior: S.still ? 'auto' : 'smooth' });
+    if (el) { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1800); }
+  }
   function renderPanel() {
     const vc = curCharts, links = curLinks.slice().sort((a, b) => a.off - b.off); if (!vc[0]) return;
     // header: the charts in this view
     $('#facts').innerHTML = vc.map((ch) => '<div class="fact" style="--c:' + D.SLOTCOL[S.slotOf(ch)] + '"><h3>' + esc(ch.name) + ' ' + (ch.meta && ch.meta.src ? badge(ch.meta) : '') + '</h3><p>' + facts(ch) + '</p></div>').join('');
-    // selection card
-    let card = '';
-    if (S.sel) {
-      const ch = S.sel.slot === 4 ? dav : S.charts[S.sel.slot], id = S.sel.id, P = D.PT[id];
-      if (ch && (ch.bodies[id] || ch[id] != null)) {
-        const lon = ch.bodies[id] ? ch.bodies[id].lon : ch[id], b = ch.bodies[id], mine = links.filter((x) => (S.slotOf(vc[x.ia]) === S.sel.slot && x.a === id) || (S.slotOf(vc[x.ib]) === S.sel.slot && x.b === id));
-        card = '<div class="card" style="--c:' + D.PCOL[id] + '"><div class="card-h">' + pg(id) + '<div><h3>' + P.n + ' <span lang="grc">' + P.g + '</span></h3><p>' + (vc.length > 1 || S.sel.slot === 4 ? esc(shortName(ch)) + ' · ' : '') + pos(lon) + (b && b.house ? ' · house ' + b.house : '') + (b && b.retro ? ' · retrograde' : '') + '</p></div><button class="x" data-clear aria-label="Clear selection">×</button></div><p class="k">' + cap(P.k) + '.</p>' + (mine.length ? '<ul class="lks">' + mine.map((x) => linkRow(x, vc, !(S.slotOf(vc[x.ia]) === S.sel.slot && x.a === id))).join('') + '</ul>' : '<p class="fine">No lines to this point at the current tightness.</p>') + '</div>';
-      }
-    }
-    $('#card').innerHTML = card || '<p class="prompt">Tap any point on the chart to follow its lines.</p>';
+    // the journey: the trail, then the current stop or a way in
+    const st = S.trail[S.at];
+    $('#card').innerHTML = trailHtml() + (st ? stopCard(st, links) : startCard(links));
+    const tr = $('#card .trail'), cur = tr && tr.querySelector('[aria-current]'); if (tr && cur) tr.scrollLeft = Math.max(0, cur.offsetLeft - tr.clientWidth + cur.offsetWidth + 24);
     $$('#tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.tab === S.tab));
     let body = '';
     if (S.tab === 'aspects') body = links.length ? '<ul class="lks">' + links.slice(0, 40).map((x) => linkRow(x, vc)).join('') + '</ul>' + (links.length > 40 ? '<p class="fine">Showing the 40 tightest of ' + links.length + '.</p>' : '') : '<p class="fine">No lines at this tightness. Loosen the orbs under Tuning.</p>';
@@ -1398,7 +1657,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (b.dataset.close != null) return closeLibrary();
     if (b.dataset.back != null) { $('#lib-body').hidden = false; $('#self').hidden = true; return; }
     if (b.dataset.self != null) { $('#lib-body').hidden = true; $('#self').hidden = false; $('#f-name').focus(); return; }
-    if (b.dataset.pair != null) { const p = L.PAIRS[+b.dataset.pair]; S.specs = [M.specOf(figById(p[0])), M.specOf(figById(p[1]))]; S.sel = null; S.focus = 0; S.view = 'biwheel'; recast(); closeLibrary(); renderAll(); return; }
+    if (b.dataset.pair != null) { const p = L.PAIRS[+b.dataset.pair]; S.specs = [M.specOf(figById(p[0])), M.specOf(figById(p[1]))]; S.sel = null; S.trail = []; S.at = -1; S.focus = 0; S.view = 'biwheel'; recast(); closeLibrary(); renderAll(); return; }
     if (b.dataset.fig) { const spec = b.dataset.fig === 'now' ? nowSpec() : M.specOf(figById(b.dataset.fig)); closeLibrary(); setSlot(S.pickSlot, spec); return; }
     if (b.dataset.city != null) { const c = cities.c[+b.dataset.city]; $('#f-place').value = c[0] + (c[1] ? ', ' + c[1] : '') + ', ' + c[2]; $('#f-lat').value = c[3]; $('#f-lon').value = c[4]; $('#f-place').dataset.tz = cities.tz[c[5]]; $('#f-hits').innerHTML = ''; suggestOffset(); }
   });
@@ -1446,7 +1705,10 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
 
   /* ---------------- wiring ---------------- */
   document.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-start],[data-pick],[data-drop],[data-view],[data-focus],[data-tog],[data-sel],[data-clear],[data-tab],[data-tone]'); if (!b || dlg.contains(b)) return;
+    const b = e.target.closest('[data-go],[data-crumb],[data-goto],[data-start],[data-pick],[data-drop],[data-view],[data-focus],[data-tog],[data-sel],[data-clear],[data-tab],[data-tone]'); if (!b || dlg.contains(b)) return;
+    if (b.dataset.go) { const v = b.dataset.go, i = v.indexOf(':'); return go(v.slice(0, i), v.slice(i + 1), b.closest('#card') ? 'card' : 'list'); }
+    if (b.dataset.crumb != null) { S.at = +b.dataset.crumb; return syncJourney(); }
+    if (b.dataset.goto) return goTo(b.dataset.goto);
     if (b.dataset.start) { if (b.dataset.start === 'house') { const sp = M.specOf(Object.assign({}, figById('wilhelm'), { private: true })); sp.meta = L.FIGURES[0]; return setSlot(0, sp); } openLibrary(0); if (b.dataset.start === 'self') { $('#lib-body').hidden = true; $('#self').hidden = false; $('#f-name').focus(); } return; }
     if (b.dataset.pick != null) return openLibrary(+b.dataset.pick);
     if (b.dataset.drop != null) return dropSlot(+b.dataset.drop);
@@ -1454,14 +1716,15 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (b.dataset.focus != null) { S.focus = +b.dataset.focus; S.sel = null; return renderAll(); }
     if (b.dataset.tog) { S[b.dataset.tog] = !S[b.dataset.tog]; C.opts.minor = !!S.minor; if (b.dataset.tog === 'minor') S.sel = null; if (b.dataset.tog === 'still' && !S.still) { t0 = performance.now(); requestAnimationFrame(loop); } syncTuning(); return renderAll(); }
     if (b.dataset.tone) { S.tones[b.dataset.tone] = !S.tones[b.dataset.tone]; syncTuning(); return renderAll(); }
-    if (b.dataset.sel) { const [s, id] = b.dataset.sel.split(':'); S.sel = { slot: +s, id }; redraw(); renderPanel(); $('#card').scrollIntoView({ block: 'nearest', behavior: S.still ? 'auto' : 'smooth' }); return; }
-    if (b.dataset.clear != null) { S.sel = null; redraw(); return renderPanel(); }
+    if (b.dataset.sel) return go('pt', b.dataset.sel, b.closest('#card') ? 'card' : 'list');
+    if (b.dataset.clear != null) { S.trail = []; S.at = -1; return syncJourney(); }
     if (b.dataset.tab) { S.tab = b.dataset.tab; return renderPanel(); }
   });
   function syncTuning() { $$('[data-tone]').forEach((b) => b.setAttribute('aria-pressed', S.tones[b.dataset.tone])); $$('#tuning [data-tog]').forEach((b) => b.setAttribute('aria-pressed', !!S[b.dataset.tog])); $('#tightv').textContent = Math.round(S.tight * 100) + '%'; }
   $('#tight').addEventListener('input', (e) => { S.tight = +e.target.value; syncTuning(); redraw(); renderPanel(); });
   $('#hsys').addEventListener('change', (e) => { S.hsys = e.target.value; recast(); renderAll(); });
   /* a list row under the mouse lights its line on the chart */
+  $('#body').addEventListener('click', (e) => { if (e.target.closest('button,a,.gt')) return; const li = e.target.closest('.lk[data-k]'); if (li) go('link', li.dataset.k, 'list'); });
   $('#body').addEventListener('pointerover', (e) => { if (e.pointerType !== 'mouse') return; const li = e.target.closest('.lk[data-k]'), L = li && curLinks.find((x) => x.key === li.dataset.k); setHov(L ? { kind: 'line', link: L } : null, 0, 0, 'list'); });
   $('#body').addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') setHov(null); });
   /* opening Tuning brings it into view with the chart: on a wide screen the chart shrinks to make room, on a phone the page scrolls */
