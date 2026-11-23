@@ -1152,13 +1152,17 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const dayTeam = ['sun', 'jupiter', 'saturn'], nightTeam = ['moon', 'venus', 'mars'];
     if (dayTeam.includes(r) || nightTeam.includes(r)) { const inSect = ch.day ? dayTeam.includes(r) : nightTeam.includes(r); score += inSect ? 0.5 : -0.5;
       out.push(inSect ? 'You were born by ' + (ch.day ? 'day' : 'night') + ', and ' + GOD[r] + ' belongs to the ' + (ch.day ? 'day' : 'night') + ' team, so its better side comes more easily.' : 'You were born by ' + (ch.day ? 'day' : 'night') + ', and ' + GOD[r] + ' belongs to the ' + (ch.day ? 'night' : 'day') + ' team, so it can come out rougher and asks for more awareness.'); }
-    if (r !== 'sun') { const d = C.sep(b.lon, ch.bodies.sun.lon); if (d < 0.29) { score += 1; out.push('It stands in the heart of Helios, within a fraction of a degree: the ancients read this as a god seated on the throne.'); } else if (d < 8.5) { score -= 1; out.push('It stands ' + d.toFixed(1) + '° from Helios, which the ancients called burned. This function is hard to see apart from your sense of self, and it helps to give it a hearing of its own.'); } }
+    if (r !== 'sun') { const d = C.sep(b.lon, ch.bodies.sun.lon), am = Math.round(d * 60);
+      if (d < 17 / 60) { score += 1; out.push('<b>Enthroned.</b> ' + N + ' stands ' + am + '′ from Helios, inside the heart of the Sun by the strictest medieval measure. The old image is a god seated on the king’s own throne, speaking with his voice.'); }
+      else if (d < 1) { score += 1; out.push('<b>Enthroned.</b> ' + N + ' stands ' + am + '′ from Helios, in the same degree. The strict medieval line for the heart of the Sun is 16 to 17 minutes, and the wider school counts the whole degree; by that measure ' + GOD[r] + ' sits on the king’s own throne and speaks with his voice. This function is fused with your sense of self, and carries its authority.'); }
+      else if (d < 8.5) { score -= 1; out.push('It stands ' + d.toFixed(1) + '° from Helios, which the ancients called burned. This function is hard to see apart from your sense of self, and it helps to give it a hearing of its own.'); } }
     if (b.retro) { score -= 0.5; out.push('It was walking backward at your birth: it turns inward first, and gets things right on the second pass.'); }
     /* closest aspects from the other gods */
     const asp = []; for (const p of C.PLANETS) if (p !== r) { const sp = C.sep(ch.bodies[p].lon, b.lon); for (const a of [0, 60, 90, 120, 180]) { const off = Math.abs(sp - a); if (off < (a === 60 ? 4 : 6)) asp.push({ p, a, off }); } }
     asp.sort((x, y) => x.off - y.off);
     for (const x of asp.slice(0, 3)) { const G = cap(GOD[x.p]), o = ' (' + x.off.toFixed(1) + '°)';
-      if (x.a === 0) { out.push(G + ' stands with ' + GOD[r] + o + ' and brings ' + GIFT[x.p] + ', along with ' + STRAIN[x.p] + '.'); if (x.p === 'jupiter' || x.p === 'venus') score += 1; if (x.p === 'mars' || x.p === 'saturn') score -= 1; }
+      if (x.a === 0 && (x.p === 'sun' || r === 'sun') && x.off < 1) { if (r === 'sun') out.push(G + ' sits enthroned in the heart of Helios' + o + ' and speaks with the king’s voice.'); }
+      else if (x.a === 0) { out.push(G + ' stands with ' + GOD[r] + o + ' and brings ' + GIFT[x.p] + ', along with ' + STRAIN[x.p] + '.'); if (x.p === 'jupiter' || x.p === 'venus') score += 1; if (x.p === 'mars' || x.p === 'saturn') score -= 1; }
       else if (x.a === 60 || x.a === 120) { out.push(G + ' ' + ASPV[x.a] + ' ' + GOD[r] + o + ' and lends ' + GIFT[x.p] + '.'); score += x.p === 'jupiter' || x.p === 'venus' ? 1 : 0.5; }
       else { out.push(G + ' ' + ASPV[x.a] + ' ' + GOD[r] + o + ', and the work between them is ' + STRAIN[x.p] + '.'); score -= x.p === 'mars' || x.p === 'saturn' ? 1 : x.p === 'jupiter' || x.p === 'venus' ? 0 : 0.5; } }
     if (!asp.length) out.push('No other god aspects it closely, so it acts alone and is easy to overlook.');
