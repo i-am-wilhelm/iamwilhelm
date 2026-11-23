@@ -62,7 +62,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   <div class="panel" role="region" aria-label="The reading">
     <div id="facts"></div>
     <div id="card" aria-live="polite"></div>
-    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="aspects">Lines</button><button role="tab" data-tab="reading">Reading</button><button role="tab" data-tab="music">Music</button><button role="tab" data-tab="energies">Energies</button></div>
+    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="aspects">Lines</button><button role="tab" data-tab="reading">Reading</button><button role="tab" data-tab="today">Today</button><button role="tab" data-tab="music">Music</button><button role="tab" data-tab="energies">Energies</button></div>
     <div id="body"></div>
   </div>
 </div>
@@ -200,6 +200,14 @@ body.natal .gl.tx{width:auto;height:auto;font-family:var(--mono);font-size:.72em
 body.natal .gl.zs{color:var(--mute)}
 body.natal .key{border:1px solid var(--ichor);border-radius:12px;padding:12px 14px;margin:0 0 10px;background:rgba(242,197,107,.06)}body.natal .key span{display:block;font-family:var(--mono);font-weight:500;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}body.natal .key b{display:block;font-size:1.9rem;line-height:1.15;color:var(--ichor)}body.natal .key small{font-family:var(--mono);font-weight:500;font-size:.66rem;color:var(--mute)}
 body.natal .nt{color:var(--ichor);font-size:1.05rem}body.natal .iv{font-size:.82rem;color:var(--mute)}
+body.natal .day{--a:var(--ichor);border:1px solid var(--a);border-radius:12px;padding:16px;margin:0 0 14px;background:var(--slab)}
+body.natal .day h4{margin:4px 0 6px;font-size:1.5rem;line-height:1.1;color:var(--a)}body.natal .day-k,body.natal .day-f,body.natal .day i{font-family:var(--mono);font-weight:500;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);font-style:normal}
+body.natal .day ol{margin:10px 0;padding-left:1.2em;display:grid;gap:9px}body.natal .day-m{margin:0;font-style:italic}
+body.natal .day-almanac{border-style:double;border-width:4px}
+body.natal .day-telegram{--a:#efe8d8;border-style:dashed;border-radius:2px;font-family:var(--mono);font-weight:500;font-size:.84rem}body.natal .day-telegram h4{font-family:var(--mono);text-transform:uppercase;font-size:1.05rem;letter-spacing:.08em}
+body.natal .day-illumination{--a:#ff8fb0;background:linear-gradient(160deg,#2a1020,#15131c 60%);border-radius:4px}body.natal .day-illumination h4::first-letter{font-size:2.6em;float:left;line-height:.8;margin-right:6px}
+body.natal .day-tide{--a:#7fd8c4;background:linear-gradient(180deg,#0f2a2c,#15131c);border-radius:26px;border-width:0;box-shadow:inset 0 0 0 1px rgba(127,216,196,.4)}
+body.natal .day-broadside{--a:#0b0a10;background:#efe8d8;color:#0b0a10;border-radius:0}body.natal .day-broadside h4{font-size:2rem;text-transform:uppercase;letter-spacing:-.01em}body.natal .day-broadside .day-k,body.natal .day-broadside .day-f,body.natal .day-broadside i{color:#5a5548}
 body.natal .god{border-left:2px solid var(--rule);padding:0 0 0 12px;margin:0 0 14px}body.natal .god h5{margin:0 0 4px;font-size:1.05rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px}body.natal .god h5 span{font-family:var(--mono);font-weight:500;font-size:.66rem;color:var(--mute)}
 body.natal .rd{margin:0 0 10px;font-size:.98rem;line-height:1.5}body.natal .rd-l{margin:0 0 12px;padding-left:1.1em;display:grid;gap:7px;font-size:.95rem}
 body.natal #tabs{overflow-x:auto;scrollbar-width:none;white-space:nowrap;display:flex;gap:4px;border-bottom:1px solid var(--rule);margin:0 0 10px}

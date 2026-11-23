@@ -1041,16 +1041,52 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     uranus: 'I am the sky before there were rules. I arrive without knocking.', neptune: 'I am the sea under your floor. I blur what you were sure of, and I call it mercy.', pluto: 'I keep what is buried, and I hand it back changed.',
   };
   const MANNER = ['fast and first', 'slow and sure', 'in two voices at once', 'with my guard up and my arms open', 'as if on a stage', 'with a fine brush', 'with a hand on the scales', 'all the way down', 'at full gallop', 'by the long road', 'from the far side of the room', 'through the walls'];
-  const SAY = {
-    conjunction: (n) => cap(n) + ' stands so close that we speak with one mouth.', opposition: (n) => cap(n) + ' faces me across the whole wheel. We take turns holding you.',
-    trine: (n) => cap(n) + ' and I are easy company. What I start, the other carries.', square: (n) => cap(n) + ' and I quarrel, and you are the house we quarrel in. The friction is your engine.',
-    sextile: (n) => cap(n) + ' leaves a door open for me. Use it.',
-  };
   const hs = (n) => 'the house of ' + HOUSECOPY[n - 1].replace(/\.$/, '').toLowerCase();
+  /* What each pair of gods is about; the aspect decides how they say it. */
+  const THEME = { 'sun|moon': 'what you are and what you need', 'sun|mercury': 'the self and its spokesman', 'sun|venus': 'being seen and being wanted', 'sun|mars': 'the will and the arm that carries it', 'sun|jupiter': 'confidence and how far it stretches', 'sun|saturn': 'the self and the standard it is held to', 'sun|uranus': 'who you are and who you refuse to be', 'sun|neptune': 'the self and the dream it dissolves into', 'sun|pluto': 'identity and the power under it',
+    'moon|mercury': 'what you feel and what you can say', 'moon|venus': 'comfort and desire', 'moon|mars': 'the tender place and the temper guarding it', 'moon|jupiter': 'need and plenty', 'moon|saturn': 'need and the rule against asking', 'moon|uranus': 'closeness and the urge to bolt', 'moon|neptune': 'feeling without edges', 'moon|pluto': 'feeling that goes to the bottom',
+    'mercury|venus': 'charm in the mouth', 'mercury|mars': 'the quick tongue and the fight it starts', 'mercury|jupiter': 'the detail and the big story', 'mercury|saturn': 'thought that has to be proved', 'mercury|uranus': 'the idea that arrives like lightning', 'mercury|neptune': 'the word and the fog around it', 'mercury|pluto': 'the question that will not stop digging',
+    'venus|mars': 'wanting and going after', 'venus|jupiter': 'love with the tap left running', 'venus|saturn': 'love that has to last', 'venus|uranus': 'love that will not be fenced', 'venus|neptune': 'love as a dream of love', 'venus|pluto': 'love that goes all the way down',
+    'mars|jupiter': 'the charge and the cause', 'mars|saturn': 'the accelerator and the brake', 'mars|uranus': 'the sudden move', 'mars|neptune': 'force without a clear target', 'mars|pluto': 'a will that does not let go',
+    'jupiter|saturn': 'how much to hope and how much to build', 'jupiter|uranus': 'the lucky break', 'jupiter|neptune': 'faith with no ceiling', 'jupiter|pluto': 'ambition with deep roots', 'saturn|uranus': 'the old order and the break from it', 'saturn|neptune': 'the wall and the tide', 'saturn|pluto': 'pressure that makes or breaks', 'uranus|neptune': 'the dream of a different world', 'uranus|pluto': 'upheaval as a birthright', 'neptune|pluto': 'the slow tide under a whole generation' };
+  const theme = (a, b) => (b === 'asc' || a === 'asc' ? 'how you walk into a room' : b === 'mc' || a === 'mc' ? 'what you are known for' : THEME[a + '|' + b] || THEME[b + '|' + a] || 'the two of us');
+  const SAY = {
+    conjunction: (n, t) => cap(n) + ' stands so close that we speak with one mouth about ' + t + '.', opposition: (n, t) => cap(n) + ' faces me across the wheel, and ' + t + ' is the rope between us.',
+    trine: (n, t) => cap(n) + ' and I are easy company: ' + t + ' comes to you without a fight.', square: (n, t) => cap(n) + ' and I quarrel over ' + t + ', and you are the house we quarrel in.', sextile: (n, t) => cap(n) + ' leaves me a door: ' + t + ', if you use it.',
+  };
+  const ELM = { sun: ['I burn in the open.', 'I shine on what can be built.', 'I light up ideas and the people who trade them.', 'I shine underwater, by feel.'], moon: ['I feel first and loudly.', 'I am soothed by what I can touch.', 'I need to talk it through.', 'I am at home here; I feel everything.'], mercury: ['I speak before the thought cools.', 'I think in lists and proofs.', 'I am in my element: fast, light, everywhere.', 'I think in pictures and moods.'], venus: ['I love by pursuit.', 'I love with my hands.', 'I love by conversation.', 'I love by soaking in.'], mars: ['I strike clean and at once.', 'I grind; I do not sprint.', 'I fight with words.', 'I fight sideways, and I remember.'], jupiter: ['I bet big.', 'I grow what is planted.', 'I multiply ideas and friends.', 'I am generous with feeling.'], saturn: ['I discipline the impulse.', 'I am the builder at home.', 'I put rules on thought and company.', 'I guard the feelings behind a wall.'], uranus: ['I revolt in person.', 'I crack the foundations.', 'I rewire the ideas.', 'I shock the heart.'], neptune: ['I dream of glory.', 'I dissolve the solid things.', 'I fog the ideals.', 'I am the whole sea.'], pluto: ['I burn it down to regrow it.', 'I remake what you rely on.', 'I turn the meaning inside out.', 'I work in the dark of the feelings.'] };
+  const EXTRA = [['lilith', 'Lilith', 'I am the one who would not lie beneath. Where I stand you take no orders, and you pay for it gladly.'], ['nn', 'The North Node', 'I am the road you have not walked. It feels wrong because it is new.'], ['sn', 'The South Node', 'I am what you already know how to do. Rest here, and do not live here.'], ['chiron', 'Chiron', 'I am the wound that would not close, so I learned medicine. Here you teach what hurt you.'], ['ceres', 'Demeter', 'I feed, and I grieve when the fed are taken. Here is how you mother and what you cannot bear to lose.'], ['pallas', 'Athena', 'I see the pattern before the others see the pieces.'], ['juno', 'Hera', 'I keep the vow, and I keep the ledger of it.'], ['vesta', 'Hestia', 'I tend one flame and let no one touch it. Here is what you hold sacred.']];
+  const hs0 = 0;
+  const xlon = (ch, id) => (id === 'sn' ? C.norm(ch.nn + 180) : id === 'nn' ? ch.nn : id === 'lilith' ? ch.lilith : ch.bodies[id] ? ch.bodies[id].lon : null);
+  function extras(ch) {
+    return EXTRA.map(([id, n, open]) => { const lon = xlon(ch, id); if (lon == null) return ''; let t = open + ' In you I stand in ' + C.SIGNS[sg(lon)] + (ch.cusps ? ', in ' + hs(C.houseOf(lon, ch.cusps)) : '') + '.';
+      const near = C.PLANETS.filter((p) => C.sep(ch.bodies[p].lon, lon) < 4)[0]; if (near) t += ' ' + cap(GOD[near]) + ' stands with me, and speaks in my accent.';
+      return '<div class="god"><h5>' + (D.PG[id === 'sn' ? 'nn' : id] ? svg(D.PG[id === 'sn' ? 'nn' : id], 'pl') : '') + n + ' <span>' + C.SIGNS[sg(lon)] + '</span></h5><p class="rd">' + t + '</p></div>'; }).join('');
+  }
+  function patterns(ch) {
+    const P = C.PLANETS.map((id) => [GOD[id], ch.bodies[id].lon]), out = [];
+    const W = P.concat(ch.minorOk ? [['Hestia', ch.bodies.vesta.lon], ['Chiron', ch.bodies.chiron.lon]] : []).concat([['the North Node', ch.nn]]);
+    for (let s = 0; s < 12; s++) { const in_ = P.filter((p) => sg(p[1]) === s).map((p) => p[0]); if (in_.length >= 3) out.push('<b>A crowd in ' + C.SIGNS[s] + '.</b> ' + in_.join(', ') + ' share one room. It is loud in there, and much of your life is decided in it.'); }
+    const near = (a, b, ang, orb) => Math.abs(C.sep(a, b) - ang) < orb; let gt = 0, ts = 0;
+    for (let i = 0; i < W.length; i++) for (let j = i + 1; j < W.length; j++) for (let k = j + 1; k < W.length; k++) { if (!gt && near(W[i][1], W[j][1], 120, 6) && near(W[j][1], W[k][1], 120, 6) && near(W[i][1], W[k][1], 120, 6)) { gt = 1; out.push('<b>A grand trine in ' + C.ELEMENT[sg(W[i][1]) % 4] + '.</b> ' + cap(W[i][0]) + ', ' + W[j][0] + ' and ' + W[k][0] + ' hold a closed triangle of ease. It runs without effort, which is its gift and its trap.'); } }
+    for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) if (near(P[i][1], P[j][1], 180, 7)) for (const c of P) if (!ts && c !== P[i] && c !== P[j] && near(c[1], P[i][1], 90, 6) && near(c[1], P[j][1], 90, 6)) { ts = 1; out.push('<b>A T-square.</b> ' + P[i][0] + ' and ' + P[j][0] + ' pull against each other, and ' + c[0] + ' takes the strain of both. ' + c[0] + ' is where you act.'); }
+    const el = C.sep(ch.bodies.sun.lon, ch.bodies.moon.lon); if (el > 168) out.push('<b>Born under a full moon.</b> Helios and Selene look straight at each other: you see yourself best in another person.'); else if (el < 12) out.push('<b>Born at the dark of the moon.</b> Helios and Selene share a seat: what you want and what you need are hard to tell apart.');
+    return out.length ? '<div class="god"><h5>The patterns</h5>' + out.map((x) => '<p class="rd">' + x + '</p>').join('') + '</div>' : '';
+  }
+  /* The daily read: today's sky against the chart, on a card whose design changes with the day. */
+  const PHASE = ['new', 'waxing crescent', 'first quarter', 'waxing gibbous', 'full', 'waning gibbous', 'last quarter', 'waning crescent'];
+  const TVERB = { conjunction: 'sits on', opposition: 'faces', trine: 'smooths the way for', square: 'leans on', sextile: 'opens a door for' };
+  const DSTYLE = ['almanac', 'telegram', 'illumination', 'tide', 'broadside'];
+  function daily(ch) {
+    const d = new Date(), now = C.cast(Object.assign(nowSpec(), { jd: Math.floor(Date.now() / 3600000) / 24 + 2440587.5 })), day = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+    const x = C.cross(now, ch, 0.5).filter((L) => L.a !== 'moon' || L.off < 2).slice(0, 3), ms = sg(now.bodies.moon.lon), ph = PHASE[Math.round(C.norm(now.bodies.moon.lon - now.bodies.sun.lon) / 45) % 8];
+    return '<div class="day day-' + DSTYLE[day % 5] + '"><span class="day-k">' + DSTYLE[day % 5] + ' · day ' + day + '</span><h4>' + d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) + '</h4><p class="day-m">Selene is ' + ph + ' in ' + C.SIGNS[ms] + ', working ' + MANNER[ms] + '.</p>' +
+      (x.length ? '<ol>' + x.map((L) => '<li><b>' + cap(GOD[L.a]) + ' ' + TVERB[L.kind] + ' your ' + GOD[L.b].split(',')[0].replace(/^the /, '') + '.</b> Today’s subject: ' + theme(L.a, L.b) + '. <i>' + L.off.toFixed(1) + '°</i></li>').join('') + '</ol>' : '<p>A quiet sky against this chart today. Nothing leans on you.</p>') + '<p class="day-f">For ' + esc(ch.name) + ' · the card wears a different design each day, five in rotation.</p></div>';
+  }
   function godSpeaks(ch, id, all) {
-    const b = ch.bodies[id], s = sg(b.lon), mine = all.filter((x) => x.a === id || x.b === id).slice(0, 2);
-    let t = OPEN[id] + ' In you I am in ' + C.SIGNS[s] + ', so I work ' + MANNER[s] + (b.house ? ', and I keep to ' + hs(b.house) : '') + '.' + (b.retro ? ' I was walking backward when you were born, so I do my work twice.' : '');
-    for (const x of mine) t += ' ' + SAY[x.kind](GOD[x.a === id ? x.b : x.a]) + (x.off < 1 ? ' This is close to exact; it runs through everything.' : '');
+    const b = ch.bodies[id], s = sg(b.lon), mine = all.filter((x) => x.a === id || x.b === id).slice(0, 3);
+    let t = OPEN[id] + ' ' + ELM[id][s % 4] + ' In you I am in ' + C.SIGNS[s] + ', so I work ' + MANNER[s] + (b.house ? ', and I keep to ' + hs(b.house) : '') + '.' + (b.retro ? ' I was walking backward when you were born, so I do my work twice.' : '');
+    for (const x of mine) t += ' ' + SAY[x.kind](GOD[x.a === id ? x.b : x.a], theme(x.a, x.b)) + (x.off < 1 ? ' This is close to exact; it runs through everything.' : '');
     return '<div class="god"><h5 style="color:' + D.PCOL[id] + '">' + pg(id) + GOD[id] + ' <span>' + D.PT[id].n + ' in ' + C.SIGNS[s] + (b.house ? ', house ' + b.house : '') + '</span></h5><p class="rd">' + t + '</p></div>';
   }
   function inner(ch, all, name, ids, blurb) {
@@ -1073,7 +1109,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const all = C.aspects(ch, S.tight).filter((x) => !C.MINOR.includes(x.a) && !C.MINOR.includes(x.b));
     let h = '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>';
     if (ch.timeKnown) { const r = RULER[sg(ch.asc)]; h += '<p class="rd"><b>' + C.SIGNS[sg(ch.asc)] + ' rises, so ' + GOD[r] + ' holds the keys.</b> The chart sounds in ' + keyOf(ch).name + '. Listen to ' + GOD[r] + ' first.</p>'; }
-    h += C.PLANETS.map((id) => godSpeaks(ch, id, all)).join('') + lotsSpeak(ch);
+    h += patterns(ch) + C.PLANETS.map((id) => godSpeaks(ch, id, all)).join('') + extras(ch) + lotsSpeak(ch);
     h += inner(ch, all, 'Anima', ['venus', 'moon'], 'Jung’s name for the soul’s feminine face, the one you fall for in other people before you meet her in yourself.');
     h += inner(ch, all, 'Animus', ['mars', 'sun'], 'The soul’s masculine face: the will, the word, the one who acts.');
     return h;
@@ -1104,6 +1140,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (S.tab === 'aspects') body = links.length ? '<ul class="lks">' + links.slice(0, 40).map((x) => linkRow(x, vc)).join('') + '</ul>' + (links.length > 40 ? '<p class="fine">Showing the 40 tightest of ' + links.length + '.</p>' : '') : '<p class="fine">No lines at this tightness. Loosen the orbs under Tuning.</p>';
     else if (S.tab === 'placements') body = vc.map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + placements(ch)).join('');
     else if (S.tab === 'reading') body = readingAll(vc, links);
+    else if (S.tab === 'today') body = vc.filter((c) => !(c.meta && (c.meta.now || c.meta.davison))).map(daily).join('') || '<p class="fine">Pick a birth chart to read today against.</p>';
     else if (S.tab === 'music') body = vc.map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + music(ch)).join('');
     else body = energies(vc, links);
     $('#body').innerHTML = body; markRows();
