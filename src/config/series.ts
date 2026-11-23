@@ -74,6 +74,14 @@ export const series = {
     accent: '#7d5f18',
     statement: 'Essays on how a picture resolves: the double image, the lit room, the broken dab, and the glyph dither they lead to.',
   },
+  machines: {
+    name: 'Machines',
+    title: 'Machines',
+    href: '/writings/machines/',
+    accent: '#2f5f73',
+    /* TODO(owner): the series' one-line statement, shown on /writings/machines/ and in its feed. */
+    statement: 'Hands-on pages: instruments to play with rather than read.',
+  },
   readings: {
     name: 'Readings',
     title: 'Readings',

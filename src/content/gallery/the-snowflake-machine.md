@@ -11,10 +11,12 @@ order: 24
 status: on-view
 plate: "#0d1228"
 date: 2026-11-09
+series: machines
+seriesNo: 1
 ---
 
 Mounted as delivered from the owner's approved source file
 (_incoming/art-scrollies/the-snowflake-machine.html) by src/lib/seen.ts; the title and the
-card text are the file's own <title> and meta description. Unnumbered and
-outside the series chain: a hands-on page, hung last.
+card text are the file's own <title> and meta description. First of the
+Machines, the hands-on pages.
 TODO(owner): the zodiac `sign` is the schema default; choose one.
