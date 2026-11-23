@@ -62,7 +62,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   <div class="panel" role="region" aria-label="The reading">
     <div id="facts"></div>
     <div id="card" aria-live="polite"></div>
-    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="aspects">Lines</button><button role="tab" data-tab="reading">Reading</button><button role="tab" data-tab="today">Today</button><button role="tab" data-tab="music">Music</button><button role="tab" data-tab="energies">Energies</button></div>
+    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="aspects">Lines</button><button role="tab" data-tab="reading">Reading</button><button role="tab" data-tab="houses">Houses</button><button role="tab" data-tab="today">Today</button><button role="tab" data-tab="music">Music</button><button role="tab" data-tab="energies">Energies</button></div>
     <div id="body"></div>
   </div>
 </div>
@@ -217,6 +217,7 @@ body.natal .gloss b{display:block;font-size:1.05rem;line-height:1.2}body.natal .
 body.natal .god h5 .ep{font-style:normal;font-weight:400;font-size:.95rem;color:var(--ichor)}body.natal .god h5 span{flex-basis:100%}
 body.natal .god.fate{border:1px solid var(--ichor);border-radius:12px;padding:12px 14px;background:rgba(242,197,107,.05)}body.natal .god.fate h5{color:var(--ichor)}
 body.natal .god{border-left:2px solid var(--rule);padding:0 0 0 12px;margin:0 0 14px}body.natal .god h5{margin:0 0 4px;font-size:1.05rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px}body.natal .god h5 span{font-family:var(--mono);font-weight:500;font-size:.66rem;color:var(--mute)}
+body.natal .god.house .hn{display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;border:1px solid var(--ichor);color:var(--ichor);font-family:var(--mono);font-size:.72rem;font-weight:600;flex:none}body.natal .rd.hq{font-style:italic;color:var(--ichor);border-top:1px solid var(--rule);padding-top:8px}
 body.natal .rd{margin:0 0 10px;font-size:.98rem;line-height:1.5}body.natal .rd-l{margin:0 0 12px;padding-left:1.1em;display:grid;gap:7px;font-size:.95rem}
 body.natal #tabs{overflow-x:auto;scrollbar-width:none;white-space:nowrap;display:flex;gap:4px;border-bottom:1px solid var(--rule);margin:0 0 10px}
 body.natal #tabs button{padding:10px 12px 9px;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;min-height:44px}
