@@ -1052,7 +1052,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const theme = (a, b) => (b === 'asc' || a === 'asc' ? 'how you walk into a room' : b === 'mc' || a === 'mc' ? 'what you are known for' : THEME[a + '|' + b] || THEME[b + '|' + a] || 'the two of us');
   const SAY = {
     conjunction: (n, t) => cap(n) + ' stands so close that we speak with one mouth about ' + t + '.', opposition: (n, t) => cap(n) + ' faces me across the wheel, and ' + t + ' is the rope between us.',
-    trine: (n, t) => cap(n) + ' and I are easy company: ' + t + ' comes to you without a fight.', square: (n, t) => cap(n) + ' and I quarrel over ' + t + ', and you are the house we quarrel in.', sextile: (n, t) => cap(n) + ' leaves me a door: ' + t + ', if you use it.',
+    trine: (n, t) => cap(n) + ' and I are easy company: ' + t + ' comes to you without a fight.', square: (n, t) => cap(n) + ' and I quarrel over ' + t + ', and you are the room we quarrel in.', sextile: (n, t) => cap(n) + ' leaves me a door: ' + t + ', if you use it.',
   };
   const ELM = { sun: ['I burn in the open.', 'I shine on what can be built.', 'I light up ideas and the people who trade them.', 'I shine underwater, by feel.'], moon: ['I feel first and loudly.', 'I am soothed by what I can touch.', 'I need to talk it through.', 'I am at home here; I feel everything.'], mercury: ['I speak before the thought cools.', 'I think in lists and proofs.', 'I am in my element: fast, light, everywhere.', 'I think in pictures and moods.'], venus: ['I love by pursuit.', 'I love with my hands.', 'I love by conversation.', 'I love by soaking in.'], mars: ['I strike clean and at once.', 'I grind; I do not sprint.', 'I fight with words.', 'I fight sideways, and I remember.'], jupiter: ['I bet big.', 'I grow what is planted.', 'I multiply ideas and friends.', 'I am generous with feeling.'], saturn: ['I discipline the impulse.', 'I am the builder at home.', 'I put rules on thought and company.', 'I guard the feelings behind a wall.'], uranus: ['I revolt in person.', 'I crack the foundations.', 'I rewire the ideas.', 'I shock the heart.'], neptune: ['I dream of glory.', 'I dissolve the solid things.', 'I fog the ideals.', 'I am the whole sea.'], pluto: ['I burn it down to regrow it.', 'I remake what you rely on.', 'I turn the meaning inside out.', 'I work in the dark of the feelings.'] };
   const EXTRA = [['lilith', 'Lilith', 'I am the one who would not lie beneath. Where I stand you take no orders, and you pay for it gladly.'], ['nn', 'The North Node', 'I am the road you have not walked. It feels wrong because it is new.'], ['sn', 'The South Node', 'I am what you already know how to do. Rest here, and do not live here.'], ['chiron', 'Chiron', 'I am the wound that would not close, so I learned medicine. Here you teach what hurt you.'], ['ceres', 'Demeter', 'I feed, and I grieve when the fed are taken. Here is how you mother and what you cannot bear to lose.'], ['pallas', 'Athena', 'I see the pattern before the others see the pieces.'], ['juno', 'Hera', 'I keep the vow, and I keep the ledger of it.'], ['vesta', 'Hestia', 'I tend one flame and let no one touch it. Here is what you hold sacred.']];
@@ -1121,6 +1121,60 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     return h + '<p class="fine">The gods\u2019 lines are assembled by rule from the placements and aspects. Everyone carries both inner figures. Read it as a mirror to argue with.</p>';
   }
 
+  /* ---------------- the glossary: tap or hover a god's name or a term ---------------- */
+  const aspSvg = (deg, extra) => { const p = (a) => [24 + 19 * Math.cos((a * Math.PI) / 180), 24 + 19 * Math.sin((a * Math.PI) / 180)], a = p(-90 - deg / 2), b = p(-90 + deg / 2); return '<circle cx="24" cy="24" r="19" opacity=".45"/><path d="M' + a + 'L' + b + '"/><circle cx="' + a[0] + '" cy="' + a[1] + '" r="3" fill="currentColor"/><circle cx="' + b[0] + '" cy="' + b[1] + '" r="3" fill="currentColor"/>' + (extra || ''); };
+  const RING = '<circle cx="24" cy="24" r="19" opacity=".45"/>';
+  const GL = {
+    helios: ['Helios', 'the Sun', 'The Greek god who drives the sun across the sky. In a chart he is your core self: the lead singer of the band.', 'sun'],
+    selene: ['Selene', 'the Moon', 'The moon goddess. Your moods and needs: the part of you that shows up at 2 a.m.', 'moon'],
+    hermes: ['Hermes', 'Mercury', 'The messenger god with winged sandals. How you think and talk: your inner group chat.', 'mercury'],
+    aphrodite: ['Aphrodite', 'Venus', 'Goddess of love and beauty. What you are drawn to, and how you draw people in.', 'venus'],
+    ares: ['Ares', 'Mars', 'God of war. Your drive and your temper: the gas pedal.', 'mars'],
+    zeus: ['Zeus', 'Jupiter', 'King of the gods. Where things grow and luck shows up: the planet that says yes.', 'jupiter'],
+    kronos: ['Kronos', 'Saturn', 'The old Titan of time. Rules, limits and hard work: the strict coach who turns out to be right.', 'saturn'],
+    ouranos: ['Ouranos', 'Uranus', 'The first sky god. Sudden change and rebellion: the fire alarm in the middle of class.', 'uranus'],
+    poseidon: ['Poseidon', 'Neptune', 'God of the sea. Dreams, imagination and fog: the part of you staring out the window.', 'neptune'],
+    hades: ['Hades', 'Pluto', 'Lord of the underworld. Deep change: what gets buried and comes back different.', 'pluto'],
+    demeter: ['Demeter', 'Ceres, an asteroid', 'Goddess of the harvest, who lost her daughter to Hades. How you look after people.', 'ceres'],
+    athena: ['Athena', 'Pallas, an asteroid', 'Goddess of strategy. How you spot patterns and solve problems.', 'pallas'],
+    hera: ['Hera', 'Juno, an asteroid', 'Queen of the gods and goddess of marriage. What commitment means to you.', 'juno'],
+    hestia: ['Hestia', 'Vesta, an asteroid', 'Goddess of the hearth fire. What you guard and give your full focus.', 'vesta'],
+    chiron: ['Chiron', 'a small body between Saturn and Uranus', 'The wise centaur with a wound he could not heal, who became a teacher. Where a hurt turns into a skill.', 'chiron'],
+    lilith: ['Lilith', 'the Black Moon', 'The far point of the Moon’s orbit: a spot in space with nothing there. In legend, the woman who refused to obey.', 'lilith'],
+    house: ['House', 'one of twelve', 'The sky around your birthplace cut into twelve slices, like a pizza. Each slice is an area of life: money, home, work, love.', RING + '<path d="M24 24L43 24A19 19 0 0 0 40.5 14.5Z" fill="currentColor" opacity=".8"/><path d="M5 24H43M24 5V43M7.5 14.5L40.5 33.5M7.5 33.5L40.5 14.5M14.5 7.5L33.5 40.5M14.5 40.5L33.5 7.5" opacity=".35"/>'],
+    ascendant: ['Ascendant', 'the rising sign', 'The zodiac sign coming up over the eastern horizon the minute you were born, like a sunrise. It sets how you come across.', RING + '<path d="M3 24H45"/><circle cx="5" cy="24" r="3.5" fill="currentColor"/><path d="M5 17V11M2 14L5 11L8 14"/>'],
+    midheaven: ['Midheaven', 'the top of the chart', 'The highest point of the sky at your birth. It points at career and reputation: what you are seen doing.', RING + '<path d="M24 24V5"/><circle cx="24" cy="5" r="3.5" fill="currentColor"/>'],
+    vertex: ['Vertex', 'a western point', 'A point on the western side of the chart. Astrologers read it as the spot for meetings that feel fated.', RING + '<circle cx="42" cy="28" r="3.5" fill="currentColor"/><path d="M24 24L38 27"/>'],
+    conjunction: ['Conjunction', '0° apart', 'Two planets in the same spot of sky. They blend, like two colors of paint stirred together.', aspSvg(10)],
+    opposition: ['Opposition', '180° apart', 'Two planets on opposite sides of the sky. Like a seesaw: one goes up when the other goes down.', aspSvg(180)],
+    trine: ['Trine', '120° apart', 'Two planets a third of the circle apart. They get along without trying, like friends with the same sense of humor.', aspSvg(120)],
+    square: ['Square', '90° apart', 'Two planets a quarter of the circle apart. They rub each other the wrong way, and the friction pushes you to act.', aspSvg(90)],
+    sextile: ['Sextile', '60° apart', 'Two planets a sixth of the circle apart. A helpful link, like a door left unlocked.', aspSvg(60)],
+    'grand trine': ['Grand trine', 'a triangle', 'Three planets, each 120° from the next, making a triangle. Talent that comes easily.', RING + '<path d="M24 5L40.5 33.5L7.5 33.5Z"/>'],
+    't-square': ['T-square', 'a pressure point', 'Two planets opposite each other, with a third at a right angle to both. The pressure funnels into the third.', RING + '<path d="M5 24H43M5 24L24 5L43 24"/><circle cx="24" cy="5" r="3" fill="currentColor"/>'],
+    retrograde: ['Retrograde', 'seeming to go backward', 'From Earth a planet sometimes seems to drift backward for a few weeks, the way a slower car seems to roll back when you pass it.', '<path d="M4 32C16 32 30 30 30 21S19 14 19 22S32 32 44 32"/><path d="M40 28L44 32L40 36"/>'],
+    node: ['The nodes', 'two crossing points', 'The two points where the Moon’s path crosses the Sun’s. North is where you are headed; South is what you bring with you.', '<ellipse cx="24" cy="24" rx="20" ry="9"/><ellipse cx="24" cy="24" rx="20" ry="9" transform="rotate(28 24 24)" opacity=".6"/><circle cx="6.5" cy="19.5" r="3" fill="currentColor"/><circle cx="41.5" cy="28.5" r="3" fill="currentColor"/>'],
+    lot: ['A lot', 'a calculated point', 'A point found with arithmetic: take the distance between two planets and measure it off from the Ascendant. An ancient Greek method.', RING + '<path d="M11 11L37 37M37 11L11 37"/>'],
+    anima: ['Anima and Animus', 'Jung’s inner figures', 'Carl Jung’s names for the inner feminine (Anima) and inner masculine (Animus) that every person carries, whatever their sex.', '<circle cx="18" cy="24" r="12"/><circle cx="30" cy="24" r="12" opacity=".6"/>'],
+    tonic: ['Tonic', 'the home note', 'The note a key is built on: the one a song wants to land on at the end.', '<path d="M4 16H44M4 22H44M4 28H44M4 34H44" opacity=".45"/><ellipse cx="22" cy="31" rx="5" ry="3.6" fill="currentColor"/><path d="M27 31V10"/>'],
+  };
+  const GKEY = { 'north node': 'node', 'south node': 'node', nodes: 'node', lots: 'lot', fortune: 'lot', spirit: 'lot', eros: 'lot', 'lot of eros': 'lot', animus: 'anima' };
+  const GRX = /\b(grand trine|T-square|North Node|South Node|Lot of Eros|Ascendant|Midheaven|Vertex|Helios|Selene|Hermes|Aphrodite|Ares|Zeus|Kronos|Ouranos|Poseidon|Hades|Demeter|Athena|Hera|Hestia|Chiron|Lilith|Fortune|Spirit|Eros|Anima|Animus|conjunction|opposition|sextile|square|trine|retrograde|house|lots|tonic)\b/g;
+  /** Wrap god names and terms in the text of some HTML (never inside a tag) so each opens its glossary note. */
+  function gloss(html) { return html.split(/(<[^>]+>)/).map((part) => (part.charAt(0) === '<' ? part : part.replace(GRX, (m) => { const k = m.toLowerCase(), key = GL[k] ? k : GKEY[k]; return key ? '<button type="button" class="gt" data-g="' + key + '">' + m + '</button>' : m; }))).join(''); }
+  const gbox = document.createElement('div'); gbox.id = 'gloss'; gbox.className = 'gloss'; gbox.hidden = true; gbox.setAttribute('role', 'tooltip'); document.body.appendChild(gbox);
+  function showGloss(el) {
+    const g = GL[el.dataset.g]; if (!g) return;
+    const pic = D.PG[g[3]] ? '<svg viewBox="0 0 24 24" class="gloss-p"><path d="' + D.PG[g[3]] + '" stroke-width="1.5"/></svg>' : '<svg viewBox="0 0 48 48" class="gloss-p">' + g[3] + '</svg>';
+    gbox.innerHTML = pic + '<div><b>' + g[0] + '</b><span>' + g[1] + '</span><p>' + g[2] + '</p></div>'; gbox.hidden = false;
+    const r = el.getBoundingClientRect(), w = gbox.offsetWidth, h = gbox.offsetHeight; let x = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h - 8; if (y < 8) y = r.bottom + 8;
+    gbox.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)'; gbox.dataset.for = el.dataset.g;
+  }
+  const hideGloss = () => { gbox.hidden = true; };
+  document.addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse') { const el = e.target.closest && e.target.closest('.gt'); if (el) showGloss(el); else hideGloss(); } });
+  document.addEventListener('click', (e) => { const el = e.target.closest && e.target.closest('.gt'); if (el) { e.stopPropagation(); showGloss(el); } else hideGloss(); }, true);
+  addEventListener('scroll', hideGloss, { passive: true });
+
   function renderPanel() {
     const vc = curCharts, links = curLinks.slice().sort((a, b) => a.off - b.off); if (!vc[0]) return;
     // header: the charts in this view
@@ -1143,6 +1197,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     else if (S.tab === 'today') body = vc.filter((c) => !(c.meta && (c.meta.now || c.meta.davison))).map(daily).join('') || '<p class="fine">Pick a birth chart to read today against.</p>';
     else if (S.tab === 'music') body = vc.map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + music(ch)).join('');
     else body = energies(vc, links);
+    if (S.tab === 'reading' || S.tab === 'today' || S.tab === 'music') body = gloss(body);
     $('#body').innerHTML = body; markRows();
     cv.setAttribute('aria-label', (VIEWS.find((x) => x[0] === S.view)[1]) + ' view of ' + vc.map((c) => c.name).join(' and ') + '. ' + links.length + ' aspect lines. Full positions are in the tables below.');
   }

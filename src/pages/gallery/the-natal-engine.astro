@@ -208,6 +208,12 @@ body.natal .day-telegram{--a:#efe8d8;border-style:dashed;border-radius:2px;font-
 body.natal .day-illumination{--a:#ff8fb0;background:linear-gradient(160deg,#2a1020,#15131c 60%);border-radius:4px}body.natal .day-illumination h4::first-letter{font-size:2.6em;float:left;line-height:.8;margin-right:6px}
 body.natal .day-tide{--a:#7fd8c4;background:linear-gradient(180deg,#0f2a2c,#15131c);border-radius:26px;border-width:0;box-shadow:inset 0 0 0 1px rgba(127,216,196,.4)}
 body.natal .day-broadside{--a:#0b0a10;background:#efe8d8;color:#0b0a10;border-radius:0}body.natal .day-broadside h4{font-size:2rem;text-transform:uppercase;letter-spacing:-.01em}body.natal .day-broadside .day-k,body.natal .day-broadside .day-f,body.natal .day-broadside i{color:#5a5548}
+body.natal .gt{font:inherit;color:inherit;border-bottom:1.5px dotted var(--ichor);cursor:help;padding:0;line-height:inherit}
+body.natal .day-broadside .gt{border-bottom-color:#0b0a10}
+body.natal .gloss{position:fixed;left:0;top:0;z-index:40;display:flex;gap:12px;align-items:flex-start;width:min(320px,calc(100vw - 16px));padding:12px 14px;border:1px solid var(--ichor);border-radius:12px;background:#15131c;color:var(--ink);box-shadow:0 10px 34px rgba(0,0,0,.6);pointer-events:none;font-size:.9rem;line-height:1.4}
+body.natal .gloss[hidden]{display:none}
+body.natal .gloss-p{width:52px;height:52px;flex:none;fill:none;stroke:var(--ichor);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--ichor)}
+body.natal .gloss b{display:block;font-size:1.05rem;line-height:1.2}body.natal .gloss span{display:block;font-family:var(--mono);font-weight:500;font-size:.68rem;letter-spacing:.06em;color:var(--ichor);margin:2px 0 5px}body.natal .gloss p{margin:0}
 body.natal .god{border-left:2px solid var(--rule);padding:0 0 0 12px;margin:0 0 14px}body.natal .god h5{margin:0 0 4px;font-size:1.05rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px}body.natal .god h5 span{font-family:var(--mono);font-weight:500;font-size:.66rem;color:var(--mute)}
 body.natal .rd{margin:0 0 10px;font-size:.98rem;line-height:1.5}body.natal .rd-l{margin:0 0 12px;padding-left:1.1em;display:grid;gap:7px;font-size:.95rem}
 body.natal #tabs{overflow-x:auto;scrollbar-width:none;white-space:nowrap;display:flex;gap:4px;border-bottom:1px solid var(--rule);margin:0 0 10px}
