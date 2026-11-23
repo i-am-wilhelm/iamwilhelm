@@ -763,7 +763,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   ];
   const S = {
     specs: [], charts: [], view: 'wheel', focus: 0, sel: null, hov: null, foc: null, hsys: 'P', tight: 1, tones: { flow: true, grind: true, fuse: true },
-    inner: false, webDav: false, greek: false, minor: false, still: matchMedia('(prefers-reduced-motion: reduce)').matches, tab: 'aspects', pickSlot: 0, selfN: 0,
+    inner: false, webDav: false, greek: false, minor: false, still: matchMedia('(prefers-reduced-motion: reduce)').matches, tab: 'placements', pickSlot: 0, selfN: 0,
     slotOf(ch) { const i = S.charts.indexOf(ch); return i < 0 ? 4 : i; },
   };
   let dav = null, cities = null;
@@ -1016,6 +1016,43 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (top) { const [i, id] = top.split(':'); h += '<p class="fine">Loudest point: ' + (vc.length > 1 ? esc(shortName(vc[+i])) + '’s ' : '') + D.PT[id].n + ', carrying the most line weight.' + (links[0] ? ' Tightest line: ' + D.PT[links.slice().sort((a, b) => a.off - b.off)[0].a].n + ' to ' + D.PT[links.slice().sort((a, b) => a.off - b.off)[0].b].n + '.' : '') + '</p>'; }
     return h + '</div>';
   }
+  /* ---------------- the music of the chart, and a written reading ---------------- */
+  /* The twelve signs sit on the circle of fifths from Aries = C. The Ascendant's sign is the tonic. */
+  const NOTE = ['C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'D♭', 'A♭', 'E♭', 'B♭', 'F'];
+  const INTERVAL = ['unison', 'minor second', 'major second', 'minor third', 'major third', 'perfect fourth', 'tritone', 'perfect fifth', 'minor sixth', 'major sixth', 'minor seventh', 'major seventh'];
+  const RULER = ['mars', 'venus', 'mercury', 'moon', 'sun', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'saturn', 'jupiter'];
+  const sg = (lon) => Math.floor(C.norm(lon) / 30);
+  function keyOf(ch) { const t = ch.timeKnown ? sg(ch.asc) : sg(ch.bodies.sun.lon); return { t, name: NOTE[t] + (ch.timeKnown ? (ch.day ? ' major' : ' minor') : ''), from: ch.timeKnown ? 'Ascendant in ' + C.SIGNS[t] : 'Sun in ' + C.SIGNS[t] + ' (no birth time, so no Ascendant)' }; }
+  const stepsUp = (t, s) => (((s - t) * 7) % 12 + 12) % 12;
+  function music(ch) {
+    const k = keyOf(ch), ids = C.PLANETS.concat(ch.minorOk ? C.MINOR : []);
+    let h = '<div class="key"><span>Key of the chart</span><b>' + k.name + '</b><small>' + k.from + (ch.timeKnown ? ' · ' + (ch.day ? 'a day chart sounds major' : 'a night chart sounds minor') : '') + '</small></div><table class="pl-t"><tbody>';
+    for (const id of ids) { const s = sg(ch.bodies[id].lon), st = stepsUp(k.t, s); h += '<tr data-sel="' + S.slotOf(ch) + ':' + id + '"><th>' + pg(id) + pname(id) + '</th><td><b class="nt">' + NOTE[s] + '</b> <span class="iv">' + (st ? INTERVAL[st] + ' above the tonic' : 'the tonic') + '</span></td><td class="hs">' + C.SIGNS[s] + '</td></tr>'; }
+    const tri = [...new Set([sg(ch.bodies.sun.lon), sg(ch.bodies.moon.lon)].concat(ch.timeKnown ? [sg(ch.asc)] : []).map((s) => NOTE[s]))];
+    h += '</tbody></table><p class="fine">Sun, Moon' + (ch.timeKnown ? ' and Ascendant' : '') + ' together sound ' + tri.join(' · ') + '. The signs sit on the circle of fifths from Aries at C, so a trine sounds a major third, a square a minor third or major sixth, a sextile a whole tone, an opposition a tritone, and a conjunction a unison. No sound yet: this is the score.</p>';
+    return h;
+  }
+  function reading(ch, vc, links) {
+    const B = ch.bodies, line = (id, lon, house) => '<b>' + (D.PT[id] ? D.PT[id].n : MARKNAME[id]) + ' in ' + C.SIGNS[sg(lon)] + (house ? ', house ' + house : '') + '.</b> ' + cap(D.PT[id].k) + ', the ' + C.SIGNS[sg(lon)] + ' way. ' + SIGNCOPY[sg(lon)][1] + (house ? ' It plays out in the house of ' + HOUSECOPY[house - 1].replace(/\.$/, '').toLowerCase() + '.' : '');
+    let h = '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4><p class="rd">' + line('sun', B.sun.lon, B.sun.house) + '</p><p class="rd">' + line('moon', B.moon.lon, B.moon.house) + '</p>';
+    if (ch.timeKnown) {
+      const r = RULER[sg(ch.asc)], rb = B[r];
+      h += '<p class="rd">' + line('asc', ch.asc) + '</p><p class="rd"><b>Chart ruler: ' + D.PT[r].n + '.</b> ' + C.SIGNS[sg(ch.asc)] + ' rising hands the chart to ' + D.PT[r].n + ', here in ' + C.SIGNS[sg(rb.lon)] + ', house ' + rb.house + '. ' + COPY[r] + ' Its home is the house of ' + HOUSECOPY[rb.house - 1].replace(/\.$/, '').toLowerCase() + '.</p>';
+    }
+    const bal = C.balance(ch), top = (o) => Object.keys(o).sort((a, b) => o[b] - o[a]), el = top(bal.el), mo = top(bal.mo), none = el.filter((e) => !bal.el[e]);
+    h += '<p class="rd"><b>The mix.</b> Mostly ' + el[0] + ' (' + bal.el[el[0]] + ' of ten) and ' + mo[0] + ' (' + bal.mo[mo[0]] + ').' + (none.length ? ' No planets in ' + none.join(' or ') + ', so that element is learned from other people.' : ' Every element has a seat.') + '</p>';
+    const own = C.aspects(ch, S.tight).filter((x) => !C.MINOR.includes(x.a) && !C.MINOR.includes(x.b)).slice(0, 3).map((x) => Object.assign(x, { ia: 0, ib: 0 }));
+    if (own.length) h += '<p class="rd"><b>The three tightest lines.</b></p><ul class="rd-l">' + own.map((x) => '<li><b>' + D.PT[x.a].n + ' ' + x.kind + ' ' + D.PT[x.b].n + '</b> (' + x.off.toFixed(1) + '°). ' + sentence(x, [ch]) + '</li>').join('') + '</ul>';
+    h += '<p class="rd"><b>The sound.</b> The chart is in ' + keyOf(ch).name + '. The Music tab has every planet’s tone.</p>';
+    return h;
+  }
+  function readingAll(vc, links) {
+    let h = vc.map((ch) => reading(ch, vc, links)).join('');
+    const x = links.filter((L) => L.ia !== L.ib).slice(0, 4);
+    if (x.length) h += '<h4 class="sub">Between them</h4><ul class="rd-l">' + x.map((L) => '<li><b>' + D.PT[L.a].n + ' ' + L.kind + ' ' + D.PT[L.b].n + '</b> (' + L.off.toFixed(1) + '°). ' + sentence(L, vc) + '</li>').join('') + '</ul>';
+    return h + '<p class="fine">A sketch written from the placements by rule. Read it as a mirror to argue with.</p>';
+  }
+
   function renderPanel() {
     const vc = curCharts, links = curLinks.slice().sort((a, b) => a.off - b.off); if (!vc[0]) return;
     // header: the charts in this view
@@ -1034,6 +1071,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     let body = '';
     if (S.tab === 'aspects') body = links.length ? '<ul class="lks">' + links.slice(0, 40).map((x) => linkRow(x, vc)).join('') + '</ul>' + (links.length > 40 ? '<p class="fine">Showing the 40 tightest of ' + links.length + '.</p>' : '') : '<p class="fine">No lines at this tightness. Loosen the orbs under Tuning.</p>';
     else if (S.tab === 'placements') body = vc.map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + placements(ch)).join('');
+    else if (S.tab === 'reading') body = readingAll(vc, links);
+    else if (S.tab === 'music') body = vc.map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + music(ch)).join('');
     else body = energies(vc, links);
     $('#body').innerHTML = body; markRows();
     cv.setAttribute('aria-label', (VIEWS.find((x) => x[0] === S.view)[1]) + ' view of ' + vc.map((c) => c.name).join(' and ') + '. ' + links.length + ' aspect lines. Full positions are in the tables below.');

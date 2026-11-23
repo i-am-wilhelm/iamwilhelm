@@ -62,7 +62,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   <div class="panel" role="region" aria-label="The reading">
     <div id="facts"></div>
     <div id="card" aria-live="polite"></div>
-    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="aspects">Lines</button><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="energies">Energies</button></div>
+    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="aspects">Lines</button><button role="tab" data-tab="reading">Reading</button><button role="tab" data-tab="music">Music</button><button role="tab" data-tab="energies">Energies</button></div>
     <div id="body"></div>
   </div>
 </div>
@@ -198,7 +198,10 @@ body.natal .card .k{margin:8px 0 10px;font-style:italic;color:var(--mute)}
 body.natal .gl{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 body.natal .gl.tx{width:auto;height:auto;font-family:var(--mono);font-size:.72em;font-weight:600;vertical-align:baseline}
 body.natal .gl.zs{color:var(--mute)}
-body.natal #tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin:0 0 10px}
+body.natal .key{border:1px solid var(--ichor);border-radius:12px;padding:12px 14px;margin:0 0 10px;background:rgba(242,197,107,.06)}body.natal .key span{display:block;font-family:var(--mono);font-weight:500;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}body.natal .key b{display:block;font-size:1.9rem;line-height:1.15;color:var(--ichor)}body.natal .key small{font-family:var(--mono);font-weight:500;font-size:.66rem;color:var(--mute)}
+body.natal .nt{color:var(--ichor);font-size:1.05rem}body.natal .iv{font-size:.82rem;color:var(--mute)}
+body.natal .rd{margin:0 0 10px;font-size:.98rem;line-height:1.5}body.natal .rd-l{margin:0 0 12px;padding-left:1.1em;display:grid;gap:7px;font-size:.95rem}
+body.natal #tabs{overflow-x:auto;scrollbar-width:none;white-space:nowrap;display:flex;gap:4px;border-bottom:1px solid var(--rule);margin:0 0 10px}
 body.natal #tabs button{padding:10px 12px 9px;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;min-height:44px}
 body.natal #tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ink)}
 body.natal .lks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
