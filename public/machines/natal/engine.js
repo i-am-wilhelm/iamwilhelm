@@ -1032,25 +1032,57 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     h += '</tbody></table><p class="fine">Sun, Moon' + (ch.timeKnown ? ' and Ascendant' : '') + ' together sound ' + tri.join(' · ') + '. The signs sit on the circle of fifths from Aries at C, so a trine sounds a major third, a square a minor third or major sixth, a sextile a whole tone, an opposition a tritone, and a conjunction a unison. No sound yet: this is the score.</p>';
     return h;
   }
-  function reading(ch, vc, links) {
-    const B = ch.bodies, line = (id, lon, house) => '<b>' + (D.PT[id] ? D.PT[id].n : MARKNAME[id]) + ' in ' + C.SIGNS[sg(lon)] + (house ? ', house ' + house : '') + '.</b> ' + cap(D.PT[id].k) + ', the ' + C.SIGNS[sg(lon)] + ' way. ' + SIGNCOPY[sg(lon)][1] + (house ? ' It plays out in the house of ' + HOUSECOPY[house - 1].replace(/\.$/, '').toLowerCase() + '.' : '');
-    let h = '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4><p class="rd">' + line('sun', B.sun.lon, B.sun.house) + '</p><p class="rd">' + line('moon', B.moon.lon, B.moon.house) + '</p>';
-    if (ch.timeKnown) {
-      const r = RULER[sg(ch.asc)], rb = B[r];
-      h += '<p class="rd">' + line('asc', ch.asc) + '</p><p class="rd"><b>Chart ruler: ' + D.PT[r].n + '.</b> ' + C.SIGNS[sg(ch.asc)] + ' rising hands the chart to ' + D.PT[r].n + ', here in ' + C.SIGNS[sg(rb.lon)] + ', house ' + rb.house + '. ' + COPY[r] + ' Its home is the house of ' + HOUSECOPY[rb.house - 1].replace(/\.$/, '').toLowerCase() + '.</p>';
-    }
-    const bal = C.balance(ch), top = (o) => Object.keys(o).sort((a, b) => o[b] - o[a]), el = top(bal.el), mo = top(bal.mo), none = el.filter((e) => !bal.el[e]);
-    h += '<p class="rd"><b>The mix.</b> Mostly ' + el[0] + ' (' + bal.el[el[0]] + ' of ten) and ' + mo[0] + ' (' + bal.mo[mo[0]] + ').' + (none.length ? ' No planets in ' + none.join(' or ') + ', so that element is learned from other people.' : ' Every element has a seat.') + '</p>';
-    const own = C.aspects(ch, S.tight).filter((x) => !C.MINOR.includes(x.a) && !C.MINOR.includes(x.b)).slice(0, 3).map((x) => Object.assign(x, { ia: 0, ib: 0 }));
-    if (own.length) h += '<p class="rd"><b>The three tightest lines.</b></p><ul class="rd-l">' + own.map((x) => '<li><b>' + D.PT[x.a].n + ' ' + x.kind + ' ' + D.PT[x.b].n + '</b> (' + x.off.toFixed(1) + '°). ' + sentence(x, [ch]) + '</li>').join('') + '</ul>';
-    h += '<p class="rd"><b>The sound.</b> The chart is in ' + keyOf(ch).name + '. The Music tab has every planet’s tone.</p>';
+  /* The gods speak in the first person, and name each other by the aspects between them. */
+  const GOD = { sun: 'Helios', moon: 'Selene', mercury: 'Hermes', venus: 'Aphrodite', mars: 'Ares', jupiter: 'Zeus', saturn: 'Kronos', uranus: 'Ouranos', neptune: 'Poseidon', pluto: 'Hades', asc: 'the Ascendant, your front door', mc: 'the Midheaven, your public roof' };
+  const OPEN = {
+    sun: 'I am the light you steer by. What I look at, you become.', moon: 'I keep your nights. I know what you need before you can say it.',
+    mercury: 'I carry your words and lift your best ideas from the other gods. Ask me anything and I will answer three ways.', venus: 'I am what you want and how you are wanted. Nobody argues with me for long.',
+    mars: 'I am your spear arm. Point me at something.', jupiter: 'I give. Where I stand, the roof is higher.', saturn: 'I am time, and I collect. What I ask of you now, you will thank me for at sixty.',
+    uranus: 'I am the sky before there were rules. I arrive without knocking.', neptune: 'I am the sea under your floor. I blur what you were sure of, and I call it mercy.', pluto: 'I keep what is buried, and I hand it back changed.',
+  };
+  const MANNER = ['fast and first', 'slow and sure', 'in two voices at once', 'with my guard up and my arms open', 'as if on a stage', 'with a fine brush', 'with a hand on the scales', 'all the way down', 'at full gallop', 'by the long road', 'from the far side of the room', 'through the walls'];
+  const SAY = {
+    conjunction: (n) => cap(n) + ' stands so close that we speak with one mouth.', opposition: (n) => cap(n) + ' faces me across the whole wheel. We take turns holding you.',
+    trine: (n) => cap(n) + ' and I are easy company. What I start, the other carries.', square: (n) => cap(n) + ' and I quarrel, and you are the house we quarrel in. The friction is your engine.',
+    sextile: (n) => cap(n) + ' leaves a door open for me. Use it.',
+  };
+  const hs = (n) => 'the house of ' + HOUSECOPY[n - 1].replace(/\.$/, '').toLowerCase();
+  function godSpeaks(ch, id, all) {
+    const b = ch.bodies[id], s = sg(b.lon), mine = all.filter((x) => x.a === id || x.b === id).slice(0, 2);
+    let t = OPEN[id] + ' In you I am in ' + C.SIGNS[s] + ', so I work ' + MANNER[s] + (b.house ? ', and I keep to ' + hs(b.house) : '') + '.' + (b.retro ? ' I was walking backward when you were born, so I do my work twice.' : '');
+    for (const x of mine) t += ' ' + SAY[x.kind](GOD[x.a === id ? x.b : x.a]) + (x.off < 1 ? ' This is close to exact; it runs through everything.' : '');
+    return '<div class="god"><h5 style="color:' + D.PCOL[id] + '">' + pg(id) + GOD[id] + ' <span>' + D.PT[id].n + ' in ' + C.SIGNS[s] + (b.house ? ', house ' + b.house : '') + '</span></h5><p class="rd">' + t + '</p></div>';
+  }
+  function inner(ch, all, name, ids, blurb) {
+    const a = ch.bodies[ids[0]], b = ch.bodies[ids[1]], near = all.filter((x) => ids.includes(x.a) || ids.includes(x.b))[0];
+    let t = blurb + ' In you she wears '.replace('she', name === 'Anima' ? 'she' : 'he') + GOD[ids[0]] + '’s face in ' + C.SIGNS[sg(a.lon)] + ' and ' + GOD[ids[1]] + '’s in ' + C.SIGNS[sg(b.lon)] + ': ' + MANNER[sg(a.lon)] + ', and ' + MANNER[sg(b.lon)] + '.';
+    if (a.house) t += ' Look for ' + (name === 'Anima' ? 'her' : 'him') + ' in ' + hs(a.house) + (b.house !== a.house ? ' and ' + hs(b.house) : '') + '.';
+    if (near) { const me = ids.includes(near.a) ? near.a : near.b, o = me === near.a ? near.b : near.a; t += ' The god nearest ' + (name === 'Anima' ? 'her' : 'him') + ' is ' + GOD[o] + ', by ' + near.kind + ' to ' + GOD[me] + ': ' + D.PT[o].k + ' colours every meeting.'; }
+    if (name === 'Anima' && ch.lots) t += ' The Lot of Eros falls in ' + C.SIGNS[sg(ch.lots.eros)] + ', ' + hs(C.houseOf(ch.lots.eros, ch.cusps)) + ': that is where the reaching starts.';
+    return '<div class="god"><h5>' + name + '</h5><p class="rd">' + t + '</p></div>';
+  }
+  function lotsSpeak(ch) {
+    if (!ch.lots) return '';
+    const L = [['fortune', 'Fortune', 'what comes to you arrives through '], ['spirit', 'Spirit', 'what you go and do is aimed at '], ['eros', 'Eros', 'what you reach for lives in ']];
+    let t = L.map(([id, n, say]) => '<b>' + n + '</b> in ' + C.SIGNS[sg(ch.lots[id])] + ': ' + say + hs(C.houseOf(ch.lots[id], ch.cusps)) + '.').join(' ');
+    const near = [['the Vertex', ch.vertex]].concat(C.PLANETS.map((p) => [GOD[p], ch.bodies[p].lon]));
+    for (const [id, n] of L) for (const [who, lon] of near) if (C.sep(ch.lots[id], lon) < 3) t += ' ' + n + ' stands beside ' + who + (who === 'the Vertex' ? ': there, that lot and fate arrive as one event.' : ', who speaks for it.');
+    return '<div class="god"><h5>The lots</h5><p class="rd">' + t + '</p></div>';
+  }
+  function reading(ch) {
+    const all = C.aspects(ch, S.tight).filter((x) => !C.MINOR.includes(x.a) && !C.MINOR.includes(x.b));
+    let h = '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>';
+    if (ch.timeKnown) { const r = RULER[sg(ch.asc)]; h += '<p class="rd"><b>' + C.SIGNS[sg(ch.asc)] + ' rises, so ' + GOD[r] + ' holds the keys.</b> The chart sounds in ' + keyOf(ch).name + '. Listen to ' + GOD[r] + ' first.</p>'; }
+    h += C.PLANETS.map((id) => godSpeaks(ch, id, all)).join('') + lotsSpeak(ch);
+    h += inner(ch, all, 'Anima', ['venus', 'moon'], 'Jung’s name for the soul’s feminine face, the one you fall for in other people before you meet her in yourself.');
+    h += inner(ch, all, 'Animus', ['mars', 'sun'], 'The soul’s masculine face: the will, the word, the one who acts.');
     return h;
   }
   function readingAll(vc, links) {
     let h = vc.map((ch) => reading(ch, vc, links)).join('');
     const x = links.filter((L) => L.ia !== L.ib).slice(0, 4);
     if (x.length) h += '<h4 class="sub">Between them</h4><ul class="rd-l">' + x.map((L) => '<li><b>' + D.PT[L.a].n + ' ' + L.kind + ' ' + D.PT[L.b].n + '</b> (' + L.off.toFixed(1) + '°). ' + sentence(L, vc) + '</li>').join('') + '</ul>';
-    return h + '<p class="fine">A sketch written from the placements by rule. Read it as a mirror to argue with.</p>';
+    return h + '<p class="fine">The gods\u2019 lines are assembled by rule from the placements and aspects. Everyone carries both inner figures. Read it as a mirror to argue with.</p>';
   }
 
   function renderPanel() {
