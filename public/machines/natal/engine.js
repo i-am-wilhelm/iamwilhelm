@@ -1126,16 +1126,73 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const CORULER = { 7: 'pluto', 10: 'uranus', 11: 'neptune' };
   const TENANT = { sun: 'your sense of who you are is at stake in this room', moon: 'your need for safety is settled or unsettled in this room', mercury: 'your thinking keeps returning to this room', venus: 'you look for love and pleasure in this room', mars: 'you fight, want and act in this room', jupiter: 'you grow easily in this room, and can overreach', saturn: 'you are tested in this room, and become an authority late', uranus: 'you break the pattern in this room', neptune: 'you dream in this room, and lose your edges', pluto: 'you are taken apart and remade in this room' };
   const ORDW = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'];
+  /* Key-holders: the condition of each house ruler, said once, then referred to from the houses it keeps. */
+  const EXALT = { sun: 0, moon: 1, mercury: 5, venus: 11, mars: 9, jupiter: 3, saturn: 6 };
+  const GIFT = { sun: 'clarity and recognition', moon: 'instinct and emotional support', mercury: 'words and wit', venus: 'warmth and ease', mars: 'drive and courage', jupiter: 'confidence and good faith', saturn: 'discipline and staying power', uranus: 'originality', neptune: 'imagination', pluto: 'depth and endurance' };
+  const STRAIN = { sun: 'the ego crowding in', moon: 'moods pulling at it', mercury: 'overthinking', venus: 'the wish to be liked', mars: 'heat, haste and conflict', jupiter: 'excess and overpromising', saturn: 'doubt, delay and heavy demands', uranus: 'disruption', neptune: 'confusion', pluto: 'compulsion and power struggles' };
+  const ASPV = { 60: 'sextiles', 90: 'squares', 120: 'trines', 180: 'opposes' };
+  function keyCond(ch, r) {
+    const b = ch.bodies[r], s = sg(b.lon), N = cap(GOD[r]), host = RULER[s], out = []; let score = 0;
+    const dom = RULER[s] === r, exa = EXALT[r] === s, det = RULER[(s + 6) % 12] === r, fall = EXALT[r] === (s + 6) % 12;
+    if (dom) { score += 2; out.push(N + ' is at home in ' + C.SIGNS[s] + '. This part of you acts in character and asks no one’s permission.'); }
+    else if (exa) { score += 2; out.push(N + ' is an honored guest in ' + C.SIGNS[s] + ', the sign of its exaltation. This function is given room in you, and other people tend to take it seriously.'); }
+    else if (det) { score -= 1; out.push(N + ' is far from home in ' + C.SIGNS[s] + ', the sign opposite its own (the old word is detriment). This part of you has to work in a style that does not come naturally, and often becomes more conscious because of it.'); }
+    else if (fall) { score -= 1; out.push(N + ' is in ' + C.SIGNS[s] + ', the sign of its fall. This function was given little welcome early on, and you learn it the long way. What is learned the long way tends to stay learned.'); }
+    else out.push(N + ' is a traveler in ' + C.SIGNS[s] + ', with no special standing there, and leans on its host, ' + GOD[host] + '.');
+    /* reception */
+    if (host !== r) { const hb = ch.bodies[host], hs_ = sg(hb.lon);
+      if (RULER[hs_] === r) { score += 1; out.push('<b>Mutual reception.</b> ' + N + ' is in the sign of ' + GOD[host] + ', and ' + GOD[host] + ' is in the sign of ' + GOD[r] + '. Each holds the keys to the other’s home, so these two parts of you cover for each other. When one is stuck, go to the other.'); }
+      else if (EXALT[r] === hs_ && EXALT[host] === s) { score += 1; out.push('<b>Mutual reception by exaltation.</b> ' + N + ' and ' + GOD[host] + ' each stand where the other is honored, and each lifts the other.'); }
+      else { const d = ((sg(hb.lon) - s) % 12 + 12) % 12; if ([1, 5, 7, 11].includes(d)) out.push('Its host, ' + GOD[host] + ', stands in ' + C.SIGNS[hs_] + ' and cannot see it from there, so ' + GOD[r] + ' gets little backing from the landlord.'); }
+    }
+    const ang = [1, 4, 7, 10].includes(b.house), cad = [3, 6, 9, 12].includes(b.house);
+    if (ang) score += 1; if (cad) score -= 0.5;
+    out.push(ang ? 'It stands on an angle of the chart (the ' + ORDW[b.house - 1] + ' house), so it acts in plain view.' : cad ? 'It stands in the ' + ORDW[b.house - 1] + ' house, which falls away from the angles, so it works out of sight and matures in private.' : 'It stands in the ' + ORDW[b.house - 1] + ' house, a supporting position: steady, and slower to show.');
+    if (HJOY[b.house - 1] === r) { score += 1; out.push('This is the house where ' + GOD[r] + ' rejoices, an old sign of a god doing what it likes best.'); }
+    const dayTeam = ['sun', 'jupiter', 'saturn'], nightTeam = ['moon', 'venus', 'mars'];
+    if (dayTeam.includes(r) || nightTeam.includes(r)) { const inSect = ch.day ? dayTeam.includes(r) : nightTeam.includes(r); score += inSect ? 0.5 : -0.5;
+      out.push(inSect ? 'You were born by ' + (ch.day ? 'day' : 'night') + ', and ' + GOD[r] + ' belongs to the ' + (ch.day ? 'day' : 'night') + ' team, so its better side comes more easily.' : 'You were born by ' + (ch.day ? 'day' : 'night') + ', and ' + GOD[r] + ' belongs to the ' + (ch.day ? 'night' : 'day') + ' team, so it can come out rougher and asks for more awareness.'); }
+    if (r !== 'sun') { const d = C.sep(b.lon, ch.bodies.sun.lon); if (d < 0.29) { score += 1; out.push('It stands in the heart of Helios, within a fraction of a degree: the ancients read this as a god seated on the throne.'); } else if (d < 8.5) { score -= 1; out.push('It stands ' + d.toFixed(1) + '° from Helios, which the ancients called burned. This function is hard to see apart from your sense of self, and it helps to give it a hearing of its own.'); } }
+    if (b.retro) { score -= 0.5; out.push('It was walking backward at your birth: it turns inward first, and gets things right on the second pass.'); }
+    /* closest aspects from the other gods */
+    const asp = []; for (const p of C.PLANETS) if (p !== r) { const sp = C.sep(ch.bodies[p].lon, b.lon); for (const a of [0, 60, 90, 120, 180]) { const off = Math.abs(sp - a); if (off < (a === 60 ? 4 : 6)) asp.push({ p, a, off }); } }
+    asp.sort((x, y) => x.off - y.off);
+    for (const x of asp.slice(0, 3)) { const G = cap(GOD[x.p]), o = ' (' + x.off.toFixed(1) + '°)';
+      if (x.a === 0) { out.push(G + ' stands with ' + GOD[r] + o + ' and brings ' + GIFT[x.p] + ', along with ' + STRAIN[x.p] + '.'); if (x.p === 'jupiter' || x.p === 'venus') score += 1; if (x.p === 'mars' || x.p === 'saturn') score -= 1; }
+      else if (x.a === 60 || x.a === 120) { out.push(G + ' ' + ASPV[x.a] + ' ' + GOD[r] + o + ' and lends ' + GIFT[x.p] + '.'); score += x.p === 'jupiter' || x.p === 'venus' ? 1 : 0.5; }
+      else { out.push(G + ' ' + ASPV[x.a] + ' ' + GOD[r] + o + ', and the work between them is ' + STRAIN[x.p] + '.'); score -= x.p === 'mars' || x.p === 'saturn' ? 1 : x.p === 'jupiter' || x.p === 'venus' ? 0 : 0.5; } }
+    if (!asp.length) out.push('No other god aspects it closely, so it acts alone and is easy to overlook.');
+    const v = score >= 1.5 ? 0 : score <= -1.5 ? 2 : 1;
+    return { out, score, v };
+  }
+  const KVERD = ['well resourced', 'carrying a mixed load', 'working under strain'];
+  const KNOTE = ['The rooms it keeps are in good hands, which also means you may take them for granted.', 'The rooms it keeps get both help and friction, and repay attention.', 'The rooms it keeps ask more of you. Strain marks where consciousness is demanded, and that is where growth is most likely.'];
+  function keyHolders(ch) {
+    const rs = []; for (let i = 0; i < 12; i++) { const r = RULER[sg(ch.cusps[i])]; if (!rs.includes(r)) rs.push(r); }
+    return '<h4 class="sub">The key-holders</h4><p class="fine">Each house is kept by the god who rules the sign on its door. How that god is placed says how well the room is kept.</p>' + rs.map((r) => { const k = keyCond(ch, r), rooms = []; for (let i = 0; i < 12; i++) if (RULER[sg(ch.cusps[i])] === r) rooms.push(ORDW[i]);
+      return '<div class="god"><h5 style="color:' + D.PCOL[r] + '">' + pg(r) + GOD[r] + ' <span>keeps the ' + rooms.join(', ') + ' · ' + KVERD[k.v] + '</span></h5>' + k.out.map((x) => '<p class="rd">' + x + '</p>').join('') + '<p class="rd"><b>Overall, ' + KVERD[k.v] + '.</b> ' + KNOTE[k.v] + '</p></div>'; }).join('') + '<h4 class="sub">The twelve houses</h4>';
+  }
+  const SIGHT = { 2: 'by sextile, with easy cooperation', 10: 'by sextile, with easy cooperation', 3: 'by square, with tension that gets things done', 9: 'by square, with tension that gets things done', 4: 'by trine, with natural support', 8: 'by trine, with natural support', 6: 'by opposition, from across the chart, so its business often arrives through other people' };
+  const AVERT = [(g, sn) => ' From ' + sn + ' it cannot see this room (the old word is aversion). This part of your life can feel as if it runs unsupervised, and it rewards deliberate attention.', (g, sn) => ' ' + sn + ' has no line of sight to this door, so ' + g + ' is turned away from it (aversion). You may run this room by habit until something makes you look.', (g, sn) => ' From ' + sn + ' this room is out of the key-holder’s sight (aversion). What happens here tends to surprise you, and a regular check-in does more than effort.'];
+  let avN = 0;
+  function keySees(ch, i, r, inRoom) {
+    const cs = sg(ch.cusps[i]), rs = sg(ch.bodies[r].lon), d = ((rs - cs) % 12 + 12) % 12, k = keyCond(ch, r);
+    const t = ' As a key-holder, ' + GOD[r] + ' is ' + KVERD[k.v] + '.';
+    if (inRoom) return t;
+    if (d === 0) return t + ' It stands in the sign on the door, close to its own room.';
+    return t + (SIGHT[d] ? ' From ' + C.SIGNS[rs] + ' it looks at this room ' + SIGHT[d] + '.' : AVERT[avN++ % 3](GOD[r], C.SIGNS[rs]));
+  }
   function housesRead(ch) {
-    const timed = ch.timeKnown && ch.cusps; let h = '';
+    const timed = ch.timeKnown && ch.cusps; let h = ''; avN = 0;
     if (!timed) h += '<p class="fine">Houses need a birth time. Without one, here is what each room means; add a time to see your signs, rulers and tenants.</p>';
+    if (timed) h += keyHolders(ch);
     for (let i = 0; i < 12; i++) {
       let you = '';
       if (timed) {
         const s = sg(ch.cusps[i]), r = RULER[s], rb = ch.bodies[r], rh = rb.house, co = CORULER[s];
         you = '<p class="rd"><b>In your chart.</b> ' + C.SIGNS[s] + ' is on the door, so you enter this room ' + SIGNWAY[s] + '. ' + cap(GOD[r]) + ' holds the key' + (co ? ', and in the modern reckoning ' + GOD[co] + ' holds a second one (in your ' + ORDW[ch.bodies[co].house - 1] + ' house)' : '') + '. ';
         you += rh === i + 1 ? cap(GOD[r]) + ' lives in this very room, in ' + C.SIGNS[sg(rb.lon)] + ', so this part of your life answers to itself and tends to run on its own strength.' : cap(GOD[r]) + ' lives in your ' + ORDW[rh - 1] + ' house, in ' + C.SIGNS[sg(rb.lon)] + '. For you, ' + HTASK[i] + ' is worked out through ' + HTASK[rh - 1] + '.';
-        if (rb.retro) you += ' ' + cap(GOD[r]) + ' was walking backward at your birth, so this room opens slowly and rewards a second attempt.';
+        you += keySees(ch, i, r, rh === i + 1);
         const ten = C.PLANETS.filter((p) => ch.bodies[p].house === i + 1);
         const others = EXTRA.filter((e) => { const l = xlon(ch, e[0]); return l != null && C.houseOf(l, ch.cusps) === i + 1; }).map((e) => e[1].replace(/^The /, 'the '));
         you += '</p><p class="rd">' + (ten.length ? ten.map((p) => '<b>' + cap(GOD[p]) + ' lives here:</b> ' + TENANT[p] + '.').join(' ') : 'No god lives in this room. It is still fully yours, and ' + GOD[r] + ' speaks for it from the ' + ORDW[rh - 1] + ' house.') + (others.length ? ' Also here: ' + others.join(', ') + '.' : '');
