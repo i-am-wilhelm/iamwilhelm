@@ -1,11 +1,11 @@
 ---
 /**
- * The Natal Engine, second of the Machines: a chart engine. It casts a
+ * Horoskopos ("hour-marker"), second of the Machines: a chart engine. It casts a
  * birth chart in the browser (Astronomy Engine for the planets; Chiron and
  * the four asteroids integrated from saved states; Placidus, whole-sign or
  * equal houses; the Vertex and the Hellenistic lots), and reads one chart as
  * a wheel or several together as a biwheel, a web of wired wheels, a grid
- * or a Davison chart. It opens on the house chart; the library holds
+ * or a Davison chart. It opens empty until a chart is chosen; the library holds
  * historical figures by genre, each tagged with how its birth time is
  * known; a visitor's own data stays in the tab and is never sent or saved
  * (the city list is a file of the site's own, public/machines/natal/).
@@ -23,8 +23,8 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
 ---
 
 <Poem
-  title="The Natal Engine"
-  description="A chart engine by Michael Wilhelm: cast a birth chart, lay two together as a biwheel, a web, a grid or a Davison chart, and read which gods are talking."
+  title="Horoskopos"
+  description="Horoskopos, the hour-marker: a chart engine by Michael Wilhelm. Cast a birth chart, lay two together as a biwheel, a web, a grid or a Davison chart, and read which gods are talking."
   year="2026"
   night="#0b0a10"
   accent="#f2c56b"
@@ -35,9 +35,9 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
 >
 <main class="ne-main">
 <header class="top" data-og-frame>
-  <p class="eyebrow"><span>A machine · <Byline /></span><span><SeriesMark id="the-natal-engine" /></span></p>
-  <h1>The Natal Engine</h1>
-  <p class="deck">A sky clock you can read. Cast a chart, lay two together, and watch which gods are talking.</p>
+  <p class="eyebrow"><span>A machine · <Byline /></span><span><SeriesMark id="horoskopos" /></span></p>
+  <h1>Horoskopos <span class="h1-gk" lang="grc">ὡροσκόπος</span></h1>
+  <p class="deck">The hour-marker: a sky clock you can read. Cast a chart, lay two together, and watch which gods are talking.</p>
 </header>
 
 <section id="start" class="start" aria-label="Start">
@@ -88,14 +88,15 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <h2>How it is made</h2>
     <p>Positions are worked out in your browser by Astronomy Engine (Don Cross, MIT licence). Checked against Swiss Ephemeris values for the house chart, the ten planets agree to within a tenth of an arcminute, and the angles and Placidus cusps agree to three decimal places. Checked against the published positions of every chart in the library, back to 1452, the Sun and Moon land within about an arcminute of the printed values.</p>
     <p>Chiron, Ceres, Pallas, Juno and Vesta are integrated from JPL orbital elements with the same library’s gravity model. Against published positions they land within an arcminute in 1879, within four arcminutes in 1756, and within a quarter of a degree in 1452, where Chiron itself stays within an arcminute. They sit on the wheel as quiet marks until you switch them into the lines under Tuning.</p>
+    <p><b>The name.</b> <span lang="grc">Ὡροσκόπος</span>, hōroskopos, “hour-marker”, was the Greek astrologers’ word for the degree of the zodiac rising in the east at the moment of birth: the point the whole chart is counted from, and the word “horoscope” comes from.</p>
     <p>The North Node and the Black Moon are mean values. The lots follow the Hellenistic rule and flip by day and night: Fortune from Sun to Moon, Spirit from Moon to Sun, Eros from Spirit to Venus, each cast from the Ascendant.</p>
     <p>Library birth data comes from Astrotheme, whose reliability notes follow the Rodden scale. Every chart carries a tag saying how its birth time is known. Two charts (Fitzgerald and Freud) use a different clock standard for the birthplace than the source does, so their angles sit three to four degrees from the published ones.</p>
     <p>What you enter stays in this tab. The city list travels with the page, so even the place lookup happens here. Nothing is sent and nothing is saved.</p>
   </div>
   <div>
     <MethodLink />
-    <p class="eyebrow"><span><a class="ne-back" href="/gallery/">The Gallery</a></span><span><SeriesMark id="the-natal-engine" /></span></p>
-    <ScrollFoot id="the-natal-engine" class="ne-sf" />
+    <p class="eyebrow"><span><a class="ne-back" href="/gallery/">The Gallery</a></span><span><SeriesMark id="horoskopos" /></span></p>
+    <ScrollFoot id="horoskopos" class="ne-sf" />
   </div>
 </footer>
 </main>
@@ -309,6 +310,7 @@ body.natal .lib header{position:sticky;top:0;z-index:2;display:flex;align-items:
 body.natal .lib h2{margin:0;font-size:1.3rem}
 body.natal .lib header button{width:44px;height:44px;font-size:1.6rem;color:var(--mute)}
 body.natal .lib-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}
+body.natal .h1-gk{font-weight:400;font-size:.55em;color:var(--ichor);margin-left:.35em;white-space:nowrap}
 body.natal .start{max-width:640px;margin:0 auto;padding:18px 14px 34px;text-align:center}body.natal .start h2{margin:0 0 6px;font-size:1.5rem}body.natal .start>p{margin:0 0 16px;color:var(--mute)}body.natal .start-go{display:grid;gap:10px;margin:0 0 14px}
 body.natal .ne-main.is-empty .rig{display:none}body.natal .ne-main:not(.is-empty) .start{display:none}
 @media(min-width:620px){body.natal .start-go{grid-template-columns:1fr 1fr}}
