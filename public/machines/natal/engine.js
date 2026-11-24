@@ -750,7 +750,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
 /* Horoskopos: state, the page around the canvas, and the reading panel. */
 (function () {
   'use strict';
-  const C = NatalCore, M = NatalMake, L = NatalFigures, D = NatalDraw;
+  const C = self.NatalCore, M = self.NatalMake, L = self.NatalFigures, D = self.NatalDraw;
   /* Share system: headless mode. With no chart canvas on the page (the embed route, the Worker, the tests) the page
      wiring is skipped; the readings, the journey cards and the drawing still run, reached through the API at the foot. */
   const LIVE = typeof document !== 'undefined' && !!document.querySelector('#sky');
@@ -1781,10 +1781,29 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     S.trail = (o.trail || []).slice(-14); S.at = S.trail.length - 1; S.view = o.view || 'wheel'; if (o.tab) S.tab = o.tab;
     recast(); fixView(); renderAll();
   }
+  /** Run fn with shared charts on the table at default tuning, then put everything back exactly as it was.
+      Nothing is drawn or rendered in between, so a share can be built beside a chart the visitor is reading. */
+  function withShared(charts, o, fn) {
+    o = o || {};
+    const keep = { specs: S.specs, charts: S.charts, view: S.view, focus: S.focus, trail: S.trail, at: S.at, hov: S.hov, foc: S.foc, tight: S.tight, tones: S.tones, inner: S.inner, webDav: S.webDav, greek: S.greek, still: S.still, minor: C.opts.minor, dav, SO, curCharts, curLinks };
+    try {
+      S.specs = charts.map((ch) => ({ chart: ch })); S.charts = charts.slice(0, 4); SO = S.charts.some(signOnly); dav = null;
+      S.view = o.view || 'wheel'; fixView(); S.focus = 0; S.trail = (o.trail || []).slice(-14); S.at = S.trail.length - 1; S.hov = null;
+      S.tight = 1; S.tones = { flow: true, grind: true, fuse: true }; S.inner = false; S.webDav = false; S.greek = false; S.still = true; C.opts.minor = false;
+      curCharts = viewCharts(); curLinks = curCharts[0] ? viewLinks(curCharts) : [];
+      for (const L of curLinks) L.key = S.slotOf(curCharts[L.ia]) + ':' + L.a + '|' + S.slotOf(curCharts[L.ib]) + ':' + L.b;
+      S.foc = o.foc || stopFoc();
+      return fn();
+    } finally {
+      S.specs = keep.specs; S.charts = keep.charts; S.view = keep.view; S.focus = keep.focus; S.trail = keep.trail; S.at = keep.at; S.hov = keep.hov; S.foc = keep.foc;
+      S.tight = keep.tight; S.tones = keep.tones; S.inner = keep.inner; S.webDav = keep.webDav; S.greek = keep.greek; S.still = keep.still; C.opts.minor = keep.minor;
+      dav = keep.dav; SO = keep.SO; curCharts = keep.curCharts; curLinks = keep.curLinks;
+    }
+  }
   /** One god's default line about another across an aspect (the speech's own sentence when it is not in the speech). */
   function says(id, x) { const o = x.a === id ? x.b : x.a; return SAY[x.kind][Math.floor(seed(x.a + x.b + id) * 3) % 3](GOD[o], theme(x.a, x.b)) + (TELL[id] ? ' ' + TELL[id][x.tone][Math.floor(seed(id + x.b + x.a + 't') * 3) % 3] : ''); }
   self.__natal = { LIVE, S, C, D, M, L, FONT, setSlot, figById, redraw, renderAll, renderPanel, hits: () => hits, charts: () => curCharts, links: () => curLinks, dav: () => dav,
-    loadShared, paint, go, goTo, pushStop, syncJourney, shortName, keyOf, sentence, theme, says, gname, termOf, termGo, crumb, keyCond, nowSpec,
+    loadShared, withShared, paint, stopFoc, go, goTo, pushStop, syncJourney, shortName, keyOf, sentence, theme, says, gname, termOf, termGo, crumb, keyCond, nowSpec,
     GOD, GODX, OPEN, EXTRA, HNAME, HSAID, HASK, RULER, KVERD, NOTE, INTERVAL, ASYM, MARKNAME, COPY, GL, TERMX, CARDS,
     html: { placements, reading, housesRead, music, daily, energies } };
 
