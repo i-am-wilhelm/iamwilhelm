@@ -1,0 +1,12 @@
+# Response headers for the static assets (Cloudflare Workers static assets).
+#
+# The Horoskopos embed route is made to sit in an <iframe> on other people's
+# sites, so it alone says it may be framed anywhere. No other route's framing
+# policy is set or changed here. It is also kept out of search engines: its
+# canonical is the engine page.
+/horoskopos/embed
+  Content-Security-Policy: frame-ancestors *
+  X-Robots-Tag: noindex
+/horoskopos/embed/*
+  Content-Security-Policy: frame-ancestors *
+  X-Robots-Tag: noindex
