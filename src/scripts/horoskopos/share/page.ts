@@ -74,17 +74,17 @@ function arrive(st: ShareState) {
   const cta = '<button class="chip" data-start="self">Cast your own chart</button>';
   if (!charts.length) {
     /* A module that stands without a chart (the daily read, a glossary entry): shown here, the engine stays empty. */
-    banner(d.ok ? `<div class="shr-solo">${m.embed(d.content)}</div><p class="fine">A shared ${esc(m.title.toLowerCase())}. Nothing is loaded below until you cast a chart or choose one. ${cta}</p>` : `<p><b>${esc(d.why)}</b></p>`);
+    banner(d.content ? `<div class="shr-solo">${m.embed(d.content)}</div><p class="fine">A shared ${esc(m.title.toLowerCase())}. Nothing is loaded below until you cast a chart or choose one. ${cta}</p>` : `<p><b>${esc(d.why)}</b></p>`);
     return;
   }
   const stage = m.stage(st.f, charts.length);
   api.loadShared(charts, { view: stage.view || 'wheel', trail: st.m === 'step' ? stage.trail : [] });
-  const what = d.ok ? `${d.content.title} · ${d.content.kicker}` : m.title;
+  const what = d.content ? `${d.content.title} · ${d.content.kicker}` : m.title;
   banner(`<p><b>You arrived on a shared link:</b> ${esc(what)}.${LEVEL[level]} A link carries a chart’s positions, never a birth date, time or place.${d.ok ? '' : ` <b>${esc(d.why)}</b>`}</p><p class="fine">${cta}</p>`);
   /* The engine has just drawn; let the layout settle, then go to the module and light its focus. */
   requestAnimationFrame(() => requestAnimationFrame(() => {
     let el: Element | null = null;
-    try { el = d.ok ? m.full(api, d.content.focus, document) : null; } catch { el = null; }
+    try { el = d.content ? m.full(api, d.content.focus, document) : null; } catch { el = null; }
     lit(el || $('.bench'));
   }));
 }
@@ -175,7 +175,7 @@ function askOf(b: HTMLElement): Ask | null {
     const map = new Map(slots.slice(0, 2).map((s, i) => [String(s), String(i)]));
     const steps: Stop[] = [];
     for (const st of S.trail.slice(0, S.at + 1)) {
-      const k = st.k.replace(/(^|\|)(\d):/g, (all, pre: string, s: string) => (map.has(s) ? `${pre}${map.get(s)}:` : `${pre}?:`));
+      const k = st.k.replace(/(^|\|)(\d):/g, (_all, pre: string, s: string) => (map.has(s) ? `${pre}${map.get(s)}:` : `${pre}?:`));
       if (!k.includes('?')) steps.push({ t: st.t, k });
     }
     if (!steps.length) return null;
@@ -227,6 +227,7 @@ function views(): Array<{ group: string; label: string; module: string; focus: s
   add('The daily read', 'Against this chart', 'daily', '');
   add('The daily read', 'The sky itself (no chart)', 'daily', '', 0);
   if (two) for (const v of ['biwheel', 'web', 'grid']) add('Synastry', v.charAt(0).toUpperCase() + v.slice(1), 'synastry', v, 2);
+  if (two && api.dav()) add('', 'The Davison chart', 'davison', '', 2);
   for (const k of Object.keys({ ...api.GL, ...api.TERMX })) add('A glossary entry', (api.termOf(k) || [k])[0], 'glossary', k, 0);
   return out;
 }
@@ -290,18 +291,19 @@ async function refresh() {
     if (!ctx) return;
     paintCanvas(ctx, layoutCard(m.card(content, P.pick), size, canvasMeasure(ctx)), (c, w, h) => api.paint(c, w, h, 2.4, { ...api.FONT, dpr: 1 }));
   });
-  d0.classList.toggle('shr-off', !d.ok);
-  if (!d.ok) {
+  d0.classList.toggle('shr-off', !d.content);
+  if (!d.content) {
     P.content = null;
     msg(d.why + (P.privacy !== 'full' && m && m.degrees ? ' Choose Full to share it, or pick another view.' : ''));
     $$('[data-shr-pane]', d0).forEach((p) => { p.hidden = true; });
     return;
   }
-  P.content = d.content;
-  P.state.f = d.content.focus;
-  msg(d.content.deep ? 'This is a deep reading. It shares as a teaser: a line or two, and the way back to the full reading.' : '');
+  const content = d.content;
+  P.content = content;
+  P.state.f = content.focus;
+  msg(content.deep ? 'This is a deep reading. It shares as a teaser: a line or two, and the way back to the full reading.' : '');
   const title = $('#shr-title'), eb = $('#shr-eb');
-  if (title) title.textContent = d.content.title;
+  if (title) title.textContent = content.title;
   if (eb) eb.textContent = `Share · ${m.title}`;
   $$('[data-shr-pane]', d0).forEach((p) => { p.hidden = p.dataset.shrPane !== P.tab; });
   $$('[data-shr-tab]', d0).forEach((b) => b.setAttribute('aria-selected', String(b.dataset.shrTab === P.tab)));
@@ -311,13 +313,13 @@ async function refresh() {
   /* line picker: only when the module has several lines to offer, and never for a table or a wheel alone */
   const lines = $('#shr-lines');
   if (lines) {
-    const list = m.layout === 'table' ? [] : d.content.lines;
+    const list = m.layout === 'table' ? [] : content.lines;
     lines.hidden = list.length < 2;
     lines.innerHTML = list.length < 2 ? '' : '<p class="lab">Which line</p>' + list.map((l, i) => `<label><input type="radio" name="shr-line" value="${i}"${i === Math.min(P.pick, list.length - 1) ? ' checked' : ''}><span>${l.by ? `<b>${esc(l.by)}:</b> ` : ''}${esc(l.text)}</span></label>`).join('');
   }
   if (cv) {
     cv.style.aspectRatio = `${size.w} / ${size.h}`;
-    cv.setAttribute('aria-label', `Card preview: ${d.content.title}, ${size.label.toLowerCase()} size, ${size.w} by ${size.h}`);
+    cv.setAttribute('aria-label', `Card preview: ${content.title}, ${size.label.toLowerCase()} size, ${size.w} by ${size.h}`);
     cv.toBlob((b) => { if (seq === P.seq) { P.blob = b; sharable(); } }, 'image/png');
   }
   if (P.tab === 'embed') {
@@ -421,9 +423,11 @@ function wire() {
       const [module, focus, n] = t.value.split('|');
       if (n === 'keep') return;
       const S = api.S, base = P.ask.charts[0], want = +n;
-      const charts = want === 0 ? [] : want === 2 ? S.charts.slice(0, 2) : [base || S.charts[0]];
-      P.ask = { module, focus, charts };
-      P.outs = charts.map((c) => fromEngineChart(c));
+      const dav = module === 'davison' ? api.dav() : null;
+      const charts = dav ? [dav] : want === 0 ? [] : want === 2 ? S.charts.slice(0, 2) : [base && S.charts.includes(base) ? base : S.charts[0]];
+      const labels = dav ? [`Davison · ${api.shortName(S.charts[0])} & ${api.shortName(S.charts[1])}`] : undefined;
+      P.ask = { module, focus, charts, labels };
+      P.outs = charts.map((c, i) => fromEngineChart(c, (labels && labels[i]) || undefined));
       P.pick = 0;
     }
     void refresh();

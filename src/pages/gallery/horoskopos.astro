@@ -444,7 +444,7 @@ body.natal .shr-tabs{display:flex;gap:6px;border-bottom:1px solid var(--rule);ma
 body.natal .shr-tabs button{padding:10px 14px;min-height:44px;font-family:var(--mono);font-weight:500;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
 body.natal .shr-tabs button[aria-selected=true]{color:var(--ichor);border-bottom-color:var(--ichor)}
 body.natal .shr-msg{margin:0 0 12px;padding:9px 12px;border:1px solid var(--rule);border-left:3px solid var(--ichor);border-radius:8px;font-size:.95rem}
-body.natal .shr-sizes{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+body.natal .shr-sizes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
 body.natal .shr-sizes .chip{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border-radius:10px;text-align:left}
 body.natal .shr-sizes .chip small{font-size:.58rem;color:var(--mute);letter-spacing:.02em}
 body.natal .shr-sizes .chip[aria-pressed=true]{border-color:var(--ichor);color:var(--ichor)}

@@ -7,7 +7,6 @@
  * and explains it.
  */
 import type { AstroIntegration } from 'astro';
-// @ts-expect-error a plain .mjs script, shared with `npm test`
 import { buildEngineModule } from '../../scripts/horoskopos-engine-module.mjs';
 
 export default function horoskoposEngine(): AstroIntegration {

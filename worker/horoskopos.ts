@@ -28,10 +28,11 @@ import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
 // The engine, written as a module by scripts/horoskopos-engine-module.mjs at the start of every build.
 import { natal as engine } from './gen/horoskopos-engine.js';
 import { estimate, layoutCard, sizeById } from '../src/scripts/horoskopos/share/cards.ts';
+import type { ChartOutput } from '../src/scripts/horoskopos/share/codec.ts';
 import { toEngineChart, type Natal } from '../src/scripts/horoskopos/share/engine.ts';
 import { paintSvg } from '../src/scripts/horoskopos/share/paint-svg.ts';
 import { REGISTRY, derive, type CardData, type Content } from '../src/scripts/horoskopos/share/registry.ts';
-import { EMBED_PATH, OEMBED_PATH, OG_PATH, SHARE_PATH, chartsOf, embedUrl, levelOf, parseShare, shareQuery, type ShareState } from '../src/scripts/horoskopos/share/state.ts';
+import { OEMBED_PATH, OG_PATH, SHARE_PATH, chartsOf, embedUrl, levelOf, parseShare, shareQuery, type ShareState } from '../src/scripts/horoskopos/share/state.ts';
 
 const natal = engine as Natal;
 
@@ -51,7 +52,7 @@ export const isHoroskoposApi = (url: URL) => url.pathname.startsWith('/api/horos
 function read(st: ShareState, size = 'wide'): { content: Content; card: CardData; svg: string } | null {
   const m = REGISTRY[st.m];
   if (!m) return null;
-  let outs;
+  let outs: ChartOutput[];
   try { outs = chartsOf(st); } catch { return null; }
   const charts = outs.map(toEngineChart), dims = sizeById(size);
   let svg = '', card: CardData | null = null;
@@ -59,7 +60,7 @@ function read(st: ShareState, size = 'wide'): { content: Content; card: CardData
     card = m.card(content, 0);
     svg = paintSvg(layoutCard(card, dims, estimate, { latinGreekOnly: true }), dims, (ctx, w, h) => natal.paint(ctx, w, h, 2.4));
   });
-  return d.ok && card ? { content: d.content, card, svg } : null;
+  return d.content && card ? { content: d.content, card, svg } : null;
 }
 
 async function sha(text: string): Promise<string> {
@@ -119,7 +120,7 @@ const clip = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1).replace
 
 /** Title and description of a share, for unfurl tags and oEmbed. */
 function describe(c: Content, card: CardData): { title: string; description: string } {
-  const title = `${card.title}${c.owner && !card.title.includes(c.owner) ? `, ${c.owner}` : ''} · ${card.kicker} · Horoskopos`;
+  const title = `${card.title}${c.owner && !card.title.includes(c.owner) ? `, ${c.owner}` : ''} · ${card.kicker.split(' · ')[0]} · Horoskopos`;
   const line = card.line ? card.line.text : c.paras[0] || '';
   return { title: clip(title, 110), description: clip(line || 'A view from Horoskopos, the chart engine.', 200) };
 }
@@ -204,4 +205,3 @@ export async function horoskopos(request: Request, assets: Assets, ctx: Ctx): Pr
   return new Response('not found', { status: 404 });
 }
 
-export { EMBED_PATH };

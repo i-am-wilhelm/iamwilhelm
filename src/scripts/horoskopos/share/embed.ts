@@ -11,6 +11,7 @@
  * In a frame with no fixed size it tells the host page its height
  * (public/machines/natal/embed.js listens), since readings vary in length.
  */
+import type { ChartOutput } from './codec.ts';
 import { toEngineChart, type Natal } from './engine.ts';
 import { REGISTRY, derive } from './registry.ts';
 import { SHARE_PATH, chartsOf, levelOf, parseShare, shareQuery, type ShareState } from './state.ts';
@@ -35,8 +36,12 @@ function fail(text: string) {
 
 /** Tell the host page how tall the content is, for frames that size themselves to it. */
 function tell() {
-  if (parent === window) return;
-  parent.postMessage({ type: 'horoskopos:size', height: Math.ceil(document.documentElement.scrollHeight) }, '*');
+  /* A frame with a fixed size keeps it; only the responsive embed reports its height. */
+  if (parent === window || document.documentElement.dataset.size !== 'auto') return;
+  /* The content's own height, not the frame's: a short reading can then draw a tall frame in as well as push a short one out. */
+  const inner = root.firstElementChild as HTMLElement | null, foot = document.querySelector<HTMLElement>('.emb-foot'), pad = getComputedStyle(root);
+  const height = (inner ? inner.offsetHeight : 0) + parseFloat(pad.paddingTop) + parseFloat(pad.paddingBottom) + (foot ? foot.offsetHeight : 0);
+  if (height > 0) parent.postMessage({ type: 'horoskopos:size', height: Math.ceil(height) }, '*');
 }
 
 let stopDrawing = () => {};
@@ -68,27 +73,28 @@ function chart(api: Natal, cv: HTMLCanvasElement) {
 
 function show(api: Natal) {
   const m = REGISTRY[st.m];
-  let outs;
+  let outs: ChartOutput[];
   try { outs = chartsOf(st); } catch { return fail('This embed link could not be read. It may have been cut short.'); }
   const charts = outs.map(toEngineChart), level = levelOf(st, outs);
   const d = derive(api, st.m, st.f, charts, level);
-  if (!d.ok) return fail(d.why);
+  const content = d.content;
+  if (!content) return fail(d.why);
   stopDrawing();
-  root.innerHTML = m.embed(d.content);
+  root.innerHTML = m.embed(content);
   /* The way back to this exact view in the engine: on the title, and on a teaser's pointer. */
-  const deep = `${SHARE_PATH}?${shareQuery({ ...st, f: d.content.focus })}&ref=embed`;
+  const deep = `${SHARE_PATH}?${shareQuery({ ...st, f: content.focus })}&ref=embed`;
   const more = root.querySelector('.hk-more');
   if (more) more.innerHTML = `<a href="${esc(deep)}" target="_blank" rel="noopener">${more.innerHTML}</a>`;
   const open = document.getElementById('hk-open') as HTMLAnchorElement | null;
   if (open && (charts.length || st.m !== 'daily')) open.href = deep;
-  document.title = `${d.content.title} · Horoskopos`;
+  document.title = `${content.title} · Horoskopos`;
   const cv = root.querySelector<HTMLCanvasElement>('canvas[data-chart]');
   if (cv) {
     /* The chart view stays on the engine's table here (the page shows nothing else), lit on the module's focus. */
-    const staged = m.charts === 2 ? charts.slice(0, 2) : charts.slice(0, 1), stage = m.stage(d.content.focus, staged.length);
+    const staged = m.charts === 2 ? charts.slice(0, 2) : charts.slice(0, 1), stage = m.stage(content.focus, staged.length);
     api.loadShared(staged, { view: stage.view || 'wheel', trail: stage.trail || [] });
     api.S.still = still;
-    if (m.light) m.light(api, d.content.focus);
+    if (m.light) m.light(api, content.focus);
     chart(api, cv);
   }
   tell();

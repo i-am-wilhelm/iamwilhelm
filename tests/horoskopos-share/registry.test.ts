@@ -26,8 +26,8 @@ test('every registered module derives content, a card and an embed from a shared
   for (const m of MODULES) {
     const charts = m.id === 'davison' ? [toEngineChart(decodeChart(encodeChart(fromEngineChart(Object.assign(natal.C.davison(cast('kahlo'), cast('rivera')), { name: 'Davison' }), 'Davison · Frida & Diego'))))] : m.charts === 2 ? [a, b] : [a];
     const d = derive(natal, m.id, f[m.id], charts, 'full');
-    assert.ok(d.ok, `${m.id}: ${d.ok ? '' : d.why}`);
-    if (!d.ok) continue;
+    assert.ok(d.ok && d.content, `${m.id}: ${d.why}`);
+    if (!d.content) continue;
     const c = d.content;
     assert.ok(c.title && c.kicker, `${m.id} has a title and a kicker`);
     assert.ok(c.paras.length > 0, `${m.id} has text`);
@@ -56,7 +56,7 @@ test('sign level: no degrees and no houses anywhere in what is shown', () => {
     if (m.charts === 2 || m.id === 'davison') continue;
     const d = derive(natal, m.id, f[m.id], [a], 'sign');
     if (m.degrees) { assert.equal(d.ok, false, `${m.id} is withheld at sign level`); continue; }
-    if (!d.ok) { assert.ok(m.id === 'step' || m.id === 'aspect', `${m.id}: ${d.why}`); continue; }
+    if (!d.content) { assert.ok(m.id === 'step' || m.id === 'aspect', `${m.id}: ${d.why}`); continue; }
     shown++;
     const text = everything(d.content) + m.embed(d.content) + JSON.stringify(m.card(d.content));
     /* The daily read quotes today's sky (its own degrees are public); everything about the chart must be degree-free. */
@@ -73,7 +73,7 @@ test('anon: the label is nowhere', () => {
   for (const m of MODULES) {
     if (m.charts === 2 || m.id === 'davison' || m.degrees) continue;
     const d = derive(natal, m.id, f[m.id], [a], 'anon');
-    if (!d.ok) continue;
+    if (!d.content) continue;
     const text = everything(d.content) + m.embed(d.content) + JSON.stringify(m.card(d.content));
     assert.ok(!/Kahlo|Frida/.test(text), `${m.id} names the chart`);
     assert.equal(d.content.owner, '');
@@ -82,8 +82,8 @@ test('anon: the label is nowhere', () => {
 
 test('deep readings share as a teaser', () => {
   const d = derive(natal, 'house', '10', [shared('kahlo')], 'full');
-  assert.ok(d.ok && d.content.deep && REGISTRY.house.deep);
-  if (!d.ok) return;
+  assert.ok(d.content && d.content.deep && REGISTRY.house.deep);
+  if (!d.content) return;
   const html = REGISTRY.house.embed(d.content);
   assert.match(html, /hk-more/);
   assert.ok(html.length < d.content.paras.join(' ').length, 'the embed holds less than the reading');
@@ -92,7 +92,7 @@ test('deep readings share as a teaser', () => {
 
 test('the daily read stands without a chart', () => {
   const d = derive(natal, 'daily', '', [], 'full');
-  assert.ok(d.ok && d.content.paras.length > 0);
+  assert.ok(d.content && d.content.paras.length > 0);
 });
 
 test('share state reads and writes one URL shape', () => {

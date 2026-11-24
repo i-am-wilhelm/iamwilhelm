@@ -171,6 +171,8 @@ function rows(ops: Op[], list: Row[], box: Box, k: number, measure: Measure, col
   const need = (f: number) => Math.max(...list.map((r) => measure(r.name.split(' · ')[0], serif(f, 600)) + measure(r.value, serif(f, 400)) + Math.min(rh * 0.58, f * 1.5) + 44 * k));
   if (need(fs) > cw) fs = Math.max(fs * 0.62, (fs * cw) / need(fs));
   const nf = serif(fs, 600), vf = serif(fs, 400), tf = mono(fs * 0.62, 500);
+  /* The small note column shows for every row or for none. */
+  const g0 = Math.min(rh * 0.58, fs * 1.5), notes = list.every((r) => !r.note || measure(r.name.split(' · ')[0], nf) + measure(r.value, vf) + measure(r.note, tf) + g0 + 66 * k <= cw);
   list.forEach((r, i) => {
     const col = Math.floor(i / per), x = box.x + col * (cw + gap), y = box.y + (i % per) * rh, base = y + rh / 2 + fs * 0.34, g = Math.min(rh * 0.58, fs * 1.5);
     if (i % per) ops.push({ t: 'line', x1: x, y1: y, x2: x + cw, y2: y, stroke: INK.rule, sw: 1.5 });
@@ -178,8 +180,8 @@ function rows(ops: Op[], list: Row[], box: Box, k: number, measure: Measure, col
     const nx = x + g + 18 * k, room = cw - (nx - x), vw = measure(r.value, vf), note = r.note || '', noteW = note ? measure(note, tf) + 22 * k : 0;
     /* The name gives way first ("Helios · Sun" falls back to "Helios"), then the note. */
     let name = r.name;
-    if (measure(name, nf) + vw + noteW + 26 * k > room) name = name.split(' · ')[0];
-    const showNote = !!note && measure(name, nf) + vw + noteW + 26 * k <= room;
+    if (measure(name, nf) + vw + (notes ? noteW : 0) + 26 * k > room) name = name.split(' · ')[0];
+    const showNote = !!note && notes;
     ops.push({ t: 'text', x: nx, y: base, text: name, font: nf, fill: INK.ink });
     ops.push({ t: 'text', x: x + cw - (showNote ? noteW : 0), y: base, text: r.value, font: vf, fill: INK.ink, align: 'right' });
     if (showNote) ops.push({ t: 'text', x: x + cw, y: base - 1, text: note, font: tf, fill: INK.mute, align: 'right' });

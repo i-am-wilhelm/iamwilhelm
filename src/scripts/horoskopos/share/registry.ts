@@ -114,6 +114,8 @@ const owner = (ch?: EngineChart) => (ch && ch.meta && ch.meta.named ? ch.name : 
 const sg = (lon: number) => Math.floor((((lon % 360) + 360) % 360) / 30);
 const glyphOf = (api: Natal, id: string): Glyph => (api.D.PG[id === 'sn' ? 'nn' : id] ? { path: api.D.PG[id === 'sn' ? 'nn' : id] } : { text: api.D.TXT[id] || id.slice(0, 2).toUpperCase() });
 const god = (api: Natal, id: string) => cap(api.gname(id));
+/** A god's name inside a phrase: "the Midheaven" keeps its small t, and loses the article after a possessive. */
+const named = (api: Natal, id: string, owned = false) => { const g = api.gname(id); return /^the /.test(g) ? (owned ? g.slice(4) : g) : cap(g); };
 
 /** "12°04′ Pisces", or the sign alone at sign level. */
 function where(api: Natal, ch: EngineChart, lon: number): string {
@@ -286,7 +288,7 @@ const aspect: Module = {
     if (two || !lines.length) lines.push({ text: said });
     if (card && card.lesson) { paras.push(strip(card.lesson)); lines.push(...pullLines([strip(card.lesson)]).slice(0, 2)); }
     if (card && card.here) paras.push(strip(card.here).replace(/ It is the [^.]*? lines on screen\./, ''));
-    const names = two ? `${api.shortName(A)}’s ${god(api, L.a)} ${api.ASYM[L.kind]} ${api.shortName(B)}’s ${god(api, L.b)}` : `${god(api, L.a)} ${api.ASYM[L.kind]} ${god(api, L.b)}`;
+    const names = two ? `${api.shortName(A)}’s ${named(api, L.a, true)} ${api.ASYM[L.kind]} ${api.shortName(B)}’s ${named(api, L.b, true)}` : `${god(api, L.a)} ${api.ASYM[L.kind]} ${named(api, L.b)}`;
     return {
       module: 'aspect', focus, kicker: `A line · ${L.kind}`, title: names, sub: `${L.off.toFixed(1)}° from exact${L.applying === true ? ' · closing' : L.applying === false && !two ? ' · parting' : ''} · about ${api.theme(L.a, L.b)}`,
       color: api.D.COL[L.tone] || ICHOR, glyph: glyphOf(api, L.a), glyph2: glyphOf(api, L.b), joiner: api.ASYM[L.kind], paras, lines, voice: '', owner: two ? '' : owner(A), deep: false,
@@ -440,7 +442,7 @@ const synastry: Module = {
   derive({ api, charts }, focus) {
     if (charts.length < 2) return null;
     const v = SYN[focus] ? focus : 'biwheel', [A, B] = charts, links = api.links().filter((L) => L.ia !== L.ib).sort((x, y) => x.off - y.off);
-    const said = links.slice(0, 4).map((L) => `${god(api, L.a)} ${L.kind} ${god(api, L.b)} (${L.off.toFixed(1)}°). ${strip(api.sentence(L, api.charts()))}`);
+    const said = links.slice(0, 4).map((L) => `${god(api, L.a)} ${L.kind} ${named(api, L.b)} (${L.off.toFixed(1)}°). ${strip(api.sentence(L, api.charts()))}`);
     const names = owner(A) && owner(B) ? `${api.shortName(A)} and ${api.shortName(B)}` : 'Two charts';
     return {
       module: 'synastry', focus: v, kicker: `Synastry · ${SYN[v]}`, title: names, sub: `${links.length} ${links.length === 1 ? 'line' : 'lines'} between them`, color: ICHOR,
@@ -500,30 +502,31 @@ const step: Module = {
       paras, lines: pullLines(paras), trail: trail.map((s) => strip(api.crumb(s))), voice: '', owner: owner(charts[0]), deep: false,
     };
   },
-  full(api, _f, doc) { return q(doc, '#card'); },
+  full(_api, _f, doc) { return q(doc, '#card'); },
   embed: embedReading, card: cardOf('voice'),
 };
 
 export const MODULES: readonly Module[] = [wheel, placements, godModule, aspect, patterns, house, keyholder, inner, lots, fate, key, daily, synastry, davison, glossary, step];
 export const REGISTRY: Readonly<Record<string, Module>> = Object.fromEntries(MODULES.map((m) => [m.id, m]));
 
-export type Derived = { ok: true; module: Module; content: Content } | { ok: false; module: Module | null; why: string };
+/** What deriving gives back. One shape, so it reads the same with or without strict null checks: when `ok`, `content` is set; when not, `why` says why. */
+export interface Derived<T = undefined> { ok: boolean; module: Module | null; content: Content | null; why: string; used?: T }
 
 /**
  * Derive a module's content from decoded charts and a focus. The charts go on the engine's table only for the
  * length of the call. `use` runs with the same staging still in place, for painting the chart view.
  */
-export function derive<T = undefined>(api: Natal, moduleId: string, focus: string, charts: EngineChart[], level: Privacy, use?: (c: Content) => T): Derived & { used?: T } {
+export function derive<T = undefined>(api: Natal, moduleId: string, focus: string, charts: EngineChart[], level: Privacy, use?: (c: Content) => T): Derived<T> {
   const m = REGISTRY[moduleId];
-  if (!m) return { ok: false, module: null, why: 'This link names a view this page does not have.' };
-  if (charts.length < m.charts) return { ok: false, module: m, why: m.charts === 2 ? `${m.title} needs two charts.` : `${m.title} needs a chart.` };
-  if (m.degrees && charts.slice(0, Math.max(1, m.charts)).some((c) => c.signOnly)) return { ok: false, module: m, why: `${m.title}: this view needs degrees, so it cannot be shown at sign level.` };
+  if (!m) return { ok: false, module: null, content: null, why: 'This link names a view this page does not have.' };
+  if (charts.length < m.charts) return { ok: false, module: m, content: null, why: m.charts === 2 ? `${m.title} needs two charts.` : `${m.title} needs a chart.` };
+  if (m.degrees && charts.slice(0, Math.max(1, m.charts)).some((c) => c.signOnly)) return { ok: false, module: m, content: null, why: `${m.title}: this view needs degrees, so it cannot be shown at sign level.` };
   const staged = m.charts === 2 || (m.id === 'aspect' && charts.length > 1) || (m.id === 'step' && charts.length > 1) ? charts.slice(0, 2) : charts.slice(0, 1);
-  return api.withShared(staged, m.stage(focus, staged.length), () => {
+  return api.withShared(staged, m.stage(focus, staged.length), (): Derived<T> => {
     const content = m.derive({ api, charts: staged, level }, focus);
-    if (!content) return { ok: false as const, module: m, why: `${m.title}: that focus is not in this chart.` };
+    if (!content) return { ok: false, module: m, content: null, why: `${m.title}: that focus is not in this chart.` };
     if (m.light) m.light(api, content.focus);
     const used = use ? use(content) : undefined;
-    return { ok: true as const, module: m, content, used };
+    return { ok: true, module: m, content, why: '', used };
   });
 }
