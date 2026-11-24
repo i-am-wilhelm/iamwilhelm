@@ -1,14 +1,20 @@
 /**
  * Worker entry. The site is a static Astro build served from the ASSETS
  * binding; this script only sees requests matched by `run_worker_first` in
- * the wrangler config (/api/* and the Search Console file below). Everything
- * else is answered by the asset layer before the script runs, so static
- * pages cost no invocations.
+ * the wrangler config (/api/*, the Search Console file below, and the
+ * Horoskopos page, whose share links need their preview tags written on the
+ * server). Everything else is answered by the asset layer before the script
+ * runs, so the other static pages cost no invocations.
  *
  * Routes
  *   GET /api/room/:code                  WebSocket upgrade into the PoemRoom for that code.
  *   GET /google8b497834161e9abd.html     Google Search Console verification file.
+ *   GET /gallery/horoskopos/             The engine page; with a share link in the query,
+ *                                        its unfurl tags are rewritten (worker/horoskopos.ts).
+ *   GET /api/horoskopos/*                Share card image and oEmbed (worker/horoskopos.ts).
  */
+import { horoskopos, isHoroskoposApi, isHoroskoposShare } from './horoskopos';
+
 export { PoemRoom } from './poem-room';
 
 export interface Env {
@@ -30,7 +36,7 @@ const GSC_PATH = '/google8b497834161e9abd.html';
 const GSC_BODY = 'google-site-verification: google8b497834161e9abd.html';
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
     if (url.pathname === GSC_PATH) {
@@ -54,6 +60,9 @@ export default {
       const stub = env.POEM_ROOM.get(env.POEM_ROOM.idFromName(code));
       return stub.fetch(request);
     }
+
+    /* Horoskopos: a share link's preview tags, its card image, and oEmbed. Without a share in the query the page is served as built. */
+    if (isHoroskoposApi(url) || isHoroskoposShare(url)) return horoskopos(request, env.ASSETS, ctx);
 
     if (url.pathname.startsWith('/api/')) return new Response('not found', { status: 404 });
     return env.ASSETS.fetch(request);

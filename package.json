@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
+    "@resvg/resvg-wasm": "^2.6.2",
     "astro": "^5.7.0",
     "gsap": "^3.12.7",
     "ogl": "^1.0.11",
