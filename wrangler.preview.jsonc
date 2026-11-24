@@ -5,10 +5,12 @@
   // never touch the production worker or its custom domains.
   "name": "iamwilhelm-preview",
   "compatibility_date": "2026-07-01",
-  // The script only runs for /api/* and the Google Search Console file
-  // (run_worker_first); every other request is served straight from the
-  // static assets without invoking it. The Search Console path must stay:
-  // see worker/index.ts.
+  // The script only runs for /api/*, the Google Search Console file and the
+  // Horoskopos page (run_worker_first); every other request is served
+  // straight from the static assets without invoking it. The Search Console
+  // path must stay: see worker/index.ts. The Horoskopos page goes through
+  // the script so a share link (?c=…&m=…) gets its own preview tags; with
+  // no share in the query the script hands the page back as built.
   "main": "./worker/index.ts",
   "workers_dev": true,
   "assets": {
@@ -16,11 +18,19 @@
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/google8b497834161e9abd.html"]
+    "run_worker_first": ["/api/*", "/google8b497834161e9abd.html", "/gallery/horoskopos", "/gallery/horoskopos/"]
   },
   // Equal Volume two-phone rooms: one PoemRoom per four-character code.
   "durable_objects": {
     "bindings": [{ "name": "POEM_ROOM", "class_name": "PoemRoom" }]
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PoemRoom"] }]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PoemRoom"] }],
+  // Invocation logs record each request's URL. A Horoskopos share URL holds
+  // a chart code, so they are off here as in production.
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "invocation_logs": false
+    }
+  }
 }

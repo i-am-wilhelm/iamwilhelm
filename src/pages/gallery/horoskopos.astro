@@ -14,12 +14,18 @@
  * claude.ai/artifact/WzrGQaWF2KJFTZdgaiaKhq): markup and stylesheet here,
  * scoped under body.natal so Poem.astro's globals cannot reach them; the
  * scripts are plain files in public/machines/natal/ and load as written.
+ *
+ * The share system (src/scripts/horoskopos/share/, docs/horoskopos-share.md)
+ * adds one script at the foot, the share dialog, and the .shr rules at the
+ * end of the stylesheet. With no share link in the address the page loads
+ * and behaves as it did.
  */
 import Poem from '../../layouts/Poem.astro';
 import SeriesMark from '../../components/scroll/SeriesMark.astro';
 import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
+import '../../styles/horoskopos-share.css';
 ---
 
 <Poem
@@ -57,6 +63,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
     <p id="hint" class="hint"></p>
     <div id="focus" class="focus"></div>
     <div class="ne-stage" data-twin="A chart wheel drawn on a night field: the zodiac as a ring of twelve signs, the house lines, the planets as orbs of colored light, and lines between them for the aspects, each carrying a moving signal. Other views lay two charts together as rings, as wired wheels, as a grid, or as one Davison chart."><canvas id="sky" role="img" aria-label="Chart"></canvas><div id="tip" class="tip" role="status" hidden></div></div>
+    <p class="shr-line"><button class="chip" type="button" data-share-main>Share this view</button><span class="shr-warn">Placements can reveal an approximate birth date. The privacy selector controls how much is shown.</span></p>
     <details id="tuning" class="tuning">
       <summary>Tuning</summary>
       <div class="tune">
@@ -124,9 +131,49 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   </div>
 </dialog>
 
+<dialog id="share" aria-labelledby="shr-title">
+  <div class="lib shr-panel">
+    <header><div><p class="shr-eb" id="shr-eb">Share</p><h2 id="shr-title">Share</h2></div><button type="button" data-shr-close aria-label="Close">&times;</button></header>
+    <fieldset class="shr-priv">
+      <legend>Privacy</legend>
+      <label><input type="radio" name="shr-p" value="full" checked /><span><b>Full</b><small>Degrees, houses and the chart’s name</small></span></label>
+      <label><input type="radio" name="shr-p" value="sign" /><span><b>Signs only</b><small>No degrees, no houses</small></span></label>
+      <label><input type="radio" name="shr-p" value="anon" /><span><b>Anonymous</b><small>Signs only, and no name</small></span></label>
+    </fieldset>
+    <p class="shr-warn fine">Placements can reveal an approximate birth date. The privacy selector controls how much is shown.</p>
+    <div class="shr-tabs" role="tablist" aria-label="Ways to share"><button type="button" role="tab" data-shr-tab="card" aria-selected="true">Card</button><button type="button" role="tab" data-shr-tab="link" aria-selected="false">Link</button><button type="button" role="tab" data-shr-tab="embed" aria-selected="false">Embed</button></div>
+    <p id="shr-msg" class="shr-msg" role="status" hidden></p>
+    <section data-shr-pane="card">
+      <div id="shr-sizes" class="shr-sizes" role="group" aria-label="Card size"></div>
+      <div class="shr-prev"><canvas id="shr-cv" role="img" aria-label="Card preview"></canvas></div>
+      <div id="shr-lines" class="shr-lines" role="radiogroup" aria-label="Which line goes on the card" hidden></div>
+      <div class="shr-act"><button type="button" class="go" id="shr-share" hidden>Share image</button><button type="button" class="chip" id="shr-dl">Download image</button></div>
+    </section>
+    <section data-shr-pane="link" hidden>
+      <label>Link <input id="shr-url" readonly /></label>
+      <p class="fine">Opens Horoskopos on this exact view. A link carries the chart’s positions, never a birth date, time or place, and nothing is stored: the link is the whole of it.</p>
+    </section>
+    <section data-shr-pane="embed" hidden>
+      <div class="shr-opts">
+        <label>View <select id="shr-view"></select></label>
+        <label>Size <select id="shr-esize"></select></label>
+        <label>Theme <select id="shr-theme"><option value="dark">Dark</option><option value="light">Light</option></select></label>
+      </div>
+      <div class="shr-frame"><iframe id="shr-if" title="Embed preview"></iframe></div>
+      <label>Embed code <textarea id="shr-code" readonly rows="4" spellcheck="false"></textarea></label>
+      <label class="check"><input id="shr-auto" type="checkbox" /> Add the script that fits the frame’s height to the reading</label>
+      <div class="shr-act"><button type="button" class="chip" id="shr-copycode">Copy embed code</button></div>
+    </section>
+    <footer class="shr-foot"><button type="button" class="chip" id="shr-copy">Copy link</button><span id="shr-done" role="status"></span></footer>
+  </div>
+</dialog>
+
   <div id="cities" data-src="/machines/natal/cities.json" hidden></div>
   <script is:inline src="/machines/natal/astronomy.min.js"></script>
   <script is:inline src="/machines/natal/engine.js"></script>
+  <script>
+    import '../../scripts/horoskopos/share/page.ts';
+  </script>
 </Poem>
 
 <style is:global>
@@ -353,4 +400,74 @@ body.natal .ne-sf{margin-top:1.2rem}
 /* the share card and the reel stills frame the stage itself (scripts/og-scrollies.mjs adds html.og) */
 html.og body.natal .slots,html.og body.natal .views,html.og body.natal .hint,html.og body.natal .focus,html.og body.natal .tuning{display:none}
 html.og body.natal .ne-stage{height:468px;min-height:0;margin-top:10px}
+
+/* ---------------- the share system (src/scripts/horoskopos/share/page.ts) ---------------- */
+body.natal .shr{position:relative}
+body.natal .shr-wrap{position:relative;padding-top:2px}
+body.natal .shr-b{position:absolute;top:0;right:0;z-index:3;display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:4px 10px;border:1px solid var(--rule);border-radius:99px;background:var(--slab);color:var(--mute);font-family:var(--mono);font-weight:500;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase}
+body.natal .shr-b:hover,body.natal .shr-b:focus-visible{color:var(--ichor);border-color:var(--ichor)}
+body.natal .shr-b svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.natal .god.shr>h5{padding-right:86px}
+body.natal .day.shr .shr-b,body.natal .key.shr .shr-b{top:10px;right:10px}
+body.natal .shr-wrap .shr-b{top:-34px}
+body.natal .shr-wrap{margin-top:36px}
+body.natal .shr-b-stage{top:10px;right:10px;background:rgba(21,19,28,.86)}
+body.natal .shr-b-card{top:auto;bottom:10px;right:12px}
+body.natal .stop.shr{padding-bottom:46px}
+body.natal .shr-b-row{top:auto;bottom:7px;right:9px;min-height:26px;padding:2px 8px}
+body.natal .shr-b-row span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+body.natal .lk.shr .meter{margin-right:44px}
+body.natal .shr-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:10px 0 0}
+body.natal .shr-line span{flex:1 1 240px;font-family:var(--mono);font-weight:500;font-size:.68rem;line-height:1.5;color:var(--mute)}
+body.natal .shr-lit{outline:2px solid var(--ichor);outline-offset:6px;border-radius:10px;animation:shr-lit 4.2s ease-out forwards}
+@keyframes shr-lit{0%,70%{outline-color:var(--ichor)}100%{outline-color:transparent}}
+body.natal .shr-note{position:relative;max-width:1208px;margin:10px 16px 0;padding:12px 52px 12px 14px;border:1px solid var(--ichor);border-radius:12px;background:rgba(242,197,107,.06)}
+@media (min-width:1240px){body.natal .shr-note{margin-left:auto;margin-right:auto}}
+body.natal .shr-note p{margin:0 0 6px}body.natal .shr-note p:last-of-type{margin-bottom:0}
+body.natal .shr-note .x{position:absolute;top:4px;right:6px;width:40px;height:40px;font-size:1.4rem;color:var(--mute)}
+body.natal .shr-solo{max-width:640px;margin:2px 0 12px}
+body.natal .shr-panel section{display:block;min-height:0;margin:0;padding:0}
+body.natal .shr-panel [hidden],body.natal .shr-note[hidden]{display:none!important}
+body.natal .shr-panel .shr-eb{margin:0;font-family:var(--mono);font-weight:500;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ichor)}
+body.natal .shr-priv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 8px;padding:0;border:0;min-width:0}
+body.natal .shr-priv legend{padding:0;margin:0 0 6px;font-family:var(--mono);font-weight:500;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+body.natal .shr-priv label{display:block;position:relative;cursor:pointer;letter-spacing:0;text-transform:none}
+body.natal .shr-priv input{position:absolute;opacity:0;width:100%;height:100%;inset:0;margin:0;cursor:pointer}
+body.natal .shr-priv span{display:block;height:100%;border:1px solid var(--rule);border-radius:10px;padding:9px 10px;background:var(--night)}
+body.natal .shr-priv b{display:block;font-family:var(--display);font-size:1rem;color:var(--ink)}
+body.natal .shr-priv small{display:block;font-family:var(--mono);font-weight:500;font-size:.62rem;line-height:1.45;color:var(--mute)}
+body.natal .shr-priv input:checked+span{border-color:var(--ichor);background:rgba(242,197,107,.08)}
+body.natal .shr-priv input:focus-visible+span{outline:2px solid var(--ichor);outline-offset:2px}
+body.natal .shr-priv input:disabled+span{opacity:.45}
+body.natal .shr-panel .shr-warn{margin:0 0 12px}
+body.natal .shr-tabs{display:flex;gap:6px;border-bottom:1px solid var(--rule);margin:0 0 12px}
+body.natal .shr-tabs button{padding:10px 14px;min-height:44px;font-family:var(--mono);font-weight:500;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
+body.natal .shr-tabs button[aria-selected=true]{color:var(--ichor);border-bottom-color:var(--ichor)}
+body.natal .shr-msg{margin:0 0 12px;padding:9px 12px;border:1px solid var(--rule);border-left:3px solid var(--ichor);border-radius:8px;font-size:.95rem}
+body.natal .shr-sizes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+body.natal .shr-sizes .chip{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border-radius:10px;text-align:left}
+body.natal .shr-sizes .chip small{font-size:.58rem;color:var(--mute);letter-spacing:.02em}
+body.natal .shr-sizes .chip[aria-pressed=true]{border-color:var(--ichor);color:var(--ichor)}
+body.natal .shr-prev{display:grid;place-items:center;padding:12px;border:1px solid var(--rule);border-radius:12px;background:var(--night)}
+body.natal .shr-prev canvas{display:block;width:auto;height:auto;max-width:100%;max-height:min(58vh,520px);border-radius:6px}
+body.natal .shr-lines{display:grid;gap:6px;margin:12px 0 0;max-height:220px;overflow:auto}
+body.natal .shr-lines .lab{margin:0;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+body.natal .shr-lines label{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border:1px solid var(--rule);border-radius:9px;background:var(--night);font-family:var(--display);font-size:.95rem;line-height:1.4;letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}
+body.natal .shr-lines input{margin:4px 0 0;accent-color:var(--ichor);flex:none;width:auto;min-height:0}
+body.natal .shr-lines label:has(input:checked){border-color:var(--ichor)}
+body.natal .shr-act{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+body.natal .shr-act .go{margin:0;width:auto;flex:1 1 180px}
+body.natal .shr-panel section>label,body.natal .shr-opts label{margin:0 0 10px}
+body.natal .shr-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+body.natal .shr-panel select,body.natal .shr-panel textarea{background:var(--night);border:1px solid var(--rule);border-radius:9px;padding:10px 12px;min-height:46px;width:100%;color:var(--ink);letter-spacing:0;text-transform:none}
+body.natal .shr-panel select{font-family:var(--display);font-size:1rem}
+body.natal .shr-panel textarea{font-family:var(--mono);font-weight:500;font-size:.72rem;line-height:1.5;resize:vertical}
+body.natal .shr-panel #shr-url{font-family:var(--mono);font-weight:500;font-size:.76rem}
+body.natal .shr-frame{margin:0 0 12px;padding:10px;border:1px solid var(--rule);border-radius:12px;background:var(--night);display:grid;place-items:center}
+body.natal .shr-frame iframe{display:block;width:100%;height:460px;border:0;border-radius:8px;background:#0b0a10}
+body.natal .shr-foot{display:flex;align-items:center;gap:12px;margin:18px 0 0;padding:12px 0 0;border-top:1px solid var(--rule)}
+body.natal .shr-foot span{font-family:var(--mono);font-weight:500;font-size:.72rem;color:var(--ichor)}
+body.natal .shr-off .shr-foot,body.natal .shr-off .shr-tabs{display:none}
+body.natal .ne-main.is-empty .shr-line{display:none}
+html.og body.natal .shr-b,html.og body.natal .shr-line{display:none}
 </style>

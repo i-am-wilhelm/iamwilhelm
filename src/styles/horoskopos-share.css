@@ -1,0 +1,32 @@
+/*
+ * Horoskopos, the compact view: the markup the share registry's embed
+ * renderers write (src/scripts/horoskopos/share/registry.ts, everything
+ * under .hk). Used by the embed route and by the engine page, where a
+ * shared view that needs no chart is shown on arrival. Colours follow the
+ * engine's palette; a light theme swaps the four tokens.
+ */
+.hk{--hk-ink:#efe8d8;--hk-mute:#aaa49b;--hk-rule:#2d2935;--hk-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;color:var(--hk-ink);font-family:'Literata',Georgia,'Times New Roman',serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.hk *{box-sizing:border-box}
+.hk-h{display:flex;gap:14px;align-items:flex-start;margin:0 0 12px}
+.hk-gs{display:flex;align-items:center;gap:6px;flex:none;padding-top:2px}
+.hk-g{width:46px;height:46px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+svg.hk-g[viewBox="0 0 48 48"]{stroke-width:2.6}
+.hk-gt{display:grid;place-items:center;border:2px solid currentColor;border-radius:50%;font-family:var(--hk-mono);font-weight:600;font-size:1.05rem;line-height:1}
+.hk-j{font-size:1.5rem;line-height:1}
+.hk-k{margin:0;font-family:var(--hk-mono);font-weight:600;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase}
+.hk h1{margin:2px 0 0;font-size:1.55rem;line-height:1.15;font-weight:600;letter-spacing:-.005em}
+.hk-gk{font-weight:400;font-size:.62em;color:var(--c);margin-left:.25em;white-space:nowrap}
+.hk-s,.hk-t{margin:5px 0 0;font-family:var(--hk-mono);font-weight:500;font-size:.7rem;line-height:1.55;color:var(--hk-mute)}
+.hk-b p{margin:0 0 .75em}
+.hk-b p:last-child{margin-bottom:0}
+.hk-more{font-style:italic;color:var(--hk-mute)}
+.hk table{width:100%;border-collapse:collapse;margin:0 0 12px}
+.hk th,.hk td{padding:7px 0;border-top:1px solid var(--hk-rule);vertical-align:middle;text-align:left}
+.hk tr:first-child th,.hk tr:first-child td{border-top:0}
+.hk th{font-weight:600;white-space:nowrap}
+.hk th .hk-g{width:20px;height:20px;margin-right:9px;vertical-align:-4px;stroke-width:1.9}
+.hk th .hk-gt{display:inline-grid;border:0;font-size:.7rem;width:20px;height:20px}
+.hk td{padding-left:10px}
+.hk td:last-child{font-family:var(--hk-mono);font-weight:500;font-size:.68rem;color:var(--hk-mute);text-align:right}
+.hk-cv{aspect-ratio:1/1;max-width:560px;margin:0 auto 14px;border:1px solid #2d2935;border-radius:14px;background:radial-gradient(120% 90% at 50% 40%,#16131f 0%,#0b0a10 70%);overflow:hidden}
+.hk-cv canvas{display:block;width:100%;height:100%}

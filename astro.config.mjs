@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import twins from './src/integrations/twins';
+import horoskoposEngine from './src/integrations/horoskopos-engine';
 
 // Static-first build. Interactive layers (WebGL pipeline, orchestra pit,
 // easter-egg engine) hydrate as client-side islands from src/scripts.
@@ -10,8 +11,9 @@ import twins from './src/integrations/twins';
 // The sitemap lists the public museum only: the archived homepage
 // (/atelier) and the lab workbench stay out, alongside their noindex tags,
 // and so do the plain-text twins (/gallery/<slug>/twin/), whose canonical
-// is the scroll page they mirror.
-const PRIVATE = ['/atelier', '/lab/'];
+// is the scroll page they mirror. The Horoskopos embed route (/horoskopos/embed/)
+// is a frame for other sites, not a page of this one, and stays out too.
+const PRIVATE = ['/atelier', '/lab/', '/horoskopos/embed'];
 const isTwin = (pathname) => /\/twin\/?$/.test(pathname);
 
 export default defineConfig({
@@ -30,6 +32,7 @@ export default defineConfig({
   },
   integrations: [
     twins(),
+    horoskoposEngine(),
     sitemap({
       filter: (page) => {
         const { pathname } = new URL(page);
