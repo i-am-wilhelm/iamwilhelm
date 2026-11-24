@@ -1,4 +1,4 @@
-# The Natal Engine: files
+# Horoskopos: files
 
 - `engine.js`: the engine itself (small-body table, core, library, drawing, page logic), written for this site.
 - `astronomy.min.js`: Astronomy Engine 2.1.19 by Don Cross, MIT licence (https://github.com/cosinekitty/astronomy). Planet positions, sidereal time and the gravity simulator.

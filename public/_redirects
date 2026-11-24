@@ -17,3 +17,8 @@
 /writings/mimics /writings/mythmaking/ 301
 /writings/mimics/ /writings/mythmaking/ 301
 /writings/mimics/* /writings/mythmaking/:splat 301
+
+# The Natal Engine was renamed Horoskopos (November 2026). Its page and twin moved with it.
+/gallery/the-natal-engine /gallery/horoskopos/ 301
+/gallery/the-natal-engine/ /gallery/horoskopos/ 301
+/gallery/the-natal-engine/* /gallery/horoskopos/:splat 301
