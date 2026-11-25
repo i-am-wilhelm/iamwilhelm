@@ -297,7 +297,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     ['pop', 'Pop culture'],
   ];
   const FIGURES = [
-    F('wilhelm', 'Michael Wilhelm', 'house', 1991, 3, 1, [10, 0], -7, 32.834, -109.707, 'Safford, Arizona', 'own', { blurb: 'Whose museum this is.' }),
+    F('wilhelm', 'Wilhelm', 'house', 1991, 3, 1, [10, 0], -7, 32.834, -109.707, 'Safford, Arizona', 'own', { blurb: 'Whose museum this is.' }),
 
     F('leonardo', 'Leonardo da Vinci', 'painters', 1452, 4, 14, [21, 40], 'LMT', 43.78, 10.93, 'Vinci, Italy', 'record', { cal: 'J' }),
     F('michelangelo', 'Michelangelo', 'painters', 1475, 3, 6, [1, 45], 'LMT', 43.64, 11.99, 'Caprese, Italy', 'record', { cal: 'J' }),
@@ -799,7 +799,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const LET = ['A', 'B', 'C', 'D'];
-  const SHORT = { wilhelm: 'Michael', leonardo: 'Leonardo', vangogh: 'Vincent', victoria: 'Victoria', albert: 'Albert', fitzgerald: 'Scott', king: 'King', elizabeth: 'Elizabeth', mshelley: 'Mary', pshelley: 'Percy', carter: 'June', cash: 'Johnny', kahlo: 'Frida', rivera: 'Diego', taylor: 'Taylor', burton: 'Burton', beauvoir: 'Beauvoir', sartre: 'Sartre', rimbaud: 'Rimbaud', verlaine: 'Verlaine', zelda: 'Zelda' };
+  const SHORT = { wilhelm: 'Wilhelm', leonardo: 'Leonardo', vangogh: 'Vincent', victoria: 'Victoria', albert: 'Albert', fitzgerald: 'Scott', king: 'King', elizabeth: 'Elizabeth', mshelley: 'Mary', pshelley: 'Percy', carter: 'June', cash: 'Johnny', kahlo: 'Frida', rivera: 'Diego', taylor: 'Taylor', burton: 'Burton', beauvoir: 'Beauvoir', sartre: 'Sartre', rimbaud: 'Rimbaud', verlaine: 'Verlaine', zelda: 'Zelda' };
   const FONT = { mono: "'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace", serif: "'Literata',Georgia,serif" };
   const VIEWS = [
     ['wheel', 'Wheel', 'One sky. The Ascendant sits at nine o’clock and the houses run counterclockwise.'],
