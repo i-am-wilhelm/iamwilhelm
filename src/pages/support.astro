@@ -9,12 +9,14 @@ import Placard from '../components/museum/Placard.astro';
 import Meander from '../components/museum/Meander.astro';
 import Colophon from '../components/museum/Colophon.astro';
 import { CONTACT_EMAIL, SITE_URL } from '../config/site';
+import { trail } from '../lib/crumbs';
 ---
 
 <Museum
   title="Support the work · Michael Wilhelm"
   description="Patronage for the pages on iamwilhelm.com: how to keep the lights on in the Gallery and the reading room."
   current="support"
+  crumbs={trail('Patronage')}
   schema={[
     {
       '@type': 'WebPage',

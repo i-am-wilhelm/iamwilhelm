@@ -7,7 +7,7 @@
  * movements marked up as `.section[data-section]` in the markdown.
  *
  * This component carries the chrome around the content: the exit back to
- * the Gallery, the title block (series label, dedication, title) with the "read it straight through"
+ * the Gallery (a breadcrumb trail, CrumbExit), the title block (series label, dedication, title) with the "read it straight through"
  * un-gate (shown only once the island is live), and the styles for the
  * headnote, the poem movements, the seed gates, the metamorphosis, the hall
  * of asphodel, the seat-mirror, and the return. The island itself lives in
@@ -22,6 +22,9 @@
 import SeriesMark from '../scroll/SeriesMark.astro';
 import Byline from '../scroll/Byline.astro';
 import BureauStamp from '../scroll/BureauStamp.astro';
+import CrumbExit from '../scroll/CrumbExit.astro';
+import { getPiece } from '../../lib/pieces';
+import { pieceTrail } from '../../lib/crumbs';
 
 interface Props {
   /** The piece's id, for its series label. */
@@ -35,7 +38,7 @@ interface Props {
 const { id, title, dateLabel, dedication } = Astro.props;
 ---
 
-<a class="descent-exit" href="/gallery/" data-og-hide><span aria-hidden="true">&larr;</span> The Gallery</a>
+<CrumbExit trail={pieceTrail(await getPiece(id))} className="descent-exit" />
 
 <article class="descent" aria-labelledby="descent-title">
   <header class="descent__head">

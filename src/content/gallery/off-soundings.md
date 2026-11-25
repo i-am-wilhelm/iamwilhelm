@@ -12,6 +12,7 @@ plate: "#17222e"
 date: 2026-11-15T01:00:00Z
 series: seen
 seriesNo: 17
+tags: [money, the-dollar, trusts-and-taxes, banking, crypto, gold, preparedness]
 ---
 
 Mounted as delivered from the owner's approved source file

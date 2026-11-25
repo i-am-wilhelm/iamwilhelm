@@ -14,6 +14,7 @@ plate: "#0b0a10"
 date: 2026-11-23
 series: machines
 seriesNo: 2
+tags: [astrology, the-sky, greek-words, word-histories, hands-on, time]
 ---
 
 Generated from the owner's Claude artifact (claude.ai/artifact/WzrGQaWF2KJFTZdgaiaKhq)

@@ -10,6 +10,7 @@ order: 38
 status: on-view
 plate: "#0e0d0b"
 date: 2026-11-15T06:00:00Z
+tags: [campaigns, fundraising, for-organizations]
 ---
 
 Mounted from the page file of the owner's published artifact

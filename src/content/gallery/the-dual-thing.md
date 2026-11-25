@@ -13,6 +13,7 @@ date: 2026-11-05
 verb: "one soul's sequence · you drink from two springs"
 series: in-the-original
 seriesNo: 2
+tags: [orpheus, the-soul, greek-myth, dionysus, zeus, plato, greek-words, septuagint, underworld, gold, mirrors]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/HNMmkbXhn3QK5JUehuTX3o).

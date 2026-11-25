@@ -12,6 +12,7 @@ plate: "#f3eee3"
 date: 2026-11-09
 series: seen
 seriesNo: 9
+tags: [letters, printmaking, perception, johannes-gutenberg]
 ---
 
 Mounted as delivered from the owner's approved source file

@@ -8,6 +8,7 @@ description: "Atlas, Columbia, and Pallas Athena: the weight, the torch, and the
 series: readings
 seriesNo: 2
 methodLink: true
+tags: [athena, faith, underworld, greek-myth, memoir]
 ---
 
 <section class="part part--front" aria-label="Epigraph">

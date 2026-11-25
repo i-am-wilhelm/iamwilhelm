@@ -5,8 +5,9 @@
  * title, the date, and the one-line description. Shared by Room III (the
  * latest few readings), /writings (every reading: the readings shelf) and
  * the series indexes (`series`: that series' pieces, scroll pages and
- * readings alike, numbered in it). The catalogue number is a sort key and
- * is not printed.
+ * readings alike, numbered in it) and the tags' pages (`pieces`: the pieces
+ * filed under the tag, from every series). The catalogue number is a sort
+ * key and is not printed.
  */
 import { series as seriesSpec, seriesAccent, type SeriesId } from '../../config/series';
 import { getReadings, getSeriesPieces, type Piece } from '../../lib/pieces';
@@ -16,11 +17,13 @@ interface Props {
   level?: 2 | 3;
   /** Only this series, scroll pages and readings, newest first. */
   series?: SeriesId;
+  /** These pieces, as given (a tag's page). */
+  pieces?: Piece[];
 }
-const { limit, level = 3, series } = Astro.props;
+const { limit, level = 3, series, pieces } = Astro.props;
 const H = `h${level}` as 'h2' | 'h3';
 
-const all: (Piece & { companion?: Piece })[] = series ? await getSeriesPieces(series) : await getReadings();
+const all: (Piece & { companion?: Piece })[] = pieces ?? (series ? await getSeriesPieces(series) : await getReadings());
 const posts = limit ? all.slice(0, limit) : all;
 
 const fmt = (d: Date) =>
@@ -37,6 +40,12 @@ const fmt = (d: Date) =>
             <p class="entry__series mono" style={`--series-accent: ${seriesAccent(p.series)}`}>
               {series ? <span>{p.label}</span> : <a href={seriesSpec[p.series].href}>{p.label}</a>}
               {p.kind === 'scroll' && <span class="entry__kind">Scroll page</span>}
+              {pieces && p.kind === 'reading' && <span class="entry__kind">Reading</span>}
+            </p>
+          )}
+          {pieces && !p.series && (
+            <p class="entry__series mono">
+              <span class="entry__kind">{p.kind === 'scroll' ? 'Elsewhere · Scroll page' : 'Reading'}</span>
             </p>
           )}
           <H class="entry__title">

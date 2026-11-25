@@ -46,6 +46,7 @@ import { ogImage } from '../config/og';
 import { series as registry } from '../config/series';
 import { FEEDS, SITE_NAME, SITE_URL } from '../config/site';
 import { getPiece } from './pieces';
+import { breadcrumbScript, pieceTrail } from './crumbs';
 
 const LATIN =
   'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD';
@@ -507,6 +508,10 @@ export async function futuristDocument(slug: FuturistSlug): Promise<[string, str
     `<meta name="twitter:description" content="${esc(description)}">`,
     `<meta name="twitter:image" content="${esc(image)}">`,
     `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>`,
+    /* The breadcrumb trail, for the schema only: the page's own masthead
+       already carries the way up (its series label and The Gallery), and
+       the shared foot draws the trail (ScrollFoot). */
+    breadcrumbScript(pieceTrail(piece), canonical),
   ].join('\n');
 
   /* The title and description: the page's own, in the site's title shape.

@@ -13,6 +13,7 @@ date: 2026-11-10
 verb: "nine chapters · you descend four levels"
 series: futurist
 seriesNo: 2
+tags: [biometrics, surveillance, inventions, crypto, descents]
 ---
 
 The second Futurist installment; on /gallery/ the Futurist installments

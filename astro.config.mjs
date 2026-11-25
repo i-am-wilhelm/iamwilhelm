@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import twins from './src/integrations/twins';
+import search from './src/integrations/search';
 import horoskoposEngine from './src/integrations/horoskopos-engine';
 
 // Static-first build. Interactive layers (WebGL pipeline, orchestra pit,
@@ -12,8 +13,9 @@ import horoskoposEngine from './src/integrations/horoskopos-engine';
 // (/atelier) and the lab workbench stay out, alongside their noindex tags,
 // and so do the plain-text twins (/gallery/<slug>/twin/), whose canonical
 // is the scroll page they mirror. The Horoskopos embed route (/horoskopos/embed/)
-// is a frame for other sites, not a page of this one, and stays out too.
-const PRIVATE = ['/atelier', '/lab/', '/horoskopos/embed'];
+// is a frame for other sites, not a page of this one, and stays out too, as
+// does the list the search index is built from (deleted after the build).
+const PRIVATE = ['/atelier', '/lab/', '/horoskopos/embed', '/search/records.json'];
 const isTwin = (pathname) => /\/twin\/?$/.test(pathname);
 
 export default defineConfig({
@@ -32,6 +34,8 @@ export default defineConfig({
   },
   integrations: [
     twins(),
+    /* After twins: the search index reads the filled twins. */
+    search(),
     horoskoposEngine(),
     sitemap({
       filter: (page) => {

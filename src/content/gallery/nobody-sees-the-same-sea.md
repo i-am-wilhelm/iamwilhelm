@@ -12,6 +12,7 @@ plate: "#06101c"
 date: 2026-11-09
 series: seen
 seriesNo: 8
+tags: [the-sea, animals, color, light, perception, water]
 ---
 
 Mounted as delivered from the owner's approved source file

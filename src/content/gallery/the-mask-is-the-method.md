@@ -12,6 +12,7 @@ plate: "#131110"
 date: 2026-11-09
 series: seen
 seriesNo: 15
+tags: [symbolism, secrecy, francisco-goya, printmaking, perception]
 ---
 
 Mounted as delivered from the owner's approved source file

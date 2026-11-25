@@ -50,6 +50,10 @@ import SeriesMark from '../../components/scroll/SeriesMark.astro';
 import Byline from '../../components/scroll/Byline.astro';
 import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import MethodLink from '../../components/scroll/MethodLink.astro';
+import CrumbExit from '../../components/scroll/CrumbExit.astro';
+import { getPiece } from '../../lib/pieces';
+import { pieceTrail } from '../../lib/crumbs';
+const piece = await getPiece('questions-wearing-teeth');
 ---
 
 <Poem
@@ -65,7 +69,7 @@ import MethodLink from '../../components/scroll/MethodLink.astro';
   preload={['/fonts/bodoni-moda-latin-opsz-normal.woff2', '/fonts/bodoni-moda-latin-opsz-italic.woff2', '/fonts/martian-mono-latin-wght-normal.woff2']}
 >
 <a class="skip" href="#text" data-twin-skip>Skip to the text</a>
-<a class="poem-exit" href="/gallery/"><span aria-hidden="true">&larr;</span> <span class="qwt-exit-w">The Gallery</span></a>
+<CrumbExit trail={pieceTrail(piece)} className="poem-exit" />
 <canvas id="world" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
 
@@ -753,9 +757,11 @@ html[data-ink="cave"]{color-scheme:dark!important}
    same ink, same mono, and the same top line. */
 .qwt .poem-exit{top:max(.65rem,env(safe-area-inset-top));left:max(.65rem,env(safe-area-inset-left));padding:.55rem .7rem;border-radius:.85rem;border:1px solid rgba(127,127,127,.35);background:var(--hud-bg);color:var(--hud-ink);font:600 .6rem/1 var(--font-mono);letter-spacing:.12em;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);transition:background-color .8s,color .8s,border-color .8s}
 .qwt .poem-exit:hover{border-color:var(--gold)}
-/* Under 390px the HUD needs the top line: the exit keeps its arrow, and its
-   words stay for screen readers. */
-@media (max-width:389px){.qwt .qwt-exit-w{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+/* The HUD shares the top line: up to 560px the exit is always the short
+   way up ("← Mythmaking"), and under 390px only its arrow, the trail's
+   words staying for screen readers. */
+@media (max-width:560px){.qwt .poem-exit li:not(.crumb-exit__here):not(:nth-last-child(2)){display:none}.qwt .poem-exit li:nth-last-child(2)::before{content:none}.qwt .poem-exit li:nth-last-child(2) a::before{content:"\2190\00a0\00a0"}}
+@media (max-width:389px){.qwt .poem-exit li:not(.crumb-exit__here):not(:nth-last-child(2)){display:none}.qwt .poem-exit li:nth-last-child(2)::before{content:none}.qwt .poem-exit li:nth-last-child(2) a{font-size:0}.qwt .poem-exit li:nth-last-child(2) a::before{content:"\2190"!important;font-size:.6rem!important}}
 /* The shared foot, inside the Cairns card. */
 .qwt .qwt-sf{max-width:none;margin-top:2.2rem!important;padding-inline:0;padding-bottom:0;border-top-color:var(--card-line)}
 </style>

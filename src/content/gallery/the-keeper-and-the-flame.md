@@ -15,6 +15,7 @@ series: poems
 seriesNo: 2
 subject: feminine
 case: "009.01"
+tags: [lighthouses, fire, light, the-sea, love, astrology, aphrodite, bureau-of-coincidence]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/WM6K9TyMLupDHKB6fhYzCR).

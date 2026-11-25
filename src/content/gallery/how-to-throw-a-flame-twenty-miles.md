@@ -12,6 +12,7 @@ plate: "#0a1220"
 date: 2026-11-09
 series: seen
 seriesNo: 13
+tags: [lighthouses, light, fire, the-sea, geometry, pacific-northwest]
 ---
 
 Mounted as delivered from the owner's approved source file

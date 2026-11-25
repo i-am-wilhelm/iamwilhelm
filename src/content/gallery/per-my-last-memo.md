@@ -11,6 +11,7 @@ order: 30
 status: on-view
 plate: "#2a1b52"
 date: 2026-11-15
+tags: [humor, psychology, carlo-cipolla]
 ---
 
 Mounted as delivered from the owner's approved source file

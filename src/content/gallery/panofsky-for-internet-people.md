@@ -12,6 +12,7 @@ plate: "#0e1014"
 date: 2026-11-15T02:00:00Z
 series: seen
 seriesNo: 4
+tags: [erwin-panofsky, symbolism, perception, painting]
 ---
 
 Mounted from the page file of the owner's published artifact

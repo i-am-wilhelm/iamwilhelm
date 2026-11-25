@@ -13,6 +13,7 @@ plate: "#0d1228"
 date: 2026-11-09
 series: machines
 seriesNo: 1
+tags: [hands-on, mirrors, geometry]
 ---
 
 Mounted as delivered from the owner's approved source file

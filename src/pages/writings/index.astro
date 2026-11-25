@@ -10,12 +10,14 @@ import WritingsList from '../../components/museum/WritingsList.astro';
 import Meander from '../../components/museum/Meander.astro';
 import Colophon from '../../components/museum/Colophon.astro';
 import { SITE_URL } from '../../config/site';
+import { trail } from '../../lib/crumbs';
 ---
 
 <Museum
   title="Writings · Michael Wilhelm"
   description="Writings by Michael Wilhelm: essays, poems, and close readings of ancient words."
   current="writings"
+  crumbs={trail('Writings')}
   schema={[
     {
       '@type': 'CollectionPage',

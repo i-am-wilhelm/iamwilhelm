@@ -10,6 +10,7 @@ order: 39
 status: on-view
 plate: "#0c1626"
 date: 2026-11-15T07:00:00Z
+tags: [liberty, campaigns, local-government, schools, fundraising, for-organizations, fire]
 ---
 
 Mounted from the page file of the owner's published artifact

@@ -24,6 +24,7 @@ import { series as registry } from '../../config/series';
 import { SITE_URL } from '../../config/site';
 import { ogImage } from '../../config/og';
 import { getPiece } from '../../lib/pieces';
+import { pieceTrail } from '../../lib/crumbs';
 
 export async function getStaticPaths() {
   const posts = await getCollection('writings', ({ data }) => !data.draft && data.treatment === 'museum');
@@ -48,6 +49,7 @@ const modified = post.data.updated ?? date;
   title={`${post.data.title} · Writings · Michael Wilhelm`}
   description={post.data.description}
   current="writings"
+  crumbs={pieceTrail(piece)}
   schema={[
     {
       '@type': 'Article',

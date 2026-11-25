@@ -12,6 +12,7 @@ plate: "#0b0a08"
 date: 2026-11-09
 series: seen
 seriesNo: 11
+tags: [gustav-klimt, painting, gold, light, color, symbolism]
 ---
 
 Mounted as delivered from the owner's approved source file

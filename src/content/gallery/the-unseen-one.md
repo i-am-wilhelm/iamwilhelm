@@ -15,6 +15,7 @@ series: poems
 seriesNo: 4
 subject: feminine
 case: "263.52"
+tags: [underworld, persephone, love, death, descents, thresholds, greek-myth, greek-words, gold, astrology, bureau-of-coincidence]
 ---
 
 The poem itself lives in src/content/writings/the-unseen-one.md and is

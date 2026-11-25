@@ -13,6 +13,7 @@ import Placard from '../components/museum/Placard.astro';
 import Meander from '../components/museum/Meander.astro';
 import Colophon from '../components/museum/Colophon.astro';
 import { SITE_URL } from '../config/site';
+import { CRUMB_ROOMS, trail } from '../lib/crumbs';
 import { ogImage } from '../config/og';
 
 const url = `${SITE_URL}/method/`;
@@ -29,6 +30,7 @@ const legend = [
   title="Method · How These Pieces Are Made | Michael Wilhelm"
   description="How the pieces on iamwilhelm.com are made: every claim tagged text, reading, or disputed and listed in a ledger; Greek, Latin, and Hebrew read in the original; what is machine-assisted; and a plain-text twin for every piece."
   current="method"
+  crumbs={trail(CRUMB_ROOMS.commissions, 'Method')}
   schema={[
     {
       '@type': 'Article',

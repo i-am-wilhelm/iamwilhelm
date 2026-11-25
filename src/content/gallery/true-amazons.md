@@ -13,6 +13,7 @@ date: 2026-11-06
 verb: "nine steps · you draw the bow"
 series: in-the-original
 seriesNo: 4
+tags: [poison, greek-myth, greek-words, word-histories, animals, death, homer, hesiod, athena]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/Szw5Fd6dWfZXf4g9JR5dGt),

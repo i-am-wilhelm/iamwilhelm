@@ -8,6 +8,7 @@
 - [Scrollbrief](https://iamwilhelm.com/scrollbrief/): the litigation-support studio, interactive case stories for trial lawyers
 - [Futurist](https://iamwilhelm.com/writings/futurist/): the Futurist installments, a series of essays on what comes next
 - [Method](https://iamwilhelm.com/method): epistemic tagging, what is read in the original, what is machine-assisted
+- [Tags](https://iamwilhelm.com/tags/): the subject index, every piece filed by subject (Greek words, the underworld, money, light, the sea and more)
 
 ## Pieces (plain-text twins)
 - [The Only Sighted One](https://iamwilhelm.com/gallery/the-only-sighted-one/) — twin: https://iamwilhelm.com/gallery/the-only-sighted-one/twin/

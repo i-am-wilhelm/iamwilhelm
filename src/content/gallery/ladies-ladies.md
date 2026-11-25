@@ -14,6 +14,7 @@ date: 2026-11-09
 verb: "ten sections · you drag the point"
 series: poems
 seriesNo: 5
+tags: [bureau-of-coincidence, humor, astrology, aphrodite, persephone, love, geometry, greek-words]
 ---
 
 Ported from the owner's prototype (docs/prototypes/ladies-ladies-prototype.html,

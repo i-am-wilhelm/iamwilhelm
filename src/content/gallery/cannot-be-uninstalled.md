@@ -14,6 +14,7 @@ date: 2026-11-25
 verb: "five escapes · you flip the Record to the Legend"
 series: mythmaking
 seriesNo: 4
+tags: [legends, public-record, death, mirrors, secrecy, dither]
 ---
 
 Mounted as delivered from its approved source file

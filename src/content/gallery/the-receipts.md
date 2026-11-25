@@ -14,6 +14,7 @@ date: 2026-11-10T01:00:00Z
 verb: "fourteen line items · you ring each one up"
 series: futurist
 seriesNo: 4
+tags: [inventions, secrecy, surveillance, ai, public-record]
 ---
 
 Mounted as delivered from the owner's approved source file

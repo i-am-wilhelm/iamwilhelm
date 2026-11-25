@@ -14,6 +14,7 @@ import Meander from './Meander.astro';
 import Colophon from './Colophon.astro';
 import { series as registry, seriesAccent, seriesFeed, type SeriesId } from '../../config/series';
 import { SITE_NAME, SITE_URL } from '../../config/site';
+import { CRUMB_ROOMS, seriesTrail } from '../../lib/crumbs';
 
 interface Props {
   id: SeriesId;
@@ -22,12 +23,16 @@ const { id } = Astro.props;
 const s = registry[id];
 const url = `${SITE_URL}${s.href}`;
 const feed = seriesFeed(id);
+/* The room the series hangs in: the Gallery for a series of scroll pages,
+   Writings for one of readings (src/config/series.ts `room`). */
+const room = CRUMB_ROOMS[s.room];
 ---
 
 <Museum
-  title={`${s.title} · Writings · ${SITE_NAME}`}
+  title={`${s.title} · ${room.name} · ${SITE_NAME}`}
   description={`${s.title} by ${SITE_NAME}. ${s.statement}`}
-  current={id === 'futurist' ? 'futurist' : 'writings'}
+  current={id === 'futurist' ? 'futurist' : s.room}
+  crumbs={seriesTrail(id)}
   schema={[
     {
       '@type': ['CollectionPage', 'CreativeWorkSeries'],
@@ -36,7 +41,7 @@ const feed = seriesFeed(id);
       name: s.title,
       description: s.statement,
       author: { '@id': `${SITE_URL}/#person` },
-      isPartOf: { '@type': 'CollectionPage', name: 'Writings', url: `${SITE_URL}/writings/` },
+      isPartOf: { '@type': 'CollectionPage', name: s.room === 'gallery' ? 'The Gallery' : 'Writings', url: `${SITE_URL}${room.href}` },
     },
   ]}
 >

@@ -14,6 +14,7 @@ date: 2026-11-14
 verb: "a climb, a fall, three rooms and a sunrise · you dig for the gold"
 series: mythmaking
 seriesNo: 2
+tags: [underworld, descents, gold, psychology, thresholds, greek-myth, greek-words, latin, hesiod, free-will]
 ---
 
 Mounted from its approved source file,

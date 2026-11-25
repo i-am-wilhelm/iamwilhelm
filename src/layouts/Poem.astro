@@ -4,7 +4,9 @@
  * is a night piece of its own: one fixed canvas behind a single column of
  * loose lines that brighten and settle as they arrive. The museum wall
  * (ivory, grain, nav) stays outside the frame; the only museum element on
- * the page is the small exit back to the gallery.
+ * the page is the small exit back to the gallery, which is a breadcrumb
+ * trail (CrumbExit: "Foyer / Gallery / Poems", then "← Poems" once the
+ * reader is under way).
  *
  * The page supplies its own palette, line styles, and canvas script. This
  * layout carries the meta, the fonts, the shared line mechanics, and the
@@ -19,6 +21,8 @@ import { FEEDS, SITE_NAME, SITE_URL } from '../config/site';
 import { ogImage } from '../config/og';
 import { series as registry } from '../config/series';
 import { getPieces } from '../lib/pieces';
+import { breadcrumbScript, CRUMB_ROOMS, pieceTrail, trail } from '../lib/crumbs';
+import CrumbExit from '../components/scroll/CrumbExit.astro';
 
 interface Props {
   title: string;
@@ -33,7 +37,7 @@ interface Props {
   bodyClass?: string;
   /** Colour scheme: the night pieces are dark; a paper piece is light. */
   scheme?: 'dark' | 'light';
-  /** The fixed corner exit to the Gallery. False when the page carries its own way back. */
+  /** The fixed corner exit: the breadcrumb trail up to the Gallery. False when the page carries its own way back. */
   exit?: boolean;
   /** What the piece belongs to, for the title suffix and the schema. Default: the Gallery. */
   partOf?: { name: string; url: string; type?: string };
@@ -80,6 +84,8 @@ const partOf =
 /* The plain-text twin (src/pages/gallery/[slug]/twin.astro): the same piece as semantic HTML. */
 const twinUrl = `${canonical.replace(/\/?$/, '/')}twin/`;
 const fullTitle = `${title} · ${partOf.name} · ${SITE_NAME}`;
+/* Where the piece hangs: Foyer / Gallery / <series> / <title> (src/lib/crumbs.ts). */
+const crumbs = piece ? pieceTrail(piece) : trail(CRUMB_ROOMS.gallery, title);
 
 /* Article, so every piece carries author, datePublished, dateModified and
    its own share image; `genre` keeps the poem or essay. The author is the
@@ -141,10 +147,11 @@ const htmlStyle = `--night:${night};--exit:${accent}${scheme === 'light' ? ';col
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <Fragment set:html={breadcrumbScript(crumbs, canonical)} />
     <noscript><style>.l { opacity: 1 !important; transform: none !important; }</style></noscript>
   </head>
   <body class={bodyClass}>
-    {exit && <a class="poem-exit" href="/gallery/"><span aria-hidden="true">&larr;</span> The Gallery</a>}
+    {exit && <CrumbExit trail={crumbs} className="poem-exit" />}
     <slot />
   </body>
 </html>

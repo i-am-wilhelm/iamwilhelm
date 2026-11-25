@@ -10,6 +10,7 @@ order: 27
 status: on-view
 plate: "#14162b"
 date: 2026-11-11
+tags: [animals, arizona]
 ---
 
 Mounted as delivered from the owner's approved source file

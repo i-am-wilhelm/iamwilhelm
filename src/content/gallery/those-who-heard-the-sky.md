@@ -10,6 +10,7 @@ order: 37
 status: on-view
 plate: "#101329"
 date: 2026-11-15T05:00:00Z
+tags: [music, the-sky, pythagoras, johannes-kepler, with-sound]
 ---
 
 Mounted from the page file of the owner's published artifact

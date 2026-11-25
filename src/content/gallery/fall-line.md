@@ -12,6 +12,7 @@ plate: "#0a2342"
 date: 2026-11-15
 series: seen
 seriesNo: 16
+tags: [money, banking, trusts-and-taxes, water]
 ---
 
 Mounted as delivered from the owner's approved source file

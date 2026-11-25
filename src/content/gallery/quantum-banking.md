@@ -14,6 +14,7 @@ date: 2026-11-15T01:00:00Z
 verb: "eight sections · you price the veil"
 series: futurist
 seriesNo: 6
+tags: [money, banking, crypto, the-dollar, surveillance, trusts-and-taxes]
 ---
 
 Mounted as delivered from the owner's approved source file

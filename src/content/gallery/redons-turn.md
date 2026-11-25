@@ -12,6 +12,7 @@ plate: "#0e0d0c"
 date: 2026-11-09
 series: seen
 seriesNo: 12
+tags: [odilon-redon, painting, color, printmaking, light]
 ---
 
 Mounted as delivered from the owner's approved source file
