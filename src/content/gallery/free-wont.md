@@ -14,6 +14,7 @@ date: 2026-11-20
 verb: "five chapters · you hold still to open the last"
 series: futurist
 seriesNo: 7
+tags: [free-will, psychology, secrecy, ai, faith, the-sky, greek-myth]
 ---
 
 Mounted as delivered from the owner's approved source file

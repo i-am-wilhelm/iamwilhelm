@@ -150,6 +150,67 @@ No WebGL, no dithering, no audio on these pages.
   One), ported from the owner's Claude artifacts. Each is a night scene of its
   own: a fixed canvas behind lines that brighten as they arrive. The canvas
   paints once at load and animates from the reader's first scroll or touch.
+- Tags (`src/config/tags.ts`): every piece carries a handful, from one
+  registry of about ninety, grouped (Gods & myths, Words & old sources, Art &
+  seeing, People, Money, Running threads, Forms and the rest). A piece names
+  them in `tags` on the entry that numbers it: the `gallery` entry for a
+  scroll page, the `writings` entry for a reading (the build refuses tags
+  on a `scrolly` or `descent` writings entry, and any id not in the
+  registry). From that one field follow the tag's page at `/tags/<id>/`
+  (every piece under it, newest first, and the tags filed most often
+  beside it), the subject index at `/tags/` (`TagIndex.astro`), the
+  "Filed under" and "Filed near" lines at the foot of every piece
+  (`ScrollFoot`, and the foot `src/lib/seen.ts` adds to the Seen pages),
+  and the tag filter in search. To add a tag, add one entry and name it on
+  the pieces; to rename one, change its `label` and keep its id.
+- Breadcrumbs (`src/lib/crumbs.ts`): one trail per page, from the foyer
+  down: Foyer / Gallery / Seen / Fall Line; Foyer / Writings / Readings /
+  Underworld; Foyer / Tags / Gold. A series hangs in the room named by its
+  `room` in `src/config/series.ts`, which also lights its nav item. Museum
+  pages pass `crumbs` to `Museum.astro`, which draws the line under the nav
+  (`Breadcrumbs.astro`) and adds a BreadcrumbList to the JSON-LD. On a
+  scroll page the corner exit that read "The Gallery" is now the trail
+  (`CrumbExit.astro`): the whole trail while the page opens, then "← Seen"
+  once the reader is under way. The Seen pages mounted by `src/lib/seen.ts`
+  get a small chip that shows only near the top (their own control bars
+  use the top of the screen as they scroll); `SEEN_CRUMB_EXIT` in
+  `src/config/seen.ts` moves it to the right, dresses it light, or leaves
+  it off for a page with its own masthead. Every piece also ends on the
+  trail. The first crumb's name is `CRUMB_HOME` ("Foyer").
+- Search (`/search/`): Pagefind, built after the build. `src/pages/search/records.json.ts`
+  lists what to index (every piece, every series, and the rooms in
+  `src/config/search.ts`); `src/integrations/search.ts` reads each one's
+  words from its built page (a scroll page from its plain-text twin), writes
+  the index to `dist/pagefind/` and deletes the list. The page
+  (`src/scripts/search.ts`) searches by word, filters by tag and series,
+  offers matching tags, lists a named tag's or series' pieces first, and
+  keeps the query in the address (`?q=`, `?tag=`, `?series=`). Before a
+  search, and with scripts off, it shows the subject index. The nav's glass
+  goes there, and so do "/" and Ctrl/⌘ K from any museum page. The index
+  only exists in a build: in `astro dev` the page says to run `npm run
+  build` then `npm run preview`. The 404 page offers the field, filled from
+  the address that missed.
+- Previews (`npm run reel`, `scripts/reel-scrollies.mjs`): every scroll
+  page's previews are shot from the page itself with its words put away, so
+  they show what the piece draws and moves, not its copy. The script walks
+  the built page half a screen at a time, hides all text below display size
+  (and the cards it sits on) and the chrome, scores each frame for how much
+  it draws, its colour, edges and range, and keeps the five strongest frames
+  that differ (`public/reel/<id>/1.jpg`…`5.jpg`, 800×420, in page order: the
+  Archive's reading table), the strongest as `poster.jpg`, and a five-second
+  muted loop of the three strongest stretches (`loop.mp4`, 640×336). Run
+  `npm run reel -- <slug>` when a piece is hung, after `og:scrollies`. Needs
+  Playwright's Chromium (or `CHROMIUM_PATH`) and ffmpeg (or `FFMPEG_PATH`);
+  without ffmpeg it writes the stills and poster and skips the loop. A page
+  that waits for a hand gets one in `ACTS` (The Snowflake Machine is drawn
+  on before each shot).
+- The Gallery page (`/gallery/`, `GalleryGrid.astro`): small tiles, four or
+  five across (two on a phone), hung by series with a row of links to each
+  wall. A tile shows the piece's poster and plays its loop while the pointer
+  rests on it or it has focus; on a touch screen, while it is the tile most
+  in view (`src/scripts/gallery-grid.ts`). Loops load only when asked and
+  never under reduced motion or Save-Data. Room II's Archive and
+  `/services` keep their own walls.
 - `src/config/site.ts`: URLs, nav, and the owner placeholders (booking
   scheduler link, BackGold newsletter embed).
 - `npm run og` re-renders `public/og.png` and the PNG icons;

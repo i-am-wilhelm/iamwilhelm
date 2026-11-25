@@ -13,6 +13,7 @@ date: 2026-11-23
 verb: "thirty-four cards, one night sky · you choose the god"
 series: in-the-original
 seriesNo: 6
+tags: [eros, love, aphrodite, greek-myth, greek-words, plato, the-soul, psychology, dionysus, zeus]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/SHCZkthsThP5jaagd9r75v).

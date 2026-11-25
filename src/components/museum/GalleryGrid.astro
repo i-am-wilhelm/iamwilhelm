@@ -1,0 +1,446 @@
+---
+/**
+ * The Gallery page's wall (/gallery): every scroll page on view as a small
+ * tile, hung by series in the order of src/config/series.ts (the featured
+ * series first, a piece in no series last under "Elsewhere"), four or five
+ * across on a wide screen and two on a phone. A row of links at the head
+ * jumps to each series' wall (#wall-<series>, #wall-elsewhere).
+ *
+ * A tile is one link to its piece: a preview from the piece itself, its
+ * series label, its title and its one line. The preview is the strongest
+ * frame of the piece with its words put away (public/reel/<id>/poster.jpg),
+ * and over it a five-second loop of the piece's three strongest stretches
+ * (public/reel/<id>/loop.mp4), both shot by scripts/reel-scrollies.mjs
+ * (`npm run reel -- <id>`). The loop plays while the pointer rests on the
+ * tile or the tile has focus; on a touch screen, while the tile is the one
+ * most in view. It never loads under reduced motion or Save-Data
+ * (src/scripts/gallery-grid.ts). A piece without a reel yet shows its
+ * first reel still, then its share image; a forthcoming entry hangs as a
+ * plate with its title and no link.
+ *
+ * Replaces PoemGallery's large framed wall on this page only; Room II's
+ * Archive (the homepage) and /services keep theirs.
+ */
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { getCollection } from 'astro:content';
+import { series as registry, seriesAccent, seriesIds, type SeriesId } from '../../config/series';
+import { getScrollPieces, type Piece } from '../../lib/pieces';
+
+interface Props {
+  /** Heading level for the series headings; tiles take the next one down. */
+  level?: 2 | 3;
+  /** Hang this series' wall first. */
+  feature?: SeriesId;
+}
+const { level = 2, feature } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+const T = `h${level + 1}` as 'h3' | 'h4';
+const ELSEWHERE_ACCENT = '#7a5a1f';
+
+const frames = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+const pieces = new Map((await getScrollPieces()).map((p) => [p.id, p]));
+const has = (path: string) => existsSync(resolve(process.cwd(), 'public', path.replace(/^\//, '')));
+
+type Frame = (typeof frames)[number];
+interface Wall {
+  id: string;
+  name: string;
+  href?: string;
+  statement?: string;
+  accent: string;
+  frames: Frame[];
+}
+const walls: Wall[] = [];
+for (const id of seriesIds) {
+  const inSeries = frames
+    .filter((f) => pieces.get(f.id)?.series === id)
+    .sort((a, b) => (pieces.get(a.id)?.seriesNo ?? 0) - (pieces.get(b.id)?.seriesNo ?? 0));
+  if (inSeries.length) {
+    const s = registry[id];
+    walls.push({ id, name: s.name, href: s.href, statement: s.statement, accent: seriesAccent(id), frames: inSeries });
+  }
+}
+if (feature) {
+  const i = walls.findIndex((w) => w.id === feature);
+  if (i > 0) walls.unshift(...walls.splice(i, 1));
+}
+const loose = frames.filter((f) => !pieces.get(f.id)?.series);
+if (loose.length) walls.push({ id: 'elsewhere', name: 'Elsewhere', statement: 'Pieces in no series: endorsements, demonstrations, a toy and an essay or two.', accent: ELSEWHERE_ACCENT, frames: loose });
+
+/** The tile's picture: the poster, else the first reel still, else the share image. */
+function preview(id: string): { poster?: string; loop?: string } {
+  const poster = [`/reel/${id}/poster.jpg`, `/reel/${id}/1.jpg`, `/og/${id}.jpg`].find(has);
+  const loop = has(`/reel/${id}/loop.mp4`) ? `/reel/${id}/loop.mp4` : undefined;
+  return { poster, loop };
+}
+const count = (n: number) => (n === 1 ? '1 piece' : `${n} pieces`);
+const onView = (w: Wall) => w.frames.filter((f) => pieces.has(f.id)).length;
+---
+
+<nav class="jump" aria-label="Walls of the Gallery">
+  <p class="jump__k smallcaps">Walls</p>
+  <ul class="jump__list" role="list">
+    {
+      walls.map((w) => (
+        <li>
+          <a class="jump__link" href={`#wall-${w.id}`} style={`--series-accent: ${w.accent}`}>
+            {w.name}
+            <span class="jump__n" aria-hidden="true">
+              {onView(w)}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="jump__also smallcaps">
+    <a href="/tags/">Browse by tag</a>
+    <span aria-hidden="true"> &middot; </span>
+    <a href="/search/">Search</a>
+  </p>
+</nav>
+
+<div class="walls" data-gallery-grid>
+  {
+    walls.map((w) => (
+      <section class="wall" aria-labelledby={`wall-${w.id}`} style={`--series-accent: ${w.accent}`}>
+        <header class="wall__head">
+          <H class="wall__title display" id={`wall-${w.id}`}>
+            {w.href ? <a href={w.href}>{w.name}</a> : w.name}
+          </H>
+          <p class="wall__count mono">{count(onView(w))}</p>
+          {w.statement && <p class="wall__statement">{w.statement}</p>}
+          {w.href && (
+            <p class="wall__all mono">
+              <a href={w.href}>All of {w.name}</a>
+            </p>
+          )}
+        </header>
+        <ul class="tiles" role="list">
+          {w.frames.map((f) => {
+            const p: Piece | undefined = pieces.get(f.id);
+            const { poster, loop } = preview(f.id);
+            const plate = (
+              <span class="tile__plate" style={`--plate: ${f.data.plate}`}>
+                <span class="tile__plate-title">{f.data.plateTitle ?? f.data.title}</span>
+              </span>
+            );
+            const inner = (
+              <>
+                <span class="tile__frame" style={`--plate: ${f.data.plate}`}>
+                  {p && poster ? (
+                    <>
+                      <img class="tile__poster" src={poster} alt="" width="800" height="420" loading="lazy" decoding="async" />
+                      {loop && <video class="tile__loop" data-src={loop} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" />}
+                    </>
+                  ) : (
+                    plate
+                  )}
+                </span>
+                <span class="tile__label mono">{p?.label ?? (p ? 'Elsewhere' : 'Forthcoming')}</span>
+                <T class="tile__title">{f.data.title}</T>
+                {(p?.line ?? f.data.epigraph) && <span class="tile__line">{p?.line ?? f.data.epigraph}</span>}
+              </>
+            );
+            return (
+              <li class:list={['tile', !p && 'tile--forthcoming']}>
+                {p ? (
+                  <a class="tile__link" href={p.path} data-tile>
+                    {inner}
+                  </a>
+                ) : (
+                  <div class="tile__link">{inner}</div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<script>
+  import { initGalleryGrid } from '../../scripts/gallery-grid';
+  initGalleryGrid();
+</script>
+
+<style>
+  /* ---- The row of walls ---- */
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--rule);
+  }
+  .jump__k,
+  .jump__also {
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+  .jump__also {
+    margin-left: auto;
+  }
+  .jump__also a {
+    color: var(--ink-soft);
+    text-underline-offset: 0.3em;
+  }
+  .jump__list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    margin: 0;
+    padding: 0;
+  }
+  .jump__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    min-height: 40px;
+    padding: 0.2rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--series-accent);
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.98rem;
+    transition:
+      border-color 400ms var(--ease-settle),
+      color 300ms ease,
+      background-color 400ms var(--ease-settle);
+  }
+  .jump__link:hover,
+  .jump__link:focus-visible {
+    color: var(--ink);
+    border-color: var(--series-accent);
+    background: var(--wall-deep);
+  }
+  .jump__n {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--series-accent);
+  }
+
+  /* ---- The walls ---- */
+  .walls {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 2vw, 3.75rem);
+  }
+  .wall {
+    display: grid;
+    gap: clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
+  }
+  .wall__head {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--rule);
+  }
+  .wall__title {
+    font-size: clamp(1.55rem, 1.3rem + 0.9vw, 2.1rem);
+    line-height: 1.1;
+    color: var(--series-accent);
+    scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+  }
+  .wall__title a {
+    color: inherit;
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .wall__title a:hover,
+  .wall__title a:focus-visible {
+    background-size: 100% 1px;
+  }
+  .wall__count {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .wall__statement {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+  .wall__all {
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+  .wall__all a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--series-accent);
+    text-decoration: none;
+    text-underline-offset: 0.3em;
+  }
+  .wall__all a:hover,
+  .wall__all a:focus-visible {
+    text-decoration: underline;
+  }
+  @media (max-width: 820px) {
+    .wall__head {
+      grid-template-columns: auto 1fr;
+    }
+    .wall__statement {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .wall__all {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* ---- The tiles ---- */
+  .tiles {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14.5rem), 1fr));
+    gap: clamp(1.5rem, 1rem + 1vw, 2.25rem) clamp(1rem, 0.6rem + 1vw, 1.5rem);
+    margin: 0;
+    padding: 0;
+  }
+  @media (max-width: 560px) {
+    .tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.4rem 0.85rem;
+    }
+  }
+  .tile__link {
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+  .tile__frame {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    margin-bottom: 0.45rem;
+    overflow: hidden;
+    background: var(--plate, #1b1a18);
+    outline: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    outline-offset: 3px;
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.06),
+      0 10px 22px -16px rgba(30, 22, 10, 0.55);
+    transition:
+      outline-color 500ms var(--ease-settle),
+      box-shadow 500ms var(--ease-settle),
+      transform 500ms var(--ease-settle);
+  }
+  .tile__poster,
+  .tile__loop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tile__loop {
+    opacity: 0;
+    transition: opacity 450ms ease;
+  }
+  .tile__loop.is-playing {
+    opacity: 1;
+  }
+  .tile__link:hover .tile__frame,
+  .tile__link:focus-visible .tile__frame {
+    outline-color: var(--series-accent, var(--gilt));
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.06),
+      0 16px 28px -16px rgba(30, 22, 10, 0.65);
+  }
+  .tile__link:focus-visible {
+    outline: none;
+  }
+  .tile__link:focus-visible .tile__frame {
+    outline: 2px solid var(--focus, var(--gilt-ink));
+  }
+  .tile__label {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--series-accent, var(--gilt-ink));
+  }
+  .tile__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.15rem, 1.05rem + 0.35vw, 1.35rem);
+    line-height: 1.15;
+    color: var(--ink);
+    text-wrap: balance;
+    background-image: linear-gradient(var(--gilt), var(--gilt));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    justify-self: start;
+    transition: background-size calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .tile__link:hover .tile__title,
+  .tile__link:focus-visible .tile__title {
+    background-size: 100% 1px;
+  }
+  .tile__line {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 560px) {
+    .tile__line {
+      font-size: 0.85rem;
+      -webkit-line-clamp: 3;
+    }
+    .tile__label {
+      font-size: 0.66rem;
+    }
+  }
+  .tile__plate {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--plate) 70%, #fff 8%), var(--plate));
+  }
+  .tile__plate-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #efe6d2;
+  }
+  .tile--forthcoming {
+    opacity: 0.75;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile__frame,
+    .tile__loop,
+    .tile__title,
+    .jump__link {
+      transition: none;
+    }
+    .tile__link:hover .tile__frame,
+    .tile__link:focus-visible .tile__frame {
+      transform: none;
+    }
+  }
+</style>

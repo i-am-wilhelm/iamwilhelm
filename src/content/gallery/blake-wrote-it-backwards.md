@@ -14,6 +14,7 @@ date: 2026-11-09
 verb: "five scenes · you color your own copy"
 series: seen
 seriesNo: 7
+tags: [william-blake, printmaking, color, mirrors, letters, perception, hands-on]
 ---
 
 Ported from the owner's prototype (docs/prototypes/blake-wrote-it-backwards-prototype.html,

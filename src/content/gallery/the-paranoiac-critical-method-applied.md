@@ -12,6 +12,7 @@ plate: "#0f0c0a"
 date: 2026-11-15T04:00:00Z
 series: seen
 seriesNo: 6
+tags: [salvador-dali, surrealism, perception]
 ---
 
 Mounted from the page file of the owner's published artifact

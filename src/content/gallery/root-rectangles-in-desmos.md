@@ -12,6 +12,7 @@ plate: "#2a2740"
 date: 2026-11-15T03:00:00Z
 series: seen
 seriesNo: 5
+tags: [geometry, painting]
 ---
 
 Mounted from the page file of the owner's published artifact

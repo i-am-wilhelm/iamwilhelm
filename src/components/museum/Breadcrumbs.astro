@@ -1,0 +1,93 @@
+---
+/**
+ * The breadcrumb line on a museum page: "Foyer / Gallery / Seen", under
+ * the nav, in the nav's small caps. Museum.astro mounts it from its
+ * `crumbs` prop (trails are built in src/lib/crumbs.ts); the homepage has
+ * none. The last crumb is the page itself and is not a link.
+ */
+import type { Crumb } from '../../lib/crumbs';
+
+interface Props {
+  trail: Crumb[];
+}
+const { trail } = Astro.props;
+const last = trail.length - 1;
+---
+
+<nav class="crumbs" aria-label="Breadcrumb">
+  <ol class="crumbs__list wrap">
+    {
+      trail.map((c, i) => (
+        <li class="crumbs__item">
+          {c.href && i < last ? (
+            <a class="crumbs__link" href={c.href}>
+              {c.name}
+            </a>
+          ) : (
+            <span class="crumbs__here" aria-current="page">
+              {c.name}
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .crumbs {
+    padding-top: clamp(1rem, 0.7rem + 1vw, 1.6rem);
+  }
+  .crumbs__list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 0.55rem;
+    margin-block: 0;
+    font-size: 0.98rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+  .crumbs__item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    min-width: 0;
+  }
+  .crumbs__item + .crumbs__item::before {
+    content: '/';
+    color: var(--gilt);
+  }
+  @supports (content: 'x' / '') {
+    .crumbs__item + .crumbs__item::before {
+      content: '/' / '';
+    }
+  }
+  .crumbs__link {
+    color: var(--ink-soft);
+    text-decoration: none;
+    background-image: linear-gradient(var(--gilt), var(--gilt));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 1px;
+    transition:
+      background-size 500ms var(--ease-settle),
+      color 300ms ease;
+  }
+  .crumbs__link:hover,
+  .crumbs__link:focus-visible {
+    color: var(--ink);
+    background-size: 100% 1px;
+  }
+  .crumbs__here {
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .crumbs__link {
+      transition: none;
+    }
+  }
+</style>

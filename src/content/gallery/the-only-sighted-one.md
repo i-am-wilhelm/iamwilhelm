@@ -13,6 +13,7 @@ date: 2026-10-29
 verb: "several nights and days · you watch the eagle come"
 series: in-the-original
 seriesNo: 1
+tags: [prometheus, fire, greek-myth, greek-words, hesiod, zeus]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/VnjmDvGN2aCmtD14T5uMUu).

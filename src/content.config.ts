@@ -1,6 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { seriesIds } from './config/series';
+import { tagIds } from './config/tags';
 
 /**
  * Local markdown collections. A Ghost backend can be wired in later by
@@ -17,6 +18,15 @@ import { seriesIds } from './config/series';
 const seriesFields = {
   series: z.enum(seriesIds).optional(),
   seriesNo: z.number().int().positive().optional(),
+};
+/**
+ * The piece's tags, ids from src/config/tags.ts. They go on the entry that
+ * numbers the piece: the `gallery` entry for a scroll page, the `writings`
+ * entry for a reading (src/lib/pieces.ts refuses tags on a `scrolly` or
+ * `descent` writings entry, whose piece is tagged on its gallery entry).
+ */
+const tagsField = {
+  tags: z.array(z.enum(tagIds)).default([]),
 };
 const seriesTogether = {
   check: (d: { series?: string; seriesNo?: number }) => (d.series === undefined) === (d.seriesNo === undefined),
@@ -61,6 +71,7 @@ const writings = defineCollection({
       /** Show the link to /method in the reading's placard (the Philosophy page). */
       methodLink: z.boolean().default(false),
       ...seriesFields,
+      ...tagsField,
     })
     .refine(seriesTogether.check, { message: seriesTogether.message, path: ['seriesNo'] }),
 });
@@ -138,6 +149,7 @@ const gallery = defineCollection({
         .regex(/^(?:[0-2]\d\d|3[0-5]\d)\.[0-5]\d$/, '`case` is degrees.minutes of ecliptic longitude, e.g. "009.01".')
         .optional(),
       ...seriesFields,
+      ...tagsField,
     })
     .refine(seriesTogether.check, { message: seriesTogether.message, path: ['seriesNo'] })
     .refine((d) => (d.subject === undefined) === (d.case === undefined), {

@@ -13,6 +13,7 @@ date: 2026-11-08
 verb: "seven movements · you tune the lyre"
 series: through-the-lens
 seriesNo: 3
+tags: [sigmund-freud, plato, psychology, the-soul, greek-words, latin, word-histories, homer, eros]
 ---
 
 Through the Lens, No. 3; the label comes from src/content/writings/where-it-was.md.

@@ -12,6 +12,7 @@
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { series as registry, seriesLabel, type SeriesId } from '../config/series';
+import { tags as tagRegistry, type TagId } from '../config/tags';
 import { SITE_URL } from '../config/site';
 
 export type PieceKind = 'scroll' | 'reading';
@@ -33,6 +34,8 @@ export interface Piece {
   seriesNo?: number;
   /** "Futurist · No. 1", when in a series. */
   label?: string;
+  /** Tags from src/config/tags.ts, in the order the entry lists them. */
+  tags: TagId[];
   /** Share image path under public/, when the piece renders its own. */
   ogPath?: string;
   /** The plain-text twin (/gallery/<id>/twin/), for scroll pages. */
@@ -59,6 +62,13 @@ async function build(): Promise<Piece[]> {
     if (w && (w.data.series !== g.data.series || w.data.seriesNo !== g.data.seriesNo)) {
       throw new Error(`${g.id}: the gallery and writings entries disagree on series/seriesNo.`);
     }
+    /* A scroll page is tagged on its gallery entry, like its number; a
+       writings entry that only carries the page's meta stays untagged so
+       the two can never drift. (A reading under the same id, PHARMAKON's
+       headnote, is its own piece and carries its own tags.) */
+    if (w && w.data.treatment !== 'museum' && w.data.tags.length) {
+      throw new Error(`${g.id}: tag the scroll page on its gallery entry, not on its writings entry.`);
+    }
     const date = g.data.date ?? w?.data.date;
     if (!date) throw new Error(`${g.id}: the gallery entry needs a date.`);
     const line = g.data.epigraph ?? g.data.description ?? w?.data.description ?? '';
@@ -75,6 +85,7 @@ async function build(): Promise<Piece[]> {
       series: g.data.series,
       seriesNo: g.data.seriesNo,
       label: g.data.series && g.data.seriesNo ? seriesLabel(g.data.series, g.data.seriesNo) : undefined,
+      tags: g.data.tags,
       ogPath: `/og/${g.id}.jpg`,
       twinPath: `${g.data.href.replace(/\/?$/, '/')}twin/`,
       gallery: g,
@@ -97,6 +108,7 @@ async function build(): Promise<Piece[]> {
       series: w.data.series,
       seriesNo: w.data.seriesNo,
       label: w.data.series && w.data.seriesNo ? seriesLabel(w.data.series, w.data.seriesNo) : undefined,
+      tags: w.data.tags,
       writing: w,
     });
   }
@@ -155,4 +167,53 @@ export async function nextInSeries(p: Piece): Promise<{ title: string; path: str
     .sort((x, y) => x.seriesNo! - y.seriesNo!)[0];
   if (next) return { title: next.title, path: next.path, label: next.label!, isIndex: false };
   return { title: s.title, path: s.href, label: `${s.name} · the series`, isIndex: true };
+}
+
+/**
+ * Every piece filed under a tag, newest first. A scroll page and a reading
+ * under the same id (PHARMAKON and its headnote) are two pieces and are
+ * both listed when both carry the tag.
+ */
+export async function getTagPieces(id: TagId): Promise<Piece[]> {
+  return (await getPieces()).filter((p) => p.tags.includes(id));
+}
+
+/** How many pieces carry each tag (tags no piece carries are left out). */
+export async function getTagCounts(): Promise<Map<TagId, number>> {
+  const counts = new Map<TagId, number>();
+  for (const p of await getPieces()) for (const t of p.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+  return counts;
+}
+
+/**
+ * The tags that turn up beside this one most often, for the "Also filed
+ * with" line on a tag's page: by how many pieces they share, then by name.
+ */
+export async function relatedTags(id: TagId, limit = 8): Promise<{ id: TagId; shared: number }[]> {
+  const shared = new Map<TagId, number>();
+  for (const p of await getTagPieces(id)) {
+    for (const t of p.tags) if (t !== id) shared.set(t, (shared.get(t) ?? 0) + 1);
+  }
+  return [...shared]
+    .map(([t, n]) => ({ id: t, shared: n }))
+    .sort((a, b) => b.shared - a.shared || tagRegistry[a.id].label.localeCompare(tagRegistry[b.id].label))
+    .slice(0, limit);
+}
+
+/**
+ * Other pieces that share at least two tags with this one, for the "Filed
+ * near" line at the foot of a piece: most tags shared first; on a tie, a
+ * piece from another series (the foot already offers the next in this
+ * one), then the newer.
+ */
+export async function filedNear(p: Piece, limit = 3): Promise<Piece[]> {
+  if (!p.tags.length) return [];
+  const other = (q: Piece) => (q.series && q.series === p.series ? 0 : 1);
+  return (await getPieces())
+    .filter((q) => q.id !== p.id)
+    .map((q) => ({ q, n: q.tags.filter((t) => p.tags.includes(t)).length }))
+    .filter(({ n }) => n >= 2)
+    .sort((a, b) => b.n - a.n || other(b.q) - other(a.q) || b.q.date.valueOf() - a.q.date.valueOf())
+    .slice(0, limit)
+    .map(({ q }) => q);
 }

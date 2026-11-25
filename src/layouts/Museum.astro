@@ -8,6 +8,8 @@
  */
 import '../styles/museum.css';
 import Nav from '../components/museum/Nav.astro';
+import Breadcrumbs from '../components/museum/Breadcrumbs.astro';
+import { breadcrumbSchema, type Crumb } from '../lib/crumbs';
 import SiteFooter from '../components/museum/SiteFooter.astro';
 import {
   ALM_URL,
@@ -28,8 +30,14 @@ interface Props {
   image?: string;
   imageAlt?: string;
   home?: boolean;
-  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services' | 'scrollbrief';
+  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services' | 'scrollbrief' | 'search' | 'tags';
   noindex?: boolean;
+  /**
+   * Where the page sits, from the foyer down (src/lib/crumbs.ts). Drawn as
+   * the breadcrumb line under the nav and added to the JSON-LD as a
+   * BreadcrumbList. The homepage passes none.
+   */
+  crumbs?: Crumb[];
   /** Extra JSON-LD nodes for this page (merged into the @graph). */
   schema?: Record<string, unknown>[];
   /** Canonical URL when it is not this page (a plain-text twin points at its scroll page). */
@@ -46,6 +54,7 @@ const {
   noindex = false,
   schema = [],
   canonical: canonicalProp,
+  crumbs,
 } = Astro.props;
 
 const pageUrl = new URL(Astro.url.pathname, SITE_URL).href;
@@ -86,6 +95,7 @@ const jsonLd = {
       inLanguage: 'en',
     },
     ...schema,
+    ...(crumbs?.length ? [breadcrumbSchema(crumbs, pageUrl)] : []),
   ],
 };
 ---
@@ -148,6 +158,7 @@ const jsonLd = {
     <a class="skip-link" href="#main">Skip to content</a>
     <Nav home={home} current={current} />
     <main id="main" tabindex="-1">
+      {crumbs?.length ? <Breadcrumbs trail={crumbs} /> : null}
       <slot />
     </main>
     <SiteFooter />

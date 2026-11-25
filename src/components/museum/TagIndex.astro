@@ -1,0 +1,94 @@
+---
+/**
+ * The subject index: every tag that a piece carries, grouped and ordered as
+ * in src/config/tags.ts, each with its count, then the series. Printed on
+ * /tags/ and under the field on /search/, where it is what the page shows
+ * before a search (and all it shows with scripts off).
+ */
+import { groupIds, tagGroups, tags, tagHref, type TagId } from '../../config/tags';
+import { series, seriesIds } from '../../config/series';
+import { getSeriesPieces, getTagCounts } from '../../lib/pieces';
+
+interface Props {
+  level?: 2 | 3;
+}
+const { level = 2 } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+
+const counts = await getTagCounts();
+const all = Object.keys(tags) as TagId[];
+const groups = groupIds
+  .map((g) => ({ id: g, name: tagGroups[g].name, tags: all.filter((t) => tags[t].group === g && counts.has(t)) }))
+  .filter((g) => g.tags.length);
+const shelves = await Promise.all(seriesIds.map(async (id) => ({ id, n: (await getSeriesPieces(id)).length })));
+const n = (k: number) => (k === 1 ? '1 piece' : `${k} pieces`);
+---
+
+<div class="tag-index">
+  {
+    groups.map((g) => (
+      <section class="tag-index__group" id={g.id} aria-labelledby={`tags-${g.id}`}>
+        <H class="tag-index__title" id={`tags-${g.id}`}>
+          {g.name}
+        </H>
+        <ul class="tag-cloud" role="list">
+          {g.tags.map((t) => (
+            <li>
+              <a class="tag-chip" href={tagHref(t)} aria-label={`${tags[t].label}, ${n(counts.get(t)!)}`}>
+                {tags[t].label}
+                <span class="tag-chip__n" aria-hidden="true">
+                  {counts.get(t)}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+  <section class="tag-index__group" id="series" aria-labelledby="tags-series">
+    <H class="tag-index__title" id="tags-series">The series</H>
+    <ul class="tag-cloud" role="list">
+      {
+        shelves
+          .filter((s) => s.n)
+          .map((s) => (
+            <li>
+              <a class="tag-chip tag-chip--series" href={series[s.id].href} aria-label={`${series[s.id].name}, ${n(s.n)}`} style={`--series-accent: ${series[s.id].accent}`}>
+                {series[s.id].name}
+                <span class="tag-chip__n" aria-hidden="true">
+                  {s.n}
+                </span>
+              </a>
+            </li>
+          ))
+      }
+    </ul>
+  </section>
+</div>
+
+<style>
+  .tag-index {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: clamp(2rem, 1.5rem + 2vw, 3rem) clamp(2rem, 1rem + 3vw, 4rem);
+    padding-top: clamp(1.5rem, 1rem + 1vw, 2rem);
+    border-top: 1px solid var(--rule);
+  }
+  .tag-index__group {
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+  }
+  .tag-index__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.7rem);
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .tag-chip--series {
+    border-left: 2px solid var(--series-accent);
+  }
+</style>

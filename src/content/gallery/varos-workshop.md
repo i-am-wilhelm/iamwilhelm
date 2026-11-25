@@ -14,6 +14,7 @@ date: 2026-11-09
 verb: "four scenes · you leave the candle burning"
 series: seen
 seriesNo: 2
+tags: [remedios-varo, painting, surrealism, geometry]
 ---
 
 Ported from the owner's prototype (docs/prototypes/varos-workshop-prototype.html).

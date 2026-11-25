@@ -13,6 +13,7 @@ date: 2026-11-06
 verb: "nine chapters · you search your own name"
 series: futurist
 seriesNo: 1
+tags: [surveillance, ai, biometrics, faith]
 ---
 
 The first Futurist installment. On the homepage it hangs with the other

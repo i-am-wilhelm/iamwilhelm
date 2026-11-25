@@ -13,6 +13,7 @@ date: 2026-11-05
 verb: "one flower, one pool · you touch the water"
 series: in-the-original
 seriesNo: 3
+tags: [persephone, narcissus, eros, mirrors, greek-myth, greek-words, ovid, underworld, orpheus, love]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/Gh1AjN7r46j1tnRME2o9Nt).

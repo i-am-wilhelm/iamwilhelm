@@ -14,6 +14,7 @@ import PoemGallery from '../components/museum/PoemGallery.astro';
 import Meander from '../components/museum/Meander.astro';
 import Colophon from '../components/museum/Colophon.astro';
 import { CONTACT_EMAIL, SCHEDULER_URL, SCROLLY_INTAKE_URL, SITE_URL } from '../config/site';
+import { trail } from '../lib/crumbs';
 
 const url = `${SITE_URL}/services/`;
 const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Commission')}`;
@@ -151,6 +152,7 @@ const schema = [
   title="Commission a Scrolly | Michael Wilhelm"
   description="A story told as an interactive page: visualized essays, poems, impact reports, launch pages and origin stories, written with you and built by Michael Wilhelm. From $2,500."
   current="services"
+  crumbs={trail('Commissions')}
   schema={schema}
 >
   <article class="page" aria-labelledby="services-title" style="--room-accent: var(--room-iv)">

@@ -14,6 +14,7 @@ date: 2026-11-15
 verb: "five layers · you drill to bedrock"
 series: futurist
 seriesNo: 5
+tags: [money, the-dollar, crypto, banking, gold, preparedness, descents]
 ---
 
 Mounted as delivered from the owner's approved source file

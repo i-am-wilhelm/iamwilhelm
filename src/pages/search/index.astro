@@ -1,0 +1,402 @@
+---
+/**
+ * /search/: the catalogue. One field searches every piece, reading, series
+ * and room by word (the Pagefind index that src/integrations/search.ts
+ * writes after the build); two selects narrow it to a tag or a series.
+ * Tags whose names match the words are offered above the results, as a
+ * way across to their pages. The query lives in the address (?q=, ?tag=,
+ * ?series=), so a search can be shared and the back button walks it.
+ *
+ * Before a search, and with scripts off, the page is the subject index
+ * (TagIndex), so browsing never depends on the script. The script is
+ * src/scripts/search.ts; "/" or Ctrl/⌘ K from any museum page comes here
+ * (Nav.astro), and here puts the cursor in the field.
+ */
+import Museum from '../../layouts/Museum.astro';
+import Placard from '../../components/museum/Placard.astro';
+import TagIndex from '../../components/museum/TagIndex.astro';
+import Meander from '../../components/museum/Meander.astro';
+import Colophon from '../../components/museum/Colophon.astro';
+import { groupIds, tagGroups, tags, type TagId } from '../../config/tags';
+import { series, seriesIds } from '../../config/series';
+import { SITE_NAME, SITE_URL } from '../../config/site';
+import { getPieces, getSeriesPieces, getTagCounts } from '../../lib/pieces';
+import { trail } from '../../lib/crumbs';
+
+const counts = await getTagCounts();
+const all = Object.keys(tags) as TagId[];
+const groups = groupIds
+  .map((g) => ({ id: g, name: tagGroups[g].name, tags: all.filter((t) => tags[t].group === g && counts.has(t)) }))
+  .filter((g) => g.tags.length);
+const shelves = (await Promise.all(seriesIds.map(async (id) => ({ id, n: (await getSeriesPieces(id)).length })))).filter((s) => s.n);
+const hasElsewhere = (await getPieces()).some((p) => p.kind === 'scroll' && !p.series);
+
+/* What the script needs to name tags and series and to suggest tags: ids, labels, counts. */
+const data = {
+  tags: Object.fromEntries(groups.flatMap((g) => g.tags.map((t) => [t, { label: tags[t].label, n: counts.get(t)! }]))),
+  series: {
+    ...Object.fromEntries(shelves.map((s) => [s.id, { name: series[s.id].name, href: series[s.id].href, accent: series[s.id].accent }])),
+    ...(hasElsewhere ? { elsewhere: { name: 'Elsewhere', href: '/gallery/#wall-elsewhere', accent: '#7a5a1f' } } : {}),
+  },
+};
+---
+
+<Museum
+  title={`Search · ${SITE_NAME}`}
+  description={`Search every piece, reading and room by ${SITE_NAME}, by word, by tag or by series.`}
+  current="search"
+  crumbs={trail('Search')}
+  schema={[
+    {
+      '@type': 'SearchResultsPage',
+      '@id': `${SITE_URL}/search/#page`,
+      url: `${SITE_URL}/search/`,
+      name: 'Search',
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+    },
+  ]}
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, follow" />
+  </Fragment>
+  <section class="page search" aria-labelledby="search-title" style="--room-accent: var(--gilt-ink)" data-search>
+    <div class="page__inner wrap">
+      <div class="search__head">
+        <Placard
+          id="search-title"
+          level={1}
+          label="The catalogue"
+          title="Search"
+          medium="Every piece, reading and room, by word. Narrow it to a tag or a series, or browse the subject index below."
+        />
+
+        <form class="search__form" role="search" action="/search/" method="get" data-search-form>
+          <label class="search__label smallcaps" for="search-q">Search the collection</label>
+          <div class="search__field">
+            <input
+              class="search__input"
+              id="search-q"
+              name="q"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              enterkeyhint="search"
+              placeholder="Try gold, Persephone, the dollar, lighthouse"
+              data-search-input
+            />
+            <button class="search__go" type="submit">Search</button>
+          </div>
+          <div class="search__filters">
+            <label class="search__filter">
+              <span class="smallcaps">Tag</span>
+              <select name="tag" data-search-tag>
+                <option value="">Any tag</option>
+                {
+                  groups.map((g) => (
+                    <optgroup label={g.name}>
+                      {g.tags.map((t) => (
+                        <option value={t}>
+                          {tags[t].label} ({counts.get(t)})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))
+                }
+              </select>
+            </label>
+            <label class="search__filter">
+              <span class="smallcaps">Series</span>
+              <select name="series" data-search-series>
+                <option value="">Any series</option>
+                {
+                  shelves.map((s) => (
+                    <option value={s.id}>
+                      {series[s.id].name} ({s.n})
+                    </option>
+                  ))
+                }
+                {hasElsewhere && <option value="elsewhere">Elsewhere</option>}
+              </select>
+            </label>
+            <button class="search__clear" type="reset" hidden data-search-clear>Clear</button>
+          </div>
+        </form>
+      </div>
+
+      <p class="search__nojs" data-search-nojs>
+        Search by word runs in your browser and needs JavaScript. Every piece is also filed by tag below.
+      </p>
+
+      <div class="search__out" data-search-out hidden>
+        <p class="search__status" role="status" aria-live="polite" data-search-status></p>
+        <div class="search__suggest" data-search-suggest hidden>
+          <p class="search__k smallcaps">Tags</p>
+          <ul class="tag-cloud" role="list" data-search-suggest-list></ul>
+        </div>
+        <ol class="hits" role="list" data-search-hits></ol>
+        <button class="search__more" type="button" hidden data-search-more>More results</button>
+      </div>
+
+      <div class="search__browse" data-search-browse>
+        <h2 class="search__browse-title">Browse the subject index</h2>
+        <TagIndex level={3} />
+      </div>
+    </div>
+  </section>
+  <Meander />
+  <Colophon />
+  <script type="application/json" id="search-data" set:html={JSON.stringify(data)} />
+</Museum>
+
+<script>
+  import { initSearch } from '../../scripts/search';
+  initSearch();
+</script>
+
+<style>
+  .page {
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 6rem);
+  }
+  .page__inner {
+    display: grid;
+    gap: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+  }
+  .search__head {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .search__form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    min-width: 0;
+    padding-top: 0.5rem;
+  }
+  @media (max-width: 820px) {
+    .search__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .search__label {
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+  .search__field {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+    min-width: 0;
+    border-bottom: 1px solid var(--gilt);
+  }
+  .search__input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 3.5rem;
+    padding: 0.4rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .search__input::placeholder {
+    color: var(--ink-faint);
+    opacity: 0.55;
+    font-style: italic;
+  }
+  .search__input:focus {
+    outline: none;
+  }
+  .search__field:focus-within {
+    border-bottom-color: var(--gilt-ink);
+    box-shadow: 0 1px 0 0 var(--gilt-ink);
+  }
+  /* The Clear button does this, for the selects too. */
+  .search__input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+  .search__go,
+  .search__clear,
+  .search__more {
+    flex: none;
+    align-self: center;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid var(--gilt);
+    background: transparent;
+    color: var(--gilt-ink);
+    font: inherit;
+    font-size: 0.95rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.14em;
+    cursor: pointer;
+    transition:
+      background-color 400ms var(--ease-settle),
+      color 400ms var(--ease-settle);
+  }
+  .search__go:hover,
+  .search__go:focus-visible,
+  .search__clear:hover,
+  .search__clear:focus-visible,
+  .search__more:hover,
+  .search__more:focus-visible {
+    background: var(--gilt-ink);
+    border-color: var(--gilt-ink);
+    color: var(--wall);
+  }
+  .search__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.75rem 1.5rem;
+  }
+  .search__filter {
+    display: grid;
+    gap: 0.25rem;
+    min-width: min(100%, 15rem);
+  }
+  .search__filter span {
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+  .search__filter select {
+    min-height: 44px;
+    padding: 0.35rem 2rem 0.35rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    background: var(--wall)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='%237a5a1f'/%3E%3C/svg%3E")
+      no-repeat right 0.75rem center;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem;
+    appearance: none;
+  }
+  .search__filter select:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .search__nojs {
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .search__out {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .search__status {
+    min-height: 1.5em;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+  }
+  .search__status :global(em) {
+    color: var(--ink);
+  }
+  .search__suggest {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .search__k {
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+  .hits {
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+  .search__more {
+    justify-self: start;
+  }
+  .search__browse {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .search__browse-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+    color: var(--ink);
+  }
+  /* Results are drawn by the script, outside this component's scope. */
+  .search :global(.hit) {
+    display: grid;
+    gap: 0.35rem;
+    padding-block: clamp(1.2rem, 0.9rem + 1vw, 1.8rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .search :global(.hit__label) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    color: var(--series-accent, var(--gilt-ink));
+  }
+  .search :global(.hit__kind) {
+    color: var(--ink-faint);
+  }
+  .search :global(.hit__title) {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.2rem);
+    line-height: 1.1;
+  }
+  .search :global(.hit__title a) {
+    color: var(--ink);
+    text-decoration: none;
+    background-image: linear-gradient(var(--gilt), var(--gilt));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size calc(var(--beat) * 1.2) var(--ease-settle);
+  }
+  .search :global(.hit__title a:hover),
+  .search :global(.hit__title a:focus-visible) {
+    background-size: 100% 1px;
+  }
+  .search :global(.hit__excerpt) {
+    max-width: 44rem;
+    color: var(--ink-soft);
+  }
+  .search :global(.hit__excerpt mark) {
+    background: color-mix(in srgb, var(--gilt-bright) 32%, transparent);
+    color: var(--ink);
+    padding: 0 0.1em;
+  }
+  .search :global(.hit__tags) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.9rem;
+    margin-top: 0.2rem;
+    font-size: 0.95rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+  .search :global(.hit__tags a) {
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+  .search :global(.hit__tags a:hover),
+  .search :global(.hit__tags a:focus-visible),
+  .search :global(.hit__tags a[aria-current]) {
+    color: var(--gilt-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .search :global(.hit__title a) {
+      transition: none;
+    }
+  }
+</style>

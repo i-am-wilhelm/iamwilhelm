@@ -66,3 +66,40 @@ export const SEEN_SOURCES: Record<string, string> = {
      making-of line. */
   'the-label-comes-last': '_incoming/elsewhere/the-label-comes-last.html',
 };
+
+/**
+ * Where each mounted page wears its breadcrumb trail (src/lib/crumbs.ts).
+ * By default a small chip in the top-left corner: "Foyer / Gallery /
+ * Seen" while the page opens, gone once the reader is under way (the
+ * pages' own control bars use the top of the screen as they scroll), back
+ * near the top. `side: 'right'` moves it to the top-right corner, for a
+ * page whose own label sits top-left; `tone: 'light'` dresses it in ivory
+ * for a light page. `none` leaves the top alone, for a page with
+ * its own masthead across the top. Every page also ends on the trail and
+ * its tags (the "Filed under" foot), after its own colophon, except the
+ * pages in SEEN_NO_FOOT.
+ */
+export const SEEN_CRUMB_EXIT: Record<string, { side?: 'right'; tone?: 'light' } | 'none'> = {
+  'fall-line': { side: 'right' },
+  'off-soundings': { side: 'right', tone: 'light' },
+  'the-label-comes-last': { side: 'right', tone: 'light' },
+  'due-space': { tone: 'light' },
+  'type-is-an-image': { tone: 'light' },
+  'root-rectangles-in-desmos': { tone: 'light' },
+  'backgold-scrolly': 'none',
+  'lla-scrolly-homepage': 'none',
+  'per-my-last-memo': 'none',
+  'the-snowflake-machine': 'none',
+};
+
+/**
+ * A page that holds the screen (no scroll, so no foot to reach) wears its
+ * trail inline in its own bottom line instead: the exact source text the
+ * trail goes in front of. Exhibit mode hides it with the rest of the line.
+ */
+export const SEEN_CRUMB_INLINE: Record<string, string> = {
+  'the-snowflake-machine': '<button type="button" id="exhibitBtn"',
+};
+
+/** Pages that end without the "Filed under" foot: the screen-holding toy. */
+export const SEEN_NO_FOOT: readonly string[] = ['the-snowflake-machine'];

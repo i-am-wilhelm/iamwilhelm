@@ -15,6 +15,7 @@ import Placard from '../components/museum/Placard.astro';
 import Meander from '../components/museum/Meander.astro';
 import Colophon from '../components/museum/Colophon.astro';
 import { SITE_URL } from '../config/site';
+import { CRUMB_ROOMS, trail } from '../lib/crumbs';
 import { ogImage } from '../config/og';
 import { getPiece } from '../lib/pieces';
 
@@ -101,7 +102,7 @@ const schema = [
 ];
 ---
 
-<Museum title={title} description={description} schema={schema}>
+<Museum title={title} description={description} schema={schema} crumbs={trail(CRUMB_ROOMS.commissions, 'What is a scrolly?')}>
   <article class="page" aria-labelledby="scrolly-title" style="--room-accent: var(--room-iv)">
     <div class="page__inner wrap">
       <header class="page__head">

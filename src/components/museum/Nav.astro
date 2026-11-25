@@ -5,14 +5,16 @@
  * Gallery and Writings go to their own routes and the rest return to the
  * homepage rooms. An item with `room: false` (Scrollbrief, Futurist, Commissions, Earl) has no room: it goes to
  * its route from every page and stays out of the scroll-spy. At the right
- * end, one quiet gilt button books a call (the BackGold scheduler).
+ * end, the way to search (/search/; "/" or Ctrl/⌘ K from any museum page
+ * goes there too) and one quiet gilt button that books a call (the BackGold
+ * scheduler).
  */
 import { NAV, SCHEDULER_URL } from '../../config/site';
 
 interface Props {
   home?: boolean;
   /** Route key for aria-current="page" on standalone pages. */
-  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services' | 'scrollbrief';
+  current?: 'gallery' | 'futurist' | 'writings' | 'method' | 'support' | 'services' | 'scrollbrief' | 'search' | 'tags';
 }
 const { home = false, current } = Astro.props;
 
@@ -45,9 +47,40 @@ const items = NAV.map((item) => {
         ))
       }
     </ul>
-    <a class="site-nav__book" href={SCHEDULER_URL}>Book a call</a>
+    <div class="site-nav__end">
+      <a class="site-nav__search" href="/search/" aria-current={current === 'search' ? 'page' : undefined} title="Search (press /)" data-nav-search>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+          <circle cx="10.5" cy="10.5" r="6.25" fill="none" stroke="currentColor" stroke-width="1.4" />
+          <path d="M15.2 15.2 20.5 20.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+        <span class="site-nav__search-label">Search</span>
+      </a>
+      <a class="site-nav__book" href={SCHEDULER_URL}>Book a call</a>
+    </div>
   </nav>
 </header>
+
+<script>
+  /* "/" (or Ctrl/⌘ K) from anywhere on a museum page: to the search page,
+     or into its field when already there. Never while the reader is typing. */
+  const typing = (t: EventTarget | null) =>
+    t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+  document.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented || e.altKey) return;
+    const slash = e.key === '/' && !e.metaKey && !e.ctrlKey;
+    const palette = (e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey) && !e.shiftKey;
+    if (!slash && !palette) return;
+    if (slash && typing(e.target)) return;
+    const field = document.querySelector<HTMLInputElement>('[data-search-input]');
+    e.preventDefault();
+    if (field) {
+      field.focus();
+      field.select();
+    } else {
+      location.href = '/search/';
+    }
+  });
+</script>
 
 <style>
   .site-nav {
@@ -135,6 +168,37 @@ const items = NAV.map((item) => {
   .site-nav__list a:hover::after,
   .site-nav__list a[aria-current]::after {
     transform: scaleX(1);
+  }
+
+  .site-nav__end {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  /* Search: a glass, no box. Its word is for screen readers only. */
+  .site-nav__search {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 300ms ease;
+  }
+  .site-nav__search:hover,
+  .site-nav__search:focus-visible,
+  .site-nav__search[aria-current] {
+    color: var(--gilt-ink);
+  }
+  .site-nav__search-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
   /* The one button in the nav: gilt hairline, small caps, quiet. */

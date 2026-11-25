@@ -1,6 +1,9 @@
 ---
 /**
- * 404 in the museum style: a closed door, and the way back to the foyer.
+ * 404 in the museum style: a closed door, the way back to the foyer, and
+ * the search field, filled from the address the reader tried (the last
+ * part of the path, hyphens as spaces), so a mistyped piece is one press
+ * away.
  */
 import Museum from '../layouts/Museum.astro';
 ---
@@ -11,7 +14,25 @@ import Museum from '../layouts/Museum.astro';
     <h1 class="lost__title display" id="lost-title">This room is closed.</h1>
     <p class="lede">The page you asked for is elsewhere in the building, or was never hung.</p>
     <a class="cta" href="/">Return to the foyer</a>
+    <form class="lost__search" role="search" action="/search/" method="get">
+      <label class="lost__label smallcaps" for="lost-q">Or search the collection</label>
+      <div class="lost__field">
+        <input id="lost-q" name="q" type="search" autocomplete="off" placeholder="A title, a word, a name" />
+        <button type="submit">Search</button>
+      </div>
+    </form>
   </section>
+  <script is:inline>
+    (function () {
+      var last = location.pathname.replace(/\/+$/, '').split('/').pop() || '';
+      try {
+        last = decodeURIComponent(last);
+      } catch (e) {}
+      var words = last.replace(/\.html?$/, '').replace(/[-_]+/g, ' ').trim();
+      var field = document.getElementById('lost-q');
+      if (field && words && words.length < 60) field.value = words;
+    })();
+  </script>
 </Museum>
 
 <style>
@@ -32,5 +53,51 @@ import Museum from '../layouts/Museum.astro';
   }
   .lost__title {
     font-size: clamp(2.4rem, 1.6rem + 3.6vw, 4.6rem);
+  }
+  .lost__search {
+    display: grid;
+    gap: 0.5rem;
+    width: min(100%, 28rem);
+    margin-top: 1.5rem;
+  }
+  .lost__label {
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+  .lost__field {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--gilt);
+  }
+  .lost__field input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 44px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .lost__field input:focus {
+    outline: none;
+  }
+  .lost__field:focus-within {
+    border-bottom-color: var(--gilt-ink);
+  }
+  .lost__field button {
+    flex: none;
+    align-self: center;
+    min-height: 40px;
+    padding: 0 0.9rem;
+    border: 1px solid var(--gilt);
+    background: transparent;
+    color: var(--gilt-ink);
+    font: inherit;
+    font-size: 0.95rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.14em;
+    cursor: pointer;
   }
 </style>

@@ -1,0 +1,25 @@
+---
+/**
+ * The corner exit on a scroll page, as a breadcrumb trail: "Foyer /
+ * Gallery / Poems" while the page opens, then "← Poems" once the reader is
+ * under way (the whole trail again on hover or focus). It replaces the
+ * single "← The Gallery" link the pages used to carry and keeps that
+ * link's dress: pass the page's exit class (`poem-exit`, `descent-exit`)
+ * as `className`. Markup, rules and the few lines of script are in
+ * src/lib/crumbs.ts, shared with the Seen pages that src/lib/seen.ts
+ * mounts as whole documents.
+ */
+import { crumbExitHtml, CRUMB_EXIT_CSS, CRUMB_EXIT_JS, type Crumb, type CrumbExitOptions } from '../../lib/crumbs';
+
+interface Props {
+  trail: Crumb[];
+  mode?: CrumbExitOptions['mode'];
+  className?: string;
+  side?: CrumbExitOptions['side'];
+}
+const { trail, mode = 'compact', className, side } = Astro.props;
+---
+
+<Fragment set:html={crumbExitHtml(trail, { mode, className, side })} />
+<style is:inline set:html={CRUMB_EXIT_CSS}></style>
+<script is:inline set:html={CRUMB_EXIT_JS}></script>

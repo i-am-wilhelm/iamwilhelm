@@ -12,6 +12,7 @@ plate: "#12100c"
 date: 2026-11-09
 series: seen
 seriesNo: 14
+tags: [painting, symbolism, death, time, light, geometry]
 ---
 
 Mounted as delivered from the owner's approved source file

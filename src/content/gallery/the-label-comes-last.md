@@ -12,6 +12,7 @@ plate: "#191a16"
 date: 2026-11-22
 series: seen
 seriesNo: 18
+tags: [schools, local-government, public-record]
 ---
 
 Mounted from the page file of the owner's published artifact, with its

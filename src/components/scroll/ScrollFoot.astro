@@ -13,6 +13,11 @@
  * The Janus mark beside that line opens the essay on Janus (Before and
  * Behind), on every page but that one.
  *
+ * Above that line, where the piece is filed: its breadcrumb trail (Foyer /
+ * Gallery / Seen / the piece, src/lib/crumbs.ts), its tags, each linking to
+ * the tag's page (src/config/tags.ts), up to three pieces from other series
+ * that share at least two of its tags, and the way to search.
+ *
  * Self-contained: everything inherits the page's colour and text face, and
  * the small type reads the page's mono variable (--font-mono, --log or
  * --typed), so the block takes each page's voice without a per-page style.
@@ -21,7 +26,9 @@
 import NewsletterForm from '../museum/NewsletterForm.astro';
 import JanusMark from '../museum/JanusMark.astro';
 import { series as registry } from '../../config/series';
-import { getPiece, nextInSeries, type PieceKind } from '../../lib/pieces';
+import { filedNear, getPiece, nextInSeries, type PieceKind } from '../../lib/pieces';
+import { tags as tagRegistry, tagHref } from '../../config/tags';
+import { pieceTrail } from '../../lib/crumbs';
 import { JANUS_ESSAY } from '../../config/site';
 
 interface Props {
@@ -32,6 +39,8 @@ interface Props {
 const { id, kind = 'scroll', class: cls } = Astro.props;
 const p = await getPiece(id, kind);
 const next = await nextInSeries(p);
+const near = await filedNear(p);
+const crumbs = pieceTrail(p);
 const s = p.series ? registry[p.series] : undefined;
 const shareText = [p.title, p.label].filter(Boolean).join(' · ');
 const x = `https://x.com/intent/post?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(p.url)}`;
@@ -83,6 +92,42 @@ const uid = `sf-${id}`;
       <p class="scroll-foot__note">These pages are free to read and slow to make.</p>
       <a class="scroll-foot__btn scroll-foot__door" href="/support/">Keep the lights on</a>
     </div>
+  </div>
+  <div class="scroll-foot__filed">
+    <nav class="scroll-foot__trail" aria-label="Breadcrumb">
+      <ol>
+        {
+          crumbs.map((c, i) => (
+            <li>{c.href && i < crumbs.length - 1 ? <a href={c.href}>{c.name}</a> : <span aria-current="page">{c.name}</span>}</li>
+          ))
+        }
+      </ol>
+    </nav>
+    {
+      p.tags.length > 0 && (
+        <p class="scroll-foot__filed-line">
+          <span class="scroll-foot__k">Filed under</span>
+          {p.tags.map((t, i) => (
+            <>{i > 0 && <span class="scroll-foot__dot" aria-hidden="true"> &middot; </span>}<a href={tagHref(t)}>{tagRegistry[t].label}</a></>
+          ))}
+        </p>
+      )
+    }
+    {
+      near.length > 0 && (
+        <p class="scroll-foot__filed-line">
+          <span class="scroll-foot__k">Filed near</span>
+          {near.map((q, i) => (
+            <>{i > 0 && <span class="scroll-foot__dot" aria-hidden="true"> &middot; </span>}<a href={q.path}><i>{q.title}</i></a></>
+          ))}
+        </p>
+      )
+    }
+    <p class="scroll-foot__filed-line">
+      <a href="/search/">Search the collection</a>
+      <span class="scroll-foot__dot" aria-hidden="true"> &middot; </span>
+      <a href="/tags/">Every tag</a>
+    </p>
   </div>
   <p class="scroll-foot__commission">
     {p.twinPath && (
@@ -287,6 +332,59 @@ const uid = `sf-${id}`;
   }
   .scroll-foot__door {
     justify-self: start;
+  }
+  .scroll-foot__filed {
+    display: grid;
+    gap: 0.55rem;
+    margin: 2rem 0 0;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--sf-rule);
+  }
+  .scroll-foot__trail ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em 0.6em;
+    margin: 0 0 0.35rem;
+    padding: 0;
+    font-family: var(--sf-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .scroll-foot__trail li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .scroll-foot__trail li + li::before {
+    content: '/';
+    margin-right: 0.6em;
+    opacity: 0.55;
+  }
+  @supports (content: 'x' / '') {
+    .scroll-foot__trail li + li::before {
+      content: '/' / '';
+    }
+  }
+  .scroll-foot__trail a,
+  .scroll-foot__filed-line a {
+    color: inherit;
+    text-underline-offset: 0.25em;
+    text-decoration-thickness: 1px;
+  }
+  .scroll-foot__filed-line {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+  .scroll-foot__filed-line .scroll-foot__k {
+    display: inline-block;
+    margin-right: 0.7em;
+  }
+  .scroll-foot__dot {
+    opacity: 0.5;
   }
   .scroll-foot__commission {
     margin: 2rem 0 0;

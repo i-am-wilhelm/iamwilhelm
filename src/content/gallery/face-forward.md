@@ -14,6 +14,7 @@ date: 2026-11-10T02:00:00Z
 verb: "seven sections · you scroll from night to morning"
 series: futurist
 seriesNo: 3
+tags: [preparedness, humor, faith]
 ---
 
 Mounted as delivered from the owner's approved source file

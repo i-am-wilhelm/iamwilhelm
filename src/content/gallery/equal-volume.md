@@ -13,6 +13,7 @@ date: 2026-11-01
 verb: "three parts · you hold to fill the vessel"
 series: poems
 seriesNo: 3
+tags: [love, mirrors, water, astrology]
 ---
 
 Ported from the owner's prototype page (equal-volume.html). The poem names

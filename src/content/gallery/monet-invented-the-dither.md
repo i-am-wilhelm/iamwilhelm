@@ -14,6 +14,7 @@ date: 2026-11-09
 verb: "four scenes · you tap to change the hour"
 series: seen
 seriesNo: 3
+tags: [claude-monet, painting, color, light, perception, dither, printmaking]
 ---
 
 Ported from the owner's prototype (docs/prototypes/monet-invented-the-dither-prototype.html).

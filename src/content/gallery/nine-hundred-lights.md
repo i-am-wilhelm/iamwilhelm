@@ -10,6 +10,7 @@ order: 28
 status: on-view
 plate: "#0a1220"
 date: 2026-11-14
+tags: [liberty, campaigns, lighthouses, fire, the-sea, for-organizations]
 ---
 
 Mounted as delivered from the owner's approved source file

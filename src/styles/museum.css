@@ -357,3 +357,53 @@ a {
     display: none;
   }
 }
+
+/* ---- Tags: the chips on the subject index, a tag's page and search ---- */
+.tag-cloud {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.55rem;
+  margin: 0;
+  padding: 0;
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  min-height: 44px;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--wall-deep) 55%, transparent);
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    border-color 400ms var(--ease-settle),
+    background-color 400ms var(--ease-settle),
+    color 300ms ease;
+}
+.tag-chip:hover,
+.tag-chip:focus-visible {
+  border-color: var(--gilt);
+  background: var(--wall-deep);
+  color: var(--ink);
+}
+.tag-chip[aria-current],
+.tag-chip[aria-pressed='true'] {
+  border-color: var(--gilt-ink);
+  background: var(--wall-deep);
+  color: var(--ink);
+}
+.tag-chip__n {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--gilt-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tag-chip {
+    transition: none;
+  }
+}

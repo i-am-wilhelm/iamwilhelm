@@ -21,7 +21,13 @@
  *     passes under the bar instead of covering it;
  *   - FIXES holds the few per-page repairs made since the files were
  *     approved, and the in-page links to other pieces moved onto the
- *     site's own routes, each one a named, exact replacement.
+ *     site's own routes, each one a named, exact replacement;
+ *   - the breadcrumb trail (src/lib/crumbs.ts): a BreadcrumbList in the
+ *     head, a small chip in a top corner while the page opens (or set into
+ *     the page's own line, or left off: SEEN_CRUMB_EXIT and
+ *     SEEN_CRUMB_INLINE in src/config/seen.ts), and, after the page's own
+ *     colophon, a foot with the trail, the piece's tags and the pieces
+ *     filed near it (SEEN_NO_FOOT leaves it off).
  *
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
@@ -29,10 +35,29 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ogImage } from '../config/og';
-import { SEEN_AI_LINE, SEEN_AI_LINE_SOURCE, SEEN_CHAIN, SEEN_SOURCES } from '../config/seen';
+import {
+  SEEN_AI_LINE,
+  SEEN_AI_LINE_SOURCE,
+  SEEN_CHAIN,
+  SEEN_CRUMB_EXIT,
+  SEEN_CRUMB_INLINE,
+  SEEN_NO_FOOT,
+  SEEN_SOURCES,
+} from '../config/seen';
 import { series as registry } from '../config/series';
 import { SITE_NAME, SITE_URL } from '../config/site';
-import { getPieces, type Piece } from './pieces';
+import { filedNear, getPieces, type Piece } from './pieces';
+import {
+  breadcrumbScript,
+  crumbExitHtml,
+  crumbFootHtml,
+  crumbInlineHtml,
+  pieceTrail,
+  CRUMB_EXIT_CSS,
+  CRUMB_EXIT_JS,
+  CRUMB_FOOT_CSS,
+  CRUMB_INLINE_CSS,
+} from './crumbs';
 
 const LATIN =
   'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
@@ -484,6 +509,7 @@ export async function seenDocument(slug: string): Promise<string> {
     `<meta name="twitter:description" content="${esc(description)}">`,
     `<meta name="twitter:image" content="${esc(image)}">`,
     `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>`,
+    breadcrumbScript(pieceTrail(piece), canonical),
   ].join('\n');
   html = own
     ? swap(html, /(<meta name="description" content="[^"]*">\n)/, (m) => `${m}${head}\n`, 'the meta description', slug)
@@ -535,6 +561,36 @@ export async function seenDocument(slug: string): Promise<string> {
   }
 
   html = liftControls(html, slug);
+  html = await mountCrumbs(html, slug, piece);
 
   return html.replace(/^<!DOCTYPE html>\n/i, '');
+}
+
+/**
+ * The breadcrumb trail on a mounted page: the corner chip (or the trail set
+ * into the page's own line), and the "Filed under" foot after the page's
+ * own colophon. The rules go at the end of the page's stylesheet and the
+ * chip's few lines of script at the end of the body.
+ */
+async function mountCrumbs(html: string, slug: string, piece: Piece): Promise<string> {
+  const crumbs = pieceTrail(piece);
+  const css: string[] = [];
+  const inlineAt = SEEN_CRUMB_INLINE[slug];
+  const placement = SEEN_CRUMB_EXIT[slug] ?? {};
+  if (inlineAt) {
+    html = swap(html, inlineAt, (m) => `${crumbInlineHtml(crumbs)}${m}`, 'the line the trail is set into', slug);
+    css.push(CRUMB_INLINE_CSS);
+  } else if (placement !== 'none') {
+    const chip = crumbExitHtml(crumbs, { mode: 'top', side: placement.side, tone: placement.tone });
+    html = swap(html, /<body[^>]*>\n?/, (m) => `${m}${chip}\n`, 'the <body> tag', slug);
+    css.push(CRUMB_EXIT_CSS);
+  }
+  if (!SEEN_NO_FOOT.includes(slug)) {
+    const foot = crumbFootHtml(piece, await filedNear(piece));
+    html = swap(html, /\n?<\/body>/, (m) => `\n${foot}${m}`, 'the </body> tag', slug);
+    css.push(CRUMB_FOOT_CSS);
+  }
+  if (css.length) html = swap(html, /<\/head>/, (m) => `<style>/* site: the breadcrumb trail (src/lib/crumbs.ts) */${css.join('')}</style>\n${m}`, 'the </head> tag', slug);
+  if (!inlineAt && placement !== 'none') html = swap(html, /<\/body>/, (m) => `<script>${CRUMB_EXIT_JS}</script>\n${m}`, 'the </body> tag', slug);
+  return html;
 }

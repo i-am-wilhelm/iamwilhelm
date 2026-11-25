@@ -21,6 +21,7 @@ import Colophon from '../components/museum/Colophon.astro';
 import Lens from '../components/museum/Lens.astro';
 import ScrollbriefMark from '../components/museum/ScrollbriefMark.astro';
 import { SCHEDULER_URL, SCROLLBRIEF_INTAKE_URL, SCROLLBRIEF_URL } from '../config/site';
+import { trail } from '../lib/crumbs';
 
 /* V.01 · The seven beats of a case story, rim to centre. */
 const beats = [
@@ -93,6 +94,7 @@ const pieces = ['how-to-throw-a-flame-twenty-miles', 'nobody-sees-the-same-sea',
   title="Scrollbrief · Interactive case stories for trial lawyers | Michael Wilhelm"
   description="Scrollbrief is Michael Wilhelm’s litigation-support studio: interactive demand packages, mediation presentations, trial graphics and sentencing mitigation pieces, each a private scrolling page where every factual line opens its source in the record."
   current="scrollbrief"
+  crumbs={trail('Scrollbrief')}
 >
   <article class="page" aria-labelledby="scrollbrief-page-title" style="--room-accent: #23456b">
     <div class="page__inner wrap">

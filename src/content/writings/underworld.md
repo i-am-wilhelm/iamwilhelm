@@ -7,6 +7,7 @@ draft: false
 description: "Five descents: Orpheus looking back, Virgil as guide, the Kindly Ones, the marks on the soul, and the feather of Ma'at."
 series: readings
 seriesNo: 1
+tags: [underworld, orpheus, descents, death, the-soul, egypt, greek-myth, music]
 ---
 
 <section class="part" aria-labelledby="orpheus">

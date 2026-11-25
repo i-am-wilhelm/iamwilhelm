@@ -14,6 +14,7 @@ date: 2026-11-09
 verb: "four scenes · you tap to choose a side"
 series: seen
 seriesNo: 1
+tags: [salvador-dali, surrealism, perception, mirrors, dither, geometry, janus]
 ---
 
 Ported from the owner's prototype (docs/prototypes/the-double-image-prototype.html).

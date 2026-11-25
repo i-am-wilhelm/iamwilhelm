@@ -13,6 +13,7 @@ date: 2026-11-19
 verb: "nine sections, eight figures · you turn the hinge"
 series: in-the-original
 seriesNo: 5
+tags: [janus, greek-myth, hermes, greek-words, latin, word-histories, ovid, homer, thresholds, mirrors, time]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/A9QaADVPQnED6gs3yRNBqf).

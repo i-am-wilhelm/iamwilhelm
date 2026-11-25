@@ -25,6 +25,7 @@ import { SITE_URL } from '../../../config/site';
 import { ogImage } from '../../../config/og';
 import { getPiece, getScrollPieces } from '../../../lib/pieces';
 import { twinFromHtml } from '../../../lib/twin';
+import { twinTrail } from '../../../lib/crumbs';
 
 export async function getStaticPaths() {
   return (await getScrollPieces()).map((p) => ({ params: { slug: p.id } }));
@@ -53,6 +54,7 @@ const image = ogImage(piece.ogPath);
   imageAlt={`${piece.title}, the opening frame of the scroll page`}
   current="gallery"
   canonical={piece.url}
+  crumbs={twinTrail(piece)}
   schema={[
     {
       '@type': 'Article',

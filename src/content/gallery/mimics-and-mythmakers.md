@@ -13,6 +13,7 @@ date: 2026-11-07
 verb: "six depths and one ascent · you tap the dark"
 series: mythmaking
 seriesNo: 1
+tags: [mirrors, narcissus, psychology, the-sea, descents, greek-myth, hermes, greek-words, word-histories, homer]
 ---
 
 Ported from the owner's Claude artifact (claude.ai/artifact/Uoi1YmTv8Apc8kKFsD6N5r).

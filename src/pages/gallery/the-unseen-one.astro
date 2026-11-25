@@ -15,6 +15,7 @@ import ScrollFoot from '../../components/scroll/ScrollFoot.astro';
 import { SITE_NAME, SITE_URL } from '../../config/site';
 import { ogImage } from '../../config/og';
 import { getPiece } from '../../lib/pieces';
+import { breadcrumbScript, pieceTrail } from '../../lib/crumbs';
 
 const post = await getEntry('writings', 'the-unseen-one');
 if (!post || post.data.treatment !== 'descent') throw new Error('the-unseen-one: the writings entry must use the descent treatment.');
@@ -71,6 +72,7 @@ const article = {
     <meta name="twitter:description" content={post.data.description} />
     <meta name="twitter:image" content={image} />
     <script type="application/ld+json" set:html={JSON.stringify(article)} />
+    <Fragment set:html={breadcrumbScript(pieceTrail(piece), url)} />
   </Fragment>
   <Descent id="the-unseen-one" title={post.data.title} dateLabel={dateLabel} dedication="Hades, to the Kore">
     <Content />

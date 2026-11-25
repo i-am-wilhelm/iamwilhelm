@@ -24,6 +24,13 @@ interface SeriesSpec {
   accent: string;
   /** One line for the index page, its meta description and the feed. */
   statement: string;
+  /**
+   * The room the series hangs in, for its breadcrumb trail and the nav:
+   * `gallery` for a series of scroll pages, `writings` for one mostly of
+   * readings. A piece's own trail goes through the room it is in (a scroll
+   * page through the Gallery, a reading through Writings), then its series.
+   */
+  room: 'gallery' | 'writings';
 }
 
 export const series = {
@@ -34,6 +41,7 @@ export const series = {
     accent: '#7b4128',
     /* TODO(owner): the series' one-line statement, shown on /writings/in-the-original/ and in its feed. */
     statement: 'Essays that read a myth back through the Greek it was first told in.',
+    room: 'gallery',
   },
   'through-the-lens': {
     name: 'Through the Lens',
@@ -42,6 +50,7 @@ export const series = {
     accent: '#6a3fa0',
     /* TODO(owner): the series' one-line statement, shown on /writings/through-the-lens/ and in its feed. */
     statement: 'Modern ideas read back through the Greek words underneath them.',
+    room: 'writings',
   },
   futurist: {
     name: 'Futurist',
@@ -50,6 +59,7 @@ export const series = {
     accent: '#c0281c',
     /* TODO(owner): the series' one-line statement, shown on /writings/futurist/ and in its feed. */
     statement: 'The Futurist installments: essays on what comes next, each staged as its own scrolling page.',
+    room: 'gallery',
   },
   mythmaking: {
     name: 'Mythmaking',
@@ -58,6 +68,7 @@ export const series = {
     accent: '#1d6d84',
     /* TODO(owner): the series' one-line statement, shown on /writings/mythmaking/ and in its feed. */
     statement: 'Essays on men, mirrors, and the stories they copy.',
+    room: 'gallery',
   },
   poems: {
     name: 'Poems',
@@ -66,6 +77,7 @@ export const series = {
     accent: '#5a3c63',
     /* TODO(owner): the series' one-line statement, shown on /writings/poems/ and in its feed. */
     statement: 'Poems set on their own night pages, each with a canvas that answers the reader.',
+    room: 'gallery',
   },
   seen: {
     name: 'Seen',
@@ -73,6 +85,7 @@ export const series = {
     href: '/writings/seen/',
     accent: '#7d5f18',
     statement: 'Essays on how a picture resolves: the double image, the lit room, the broken dab, and the glyph dither they lead to.',
+    room: 'gallery',
   },
   machines: {
     name: 'Machines',
@@ -81,6 +94,7 @@ export const series = {
     accent: '#2f5f73',
     /* The series' one-line statement, shown on /writings/machines/ and in its feed. Chosen by the owner, Nov 2026. */
     statement: 'Instruments for the curious, each one an old idea you can run.',
+    room: 'gallery',
   },
   readings: {
     name: 'Readings',
@@ -89,6 +103,7 @@ export const series = {
     accent: '#3d5a4b',
     /* TODO(owner): the series' one-line statement, shown on /writings/readings/ and in its feed. */
     statement: 'Wall text from the reading room: the long pieces read straight through.',
+    room: 'writings',
   },
 } as const satisfies Record<string, SeriesSpec>;
 

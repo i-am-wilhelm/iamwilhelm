@@ -14,6 +14,7 @@ date: 2026-11-25
 verb: "nine rooms · you rub each story on the touchstone"
 series: mythmaking
 seriesNo: 3
+tags: [legends, public-record, gold, death, music, time]
 ---
 
 Mounted as delivered from its approved source file
