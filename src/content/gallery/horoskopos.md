@@ -3,7 +3,7 @@ title: "Horoskopos"
 plateTitle: "Horoskopos"
 year: 2026
 epigraph: "The hour-marker: a sky clock you can read. Cast a chart, lay two together, and watch which gods are talking."
-description: "A chart engine: cast a birth chart, lay two together as a biwheel, a web, a grid or a Davison chart, and read the lines."
+description: "A chart engine: cast a birth chart, lay two together as a biwheel, a web, a grid or a Davison chart, and read the aspects."
 href: "/gallery/horoskopos/"
 medium: "Chart engine; hands-on page"
 verb: "hands-on · cast your own"

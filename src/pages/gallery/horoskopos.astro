@@ -68,10 +68,10 @@ import '../../styles/horoskopos-share.css';
       <summary>Tuning</summary>
       <div class="tune">
         <div class="tune-row"><label for="tight">Orbs <span id="tightv"></span></label><input id="tight" type="range" min="0.4" max="1.5" step="0.05" value="1" aria-describedby="tightn"></div>
-        <p id="tightn" class="fine" style="margin:-6px 0 0">Lower is stricter: only the closest lines stay.</p>
-        <div class="tune-row"><span class="lab">Lines</span><button class="chip" data-tone="flow">Flowing</button><button class="chip" data-tone="grind">Grinding</button><button class="chip" data-tone="fuse">Fused</button></div>
+        <p id="tightn" class="fine" style="margin:-6px 0 0">Lower is stricter: only the closest aspects stay.</p>
+        <div class="tune-row"><span class="lab">Aspects</span><button class="chip" data-tone="flow">Flowing</button><button class="chip" data-tone="grind">Grinding</button><button class="chip" data-tone="fuse">Fused</button></div>
         <div class="tune-row"><label for="hsys">Houses</label><select id="hsys"><option value="P">Placidus</option><option value="W">Whole sign</option><option value="E">Equal</option></select></div>
-        <div class="tune-row"><button class="chip" data-tog="minor">Chiron and asteroids in the lines</button><button class="chip" data-tog="greek">Greek names</button><button class="chip" data-tog="still">Hold still</button></div>
+        <div class="tune-row"><button class="chip" data-tog="minor">Chiron and asteroids in the aspects</button><button class="chip" data-tog="greek">Greek names</button><button class="chip" data-tog="still">Hold still</button></div>
       </div>
     </details>
   </div>
@@ -79,7 +79,7 @@ import '../../styles/horoskopos-share.css';
   <div class="panel" role="region" aria-label="The reading">
     <div id="facts"></div>
     <div id="card" aria-live="polite"></div>
-    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="aspects">Lines</button><button role="tab" data-tab="reading">Reading</button><button role="tab" data-tab="houses">Houses</button><button role="tab" data-tab="today">Today</button><button role="tab" data-tab="music">Music</button><button role="tab" data-tab="energies">Energies</button></div>
+    <div id="tabs" role="tablist" aria-label="Reading"><button role="tab" data-tab="placements">Placements</button><button role="tab" data-tab="aspects">Aspects</button><button role="tab" data-tab="reading">Reading</button><button role="tab" data-tab="houses">Houses</button><button role="tab" data-tab="today">Today</button><button role="tab" data-tab="music">Music</button><button role="tab" data-tab="energies">Energies</button></div>
     <div id="body"></div>
   </div>
 </div>
@@ -88,16 +88,18 @@ import '../../styles/horoskopos-share.css';
   <div>
     <h2>How to read it</h2>
     <p class="tones"><span class="tone-flow">Flowing: trine, sextile</span><span class="tone-grind">Grinding: square, opposition</span><span class="tone-fuse">Fused: conjunction</span></p>
-    <p>A line is an aspect: two points standing at a telling angle. Thicker and brighter means closer to exact. Each planet sends its signal down the line in its own manner, so you can tell who is talking without a label.</p>
+    <p>An aspect is two points standing at a telling angle, drawn on the wheel as a line between them. Thicker and brighter means closer to exact. Five angles count, and each is its own kind of conversation:</p>
+    <ul id="asplegend" class="asp-legend"></ul>
+    <p>Each planet sends its signal down its aspects in its own manner, so you can tell who is talking without a label.</p>
     <ul id="legend" class="legend"></ul>
   </div>
   <div>
     <h2>How it is made</h2>
     <p>Positions are worked out in your browser by Astronomy Engine (Don Cross, MIT licence). Checked against Swiss Ephemeris values for the house chart, the ten planets agree to within a tenth of an arcminute, and the angles and Placidus cusps agree to three decimal places. Checked against the published positions of every chart in the library, back to 1452, the Sun and Moon land within about an arcminute of the printed values.</p>
-    <p>Chiron, Ceres, Pallas, Juno and Vesta are integrated from JPL orbital elements with the same library’s gravity model. Against published positions they land within an arcminute in 1879, within four arcminutes in 1756, and within a quarter of a degree in 1452, where Chiron itself stays within an arcminute. They sit on the wheel as quiet marks until you switch them into the lines under Tuning.</p>
+    <p>Chiron, Ceres, Pallas, Juno and Vesta are integrated from JPL orbital elements with the same library’s gravity model. Against published positions they land within an arcminute in 1879, within four arcminutes in 1756, and within a quarter of a degree in 1452, where Chiron itself stays within an arcminute. They sit on the wheel as quiet marks until you switch them into the aspects under Tuning.</p>
     <p><b>The name.</b> <span lang="grc">Ὡροσκόπος</span>, hōroskopos, “hour-marker”, was the Greek astrologers’ word for the degree of the zodiac rising in the east at the moment of birth: the point the whole chart is counted from, and the word “horoscope” comes from.</p>
     <p>The North Node and the Black Moon are mean values. The lots follow the Hellenistic rule and flip by day and night: Fortune from Sun to Moon, Spirit from Moon to Sun, Eros from Spirit to Venus, each cast from the Ascendant.</p>
-    <p>Library birth data comes from Astrotheme, whose reliability notes follow the Rodden scale. Every chart carries a tag saying how its birth time is known. Two charts (Fitzgerald and Freud) use a different clock standard for the birthplace than the source does, so their angles sit three to four degrees from the published ones.</p>
+    <p>Library birth data comes from Astrotheme, whose reliability notes follow the Rodden scale. Every chart carries a tag saying how its birth time is known. Jutes is the one exception: Astrotheme does not list him, so his birth date comes from public biographies and his chart is cast for noon. Two charts (Fitzgerald and Freud) use a different clock standard for the birthplace than the source does, so their angles sit three to four degrees from the published ones.</p>
     <p>What you enter stays in this tab. The city list travels with the page, so even the place lookup happens here. Nothing is sent and nothing is saved.</p>
   </div>
   <div>
@@ -340,6 +342,26 @@ body.natal .en-g{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 body.natal .bar{display:grid;grid-template-columns:4.6em 1fr 1.2em;gap:8px;align-items:center;font-family:var(--mono);font-weight:500;font-size:.68rem;color:var(--mute);margin:5px 0}
 body.natal .bar div{height:7px;border-radius:9px;background:var(--rule);overflow:hidden}body.natal .bar i{display:block;height:100%;border-radius:9px}body.natal .bar b{color:var(--ink)}
 body.natal .tally{display:flex;flex-wrap:wrap;gap:8px 16px;font-family:var(--mono);font-weight:500;font-size:.74rem}body.natal .tally span{color:var(--t)}body.natal .tally b{font-size:1.1rem;margin-right:3px}
+body.natal .asp-g{margin:0 0 14px;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--slab)}
+body.natal .asp-g>p{margin:0 0 10px;font-size:.93rem;line-height:1.5}
+body.natal .asp-g-r{display:grid;gap:6px}
+body.natal .asp-g-r button{display:grid;grid-template-columns:1.6em 10.5em 1fr;gap:2px 10px;align-items:center;width:100%;text-align:left;padding:7px 10px;border:1px solid var(--rule);border-left:3px solid var(--t);border-radius:9px;min-height:44px}
+body.natal .asp-g-r button:hover,body.natal .asp-g-r button:focus-visible{background:rgba(255,255,255,.04)}
+body.natal .asp-g-r .as{font-size:1.2rem;justify-content:center}body.natal .asp-g-r .nm b{display:block;font-size:.95rem;line-height:1.15}body.natal .asp-g-r .nm small{display:block;font-family:var(--mono);font-weight:500;font-size:.62rem;color:var(--mute)}
+body.natal .asp-g-r .gi{font-size:.9rem;line-height:1.3;color:var(--ink)}
+@media (max-width:460px){body.natal .asp-g-r button{grid-template-columns:1.6em 1fr}body.natal .asp-g-r .gi{grid-column:2}}
+body.natal .asp-dl{margin:4px 0 12px;display:grid;gap:0}
+body.natal .asp-dl dt{margin:10px 0 2px;font-family:var(--mono);font-weight:500;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;color:var(--c,var(--ichor))}
+body.natal .asp-dl dd{margin:0;font-size:.95rem;line-height:1.55}body.natal .asp-dl dd.k{font-family:var(--mono);font-weight:500;font-size:.78rem;color:var(--ink)}
+body.natal .tip-g{display:flex;gap:9px;align-items:flex-start;margin:8px 0 0;padding:8px 0 0;border-top:1px solid #34303d}
+body.natal .tip-g .gloss-p{width:34px;height:34px;stroke-width:2.2}
+body.natal .tip-g b{display:block;font-size:.9rem;line-height:1.2}body.natal .tip-g span{display:block;font-family:var(--mono);font-weight:500;font-size:.62rem;letter-spacing:.06em;color:var(--ichor);margin:2px 0 3px}
+body.natal .tip .tip-g p{margin:0;font-size:.82rem;line-height:1.4}
+body.natal .asp-legend{list-style:none;margin:4px 0 14px;padding:0;display:grid;gap:8px;max-width:44em}
+body.natal .asp-legend li{display:grid;grid-template-columns:1.6em 9em 1fr;gap:2px 10px;align-items:baseline;padding:0 0 8px;border-bottom:1px solid var(--rule)}
+body.natal .asp-legend .as{font-size:1.15rem}body.natal .asp-legend b{font-size:.95rem}body.natal .asp-legend small{display:block;font-family:var(--mono);font-weight:500;font-size:.62rem;color:var(--mute)}
+body.natal .asp-legend .gi{font-size:.92rem;color:var(--ink)}body.natal .asp-legend .gi i{display:block;font-style:normal;font-family:var(--mono);font-weight:500;font-size:.62rem;color:var(--mute);margin-top:2px}
+@media (max-width:560px){body.natal .asp-legend li{grid-template-columns:1.6em 1fr}body.natal .asp-legend .gi{grid-column:2}}
 
 body.natal .after{max-width:1240px;margin:26px auto 0;padding:22px 18px 60px;border-top:1px solid var(--rule);display:grid;gap:22px}
 body.natal .after h2{font-size:1.15rem;margin:0 0 8px}

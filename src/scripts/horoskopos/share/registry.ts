@@ -214,14 +214,14 @@ const lightLink = (api: Natal, L: EngineLink | undefined) => { if (L) api.S.foc 
 /* ---------------- the modules ---------------- */
 
 const wheel: Module = {
-  id: 'wheel', title: 'Chart wheel', blurb: 'The whole sky as a wheel, with its lines.', charts: 1, layout: 'chart',
+  id: 'wheel', title: 'Chart wheel', blurb: 'The whole sky as a wheel, with its aspects.', charts: 1, layout: 'chart',
   stage: () => ({ view: 'wheel' }),
   light(api, focus) { if (focus) api.S.foc = { pts: new Set(['0:' + focus]) }; },
   derive({ api, charts }, focus) {
     const ch = charts[0], n = api.links().length;
     const paras = [bigThree(api, ch)];
-    if (ch.signOnly) paras.push('Shared at sign level: the wheel shows signs only, with no degrees, houses or lines.');
-    else paras.push(`${n} ${n === 1 ? 'line runs' : 'lines run'} between the points${ch.timeKnown ? `, on ${{ P: 'Placidus', W: 'whole sign', E: 'equal' }[ch.hsys || 'P']} houses` : '. No birth time, so no houses'}.`);
+    if (ch.signOnly) paras.push('Shared at sign level: the wheel shows signs only, with no degrees, houses or aspects.');
+    else paras.push(`${n} ${n === 1 ? 'aspect joins' : 'aspects join'} the points${ch.timeKnown ? `, on ${{ P: 'Placidus', W: 'whole sign', E: 'equal' }[ch.hsys || 'P']} houses` : '. No birth time, so no houses'}.`);
     return { module: 'wheel', focus, kicker: ch.meta && ch.meta.davison ? 'The Davison chart' : 'The chart wheel', title: owner(ch) || 'A chart', sub: paras[0], color: ICHOR, paras, lines: [{ text: paras[0] }], chart: true, voice: '', owner: owner(ch), deep: false };
   },
   full(api, focus, doc) { const el = view(api, doc, 'wheel'); if (focus && api.D.PT[focus]) api.go('pt', '0:' + focus, 'canvas'); return el; },
@@ -262,7 +262,7 @@ const godModule: Module = {
 };
 
 const aspect: Module = {
-  id: 'aspect', title: 'An aspect exchange', blurb: 'Two gods, the line between them, and what each says of the other.', charts: 1, degrees: true, layout: 'duo',
+  id: 'aspect', title: 'An aspect exchange', blurb: 'Two gods, the aspect between them, and what each says of the other.', charts: 1, degrees: true, layout: 'duo',
   stage: (_f, n) => ({ view: n > 1 ? 'biwheel' : 'wheel' }),
   light(api, focus) { lightLink(api, findLink(api, focus)); },
   derive({ api, charts }, focus) {
@@ -287,10 +287,10 @@ const aspect: Module = {
     paras.push(said);
     if (two || !lines.length) lines.push({ text: said });
     if (card && card.lesson) { paras.push(strip(card.lesson)); lines.push(...pullLines([strip(card.lesson)]).slice(0, 2)); }
-    if (card && card.here) paras.push(strip(card.here).replace(/ It is the [^.]*? lines on screen\./, ''));
+    if (card && card.here) paras.push(strip(card.here).replace(/ It is the [^.]*? aspects on screen\./, ''));
     const names = two ? `${api.shortName(A)}’s ${named(api, L.a, true)} ${api.ASYM[L.kind]} ${api.shortName(B)}’s ${named(api, L.b, true)}` : `${god(api, L.a)} ${api.ASYM[L.kind]} ${named(api, L.b)}`;
     return {
-      module: 'aspect', focus, kicker: `A line · ${L.kind}`, title: names, sub: `${L.off.toFixed(1)}° from exact${L.applying === true ? ' · closing' : L.applying === false && !two ? ' · parting' : ''} · about ${api.theme(L.a, L.b)}`,
+      module: 'aspect', focus, kicker: `An aspect · ${L.kind}`, title: names, sub: `${L.off.toFixed(1)}° from exact${L.applying === true ? ' · closing' : L.applying === false && !two ? ' · parting' : ''} · about ${api.theme(L.a, L.b)}`,
       color: api.D.COL[L.tone] || ICHOR, glyph: glyphOf(api, L.a), glyph2: glyphOf(api, L.b), joiner: api.ASYM[L.kind], paras, lines, voice: '', owner: two ? '' : owner(A), deep: false,
     };
   },
@@ -445,8 +445,8 @@ const synastry: Module = {
     const said = links.slice(0, 4).map((L) => `${god(api, L.a)} ${L.kind} ${named(api, L.b)} (${L.off.toFixed(1)}°). ${strip(api.sentence(L, api.charts()))}`);
     const names = owner(A) && owner(B) ? `${api.shortName(A)} and ${api.shortName(B)}` : 'Two charts';
     return {
-      module: 'synastry', focus: v, kicker: `Synastry · ${SYN[v]}`, title: names, sub: `${links.length} ${links.length === 1 ? 'line' : 'lines'} between them`, color: ICHOR,
-      paras: said.length ? said : ['No lines between these two at this tightness.'], lines: links.slice(0, 6).map((L) => ({ text: strip(api.sentence(L, api.charts())) })), chart: true, voice: '', owner: '', deep: false,
+      module: 'synastry', focus: v, kicker: `Synastry · ${SYN[v]}`, title: names, sub: `${links.length} ${links.length === 1 ? 'aspect' : 'aspects'} between them`, color: ICHOR,
+      paras: said.length ? said : ['No aspects between these two at this tightness.'], lines: links.slice(0, 6).map((L) => ({ text: strip(api.sentence(L, api.charts())) })), chart: true, voice: '', owner: '', deep: false,
     };
   },
   full(api, focus, doc) { return api.S.charts.length > 1 ? view(api, doc, SYN[focus] ? focus : 'biwheel') : q(doc, '.ne-stage'); },
@@ -495,7 +495,7 @@ const step: Module = {
     if (!c) return null;
     const col = VAR.test(c.col) ? api.D.COL[c.col.replace(VAR, '$1')] || ICHOR : c.col;
     const path = c.gl.match(/viewBox="0 0 24 24"[^>]*><path d="([^"]+)"/), tx = c.gl.match(/<span class="gl tx[^"]*">([\s\S]*?)<\/span>/), s48 = c.gl.match(/viewBox="0 0 48 48"[^>]*>([\s\S]*?)<\/svg>/);
-    const paras = [c.lesson, c.here ? 'In this chart. ' + c.here : '', c.q].filter(Boolean).map((p) => strip(p as string).replace(/ ?(\d+ lines? touch it on screen\.|No lines touch it at this tightness\.)/, ''));
+    const paras = [c.lesson, c.here ? 'In this chart. ' + c.here : '', c.q].filter(Boolean).map((p) => strip(p as string).replace(/ ?(\d+ aspects? touch it on screen\.|No aspects touch it at this tightness\.)/, ''));
     return {
       module: 'step', focus, kicker: strip(c.eb), title: strip(c.title), sub: c.sub ? strip(c.sub) : undefined, color: col,
       glyph: path ? { path: path[1] } : s48 ? { svg48: s48[1] } : tx ? { text: strip(tx[1]) } : undefined,
