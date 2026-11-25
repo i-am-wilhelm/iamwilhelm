@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The So-Called Count</title>
+<meta name="description" content="The Comte de Saint-Germain walked into the record in 1745 with a fortune, a violin and no birthday, and out of it in 1784 under a burial entry that didn't know who it was burying. A scrolly on the man, the myth, and who wrote it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Martian+Mono:wght@400;500&family=GFS+Didot&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* one fixed canvas draws every scene; text cards scroll over it (bottom on portrait, right column on wide screens) */
+  --bg:#0b0908; --bone:#efe6d2; --gold:#d9b55a; --gold-hi:#f5dc8e; --ember:#c8562a; --wax:#a5281b;
+  --verd:#6cc0a6; --prus:#6f9bd8; --smoke:#9a948a; --muted:#a79e88;
+  --disp:'Bodoni Moda','Didot','Bodoni 72',Georgia,'Times New Roman',serif;
+  --body:'Literata',Georgia,'Times New Roman',serif;
+  --mono:'Martian Mono',ui-monospace,Menlo,Consolas,monospace;
+  --greek:'GFS Didot','Bodoni Moda',Georgia,serif;
+  --script:'Pinyon Script','Snell Roundhand','Apple Chancery','URW Chancery L',cursive;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--bone)}
+body{font-family:var(--body);font-size:18px;line-height:1.58;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--gold-hi)}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-80px;z-index:20;background:var(--bone);color:#0b0908;padding:10px 14px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:12px}
+
+#c{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+main{position:relative;z-index:1}
+
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:14vh 22px 12vh}
+.hero .inner{max-width:900px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:var(--disp);font-weight:400;font-size:clamp(46px,11.6vw,132px);line-height:.94;margin:.5em 0 .28em;letter-spacing:-.012em;text-wrap:balance;text-shadow:0 2px 30px rgba(0,0,0,.8)}
+h1 .ins{position:relative;display:inline-block;font-family:var(--script);font-weight:400;font-size:.58em;color:var(--gold-hi);letter-spacing:0;transform:translateY(-.62em) rotate(-5deg);margin:0 .06em;clip-path:inset(-.4em 100% -.4em 0);animation:write 1.5s 1.1s cubic-bezier(.55,0,.25,1) forwards}
+h1 .ins::after{content:'';position:absolute;left:50%;bottom:-.42em;width:.36em;height:.36em;border-left:2px solid var(--gold);border-top:2px solid var(--gold);transform:translateX(-50%) rotate(45deg);opacity:.85}
+@keyframes write{to{clip-path:inset(-.4em -.2em -.4em 0)}}
+.alias{font-family:var(--disp);font-style:italic;font-size:clamp(20px,3.3vw,30px);color:var(--gold-hi);min-height:1.4em;margin:0}
+.alias .k{font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.22em;color:var(--muted);vertical-align:middle;margin-right:.9em;text-transform:uppercase}
+.sub{max-width:42ch;margin:1.1em auto 0;font-size:clamp(17px,2vw,20px);color:#d8cfba;font-style:italic;text-shadow:0 1px 14px rgba(0,0,0,.9)}
+.hint{margin-top:9vh;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+
+/* scenes */
+.scene{position:relative}
+.step{min-height:100vh;min-height:100svh;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 6vh;pointer-events:none}
+.card{pointer-events:auto;max-width:36ch;background:rgba(14,11,9,.91);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);border:1px solid rgba(217,181,90,.24);padding:18px 20px 16px;font-size:clamp(17px,calc(12px + .8vmin),23px);color:var(--bone);box-shadow:0 10px 40px rgba(0,0,0,.45)}
+.card p{margin:0 0 .7em}
+.card p:last-child{margin-bottom:0}
+.card .n{display:block;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+.card .n .gk{font-family:var(--greek);font-size:16px;letter-spacing:.02em;text-transform:none;color:var(--bone);font-weight:400}
+.card .n i{font-family:var(--body);text-transform:none;letter-spacing:0;font-size:13px;color:#d8cfba}
+.card h2{font-family:var(--disp);font-weight:500;font-size:clamp(28px,3.2vw,38px);line-height:1.02;margin:.1em 0 .45em;letter-spacing:-.005em;font-variation-settings:'opsz' 36}
+.card blockquote{margin:.2em 0 .35em;font-family:var(--disp);font-style:italic;font-size:1.32em;line-height:1.16;color:var(--gold-hi);font-variation-settings:'opsz' 24}
+.card blockquote[lang="la"]{font-size:1.5em}
+.card cite{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin:0 0 .9em}
+.card .pull{font-family:var(--disp);font-style:italic;font-size:1.22em;line-height:1.18;color:var(--gold-hi);margin-top:.8em;padding-top:.6em;border-top:1px solid rgba(217,181,90,.22);font-variation-settings:'opsz' 24}
+.card i{font-style:italic}
+.card .key{list-style:none;margin:.6em 0 0;padding:0;display:grid;gap:6px;font-size:.84em}
+.card .key b{font-family:var(--mono);font-weight:500;font-size:.72em;letter-spacing:.14em;text-transform:uppercase;margin-right:.6em}
+.kg{color:#f0cf6b}.kb{color:#c99a52}.kl{color:#9ea1aa}
+@media (min-width:900px) and (min-aspect-ratio:6/5){
+  .step{justify-content:flex-end;align-items:center;padding:0 5vw 0 0}
+  .card{max-width:38ch}
+}
+
+/* the last screen */
+.final{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 22px}
+.final .last{font-family:var(--script);font-size:clamp(40px,7.4vw,88px);line-height:1.1;color:var(--gold-hi);margin:0;text-shadow:0 2px 30px rgba(0,0,0,.9);pointer-events:auto}
+.final .lastsub{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:1.4em 0 0;pointer-events:auto}
+@media (min-width:900px) and (min-aspect-ratio:6/5){ .final{align-items:center;justify-content:center;padding:0 22px} }
+
+.btn{display:inline-block;margin-top:5vh;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:rgba(12,10,8,.7);border:1px solid rgba(217,181,90,.5);padding:13px 18px;min-height:44px;text-decoration:none;cursor:pointer;pointer-events:auto}
+.btn:hover{background:rgba(217,181,90,.14)}
+
+/* HUD: watch, room, year, age, assay, sound */
+#hud{position:fixed;top:10px;right:10px;z-index:6;display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(12,10,8,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(217,181,90,.3);padding:5px 6px 5px 7px}
+#hud canvas{width:34px;height:34px;display:block}
+#hud .f{display:flex;flex-direction:column;line-height:1.35;min-width:0}
+#hud .f b{font-weight:500;color:var(--bone);letter-spacing:.06em;font-size:11px;white-space:nowrap}
+#hud .f b.gk{font-family:var(--greek);font-weight:400;font-size:14px;letter-spacing:.01em;text-transform:none;line-height:1.1}
+#snd{font:inherit;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid rgba(217,181,90,.45);min-height:36px;padding:0 10px;cursor:pointer;white-space:nowrap}
+#snd[aria-pressed="true"]{background:var(--gold);color:#0b0908;border-color:var(--gold)}
+@media (max-width:899px),(max-aspect-ratio:6/5){
+  #hud{left:8px;right:8px;top:8px;justify-content:space-between;gap:8px;padding:4px 5px 4px 6px}
+  #hud canvas{width:30px;height:30px}
+  #hud .gw{display:none}
+}
+@media (max-width:420px){ #hud .f .k{font-size:8.5px} #hud .f b{font-size:10.5px} #snd .t{display:none} #snd{padding:0 9px} }
+
+/* docks: controls for the scene on screen */
+.dock{position:fixed;z-index:5;left:50%;top:60px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:max-content;max-width:calc(100% - 16px);background:rgba(12,10,8,.88);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(217,181,90,.32);padding:6px 8px;opacity:0;pointer-events:none;transition:opacity .35s}
+.dock.on{opacity:1;pointer-events:auto}
+.dock .lb{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.dock button{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--bone);background:transparent;border:1px solid rgba(239,230,210,.36);min-height:44px;padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.dock button:hover{border-color:var(--gold)}
+.dock button[aria-pressed="true"]{background:var(--gold);color:#0b0908;border-color:var(--gold)}
+.dock button[disabled]{opacity:.4;cursor:default}
+.dock input[type=range]{width:min(44vw,240px);height:44px;accent-color:#d9b55a;margin:0}
+.dock output{font-family:var(--mono);font-size:11.5px;min-width:4.6em;color:var(--bone)}
+.dock .out:empty{display:none}
+.dock .out{flex-basis:100%;text-align:center;font-family:var(--mono);font-size:10.5px;line-height:1.55;letter-spacing:.02em;color:#d8cfba;margin:2px 4px 2px;min-height:1.55em;max-width:62ch;margin-left:auto;margin-right:auto}
+.hold{position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}
+.hold .ring{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--gold-hi) calc(var(--h,0) * 1turn),rgba(239,230,210,.16) 0);-webkit-mask:radial-gradient(circle,transparent 6px,#000 7px);mask:radial-gradient(circle,transparent 6px,#000 7px)}
+.hold.held{border-color:var(--gold-hi);background:rgba(217,181,90,.14)}
+
+/* the touchstone's nine claims */
+#dk8{width:min(calc(100% - 16px),760px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#dk8 .out{grid-column:1/-1}
+#dk8 button{justify-content:flex-start;text-align:left;font-family:var(--body);font-size:13.5px;letter-spacing:0;line-height:1.25;padding:7px 10px;min-height:46px}
+#dk8 button .v{flex:0 0 auto;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-left:auto;padding-left:6px}
+#dk8 button[data-v="g"] .v{color:#f0cf6b}
+#dk8 button[data-v="b"] .v{color:#c99a52}
+#dk8 button[data-v="l"] .v{color:#9ea1aa}
+#dk8 button[data-v="n"] .v{color:var(--prus)}
+#dk8 button.done{border-color:rgba(239,230,210,.14);color:#b9b09c}
+#dk8 .x{grid-column:1/-1;flex-basis:100%;display:none}
+#dk8.ten .x{display:flex;justify-content:center}
+#dk8 .nav{display:none}
+@media (max-width:899px),(max-aspect-ratio:6/5){
+  #dk8{display:flex;flex-wrap:wrap;width:calc(100% - 16px)}
+  #dk8 .row{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;flex:1 1 0;min-width:0;scrollbar-width:none}
+  #dk8 .row::-webkit-scrollbar{display:none}
+  #dk8 .row button{flex:0 0 auto;scroll-snap-align:start;max-width:72vw}
+  #dk8 .nav{display:inline-flex;flex:0 0 auto;padding:8px 10px}
+}
+@media (min-width:900px) and (min-aspect-ratio:6/5){
+  .dock{top:auto;bottom:22px;left:30vw}
+  #dk8 .row{display:contents}
+}
+
+/* the end matter */
+.end{position:relative;z-index:1;background:linear-gradient(rgba(11,9,8,0),rgba(11,9,8,.95) 16vh);padding:22vh 22px 12vh}
+.end .wrap{max-width:760px;margin:0 auto}
+.end h2{font-family:var(--disp);font-weight:400;font-size:clamp(40px,8vw,72px);line-height:1;margin:0 0 .4em;text-align:center}
+.end .lede{color:#d8cfba;max-width:48ch;margin:0 auto 2.2em;text-align:center;font-style:italic}
+.end h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:9vh 0 1.2em}
+.src{margin:0;padding-left:1.2em;font-size:15.5px;color:#d8cfba;display:grid;gap:9px}
+.src i{font-style:italic}
+.end p{font-size:16px;color:#d8cfba}
+.series{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:9vh}
+.colophon{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);line-height:1.8}
+
+/* the share card shows the title fully written */
+.og h1 .ins{animation:none;clip-path:none}
+@media (prefers-reduced-motion:reduce){
+  h1 .ins{animation:none;clip-path:none}
+  .dock{transition:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#cairns" data-twin-skip>Skip to the sources</a>
+<canvas id="c" aria-hidden="true"></canvas>
+
+<div id="hud" role="group" aria-label="Where you are in the story" data-og-hide data-twin-skip>
+  <canvas id="watch" width="34" height="34" aria-hidden="true"></canvas>
+  <div class="f"><span class="k">Room</span><b class="gk" id="hSt">—</b></div>
+  <div class="f"><span class="k">Anno</span><b id="hYr">—</b></div>
+  <div class="f"><span class="k">Age</span><b id="hAge">?</b></div>
+  <div class="f" id="hAsF" hidden><span class="k">Assay</span><b id="hAs">0/9</b></div>
+  <button id="snd" type="button" aria-pressed="false">♪<span class="t"> Sound off</span></button>
+</div>
+
+<!-- docks: one control strip per interactive scene, shown while that scene is on screen -->
+<div class="dock" id="dk1" data-twin-skip role="group" aria-label="The names" inert>
+  <button type="button" id="askBtn">Ask his name</button>
+  <button type="button" id="shufBtn" aria-pressed="false">Shuffle the letters</button>
+  <p class="out" id="o1" aria-live="polite"></p>
+</div>
+<div class="dock" id="dk2" data-twin-skip role="group" aria-label="The years" inert>
+  <label class="lb" for="yr">Year</label>
+  <input type="range" id="yr" min="1710" max="1784" step="1" value="1757" aria-valuetext="1757">
+  <output id="yrOut" for="yr">1757</output>
+</div>
+<div class="dock" id="dk3" data-twin-skip role="group" aria-label="The coin" inert>
+  <button type="button" class="hold" id="blow" aria-describedby="blowHelp"><span class="ring" aria-hidden="true"></span><span class="bl">Hold to blow on the coals</span></button>
+  <button type="button" id="hands" aria-pressed="false">Watch his hands</button>
+  <p class="out" id="o3" aria-live="polite"></p>
+  <span class="sr-only" id="blowHelp">Press and hold with a mouse, a finger, or the Space or Enter key. A quick tap adds a fifth of the heat.</span>
+</div>
+<div class="dock" id="dk4" data-twin-skip role="group" aria-label="The tea" inert>
+  <label class="lb" for="steep">Steep</label>
+  <input type="range" id="steep" min="0" max="10" step="1" value="0" aria-valuetext="0 minutes">
+  <output id="steepOut" for="steep">0 min</output>
+</div>
+<div class="dock" id="dk5" data-twin-skip role="group" aria-label="The rumor" inert>
+  <button type="button" id="tellBtn">Tell it again</button>
+  <button type="button" id="tellReset">Start over</button>
+  <p class="out" id="o5" aria-live="polite"></p>
+</div>
+<div class="dock" id="dk8" data-twin-skip role="group" aria-label="Rub each claim on the touchstone" inert>
+  <button type="button" class="nav" id="chipPrev" aria-label="Previous claims">‹</button>
+  <div class="row" id="chips"></div>
+  <button type="button" class="nav" id="chipNext" aria-label="More claims">›</button>
+  <div class="x"><button type="button" id="tenth" data-v="" data-i="9">His name was Saint-Germain.<span class="v"></span></button></div>
+  <p class="out" id="o8" aria-live="polite"></p>
+</div>
+
+<main>
+<header class="hero" data-scene>
+  <div class="inner" data-og-frame>
+    <div class="eyebrow">Mythmaking · No. 3 · By Michael Wilhelm</div>
+    <h1>The <span class="ins">so-called</span> Count</h1>
+    <p class="alias" aria-hidden="true"><span class="k">alias</span><span id="alias">Comte de Saint-Germain</span></p>
+    <p class="sr-only">He also went by Marquis de Montferrat, Comte Bellamarre, Chevalier Schoening, Count Weldon, Comte Soltikoff, Graf Tzarogy and Prinz Ragoczy.</p>
+    <p class="sub">He walks into the record in 1745 already grown, rich and nameless. He walks out of it in 1784 under a burial entry that admits it doesn't know who it's burying. Everything in between, he let other people write.</p>
+    <div class="hint" aria-hidden="true">SCROLL &darr;</div>
+  </div>
+</header>
+
+<!-- I · a name -->
+<section class="scene" data-scene id="s1" aria-labelledby="s1h">
+  <p class="sr-only">An empty oval portrait frame in gilt. Under it, a brass nameplate. As the story goes on, a lantern beam sweeps the frame, lines of a letter appear inside it, the guesses London made about him hang from threads around it, and eight names circle it like planets. The frame stays empty.</p>
+  <div class="step"><div class="card"><span class="n">I · <span class="gk">ὄνομα</span> · <i>onoma, a name</i></span><h2 id="s1h">Goes by the Name Of</h2><p>London, December 1745. A Stuart prince's army has just turned back at Derby, a few days' march from the capital, and the city is jumpy about foreigners. Officers pick up one who calls himself Count St. Germain.</p></div></div>
+  <div class="step"><div class="card"><p>Horace Walpole, son of the late prime minister, wrote the arrest up for a friend in Florence.</p><blockquote>“…will not tell who he is, or whence, but professes that he does not go by his right name.”</blockquote><cite>Horace Walpole to Horace Mann, 9 December 1745</cite></div></div>
+  <div class="step"><div class="card"><p>He sings, Walpole goes on. He plays the violin wonderfully. He composes. London fills in the rest: he's Italian, or Spanish, or a Pole. A priest, a fiddler, a vast nobleman. A man who married a fortune in Mexico and ran off to Constantinople with her jewels.</p><p>Nothing is proved. They let him go, and he stays in town telling people about the time he was arrested as a spy. Walpole takes that as proof he's no gentleman.</p></div></div>
+  <div class="step"><div class="card"><p>Over the next forty years he goes by Marquis de Montferrat, Comte Bellamarre, Chevalier Schoening, Count Weldon, Comte Soltikoff, Graf Tzarogy, Prinz Ragoczy. Ask him which one is real.</p><p>The frame stays empty. The one painting of him anyone knows of is lost. An engraving made from it in 1783 is all that's left of his face.</p></div></div>
+  <div class="step"><div class="card"><p>Two of those names are one name. Spell Rákóczi the old German way, RAGOTZY, and shuffle the letters: TZAROGY.</p><p>Late in life he told a German prince what the shuffle was hiding. He was a son of Francis II Rákóczi, the rebel Prince of Transylvania. He never proved it. A margrave he'd stayed with looked into it, doubted it, and the two parted ways.</p><p class="pull">A name you choose is a story you get to start.</p></div></div>
+</section>
+
+<!-- II · time -->
+<section class="scene" data-scene id="s2" aria-labelledby="s2h">
+  <p class="sr-only">Seven candles in a row, with the year written large above them. Six belong to people of his time: Voltaire, Horace Walpole, Louis XV, Madame de Pompadour, Frederick the Great and Casanova. Each one is born at its full height and burns down to nothing at its owner's death. The gold candle in the middle is the count's. It stays the same height, marked about fifty, until 1784, when it goes out. A slider moves the year from 1710 to 1784.</p>
+  <div class="step"><div class="card"><span class="n">II · <span class="gk">χρόνος</span> · <i>chronos, time</i></span><h2 id="s2h">The Man Who Never Dies</h2><p>By the late 1750s he's at Versailles, a regular in Madame de Pompadour's rooms. Casanova says the king gave him rooms at the château of Chambord for a laboratory.</p></div></div>
+  <div class="step"><div class="card"><p>Pompadour's lady's maid, Madame du Hausset, kept notes. He looked about fifty, she wrote. Neither fat nor thin. Dressed simply and in good taste, with diamonds on his rings, his watch, his snuffbox and his shoe buckles.</p></div></div>
+  <div class="step"><div class="card"><p>An old lady at court, Madame de Gergy, swore she had known him in Venice years before, and that he hadn't changed at all. Pompadour asked him about it. It was not impossible, he said, that he was over a hundred. It was also possible Madame de Gergy was in her dotage.</p></div></div>
+  <div class="step"><div class="card"><p>He could describe Francis I, two centuries dead, the way you'd describe a man you had watched across a room. His own explanation, as Madame du Hausset set it down: a good memory, and he sometimes amused himself by letting people believe he'd lived in the old days.</p><p>Drag the years. Everyone at that table burns down. On paper, his candle never does.</p></div></div>
+  <div class="step"><div class="card"><p>Voltaire, writing to Frederick the Great, gave the legend its tagline:</p><blockquote>“a man who never dies, and who knows everything.”</blockquote><cite>Voltaire to Frederick II, 15 April 1760</cite><p>He was joking. In the same letter he has the count dining with the fathers of the Council of Trent, two hundred years before. The joke outlived Voltaire.</p></div></div>
+  <div class="step"><div class="card"><p>One more thing people noticed. At a dinner in Paris in 1757, Casanova watched him talk from the first course to the last and eat nothing. As a talker, Casanova wrote, he was unequalled. His boasts, Casanova added, were barefaced lies.</p><p class="pull">He never said he was immortal. He let you do the arithmetic.</p></div></div>
+</section>
+
+<!-- III · gold-making -->
+<section class="scene" data-scene id="s3" aria-labelledby="s3h">
+  <p class="sr-only">First, a cut diamond seen from above, with a dark flaw near its table that fades away; beside it a ledger of three bars: 240 louis flawed, 400 louis clean, and 380 louis, what the jeweller paid. Then a small iron brazier of coals with a silver coin on top and a blowpipe at its side. Holding the button heats the coals until the coin turns gold. Watch his hands shows the trick Casanova suspected: the silver coin going up a lace cuff, and a gold one waiting in the palm.</p>
+  <div class="step"><div class="card"><span class="n">III · <span class="gk">χρυσοποιία</span> · <i>chrysopoeia, gold-making</i></span><h2 id="s3h">The Coin in the Coals</h2><p>Louis XV owned a diamond with a flaw in it. Flawed, it was worth 240 louis. Clean, 400. Could the count, the king wondered, put the difference in his pocket?</p></div></div>
+  <div class="step"><div class="card"><p>A month later the stone came back wrapped in asbestos cloth, clean, its weight barely changed. The king's jeweller paid 380 louis for it. The king gave back the money and kept the stone as a curiosity. The count must be worth millions, he decided. The count neither confirmed nor denied having the secret.</p><p>A century and a half later the Scottish writer Andrew Lang guessed it wasn't the same stone at all.</p></div></div>
+  <div class="step"><div class="card"><p>Tournai, 1764. Casanova finds him in a room full of retorts, wearing a beard two inches long and setting up a hat factory for Count Cobenzl, the Austrian minister in Brussels. Casanova arrives a skeptic.</p></div></div>
+  <div class="step"><div class="card"><p>Casanova hands over a silver twelve-sols piece. The count sets it on the coals with a small black grain, and blows.</p><p>Hold the button and blow with him.</p></div></div>
+  <div class="step"><div class="card"><p>When it cools, it's gold. Casanova is sure his silver piece was smuggled away and a gold one slipped in. He writes the count down as a celebrated and learned impostor. Watch the hands.</p><blockquote>“Those that are capable of entertaining doubts of my art are not worthy to speak to me.”</blockquote><cite>The count to Casanova, as Casanova tells it</cite><p class="pull">The oldest alchemy works on the audience.</p></div></div>
+</section>
+
+<!-- IV · the elixir -->
+<section class="scene" data-scene id="s4" aria-labelledby="s4h">
+  <p class="sr-only">A porcelain cup of tea on a saucer. Its steam rises and spells a word that changes as the story goes: elixir, then the Greek ξήριον, then al-iksīr, then elixir again. A slider steeps the tea from 0 to 10 minutes. The tea darkens, a paper packet labeled Saint-Germain tea, folia sennae, appears beside the cup, and the steam changes its word to senna.</p>
+  <div class="step"><div class="card"><span class="n">IV · <span class="gk">ξήριον</span> · <i>xērion, a drying powder for wounds</i></span><h2 id="s4h">The Tea</h2><p>Madame de Gergy told Pompadour the count's elixir had made her feel twenty-four again. Why not give some to the king? The count looked alarmed. He would have to be mad, he said, to give the king an unknown drug.</p></div></div>
+  <div class="step"><div class="card"><p>Elixir has come a long way to get here. Greek <i>xērion</i>, a dry powder for wounds. Arabic <i>al-iksīr</i>, the powder alchemists hoped would perfect a metal. Medieval Latin <i>elixir</i>, a cure for everything. Then the bottle on every quack's cart.</p></div></div>
+  <div class="step"><div class="card"><p>In Tournai he offered Casanova fifteen pills that would cure him in three days, and showed off a white liquid he called the universal spirit of nature.</p></div></div>
+  <div class="step"><div class="card"><p>What actually survived him was a tea. In nineteenth-century Germany and Denmark, people drank something called Saint-Germain tea. The leaf that did the work was senna. Steep it and see.</p></div></div>
+  <div class="step"><div class="card"><p>Senna is a laxative.</p><p class="pull">The elixir of life, as sold, kept things moving.</p></div></div>
+</section>
+
+<!-- V · rumor -->
+<section class="scene" data-scene id="s5" aria-labelledby="s5h">
+  <p class="sr-only">A chart of his age as each teller gave it, on a scale that multiplies by ten at each line, from 10 to 10,000 years. A pale band marks what he probably was around 1760, between 48 and 69. The points climb: about 50 by Madame du Hausset; 88, his own figure to Prince Charles, ringed; over 100, to Pompadour; 300, per Casanova; 350, per Count Lamberg; 500, per Baron Gleichen; more than 1,700, from a comedian's act; 2,000, from an editor's footnote; and a last point that leaves the top of the chart, marked infinity, for the twentieth-century belief in him as an ageless master. The Tell it again button adds the next point.</p>
+  <div class="step"><div class="card"><span class="n">V · <span class="gk">φήμη</span> · <i>phēmē, a rumor, a voice going around</i></span><h2 id="s5h">Tell It Again</h2><p>Virgil drew Rumor as a monster with an eye, a tongue and an ear under every feather, who grows stronger the farther she travels.</p><blockquote lang="la">vires acquirit eundo</blockquote><cite>Virgil, Aeneid 4.175 · she gathers strength by going</cite></div></div>
+  <div class="step"><div class="card"><p>Watch his age do it. Every time someone tells the story, tap Tell it again.</p></div></div>
+  <div class="step"><div class="card"><p>Look at who's talking. A maid's memory. A rival's memoirs. A count's diary, a baron's gossip, a comedian's act, an editor's footnote. One number came from the man himself with a source attached: 88.</p><p>The footnote even gave him a valet, who said he had only had the honor of serving his master for five hundred years.</p></div></div>
+  <div class="step"><div class="card"><p>Retellings don't only grow. They drift. In du Hausset, Madame de Gergy knew him in Venice. By 1912 a biographer had her down as the Countess de Georgy, and the meeting dated to 1710.</p></div></div>
+  <div class="step"><div class="card"><p>That was the method, if it was a method. He left a gap the exact shape of a miracle, and everyone who passed through it came out with a bigger number.</p></div></div>
+</section>
+
+<!-- VI · the register -->
+<section class="scene" data-scene id="s6" aria-labelledby="s6h">
+  <p class="sr-only">A page of a parish burial register, ruled and yellowed, headed Todten-Register, 1784. A candle burns beside it, then goes out. A hand writes the entry line by line: Deceased on February 27th, buried on March 2nd, 1784, the so-called Comte de St. Germain and Weldon. Further information not known. A small slip of paper lists the estate: about 82 reichsthaler and 13 shillings, clothing, linen, small effects. Gold, jewels and elixir are each listed, and struck through.</p>
+  <div class="step"><div class="card"><span class="n">VI · <span class="gk">σῆμα</span> · <i>sēma, a sign; also a grave-mound</i></span><h2 id="s6h">Further Information Not Known</h2><p>1779. He turns up in Schleswig, on the Baltic, and finds a last patron: Prince Charles of Hesse-Kassel, who sets him up in an empty factory at Eckernförde to work on dyes for cloth.</p></div></div>
+  <div class="step"><div class="card"><p>He tells the prince he's 88. The prince calls him one of the greatest philosophers who ever lived.</p></div></div>
+  <div class="step"><div class="card"><p>He dies at Eckernförde on 27 February 1784, while the prince is away in Kassel. The clerk at St. Nicolai writes him into the burial register.</p><blockquote>“Deceased on February 27th, buried on March 2nd, 1784, the so-called Comte de St. Germain and Weldon. Further information not known.”</blockquote><cite>Burial register, St. Nicolai, Eckernförde · as usually translated</cite></div></div>
+  <div class="step"><div class="card"><p>The town counts up what he left. About 82 reichsthaler. Clothes, linen, a few small things. No gold. No jewels. No elixir.</p></div></div>
+  <div class="step"><div class="card"><p>Even the record hedges.</p><p class="pull">So-called.</p></div></div>
+</section>
+
+<!-- VII · the apparition -->
+<section class="scene" data-scene id="s7" aria-labelledby="s7h">
+  <p class="sr-only">A timeline from 1740 to 2030, squeezed on the left so his lifetime fits. Gold dots mark his documented years: London 1745, Paris 1757, Voltaire's letter 1760, Tournai 1764, Schleswig 1779, and a small gravestone at 1784. After the grave, smoke-blue rings appear one by one: the forged memoir of 1836, Annie Besant in 1896, Mount Shasta in 1930, French television in 1972, and a last ring at 2026 marked here. A figure made of dust drifts from the grave to each new ring.</p>
+  <div class="step"><div class="card"><span class="n">VII · <span class="gk">φάσμα</span> · <i>phasma, an apparition</i></span><h2 id="s7h">He Would Not Stay Buried</h2><p>Then he kept turning up.</p></div></div>
+  <div class="step"><div class="card"><p>In 1836 a book appeared: the memoirs of the Comtesse d'Adhémar, a lady of Marie Antoinette's court. In them the count warns the queen of a bloody revolution, then keeps calling on the countess, unchanged, for years after his burial. The book was a forgery, written by Étienne-Léon de Lamothe-Langon, who made a career of inventing other people's memoirs.</p></div></div>
+  <div class="step"><div class="card"><p>The Theosophists took him up next. Helena Blavatsky called him the greatest adept Europe had seen in centuries. Annie Besant said she met him in 1896.</p></div></div>
+  <div class="step"><div class="card"><p>In August 1930, on the slopes of Mount Shasta, a mining engineer named Guy Ballard said he met the count, by then an Ascended Master. His 1934 book launched the I AM movement, which still teaches in the count's name. For believers he is a living teacher, and a parish register has nothing to say about that.</p></div></div>
+  <div class="step"><div class="card"><p>In January 1972 a Frenchman named Richard Chanfray went on French television, said he was the Comte de Saint-Germain, and turned lead into gold on camera. The last ring on the line is you, reading about him.</p><p class="pull">The grave is in the register. The name kept walking.</p></div></div>
+</section>
+
+<!-- VIII · the touchstone -->
+<section class="scene" data-scene id="s8" aria-labelledby="s8h">
+  <p class="sr-only">A slab of black touchstone. Each claim you rub on it leaves a streak: bright gold, dull brass or gray lead, with a small label and the old metal sign for each, the sun for gold, Venus for copper and brass, Saturn for lead. When all nine are done, the stone holds three of each.</p>
+  <div class="step"><div class="card"><span class="n">VIII · <span class="gk">βάσανος</span> · <i>basanos, a touchstone; later, any hard test</i></span><h2 id="s8h">Assay</h2><p>Goldsmiths had a way to tell gold from brass without melting anything. Draw the metal across a black stone and read the streak. The Greeks called the stone <i>basanos</i>. The word grew to mean any hard test.</p></div></div>
+  <div class="step"><div class="card"><p>Here are nine things people say about him. Rub each one on the stone.</p><ul class="key"><li><b class="kg">☉ Gold</b>on the record at the time, from someone in a position to know</li><li><b class="kb">♀ Brass</b>one witness's word, or his own, never proved</li><li><b class="kl">♄ Lead</b>rumor or forgery, with no witness at all</li></ul></div></div>
+  <div class="step"><div class="card"><p>Three streaks of gold: a fiddler, a joke of Voltaire's, a burial. That's the man. Everything else is the myth, and the myth is the part still working.</p></div></div>
+</section>
+
+<!-- coda · what is told -->
+<section class="scene" data-scene id="s9" aria-labelledby="s9h">
+  <p class="sr-only">The dust of every story told about him gathers into the silhouette of an eighteenth-century gentleman in a tricorn hat and a tied wig. The gilt frame from the beginning closes around it. At the end the dust lifts away like smoke and the frame is empty again.</p>
+  <div class="step"><div class="card"><span class="n"><span class="gk">μῦθος</span> · <i>mythos, a thing said; a story</i></span><h2 id="s9h">Leave the Gap</h2><p>He never told anyone he was immortal. He described a dead king's face, and smiled. He let an old woman's memory do the arithmetic. Asked about the diamond, he neither confirmed nor denied.</p></div></div>
+  <div class="step"><div class="card"><p>He made himself out of what was at hand: a violin, a good coat, diamonds on his buckles, a laboratory, and silence at exactly the right moment.</p></div></div>
+  <div class="step"><div class="card"><p>Everyone else did the rest. A maid, a rival, a philosopher, a comedian, a forger, a mystic, a man on television. Two hundred and forty years of people finishing his story for him.</p></div></div>
+  <div class="step"><div class="card"><p>That's the lever under every myth. Leave a gap the shape of a miracle and someone will fill it. It cuts both ways. The same gap let a forger put words in his mouth, and a stranger wear his name on TV.</p><p class="pull">Tell your own story while you're holding the pen.</p></div></div>
+  <div class="step final"><p class="last">Further information not known.</p><p class="lastsub">St. Nicolai · Eckernförde · 2 March 1784</p><button type="button" class="btn" id="again">Begin again ↑</button></div>
+</section>
+
+<section class="end" id="cairns" aria-labelledby="cairnsH">
+  <div class="wrap">
+    <h2 id="cairnsH">Cairns</h2>
+    <p class="lede">Where each piece of this came from: gold, brass and lead alike.</p>
+    <ol class="src">
+      <li>Horace Walpole to Horace Mann, 9 December 1745. <i>Letters of Horace Walpole</i>, vol. 1; <i>Yale Edition of Horace Walpole's Correspondence</i>, vol. 26.</li>
+      <li>Madame du Hausset, journal (first printed 1809), in <i>Memoirs of the Courts of Louis XV and XVI</i>, vol. 2: his looks, Madame de Gergy, Francis I, the diamond, the elixir; the editor's footnote on two thousand years and the valet.</li>
+      <li>Voltaire to Frederick II, 15 April 1760, <i>Œuvres complètes</i> (Garnier), vol. 40.</li>
+      <li>Giacomo Casanova, <i>Histoire de ma vie</i>, tr. Arthur Machen (1894): the Paris dinner, 1757; Tournai, 1764.</li>
+      <li>Charles of Hesse-Kassel, <i>Mémoires de mon temps</i> (1861): the age of 88, the Rákóczi claim, the factory at Eckernförde.</li>
+      <li>Gustav Berthold Volz, ed., <i>Der Graf von Saint-Germain: Das Leben eines Alchimisten</i> (1923): Lamberg, Gleichen, Milord Gower, the Eckernförde documents.</li>
+      <li>Andrew Lang, “The Comte de Saint-Germain,” in <i>Historical Mysteries</i> (1904).</li>
+      <li>Isabel Cooper-Oakley, <i>The Comte de St. Germain: The Secret of Kings</i> (1912).</li>
+      <li>Jean Overton Fuller, <i>The Comte de Saint-Germain: Last Scion of the House of Rákóczy</i> (1988): the estate.</li>
+      <li><i>Souvenirs sur Marie-Antoinette</i>, “par Madame la comtesse d'Adhémar” (1836), written by Étienne-Léon de Lamothe-Langon.</li>
+      <li>H. P. Blavatsky, <i>The Theosophical Glossary</i> (1892). Godfré Ray King [Guy Ballard], <i>Unveiled Mysteries</i> (1934).</li>
+      <li><i>Le Troisième Œil</i>, ORTF, 28 January 1972: Richard Chanfray.</li>
+      <li>Virgil, <i>Aeneid</i> 4.173–188, on Rumor.</li>
+      <li>Online Etymology Dictionary, “elixir”; Liddell–Scott–Jones for ὄνομα, χρόνος, χρυσοποιία, ξήριον, φήμη, σῆμα, φάσμα, βάσανος and μῦθος.</li>
+      <li>“Count of St. Germain,” Wikipedia, and “Graf von Saint Germain,” German Wikipedia: Chambord, the music, the engraving, the Saint-Germain tea.</li>
+    </ol>
+    <h3>A note on the assay</h3>
+    <p>The gold, brass and lead verdicts are this piece's judgment calls, made from the sources above. Belief in him as a spiritual teacher is left off the stone on purpose: a register can test a burial, not a faith. The birth band on the age chart runs from 1691, the year his own “88” implies, to 1712, the other year his biographers give.</p>
+    <p class="series">Mythmaking · No. 3 · Previous: Questions Wearing Teeth</p>
+    <p class="colophon">Research, writing and code made with AI assistance and checked against the sources listed.</p>
+  </div>
+</section>
+</main>
+<p class="sr-only" id="live" aria-live="polite"></p>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const TAU = Math.PI * 2, clamp = (v, a, b) => v < a ? a : v > b ? b : v, lerp = (a, b, t) => a + (b - a) * t;
+const ease = (v, a, b) => { const x = clamp((v - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rng(s) { s = Math.abs(Math.floor(s)) % 2147483647 || 1; return () => (s = s * 16807 % 2147483647) / 2147483647; }
+const DISP = '"Bodoni Moda", Didot, "Bodoni 72", Georgia, serif', SCRIPT = '"Pinyon Script", "Snell Roundhand", "Apple Chancery", "URW Chancery L", cursive',
+  MONO = '"Martian Mono", ui-monospace, Menlo, Consolas, monospace', GREEK = '"GFS Didot", "Bodoni Moda", Georgia, serif';
+const C = { bg: '#0b0908', bone: '#efe6d2', gold: '#d9b55a', goldHi: '#f5dc8e', ember: '#c8562a', wax: '#a5281b', verd: '#6cc0a6', prus: '#6f9bd8', smoke: '#9a948a', muted: '#a79e88' };
+const ACC = [C.gold, C.wax, C.goldHi, C.gold, C.verd, C.ember, C.bone, C.prus, C.gold, C.goldHi];
+const ALIASES = ['Comte de Saint-Germain', 'Marquis de Montferrat', 'Comte Bellamarre', 'Chevalier Schoening', 'Count Weldon', 'Comte Soltikoff', 'Graf Tzarogy', 'Prinz Ragoczy'];
+const GLY = 'αβγδεζηθλμξπρσφχψωΔΘΛΞΣΦΨΩ☉☽☿♀♂♃♄';
+const say = (el, s) => { if (el && el.textContent !== s) el.textContent = s; };
+const hexA = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
+const mixHex = (a, b, t) => { const A = parseInt(a.slice(1), 16), B = parseInt(b.slice(1), 16), f = s => Math.round(lerp(A >> s & 255, B >> s & 255, t)); return '#' + ((1 << 24) + (f(16) << 16) + (f(8) << 8) + f(0)).toString(16).slice(1); };
+const ck = (p, n) => { const x = p * n, k = Math.min(n - 1, Math.floor(x)); return [k, x - k]; };
+
+/* ---------- canvas, zone, alpha ---------- */
+const cv = $('#c'), g = cv.getContext('2d');
+let W = 0, H = 0, DPR = 1, Z = {}, GA = 1;
+const ga = a => { g.globalAlpha = clamp(GA * a, 0, 1); };
+function zoneCalc() {
+  const wide = W >= 900 && W / H >= 1.2;
+  if (wide) { const zw = W * .6; Z = { wide, x: 0, y: 0, w: zw, h: H, cx: zw * .52, cy: H * .45 }; }
+  else { const top = 118, zh = Math.max(250, H * .6 - top); Z = { wide, x: 0, y: top, w: W, h: zh, cx: W / 2, cy: top + zh * .5 }; }
+  Z.s = Math.min(Z.w, Z.h * 1.15); Z.fs = clamp(Z.s * .024, 9.5, 12.5);
+}
+const swarms = [];
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); zoneCalc(); buildDust();
+  for (const s of swarms) s.key = '';
+}
+
+/* ---------- drawing helpers ---------- */
+function txt(s, x, y, font, col, a = 1, al = 'center') { ga(a); g.font = font; g.fillStyle = col; g.textAlign = al; g.textBaseline = 'alphabetic'; g.fillText(s, x, y); ga(1); }
+const mono = (s, x, y, col, a = 1, al = 'center', size = Z.fs) => txt(s, x, y, `500 ${size}px ${MONO}`, col, a, al);
+const spaced = on => { if ('letterSpacing' in g) g.letterSpacing = on ? '1.5px' : '0px'; };
+function tag(s, a = 1) {
+  const fs = Math.max(9, Z.fs - 1.5), S = s.toUpperCase(); g.font = `500 ${fs}px ${MONO}`; spaced(true);
+  const w = g.measureText(S).width, x = Z.x + 12, y = Z.wide ? 16 : Z.y + 4, h = fs + 12;
+  ga(a * .8); g.fillStyle = 'rgba(14,12,9,.78)'; g.fillRect(x, y, w + 16, h);
+  ga(a); g.strokeStyle = 'rgba(217,181,90,.3)'; g.lineWidth = 1; g.strokeRect(x + .5, y + .5, w + 15, h - 1);
+  g.fillStyle = C.gold; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(S, x + 8, y + h / 2 + .5);
+  spaced(false); g.textBaseline = 'alphabetic'; ga(1);
+}
+function rr(o, x, y, w, h, r) { o.beginPath(); o.moveTo(x + r, y); o.arcTo(x + w, y, x + w, y + h, r); o.arcTo(x + w, y + h, x, y + h, r); o.arcTo(x, y + h, x, y, r); o.arcTo(x, y, x + w, y, r); o.closePath(); }
+function scramble(s, el, t) {
+  if (reduce || el > 1200) return s;
+  let o = ''; for (let i = 0; i < s.length; i++) { const ri = 140 + i * 34; o += (el > ri || s[i] === ' ') ? s[i] : GLY[(Math.floor(t / 55) + i * 7) % GLY.length]; }
+  return o;
+}
+function squiggle(o, x0, x1, y, amp, seed) { o.beginPath(); for (let x = x0; x <= x1; x += 3) { const yy = y + Math.sin(x * .32 + seed) * amp + Math.sin(x * .09 + seed * 2) * amp * .6; x === x0 ? o.moveTo(x, yy) : o.lineTo(x, yy); } o.stroke(); }
+
+/* the gilt oval frame: empty at the start, empty at the end */
+function gilt(cx, cy, rx, ry, a = 1, interior = true) {
+  if (interior) { const ig = g.createRadialGradient(cx, cy - ry * .25, rx * .05, cx, cy, ry * 1.05); ig.addColorStop(0, '#1d1813'); ig.addColorStop(1, '#050404'); ga(a); g.fillStyle = ig; g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, TAU); g.fill(); }
+  const fg = g.createLinearGradient(cx - rx, cy - ry, cx + rx * .8, cy + ry); fg.addColorStop(0, '#f6de94'); fg.addColorStop(.3, '#9c7428'); fg.addColorStop(.55, '#f2d27c'); fg.addColorStop(.8, '#7a5819'); fg.addColorStop(1, '#d9b55a');
+  ga(a); g.strokeStyle = fg; g.lineWidth = Math.max(3, rx * .085); g.beginPath(); g.ellipse(cx, cy, rx * 1.055, ry * 1.045, 0, 0, TAU); g.stroke();
+  g.lineWidth = 1; g.strokeStyle = 'rgba(245,220,142,.55)'; g.beginPath(); g.ellipse(cx, cy, rx * 1.15, ry * 1.125, 0, 0, TAU); g.stroke(); g.beginPath(); g.ellipse(cx, cy, rx * .995, ry * .99, 0, 0, TAU); g.stroke();
+  g.fillStyle = '#e4c46e'; const nb = 56, br = Math.max(.9, rx * .011);
+  for (let i = 0; i < nb; i++) { const q = i / nb * TAU; g.beginPath(); g.arc(cx + Math.cos(q) * rx * 1.15, cy + Math.sin(q) * ry * 1.125, br, 0, TAU); g.fill(); }
+  const ty = cy - ry * 1.16; g.strokeStyle = fg; g.lineWidth = Math.max(1.5, rx * .025); g.beginPath(); g.moveTo(cx - rx * .24, ty + rx * .03); g.quadraticCurveTo(cx - rx * .12, ty - rx * .17, cx, ty - rx * .05); g.quadraticCurveTo(cx + rx * .12, ty - rx * .17, cx + rx * .24, ty + rx * .03); g.stroke();
+  g.fillStyle = '#f2d27c'; g.beginPath(); g.arc(cx, ty - rx * .1, Math.max(2, rx * .035), 0, TAU); g.fill();
+  ga(1);
+}
+/* his names, circling the frame like planets */
+function orbits(cx, cy, R, t, front, al) {
+  const tilt = -.17, ct = Math.cos(tilt), st = Math.sin(tilt); g.textAlign = 'center'; g.textBaseline = 'middle';
+  for (let i = 0; i < 8; i++) {
+    const k = i % 3, rx = R * (1.42 + k * .2), ry = rx * .3, dir = k === 1 ? -1 : 1, ang = i * TAU / 8 + k * .7 + dir * (reduce ? 0 : t * .00006 * (1 + k * .25));
+    const ex = Math.cos(ang) * rx, ey = Math.sin(ang) * ry, x = cx + ex * ct - ey * st, y = cy + ex * st + ey * ct + R * .12, d = (Math.sin(ang) + 1) / 2;
+    if ((d >= .5) !== front) continue;
+    const fs = Math.max(11, R * .105 * (.7 + .45 * d)); g.font = `${fs}px ${SCRIPT}`; ga(al * (.16 + .72 * d)); g.fillStyle = d > .5 ? C.goldHi : C.gold; g.fillText(ALIASES[i], x, y);
+  }
+  ga(1); g.textBaseline = 'alphabetic';
+}
+
+/* ---------- point clouds: words and a silhouette resolved from dust ---------- */
+const PTS = new Map();
+function sample(key, bw, bh, draw, max = 1000, step = 3) {
+  if (PTS.has(key)) return PTS.get(key);
+  const oc = document.createElement('canvas'); oc.width = bw; oc.height = bh; const o = oc.getContext('2d', { willReadFrequently: true }); draw(o, bw, bh);
+  const d = o.getImageData(0, 0, bw, bh).data; let pts = [];
+  for (let y = 0; y < bh; y += step) for (let x = 0; x < bw; x += step) if (d[(y * bw + x) * 4 + 3] > 110) pts.push([x / bw - .5, y / bh - .5]);
+  const R = rng(key.length * 97 + bw); for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+  if (pts.length > max) pts.length = max; if (!pts.length) pts = [[0, 0]];
+  PTS.set(key, pts); return pts;
+}
+const wordPts = (word, font) => sample('w:' + word + font, 720, 200, (o, bw, bh) => {
+  o.fillStyle = '#fff'; o.textAlign = 'center'; o.textBaseline = 'middle'; let fs = 150; o.font = font.replace('%', fs);
+  while (o.measureText(word).width > bw * .94 && fs > 20) { fs -= 6; o.font = font.replace('%', fs); }
+  o.fillText(word, bw / 2, bh / 2);
+}, 1800, 2);
+/* a gentleman of 1760 in profile, generic: tricorn, tied wig, jabot */
+const silPts = () => sample('sil', 300, 360, o => {
+  o.scale(3, 3); o.fillStyle = '#fff'; const F = d => o.fill(new Path2D(d)), E = (x, y, rx, ry, r = 0) => { o.beginPath(); o.ellipse(x, y, rx, ry, r, 0, TAU); o.fill(); };
+  F('M3,120 C5,97 20,84 38,80 L64,80 C82,84 95,97 98,120 Z');
+  F('M43,58 L61,58 L63,82 L41,82 Z');
+  E(52, 44, 16, 19);
+  F('M58,27 Q67,31 67,39 L74,48 L67,50 Q70,52 67,54 Q70,56 66,58 Q68,64 60,66 L48,64 Z');
+  E(40, 47, 8, 4.5, -.15); E(40, 55, 7.5, 4, -.1);
+  F('M38,44 Q28,56 31,74 L35,74 Q34,58 44,50 Z'); F('M33,55 L25,51 L27,60 Z'); F('M33,55 L40,50 L39,60 Z');
+  F('M22,33 Q27,19 47,16 Q66,13 82,22 L86,26 Q72,25 60,27 Q42,29 26,36 Z'); E(51, 22, 16, 9);
+  E(62, 81, 4, 3.4); E(64, 86, 3.6, 3.2); E(63, 91, 3.2, 3);
+}, 1800, 2);
+
+class Swarm {
+  constructor(n, seed) { const R = rng(seed); this.p = []; this.key = ''; for (let i = 0; i < n; i++) this.p.push({ x: R() * W, y: R() * H, vx: 0, vy: 0, tx: NaN, ty: NaN, j: R() * TAU, c: R() }); swarms.push(this); }
+  target(pts, cx, cy, sw, sh, key) {
+    if (key === this.key) return; this.key = key;
+    for (let i = 0; i < this.p.length; i++) { const q = pts[i % pts.length], P = this.p[i]; P.tx = cx + q[0] * sw; P.ty = cy + q[1] * sh; if (reduce) { P.x = P.tx; P.y = P.ty; } }
+  }
+  free() { this.key = 'free'; for (const P of this.p) { P.tx = NaN; P.vy -= .3 + P.c * .6; } }
+  step(dt, t) {
+    const f = dt / 16, damp = Math.pow(.82, f);
+    for (const P of this.p) {
+      if (Number.isNaN(P.tx)) { P.vy -= .025 * f; P.vx += Math.sin(t * .001 + P.j) * .04 * f; P.vx *= .98; }
+      else { P.vx = (P.vx + (P.tx - P.x) * .06 * f) * damp; P.vy = (P.vy + (P.ty - P.y) * .06 * f) * damp; }
+      P.x += P.vx * f; P.y += P.vy * f;
+    }
+  }
+  draw(t, cols, size, a) {
+    for (const P of this.p) {
+      const jx = reduce ? 0 : Math.sin(t * .002 + P.j) * 1.1, jy = reduce ? 0 : Math.cos(t * .0017 + P.j * 1.3) * 1.1;
+      ga(a * (reduce ? .8 : .55 + .45 * Math.sin(t * .003 + P.j * 3))); g.fillStyle = cols[Math.floor(P.c * cols.length)]; g.fillRect(P.x + jx, P.y + jy, size, size);
+    }
+    ga(1);
+  }
+}
+
+/* ---------- ambient: dust with Greek and metal glyphs, smoke that swings side to side ---------- */
+let dust = [];
+function buildDust() { const R = rng(1784), n = Math.round(clamp(W * H / 9000, 60, 200)); dust = []; for (let i = 0; i < n; i++) dust.push({ x: R() * W, y: R() * H, z: .3 + R() * .7, tw: R() * TAU, gl: R() < .12 ? GLY[Math.floor(R() * GLY.length)] : null }); }
+function drawDust(t, acc) {
+  const tt = reduce ? 0 : t;
+  for (const d of dust) {
+    let y = (d.y - scrollY * .05 * d.z) % H; if (y < 0) y += H;
+    const a = (.12 + .3 * d.z) * (.6 + .4 * Math.sin(tt * .001 * d.z + d.tw));
+    if (d.gl) { g.globalAlpha = a * .7; g.font = `${9 + 7 * d.z}px ${GREEK}`; g.fillStyle = acc; g.textAlign = 'center'; g.fillText(d.gl, d.x, y); }
+    else { g.globalAlpha = a; g.fillStyle = C.bone; const s = d.z * 1.4; g.fillRect(d.x, y, s, s); }
+  }
+  g.globalAlpha = 1;
+}
+const SPR = new Map();
+function sprite(col) { if (SPR.has(col)) return SPR.get(col); const c = document.createElement('canvas'); c.width = c.height = 64; const o = c.getContext('2d'), gr = o.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, hexA(col, 1)); gr.addColorStop(.5, hexA(col, .35)); gr.addColorStop(1, hexA(col, 0)); o.fillStyle = gr; o.fillRect(0, 0, 64, 64); SPR.set(col, c); return c; }
+const smoke = []; let emitAcc = 0, srcX = -1, vel = 0;
+function drawSmoke(t, dt, best, acc) {
+  if (reduce) return;
+  const side = best <= 0 ? .5 : (best % 2 ? .12 : .88); // alternates sides, scene by scene
+  if (srcX < 0) srcX = W * side; srcX = lerp(srcX, W * side, 1 - Math.pow(.25, dt / 1000));
+  emitAcc += dt * (W < 600 ? .016 : .028);
+  while (emitAcc > 1) { emitAcc--; smoke.push({ x: srcX + Math.sin(t * .0005) * W * .03 + (Math.random() - .5) * 24, y: H + 40, vx: 0, vy: -(.03 + Math.random() * .035), age: 0, life: 6500 + Math.random() * 5000, r: 26 + Math.random() * 30, s: Math.random() * TAU }); }
+  const spr = sprite(mixHex(C.smoke, acc, .4));
+  for (let k = smoke.length - 1; k >= 0; k--) {
+    const P = smoke[k]; P.age += dt; if (P.age > P.life || P.y < -160) { smoke.splice(k, 1); continue; }
+    P.vx += (Math.sin(P.y * .006 + P.s + t * .0003) * .00012 - vel * .00009) * dt; P.vx *= .985; P.x += P.vx * dt; P.y += P.vy * dt; P.r += dt * .012;
+    g.globalAlpha = Math.sin(P.age / P.life * Math.PI) * .08; g.drawImage(spr, P.x - P.r, P.y - P.r, P.r * 2, P.r * 2);
+  }
+  if (smoke.length > 240) smoke.splice(0, smoke.length - 240);
+  g.globalAlpha = 1;
+}
+
+/* ---------- sound: off until the reader turns it on ---------- */
+let AC = null, master = null, soundOn = false, blowNode = null;
+function audioInit() {
+  if (AC) return; const A = window.AudioContext || window.webkitAudioContext; if (!A) return;
+  AC = new A(); master = AC.createGain(); master.gain.value = 0; master.connect(AC.destination);
+  const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 380; const dg = AC.createGain(); dg.gain.value = .045; lp.connect(dg); dg.connect(master);
+  [[73.42, 'sine', .7], [110, 'sine', .45], [147.4, 'triangle', .18]].forEach(([f, ty, v]) => { const o = AC.createOscillator(), gg = AC.createGain(); o.type = ty; o.frequency.value = f; gg.gain.value = v; o.connect(gg); gg.connect(lp); o.start(); });
+  const lfo = AC.createOscillator(), lg = AC.createGain(); lfo.frequency.value = .06; lg.gain.value = 140; lfo.connect(lg); lg.connect(lp.frequency); lfo.start();
+}
+const sndBtn = $('#snd');
+function setSound(on) {
+  if (on) { try { audioInit(); } catch (e) { AC = null; } if (!AC) return; AC.resume && AC.resume(); master.gain.cancelScheduledValues(AC.currentTime); master.gain.setTargetAtTime(.6, AC.currentTime, .3); }
+  else if (AC) { master.gain.cancelScheduledValues(AC.currentTime); master.gain.setTargetAtTime(0, AC.currentTime, .12); }
+  soundOn = on && !!AC; sndBtn.setAttribute('aria-pressed', String(soundOn)); sndBtn.querySelector('.t').textContent = soundOn ? ' Sound on' : ' Sound off';
+}
+sndBtn.addEventListener('click', () => setSound(!soundOn));
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+function env(node, t0, a, peak, d) { node.gain.setValueAtTime(.0001, t0); node.gain.exponentialRampToValueAtTime(peak, t0 + a); node.gain.exponentialRampToValueAtTime(.0001, t0 + a + d); }
+function knock(acc) { if (!soundOn) return; const t = AC.currentTime, o = AC.createOscillator(), gg = AC.createGain(); o.frequency.setValueAtTime(acc ? 88 : 66, t); o.frequency.exponentialRampToValueAtTime(40, t + .2); env(gg, t, .004, acc ? .2 : .08, .26); o.connect(gg); gg.connect(master); o.start(t); o.stop(t + .34); }
+function bow(f, t0, dur, vol) {
+  const o = AC.createOscillator(), lp = AC.createBiquadFilter(), gg = AC.createGain(), vib = AC.createOscillator(), vg = AC.createGain();
+  o.type = 'sawtooth'; o.frequency.value = f; lp.type = 'lowpass'; lp.frequency.value = 2100; lp.Q.value = 1.1;
+  vib.frequency.value = 5.6; vg.gain.setValueAtTime(0, t0); vg.gain.linearRampToValueAtTime(f * .006, t0 + .2); vib.connect(vg); vg.connect(o.frequency);
+  gg.gain.setValueAtTime(.0001, t0); gg.gain.exponentialRampToValueAtTime(vol, t0 + .07); gg.gain.setValueAtTime(vol, t0 + Math.max(.08, dur - .08)); gg.gain.exponentialRampToValueAtTime(.0001, t0 + dur + .14);
+  o.connect(lp); lp.connect(gg); gg.connect(master); o.start(t0); vib.start(t0); o.stop(t0 + dur + .2); vib.stop(t0 + dur + .2);
+}
+const MOTIF = [[62, 2], [65, 2], [69, 2], [67, 2], [65, 3], [64, 2], [62, 3]]; // D minor, bowed in sevens: 2 + 2 + 3
+function notes(seq, eighth = .15) { if (!soundOn) return; let t = AC.currentTime + .03; for (const [m, d] of seq) { bow(mtof(m), t, d * eighth * .92, .055); t += d * eighth; } }
+function bell(f, v = .11) { if (!soundOn) return; const t = AC.currentTime; for (const [r, a] of [[1, 1], [2.76, .4], [5.4, .18]]) { const o = AC.createOscillator(), gg = AC.createGain(); o.frequency.value = f * r; env(gg, t, .005, v * a, 1.4 / r); o.connect(gg); gg.connect(master); o.start(t); o.stop(t + 1.6); } }
+function verdictSound(v) { if (v === 'g') bell(880); else if (v === 'b') bell(659, .06); else if (v === 'l') knock(true); else notes([[74, 3]]); }
+function audioBlow(on) {
+  if (!soundOn) return;
+  if (on && !blowNode) {
+    const len = AC.sampleRate, buf = AC.createBuffer(1, len, AC.sampleRate), d = buf.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = AC.createBufferSource(); src.buffer = buf; src.loop = true; const bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = .8;
+    const gg = AC.createGain(); gg.gain.setValueAtTime(.0001, AC.currentTime); gg.gain.exponentialRampToValueAtTime(.05, AC.currentTime + .15);
+    src.connect(bp); bp.connect(gg); gg.connect(master); src.start(); blowNode = { src, gg };
+  } else if (!on && blowNode) { const { src, gg } = blowNode; gg.gain.setTargetAtTime(.0001, AC.currentTime, .06); src.stop(AC.currentTime + .3); blowNode = null; }
+}
+
+/* ---------- HUD: a watch that runs backwards, ticking in sevens ---------- */
+const meta = { anno: '—', age: '?' };
+const DEF = [['—', '?'], ['1745', '?'], ['1757', '≈ 50'], ['1758', '≈ 50'], ['1760', '—'], ['1757 → 1934', '?'], ['1784', '93?'], ['1784', '∞?'], ['2026', '—'], ['—', '?']];
+const STAGES = [['—', ' · No. 3'], ['I', ' · ὄνομα'], ['II', ' · χρόνος'], ['III', ' · χρυσοποιία'], ['IV', ' · ξήριον'], ['V', ' · φήμη'], ['VI', ' · σῆμα'], ['VII', ' · φάσμα'], ['VIII', ' · βάσανος'], ['✦', ' · μῦθος']];
+const hSt = $('#hSt'), hYr = $('#hYr'), hAge = $('#hAge'), hAsF = $('#hAsF'), hAs = $('#hAs');
+let hudBest = -1;
+function hud(best) {
+  if (best !== hudBest) { hudBest = best; hSt.innerHTML = `<span class="rn">${STAGES[best][0]}</span><span class="gw">${STAGES[best][1]}</span>`; }
+  say(hYr, meta.anno); say(hAge, meta.age);
+  const n = count9(), show = best >= 8 || n > 0; if (hAsF.hidden === show) hAsF.hidden = !show; say(hAs, `${n}/9`);
+}
+const EIGHTH = 170; let lastE = -1, wStep = 0, wDrawn = -1, watchStopped = false;
+function beat(t) {
+  if (reduce) return; const e = Math.floor(t / EIGHTH); if (e === lastE) return; lastE = e;
+  const pos = e % 7; if ((pos === 0 || pos === 2 || pos === 4) && !watchStopped) { wStep++; knock(pos === 0); }
+}
+function drawWatch() {
+  if (wDrawn === wStep && $('#watch').width === Math.round(34 * DPR)) return; wDrawn = wStep;
+  const wc = $('#watch'), s = Math.round(34 * DPR); if (wc.width !== s) { wc.width = wc.height = s; }
+  const o = wc.getContext('2d'); o.setTransform(s / 34, 0, 0, s / 34, 0, 0); o.clearRect(0, 0, 34, 34);
+  const gr = o.createLinearGradient(0, 0, 34, 34); gr.addColorStop(0, '#f6de94'); gr.addColorStop(.5, '#8f6a22'); gr.addColorStop(1, '#e8c46a');
+  o.fillStyle = '#16120d'; o.beginPath(); o.arc(17, 18, 13, 0, TAU); o.fill(); o.strokeStyle = gr; o.lineWidth = 2.4; o.stroke();
+  o.fillStyle = gr; o.fillRect(15.5, 1.5, 3, 3.5);
+  o.strokeStyle = '#d9b55a'; o.lineWidth = 1; for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; o.beginPath(); o.moveTo(17 + Math.cos(a) * 10.5, 18 + Math.sin(a) * 10.5); o.lineTo(17 + Math.cos(a) * (i % 3 ? 9.5 : 8.5), 18 + Math.sin(a) * (i % 3 ? 9.5 : 8.5)); o.stroke(); }
+  const a = -Math.PI / 2 - wStep / 21 * TAU, h = -Math.PI / 2 - wStep / 252 * TAU; // counterclockwise
+  o.strokeStyle = '#efe6d2'; o.lineWidth = 1.6; o.beginPath(); o.moveTo(17, 18); o.lineTo(17 + Math.cos(h) * 5.5, 18 + Math.sin(h) * 5.5); o.stroke();
+  o.strokeStyle = '#f5dc8e'; o.lineWidth = 1; o.beginPath(); o.moveTo(17, 18); o.lineTo(17 + Math.cos(a) * 9, 18 + Math.sin(a) * 9); o.stroke();
+  o.fillStyle = '#f5dc8e'; o.beginPath(); o.arc(17, 18, 1.4, 0, TAU); o.fill();
+}
+
+/* ---------- hero ---------- */
+const aliasEl = $('#alias'); let heroI = 0, heroT0 = 0;
+function drawHero(p, t) {
+  const cx = W / 2, cy = H * .47, R = Math.min(W * .27, H * .25), ry = R * 1.3;
+  orbits(cx, cy, R, t, false, .38); gilt(cx, cy, R, ry, .32); orbits(cx, cy, R, t, true, .34);
+  if (!reduce) { if (t - heroT0 > 3200) { heroT0 = t; heroI = (heroI + 1) % ALIASES.length; } say(aliasEl, scramble(ALIASES[heroI], t - heroT0, t)); }
+}
+
+/* ---------- I · a name ---------- */
+const RUMORS = ['an Italian', 'a Spaniard', 'a Pole', 'a priest', 'a fiddler', 'a vast nobleman', 'a fortune in Mexico', 'jewels to Constantinople'];
+const SRC = 'RAGOTZY', DST = [3, 2, 5, 4, 0, 1, 6];
+let ask = -1, userAsk = false, plateTxt = '', plateT0 = -1e9, shufOn = false, userShuf = false, shufA = 0;
+const shufBtn = $('#shufBtn'), o1 = $('#o1');
+$('#askBtn').addEventListener('click', () => { userAsk = true; ask = (ask + 1) % 8; say(o1, `“${ALIASES[ask]}.” The frame stays empty. Name ${ask + 1} of 8.`); notes([[69, 2], [74, 2], [72, 3]].slice(0, 2 + ask % 2)); });
+shufBtn.addEventListener('click', () => { userShuf = true; shufOn = !shufOn; shufBtn.setAttribute('aria-pressed', String(shufOn)); say(o1, shufOn ? 'RAGOTZY becomes TZAROGY. Same seven letters.' : 'Back to RAGOTZY: Rákóczi, spelled the old German way.'); });
+function tile(x, y, s, ch, a) { ga(a); g.fillStyle = '#e9dfc6'; g.fillRect(x - s / 2, y - s / 2, s, s); g.strokeStyle = '#8a6a2a'; g.lineWidth = 1.5; g.strokeRect(x - s / 2 + .75, y - s / 2 + .75, s - 1.5, s - 1.5); g.fillStyle = '#1a130a'; g.font = `600 ${s * .62}px ${DISP}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(ch, x, y + s * .04); g.textBaseline = 'alphabetic'; ga(1); }
+function drawS1(p, t, dt) {
+  const [k, q] = ck(p, 5), cx = Z.cx, R = Z.s * .15, ry = R * 1.3, cy = Z.cy - Z.s * .05, fs = Z.fs;
+  tag(['London · December 1745', 'Walpole to Mann · 9 Dec 1745', 'What London said', 'Forty years of names', 'Rákóczi · Ragotzy · Tzarogy'][k]);
+  const oa = ease(p, .58, .68);
+  if (oa > 0) orbits(cx, cy, R, t, false, oa);
+  gilt(cx, cy, R, ry, 1);
+  // a lantern beam sweeps for him
+  const beamA = 1 - ease(p, .16, .22);
+  if (beamA > 0) {
+    const sx = Z.x + Z.w * .05, sy = Z.y + Z.h * (Z.wide ? .1 : .14), base = Math.atan2(cy - sy, cx - sx), sw = reduce ? 0 : Math.sin(t * .0008) * .32, ang = base + sw, len = Math.hypot(cx - sx, cy - sy) * 1.7, hw = .085;
+    const bg = g.createRadialGradient(sx, sy, 0, sx, sy, len); bg.addColorStop(0, 'rgba(245,220,142,.34)'); bg.addColorStop(1, 'rgba(245,220,142,0)');
+    ga(beamA); g.fillStyle = bg; g.beginPath(); g.moveTo(sx, sy); g.arc(sx, sy, len, ang - hw, ang + hw); g.closePath(); g.fill();
+    const hit = Math.max(0, 1 - Math.abs(sw) / .12); if (hit > 0) { ga(beamA * hit * .2); g.fillStyle = C.goldHi; g.beginPath(); g.ellipse(cx, cy, R, ry, 0, 0, TAU); g.fill(); }
+    ga(beamA); g.fillStyle = '#2a2116'; g.fillRect(sx - 7, sy - 10, 14, 18); g.fillStyle = C.goldHi; g.fillRect(sx - 4, sy - 6, 8, 10); ga(1);
+  }
+  // Walpole's letter, inside the frame
+  const la = ease(p, .17, .24) * (1 - ease(p, .4, .46));
+  if (la > 0) {
+    g.save(); g.beginPath(); g.ellipse(cx, cy, R * .96, ry * .96, 0, 0, TAU); g.clip();
+    const off = (k === 1 ? q : k > 1 ? 1 : 0) * ry * .3; g.strokeStyle = 'rgba(239,230,210,.55)'; g.lineWidth = 1;
+    for (let i = 0; i < 12; i++) { if (i === 5 || i === 6) continue; ga(la * .35); squiggle(g, cx - R * .85, cx + R * .85, cy - ry * .9 + i * ry * .17 - off, 1.6, i * 1.7); }
+    const sf = Math.max(12, R * .17); g.font = `${sf}px ${SCRIPT}`; g.textAlign = 'center'; ga(la); g.fillStyle = C.goldHi;
+    g.fillText('will not tell who he is,', cx, cy - ry * .9 + 5 * ry * .17 - off + sf * .3); g.fillText('or whence', cx, cy - ry * .9 + 6 * ry * .17 - off + sf * .3);
+    g.restore(); ga(1);
+  }
+  // what London said, hung on threads
+  const ra = ease(p, .4, .44) * (1 - ease(p, .62, .7) * .85) * (1 - ease(p, .76, .82));
+  if (ra > 0) {
+    g.font = `500 ${fs}px ${MONO}`;
+    for (let i = 0; i < 8; i++) {
+      const ai = ra * ease(p, .405 + i * .018, .425 + i * .018); if (ai <= 0) continue;
+      const ang = -Math.PI / 2 + (i + .5) / 8 * TAU, jx = reduce ? 0 : Math.sin(t * .0016 + i * 2) * 3, jy = reduce ? 0 : Math.cos(t * .0013 + i) * 2;
+      const x0 = cx + Math.cos(ang) * R * 1.15, y0 = cy + Math.sin(ang) * ry * 1.125, w = g.measureText(RUMORS[i]).width + 14, hh = fs + 10;
+      const tx = clamp(cx + Math.cos(ang) * R * 2.05 + jx, Z.x + w / 2 + 6, Z.x + Z.w - w / 2 - 6), ty = clamp(cy + Math.sin(ang) * ry * 1.45 + jy, Z.y + 44, Z.y + Z.h - 14);
+      ga(ai * .7); g.strokeStyle = C.gold; g.lineWidth = 1; g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo((x0 + tx) / 2, Math.max(y0, ty) + 14, tx, ty); g.stroke();
+      ga(ai); g.fillStyle = 'rgba(14,12,9,.9)'; g.fillRect(tx - w / 2, ty - hh / 2, w, hh); g.strokeStyle = 'rgba(217,181,90,.55)'; g.strokeRect(tx - w / 2 + .5, ty - hh / 2 + .5, w - 1, hh - 1);
+      g.fillStyle = C.bone; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(RUMORS[i], tx, ty + .5); g.textBaseline = 'alphabetic';
+    }
+    ga(1);
+  }
+  if (oa > 0) orbits(cx, cy, R, t, true, oa);
+  // the nameplate
+  const py = cy + ry * 1.13 + fs * 2.6;
+  if (k < 4) {
+    let want = '— ? —'; if (k >= 3) want = ask >= 0 ? ALIASES[ask] : (reduce ? ALIASES[0] : ALIASES[Math.floor(t / 2300) % 8]);
+    if (want !== plateTxt) { plateTxt = want; plateT0 = t; }
+    const s = scramble(plateTxt, t - plateT0, t), pfs = Math.max(13, fs * 1.45); g.font = `italic 500 ${pfs}px ${DISP}`;
+    const pw = Math.max(R * 2.2, g.measureText(plateTxt).width + 30), ph = pfs * 1.9, pa = 1 - ease(p, .77, .8);
+    const pg = g.createLinearGradient(0, py - ph / 2, 0, py + ph / 2); pg.addColorStop(0, '#5b4519'); pg.addColorStop(.5, '#a07e36'); pg.addColorStop(1, '#4a3712');
+    ga(pa); g.fillStyle = pg; g.fillRect(cx - pw / 2, py - ph / 2, pw, ph); g.strokeStyle = 'rgba(245,220,142,.7)'; g.lineWidth = 1; g.strokeRect(cx - pw / 2 + .5, py - ph / 2 + .5, pw - 1, ph - 1);
+    g.fillStyle = '#1a130a'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(s, cx, py + 1); g.textBaseline = 'alphabetic'; ga(1);
+  }
+  // RAGOTZY / TZAROGY
+  if (p > .78) {
+    if (!userShuf) { const want = p > .88; if (want !== shufOn) { shufOn = want; shufBtn.setAttribute('aria-pressed', String(shufOn)); } }
+    shufA = reduce ? (shufOn ? 1 : 0) : lerp(shufA, shufOn ? 1 : 0, 1 - Math.pow(.02, dt / 1000));
+    const e = ease(shufA, 0, 1), ts = Math.min(Z.w * .095, 46), gap = ts * 1.14, ta = ease(p, .79, .83);
+    for (let i = 0; i < 7; i++) { const x = lerp(cx + (i - 3) * gap, cx + (DST[i] - 3) * gap, e), y = py - Math.sin(e * Math.PI) * ts * (.7 + .25 * (i % 3)) * (i % 2 ? 1 : -1); tile(x, y, ts, SRC[i], ta); }
+    mono(e < .5 ? 'RAGOTZY · Rákóczi, the old German way' : 'TZAROGY · one of his names', cx, py + ts * .5 + fs * 2, C.gold, ta);
+  }
+}
+
+/* ---------- II · time ---------- */
+const PEOPLE = [['Voltaire', 1694, 1778], ['Walpole', 1717, 1797], ['Louis XV', 1710, 1774], ['the count', null, 1784], ['Pompadour', 1721, 1764], ['Frederick II', 1712, 1786], ['Casanova', 1725, 1798]];
+const yIn = $('#yr'), yOut = $('#yrOut'); let userYr = false; yIn.addEventListener('input', () => { userYr = true; });
+function flame(x, y, s, t, seed, gold) {
+  const fl = reduce ? 1 : 1 + Math.sin(t * .013 + seed) * .07 + Math.sin(t * .031 + seed * 2) * .04, sw = reduce ? 0 : Math.sin(t * .006 + seed) * s * .14;
+  const gl = g.createRadialGradient(x, y - s * .7, 0, x, y - s * .7, s * 4.5); gl.addColorStop(0, gold ? 'rgba(245,220,142,.4)' : 'rgba(255,196,120,.3)'); gl.addColorStop(1, 'rgba(255,196,120,0)');
+  ga(1); g.fillStyle = gl; g.fillRect(x - s * 4.5, y - s * 5.2, s * 9, s * 9);
+  g.beginPath(); g.moveTo(x + sw, y - s * 2 * fl); g.bezierCurveTo(x + s * .6, y - s, x + s * .55, y + s * .1, x, y + s * .18); g.bezierCurveTo(x - s * .55, y + s * .1, x - s * .6, y - s, x + sw, y - s * 2 * fl);
+  const fg = g.createLinearGradient(x, y - s * 2, x, y + s * .2); fg.addColorStop(0, '#fff8dc'); fg.addColorStop(.55, gold ? '#f4c24a' : '#ffb24a'); fg.addColorStop(1, 'rgba(80,110,255,.7)'); g.fillStyle = fg; g.fill();
+}
+function candle(x, base, w, h, lit, t, seed, gold) {
+  ga(1); g.fillStyle = '#4a3a20'; g.beginPath(); g.ellipse(x, base + 2, w * 1.05, w * .26, 0, 0, TAU); g.fill();
+  const top = base - h, gr = g.createLinearGradient(x - w / 2, 0, x + w / 2, 0);
+  gr.addColorStop(0, gold ? '#b8933f' : '#bcae8e'); gr.addColorStop(.45, gold ? '#f5dc8e' : '#f1e8d2'); gr.addColorStop(1, gold ? '#8f6c25' : '#a49473');
+  g.fillStyle = gr; g.fillRect(x - w / 2, top, w, h); g.beginPath(); g.ellipse(x, top, w / 2, w * .14, 0, 0, TAU); g.fillStyle = gold ? '#e6c46a' : '#ddd2b8'; g.fill();
+  if (h > w * 1.4) { g.fillStyle = gold ? '#f5dc8e' : '#f4ecd9'; g.beginPath(); g.ellipse(x - w * .32, top + w * .55, w * .1, w * .38, 0, 0, TAU); g.fill(); }
+  g.strokeStyle = '#2a2018'; g.lineWidth = Math.max(1, w * .07); g.beginPath(); g.moveTo(x, top); g.lineTo(x, top - w * .3); g.stroke();
+  if (lit) flame(x, top - w * .28, Math.max(5, w * .55), t, seed, gold);
+}
+function wisp(x, y, t, seed) { if (reduce) return; for (let j = 0; j < 6; j++) { const ph = (t * .0004 + j / 6 + seed * .13) % 1; ga((1 - ph) * .22); g.fillStyle = C.smoke; g.beginPath(); g.arc(x + Math.sin(ph * 7 + seed) * 6 * ph, y - ph * 70, 2 + ph * 9, 0, TAU); g.fill(); } ga(1); }
+function drawS2(p, t) {
+  const [k] = ck(p, 6);
+  if (!userYr) { const v = p < .5 ? 1757 + Math.round(3 * ease(p, .05, .45)) : Math.round(lerp(1760, 1784, ease(p, .5, .96))); if (+yIn.value !== v) yIn.value = String(v); }
+  const yr = +yIn.value; if (yOut.textContent !== String(yr)) { yOut.textContent = String(yr); yIn.setAttribute('aria-valuetext', String(yr) + (yr >= 1784 ? ', the count is dead' : '')); }
+  meta.anno = String(yr);
+  tag(k < 3 ? 'Versailles · Paris · 1757–1760' : 'Scrub the years · 1710–1784');
+  const fs = Z.fs, n = 7, sp = Math.min(Z.w * .86 / n, 116), base = Z.y + Z.h * (Z.wide ? .76 : .74), mh = Z.h * .4, narrow = sp < 70;
+  txt(String(yr), Z.cx, Z.y + Z.h * (Z.wide ? .2 : .2), `400 ${Math.min(Z.h * .15, 92)}px ${DISP}`, C.bone, .9);
+  for (let i = 0; i < n; i++) {
+    const [name, b, d] = PEOPLE[i], x = Z.cx + (i - 3) * sp, count = b === null, w = count ? Math.min(sp * .34, 30) : Math.min(sp * .22, 22);
+    let frac = 0, lit = false, unborn = false;
+    if (count) { lit = yr < 1784; frac = lit ? .7 : .06; } else if (yr < b) unborn = true; else if (yr >= d) frac = .06; else { frac = .12 + .88 * (1 - (yr - b) / (d - b)); lit = true; }
+    const h = mh * frac;
+    if (unborn) { ga(.25); g.setLineDash([3, 4]); g.strokeStyle = C.bone; g.lineWidth = 1; g.strokeRect(x - w / 2, base - mh, w, mh); g.setLineDash([]); ga(1); }
+    else candle(x, base, w, h, lit, t, i * 1.7, count);
+    if (!lit && !unborn) wisp(x, base - h - 4, t, i);
+    const ly = base + fs * 2 + (narrow && i % 2 ? fs * 2.7 : 0), da = unborn ? .35 : (lit ? 1 : .55);
+    mono(name, x, ly, count ? C.goldHi : C.bone, da, 'center', count ? fs : fs * .92);
+    mono(count ? '? – 1784' : `${b}–${d}`, x, ly + fs * 1.35, C.muted, da * .9, 'center', fs * .82);
+    if (lit) mono(count ? '≈50' : String(yr - b), x, base - h - w * 2.7 - fs * .5, count ? C.goldHi : C.muted, .9, 'center', fs * .9);
+  }
+}
+
+/* ---------- III · gold-making ---------- */
+let heat = 0, userHeat = false, gold = false, holding = false, holdT = 0, hands = false, userHands = false, burst = 0, blowLabel = '';
+const blowBtn = $('#blow'), handsBtn = $('#hands'), o3 = $('#o3'), bl = blowBtn.querySelector('.bl');
+function holdStart(e) {
+  if (e.type === 'keydown') { if (e.repeat || (e.key !== ' ' && e.key !== 'Enter')) return; e.preventDefault(); }
+  if (holding) return; if (gold) { gold = false; heat = 0; }
+  holding = true; holdT = performance.now(); userHeat = true; blowBtn.classList.add('held'); audioBlow(true);
+}
+function holdEnd(e) {
+  if (e.type === 'keyup' && e.key !== ' ' && e.key !== 'Enter') return; if (!holding) return;
+  holding = false; blowBtn.classList.remove('held'); audioBlow(false);
+  if (performance.now() - holdT < 240) heat = Math.min(1, heat + .2);
+}
+blowBtn.addEventListener('pointerdown', e => { try { blowBtn.setPointerCapture(e.pointerId); } catch (_) {} holdStart(e); });
+for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture', 'keyup', 'blur']) blowBtn.addEventListener(ev, holdEnd);
+blowBtn.addEventListener('keydown', holdStart);
+blowBtn.addEventListener('contextmenu', e => e.preventDefault());
+blowBtn.addEventListener('click', e => e.preventDefault());
+handsBtn.addEventListener('click', () => { userHands = true; hands = !hands; handsBtn.setAttribute('aria-pressed', String(hands)); say(o3, hands ? 'The silver piece goes up the cuff. A gold one was waiting in the palm.' : 'Hands hidden. It looks like alchemy again.'); });
+function updateHeat(dt) {
+  if (holding) heat = Math.min(1, heat + dt / 1000 * .42); else if (!gold) heat = Math.max(0, heat - dt / 1000 * .05);
+  if (heat >= 1 && !gold) { gold = true; burst = 1; say(o3, 'When it cools, the coin is gold.'); notes(MOTIF); }
+  burst = Math.max(0, burst - dt / 1400); blowBtn.style.setProperty('--h', heat.toFixed(3));
+  const lab = gold ? 'Hold to try again' : 'Hold to blow on the coals'; if (lab !== blowLabel) { blowLabel = lab; bl.textContent = lab; }
+}
+const COALS = (() => { const R = rng(1764), a = []; for (let i = 0; i < 34; i++) { const q = R() * TAU, r = Math.sqrt(R()); a.push([Math.cos(q) * r * .9, Math.sin(q) * r * .9, .1 + R() * .09, R() * TAU]); } return a; })();
+function poly(P) { g.beginPath(); P.forEach((q, i) => i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1])); g.closePath(); }
+function star4(x, y, s) { g.beginPath(); g.moveTo(x, y - s); g.quadraticCurveTo(x, y, x + s, y); g.quadraticCurveTo(x, y, x, y + s); g.quadraticCurveTo(x, y, x - s, y); g.quadraticCurveTo(x, y, x, y - s); g.fill(); }
+function drawDiamond(p, t) {
+  const cx = Z.cx, R = Z.s * .17, cy = Z.cy - Z.s * .13, clean = ease(p, .21, .3), fs = Z.fs, tt = reduce ? 0 : t;
+  const G = [], T = [];
+  for (let i = 0; i < 16; i++) { const a = i / 16 * TAU - Math.PI / 2; G.push([cx + Math.cos(a) * R, cy + Math.sin(a) * R]); }
+  for (let m = 0; m < 8; m++) { const a = (2 * m + 1) / 16 * TAU - Math.PI / 2; T.push([cx + Math.cos(a) * R * .56, cy + Math.sin(a) * R * .56]); }
+  const glow = g.createRadialGradient(cx, cy, R * .5, cx, cy, R * 2); glow.addColorStop(0, 'rgba(200,225,255,.12)'); glow.addColorStop(1, 'rgba(200,225,255,0)'); ga(1); g.fillStyle = glow; g.fillRect(cx - R * 2, cy - R * 2, R * 4, R * 4);
+  const bg = g.createRadialGradient(cx - R * .3, cy - R * .35, R * .05, cx, cy, R * 1.05); bg.addColorStop(0, '#f6fbff'); bg.addColorStop(.55, '#a9bccb'); bg.addColorStop(1, '#3b4b5a'); g.fillStyle = bg; poly(G); g.fill();
+  const sh = j => .5 + .35 * Math.sin(tt * .0011 + j * 1.9) + .15 * Math.sin(j * 4.1);
+  for (let j = 0; j < 16; j++) { const m = Math.floor(j / 2), v = sh(j); ga(.5); g.fillStyle = v > .5 ? `rgba(245,250,255,${(v - .5) * 1.3})` : `rgba(40,60,80,${(.5 - v) * 1.2})`; poly([G[j], G[(j + 1) % 16], T[m]]); g.fill(); }
+  for (let m = 0; m < 8; m++) { const v = sh(m + 20); ga(.5); g.fillStyle = v > .5 ? `rgba(245,250,255,${(v - .5)})` : `rgba(40,60,80,${(.5 - v)})`; poly([T[m], G[(2 * m + 2) % 16], T[(m + 1) % 8]]); g.fill(); }
+  const tg = g.createLinearGradient(cx - R * .5, cy - R * .5, cx + R * .5, cy + R * .5); tg.addColorStop(0, 'rgba(255,255,255,.85)'); tg.addColorStop(1, 'rgba(160,185,205,.6)'); ga(.85); g.fillStyle = tg; poly(T); g.fill();
+  ga(.55); g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = .8; poly(G); g.stroke(); poly(T); g.stroke();
+  for (let j = 0; j < 16; j++) { g.beginPath(); g.moveTo(G[j][0], G[j][1]); g.lineTo(T[Math.floor(((j + 15) % 16) / 2)][0], T[Math.floor(((j + 15) % 16) / 2)][1]); g.stroke(); }
+  // the flaw
+  if (clean < 1) { ga(1 - clean); g.fillStyle = '#1d140c'; g.beginPath(); g.ellipse(cx + R * .2, cy - R * .1, R * .055, R * .032, .6, 0, TAU); g.fill(); g.beginPath(); g.arc(cx + R * .27, cy - R * .02, R * .018, 0, TAU); g.fill(); g.strokeStyle = '#2a1d12'; g.lineWidth = 1; g.beginPath(); g.moveTo(cx + R * .14, cy - R * .16); g.lineTo(cx + R * .22, cy - R * .08); g.lineTo(cx + R * .3, cy - R * .1); g.stroke(); }
+  g.fillStyle = '#fff'; for (let i = 0; i < 3; i++) { const a = .5 + .5 * Math.sin(tt * .002 + i * 2.1); ga(a * (.4 + .6 * clean)); star4(cx + Math.cos(i * 2.2 + 1) * R * .55, cy + Math.sin(i * 2.2 + 1) * R * .5, R * (.07 + .05 * a)); }
+  ga(1);
+  // the ledger
+  const lw = Math.min(Z.s * .7, 420), lx = cx - lw / 2, ly = cy + R * 1.45, row = fs * 2.5, bx = lx + lw * .38, bwMax = lw * .46;
+  const rows = [['flawed', 240, C.ember, ease(p, .02, .08), 1], ['clean', 400, null, ease(p, .06, .12), 1], ['jeweller paid', 380, C.gold, ease(p, .06, .12), clean]];
+  rows.forEach(([lab, v, col, a, grow], i) => {
+    const y = ly + i * row; mono(lab, bx - 10, y + fs * .35, C.bone, a, 'right', fs * .95);
+    const w = bwMax * v / 400; if (col) { ga(a); g.fillStyle = col; g.fillRect(bx, y - fs * .5, w * grow, fs * 1.05); } else { ga(a); g.strokeStyle = C.goldHi; g.setLineDash([3, 3]); g.lineWidth = 1; g.strokeRect(bx + .5, y - fs * .5 + .5, w - 1, fs * 1.05 - 1); g.setLineDash([]); }
+    if (grow > .02) mono(`${Math.round(v * (col ? grow : 1))} louis`, bx + bwMax + 8, y + fs * .35, col || C.goldHi, a, 'left', fs * .9);
+  });
+  mono(clean < .5 ? 'FLAWED · 240 LOUIS' : 'CLEAN · THE KING KEEPS IT', cx, cy - R * 1.25, C.goldHi, .85, 'center', fs * .9);
+}
+function drawBrazier(p, t) {
+  const R = Z.s * .24, cx = Z.cx, cy = Z.cy + Z.s * .06, fs = Z.fs, tt = reduce ? 0 : t;
+  const ht = userHeat ? heat : ease(p, .62, .76), isGold = userHeat ? gold : p > .76, showH = userHands ? hands : p > .88;
+  if (!userHands && hands !== showH) { hands = showH; handsBtn.setAttribute('aria-pressed', String(hands)); }
+  const gl = g.createRadialGradient(cx, cy - R * .1, 0, cx, cy - R * .1, R * 2.2); gl.addColorStop(0, `rgba(255,120,40,${.1 + .35 * ht})`); gl.addColorStop(1, 'rgba(255,120,40,0)'); ga(1); g.fillStyle = gl; g.fillRect(cx - R * 2.2, cy - R * 2.3, R * 4.4, R * 4.4);
+  g.strokeStyle = '#2b2520'; g.lineWidth = Math.max(2, R * .04); g.beginPath(); g.moveTo(cx - R * .68, cy + R * .22); g.lineTo(cx - R * .85, cy + R * .72); g.moveTo(cx + R * .68, cy + R * .22); g.lineTo(cx + R * .85, cy + R * .72); g.moveTo(cx, cy + R * .38); g.lineTo(cx, cy + R * .78); g.stroke();
+  const bw = g.createLinearGradient(0, cy, 0, cy + R * .45); bw.addColorStop(0, '#463d34'); bw.addColorStop(1, '#14110e'); g.fillStyle = bw;
+  g.beginPath(); g.moveTo(cx - R, cy); g.bezierCurveTo(cx - R, cy + R * .52, cx + R, cy + R * .52, cx + R, cy); g.ellipse(cx, cy, R, R * .26, 0, 0, Math.PI, true); g.closePath(); g.fill();
+  g.fillStyle = '#100d0b'; g.beginPath(); g.ellipse(cx, cy, R * .95, R * .23, 0, 0, TAU); g.fill();
+  for (const [x, y, r, s] of COALS) { const X = cx + x * R * .86, Y = cy + y * R * .2, rr2 = r * R * .55, glow = ht * (.55 + .45 * Math.sin(tt * .004 + s)); const cg = g.createRadialGradient(X, Y - rr2 * .3, 0, X, Y, rr2); cg.addColorStop(0, mixHex('#3a2e26', '#ffd27a', glow)); cg.addColorStop(.7, mixHex('#241c17', '#e0521c', glow)); cg.addColorStop(1, '#120e0c'); g.fillStyle = cg; g.beginPath(); g.ellipse(X, Y, rr2, rr2 * .62, 0, 0, TAU); g.fill(); }
+  g.strokeStyle = 'rgba(160,140,120,.5)'; g.lineWidth = 1.5; g.beginPath(); g.ellipse(cx, cy, R, R * .26, 0, 0, TAU); g.stroke();
+  // the coin, lying on the coals
+  const coinX = cx, coinY = cy - R * .05, crx = R * .17, cry = R * .068, gm = isGold ? 1 : ease(ht, .65, 1) * .5;
+  g.fillStyle = mixHex('#6d7076', '#8a6417', gm); g.beginPath(); g.ellipse(coinX, coinY + R * .018, crx, cry, 0, 0, TAU); g.fill();
+  const cgr = g.createLinearGradient(coinX - crx, coinY, coinX + crx, coinY); cgr.addColorStop(0, mixHex('#a9adb4', '#c9962d', gm)); cgr.addColorStop(.5, mixHex('#eceff3', '#ffe08a', gm)); cgr.addColorStop(1, mixHex('#9a9ea5', '#b8861f', gm));
+  g.fillStyle = cgr; g.beginPath(); g.ellipse(coinX, coinY, crx, cry, 0, 0, TAU); g.fill();
+  g.save(); g.translate(coinX, coinY); g.scale(1, .42); g.fillStyle = isGold ? '#7a5512' : '#5d6168'; g.font = `600 ${R * .12}px ${DISP}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  if (isGold) { g.strokeStyle = '#7a5512'; g.lineWidth = 1.5; g.beginPath(); g.arc(0, 0, R * .07, 0, TAU); g.stroke(); g.beginPath(); g.arc(0, 0, R * .016, 0, TAU); g.fill(); } else g.fillText('12', 0, 0);
+  g.restore(); g.textBaseline = 'alphabetic';
+  if (!isGold && p > .58) { g.fillStyle = '#050505'; g.beginPath(); g.ellipse(coinX + crx * .55, coinY - cry * .2, R * .018, R * .01, 0, 0, TAU); g.fill(); }
+  if (ht > .25 && !reduce) { ga(ht * .5); g.strokeStyle = 'rgba(255,210,150,.5)'; g.lineWidth = 1; for (let j = 0; j < 4; j++) { g.beginPath(); for (let s = 0; s <= 16; s++) { const y = coinY - R * .1 - s * R * .045, x = coinX + (j - 1.5) * R * .13 + Math.sin(s * .8 + t * .006 + j) * R * .025; s ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); } ga(1);
+    for (let j = 0; j < 10; j++) { const ph = (t * .0007 + j * .13) % 1; ga(ht * (1 - ph)); g.fillStyle = '#ffb35a'; g.fillRect(cx + Math.sin(j * 9.1) * R * .6 + Math.sin(ph * 6 + j) * 6, cy - ph * R * 1.1, 2, 2); } ga(1); }
+  if (burst > 0 && isGold) { ga(burst); g.strokeStyle = C.goldHi; g.lineWidth = 1.2; for (let j = 0; j < 14; j++) { const a = j / 14 * TAU, r0 = R * .2, r1 = R * (.25 + (1 - burst) * .6); g.beginPath(); g.moveTo(coinX + Math.cos(a) * r0, coinY + Math.sin(a) * r0 * .45); g.lineTo(coinX + Math.cos(a) * r1, coinY + Math.sin(a) * r1 * .45); g.stroke(); } ga(1); }
+  // the blowpipe
+  const bx0 = cx - R * 1.45, by0 = cy - R * .62, bx1 = cx - R * .24, by1 = cy - R * .1;
+  ga(1); g.strokeStyle = '#a5823f'; g.lineWidth = Math.max(2, R * .035); g.lineCap = 'round'; g.beginPath(); g.moveTo(bx0, by0); g.lineTo(bx1, by1); g.stroke(); g.lineCap = 'butt';
+  g.fillStyle = '#c9a25a'; g.beginPath(); g.arc(bx0, by0, R * .035, 0, TAU); g.fill();
+  if (holding || (!userHeat && p > .6 && p < .76)) { g.strokeStyle = 'rgba(255,230,190,.55)'; g.lineWidth = 1; g.setLineDash([4, 6]); g.lineDashOffset = reduce ? 0 : -t * .06; for (let j = -1; j <= 1; j++) { g.beginPath(); g.moveTo(bx1, by1); g.quadraticCurveTo(bx1 + R * .12, by1 + j * R * .05, coinX - crx * .4, coinY - cry + j * 3); g.stroke(); } g.setLineDash([]); }
+  mono(isGold ? 'GOLD' : 'TWELVE SOLS · SILVER', coinX, cy + R * .72 + fs * 1.6, isGold ? C.goldHi : C.bone, .9, 'center', fs * .9);
+  if (showH) drawHands(cx, cy, R, coinX, coinY, t, fs);
+}
+/* the trick Casanova suspected, drawn like an engraving: the back of a hand over the coals, a lace cuff, a gold piece hidden in the palm */
+const HAND = new Path2D('M98,20 L72,17 Q52,13 34,18 Q16,24 8,33 Q3,40 12,43 Q28,46 46,42 L54,42 Q50,49 41,53 Q34,57 40,60 Q54,60 66,49 L98,46 Z');
+function drawHands(cx, cy, R, coinX, coinY, t, fs) {
+  const k = R * 1.05 / 110, px = cx + R * .62, py = cy - R * .78, th = -.28, ct = Math.cos(th), st = Math.sin(th);
+  const map = (lx, ly) => [px + k * ((lx - 40) * ct - (ly - 44) * st), py + k * ((lx - 40) * st + (ly - 44) * ct)];
+  const gl = g.createRadialGradient(px, py, 0, px, py, R * .2); gl.addColorStop(0, 'rgba(245,220,142,.55)'); gl.addColorStop(1, 'rgba(245,220,142,0)'); ga(1); g.fillStyle = gl; g.fillRect(px - R * .2, py - R * .2, R * .4, R * .4);
+  g.save(); g.translate(px, py); g.rotate(th); g.scale(k, k); g.translate(-40, -44);
+  g.fillStyle = '#e9be4f'; g.beginPath(); g.ellipse(40, 44, 7, 3.5, 0, 0, TAU); g.fill();
+  g.lineWidth = 1.3 / k; g.strokeStyle = C.bone; g.fillStyle = 'rgba(30,24,18,.72)'; g.fill(HAND); g.stroke(HAND);
+  g.beginPath(); g.moveTo(13, 35); g.quadraticCurveTo(28, 30, 44, 31); g.moveTo(16, 39); g.quadraticCurveTo(30, 36, 46, 37); g.moveTo(36, 22); g.quadraticCurveTo(46, 22, 58, 24); g.stroke();
+  g.setLineDash([1.6, 1.6]); g.strokeStyle = C.goldHi; g.beginPath(); g.ellipse(40, 44, 7, 3.5, 0, 0, TAU); g.stroke(); g.setLineDash([]);
+  g.fillStyle = '#0e0c09'; g.strokeStyle = C.bone; g.fillRect(96, 10, 14, 46); g.strokeRect(96, 10, 14, 46);
+  g.beginPath(); for (let i = 0; i <= 10; i++) g.lineTo(96 - (i % 2 ? 4 : 0), 10 + i * 4.6); g.stroke();
+  g.restore();
+  const [cuX, cuY] = map(103, 52), [cfX, cfY] = map(110, 12);
+  g.lineWidth = 1.2; g.setLineDash([5, 5]); g.lineDashOffset = reduce ? 0 : -t * .04;
+  ga(1); g.strokeStyle = C.goldHi; g.beginPath(); g.moveTo(coinX + R * .08, coinY - R * .03); g.quadraticCurveTo(cuX, coinY - R * .05, cuX, cuY + R * .04); g.stroke();
+  g.strokeStyle = C.bone; g.beginPath(); g.moveTo(px - R * .03, py + R * .06); g.quadraticCurveTo(px - R * .35, py + R * .3, coinX - R * .04, coinY - R * .05); g.stroke(); g.setLineDash([]);
+  mono('silver, up the sleeve', Math.min(Z.x + Z.w - 8, cfX + R * .1), cfY - fs * .8, C.goldHi, 1, 'right', fs * .9);
+  mono('gold, from the palm', Math.max(Z.x + 8, px - R * .95), py + R * .32, C.bone, 1, 'left', fs * .9);
+  ga(1);
+}
+function drawS3(p, t) {
+  const A = 1 - ease(p, .36, .42), B = ease(p, .38, .46), base = GA;
+  tag(p < .4 ? 'Versailles · the king\'s diamond' : 'Tournai · 1764');
+  meta.anno = p < .4 ? '1758' : '1764';
+  if (A > 0) { GA = base * A; drawDiamond(p, t); }
+  if (B > 0) { GA = base * B; drawBrazier(p, t); }
+  GA = base;
+}
+
+/* ---------- IV · the elixir ---------- */
+const steepIn = $('#steep'), steepOut = $('#steepOut'); let userSteep = false; steepIn.addEventListener('input', () => { userSteep = true; });
+let steamSw = null;
+function cup(cx, y, w, st, t) {
+  ga(.5); g.fillStyle = '#000'; g.beginPath(); g.ellipse(cx + 4, y + 6, w * .8, w * .13, 0, 0, TAU); g.fill();
+  ga(1); g.fillStyle = '#d9d2c3'; g.beginPath(); g.ellipse(cx, y, w * .78, w * .13, 0, 0, TAU); g.fill(); g.fillStyle = '#bdb4a2'; g.beginPath(); g.ellipse(cx, y + w * .01, w * .5, w * .07, 0, 0, TAU); g.fill();
+  g.strokeStyle = 'rgba(217,181,90,.8)'; g.lineWidth = 1.2; g.beginPath(); g.ellipse(cx, y, w * .7, w * .11, 0, 0, TAU); g.stroke();
+  const top = y - w * .55, rx = w * .5, bg = g.createLinearGradient(cx - rx, 0, cx + rx, 0); bg.addColorStop(0, '#bdb3a0'); bg.addColorStop(.4, '#f4efe4'); bg.addColorStop(1, '#a59b88');
+  g.strokeStyle = '#d8d0bf'; g.lineWidth = w * .06; g.beginPath(); g.ellipse(cx + rx * 1.02, top + w * .2, w * .15, w * .13, 0, -Math.PI / 2, Math.PI / 2); g.stroke();
+  g.fillStyle = bg; g.beginPath(); g.moveTo(cx - rx, top); g.bezierCurveTo(cx - rx, y - w * .12, cx - rx * .55, y - w * .03, cx - rx * .4, y - w * .03); g.lineTo(cx + rx * .4, y - w * .03); g.bezierCurveTo(cx + rx * .55, y - w * .03, cx + rx, y - w * .12, cx + rx, top); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(217,181,90,.9)'; g.lineWidth = 1.5; g.beginPath(); g.ellipse(cx, top + w * .06, rx * .985, w * .1, 0, 0, Math.PI); g.stroke();
+  g.fillStyle = '#efe9dc'; g.beginPath(); g.ellipse(cx, top, rx, w * .11, 0, 0, TAU); g.fill();
+  g.fillStyle = mixHex('#d9c98f', '#4a2e12', st); g.beginPath(); g.ellipse(cx, top + w * .012, rx * .9, w * .09, 0, 0, TAU); g.fill();
+  if (!reduce) for (let j = 0; j < 5; j++) { const ph = (t * .00035 + j / 5) % 1; ga((1 - ph) * ph * .7); g.strokeStyle = C.bone; g.lineWidth = 1.2; g.beginPath(); const x0 = cx + (j - 2) * rx * .3; for (let s = 0; s <= 10; s++) { const yy = top - s * w * .09 - ph * w * .5, xx = x0 + Math.sin(s * .7 + t * .002 + j) * 6; s ? g.lineTo(xx, yy) : g.moveTo(xx, yy); } g.stroke(); }
+  ga(1);
+}
+function packet(x, y, w, a) {
+  if (a <= 0) return; const h = w * 1.3, f = Math.max(7.5, w * .11);
+  ga(a); g.save(); g.translate(x, y - h * .52); g.rotate(-.08);
+  g.fillStyle = '#e6dcc2'; g.fillRect(-w / 2, -h / 2, w, h); g.strokeStyle = '#7e6a44'; g.lineWidth = 1; g.strokeRect(-w / 2 + .5, -h / 2 + .5, w - 1, h - 1);
+  g.fillStyle = '#3a2c18'; g.textAlign = 'center'; g.font = `500 ${f}px ${MONO}`; g.fillText('S. GERMAIN', 0, -h * .24); g.fillText('THEE', 0, -h * .24 + f * 1.35);
+  g.font = `italic ${f * 1.25}px ${DISP}`; g.fillText('Fol. Sennae', 0, h * .12);
+  g.fillStyle = '#4f8a5b'; g.beginPath(); g.ellipse(-w * .08, h * .32, w * .17, w * .07, .5, 0, TAU); g.fill(); g.beginPath(); g.ellipse(w * .1, h * .3, w * .15, w * .06, -.4, 0, TAU); g.fill();
+  g.restore(); ga(1);
+}
+function drawS4(p, t, dt) {
+  const [k, q] = ck(p, 5), fs = Z.fs;
+  if (!userSteep) { const v = Math.round(10 * ease(p, .64, .88)); if (+steepIn.value !== v) steepIn.value = String(v); }
+  const st = +steepIn.value / 10, so = `${steepIn.value} min`; if (steepOut.textContent !== so) { steepOut.textContent = so; steepIn.setAttribute('aria-valuetext', `${steepIn.value} minutes${st >= .7 ? ', the steam spells senna' : ''}`); }
+  tag(k === 1 ? 'Greek · Arabic · Latin' : k >= 3 ? 'Germany · Denmark · the 1800s' : 'Versailles · Tournai');
+  meta.anno = k >= 3 ? '1800s' : k === 1 ? '—' : '1760';
+  let word = 'elixir', font = `italic 600 %px ${DISP}`;
+  if (k === 1) { const seq = [['ξήριον', `400 %px ${GREEK}`], ['al-iksīr', `italic 600 %px ${DISP}`], ['elixir', `italic 600 %px ${DISP}`]]; const s = reduce ? seq[2] : seq[Math.floor(t / 2400) % 3]; word = s[0]; font = s[1]; }
+  if (k >= 3 && st >= .7) word = 'senna';
+  const cupY = Z.y + Z.h * (Z.wide ? .76 : .82), cw = Math.min(Z.s * .34, 220), wy = Z.y + Z.h * (Z.wide ? .3 : .28), ww = Math.min(Z.w * .82, 560);
+  steamSw.target(wordPts(word, font), Z.cx, wy, ww, ww * 200 / 720, `${word}|${font}|${ww | 0}|${wy | 0}|${Z.cx | 0}`);
+  steamSw.step(dt, t);
+  cup(Z.cx, cupY, cw, st, t);
+  steamSw.draw(t, [C.bone, C.verd, '#d9efe6', C.bone], Z.wide ? 1.7 : 1.4, .85);
+  if (k >= 3) packet(Math.max(Z.x + cw * .36, Z.cx - cw * 1.2), cupY, cw * .52, ease(k + q - 3, 0, .3));
+  if (k === 4) mono('SENNA · A LAXATIVE', Z.cx, cupY + cw * .2 + fs * 2.2, C.verd, ease(q, .1, .4), 'center', fs);
+}
+
+/* ---------- V · rumor ---------- */
+const RET = [
+  { v: 50, lab: '≈50', who: 'du Hausset', note: 'About fifty: what he looked like around 1760, to Madame du Hausset.' },
+  { v: 88, lab: '88', who: 'his own word', self: 1, note: '88: what he told Prince Charles of Hesse-Kassel in 1779. The one number from his own mouth with a source attached.' },
+  { v: 100, lab: '100+', who: 'to Pompadour', note: 'Over a hundred: “not impossible,” he told Madame de Pompadour, as du Hausset tells it.' },
+  { v: 300, lab: '300', who: 'Casanova', note: '300: what he claimed at dinner in Paris in 1757, according to Casanova.' },
+  { v: 350, lab: '350', who: 'Lamberg', note: '350: what Count Lamberg wrote down.' },
+  { v: 500, lab: '500', who: 'Gleichen', note: '500: what Paris believed, as Baron von Gleichen reported it.' },
+  { v: 1730, lab: '1,700+', who: 'a comedian', note: 'More than 1,700: Milord Gower, an English comic who played him at parties, remembered advising Jesus.' },
+  { v: 2000, lab: '2,000', who: 'a footnote', note: '2,000, “and still running”: an editor\'s footnote to du Hausset\'s memoir.' },
+  { v: Infinity, lab: '∞', who: 'the faithful', note: 'Ageless: a living Master, for the Theosophists and the I AM movement. A belief, not a number, so it leaves the chart.' }
+];
+let userN = null, autoN = 0; const retT = new Array(9).fill(null), o5 = $('#o5'), tellBtn = $('#tellBtn');
+tellBtn.addEventListener('click', () => { const n = Math.min(9, (userN === null ? autoN : userN) + 1); userN = n; say(o5, RET[n - 1].note); tellBtn.disabled = n >= 9; notes([[60 + n * 2, 2]]); });
+$('#tellReset').addEventListener('click', () => { userN = 0; tellBtn.disabled = false; say(o5, 'Back to the start. Nobody has told it yet.'); });
+const RSTARS = (() => { const R = rng(175), a = []; for (let i = 0; i < 270; i++) a.push([R(), R(), R() * TAU, R()]); return a; })();
+function drawS5(p, t) {
+  const [k] = ck(p, 5), fs = Z.fs;
+  autoN = Math.round(ease(p, .2, .62) * 9);
+  const n = userN === null ? autoN : userN;
+  for (let i = 0; i < 9; i++) { if (i < n && retT[i] === null) retT[i] = t; if (i >= n) retT[i] = null; }
+  meta.age = n ? RET[n - 1].lab : '?';
+  tag(k === 3 ? 'du Hausset, 1809 → Cooper-Oakley, 1912' : 'His age, as told');
+  const L = Z.x + Math.max(50, Z.w * .11), Rr = Z.x + Z.w - Math.max(18, Z.w * .05), T = Z.y + Z.h * (Z.wide ? .2 : .2), B = Z.y + Z.h * (Z.wide ? .72 : .7);
+  const Y = v => B - (Math.log10(v) - 1) / 3 * (B - T), X = i => L + (i + .5) / 9 * (Rr - L);
+  // rumor dust: more of it with every telling
+  for (let i = 0; i < Math.min(RSTARS.length, n * 30); i++) { const s = RSTARS[i]; ga((.25 + .35 * Math.sin((reduce ? 0 : t) * .002 + s[2])) * .8); g.fillStyle = s[3] < .7 ? C.gold : C.ember; g.fillRect(Z.x + s[0] * Z.w, Z.y + s[1] * Z.h, 1.4, 1.4); }
+  g.lineWidth = 1;
+  for (const v of [10, 100, 1000, 10000]) { ga(.22); g.strokeStyle = C.bone; g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(Rr, Y(v)); g.stroke(); mono(v.toLocaleString('en-US'), L - 8, Y(v) + fs * .35, C.muted, .9, 'right', fs * .85); }
+  mono('YEARS OLD', L, T - fs * 1.6, C.gold, .9, 'left', fs * .85);
+  ga(.14); g.fillStyle = C.verd; g.fillRect(L, Y(69), Rr - L, Y(48) - Y(69)); mono('what he probably was, c. 1760: 48–69', Rr - 4, Y(48) + fs * 1.3, C.verd, .95, 'right', fs * .85);
+  let px = null, py = null;
+  for (let i = 0; i < 9; i++) {
+    if (retT[i] === null) break; const r = RET[i], age = reduce ? 1 : ease(t - retT[i], 0, 520), x = X(i), yv = isFinite(r.v) ? Y(r.v) : T - Z.h * .12;
+    if (px !== null) { ga(1); g.strokeStyle = C.ember; g.lineWidth = 2; g.beginPath(); g.moveTo(px, py); g.lineTo(lerp(px, x, age), lerp(py, yv, age)); g.stroke(); }
+    if (age > .85) {
+      if (isFinite(r.v)) { ga(1); g.fillStyle = r.self ? C.goldHi : C.gold; g.beginPath(); g.arc(x, yv, r.self ? 5 : 4, 0, TAU); g.fill(); if (r.self) { g.strokeStyle = C.goldHi; g.lineWidth = 1.2; g.beginPath(); g.arc(x, yv, 10, 0, TAU); g.stroke(); } mono(r.lab, x, yv - 12, r.self ? C.goldHi : C.bone, 1, 'center', fs * 1.05); }
+      else { ga(1); g.fillStyle = C.ember; g.beginPath(); g.moveTo(x, yv - 8); g.lineTo(x - 6, yv + 4); g.lineTo(x + 6, yv + 4); g.closePath(); g.fill(); txt('∞', x + 14, yv + 8, `400 ${fs * 2.6}px ${DISP}`, C.goldHi, 1, 'left'); }
+      g.save(); g.translate(x + 3, B + 12); g.rotate(-.62); mono(r.who, 0, 0, C.muted, 1, 'right', fs * .85); g.restore();
+    }
+    px = x; py = yv;
+  }
+}
+
+/* ---------- VI · the register ---------- */
+const LINES_W = ['Deceased on February 27th, buried on March 2nd, 1784,', 'the so-called Comte de St. Germain and Weldon.', 'Further information not known.'];
+const LINES_N = ['Deceased on February 27th,', 'buried on March 2nd, 1784,', 'the so-called Comte de St. Germain', 'and Weldon.', 'Further information not known.'];
+const STAINS = (() => { const R = rng(84), a = []; for (let i = 0; i < 9; i++) a.push([R() - .5, R() - .5, 8 + R() * 40, .05 + R() * .06]); return a; })();
+function drawS6(p, t) {
+  const [k] = ck(p, 5), fs = Z.fs;
+  tag(k < 2 ? 'Schleswig · Eckernförde · 1779' : 'St. Nicolai · Eckernförde · 1784');
+  meta.anno = k < 2 ? '1779' : '1784'; meta.age = k < 2 ? '88' : '93?';
+  const pw = Math.min(Z.w * .86, 600), ph = Math.min(Z.h * .74, pw * .8), cx = Z.cx + (Z.wide ? Z.w * .02 : 0), cy = Z.cy, narrow = pw < 480, LINES = narrow ? LINES_N : LINES_W;
+  // a candle beside the page, out once the entry is written
+  if (Z.wide) { const lit = p < .58, x = cx - pw / 2 - 46, base = cy + ph * .42; candle(x, base, 20, ph * .4 * (lit ? 1 : .96), lit, t, 3, false); if (!lit) wisp(x, base - ph * .4 * .96 - 6, t, 2); }
+  g.save(); g.translate(cx, cy); g.rotate(-.018);
+  ga(.5); g.fillStyle = '#000'; g.fillRect(-pw / 2 + 8, -ph / 2 + 10, pw, ph);
+  const pg = g.createRadialGradient(0, 0, pw * .2, 0, 0, pw * .75); pg.addColorStop(0, '#eadfc3'); pg.addColorStop(1, '#b9a57c'); ga(1); g.fillStyle = pg; g.fillRect(-pw / 2, -ph / 2, pw, ph);
+  for (const [x, y, r, a] of STAINS) { const X = x * pw * .9, Y = y * ph * .9, Rr = r * pw / 600 * 1.4, sg = g.createRadialGradient(X, Y, 0, X, Y, Rr); sg.addColorStop(0, 'rgba(122,90,42,.9)'); sg.addColorStop(.7, 'rgba(122,90,42,.5)'); sg.addColorStop(1, 'rgba(122,90,42,0)'); ga(a); g.fillStyle = sg; g.fillRect(X - Rr, Y - Rr, Rr * 2, Rr * 2); }
+  const lh = ph / 11, mx = -pw / 2 + pw * .18;
+  ga(.35); g.strokeStyle = '#8a6a3e'; g.lineWidth = 1; for (let i = 2; i < 11; i++) { g.beginPath(); g.moveTo(-pw / 2 + 10, -ph / 2 + i * lh); g.lineTo(pw / 2 - 10, -ph / 2 + i * lh); g.stroke(); }
+  g.beginPath(); g.moveTo(mx, -ph / 2 + lh * 1.3); g.lineTo(mx, ph / 2 - 8); g.stroke();
+  ga(.85); g.fillStyle = '#3b2a16'; g.textAlign = 'center'; g.font = `italic 500 ${clamp(lh * .48, 11, 20)}px ${DISP}`; g.fillText(narrow ? 'Todten-Register · Anno 1784' : 'Todten-Register · St. Nicolai · Anno 1784', 0, -ph / 2 + lh * 1.05);
+  g.strokeStyle = 'rgba(59,42,22,.5)'; g.lineWidth = 1.1; for (let i = 0; i < 3; i++) { ga(.7); squiggle(g, mx + 10, pw / 2 - 20 - (i === 2 ? pw * .3 : 0), -ph / 2 + (2 + i) * lh + lh * .62, 1.7, i * 3.1); }
+  // the entry, written line by line
+  const ey = -ph / 2 + 6 * lh - (narrow ? lh : 0), avail = pw / 2 - 14 - (mx + 10);
+  g.font = `20px ${SCRIPT}`; const longest = Math.max(...LINES.map(s => g.measureText(s).width)), sf = Math.min(lh * .66, 20 * avail / longest);
+  const wp = reduce ? (p > .42 ? 1 : 0) : clamp((p - .42) / .15, 0, 1);
+  ga(ease(wp, 0, .08)); g.font = `${sf * (narrow ? .78 : .92)}px ${SCRIPT}`; g.fillStyle = '#2a1d0e'; g.textAlign = 'left'; g.fillText('Febr. 27', -pw / 2 + 10, ey + lh * .66); g.fillText('Mart. 2', -pw / 2 + 10, ey + lh * 1.66);
+  g.font = `${sf}px ${SCRIPT}`;
+  for (let i = 0; i < LINES.length; i++) {
+    const lp = clamp(wp * LINES.length - i, 0, 1); if (lp <= 0) break;
+    const y = ey + i * lh + lh * .66, x0 = mx + 10, tw = g.measureText(LINES[i]).width;
+    g.save(); g.beginPath(); g.rect(x0 - 4, y - lh, tw * lp + 6, lh * 1.5); g.clip(); ga(1); g.fillStyle = i === LINES.length - 1 ? '#5a1a10' : '#2a1d0e'; g.fillText(LINES[i], x0, y); g.restore();
+    if (lp < 1 && !reduce) { ga(1); g.fillStyle = '#111'; g.beginPath(); g.arc(x0 + tw * lp, y - sf * .25, 2, 0, TAU); g.fill(); }
+  }
+  if (wp >= 1) mono('as usually translated', pw / 2 - 14, ph / 2 - 10, '#6d5532', .9, 'right', fs * .85);
+  g.restore();
+  // what he left
+  const ea = ease(p, .6, .66);
+  if (ea > 0) {
+    const sw = Math.min(pw * .48, 240), sh = sw * 1.08, sx = cx + pw * .5 - sw * .58, sy = cy + ph * .16, lf = Math.max(9, sw * .056);
+    g.save(); g.translate(sx, sy); g.rotate(.05);
+    ga(ea * .45); g.fillStyle = '#000'; g.fillRect(-sw / 2 + 6, -sh / 2 + 8, sw, sh);
+    ga(ea); g.fillStyle = '#f3ecd9'; g.fillRect(-sw / 2, -sh / 2, sw, sh); g.strokeStyle = '#9b8458'; g.lineWidth = 1; g.strokeRect(-sw / 2 + .5, -sh / 2 + .5, sw - 1, sh - 1);
+    const rows = [['NACHLASS · HIS ESTATE', 0], ['c. 82 Rthlr. 13 ß', 0], ['clothing', 0], ['linen', 0], ['small effects', 0], ['gold', 1], ['jewels', 1], ['elixir', 1]];
+    g.textAlign = 'left';
+    rows.forEach(([s, x], i) => {
+      const y = -sh / 2 + lf * 2.1 + i * lf * 1.72; g.font = i === 0 ? `500 ${lf * .9}px ${MONO}` : `${lf * 1.4}px ${SCRIPT}`; ga(ea); g.fillStyle = i === 0 ? '#7a5d2a' : '#2a1d0e'; g.fillText(s, -sw / 2 + 12, y);
+      if (x) { const sa = reduce ? 1 : ease(p, .66 + (i - 5) * .025, .69 + (i - 5) * .025), w = g.measureText(s).width; g.strokeStyle = '#8a1e12'; g.lineWidth = 1.6; g.beginPath(); g.moveTo(-sw / 2 + 10, y - lf * .35); g.lineTo(-sw / 2 + 10 + (w + 6) * sa, y - lf * .35); g.stroke(); if (sa >= 1) { g.fillStyle = '#8a1e12'; g.fillText('none', -sw / 2 + 22 + w, y); } }
+    });
+    g.restore(); ga(1);
+  }
+}
+
+/* ---------- VII · the apparition ---------- */
+const LIFE = [1745, 1757, 1760, 1764, 1779];
+const AFTER = [[1836, 'a forged memoir', .2], [1896, 'Annie Besant', .4], [1930, 'Mount Shasta', .6], [1972, 'French TV', .8], [2026, 'here', .9]];
+let ghostSw = null, ghostX = -1;
+function drawS7(p, t, dt) {
+  const fs = Z.fs, x0 = Z.x + Z.w * .07, x1 = Z.x + Z.w * .93, yA = Z.y + Z.h * (Z.wide ? .7 : .72);
+  const XS = y => y <= 1790 ? x0 + (y - 1740) / 50 * .34 * (x1 - x0) : x0 + .34 * (x1 - x0) + (y - 1790) / 240 * .66 * (x1 - x0);
+  tag('After 1784');
+  ga(.5); g.strokeStyle = C.bone; g.lineWidth = 1; g.beginPath(); g.moveTo(x0, yA); g.lineTo(x1, yA); g.stroke();
+  const xb = XS(1790); ga(.7); g.beginPath(); g.moveTo(xb - 5, yA + 6); g.lineTo(xb - 1, yA - 6); g.moveTo(xb + 2, yA + 6); g.lineTo(xb + 6, yA - 6); g.stroke();
+  for (const y of [1750, 1775, 1800, 1850, 1900, 1950, 2000]) { const x = XS(y); ga(.4); g.beginPath(); g.moveTo(x, yA); g.lineTo(x, yA + 5); g.stroke(); mono(String(y), x, yA + fs * 1.8, C.muted, .75, 'center', fs * .8); }
+  // the documented life, in gold, under one bracket
+  for (const y of LIFE) { ga(1); g.fillStyle = C.gold; g.beginPath(); g.arc(XS(y), yA, 3.2, 0, TAU); g.fill(); }
+  const bxa = XS(1745), bxb = XS(1784), byy = yA - fs * 2.2; ga(.7); g.strokeStyle = C.gold; g.beginPath(); g.moveTo(bxa, byy + 5); g.lineTo(bxa, byy); g.lineTo(bxb, byy); g.lineTo(bxb, byy + 5); g.stroke();
+  mono('ON THE RECORD · 1745–1784', (bxa + bxb) / 2, byy - 7, C.gold, .95, 'center', fs * .8);
+  // the grave
+  const gx = XS(1784), gw = fs * 1.5, gh = fs * 2; ga(1); g.fillStyle = '#5b5850'; rr(g, gx - gw / 2, yA - gh, gw, gh, gw * .45); g.fill(); g.strokeStyle = '#8e897d'; g.stroke();
+  // the turnings-up, in smoke blue
+  let latest = 1784, li = -1;
+  AFTER.forEach(([y, lab, th], i) => {
+    const a = ease(p, th, th + .04); if (a <= 0) return; latest = y; li = i; const x = XS(y);
+    ga(a); g.strokeStyle = C.prus; g.lineWidth = 1.6; g.beginPath(); g.arc(x, yA, 5.5, 0, TAU); g.stroke();
+    const row = i % 2 ? fs * 4.6 : fs * 3.3; mono(String(y), x, yA + row, C.prus, a, 'center', fs * .95); mono(lab, x, yA + row + fs * 1.3, C.bone, a * .9, 'center', fs * .85);
+  });
+  meta.anno = latest === 1784 ? '1784' : String(latest);
+  // the figure made of dust, walking the line
+  const sh = Math.min(Z.h * (Z.wide ? .5 : .46), 330), half = sh * 300 / 360 / 2;
+  const target = clamp(li < 0 ? gx : XS(latest), Z.x + half + 4, Z.x + Z.w - half - 4); if (ghostX < 0) ghostX = target; ghostX = reduce ? target : lerp(ghostX, target, 1 - Math.pow(.15, dt / 1000));
+  const rise = li < 0 ? ease(p, .02, .15) : 1, gy = yA - sh * .56 - 12 + (1 - rise) * sh * .3;
+  ghostSw.target(silPts(), Math.round(ghostX), Math.round(gy), sh * 300 / 360, sh, `g${Math.round(ghostX / 4)}|${Math.round(gy)}|${sh | 0}`);
+  ghostSw.step(dt, t);
+  ga(.35); g.strokeStyle = C.prus; g.setLineDash([2, 5]); g.beginPath(); g.moveTo(gx, yA - gh - 4); g.lineTo(ghostX, yA - 10); g.stroke(); g.setLineDash([]);
+  ghostSw.draw(t, [C.prus, C.smoke, '#a9c2e6', C.bone], Z.wide ? 1.7 : 1.4, .6 * rise);
+}
+
+/* ---------- VIII · the touchstone ---------- */
+const ASSAY = [
+  { s: 'He played the violin wonderfully.', sh: 'violinist', v: 'g', why: 'Gold. Horace Walpole heard him in 1745, and his songs and violin sonatas survive.' },
+  { s: 'Voltaire called him a man who never dies.', sh: 'Voltaire\'s line', v: 'g', why: 'Gold. It\'s in Voltaire\'s letter to Frederick the Great of 15 April 1760. It was a joke.' },
+  { s: 'He died at Eckernförde in 1784.', sh: 'buried 1784', v: 'g', why: 'Gold. The burial register of St. Nicolai records it: died 27 February, buried 2 March.' },
+  { s: 'He was a son of Prince Rákóczi.', sh: 'Rákóczi\'s son', v: 'b', why: 'Brass. His own word, late in life, to Prince Charles of Hesse-Kassel. Never proved.' },
+  { s: 'He took the flaw out of the king\'s diamond.', sh: 'the diamond', v: 'b', why: 'Brass. Madame du Hausset had it from court. Nobody saw the work, and a second stone cut to match would do the same trick.' },
+  { s: 'He turned Casanova\'s coin to gold.', sh: 'the coin', v: 'b', why: 'Brass. Casanova watched it happen, and wrote that it was a switch.' },
+  { s: 'He was five hundred years old.', sh: '500 years', v: 'l', why: 'Lead. Paris gossip, and Baron von Gleichen reported it as gossip.' },
+  { s: 'He advised Jesus.', sh: 'advised Jesus', v: 'l', why: 'Lead. A comedian\'s routine: Milord Gower played him at parties.' },
+  { s: 'He warned Marie Antoinette of the Revolution.', sh: 'the warning', v: 'l', why: 'Lead. It comes from the Comtesse d\'Adhémar\'s memoir, forged in 1836.' },
+  { s: 'His name was Saint-Germain.', sh: 'his name', v: 'n', why: 'No streak at all. A name you give yourself isn\'t gold or lead. It\'s a story.' }
+];
+const ORDER = [0, 4, 7, 2, 5, 8, 1, 3, 6], VNAME = { g: 'gold', b: 'brass', l: 'lead', n: 'no streak' };
+const chips = $('#chips'), dk8 = $('#dk8'), o8 = $('#o8'), assayed = [], streakT = {}; let lastAuto = 0, rewinding = false;
+ORDER.forEach(i => { const b = document.createElement('button'); b.type = 'button'; b.dataset.i = String(i); b.innerHTML = `<span>${ASSAY[i].s}</span><span class="v"></span>`; chips.appendChild(b); });
+const count9 = () => assayed.filter(i => i < 9).length;
+function assay(i) {
+  const it = ASSAY[i];
+  if (assayed.includes(i)) { say(o8, it.why); return; }
+  assayed.push(i); streakT[i] = performance.now();
+  const b = i === 9 ? $('#tenth') : chips.querySelector(`[data-i="${i}"]`); b.dataset.v = it.v; b.classList.add('done'); b.querySelector('.v').textContent = VNAME[it.v];
+  const done = count9() === 9 && i < 9; if (done) dk8.classList.add('ten');
+  say(o8, it.why + (done ? ' Three gold, three brass, three lead.' : '')); verdictSound(it.v);
+}
+chips.addEventListener('click', e => { const b = e.target.closest('button'); if (b) assay(+b.dataset.i); });
+$('#tenth').addEventListener('click', () => assay(9));
+chips.addEventListener('keydown', e => {
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; const bs = [...chips.children], i = bs.indexOf(document.activeElement); if (i < 0) return;
+  e.preventDefault(); const j = clamp(i + (e.key === 'ArrowRight' ? 1 : -1), 0, bs.length - 1); bs[j].focus(); bs[j].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+});
+$('#chipPrev').addEventListener('click', () => chips.scrollBy({ left: -chips.clientWidth * .8, behavior: reduce ? 'auto' : 'smooth' }));
+$('#chipNext').addEventListener('click', () => chips.scrollBy({ left: chips.clientWidth * .8, behavior: reduce ? 'auto' : 'smooth' }));
+function resetAssay() { assayed.length = 0; for (const k in streakT) delete streakT[k]; for (const b of [...chips.children, $('#tenth')]) { b.classList.remove('done'); b.dataset.v = ''; b.querySelector('.v').textContent = ''; } dk8.classList.remove('ten'); }
+let stoneCache = null;
+function stoneTex(w, h) {
+  const key = `${Math.round(w)}x${Math.round(h)}x${DPR}`; if (stoneCache && stoneCache.key === key) return stoneCache.c;
+  const c = document.createElement('canvas'); c.width = Math.round(w * DPR); c.height = Math.round(h * DPR); const o = c.getContext('2d'); o.scale(DPR, DPR);
+  const gr = o.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#201f21'); gr.addColorStop(1, '#09090a'); o.fillStyle = gr; rr(o, 0, 0, w, h, Math.min(w, h) * .07); o.fill();
+  o.save(); o.clip(); const R = rng(77); for (let i = 0; i < w * h / 55; i++) { o.globalAlpha = R() * .14; o.fillStyle = R() < .5 ? '#46454a' : '#000'; o.fillRect(R() * w, R() * h, 1 + R() * 1.5, 1 + R() * 1.5); } o.restore();
+  o.globalAlpha = 1; o.strokeStyle = 'rgba(255,255,255,.16)'; o.lineWidth = 1.5; rr(o, 1, 1, w - 2, h - 2, Math.min(w, h) * .07); o.stroke();
+  stoneCache = { key, c }; return c;
+}
+const STREAK = { g: ['#f6dc84', '#e2b84c', '#c99a35', '#fff0b0'], b: ['#c4a159', '#a5823f', '#8e7a3e', '#b59a5a'], l: ['#8d9097', '#6d7078', '#55575d', '#9a9ca3'] };
+function glyph(v, x, y, s, col) {
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = Math.max(1.2, s * .11); g.beginPath();
+  if (v === 'g') { g.arc(x, y, s * .42, 0, TAU); g.stroke(); g.beginPath(); g.arc(x, y, s * .1, 0, TAU); g.fill(); }
+  else if (v === 'b') { g.arc(x, y - s * .2, s * .28, 0, TAU); g.moveTo(x, y + s * .08); g.lineTo(x, y + s * .58); g.moveTo(x - s * .2, y + s * .34); g.lineTo(x + s * .2, y + s * .34); g.stroke(); }
+  else if (v === 'l') { g.moveTo(x - s * .1, y - s * .55); g.lineTo(x - s * .1, y + s * .1); g.moveTo(x - s * .32, y - s * .32); g.lineTo(x + s * .12, y - s * .32); g.moveTo(x - s * .1, y - s * .05); g.quadraticCurveTo(x + s * .35, y - s * .2, x + s * .25, y + s * .2); g.quadraticCurveTo(x + s * .15, y + s * .45, x + s * .35, y + s * .55); g.stroke(); }
+}
+function drawS8(p, t) {
+  const fs = Z.fs; tag('The touchstone'); meta.age = '—';
+  if (p > .7 && !rewinding && count9() < 9 && t - lastAuto > 420) { lastAuto = t; const nx = ORDER.find(i => !assayed.includes(i)); if (nx !== undefined) assay(nx); }
+  // keep the stone clear of the claims panel, wherever the panel sits
+  const dr = DOCKS[5].on ? dk8.getBoundingClientRect() : null; let top = Z.wide ? 60 : Z.y, bot = Z.wide ? H - 30 : Z.y + Z.h;
+  if (dr && dr.height > 0) { if (Z.wide) bot = Math.min(bot, dr.top - 14); else top = Math.max(top, dr.bottom + 12); }
+  const sw = Math.min(Z.w * .82, 580), sh = Math.max(110, Math.min(sw * .66, bot - top - fs * 2.6)), sx = Z.cx - sw / 2, sy = top + (bot - top - sh) / 2 - fs * .5;
+  ga(.6); g.fillStyle = '#000'; rr(g, sx + 8, sy + 12, sw, sh, Math.min(sw, sh) * .07); g.fill();
+  ga(1); g.drawImage(stoneTex(sw, sh), sx, sy, sw, sh);
+  const order = assayed.filter(i => i < 9), cw = sw / 3, chh = (sh - fs * 3) / 3, now = performance.now();
+  order.forEach((i, n) => {
+    const it = ASSAY[i], col = n % 3, row = Math.floor(n / 3), cx = sx + cw * (col + .5), cy = sy + chh * (row + .5) + fs * .4, grow = reduce ? 1 : ease(now - streakT[i], 0, 650), R = rng(i * 31 + 7), pal = STREAK[it.v];
+    const ax = cx - cw * .36, ay = cy + chh * .12, bx = cx + cw * .36, by = cy - chh * .22;
+    ga(.5); g.strokeStyle = pal[1]; g.lineCap = 'round'; g.lineWidth = chh * .16; g.beginPath(); g.moveTo(ax, ay); g.lineTo(lerp(ax, bx, grow), lerp(ay, by, grow)); g.stroke();
+    ga(.35); g.strokeStyle = pal[3]; g.lineWidth = chh * .05; g.beginPath(); g.moveTo(ax + 4, ay - chh * .03); g.lineTo(lerp(ax, bx, grow) - 4, lerp(ay, by, grow) - chh * .03); g.stroke(); g.lineCap = 'butt';
+    for (let s = 0; s < 70; s++) { const u = s / 70; if (u > grow) break; const x = lerp(ax, bx, u), y = lerp(ay, by, u), off = (R() - .5) * chh * .22, len = 4 + R() * 9; ga(.55 + R() * .45); g.strokeStyle = pal[Math.floor(R() * pal.length)]; g.lineWidth = 1 + R() * 2.2; g.beginPath(); g.moveTo(x + off * .3, y + off); g.lineTo(x + off * .3 + len, y + off - len * .45); g.stroke(); }
+    if (grow > .6) { ga(ease(grow, .6, 1)); glyph(it.v, cx - cw * .34, cy + chh * .36, fs * 1.3, pal[0]); mono(it.sh, cx - cw * .25, cy + chh * .36 + fs * .35, C.bone, ease(grow, .6, 1), 'left', fs * .85); }
+  });
+  if (assayed.includes(9)) { const a = reduce ? 1 : ease(now - streakT[9], 0, 900); ga(a * .6); g.strokeStyle = C.prus; g.setLineDash([2, 6]); g.lineWidth = 1.2; g.beginPath(); g.moveTo(sx + sw * .3, sy + sh - fs * 1.4); g.lineTo(sx + sw * .7, sy + sh - fs * 1.9); g.stroke(); g.setLineDash([]); mono('his name: no streak', Z.cx, sy + sh + fs * 1.6, C.prus, a, 'center', fs * .9); }
+  if (order.length === 9) { const y = sy + sh - fs * 1.2; [['g', 'gold'], ['b', 'brass'], ['l', 'lead']].forEach(([v, lab], j) => { const x = sx + sw * (.25 + j * .25); ga(1); glyph(v, x - fs * 2.2, y - fs * .3, fs * 1.2, STREAK[v][0]); mono(`3 ${lab}`, x - fs * 1.2, y, C.bone, .95, 'left', fs * .9); }); }
+  else mono(`${order.length} of 9 assayed`, Z.cx, sy + sh - fs * 1.1, C.muted, .9, 'center', fs * .9);
+  meta.anno = '2026';
+}
+
+/* ---------- coda · what is told ---------- */
+let codaSw = null;
+function drawS9(p, t, dt) {
+  const [k] = ck(p, 5), fin = ease(p, .8, .9), cx = lerp(Z.cx, W / 2, fin), cy = lerp(Z.cy - Z.s * .02, H * .47, fin);
+  tag(k < 4 ? 'What is told' : 'St. Nicolai · 2 March 1784', 1 - fin);
+  const sh = Math.min(Z.h * .6, Z.s * .66), sw = sh * 300 / 360;
+  if (k < 4) codaSw.target(silPts(), Z.cx | 0, (Z.cy - Z.s * .02) | 0, sw, sh, `sil${Z.cx | 0}|${Z.cy | 0}|${sh | 0}`); else if (codaSw.key !== 'free') codaSw.free();
+  codaSw.step(dt, t);
+  const fa = ease(p, .58, .66), R = sw * .55, ry = sh * .56;
+  if (k < 4) { if (fa > 0) { ga(fa * .85); const ig = g.createRadialGradient(Z.cx, Z.cy, 0, Z.cx, Z.cy, ry); ig.addColorStop(0, '#1d1813'); ig.addColorStop(1, '#050404'); g.fillStyle = ig; g.beginPath(); g.ellipse(Z.cx, Z.cy - Z.s * .02, R, ry, 0, 0, TAU); g.fill(); ga(1); }
+    codaSw.draw(t, [C.gold, C.goldHi, C.bone, C.bone, C.ember, C.prus, C.verd], Z.wide ? 2 : 1.7, .9);
+    if (fa > 0) gilt(Z.cx, Z.cy - Z.s * .02, R, ry, fa, false); }
+  else {
+    const fr = Math.min(W * .27, H * .25);
+    gilt(cx, cy, lerp(R, fr, fin), lerp(ry, fr * 1.3, fin), .38 + .62 * (1 - fin));
+    codaSw.draw(t, [C.gold, C.goldHi, C.bone, C.bone, C.ember, C.prus, C.verd], Z.wide ? 2 : 1.7, .9 * (1 - ease(p, .82, .98)));
+  }
+  watchStopped = p > .86;
+  meta.anno = fin > .5 ? '1784' : '—';
+}
+
+/* ---------- docks, reset, loop ---------- */
+const sceneEls = $$('[data-scene]'), DRAW = [drawHero, drawS1, drawS2, drawS3, drawS4, drawS5, drawS6, drawS7, drawS8, drawS9];
+const scenes = sceneEls.map((el, i) => ({ el, draw: DRAW[i], p: 0, w: 0 }));
+const DOCKS = [['#dk1', 1, .6], ['#dk2', 2, .5], ['#dk3', 3, .6], ['#dk4', 4, .6], ['#dk5', 5, .2], ['#dk8', 8, .33]].map(([s, i, a]) => ({ el: $(s), s: i, a, on: false }));
+function docks(best) { for (const d of DOCKS) { const S = scenes[d.s], on = best === d.s && S.p >= d.a && S.p < .995; if (on !== d.on) { d.on = on; d.el.classList.toggle('on', on); d.el.inert = !on; } } }
+$('#again').addEventListener('click', () => {
+  ask = -1; userAsk = false; userShuf = false; shufOn = false; shufBtn.setAttribute('aria-pressed', 'false'); userYr = false;
+  heat = 0; gold = false; userHeat = false; hands = false; userHands = false; handsBtn.setAttribute('aria-pressed', 'false'); userSteep = false;
+  userN = null; tellBtn.disabled = false; resetAssay(); for (const o of [o1, o3, o5, o8]) say(o, ''); rewinding = true;
+  window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); const h = $('h1'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true });
+});
+
+let lastT = 0, lastSY = scrollY;
+function frame(t) {
+  const dt = Math.min(64, lastT ? t - lastT : 16); lastT = t;
+  const sy = scrollY; vel = lerp(vel, (sy - lastSY) / Math.max(1, dt), .12); lastSY = sy; if (rewinding && sy < H) rewinding = false;
+  const yc = H * .5, band = H * .22; let best = 0, bw = -1;
+  for (const S of scenes) { const r = S.el.getBoundingClientRect(); S.w = ease(yc - r.top, -band, band) * (1 - ease(yc - r.bottom, -band, band)); S.p = clamp((yc - r.top) / Math.max(1, r.height), 0, 1); }
+  scenes.forEach((S, i) => { if (S.w > bw) { bw = S.w; best = i; } });
+  updateHeat(dt);
+  g.setTransform(DPR, 0, 0, DPR, 0, 0); GA = 1; g.globalAlpha = 1;
+  g.fillStyle = C.bg; g.fillRect(0, 0, W, H);
+  const acc = ACC[best], vg = g.createRadialGradient(Z.cx, Z.cy, 0, Z.cx, Z.cy, Math.max(W, H) * .8); vg.addColorStop(0, hexA(acc, .075)); vg.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  drawDust(t, acc); drawSmoke(t, dt, best, acc);
+  watchStopped = false;
+  scenes.forEach((S, i) => { if (i === best || S.w < .004) return; GA = S.w; g.globalAlpha = GA; S.draw(S.p, t, dt); });
+  meta.anno = DEF[best][0]; meta.age = DEF[best][1];
+  GA = scenes[best].w; g.globalAlpha = GA; if (GA > .004) scenes[best].draw(scenes[best].p, t, dt);
+  GA = 1; g.globalAlpha = 1;
+  hud(best); docks(best); beat(t); drawWatch();
+  requestAnimationFrame(frame);
+}
+
+resize();
+steamSw = new Swarm(W < 600 ? 1000 : 1700, 41); ghostSw = new Swarm(W < 600 ? 650 : 1100, 43); codaSw = new Swarm(W < 600 ? 1100 : 1800, 47);
+addEventListener('resize', resize);
+if (document.fonts && document.fonts.load) {
+  Promise.all([`italic 600 40px "Bodoni Moda"`, `400 40px "Bodoni Moda"`, `400 40px "GFS Didot"`, `40px "Pinyon Script"`, `500 12px "Martian Mono"`].map(f => document.fonts.load(f).catch(() => null)))
+    .then(() => { PTS.clear(); for (const s of swarms) s.key = ''; stoneCache = null; });
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
