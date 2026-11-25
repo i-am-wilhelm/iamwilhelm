@@ -294,6 +294,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     ['mind', 'Mind and mystery'],
     ['crowns', 'Crowns and causes'],
     ['screen', 'Screen'],
+    ['pop', 'Pop culture'],
   ];
   const FIGURES = [
     F('wilhelm', 'Michael Wilhelm', 'house', 1991, 3, 1, [10, 0], -7, 32.834, -109.707, 'Safford, Arizona', 'own', { blurb: 'Whose museum this is.' }),
@@ -325,6 +326,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     F('elvis', 'Elvis Presley', 'music', 1935, 1, 8, [4, 35], -6, 34.26, -88.7, 'Tupelo, Mississippi', 'record'),
     F('lennon', 'John Lennon', 'music', 1940, 10, 9, [18, 30], 1, 53.41, -2.98, 'Liverpool, England', 'conflict'),
     F('hendrix', 'Jimi Hendrix', 'music', 1942, 11, 27, [10, 15], -7, 47.61, -122.33, 'Seattle, Washington', 'record'),
+    F('mercury', 'Freddie Mercury', 'music', 1946, 9, 5, null, 3, -6.16, 39.19, 'Stone Town, Zanzibar', 'none'),
     F('bowie', 'David Bowie', 'music', 1947, 1, 8, [9, 0], 0, 51.46, -0.12, 'Brixton, London', 'memory'),
     F('prince', 'Prince', 'music', 1958, 6, 7, [18, 17], -5, 44.98, -93.27, 'Minneapolis, Minnesota', 'record'),
     F('cobain', 'Kurt Cobain', 'music', 1967, 2, 20, [19, 38], -8, 46.98, -123.82, 'Aberdeen, Washington', 'record'),
@@ -365,6 +367,29 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     F('hepburn', 'Audrey Hepburn', 'screen', 1929, 5, 4, [3, 0], 1, 50.83, 4.37, 'Ixelles, Belgium', 'record'),
     F('taylor', 'Elizabeth Taylor', 'screen', 1932, 2, 27, [2, 30], 0, 51.56, -0.18, 'London, England', 'record'),
     F('lee', 'Bruce Lee', 'screen', 1940, 11, 27, [7, 12], -8, 37.77, -122.42, 'San Francisco, California', 'record'),
+
+    F('yoko', 'Yoko Ono', 'pop', 1933, 2, 18, [20, 30], 9, 35.69, 139.69, 'Tokyo, Japan', 'memory'),
+    F('priscilla', 'Priscilla Presley', 'pop', 1945, 5, 24, [22, 40], -4, 40.65, -73.95, 'Brooklyn, New York', 'bio'),
+    F('iman', 'Iman', 'pop', 1955, 7, 25, null, 2.5, 2.05, 45.32, 'Mogadishu, Somalia', 'none'),
+    F('courtney', 'Courtney Love', 'pop', 1964, 7, 9, [14, 8], -7, 37.77, -122.42, 'San Francisco, California', 'record'),
+    F('jayz', 'Jay-Z', 'pop', 1969, 12, 4, [0, 10], -5, 40.65, -73.95, 'Brooklyn, New York', 'question'),
+    F('reynolds', 'Ryan Reynolds', 'pop', 1976, 10, 23, [4, 30], -7, 49.28, -123.12, 'Vancouver, Canada', 'question'),
+    F('beyonce', 'Beyoncé', 'pop', 1981, 9, 4, [21, 47], -5, 29.76, -95.37, 'Houston, Texas', 'record'),
+    F('lively', 'Blake Lively', 'pop', 1987, 8, 25, [5, 7], -7, 34.17, -118.55, 'Tarzana, California', 'record'),
+    F('rihanna', 'Rihanna', 'pop', 1988, 2, 20, [8, 50], -4, 13.1, -59.62, 'Saint Michael, Barbados', 'question'),
+    F('blanco', 'Benny Blanco', 'pop', 1988, 3, 8, null, -5, 38.97, -77.34, 'Reston, Virginia', 'none'),
+    F('asap', 'A$AP Rocky', 'pop', 1988, 10, 3, null, -4, 40.81, -73.95, 'Harlem, New York', 'none'),
+    F('kelce', 'Travis Kelce', 'pop', 1989, 10, 5, [5, 49], -4, 41.46, -81.93, 'Westlake, Ohio', 'record'),
+    F('swift', 'Taylor Swift', 'pop', 1989, 12, 13, [8, 36], -5, 40.34, -75.93, 'Reading, Pennsylvania', 'conflict'),
+    F('turner', 'Callum Turner', 'pop', 1990, 2, 15, null, 0, 51.49, -0.22, 'Hammersmith, London', 'none'),
+    F('jutes', 'Jutes', 'pop', 1991, 3, 28, null, -5, 45.42, -75.7, 'Ottawa, Canada', 'none'), // Jordan Lutes. Not listed by Astrotheme: date from public biographies.
+    F('gomez', 'Selena Gomez', 'pop', 1992, 7, 22, [7, 19], -5, 32.75, -97.0, 'Grand Prairie, Texas', 'question'),
+    F('lovato', 'Demi Lovato', 'pop', 1992, 8, 20, [6, 25], -6, 35.08, -106.65, 'Albuquerque, New Mexico', 'memory'),
+    F('jbieber', 'Justin Bieber', 'pop', 1994, 3, 1, [0, 56], -5, 42.98, -81.25, 'London, Ontario', 'bio'),
+    F('lipa', 'Dua Lipa', 'pop', 1995, 8, 22, [0, 18], 1, 51.5, -0.14, 'Westminster, London', 'memory'),
+    F('holland', 'Tom Holland', 'pop', 1996, 6, 1, null, 1, 51.41, -0.3, 'Kingston upon Thames, London', 'none'),
+    F('zendaya', 'Zendaya', 'pop', 1996, 9, 1, [18, 1], -7, 37.91, -122.06, 'Walnut Creek, California', 'record'),
+    F('hbieber', 'Hailey Bieber', 'pop', 1996, 11, 22, [8, 15], -7, 32.22, -110.97, 'Tucson, Arizona', 'rectified'),
   ];
   /* Pairs history already put together, for the two-chart views. */
   const PAIRS = [
@@ -376,6 +401,20 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     ['fitzgerald', 'zelda', 'Scott and Zelda'],
     ['taylor', 'burton', 'Taylor and Burton'],
     ['cash', 'carter', 'Johnny and June'],
+    /* pop culture couples: a fourth field of 'pop' puts them in their own row */
+    ['holland', 'zendaya', 'Tom and Zendaya', 'pop'],
+    ['lovato', 'jutes', 'Demi and Jutes', 'pop'],
+    ['swift', 'kelce', 'Taylor and Travis', 'pop'],
+    ['lipa', 'turner', 'Dua and Callum', 'pop'],
+    ['gomez', 'blanco', 'Selena and Benny', 'pop'],
+    ['beyonce', 'jayz', 'Beyoncé and Jay-Z', 'pop'],
+    ['rihanna', 'asap', 'Rihanna and A$AP Rocky', 'pop'],
+    ['lively', 'reynolds', 'Blake and Ryan', 'pop'],
+    ['jbieber', 'hbieber', 'Justin and Hailey', 'pop'],
+    ['lennon', 'yoko', 'John and Yoko', 'pop'],
+    ['elvis', 'priscilla', 'Elvis and Priscilla', 'pop'],
+    ['bowie', 'iman', 'Bowie and Iman', 'pop'],
+    ['cobain', 'courtney', 'Kurt and Courtney', 'pop'],
   ];
   const SRC = {
     record: ['Recorded', 'Time from a birth record.'],
@@ -765,8 +804,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const VIEWS = [
     ['wheel', 'Wheel', 'One sky. The Ascendant sits at nine o’clock and the houses run counterclockwise.'],
     ['biwheel', 'Biwheel', 'A on the inside, B on the outside, both read on A’s houses.'],
-    ['web', 'Web', 'Every chart is a small wheel, wired to the others. Tap a point to follow its lines.'],
-    ['grid', 'Grid', 'A down the side, B across the top. Each lit square is a link.'],
+    ['web', 'Web', 'Every chart is a small wheel, wired to the others. Tap a point to follow its aspects.'],
+    ['grid', 'Grid', 'A down the side, B across the top. Each lit square is an aspect between them.'],
     ['davison', 'Davison', 'The midpoint of two births, in time and in place, cast as a chart of its own.'],
   ];
   const S = {
@@ -865,7 +904,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     ['Fixed air · ruled by Saturn, and Uranus', 'Rethinks things. Cool, principled, loyal to the idea.'], ['Mutable water · ruled by Jupiter, and Neptune', 'Dissolves things. Porous, kind, half in another world.'],
   ];
   const HOUSECOPY = ['Self, body, the way you arrive.', 'Money, possessions, what you value.', 'Siblings, neighbours, short trips, everyday speech.', 'Home, family, roots, the end of things.', 'Play, romance, children, what you make for joy.', 'Work, health, routines, service.', 'Partners, marriage, open rivals.', 'Shared money, sex, death, what binds you to others.', 'Travel, study, belief, the far country.', 'Career, standing, what you are known for.', 'Friends, allies, hopes.', 'Solitude, the hidden, what works behind the scenes.'];
-  const ASPCOPY = { conjunction: 'Conjunction: two points in the same place. They act as one.', opposition: 'Opposition: two points across the wheel. A tug of war that wants a balance.', trine: 'Trine: a third of the wheel apart, same element. Easy flow, often taken for granted.', square: 'Square: a quarter of the wheel apart. Friction that gets things done.', sextile: 'Sextile: a sixth of the wheel apart. An opening that works if you use it.' };
+  /** A glossary entry, drawn small, for the hover note: the term, its plain meaning and its picture. */
+  const tipGloss = (key) => { const g = termOf(key); return g ? '<div class="tip-g"><svg viewBox="0 0 48 48" class="gloss-p" aria-hidden="true">' + g[3] + '</svg><div><b>' + g[0] + '</b><span>' + g[1] + '</span><p>' + g[2] + '</p></div></div>' : ''; };
   const tip = $('#tip');
   const chartOfSlot = (s) => (s === 4 ? dav : S.charts[s]);
   const lonOf = (ch, id) => (ch.bodies[id] ? ch.bodies[id].lon : id === 'dsc' ? C.norm(ch.asc + 180) : id === 'ic' ? C.norm(ch.mc + 180) : ch[id] != null ? ch[id] : ch.lots ? ch.lots[id] : 0);
@@ -877,14 +917,14 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const ch = h.slot != null ? chartOfSlot(h.slot) : null;
     if (h.kind === 'point' && ch) {
       const P = D.PT[h.id], b = ch.bodies[h.id], k = h.slot + ':' + h.id, n = curLinks.filter((L) => L.key.split('|').includes(k)).length;
-      return tipHead(pg(h.id), P.n + ' <i lang="grc">' + P.g + '</i>', who(ch) + pos(lonOf(ch, h.id)) + (b && b.house ? ' · house ' + b.house : '') + (b && b.retro ? ' · retrograde' : '')) + '<p>' + COPY[h.id] + '</p><p class="tip-n">' + (n ? 'Touches ' + n + (n === 1 ? ' line' : ' lines') + ' here, lit in the list.' : 'No lines at this tightness.') + '</p>';
+      return tipHead(pg(h.id), P.n + ' <i lang="grc">' + P.g + '</i>', who(ch) + pos(lonOf(ch, h.id)) + (b && b.house ? ' · house ' + b.house : '') + (b && b.retro ? ' · retrograde' : '')) + '<p>' + COPY[h.id] + '</p><p class="tip-n">' + (n ? 'Touches ' + n + (n === 1 ? ' aspect' : ' aspects') + ' here, lit in the list.' : 'No aspects at this tightness.') + '</p>';
     }
-    if ((h.kind === 'line' || h.kind === 'cell') && h.link) { const L = h.link; return tipHead('<span class="gl tx tone-' + L.tone + '">' + ASYM[L.kind] + '</span>', D.PT[L.a].n + ' ' + L.kind + ' ' + D.PT[L.b].n, L.off.toFixed(1) + '° from exact' + (L.applying === true ? ' · closing' : '')) + '<p>' + sentence(L, curCharts) + '</p><p class="tip-n">' + ASPCOPY[L.kind] + '</p>'; }
-    if (h.kind === 'cell') return tipHead('<span class="gl tx">·</span>', D.PT[h.a].n + ' and ' + D.PT[h.b].n, '') + '<p>No aspect between these two within the orb.</p>';
+    if ((h.kind === 'line' || h.kind === 'cell') && h.link) { const L = h.link; return tipHead('<span class="gl tx tone-' + L.tone + '">' + ASYM[L.kind] + '</span>', D.PT[L.a].n + ' ' + L.kind + ' ' + D.PT[L.b].n, L.off.toFixed(1) + '° from exact' + (L.applying === true ? ' · closing' : '')) + '<p>' + sentence(L, curCharts) + '</p>' + tipGloss(L.kind) + '<p class="tip-n">' + ASPX[L.kind].keys + '</p>'; }
+    if (h.kind === 'cell') return tipHead('<span class="gl tx">·</span>', D.PT[h.a].n + ' and ' + D.PT[h.b].n, '') + '<p>No aspect between these two within the orb.</p>' + tipGloss('aspect');
     if (h.kind === 'sign' && ch) return tipHead(svg(D.ZG[h.sign], 'zs'), C.SIGNS[h.sign], SIGNCOPY[h.sign][0]) + '<p>' + SIGNCOPY[h.sign][1] + '</p><p class="tip-n">' + inList(ch, (l) => Math.floor(l / 30) === h.sign) + '</p>';
     if (h.kind === 'house' && ch) return tipHead('<span class="gl tx">' + h.house + '</span>', 'House ' + h.house, 'cusp at ' + pos(ch.cusps[h.house - 1])) + '<p>' + HOUSECOPY[h.house - 1] + '</p><p class="tip-n">' + inList(ch, (l) => C.houseOf(l, ch.cusps) === h.house) + '</p>';
     if (h.kind === 'angle' && ch) { const id = { AS: 'asc', MC: 'mc', DS: 'dsc', IC: 'ic' }[h.id]; return tipHead('<span class="gl tx">' + h.id + '</span>', MARKNAME[id], pos(lonOf(ch, id))) + '<p>' + COPY[id] + '</p>'; }
-    if (h.kind === 'mark' && ch) { const P = D.PT[h.id]; return tipHead(pg(h.id), P ? P.n + ' <i lang="grc">' + P.g + '</i>' : MARKNAME[h.id], pos(h.lon)) + '<p>' + COPY[h.id] + '</p>' + (P ? '<p class="tip-n">Switch it into the lines under Tuning.</p>' : ''); }
+    if (h.kind === 'mark' && ch) { const P = D.PT[h.id]; return tipHead(pg(h.id), P ? P.n + ' <i lang="grc">' + P.g + '</i>' : MARKNAME[h.id], pos(h.lon)) + '<p>' + COPY[h.id] + '</p>' + (P ? '<p class="tip-n">Switch it into the aspects under Tuning.</p>' : ''); }
     return '';
   }
   function distLine(ln, x, y) {
@@ -994,7 +1034,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     $('#hint').textContent = hint;
     let f = '';
     if (S.view === 'wheel' && two) f = '<span class="lab">Showing</span>' + S.charts.map((ch, i) => '<button class="chip" data-focus="' + i + '" aria-pressed="' + (S.focus === i) + '" style="--c:' + D.SLOTCOL[i] + '">' + LET[i] + ' · ' + esc(shortName(ch)) + '</button>').join('');
-    if (S.view === 'web') f = (two ? '<button class="chip" data-tog="inner" aria-pressed="' + S.inner + '">Inner lines</button><button class="chip" data-tog="webDav" aria-pressed="' + S.webDav + '">Davison in the middle</button>' : '');
+    if (S.view === 'web') f = (two ? '<button class="chip" data-tog="inner" aria-pressed="' + S.inner + '">Inner aspects</button><button class="chip" data-tog="webDav" aria-pressed="' + S.webDav + '">Davison in the middle</button>' : '');
     $('#focus').innerHTML = f;
   }
 
@@ -1033,9 +1073,9 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     for (const ch of vc) { const b = C.balance(ch), sl = S.slotOf(ch); h += '<div class="en"><h4 style="color:' + D.SLOTCOL[sl] + '">' + esc(ch.name) + '</h4><div class="en-g"><div>' + bars(b.el, D.ELCOL, 10, 'el:' + sl + ':') + '</div><div>' + bars(b.mo, {}, 10, 'mode:' + sl + ':') + '</div></div></div>'; }
     const tally = { flow: 0, grind: 0, fuse: 0 }; for (const Lk of links) tally[Lk.tone]++;
     const top = loads(links)[0], tight = links.slice().sort(byOff)[0];
-    h += '<div class="en"><h4>Lines on screen</h4><div class="tally">' + ['flow', 'grind', 'fuse'].map((t) => '<button class="tone-' + t + '" data-go="tone:' + t + '"><b>' + tally[t] + '</b> ' + { flow: 'flowing', grind: 'grinding', fuse: 'fused' }[t] + '</button>').join('') + '</div>';
-    if (top) h += '<p class="fine">Loudest point: <button class="inl" data-go="pt:' + top + '">' + pg(top.split(':')[1]) + nameOf(top) + '</button>, carrying the most <button class="inl" data-go="term:weight">line weight</button>.' + (tight ? ' Tightest line: <button class="inl" data-go="link:' + tight.key + '">' + D.PT[tight.a].n + ' ' + ASYM[tight.kind] + ' ' + D.PT[tight.b].n + '</button>.' : '') + '</p>';
-    return h + '<p class="fine">Tap any count, name, element or line to follow it.</p></div>';
+    h += '<div class="en"><h4>Aspects on screen</h4><div class="tally">' + ['flow', 'grind', 'fuse'].map((t) => '<button class="tone-' + t + '" data-go="tone:' + t + '"><b>' + tally[t] + '</b> ' + { flow: 'flowing', grind: 'grinding', fuse: 'fused' }[t] + '</button>').join('') + '</div>';
+    if (top) h += '<p class="fine">Loudest point: <button class="inl" data-go="pt:' + top + '">' + pg(top.split(':')[1]) + nameOf(top) + '</button>, carrying the most <button class="inl" data-go="term:weight">aspect weight</button>.' + (tight ? ' Tightest aspect: <button class="inl" data-go="link:' + tight.key + '">' + D.PT[tight.a].n + ' ' + ASYM[tight.kind] + ' ' + D.PT[tight.b].n + '</button>.' : '') + '</p>';
+    return h + '<p class="fine">Tap any count, name, element or aspect to follow it.</p></div>';
   }
   /* ---------------- the music of the chart, and a written reading ---------------- */
   /* The twelve signs sit on the circle of fifths from Aries = C. The Ascendant's sign is the tonic. */
@@ -1247,7 +1287,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const d = new Date(), now = C.cast(Object.assign(nowSpec(), { jd: Math.floor(Date.now() / 3600000) / 24 + 2440587.5 })), day = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
     const x = !ch ? C.aspects(now, 0.5).filter((L) => (L.a !== 'moon' && L.b !== 'moon') || L.off < 2).slice(0, 3) : ch.signOnly ? [] : C.cross(now, ch, 0.5).filter((L) => L.a !== 'moon' || L.off < 2).slice(0, 3), ms = sg(now.bodies.moon.lon), ph = PHASE[Math.round(C.norm(now.bodies.moon.lon - now.bodies.sun.lon) / 45) % 8];
     return '<div class="day day-' + DSTYLE[day % 5] + '"><span class="day-k">' + DSTYLE[day % 5] + ' · day ' + day + '</span><h4>' + d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) + '</h4><p class="day-m">Selene is ' + ph + ' in ' + C.SIGNS[ms] + ', working ' + MANNER[ms] + '.</p>' +
-      (x.length ? '<ol>' + x.map((L) => '<li><b>' + cap(GOD[L.a]) + ' ' + TVERB[L.kind] + (ch ? ' your ' : ' ') + GOD[L.b].split(',')[0].replace(/^the /, '') + '.</b> Today’s subject: ' + theme(L.a, L.b) + '. <i>' + L.off.toFixed(1) + '°</i></li>').join('') + '</ol>' : !ch ? '<p>A quiet sky today. No god leans on another.</p>' : ch.signOnly ? '<p>This chart was shared at sign level, so today’s lines to it are not drawn.</p>' : '<p>A quiet sky against this chart today. Nothing leans on you.</p>') + '<p class="day-f">' + (ch ? 'For ' + esc(ch.name) : 'The sky itself, the same for everyone') + ' · the card wears a different design each day, five in rotation.</p></div>';
+      (x.length ? '<ol>' + x.map((L) => '<li><b>' + cap(GOD[L.a]) + ' ' + TVERB[L.kind] + (ch ? ' your ' : ' ') + GOD[L.b].split(',')[0].replace(/^the /, '') + '.</b> Today’s subject: ' + theme(L.a, L.b) + '. <i>' + L.off.toFixed(1) + '°</i></li>').join('') + '</ol>' : !ch ? '<p>A quiet sky today. No god leans on another.</p>' : ch.signOnly ? '<p>This chart was shared at sign level, so today’s aspects to it are not drawn.</p>' : '<p>A quiet sky against this chart today. Nothing leans on you.</p>') + '<p class="day-f">' + (ch ? 'For ' + esc(ch.name) : 'The sky itself, the same for everyone') + ' · the card wears a different design each day, five in rotation.</p></div>';
   }
   function godSpeaks(ch, id, all) {
     const b = ch.bodies[id], s = sg(b.lon), mine = all.filter((x) => x.a === id || x.b === id).slice(0, 3);
@@ -1315,7 +1355,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     let h = vc.map((ch) => reading(ch, vc, links)).join('');
     const x = links.filter((L) => L.ia !== L.ib).slice(0, 4);
     if (x.length) h += '<h4 class="sub">Between them</h4><ul class="rd-l">' + x.map((L) => '<li><b>' + D.PT[L.a].n + ' ' + L.kind + ' ' + D.PT[L.b].n + '</b> (' + L.off.toFixed(1) + '°). ' + sentence(L, vc) + '</li>').join('') + '</ul>';
-    return h + '<p class="fine">The gods\u2019 lines are assembled by rule from the placements and aspects. Everyone carries both inner figures. Read it as a mirror to argue with.</p>';
+    return h + '<p class="fine">The gods\u2019 speeches are assembled by rule from the placements and aspects. Everyone carries both inner figures. Read it as a mirror to argue with.</p>';
   }
 
   /* ---------------- the glossary: tap or hover a god's name or a term ---------------- */
@@ -1341,12 +1381,13 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     house: ['House', 'one of twelve', 'The sky around your birthplace cut into twelve slices, like a pizza. Each slice is an area of life: money, home, work, love.', RING + '<path d="M24 24L43 24A19 19 0 0 0 40.5 14.5Z" fill="currentColor" opacity=".8"/><path d="M5 24H43M24 5V43M7.5 14.5L40.5 33.5M7.5 33.5L40.5 14.5M14.5 7.5L33.5 40.5M14.5 40.5L33.5 7.5" opacity=".35"/>'],
     ascendant: ['Ascendant', 'the rising sign', 'The zodiac sign coming up over the eastern horizon the minute you were born, like a sunrise. It sets how you come across.', RING + '<path d="M3 24H45"/><circle cx="5" cy="24" r="3.5" fill="currentColor"/><path d="M5 17V11M2 14L5 11L8 14"/>'],
     midheaven: ['Midheaven', 'the top of the chart', 'The highest point of the sky at your birth. It points at career and reputation: what you are seen doing.', RING + '<path d="M24 24V5"/><circle cx="24" cy="5" r="3.5" fill="currentColor"/>'],
+    aspect: ['Aspect', 'an angle between two points', 'Two planets standing a telling distance apart around the circle: together, or a sixth, a quarter, a third or half the way round. Each angle is a different kind of conversation between them.', RING + '<path d="M24 24V5M24 24L40.5 33.5"/><circle cx="24" cy="5" r="3" fill="currentColor"/><circle cx="40.5" cy="33.5" r="3" fill="currentColor"/><path d="M24 13A11 11 0 0 1 33.5 29.5" opacity=".6"/>'],
     vertex: ['Vertex', 'a western point', 'A point on the western side of the chart. Astrologers read it as the spot for meetings that feel fated.', RING + '<circle cx="42" cy="28" r="3.5" fill="currentColor"/><path d="M24 24L38 27"/>'],
-    conjunction: ['Conjunction', '0° apart', 'Two planets in the same spot of sky. They blend, like two colors of paint stirred together.', aspSvg(10)],
-    opposition: ['Opposition', '180° apart', 'Two planets on opposite sides of the sky. Like a seesaw: one goes up when the other goes down.', aspSvg(180)],
-    trine: ['Trine', '120° apart', 'Two planets a third of the circle apart. They get along without trying, like friends with the same sense of humor.', aspSvg(120)],
-    square: ['Square', '90° apart', 'Two planets a quarter of the circle apart. They rub each other the wrong way, and the friction pushes you to act.', aspSvg(90)],
-    sextile: ['Sextile', '60° apart', 'Two planets a sixth of the circle apart. A helpful link, like a door left unlocked.', aspSvg(60)],
+    conjunction: ['Conjunction', '0° apart · fused', 'Two planets in the same spot of sky. They blend, like two colors of paint stirred together, and act as one.', aspSvg(10)],
+    opposition: ['Opposition', '180° apart · grinding', 'Two planets on opposite sides of the sky. Like a seesaw: one goes up when the other goes down, until you learn to hold both ends.', aspSvg(180)],
+    trine: ['Trine', '120° apart · flowing', 'Two planets a third of the circle apart, in signs of the same element. They get along without trying, like friends with the same sense of humor.', aspSvg(120)],
+    square: ['Square', '90° apart · grinding', 'Two planets a quarter of the circle apart. They rub each other the wrong way, and the friction pushes you to act.', aspSvg(90)],
+    sextile: ['Sextile', '60° apart · flowing', 'Two planets a sixth of the circle apart. A helpful link, like a door left unlocked: it opens when you push.', aspSvg(60)],
     'grand trine': ['Grand trine', 'a triangle', 'Three planets, each 120° from the next, making a triangle. Talent that comes easily.', RING + '<path d="M24 5L40.5 33.5L7.5 33.5Z"/>'],
     't-square': ['T-square', 'a pressure point', 'Two planets opposite each other, with a third at a right angle to both. The pressure funnels into the third.', RING + '<path d="M5 24H43M5 24L24 5L43 24"/><circle cx="24" cy="5" r="3" fill="currentColor"/>'],
     retrograde: ['Retrograde', 'seeming to go backward', 'From Earth a planet sometimes seems to drift backward for a few weeks, the way a slower car seems to roll back when you pass it.', '<path d="M4 32C16 32 30 30 30 21S19 14 19 22S32 32 44 32"/><path d="M40 28L44 32L40 36"/>'],
@@ -1356,12 +1397,12 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     tonic: ['Tonic', 'the home note', 'The note a key is built on: the one a song wants to land on at the end.', '<path d="M4 16H44M4 22H44M4 28H44M4 34H44" opacity=".45"/><ellipse cx="22" cy="31" rx="5" ry="3.6" fill="currentColor"/><path d="M27 31V10"/>'],
   };
   const GKEY = { 'north node': 'node', 'south node': 'node', nodes: 'node', lots: 'lot', fortune: 'lot', spirit: 'lot', eros: 'lot', 'lot of eros': 'lot', animus: 'anima' };
-  const GRX = /\b(grand trine|T-square|North Node|South Node|Lot of Eros|Ascendant|Midheaven|Vertex|Helios|Selene|Hermes|Aphrodite|Ares|Zeus|Kronos|Ouranos|Poseidon|Hades|Demeter|Athena|Hera|Hestia|Chiron|Lilith|Fortune|Spirit|Eros|Anima|Animus|conjunction|opposition|sextile|square|trine|retrograde|house|lots|tonic)\b/g;
+  const GRX = /\b(grand trine|T-square|North Node|South Node|Lot of Eros|Ascendant|Midheaven|Vertex|Helios|Selene|Hermes|Aphrodite|Ares|Zeus|Kronos|Ouranos|Poseidon|Hades|Demeter|Athena|Hera|Hestia|Chiron|Lilith|Fortune|Spirit|Eros|Anima|Animus|[Cc]onjunctions?|[Oo]ppositions?|[Ss]extiles?|[Ss]quares?|[Tt]rines?|[Aa]spects?(?! it\b)|orbs?|retrograde|house|lots|tonic)\b/g;
   /** Wrap god names and terms in the text of some HTML (never inside a tag) so each opens its glossary note. */
-  function gloss(html) { return html.split(/(<[^>]+>)/).map((part) => (part.charAt(0) === '<' ? part : part.replace(GRX, (m, g1, off, str) => { if ((m === 'Spirit' || m === 'Fortune') && /(Good|Bad) $/.test(str.slice(Math.max(0, off - 5), off))) return m; const k = m.toLowerCase(), key = GL[k] ? k : GKEY[k]; return key ? '<button type="button" class="gt" data-g="' + key + '">' + m + '</button>' : m; }))).join(''); }
+  function gloss(html) { return html.split(/(<[^>]+>)/).map((part) => (part.charAt(0) === '<' ? part : part.replace(GRX, (m, g1, off, str) => { if ((m === 'Spirit' || m === 'Fortune') && /(Good|Bad) $/.test(str.slice(Math.max(0, off - 5), off))) return m; const k = m.toLowerCase(), one = k.replace(/s$/, ''), key = termOf(k) ? k : GKEY[k] || (termOf(one) ? one : null); return key ? '<button type="button" class="gt" data-g="' + key + '">' + m + '</button>' : m; }))).join(''); }
   const gbox = DOC.createElement('div'); gbox.id = 'gloss'; gbox.className = 'gloss'; gbox.hidden = true; gbox.setAttribute('role', 'tooltip'); DOC.body.appendChild(gbox);
   function showGloss(el) {
-    const g = GL[el.dataset.g]; if (!g) return;
+    const g = termOf(el.dataset.g); if (!g) return;
     const pic = D.PG[g[3]] ? '<svg viewBox="0 0 24 24" class="gloss-p"><path d="' + D.PG[g[3]] + '" stroke-width="1.5"/></svg>' : '<svg viewBox="0 0 48 48" class="gloss-p">' + g[3] + '</svg>';
     gbox.innerHTML = pic + '<div><b>' + g[0] + '</b><span>' + g[1] + '</span><p>' + g[2] + '</p><button class="nx" data-go="' + termGo(el.dataset.g, focusSlot()) + '">Follow this \u2192</button></div>'; gbox.hidden = false;
     const r = el.getBoundingClientRect(), w = gbox.offsetWidth, h = gbox.offsetHeight; let x = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h - 8; if (y < 8) y = r.bottom + 8;
@@ -1388,9 +1429,9 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const many = () => curCharts.length > 1;
   const nameOf = (key) => { const [sl, id] = key.split(':'), ch = chartOf(sl); return (many() && ch ? esc(shortName(ch)) + '’s ' : '') + (D.PT[id] ? D.PT[id].n : id); };
   const TONES = {
-    flow: ['Flowing lines', 'trines and sextiles', 'Flowing lines join planets in signs that get along: the same element, or elements that feed each other, like fire and air. The two parts of you cooperate without being asked. What comes this easily often goes unnoticed, so these are the gifts you are most likely to take for granted.'],
-    grind: ['Grinding lines', 'squares and oppositions', 'Grinding lines join planets at a right angle or straight across the chart. The two parts of you want different things at the same time. The friction is uncomfortable, and it is also where most effort, skill and change come from.'],
-    fuse: ['Fused lines', 'conjunctions', 'A fused line means two planets stand together in the same stretch of sky. Their energies blend so fully that it can be hard to tell which one is speaking. Whether the blend helps or strains depends on who the two are.'],
+    flow: ['Flowing aspects', 'trines and sextiles', 'Flowing aspects join planets in signs that get along: the same element, or elements that feed each other, like fire and air. The two parts of you cooperate without being asked. What comes this easily often goes unnoticed, so these are the gifts you are most likely to take for granted.'],
+    grind: ['Grinding aspects', 'squares and oppositions', 'Grinding aspects join planets at a right angle or straight across the chart. The two parts of you want different things at the same time. The friction is uncomfortable, and it is also where most effort, skill and change come from.'],
+    fuse: ['Fused aspects', 'conjunctions', 'A fused aspect means two planets stand together in the same stretch of sky. Their energies blend so fully that it can be hard to tell which one is speaking. Whether the blend helps or strains depends on who the two are.'],
   };
   /* angle, tone, the interval it sounds on the circle of fifths, and the lesson */
   const KINDS = {
@@ -1401,6 +1442,73 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     opposition: [180, 'grind', 'a tritone', 'Straight across the chart. The two signs are partners on one axis, like day and night. An opposition swings between its two ends and is often lived out through other people, until you learn to hold both ends yourself.'],
   };
   const KORDER = ['conjunction', 'sextile', 'square', 'trine', 'opposition'];
+  /* What each aspect means, built out: its shape, its keywords, how it feels, its best and its worst, what it does
+     between two people, and what to do with it. The gist is the one-line version for lists and the hover note. */
+  const ASPX = {
+    conjunction: {
+      gist: 'Two voices become one.',
+      keys: 'blend · focus · intensity · a beginning',
+      shape: 'Counted within 8°, or 10° when the Sun and Moon meet. A conjunction that straddles two signs (late in one, early in the next) joins signs of different elements, and the older rules read it as weaker.',
+      feel: 'Like two instruments on the same note: one sound, louder than either alone. The two drives arrive together, so thought and mood, or love and anger, can be hard to tell apart.',
+      best: 'Concentration. Each planet backs the other completely, and the part of life they share gets single-minded force. It is often the thing a person is known for.',
+      worst: 'No distance. With nobody inside to say “wait”, the blend runs unchecked, and a hard pair (Mars with Saturn, say) turns into one knot.',
+      two: 'Across two charts a conjunction says “you are like me here”. It feels familiar at once and magnifies whatever the planets are: two Venuses share a taste; Saturn on someone’s Sun can feel like a weight, or like a backbone.',
+      use: 'Give the blend one clear job. A conjunction is a single engine, and it runs best pointed at something.',
+    },
+    sextile: {
+      gist: 'A door, if you open it.',
+      keys: 'opportunity · skill · cooperation · a nudge',
+      shape: 'Counted within 5°, the narrowest orb of the five, because a sextile is the quietest. Fire and air sextiles trade momentum for ideas; earth and water sextiles trade care for practical sense.',
+      feel: 'Like a colleague who is glad to help but waits to be asked. The two planets speak related dialects, so the exchange is lively and easy, and it stays quiet until you start it.',
+      best: 'Talent you can train. A little effort here pays back quickly; this is the knack that becomes a skill.',
+      worst: 'It sleeps. Left alone a sextile does very little, and the door it opens can stay shut for years.',
+      two: 'Across two charts a sextile is friendship: easy talk, shared projects, the person who makes your ideas better. Lighter than a trine, and it often lasts longer because it keeps both people curious.',
+      use: 'Act on it. Say yes to the invitation, make the call, start the practice.',
+    },
+    square: {
+      gist: 'Friction that builds muscle.',
+      keys: 'friction · pressure · effort · a turning point',
+      shape: 'Counted within 7°. Cardinal squares clash over what to start, fixed squares over what to keep, and mutable squares over which way to turn.',
+      feel: 'Like two drivers with one steering wheel. Each planet blocks the other just as it gets going, so the matter comes back as tension, impatience, or a problem that will not stay solved.',
+      best: 'Drive and mastery. Much of what a person achieves can be traced to a square: the friction becomes the engine, and the struggle becomes a skill nobody else has.',
+      worst: 'Stuck in the fight. A square can replay the same clash for years, swinging from one planet to the other without letting either win.',
+      two: 'Across two charts a square is chemistry with an edge. It attracts and irritates in the same breath, and the pair either push each other to grow or wear each other down.',
+      use: 'Make a third thing. A square settles when the two drives are given one shared task instead of taking turns.',
+    },
+    trine: {
+      gist: 'Talent that flows unasked.',
+      keys: 'ease · talent · harmony · grace',
+      shape: 'Counted within 7°. Fire trines run on spirit, earth trines on practical sense, air trines on ideas, and water trines on feeling.',
+      feel: 'Like old friends who finish each other’s sentences. The two planets understand each other without effort, so this part of life runs smoothly, often so smoothly you do not notice it.',
+      best: 'Natural gifts and a soft landing. A trine shows what you do well without training, and where life tends to go your way.',
+      worst: 'Coasting. Nothing pushes back, so a trine can make a person comfortable rather than great. Several together can feel like a lovely room nobody leaves.',
+      two: 'Across two charts a trine is ease: you relax, you agree, it feels meant to be. The pair need a little friction from somewhere else to keep moving.',
+      use: 'Put it under load. A trine turns into real strength when it is given work, tied to a goal or to a square that keeps it honest.',
+    },
+    opposition: {
+      gist: 'A seesaw with two ends to hold.',
+      keys: 'polarity · awareness · balance · other people',
+      shape: 'Counted within 8°. Each axis has its own argument: me and you (Aries and Libra), mine and ours (Taurus and Scorpio), the near and the far (Gemini and Sagittarius), home and the world (Cancer and Capricorn), my light and the group (Leo and Aquarius), the task and the dream (Virgo and Pisces).',
+      feel: 'Like a seesaw. When one planet takes the floor the other goes quiet, then the swing comes back. Often one end is lived and the other is met in someone else: a partner, a rival, the person who “always” does the thing you disown.',
+      best: 'Perspective. An opposition lets you see yourself from across the room. Once both ends are owned it gives balance, fairness and a gift for working with others.',
+      worst: 'Projection. You hand one end to someone else and fight them over it, or lurch from one extreme to the other.',
+      two: 'Across two charts an opposition is the pull of opposites: magnetic, completing, and at times a tug of war. Each has what the other lacks.',
+      use: 'Hold both ends. Ask what the other side is right about, and give each planet its own time.',
+    },
+  };
+  const ASPINTRO = 'An aspect is an angle between two points on the wheel. Five angles count here: together, a sixth, a quarter, a third and half the way round. Each is its own kind of conversation between two parts of a life, and the nearer it is to exact (its orb), the louder it speaks.';
+  const ASPROWS = [['keys', 'Keywords'], ['shape', 'Orb and flavor'], ['feel', 'How it feels'], ['best', 'At its best'], ['worst', 'At its worst'], ['two', 'Between two people'], ['use', 'Working with it']];
+  /** An aspect's full account as a definition list; `only` keeps the named rows, in this order. */
+  function aspDl(kind, only) {
+    const X = ASPX[kind]; if (!X) return '';
+    const rows = only ? only.map((k) => ASPROWS.find((r) => r[0] === k)).filter(Boolean) : ASPROWS;
+    return '<dl class="asp-dl">' + rows.map((r) => '<dt>' + r[1] + '</dt><dd' + (r[0] === 'keys' ? ' class="k"' : '') + '>' + (r[0] === 'keys' ? X[r[0]] : gloss(X[r[0]])) + '</dd>').join('') + '</dl>';
+  }
+  /** The head of the Aspects tab: what an aspect is, and the five, each with its count on screen. */
+  function aspGuide(links) {
+    const n = {}; links.forEach((L) => { n[L.kind] = (n[L.kind] || 0) + 1; });
+    return '<div class="asp-g"><p>' + gloss(ASPINTRO) + '</p><div class="asp-g-r">' + KORDER.map((k) => '<button class="tone-' + KINDS[k][1] + '" data-go="kind:' + k + '"><span class="as">' + ASYM[k] + '</span><span class="nm"><b>' + cap(k) + '</b><small>' + KINDS[k][0] + '° · ' + TONES[KINDS[k][1]][0].split(' ')[0].toLowerCase() + ' · ' + (n[k] || 0) + ' on screen</small></span><span class="gi">' + ASPX[k].gist + '</span></button>').join('') + '</div></div>';
+  }
   const ELES = {
     fire: ['Fire is the will to act, to be seen and to believe. It moves first and asks later. Astrologers who read Jung pair it with his intuition: the sense of what could be.', 'M12 4L21 19H3Z'],
     earth: ['Earth is the body and the practical world: what can be touched, built, used and kept. It trusts what works. The Jungian pairing is sensation: the facts in front of you.', 'M12 20L3 5H21ZM6.5 11H17.5'],
@@ -1435,7 +1543,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     mars: 'Mars is drive, appetite, anger and courage. It shows where you push, how you fight for what you want, and what happens to heat you never use.',
     jupiter: 'Jupiter, the largest planet, spends about a year in each sign. It is growth, faith, generosity and excess: where life opens up for you, and where you can overdo it.',
     saturn: 'Saturn is the farthest planet the eye can see, and spends about two and a half years in each sign. It is time, limits, duty and mastery: where you are tested early and, slowly, become an authority.',
-    uranus: 'Uranus was found by telescope in 1781 and spends about seven years in each sign, so a whole age group shares its sign. Its house and its lines make it personal: where you break the pattern, invent, and need to be free.',
+    uranus: 'Uranus was found by telescope in 1781 and spends about seven years in each sign, so a whole age group shares its sign. Its house and its aspects make it personal: where you break the pattern, invent, and need to be free.',
     neptune: 'Neptune was found in 1846 and spends about fourteen years in each sign. It is longing for something larger: dreams, art and compassion, and also confusion and escape. Its house shows where your edges blur.',
     pluto: 'Pluto was found in 1930 and spends between about eleven and thirty-two years in a sign. It is power and transformation: what has to be broken down before it can be remade. Its house is where you go deepest.',
     chiron: 'Chiron is a small icy body between Saturn and Uranus, found in 1977, that circles the Sun about every fifty years. Astrologers read it as the wound that teaches: where you hurt, and where that hurt makes you useful to others.',
@@ -1447,8 +1555,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     mc: 'The Midheaven is the highest point the Sun’s path reaches in your sky. It is where a life is most visible: vocation, public standing, and the work you are known for.',
   };
   const TERMX = {
-    orb: ['Orb', 'how far from exact', 'An aspect rarely lands on the exact angle. The orb is the gap, in degrees. The smaller it is, the louder the line: under one degree, it runs through everything.', '<circle cx="24" cy="24" r="17" opacity=".35"/><path d="M24 24L41 24M24 24L38.5 15"/><path d="M33 24A9 9 0 0 0 31.8 19.5"/>'],
-    weight: ['Line weight', 'who does the most talking', 'Each line gets a weight from how close to exact it is. Add up the weights of every line touching a point and you see which part of the chart is doing the most talking.', '<path d="M8 38H40M14 38V26M24 38V12M34 38V20"/>'],
+    orb: ['Orb', 'how far from exact', 'An aspect rarely lands on the exact angle. The orb is the gap, in degrees. The smaller it is, the louder the aspect: under one degree, it runs through everything.', '<circle cx="24" cy="24" r="17" opacity=".35"/><path d="M24 24L41 24M24 24L38.5 15"/><path d="M33 24A9 9 0 0 0 31.8 19.5"/>'],
+    weight: ['Aspect weight', 'who does the most talking', 'Each aspect gets a weight from how close to exact it is. Add up the weights of every aspect touching a point and you see which part of the chart is doing the most talking.', '<path d="M8 38H40M14 38V26M24 38V12M34 38V20"/>'],
   };
   const termOf = (key) => GL[key] || TERMX[key];
   /** Where a glossary term leads: a god to its planet, an aspect to its lesson, anything else to the term itself. */
@@ -1467,7 +1575,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const nm = (k) => { const [sl, id] = k.split(':'); return (many() ? '<em style="color:' + D.SLOTCOL[sl] + '">' + (+sl === 4 ? 'Dv' : LET[sl]) + '</em>' : '') + pg(id) + pname(id); };
     return '<button class="lkb tone-' + L.tone + '" data-go="link:' + L.key + '"><span>' + nm(ka) + '</span><span class="as">' + ASYM[L.kind] + '</span><span>' + nm(kb) + '</span><small>' + L.off.toFixed(1) + '°</small></button>';
   }
-  const lineList = (arr, from) => (arr.length ? '<div class="lkbs">' + arr.slice(0, 6).map((L) => lineBtn(L, from)).join('') + (arr.length > 6 ? '<p class="fine">and ' + (arr.length - 6) + ' more in the Lines tab.</p>' : '') + '</div>' : '');
+  const lineList = (arr, from) => (arr.length ? '<div class="lkbs">' + arr.slice(0, 6).map((L) => lineBtn(L, from)).join('') + (arr.length > 6 ? '<p class="fine">and ' + (arr.length - 6) + ' more in the Aspects tab.</p>' : '') + '</div>' : '');
   const loads = (arr) => { const load = {}; for (const L of arr) for (const e of ends(L.key)) load[e] = (load[e] || 0) + L.w; return Object.keys(load).sort((a, b) => load[b] - load[a]); };
   const elGlyph = (e) => svg(ELES[e][1], 'pl');
 
@@ -1480,10 +1588,10 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (!ang) here += 'In ' + C.SIGNS[s] + ' it works ' + MANNER[s] + '. ';
     if (b && b.retro) here += 'It was retrograde at the birth, so it turns inward first. ';
     if (ch.timeKnown && ch.cusps && RULER.includes(id)) { const rooms = []; for (let n = 1; n <= 12; n++) if (RULER[sg(ch.cusps[n - 1])] === id) rooms.push(n); if (rooms.length) here += 'It holds the key to the ' + rooms.map(ordw).join(' and ') + ' house' + (rooms.length > 1 ? 's' : '') + ', and as a key-holder it is ' + KVERD[keyCond(ch, id).v] + '. '; }
-    here += mine.length ? mine.length + ' line' + (mine.length > 1 ? 's' : '') + ' touch it on screen.' : 'No lines touch it at this tightness.';
+    here += mine.length ? mine.length + ' aspect' + (mine.length > 1 ? 's' : '') + ' touch it on screen.' : 'No aspects touch it at this tightness.';
     const next = [nx('The sign: ' + C.SIGNS[s], 'sign:' + sl + ':' + s)];
     if (house) next.push(nx('The ' + ordw(house) + ' house', 'house:' + sl + ':' + house));
-    if (mine[0]) next.push(nx('Its tightest line', 'link:' + mine[0].key));
+    if (mine[0]) next.push(nx('Its tightest aspect', 'link:' + mine[0].key));
     if ((O || minor) && !(ch.meta && (ch.meta.now || ch.meta.davison))) next.push(nxt('Hear ' + gname(id) + ' speak', 'reading:' + id));
     return { col: D.PCOL[id] || 'var(--ichor)', gl: pg(id), eb: ang ? 'An angle' : minor ? (id === 'chiron' ? 'A small body' : 'An asteroid') : id === 'sun' || id === 'moon' ? 'A light' : 'A planet', title: P.n + ' <span lang="grc">' + P.g + '</span>', sub: O ? gname(id) + ' · “' + O[1] + '”' : GODX[id] || '', lesson: PLES[id], here, list: lineList(mine, k), next };
   }
@@ -1491,25 +1599,25 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const L = links.find((x) => x.key === k); if (!L) return null;
     const [ka, kb] = ends(k), a = ka.split(':')[1], b = kb.split(':')[1], rank = links.slice().sort(byOff).indexOf(L) + 1, tm = theme(a, b);
     const lesson = tm !== 'the two of us' ? 'Between ' + gname(a) + ' and ' + gname(b) + ', this ' + L.kind + ' is about ' + tm + '. ' + KINDS[L.kind][3].split('. ')[0] + '.' : KINDS[L.kind][3];
-    let here = sentence(L, curCharts) + ' It is the ' + (rank === 1 ? 'tightest' : ordw(rank) + ' tightest') + ' of ' + links.length + ' lines on screen. ' + (L.off < 1 ? 'Under a degree from exact, so it runs through everything.' : L.off < 3 ? 'Within three degrees, so you feel it often.' : 'A wider line, felt more in some seasons than others.');
+    let here = sentence(L, curCharts) + ' It is the ' + (rank === 1 ? 'tightest' : ordw(rank) + ' tightest') + ' of ' + links.length + ' aspects on screen. ' + (L.off < 1 ? 'Under a degree from exact, so it runs through everything.' : L.off < 3 ? 'Within three degrees, so you feel it often.' : 'A wider aspect, felt more in some seasons than others.');
     if (L.applying === true) here += ' The two are still closing in, which old astrologers read as a matter still growing.'; else if (L.applying === false && L.ia === L.ib) here += ' The two are pulling apart: a matter already formed.';
     const next = [nx(pg(a) + nameOf(ka), 'pt:' + ka), nx(pg(b) + nameOf(kb), 'pt:' + kb), nx('What is ' + an(L.kind) + '?', 'kind:' + L.kind), nx(TONES[L.tone][0], 'tone:' + L.tone), nx('What is an orb?', 'term:orb')];
-    return { col: 'var(--' + L.tone + ')', gl: '<span class="gl tx">' + ASYM[L.kind] + '</span>', eb: 'A line · ' + L.kind, title: pname(a) + ' <span class="as tone-' + L.tone + '">' + ASYM[L.kind] + '</span> ' + pname(b), sub: L.off.toFixed(1) + '° from exact', lesson, here, next };
+    return { col: 'var(--' + L.tone + ')', gl: '<span class="gl tx">' + ASYM[L.kind] + '</span>', eb: 'An aspect · ' + L.kind, title: pname(a) + ' <span class="as tone-' + L.tone + '">' + ASYM[L.kind] + '</span> ' + pname(b), sub: L.off.toFixed(1) + '° from exact', lesson, here, list: aspDl(L.kind, L.ia === L.ib ? ['best', 'worst', 'use'] : ['two', 'best', 'worst']), next };
   }
   function cardTone(t, links) {
     const T = TONES[t]; if (!T) return null; const mine = links.filter((L) => L.tone === t).sort(byOff), top = loads(mine)[0];
-    const here = S.tones[t] ? mine.length + ' of the ' + links.length + ' lines on screen are ' + T[1] + '.' + (top ? ' ' + nameOf(top) + ' carries the most of them.' : '') : 'These lines are switched off under Tuning. Switch them back on to see them.';
+    const here = S.tones[t] ? mine.length + ' of the ' + links.length + ' aspects on screen are ' + T[1] + '.' + (top ? ' ' + nameOf(top) + ' carries the most of them.' : '') : 'These aspects are switched off under Tuning. Switch them back on to see them.';
     const next = KORDER.filter((x) => KINDS[x][1] === t).map((x) => nx('What is ' + an(x) + '?', 'kind:' + x));
     if (top) next.push(nx('Who carries them: ' + nameOf(top), 'pt:' + top)); if (mine[0]) next.push(nx('The tightest one', 'link:' + mine[0].key));
     Object.keys(TONES).filter((x) => x !== t).forEach((x) => next.push(nx(TONES[x][0], 'tone:' + x)));
-    return { col: 'var(--' + t + ')', gl: '<span class="gl tx">' + { flow: '△', grind: '□', fuse: '☌' }[t] + '</span>', eb: 'A kind of line', title: T[0], sub: T[1], lesson: T[2], here, list: lineList(mine), next };
+    return { col: 'var(--' + t + ')', gl: '<span class="gl tx">' + { flow: '△', grind: '□', fuse: '☌' }[t] + '</span>', eb: 'A family of aspects', title: T[0], sub: T[1], lesson: T[2], here, list: lineList(mine), next };
   }
   function cardKind(kind, links) {
     const K = KINDS[kind]; if (!K) return null; const mine = links.filter((L) => L.kind === kind).sort(byOff), nk = KORDER[(KORDER.indexOf(kind) + 1) % KORDER.length];
     const here = (mine.length ? mine.length + ' ' + kind + (mine.length > 1 ? 's' : '') + ' on screen.' : 'No ' + kind + 's on screen at this tightness.') + ' On the circle of fifths this angle sounds ' + K[2] + '.';
     const next = [nx(TONES[K[1]][0], 'tone:' + K[1])]; if (mine[0]) next.push(nx('The tightest ' + kind, 'link:' + mine[0].key));
     next.push(nx('Next aspect: ' + nk, 'kind:' + nk), nx('What is an orb?', 'term:orb'), nxt('The music of the chart', 'music'));
-    return { col: 'var(--' + K[1] + ')', gl: '<span class="gl tx">' + ASYM[kind] + '</span>', eb: 'An aspect', title: cap(kind), sub: K[0] + '° apart · sounds ' + K[2], lesson: K[3], here, list: lineList(mine), next };
+    return { col: 'var(--' + K[1] + ')', gl: '<span class="gl tx">' + ASYM[kind] + '</span>', eb: 'A kind of aspect · ' + TONES[K[1]][0].split(' ')[0].toLowerCase(), title: cap(kind), sub: K[0] + '° apart · sounds ' + K[2], lesson: K[3], here, list: aspDl(kind) + lineList(mine), next };
   }
   function cardSign(k) {
     const [sl, ss] = k.split(':'), s = +ss, ch = chartOf(sl); if (!ch) return null;
@@ -1562,8 +1670,9 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     else if (key === 'anima') next.push(nxt('Read the Anima', 'reading:anima'), nxt('Read the Animus', 'reading:animus'));
     else if (key === 'tonic') { const kk = keyOf(ch); here = 'This chart is in ' + kk.name + ', from the ' + kk.from + '.'; next.push(nxt('The music of the chart', 'music')); }
     else if (key === 'grand trine' || key === 't-square') next.push(nxt('The patterns in this chart', 'reading:patterns'));
-    else if (key === 'orb') { const t0 = links.slice().sort(byOff)[0]; if (t0) { here = 'The tightest line on screen is ' + t0.off.toFixed(1) + '° from exact.'; next.push(nx('Go to it', 'link:' + t0.key)); } next.push(nx('What is a conjunction?', 'kind:conjunction')); }
-    else if (key === 'weight') { const top = loads(links)[0]; if (top) { here = nameOf(top) + ' carries the most line weight on screen.'; next.push(nx('Go to ' + nameOf(top), 'pt:' + top)); } }
+    else if (key === 'aspect') { const n = {}; links.forEach((L) => { n[L.kind] = (n[L.kind] || 0) + 1; }); here = links.length ? links.length + ' aspect' + (links.length > 1 ? 's' : '') + ' on screen: ' + KORDER.filter((k) => n[k]).map((k) => n[k] + ' ' + k + (n[k] > 1 ? 's' : '')).join(', ') + '.' : 'No aspects on screen at this tightness.'; KORDER.forEach((k) => next.push(nx(ASYM[k] + ' ' + cap(k), 'kind:' + k))); next.push(nxt('Every aspect on screen', 'aspects')); }
+    else if (key === 'orb') { const t0 = links.slice().sort(byOff)[0]; if (t0) { here = 'The tightest aspect on screen is ' + t0.off.toFixed(1) + '° from exact.'; next.push(nx('Go to it', 'link:' + t0.key)); } next.push(nx('What is a conjunction?', 'kind:conjunction')); }
+    else if (key === 'weight') { const top = loads(links)[0]; if (top) { here = nameOf(top) + ' carries the most aspect weight on screen.'; next.push(nx('Go to ' + nameOf(top), 'pt:' + top)); } }
     const pic = D.PG[g[3]] ? svg(D.PG[g[3]], 'pl') : '<svg class="gl pl" viewBox="0 0 48 48" aria-hidden="true">' + g[3] + '</svg>';
     return { col: 'var(--ichor)', gl: pic, eb: 'A term', title: g[0], sub: g[1], lesson: g[2], here, list, next };
   }
@@ -1591,7 +1700,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   function startCard(links) {
     const ch = curCharts[0]; if (!ch) return ''; const sl = S.slotOf(ch), sorted = links.slice().sort(byOff), top = loads(links)[0], tally = { flow: 0, grind: 0, fuse: 0 };
     links.forEach((L) => tally[L.tone]++); const tone = Object.keys(tally).sort((a, b) => tally[b] - tally[a])[0], bal = C.balance(ch), el = Object.keys(bal.el).sort((a, b) => bal.el[b] - bal.el[a])[0];
-    const items = [nx(pg('sun') + 'The Sun', 'pt:' + sl + ':sun'), nx(pg('moon') + 'The Moon', 'pt:' + sl + ':moon'), ch.timeKnown ? nx(pg('asc') + 'The Ascendant', 'pt:' + sl + ':asc') : '', top ? nx('The loudest point: ' + nameOf(top), 'pt:' + top) : '', sorted[0] ? nx('The tightest line', 'link:' + sorted[0].key) : '', tally[tone] ? nx('Most lines are ' + TONES[tone][0].split(' ')[0].toLowerCase(), 'tone:' + tone) : '', nx(elGlyph(el) + 'Strongest element: ' + el, 'el:' + sl + ':' + el)];
+    const items = [nx(pg('sun') + 'The Sun', 'pt:' + sl + ':sun'), nx(pg('moon') + 'The Moon', 'pt:' + sl + ':moon'), ch.timeKnown ? nx(pg('asc') + 'The Ascendant', 'pt:' + sl + ':asc') : '', top ? nx('The loudest point: ' + nameOf(top), 'pt:' + top) : '', sorted[0] ? nx('The tightest aspect', 'link:' + sorted[0].key) : '', tally[tone] ? nx('Most aspects are ' + TONES[tone][0].split(' ')[0].toLowerCase(), 'tone:' + tone) : '', nx(elGlyph(el) + 'Strongest element: ' + el, 'el:' + sl + ':' + el)];
     return '<div class="start-j"><p>Tap anything on the chart or in the lists to follow it. Each stop teaches one idea, shows it in this chart, and points to the next.</p><div class="next"><span>Or start here</span>' + items.join('') + '</div></div>';
   }
   /** What a stop lights on the chart. */
@@ -1645,7 +1754,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     const tr = $('#card .trail'), cur = tr && tr.querySelector('[aria-current]'); if (tr && cur) tr.scrollLeft = Math.max(0, cur.offsetLeft - tr.clientWidth + cur.offsetWidth + 24);
     $$('#tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.tab === S.tab));
     let body = '';
-    if (S.tab === 'aspects') body = links.length ? '<ul class="lks">' + links.slice(0, 40).map((x) => linkRow(x, vc)).join('') + '</ul>' + (links.length > 40 ? '<p class="fine">Showing the 40 tightest of ' + links.length + '.</p>' : '') : SO ? '<p class="fine">This chart was shared at sign level. Lines need degrees, so none are drawn.</p>' : '<p class="fine">No lines at this tightness. Loosen the orbs under Tuning.</p>';
+    if (S.tab === 'aspects') body = aspGuide(SO ? [] : links) + (links.length ? '<ul class="lks">' + links.slice(0, 40).map((x) => linkRow(x, vc)).join('') + '</ul>' + (links.length > 40 ? '<p class="fine">Showing the 40 tightest of ' + links.length + '.</p>' : '') : SO ? '<p class="fine">This chart was shared at sign level. Aspects need degrees, so none are drawn.</p>' : '<p class="fine">No aspects at this tightness. Loosen the orbs under Tuning.</p>');
     else if (S.tab === 'placements') body = vc.map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + placements(ch)).join('');
     else if (S.tab === 'reading') body = readingAll(vc, links);
     else if (S.tab === 'houses') body = vc.filter((c) => !(c.meta && c.meta.now)).map((ch) => (vc.length > 1 ? '<h4 class="sub" style="color:' + D.SLOTCOL[S.slotOf(ch)] + '">' + esc(ch.name) + '</h4>' : '') + housesRead(ch)).join('') || '<p class="fine">Pick a birth chart to see its houses.</p>';
@@ -1654,7 +1763,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     else body = energies(vc, links);
     if (S.tab === 'reading' || S.tab === 'houses' || S.tab === 'today' || S.tab === 'music') body = gloss(body);
     $('#body').innerHTML = body; markRows();
-    cv.setAttribute('aria-label', (VIEWS.find((x) => x[0] === S.view)[1]) + ' view of ' + vc.map((c) => c.name).join(' and ') + '. ' + links.length + ' aspect lines. Full positions are in the tables below.');
+    cv.setAttribute('aria-label', (VIEWS.find((x) => x[0] === S.view)[1]) + ' view of ' + vc.map((c) => c.name).join(' and ') + '. ' + links.length + ' aspects. Full positions are in the tables below.');
     if (LIVE) document.dispatchEvent(new CustomEvent('natal:render')); // share system: the panel was redrawn
   }
   function renderAll() { if (!LIVE) return redraw(); S.hov = null; hideTip(); const empty = !S.charts.length; $('.ne-main').classList.toggle('is-empty', empty); if (empty) return; cv.parentElement.dataset.mode = S.view; renderSlots(); renderViews(); $('#hsys').disabled = S.charts.some(fixed); size(); redraw(); renderPanel(); }
@@ -1663,7 +1772,8 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
   const dlg = $('#library');
   function renderLibrary() {
     let h = '<div class="lib-top"><button class="big" data-self>Your own chart<small>Entered here, kept in this tab, never saved</small></button><button class="big" data-fig="now">The sky right now<small>Lay this moment over any chart</small></button></div>';
-    h += '<h3 class="lib-h">Pairs</h3><div class="chips">' + L.PAIRS.map((p, i) => '<button class="chip" data-pair="' + i + '">' + esc(p[2]) + '</button>').join('') + '</div>';
+    const pairRow = (title, keep) => '<h3 class="lib-h">' + title + '</h3><div class="chips">' + L.PAIRS.map((p, i) => (keep(p) ? '<button class="chip" data-pair="' + i + '">' + esc(p[2]) + '</button>' : '')).join('') + '</div>';
+    h += pairRow('Pairs', (p) => !p[3]) + pairRow('Pop culture couples', (p) => p[3] === 'pop');
     for (const [gid, gname] of L.GENRES) {
       const fs = L.FIGURES.filter((f) => f.genre === gid); if (!fs.length) continue;
       h += '<h3 class="lib-h">' + gname + '</h3><div class="figs">' + fs.map((f) => '<button class="fig" data-fig="' + f.id + '"><span>' + esc(f.name) + '</span><small>' + (f.private ? esc(f.place) : f.y + ' · ' + esc(f.place.split(',').pop().trim())) + '</small>' + badge(f) + '</button>').join('') + '</div>';
@@ -1819,6 +1929,7 @@ self.NatalSmallTable={"gap":1826.25,"k0":-112,"ids":["chiron","ceres","pallas","
     if (S.still) draw(performance.now()); else requestAnimationFrame(loop);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (S.still) draw(performance.now()); });
     const GW = { pulse: 'pulses', wave: 'rolls', dash: 'chatters', heart: 'beats twice', spark: 'sparks', glide: 'glides', tick: 'ticks', zap: 'jolts', mist: 'drifts', deep: 'rings' };
+    const al = $('#asplegend'); if (al) al.innerHTML = KORDER.map((k) => '<li class="tone-' + KINDS[k][1] + '"><span class="as">' + ASYM[k] + '</span><span><b>' + cap(k) + '</b> <small>' + KINDS[k][0] + '° · ' + TONES[KINDS[k][1]][0].split(' ')[0].toLowerCase() + '</small></span><span class="gi">' + ASPX[k].gist + ' <i>' + ASPX[k].keys + '</i></span></li>').join('');
     $('#legend').innerHTML = C.PLANETS.map((id) => '<li style="color:' + D.PCOL[id] + '">' + pg(id) + '<span style="color:var(--ink)"><b>' + D.PT[id].n + '</b> <span lang="grc">' + D.PT[id].g + '</span></span><small>' + GW[D.PT[id].gram] + ' \u00b7 ' + D.PT[id].k + '</small></li>').join('');
   }
 })();
