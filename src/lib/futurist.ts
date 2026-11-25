@@ -30,6 +30,12 @@
  * No wrapper element is added around the page.
  * Anything the function expects and does not find stops the build, so a
  * changed source file cannot ship half-mounted.
+ *
+ * The So-Called Count (Mythmaking No. 3) arrived the same way, as one whole
+ * document, so it is mounted here too. Its source is filed with its series
+ * (_incoming/mythmaking/, the `dir` on its entry in src/config/futurist.ts);
+ * the series label, the feed and the foot follow its gallery entry, as
+ * they do for every page.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -49,6 +55,11 @@ const face = (family: string, weight: number, file: string) =>
    unicode-range Google declares for that subset. */
 const GREEK = 'U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF';
 const GREEK_EXT = 'U+1F00-1FFF';
+/* The So-Called Count: the latin-ext and math subsets, under the ranges Google declares for them. */
+const LATIN_EXT =
+  'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF';
+const MATH =
+  'U+0302-0303, U+0305, U+0307-0308, U+0310, U+0312, U+0315, U+031A, U+0326-0327, U+032C, U+032F-0330, U+0332-0333, U+0338, U+033A, U+0346, U+034D, U+0391-03A1, U+03A3-03A9, U+03B1-03C9, U+03D1, U+03D5-03D6, U+03F0-03F1, U+03F4-03F5, U+2016-2017, U+2034-2038, U+203C, U+2040, U+2043, U+2047, U+2050, U+2057, U+205F, U+2070-2071, U+2074-208E, U+2090-209C, U+20D0-20DC, U+20E1, U+20E5-20EF, U+2100-2112, U+2114-2115, U+2117-2121, U+2123-214F, U+2190, U+2192, U+2194-21AE, U+21B0-21E5, U+21F1-21F2, U+21F4-2211, U+2213-2214, U+2216-22FF, U+2308-230B, U+2310, U+2319, U+231C-2321, U+2336-237A, U+237C, U+2395, U+239B-23B7, U+23D0, U+23DC-23E1, U+2474-2475, U+25AF, U+25B3, U+25B7, U+25BD, U+25C1, U+25CA, U+25CC, U+25FB, U+266D-266F, U+27C0-27FF, U+2900-2AFF, U+2B0E-2B11, U+2B30-2B4C, U+2BFE, U+3030, U+FF5B, U+FF5D, U+1D400-1D7FF, U+1EE00-1EEFF';
 const faceOf = (family: string, style: 'normal' | 'italic', weight: string, file: string, range = LATIN) =>
   `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:swap;src:url('/fonts/${file}.woff2') format('woff2');unicode-range:${range}}`;
 /* Each family a Google Fonts link in the source files asks for, and the
@@ -79,6 +90,36 @@ const FACES: Record<string, string[]> = {
     faceOf('Newsreader', 'italic', '400 600', 'newsreader-latin-opsz-italic'),
   ],
   'Courier+Prime:wght@400;700': [400, 700].map((w) => face('Courier Prime', w, `courier-prime-latin-${w}-normal`)),
+  /* The So-Called Count asks for its five families in one link: the
+     Mythmaking faces Questions Wearing Teeth declares (Bodoni Moda, Literata,
+     Martian Mono, GFS Didot; the same files, subsets and ranges), and Pinyon
+     Script for the clerk's hand, new here. Its canvas sets ctx.font by these
+     family names. The transliterations (xērion, phēmē, sēma) need the
+     latin-ext subsets, the Greek headwords GFS Didot's greek files. */
+  'Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700': (['normal', 'italic'] as const).flatMap((st) => [
+    faceOf('Bodoni Moda', st, '400 900', `bodoni-moda-math-opsz-${st}`, MATH),
+    faceOf('Bodoni Moda', st, '400 900', `bodoni-moda-latin-ext-opsz-${st}`, LATIN_EXT),
+    faceOf('Bodoni Moda', st, '400 900', `bodoni-moda-latin-opsz-${st}`),
+  ]),
+  'Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400': (['normal', 'italic'] as const).flatMap((st) => [
+    faceOf('Literata', st, '200 900', `literata-greek-ext-opsz-${st}`, GREEK_EXT),
+    faceOf('Literata', st, '200 900', `literata-greek-opsz-${st}`, GREEK),
+    faceOf('Literata', st, '200 900', `literata-latin-ext-opsz-${st}`, LATIN_EXT),
+    faceOf('Literata', st, '200 900', `literata-latin-opsz-${st}`),
+  ]),
+  'Martian+Mono:wght@400;500': [
+    faceOf('Martian Mono', 'normal', '100 800', 'martian-mono-latin-ext-wght-normal', LATIN_EXT),
+    faceOf('Martian Mono', 'normal', '100 800', 'martian-mono-latin-wght-normal'),
+  ],
+  'GFS+Didot': [
+    faceOf('GFS Didot', 'normal', '400', 'gfs-didot-greek-ext-400-normal', GREEK_EXT),
+    faceOf('GFS Didot', 'normal', '400', 'gfs-didot-greek-400-normal', GREEK),
+    faceOf('GFS Didot', 'normal', '400', 'gfs-didot-latin-400-normal'),
+  ],
+  'Pinyon+Script': [
+    faceOf('Pinyon Script', 'normal', '400', 'pinyon-script-latin-ext-400-normal', LATIN_EXT),
+    faceOf('Pinyon Script', 'normal', '400', 'pinyon-script-latin-400-normal'),
+  ],
 };
 
 /**
@@ -96,6 +137,13 @@ const LINKS: Partial<Record<FuturistSlug, [string, string, string]>> = {
     'the header line',
     '<p class="sub">FACE FORWARD · REGISTER 01</p>',
     '<p class="sub"><a href="/gallery/face-forward/" style="color:inherit;text-decoration:none">FACE FORWARD</a> · REGISTER 01</p>',
+  ],
+  /* The So-Called Count names the series and No. 2 in the line above its
+     colophon; both become links. */
+  'the-so-called-count': [
+    'the series line',
+    '<p class="series">Mythmaking · No. 3 · Previous: Questions Wearing Teeth</p>',
+    '<p class="series"><a href="/writings/mythmaking/" style="color:inherit">Mythmaking</a> · No. 3 · Previous: <a href="/gallery/questions-wearing-teeth/" style="color:inherit"><i>Questions Wearing Teeth</i></a></p>',
   ],
 };
 
@@ -145,6 +193,11 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
      sentences (data-twin), the share-card frame (data-og-frame) and the
      marks that keep its top bar out of both. */
   'free-wont': [],
+  /* The So-Called Count ships as delivered: its file already carries the
+     share-card frame (data-og-frame on the cover, with the title's written
+     insertion shown whole under `og`) and the marks that keep its HUD out
+     of the card and its HUD and control docks out of the twin. */
+  'the-so-called-count': [],
   /* Quantum Banking: the hero rosette is drawn once, at load, into a canvas
      sized to the hero as it stands then, and the canvas is shown at the
      hero's full size. On a phone the web fonts arrive after that and the
@@ -227,6 +280,10 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
  * page's colours as they turn from night to daylight. It runs the width of
  * the sources column, and its small labels are set bold like every other
  * label on the page.
+ *
+ * The So-Called Count: inside the Cairns, after the colophon, on the end
+ * matter's dark ground above the fixed canvas, in the Cairns' 760px column,
+ * with its small type in the page's mono.
  */
 /* The source text the foot follows: [what, the exact text]. */
 const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
@@ -235,6 +292,7 @@ const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
   'depth-chart': ['the end of <main>', '</main>\n'],
   'quantum-banking': ['the end of the sources sheet', '    </ol>\n  </div>\n</section>\n'],
   'free-wont': ['the end of the sources', 'reading of each source.</p>\n  </section>\n'],
+  'the-so-called-count': ['the colophon', 'checked against the sources listed.</p>\n'],
 };
 const FOOT_CSS: Record<FuturistSlug, string> = {
   'face-forward':
@@ -248,6 +306,8 @@ const FOOT_CSS: Record<FuturistSlug, string> = {
     '.scroll-foot.site-foot{--log:var(--typed);max-width:1240px;margin-top:0;padding-left:0;padding-right:0;border-top-color:var(--rule)}' +
     '.scroll-foot.site-foot .scroll-foot__k,.scroll-foot.site-foot .scroll-foot__status,.scroll-foot.site-foot .scroll-foot__btn,' +
     '.scroll-foot.site-foot .scroll-foot__next-label,.scroll-foot.site-foot .scroll-foot__commission,.scroll-foot.site-foot .scroll-foot__door{font-weight:700;opacity:.92}',
+  'the-so-called-count':
+    '.scroll-foot.site-foot{--log:var(--mono);max-width:760px;margin-top:6vh;padding-left:0;padding-right:0;color:var(--bone);border-top-color:rgba(217,181,90,.3)}',
 };
 const FOOT_MARK = '<!--futurist:foot-->';
 
@@ -258,6 +318,14 @@ const FOOT_MARK = '<!--futurist:foot-->';
  */
 const back = (slug: FuturistSlug, label: string, href: string): [string, string, string] => {
   const a = 'style="color:inherit;white-space:nowrap"';
+  if (slug === 'the-so-called-count') {
+    return [
+      'the eyebrow',
+      '    <div class="eyebrow">Mythmaking · No. 3 · By Michael Wilhelm</div>\n',
+      `    <div class="eyebrow"><a href="${href}" ${a}>${esc(label)}</a> · <span style="white-space:nowrap">By <a href="/" rel="author" ${a}>Michael Wilhelm</a></span>` +
+        `<span data-og-hide data-twin-skip> · <a href="/gallery/" ${a}>The Gallery</a></span></div>\n`,
+    ];
+  }
   if (slug === 'free-wont') {
     return [
       'the kicker',
@@ -311,7 +379,8 @@ function swap(html: string, find: string, put: string, what: string, slug: strin
 }
 
 export function futuristSource(slug: FuturistSlug): string {
-  const bytes = readFileSync(resolve(process.cwd(), '_incoming/futurist-essays', `${slug}.html`));
+  const { dir = 'futurist-essays' } = FUTURIST_SOURCES[slug] as { dir?: string };
+  const bytes = readFileSync(resolve(process.cwd(), '_incoming', dir, `${slug}.html`));
   const sha = createHash('sha256').update(bytes).digest('hex');
   if (sha !== FUTURIST_SOURCES[slug].sha256) {
     throw new Error(`futurist: ${slug}: the source file is not the approved one (sha256 ${sha.slice(0, 16)}…).`);

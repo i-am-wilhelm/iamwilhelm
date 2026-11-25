@@ -2,12 +2,16 @@
  * The Futurist pages mounted exactly as their approved source files (in
  * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward, The
  * Receipts, Depth Chart, Quantum Banking and Free Won't, the third to
- * seventh Futurist installments.
+ * seventh Futurist installments; and one page from another series mounted
+ * the same way, The So-Called Count (Mythmaking No. 3).
  *
  * `sha256` is the approved file's hash: the build stops if the file on
  * record is not the file that was approved. `night` is the page's own
  * background, for the browser's theme colour. `preload` names the font
- * files the opening frame is set in.
+ * files the opening frame is set in. `dir` names the folder under _incoming/
+ * when the file is filed somewhere other than futurist-essays/: The
+ * So-Called Count (Mythmaking No. 3) arrived as one whole document like
+ * these, so the same function mounts it from _incoming/mythmaking/.
  */
 export const FUTURIST_SOURCES = {
   'face-forward': {
@@ -34,6 +38,12 @@ export const FUTURIST_SOURCES = {
     sha256: '501aa9169d4266e3dc249b8f13c1572b5800a25f4d1141bd879e497cf3187696',
     night: '#0a0c11',
     preload: ['/fonts/alegreya-latin-wght-normal.woff2', '/fonts/alegreya-latin-wght-italic.woff2'],
+  },
+  'the-so-called-count': {
+    dir: 'mythmaking',
+    sha256: '6ae27f7c5943d1d36e8b5da698c9ce82d988f7209474d557888e4f32ceca136f',
+    night: '#0b0908',
+    preload: ['/fonts/bodoni-moda-latin-opsz-normal.woff2', '/fonts/pinyon-script-latin-400-normal.woff2', '/fonts/martian-mono-latin-wght-normal.woff2'],
   },
 } as const;
 
