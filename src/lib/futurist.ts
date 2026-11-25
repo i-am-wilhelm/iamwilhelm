@@ -35,7 +35,8 @@
  * document, so it is mounted here too. Its source is filed with its series
  * (_incoming/mythmaking/, the `dir` on its entry in src/config/futurist.ts);
  * the series label, the feed and the foot follow its gallery entry, as
- * they do for every page.
+ * they do for every page. Cannot Be Uninstalled (Mythmaking No. 4) is
+ * filed and mounted the same way.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -120,6 +121,15 @@ const FACES: Record<string, string[]> = {
     faceOf('Pinyon Script', 'normal', '400', 'pinyon-script-latin-ext-400-normal', LATIN_EXT),
     faceOf('Pinyon Script', 'normal', '400', 'pinyon-script-latin-400-normal'),
   ],
+  /* Cannot Be Uninstalled asks for four families in one link: IBM Plex Mono
+     for the Record (the files Depth Chart's link already declares), IM Fell
+     English and its small caps for the Legend, and VT323 for the terminal. */
+  'IM+Fell+English:ital@0;1': [
+    faceOf('IM Fell English', 'normal', '400', 'im-fell-english-latin-400-normal'),
+    faceOf('IM Fell English', 'italic', '400', 'im-fell-english-latin-400-italic'),
+  ],
+  'IM+Fell+English+SC': [faceOf('IM Fell English SC', 'normal', '400', 'im-fell-english-sc-latin-400-normal')],
+  'VT323': [faceOf('VT323', 'normal', '400', 'vt323-latin-400-normal')],
 };
 
 /**
@@ -144,6 +154,13 @@ const LINKS: Partial<Record<FuturistSlug, [string, string, string]>> = {
     'the series line',
     '<p class="series">Mythmaking · No. 3 · Previous: Questions Wearing Teeth</p>',
     '<p class="series"><a href="/writings/mythmaking/" style="color:inherit">Mythmaking</a> · No. 3 · Previous: <a href="/gallery/questions-wearing-teeth/" style="color:inherit"><i>Questions Wearing Teeth</i></a></p>',
+  ],
+  /* Cannot Be Uninstalled names the series and No. 3, the other Saint
+     Germain piece, in the line above its credits; both become links. */
+  'cannot-be-uninstalled': [
+    'the series line',
+    '<p class="series">Mythmaking · No. 4 · Previous: The So-Called Count</p>',
+    '<p class="series"><a href="/writings/mythmaking/" style="color:inherit">Mythmaking</a> · No. 4 · Previous: <a href="/gallery/the-so-called-count/" style="color:inherit"><i>The So-Called Count</i></a></p>',
   ],
 };
 
@@ -198,6 +215,13 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
      insertion shown whole under `og`) and the marks that keep its HUD out
      of the card and its HUD and control docks out of the twin. */
   'the-so-called-count': [],
+  /* Cannot Be Uninstalled ships as delivered: its file already carries the
+     share-card frame (data-og-frame on the cold open, with the title's
+     strike shown finished under `og`), the twin's sentences (role="img"
+     labels on its plates, terminals and canvases) and the marks that keep
+     its top bar and case board out of both. Off Claude its reader tally
+     has no store, so the page keeps that line hidden. */
+  'cannot-be-uninstalled': [],
   /* Quantum Banking: the hero rosette is drawn once, at load, into a canvas
      sized to the hero as it stands then, and the canvas is shown at the
      hero's full size. On a phone the web fonts arrive after that and the
@@ -284,6 +308,11 @@ const FIXES: Record<FuturistSlug, [string, string, string][]> = {
  * The So-Called Count: inside the Cairns, after the colophon, on the end
  * matter's dark ground above the fixed canvas, in the Cairns' 760px column,
  * with its small type in the page's mono.
+ *
+ * Cannot Be Uninstalled: inside <main>, after the page's own footer (the
+ * crisis line and the credits), in the main column, with its small type in
+ * the Record's mono. In Believer mode the column already leaves room for
+ * the case board on wide screens, so the foot never runs under it.
  */
 /* The source text the foot follows: [what, the exact text]. */
 const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
@@ -293,6 +322,7 @@ const FOOT_AFTER: Record<FuturistSlug, [string, string]> = {
   'quantum-banking': ['the end of the sources sheet', '    </ol>\n  </div>\n</section>\n'],
   'free-wont': ['the end of the sources', 'reading of each source.</p>\n  </section>\n'],
   'the-so-called-count': ['the colophon', 'checked against the sources listed.</p>\n'],
+  'cannot-be-uninstalled': ["the page's own footer", '</footer>\n'],
 };
 const FOOT_CSS: Record<FuturistSlug, string> = {
   'face-forward':
@@ -308,6 +338,8 @@ const FOOT_CSS: Record<FuturistSlug, string> = {
     '.scroll-foot.site-foot .scroll-foot__next-label,.scroll-foot.site-foot .scroll-foot__commission,.scroll-foot.site-foot .scroll-foot__door{font-weight:700;opacity:.92}',
   'the-so-called-count':
     '.scroll-foot.site-foot{--log:var(--mono);max-width:760px;margin-top:6vh;padding-left:0;padding-right:0;color:var(--bone);border-top-color:rgba(217,181,90,.3)}',
+  'cannot-be-uninstalled':
+    '.scroll-foot.site-foot{--log:var(--font-record);max-width:none;margin-top:0;padding-left:0;padding-right:0;color:var(--text);border-top-color:var(--line)}',
 };
 const FOOT_MARK = '<!--futurist:foot-->';
 
@@ -318,6 +350,14 @@ const FOOT_MARK = '<!--futurist:foot-->';
  */
 const back = (slug: FuturistSlug, label: string, href: string): [string, string, string] => {
   const a = 'style="color:inherit;white-space:nowrap"';
+  if (slug === 'cannot-be-uninstalled') {
+    return [
+      'the eyebrow',
+      '  <p class="eyebrow">Mythmaking · No. 4 · By Michael Wilhelm</p>\n',
+      `  <p class="eyebrow"><a href="${href}" ${a}>${esc(label)}</a> · <span style="white-space:nowrap">By <a href="/" rel="author" ${a}>Michael Wilhelm</a></span>` +
+        `<span data-og-hide data-twin-skip> · <a href="/gallery/" ${a}>The Gallery</a></span></p>\n`,
+    ];
+  }
   if (slug === 'the-so-called-count') {
     return [
       'the eyebrow',
