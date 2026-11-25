@@ -3,7 +3,8 @@
  * _incoming/futurist-essays/), by src/lib/futurist.ts: Face Forward, The
  * Receipts, Depth Chart, Quantum Banking and Free Won't, the third to
  * seventh Futurist installments; and one page from another series mounted
- * the same way, The So-Called Count (Mythmaking No. 3).
+ * the same way, The So-Called Count (Mythmaking No. 3), and after it
+ * Cannot Be Uninstalled (Mythmaking No. 4).
  *
  * `sha256` is the approved file's hash: the build stops if the file on
  * record is not the file that was approved. `night` is the page's own
@@ -44,6 +45,12 @@ export const FUTURIST_SOURCES = {
     sha256: '6ae27f7c5943d1d36e8b5da698c9ce82d988f7209474d557888e4f32ceca136f',
     night: '#0b0908',
     preload: ['/fonts/bodoni-moda-latin-opsz-normal.woff2', '/fonts/pinyon-script-latin-400-normal.woff2', '/fonts/martian-mono-latin-wght-normal.woff2'],
+  },
+  'cannot-be-uninstalled': {
+    dir: 'mythmaking',
+    sha256: '6f601eaf01cdcbb56e9f537f156e06c1663a58a716193071d029930d5732458f',
+    night: '#0d0c0b',
+    preload: ['/fonts/im-fell-english-latin-400-normal.woff2', '/fonts/vt323-latin-400-normal.woff2'],
   },
 } as const;
 

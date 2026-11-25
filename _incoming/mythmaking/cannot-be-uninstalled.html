@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cannot Be Uninstalled</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: one dark reading column. The Record is typed on paper sheets; the Legend floats beside it in gold.
+     Believer mode swaps the weight: the Legend takes the column and the Record collapses into redaction bars. */
+  --night: #0d0c0b;
+  --night-2: #16130f;
+  --paper: #ebe4d3;
+  --ink: #1a1612;
+  --stamp: #b0291f;
+  --gold: #c9a44c;
+  --gold-dim: #7d6a37;
+  --phosphor: #84f0a2;
+  --text: #d9d2c3;
+  --muted: #8d8576;
+  --line: #2e2a24;
+  --plate-ink: #d6ccb4;
+  --plate-bg: #0d0c0b;
+  --font-legend: "IM Fell English", "Iowan Old Style", Georgia, serif;
+  --font-legend-sc: "IM Fell English SC", "IM Fell English", Georgia, serif;
+  --font-record: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-term: "VT323", "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+body.believer {
+  --night: #070605;
+  --text: #e2d6b4;
+  --plate-ink: #c9a44c;
+  --plate-bg: #070605;
+  --line: #2a2416;
+}
+* { box-sizing: border-box; }
+html { background: var(--night); }
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--text);
+  font-family: var(--font-record);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .6s ease;
+}
+a { color: inherit; text-decoration-color: var(--gold-dim); text-underline-offset: 3px; }
+a:hover { color: var(--gold); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- top bar & switch ---------- */
+.topbar {
+  position: fixed; inset: 0 0 auto 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 20px;
+  background: linear-gradient(var(--night) 55%, transparent);
+}
+.wordmark { font-family: var(--font-legend-sc); font-size: 15px; letter-spacing: .1em; color: var(--text); text-decoration: none; }
+.switch {
+  display: inline-flex; align-items: stretch; padding: 3px; gap: 2px;
+  border: 1px solid #3a352d; border-radius: 999px; background: #000;
+  font: 500 11px/1 var(--font-record); letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer;
+}
+.switch span { padding: 9px 13px; border-radius: 999px; transition: background-color .3s, color .3s; }
+.switch[aria-checked="false"] .opt-record { background: var(--paper); color: var(--ink); }
+.switch[aria-checked="true"] .opt-legend { background: var(--gold); color: #120f08; }
+
+main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* ---------- cold open ---------- */
+.coldopen { min-height: min(90vh, 880px); display: grid; align-content: center; gap: 30px; padding: 96px 0 56px; }
+.term {
+  position: relative; overflow: hidden;
+  font-family: var(--font-term); font-size: 24px; line-height: 1.28;
+  color: var(--phosphor); background: #030403;
+  border: 1px solid #183422; padding: 18px 22px;
+  text-shadow: 0 0 6px rgba(132, 240, 162, .32);
+}
+.term::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.28) 2px 3px);
+}
+.term p { margin: 0; white-space: pre-wrap; }
+.term .err { color: #ff8a7a; text-shadow: 0 0 6px rgba(255, 120, 100, .35); }
+.cursor { display: inline-block; width: .55em; height: 1em; vertical-align: -.12em; background: var(--phosphor); animation: blink 1.05s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.coldopen .term { max-width: 560px; }
+.title { margin: 0; font-family: var(--font-legend); font-weight: 400; color: var(--paper); line-height: .9; text-wrap: balance; }
+.believer .title { color: var(--gold); }
+.title .pre { display: block; font-family: var(--font-legend-sc); font-size: clamp(22px, 3.4vw, 40px); letter-spacing: .14em; color: var(--muted); margin-bottom: 10px; }
+.title .un { position: relative; display: inline-block; font-size: clamp(54px, 11.5vw, 156px); letter-spacing: -.01em; }
+.strike {
+  position: absolute; left: -1%; top: 54%; height: .055em; width: 101%;
+  background: var(--stamp); transform-origin: left center; transform: scaleX(.99);
+  animation: strike 2.6s cubic-bezier(.2,.7,.2,1) .5s backwards;
+}
+.strike::after { content: "99%"; position: absolute; right: -2.6em; top: -.62em; font: 500 12px/1 var(--font-record); letter-spacing: .1em; color: var(--stamp); }
+@keyframes strike { from { transform: scaleX(0); } }
+.eyebrow { margin: 0; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.og .strike { animation: none; }
+.dek { max-width: 60ch; margin: 0; color: var(--text); font-size: 15px; }
+.hint { margin: 0; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- acts ---------- */
+.act { padding: 120px 0 24px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.act-num { font-family: var(--font-legend-sc); color: var(--gold); letter-spacing: .32em; font-size: 15px; }
+.act-title { margin: 0; font-family: var(--font-legend); font-weight: 400; font-size: clamp(46px, 7.4vw, 96px); line-height: .95; color: var(--paper); text-wrap: balance; }
+.believer .act-title { color: var(--gold); }
+.act-meta { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.chip { border: 1px solid var(--stamp); color: #f0a196; padding: 4px 8px; letter-spacing: .14em; }
+
+/* ---------- beats ---------- */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.beat, .act, .bridge, .ending { scroll-margin-top: 76px; }
+.beat { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 22px 52px; padding: 52px 0; align-items: start; }
+.slug { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.slug .num { color: var(--gold); font-weight: 600; }
+.tell-tag { display: none; color: #f0a196; border: 1px solid var(--stamp); padding: 2px 7px; letter-spacing: .14em; }
+.record {
+  position: relative; background: var(--paper); color: var(--ink);
+  padding: 26px 26px 22px; font-size: 15px; line-height: 1.68;
+  box-shadow: 0 1px 0 rgba(0,0,0,.5), 0 22px 44px -24px rgba(0,0,0,.9);
+}
+.record::before {
+  content: "The Record"; position: absolute; top: -11px; left: 18px;
+  background: var(--stamp); color: #f7efe3; padding: 4px 9px;
+  font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+}
+.record p { margin: 0 0 .85em; }
+.record p:last-child { margin-bottom: 0; }
+.legend { font-family: var(--font-legend); font-style: italic; font-size: clamp(20px, 2.1vw, 25px); line-height: 1.38; color: var(--gold); border-left: 1px solid var(--gold-dim); padding: 2px 0 2px 22px; text-wrap: pretty; }
+.legend::before { content: "The Legend"; display: block; font: normal 10px/1 var(--font-record); letter-spacing: .22em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 12px; }
+.legend p { margin: 0 0 .5em; }
+.legend p:last-child { margin-bottom: 0; }
+.legend.hushed { color: var(--muted); border-left-color: var(--line); }
+.note { grid-column: 1 / -1; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+figure { margin: 0; }
+.visual { grid-column: 1 / -1; }
+
+/* believer mode */
+.believer .beat { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.believer .legend { order: -1; font-style: normal; font-size: clamp(27px, 3.7vw, 48px); line-height: 1.14; border-left: 0; padding: 0; max-width: 26ch; text-wrap: balance; }
+.believer .legend::before { content: "The Legend"; margin-bottom: 16px; }
+.believer .legend.hushed { font-size: clamp(20px, 2.2vw, 26px); font-style: italic; max-width: 40ch; }
+.believer .slug { order: -2; }
+.believer .tell-tag { display: inline-block; }
+.believer .record { background: transparent; color: var(--muted); box-shadow: none; padding: 0; font-size: 13px; max-width: 74ch; cursor: pointer; }
+.believer .record::before { content: "Official record · tap to declassify"; position: static; display: inline-block; background: transparent; color: #e9917f; border: 1px solid var(--stamp); margin-bottom: 12px; }
+.believer .record.open::before { content: "Official record · declassified"; }
+.believer .record .r { background: #26221c; color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: color .35s, background-color .35s; }
+.believer .record.open .r { background: transparent; color: var(--muted); }
+.only-believer { display: none !important; }
+.believer .only-believer { display: grid !important; }
+
+/* ---------- plates ---------- */
+.plate { color: var(--plate-ink); max-width: 780px; margin: 10px auto 0; width: 100%; }
+.plate svg { display: block; width: 100%; height: auto; }
+.plate figcaption { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; justify-content: center; text-align: center; }
+.plate figcaption b { font: 400 14px/1.2 var(--font-legend-sc); letter-spacing: .16em; color: var(--plate-ink); }
+.plate figcaption i { font: italic 16px/1.3 var(--font-legend); color: var(--muted); }
+.pk { fill: var(--plate-bg); }
+.glow { fill: currentColor; opacity: .16; }
+.lead { fill: none; stroke: currentColor; stroke-width: .8; stroke-dasharray: 3 3; }
+.pt { font: 500 10.5px var(--font-record); letter-spacing: .1em; fill: currentColor; }
+.pl { font: italic 17px var(--font-legend); fill: currentColor; }
+.goldtext { fill: var(--gold); }
+
+/* ---------- portraits ---------- */
+.portraits { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; align-items: end; max-width: 760px; margin: 8px auto 0; width: 100%; }
+.portrait { display: grid; gap: 12px; justify-items: center; text-align: center; }
+.portrait canvas { width: 100%; max-width: 340px; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.frame-sq { border: 1px solid var(--line); padding: 10px; background: #000; width: 100%; max-width: 362px; }
+.frame-oval { border: 3px double var(--gold-dim); border-radius: 50%; padding: 12px; background: #000; overflow: hidden; width: 78%; max-width: 280px; }
+.frame-oval canvas { border-radius: 50%; }
+.portrait figcaption { font: italic 16px/1.35 var(--font-legend); color: var(--muted); max-width: 30ch; }
+.portrait figcaption b { display: block; font: 400 13px/1.3 var(--font-legend-sc); letter-spacing: .14em; color: var(--text); font-style: normal; margin-bottom: 4px; }
+.sg-solo { justify-self: start; max-width: 260px; }
+
+/* ---------- typographic set pieces ---------- */
+.whackd { grid-column: 1 / -1; text-align: center; font-family: var(--font-legend-sc); font-size: clamp(54px, 12vw, 160px); line-height: 1; color: transparent; -webkit-text-stroke: 1px var(--gold); letter-spacing: .04em; padding: 10px 0; }
+.bridge { padding: 80px 0 40px; display: grid; gap: 44px; border-top: 1px solid var(--line); }
+.bridge blockquote { margin: 0 auto; max-width: 30ch; font-family: var(--font-legend); font-size: clamp(28px, 4vw, 48px); line-height: 1.16; color: var(--paper); text-align: center; text-wrap: balance; }
+.believer .bridge blockquote { color: var(--gold); }
+.bridge blockquote em { display: block; margin-top: 18px; color: var(--gold); font-size: .72em; }
+.prompt { justify-self: center; display: grid; gap: 14px; justify-items: center; text-align: center; padding: 26px 28px; border: 1px solid var(--gold-dim); max-width: 520px; }
+.prompt p { margin: 0; font: italic 22px/1.3 var(--font-legend); color: var(--gold); }
+.btn { font: 500 12px/1 var(--font-record); letter-spacing: .16em; text-transform: uppercase; padding: 13px 18px; border: 1px solid var(--gold); background: transparent; color: var(--gold); cursor: pointer; }
+.btn:hover { background: var(--gold); color: #120f08; }
+.mini-term { max-width: 560px; font-size: 22px; }
+.bar-chart { max-width: 640px; display: grid; gap: 14px; font-size: 13px; }
+.bar-row { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 14px; align-items: center; }
+.bar-row span:first-child { color: var(--muted); letter-spacing: .04em; }
+.bar { height: 22px; background: var(--paper); position: relative; }
+.believer .bar { background: var(--gold); }
+.bar.small { width: 8.4%; }
+.bar b { position: absolute; left: calc(100% + 10px); top: 1px; white-space: nowrap; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+.bar.big b { left: auto; right: 10px; color: var(--ink); }
+.exif { max-width: 520px; font-size: 20px; }
+.exif dl { margin: 0; display: grid; grid-template-columns: 11em minmax(0, 1fr); gap: 2px 12px; }
+.exif dt { color: #5fae78; }
+.exif dd { margin: 0; }
+.ekg { max-width: 640px; }
+.ekg svg { width: 100%; height: auto; display: block; }
+.ekg path { fill: none; stroke: var(--phosphor); stroke-width: 2; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(132,240,162,.5)); }
+.ekg.run path { stroke-dasharray: 1400; animation: trace 4.2s linear infinite; }
+@keyframes trace { from { stroke-dashoffset: 1400; } to { stroke-dashoffset: 0; } }
+.ekg-labels { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.win { position: relative; max-width: 440px; height: 190px; background: #cdc7ba; color: #111; font: 13px/1.45 var(--font-record); border: 2px solid; border-color: #f4f1ea #5e5950 #5e5950 #f4f1ea; }
+.win-title { background: #26305a; color: #f2f0ea; padding: 5px 10px; font-size: 12px; letter-spacing: .06em; display: flex; justify-content: space-between; }
+.win-body { padding: 16px 18px; display: flex; gap: 14px; }
+.win-icon { flex: none; width: 30px; height: 30px; border: 2px solid #8a1f17; border-radius: 50%; display: grid; place-items: center; color: #8a1f17; font-weight: 600; }
+.win button { position: absolute; font: 13px var(--font-record); padding: 5px 18px; background: #e4dfd4; color: #111; border: 2px solid; border-color: #fbf9f4 #4e4a42 #4e4a42 #fbf9f4; cursor: pointer; transition: left .18s, top .18s; }
+.win .yes { left: 150px; top: 132px; }
+.win .no { left: 262px; top: 132px; }
+.win-msg { position: absolute; left: 18px; bottom: 10px; font-size: 12px; color: #5b1712; }
+.qtile { width: min(300px, 72vw); aspect-ratio: 1; background: #fbfbfb; display: grid; place-items: center; font: 700 190px/1 Georgia, "Times New Roman", serif; color: #000; }
+.q404 { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 12px; }
+.bignum { font-family: var(--font-legend); font-size: clamp(90px, 16vw, 200px); line-height: .85; color: var(--paper); }
+.believer .bignum { color: var(--gold); }
+.bignum small { display: block; font: 500 12px/1.4 var(--font-record); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-top: 14px; }
+.phone { width: 230px; border: 1px solid var(--line); border-radius: 26px; padding: 30px 22px 24px; background: #0a0908; display: grid; gap: 8px; text-align: center; }
+.phone .ring { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.phone .num { font-size: 20px; color: var(--paper); filter: blur(.6px); font-variant-numeric: tabular-nums; }
+.phone .place { font: italic 20px var(--font-legend); color: var(--gold); }
+.phone .acts { display: flex; justify-content: space-between; margin-top: 14px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+.phone .acts span:first-child { color: #e98a7c; }
+.phone .acts span:last-child { color: var(--phosphor); }
+.chat { max-width: 380px; border: 1px solid var(--line); background: #0b0a09; }
+.chat-head { padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 12px; letter-spacing: .1em; display: flex; justify-content: space-between; color: var(--text); }
+.chat-head span:last-child { color: var(--phosphor); }
+.chat-body { padding: 16px 14px; display: grid; gap: 10px; }
+.bubble { justify-self: end; background: var(--paper); color: var(--ink); padding: 8px 12px; font-size: 13px; max-width: 80%; }
+.typing { justify-self: start; display: flex; gap: 6px; align-items: center; border: 1px solid var(--line); padding: 10px 12px; font-size: 12px; color: var(--muted); }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: dot 1.2s ease-in-out infinite; }
+.typing i:nth-child(2) { animation-delay: .2s; }
+.typing i:nth-child(3) { animation-delay: .4s; }
+@keyframes dot { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+/* ---------- discrepancy cards ---------- */
+.discrepancy { margin: 40px 0 30px; border: 1px dashed var(--stamp); padding: 30px 30px 26px; max-width: 800px; display: grid; gap: 14px; }
+.stamp { justify-self: start; font: 600 12px/1 var(--font-record); letter-spacing: .26em; text-transform: uppercase; color: #ec8f80; border: 2px solid var(--stamp); padding: 7px 11px; transform: rotate(-2.5deg); }
+.stamp .b { display: none; }
+.believer .stamp .a { display: none; }
+.believer .stamp .b { display: inline; }
+.discrepancy h3 { margin: 0; font: 400 clamp(26px, 3vw, 34px)/1.1 var(--font-legend); color: var(--paper); }
+.believer .discrepancy h3 { color: var(--gold); }
+.discrepancy p { margin: 0; font-size: 14px; max-width: 66ch; }
+.discrepancy .q { font: italic 22px/1.35 var(--font-legend); color: var(--gold); }
+.discrepancy.solemn { border-color: var(--line); }
+.discrepancy.solemn .stamp { border-color: var(--muted); color: var(--muted); }
+
+/* ---------- believer-only beats ---------- */
+.faces { grid-column: 1 / -1; display: grid; gap: 4px; font-family: var(--font-legend); font-size: clamp(30px, 5vw, 64px); line-height: 1.02; color: var(--gold); }
+.faces span:nth-child(even) { color: var(--paper); font-style: italic; }
+.faces-sg { grid-column: 1 / -1; font: italic 22px/1.4 var(--font-legend); color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; max-width: 46ch; }
+.rehearsals { width: 100%; max-width: 860px; border-collapse: collapse; font-size: 14px; }
+.rehearsals th { text-align: left; font: 400 12px var(--font-legend-sc); letter-spacing: .16em; color: var(--gold); border-bottom: 1px solid var(--gold-dim); padding: 8px 12px 8px 0; }
+.rehearsals td { border-bottom: 1px solid var(--line); padding: 12px 12px 12px 0; vertical-align: top; }
+.rehearsals td:first-child { color: var(--gold); font-variant-numeric: tabular-nums; }
+.table-wrap { grid-column: 1 / -1; overflow-x: auto; }
+.kicker { grid-column: 1 / -1; font: italic clamp(26px, 3.6vw, 44px)/1.1 var(--font-legend); color: var(--gold); margin: 0; }
+.log p { cursor: default; }
+
+/* ---------- corkboard ---------- */
+#board, #boardBtn { display: none; }
+.believer #board {
+  display: block; position: fixed; top: 64px; right: 16px; bottom: 16px; width: 248px; z-index: 40;
+  overflow-y: auto; padding: 16px 14px 20px;
+  background-color: #17130d;
+  background-image: radial-gradient(rgba(201,164,76,.08) 1px, transparent 1px);
+  background-size: 9px 9px;
+  border: 1px solid #3a2f1a;
+}
+.board-head { font: 400 14px var(--font-legend-sc); letter-spacing: .18em; color: var(--gold); display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.board-head span:last-child { font: 500 11px var(--font-record); letter-spacing: .1em; color: var(--muted); }
+.board-inner { position: relative; }
+.board-inner ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; position: relative; z-index: 1; }
+.slot { min-height: 50px; border: 1px dashed #4a3e26; padding: 8px 10px 8px 34px; position: relative; font-size: 11.5px; line-height: 1.35; color: #6f6449; }
+.slot .no { position: absolute; left: 10px; top: 8px; font-weight: 600; color: #6f6449; }
+.slot.pinned { border: 0; background: var(--paper); color: var(--ink); box-shadow: 0 6px 14px rgba(0,0,0,.5); }
+.slot.pinned:nth-child(odd) { transform: rotate(-1.2deg); }
+.slot.pinned:nth-child(even) { transform: rotate(1deg); }
+.slot.pinned .no { color: var(--stamp); }
+.pin { position: absolute; top: -5px; left: 50%; width: 11px; height: 11px; margin-left: -5px; border-radius: 50%; background: var(--stamp); box-shadow: 0 2px 3px rgba(0,0,0,.6); display: none; }
+.slot.pinned .pin { display: block; }
+.slot.just { animation: pinIn .5s ease-out; }
+@keyframes pinIn { from { transform: translateY(-8px) scale(1.04); } }
+.string { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: visible; }
+.slot .pin { z-index: 3; }
+.string path { fill: none; stroke: #c4362b; stroke-width: 1.4; }
+.slot a { color: inherit; text-decoration: none; }
+@media (min-width: 1200px) {
+  .believer main { padding-right: 300px; max-width: 1240px; }
+}
+@media (max-width: 1199px) {
+  .believer #boardBtn {
+    display: block; position: fixed; right: 14px; bottom: 14px; z-index: 45;
+    font: 500 12px/1 var(--font-record); letter-spacing: .14em; text-transform: uppercase;
+    padding: 13px 16px; background: #17130d; color: var(--gold); border: 1px solid var(--gold-dim); cursor: pointer;
+  }
+  .believer #board { display: none; }
+  .believer.board-open #board { display: block; top: 64px; bottom: 70px; right: 12px; width: min(320px, calc(100vw - 24px)); }
+}
+
+/* ---------- epilogue ---------- */
+.compare { width: 100%; border-collapse: collapse; font-size: 14px; }
+.compare th { text-align: left; font: 400 13px var(--font-legend-sc); letter-spacing: .14em; color: var(--gold); padding: 10px 14px 10px 0; border-bottom: 1px solid var(--gold-dim); }
+.compare td { padding: 12px 14px 12px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.compare td:first-child { color: var(--muted); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; width: 22%; }
+.questions { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font: clamp(24px, 3vw, 36px)/1.2 var(--font-legend); color: var(--paper); }
+.believer .questions { color: var(--gold); }
+.questions li::before { content: "?"; display: inline-block; width: 1.1em; color: var(--stamp); font-family: var(--font-record); font-size: .7em; }
+.ending { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 36px; align-items: start; padding: 40px 0; }
+.ending .portrait { align-self: center; }
+.yn { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 6px; position: relative; z-index: 1; }
+.yn button { font: 22px/1 var(--font-term); color: var(--phosphor); background: transparent; border: 1px solid #2d5a3b; padding: 9px 14px; cursor: pointer; }
+.yn button:hover, .yn button.suggest { background: rgba(132,240,162,.1); border-color: var(--phosphor); }
+.yn button[disabled] { opacity: .35; cursor: default; }
+#endlog { margin: 10px 0 0; font: inherit; white-space: pre-wrap; min-height: 1.2em; }
+.tally { margin-top: 16px !important; padding-top: 14px; border-top: 1px dashed #24462f; color: #d9f8e2; }
+.tally b { color: var(--phosphor); font-weight: 400; }
+.final { padding: 100px 0 80px; display: grid; gap: 28px; justify-items: center; text-align: center; border-top: 1px solid var(--line); }
+.final p { margin: 0; max-width: 28ch; font: clamp(28px, 4.2vw, 52px)/1.14 var(--font-legend); color: var(--paper); text-wrap: balance; }
+.final p + p { color: var(--gold); font-style: italic; }
+.final .term { font-size: 22px; padding: 10px 16px; }
+
+/* ---------- sources & footer ---------- */
+.sources { padding: 60px 0 30px; border-top: 1px solid var(--line); display: grid; gap: 18px; }
+.sources h2 { margin: 0; font: 400 28px var(--font-legend); color: var(--paper); }
+.sources p { margin: 0; font-size: 13px; color: var(--muted); max-width: 70ch; }
+.sources ul { margin: 0; padding: 0; list-style: none; columns: 3 260px; column-gap: 32px; font-size: 12.5px; line-height: 1.5; }
+.sources li { break-inside: avoid; padding: 4px 0; color: var(--muted); }
+.sources li a { color: var(--text); }
+footer { padding: 30px 0 70px; display: grid; gap: 10px; font-size: 12.5px; color: var(--muted); max-width: 80ch; }
+footer .help { color: var(--text); font-size: 14px; }
+
+@media (max-width: 760px) {
+  .beat { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 40px 0; }
+  .legend { border-left: 0; padding-left: 0; }
+  .ending { grid-template-columns: minmax(0, 1fr); }
+  .portraits { grid-template-columns: minmax(0, 1fr); }
+  .term { font-size: 21px; padding: 14px 16px; }
+  .exif dl { grid-template-columns: minmax(0, 1fr); }
+  .exif dt { margin-top: 6px; }
+  .bar-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .switch span { padding: 9px 10px; }
+  .wordmark { font-size: 13px; }
+  .strike::after { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<svg class="sr-only" aria-hidden="true" focusable="false" style="color: var(--plate-ink)">
+  <defs>
+    <pattern id="ph-h" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="currentColor" stroke-width=".8"/></pattern>
+    <pattern id="ph-hd" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="3" stroke="currentColor" stroke-width=".8"/></pattern>
+    <pattern id="ph-x" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0V5M0 0H5" stroke="currentColor" stroke-width=".7"/></pattern>
+    <pattern id="ph-z" width="9" height="5" patternUnits="userSpaceOnUse"><line x1="0" y1="2.5" x2="9" y2="2.5" stroke="currentColor" stroke-width=".6"/></pattern>
+    <pattern id="ph-s" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".8" fill="currentColor"/><circle cx="6" cy="5.5" r=".6" fill="currentColor"/></pattern>
+    <pattern id="ph-b" width="28" height="14" patternUnits="userSpaceOnUse"><path d="M0 .5H28M0 7.5H28M.5 0V7M14.5 7V14" stroke="currentColor" stroke-width=".6" fill="none"/></pattern>
+    <clipPath id="plateclip"><rect x="12" y="12" width="616" height="336"/></clipPath>
+  </defs>
+</svg>
+
+<header class="topbar" data-twin-skip>
+  <a class="wordmark" href="#top">Cannot Be Uninstalled</a>
+  <button class="switch" id="modeSwitch" data-og-hide type="button" role="switch" aria-checked="false" aria-label="Believer mode: switch between the Record and the Legend">
+    <span class="opt-record">Record</span><span class="opt-legend">Legend</span>
+  </button>
+</header>
+
+<button id="boardBtn" type="button" data-twin-skip data-og-hide aria-controls="board" aria-expanded="false">Case board · <span id="boardBtnCount">0</span>/11</button>
+<aside id="board" aria-label="Case board" data-twin-skip>
+  <div class="board-head"><span>The Case</span><span id="boardCount">0 of 11</span></div>
+  <div class="board-inner" id="boardInner">
+    <svg class="string" id="string" aria-hidden="true"><path id="stringPath" d=""/></svg>
+    <ol id="boardList"></ol>
+  </div>
+</aside>
+
+<main id="top">
+
+<!-- ================= COLD OPEN ================= -->
+<section class="coldopen" aria-labelledby="title" data-og-frame>
+  <p class="eyebrow">Mythmaking · No. 4 · By Michael Wilhelm</p>
+  <div class="term" role="img" aria-label="A terminal: uninstall mcafee.exe returns error 0x75, process still running">
+    <p>C:\&gt; uninstall mcafee.exe</p>
+    <p class="err">ERROR 0x75: process still running.</p>
+    <p>C:\&gt; <span class="cursor"></span></p>
+  </div>
+  <h1 class="title" id="title"><span class="pre">Cannot be</span><span class="un">Uninstalled<span class="strike" aria-hidden="true"></span></span></h1>
+  <p class="dek">The life, death and afterlife of John McAfee, told twice: once as the Record has it, and once as the believers do.</p>
+  <p class="hint">Scroll to begin · Flip Record / Legend at any point</p>
+</section>
+
+<!-- ================= PROLOGUE ================= -->
+<section class="act" aria-labelledby="prologue-h">
+  <span class="act-num">Prologue</span>
+  <h2 class="act-title" id="prologue-h">The Wonderman</h2>
+  <div class="act-meta"><span>1784 · 2021</span><span>Two deaths on paper</span></div>
+</section>
+
+<section class="beat" id="p1">
+  <div class="slug"><span class="num">P.1</span><span>Eckernförde, 27 February 1784</span></div>
+  <div class="record"><p><span class="r">A man known as the Count of Saint Germain dies in a converted factory in Eckernförde, in the Duchy of Schleswig. His patron, Prince Charles of Hesse-Kassel, had handed him the building in 1779 for his alchemy. The parish register of St. Nicolai records the burial.</span></p></div>
+  <div class="legend"><p>No one ever learned his real name or his true age. Voltaire, writing to Frederick the Great, called him “a man who never dies, and who knows everything.”</p></div>
+  <figure class="portrait visual sg-solo">
+    <div class="frame-oval"><canvas id="sgSolo" role="img" width="150" height="190" aria-label="A dithered oval portrait that never resolves past noise"></canvas></div>
+    <figcaption><b>Le Comte de Saint-Germain</b>Real name unknown. Shown here as he is known: as noise.</figcaption>
+  </figure>
+</section>
+
+<section class="beat" id="p2">
+  <div class="slug"><span class="num">P.2</span><span>After the burial</span></div>
+  <div class="record"><p><span class="r">Five years after his recorded death, people claimed to see him in Paris. Theosophists Annie Besant and C.W. Leadbeater later said they had met him. In 1930 a mining engineer named Guy Ballard hiked Mount Shasta and came down saying Saint Germain had appeared to him. Ballard founded a religion on the encounter, and it still holds pageants on the mountain.</span></p></div>
+  <div class="legend"><p>The burial entry was the least interesting document he ever left behind.</p></div>
+</section>
+
+<section class="beat" id="p3" data-tell="1">
+  <div class="slug"><span class="num">P.3</span><span>Brians 2, 23 June 2021</span><span class="tell-tag">Tell No. 1</span></div>
+  <div class="record"><p><span class="r">John McAfee, 75, is found dead in his cell at Brians 2, a prison outside Barcelona. He had been held there for eight months. Spain’s National Court had just approved his extradition to the United States on tax charges. Catalan officials said everything pointed to suicide. A prison source told the AP that he usually shared the cell but was alone when he died.</span></p></div>
+  <div class="legend"><p>A man who spent forty years building exits was alone in a cell built for two. Ask who needed him alone.</p></div>
+  <figure class="plate visual">
+    <svg viewBox="0 0 640 360" role="img" aria-label="Engraving: a prison cell door standing ajar, light spilling across the floor">
+      <g clip-path="url(#plateclip)">
+        <rect x="12" y="12" width="616" height="336" fill="url(#ph-b)"/>
+        <rect x="12" y="300" width="616" height="48" class="pk"/>
+        <rect x="12" y="300" width="616" height="48" fill="url(#ph-z)"/>
+        <rect x="262" y="70" width="132" height="230" class="pk"/>
+        <rect x="262" y="70" width="132" height="230" class="glow"/>
+        <polygon points="262,300 394,300 470,348 214,348" class="glow"/>
+        <polygon points="262,70 198,52 198,318 262,300" class="pk"/>
+        <polygon points="262,70 198,52 198,318 262,300" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.6"/>
+        <polygon points="214,90 248,98 248,138 214,132" class="pk" stroke="currentColor" stroke-width="1"/>
+        <path d="M223 92V134M231 94V135M239 96V137" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="262" y="70" width="132" height="230" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <line x1="12" y1="300" x2="628" y2="300" stroke="currentColor" stroke-width="1.2"/>
+      </g>
+      <rect x="6" y="6" width="628" height="348" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="12" y="12" width="616" height="336" fill="none" stroke="currentColor" stroke-width=".5"/>
+    </svg>
+    <figcaption><b>Frontispiece</b><i>Brians 2, 23 June 2021. The door.</i></figcaption>
+  </figure>
+</section>
+
+<section class="beat" id="p4" data-tell="2">
+  <div class="slug"><span class="num">P.4</span><span>The right arm</span><span class="tell-tag">Tell No. 2</span></div>
+  <div class="record"><p><span class="r">Nineteen months earlier, on 30 November 2019, McAfee posted a photo of a fresh tattoo on his right bicep that read $WHACKD. The caption ended: “If I suicide myself, I didn’t. I was whackd. Check my right arm.” $WHACKD was also the name of a crypto token he was promoting at the time.</span></p></div>
+  <div class="legend"><p>He told us, in ink, on the one part of his body the coroner would have to look at. Even the warning was for sale. That’s how you know it was really him.</p></div>
+  <div class="whackd" aria-hidden="true">$WHACKD</div>
+</section>
+
+<section class="bridge" aria-label="Two portraits">
+  <div class="portraits">
+    <figure class="portrait">
+      <div class="frame-oval"><canvas id="sgBridge" role="img" width="150" height="190" aria-label="Saint Germain, as noise"></canvas></div>
+      <figcaption><b>1784</b>Buried at Eckernförde. Seen in Paris, 1789.</figcaption>
+    </figure>
+    <figure class="portrait">
+      <div class="frame-sq"><canvas id="mcBridge" role="img" width="240" height="240" aria-label="A dithered portrait of John McAfee that sharpens as you scroll but never fully resolves"></canvas></div>
+      <figcaption><b>2021</b>Found dead in Brians 2. Posting again by 2025.</figcaption>
+    </figure>
+  </div>
+  <blockquote>Two men who lived under borrowed names and impossible stories. Two deaths on paper. Two legends that refused to stay in the ground.<em>This is the story of the second one.</em></blockquote>
+  <div class="prompt">
+    <p id="promptLine">That’s the official version. Want the other one?</p>
+    <button class="btn" id="promptBtn" type="button">Switch to the Legend</button>
+  </div>
+</section>
+
+<!-- ================= ACT I ================= -->
+<section class="act" aria-labelledby="act1-h">
+  <span class="act-num">Act I</span>
+  <h2 class="act-title" id="act1-h">The Antidote</h2>
+  <div class="act-meta"><span>1945–1994</span><span class="chip">Escape #1: a father</span><span class="chip">Escape #2: his own company</span></div>
+</section>
+
+<section class="beat" id="i1">
+  <div class="slug"><span class="num">I.1</span><span>The GI baby</span></div>
+  <div class="record"><p><span class="r">John David McAfee is born on 18 September 1945 on a U.S. Army base in Cinderford, in England’s Forest of Dean. His father is an American soldier and his mother is English. The family settles in Salem, Virginia.</span></p></div>
+  <div class="legend"><p>He is born on a military base in an ancient forest, belonging fully to neither country. He spent his whole life that way, a citizen of somewhere else.</p></div>
+</section>
+
+<section class="beat" id="i2">
+  <div class="slug"><span class="num">I.2</span><span>The father</span></div>
+  <div class="record"><p><span class="r">His father, a road surveyor and an abusive alcoholic, took his own life when John was 15. Decades later McAfee told Wired: “Every day I wake up with him.”</span></p></div>
+  <div class="legend"><p>The first escape wasn’t his. It was done to him, and it taught him that the man in charge can vanish in a single moment.</p></div>
+</section>
+
+<section class="beat" id="i3">
+  <div class="slug"><span class="num">I.3</span><span>Inside the machine</span></div>
+  <div class="record"><p><span class="r">He earned a math degree from Roanoke College in 1967. He started a doctorate in Louisiana and was thrown out over an affair with an undergraduate. From 1968 he worked as a programmer at NASA’s Institute for Space Studies in New York, then at Univac, Xerox, Booz Allen Hamilton and Lockheed. He was drinking heavily and using drugs along the way, and he later got sober through AA.</span></p></div>
+  <div class="legend"><p>NASA, then defense contractors. The man who later swore the government wanted him dead started out inside its machine. He knew where the exits were, because he’d helped wire the building.</p></div>
+</section>
+
+<section class="beat" id="i4">
+  <div class="slug"><span class="num">I.4</span><span>Brain</span></div>
+  <div class="record"><p><span class="r">In 1986 the first PC virus, Brain, spreads by floppy disk. At Lockheed, McAfee becomes obsessed with it. In 1987 he starts handing out a virus scanner as shareware from his bulletin board, on the honor system: pay if it helps. By 1989 it’s a company, McAfee Associates, and in 1990 he quits Lockheed to run it.</span></p></div>
+  <div class="legend"><p>There’s a rumor every antivirus company has heard, that the people selling the cure write the disease. No one ever proved it about McAfee, and no one ever stopped saying it.</p></div>
+  <figure class="plate visual">
+    <svg viewBox="0 0 640 360" role="img" aria-label="Engraving: a floppy disk drawn as an exploded anatomical diagram, its shutter, label and magnetic disc pulled apart">
+      <g clip-path="url(#plateclip)">
+        <path d="M236 120H398L412 134V290Q412 298 404 298H236Q228 298 228 290V128Q228 120 236 120Z" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.6"/>
+        <rect x="276" y="120" width="96" height="62" class="pk" stroke="currentColor" stroke-width="1"/>
+        <rect x="250" y="208" width="140" height="78" rx="3" class="pk" stroke="currentColor" stroke-width="1"/>
+        <rect x="237" y="276" width="10" height="12" class="pk" stroke="currentColor" stroke-width="1"/>
+        <rect x="276" y="40" width="96" height="52" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.4"/>
+        <rect x="306" y="48" width="26" height="36" class="pk" stroke="currentColor" stroke-width="1"/>
+        <path d="M324 92V118" class="lead"/>
+        <rect x="56" y="178" width="140" height="86" rx="3" class="pk" stroke="currentColor" stroke-width="1.4"/>
+        <text x="70" y="202" class="pt">SHAREWARE</text>
+        <path d="M70 214H182M70 228H182M70 242H182" stroke="currentColor" stroke-width=".5"/>
+        <text x="70" y="258" class="pt" style="font-size:9.5px">pay if it helps</text>
+        <path d="M196 236H248" class="lead"/>
+        <circle cx="532" cy="236" r="72" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="532" cy="236" r="58" fill="none" stroke="currentColor" stroke-width=".5"/>
+        <circle cx="532" cy="236" r="44" fill="none" stroke="currentColor" stroke-width=".5"/>
+        <circle cx="532" cy="236" r="18" class="pk" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="526" y="230" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1"/>
+        <path d="M412 236H458" class="lead"/>
+        <text x="384" y="64" class="pl">a</text>
+        <text x="40" y="190" class="pl">b</text>
+        <text x="604" y="168" class="pl">c</text>
+        <text x="420" y="130" class="pl">d</text>
+        <text x="40" y="326" class="pt">a. shutter    b. label    c. magnetic medium    d. the vessel</text>
+      </g>
+      <rect x="6" y="6" width="628" height="348" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="12" y="12" width="616" height="336" fill="none" stroke="currentColor" stroke-width=".5"/>
+    </svg>
+    <figcaption><b>Plate I</b><i>The vessel, exploded. Shareware, 1987.</i></figcaption>
+  </figure>
+</section>
+
+<section class="beat" id="i5" data-tell="3">
+  <div class="slug"><span class="num">I.5</span><span>The first prophecy</span><span class="tell-tag">Tell No. 3</span></div>
+  <div class="record"><p><span class="r">The Michelangelo virus was set to trigger on 6 March 1992. McAfee told reporters that up to five million PCs could be wiped. The real damage was far smaller. That October his company went public and raised $42 million.</span></p></div>
+  <div class="legend"><p>He saw the panic coming and sold the cure into it. He understood early that fear is the real operating system.</p></div>
+</section>
+
+<section class="beat" id="i6">
+  <div class="slug"><span class="num">I.6</span><span>Escape #2</span></div>
+  <div class="record"><p><span class="r">In 1994 he walks away from the company that bears his name, with a stake worth about $100 million.</span></p></div>
+  <div class="legend"><p>He shed his name like a skin and left it running on other people’s machines. You have probably tried to uninstall it.</p></div>
+  <div class="term mini-term visual" role="img" aria-label="A terminal shows Removing McAfee frozen at 3 percent">
+    <p>C:\&gt; uninstall mcafee.exe</p>
+    <p>Removing McAfee... [█░░░░░░░░░░░░░░░░░░░]  3%</p>
+    <p><span class="cursor"></span></p>
+  </div>
+</section>
+
+<div class="discrepancy">
+  <span class="stamp"><span class="a">Discrepancy</span><span class="b">Open file</span></span>
+  <h3>The five million</h3>
+  <p>McAfee’s Michelangelo estimate went around the world. A colleague who worked with him at the time later remembered the exchange differently.</p>
+  <p class="q">Prophet, salesman, or both?</p>
+</div>
+
+<!-- ================= ACT II ================= -->
+<section class="act" aria-labelledby="act2-h">
+  <span class="act-num">Act II</span>
+  <h2 class="act-title" id="act2-h">The Alchemist</h2>
+  <div class="act-meta"><span>1994–2012</span><span>Fortune lost, or hidden</span></div>
+</section>
+
+<section class="beat" id="ii1">
+  <div class="slug"><span class="num">II.1</span><span>The Wonderman years</span></div>
+  <div class="record"><p><span class="r">With his fortune he buys land in Colorado, New Mexico and Hawaii. He runs a yoga retreat. He gets hooked on aerotrekking, flying open-cockpit ultralights at treetop height across the desert Southwest with a crew of pilots called the Sky Gypsies, and he builds them an airfield in New Mexico.</span></p></div>
+  <div class="legend"><p>Saint Germain had his castles and his laboratories. McAfee had runways in the desert where no one could see who landed.</p></div>
+  <figure class="plate visual">
+    <svg viewBox="0 0 640 360" role="img" aria-label="Engraving: an open-cockpit ultralight flying over desert mesas under a large sun">
+      <g clip-path="url(#plateclip)">
+        <circle cx="500" cy="96" r="40" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.2"/>
+        <circle cx="500" cy="96" r="54" fill="none" stroke="currentColor" stroke-width=".5" stroke-dasharray="2 4"/>
+        <path d="M12 272H70L92 214H178L196 272ZM290 272L304 238H366L378 272ZM452 272L468 226H560L576 272Z" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="12" y="272" width="616" height="76" fill="url(#ph-z)"/>
+        <line x1="12" y1="272" x2="628" y2="272" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M236 128L334 104L432 128L334 140Z" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M334 104V140M240 128L330 176L428 128" fill="none" stroke="currentColor" stroke-width=".6"/>
+        <line x1="334" y1="138" x2="330" y2="176" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M308 182L330 176L356 182L330 192Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <circle cx="310" cy="188" r="5" class="pk" stroke="currentColor" stroke-width="1"/>
+        <circle cx="354" cy="188" r="5" class="pk" stroke="currentColor" stroke-width="1"/>
+        <circle cx="330" cy="197" r="5" class="pk" stroke="currentColor" stroke-width="1"/>
+        <circle cx="332" cy="166" r="5" fill="currentColor"/>
+        <line x1="356" y1="168" x2="363" y2="190" stroke="currentColor" stroke-width="2"/>
+        <ellipse cx="364" cy="302" rx="46" ry="5" fill="currentColor" opacity=".45"/>
+      </g>
+      <rect x="6" y="6" width="628" height="348" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="12" y="12" width="616" height="336" fill="none" stroke="currentColor" stroke-width=".5"/>
+    </svg>
+    <figcaption><b>Plate II</b><i>A Sky Gypsy over the desert Southwest.</i></figcaption>
+  </figure>
+</section>
+
+<section class="beat" id="ii2" data-tell="4">
+  <div class="slug"><span class="num">II.2</span><span>The vanishing fortune</span><span class="tell-tag">Tell No. 4</span></div>
+  <div class="record"><p><span class="r">In 2009 he told The New York Times that the crash had wiped out all but $4 million of a $100 million fortune, and he auctioned off property. A novice aerotrekker had died in a 2006 crash, and a multimillion-dollar wrongful-death suit was hanging over him. McAfee later told Gizmodo that the Times figure was “not very accurate at all.”</span></p></div>
+  <div class="legend"><p>A man announces he’s broke right before he leaves the country. That isn’t a confession. It’s a cover story. Saint Germain always seemed to have money too, and no one ever found out where it came from.</p></div>
+</section>
+
+<section class="beat" id="ii3">
+  <div class="slug"><span class="num">II.3</span><span>The jungle laboratory</span></div>
+  <div class="record"><p><span class="r">He moves to Belize in 2008. He gives the national coast guard a boat worth more than $1 million and makes donations to the police. In 2010 he launches QuorumEx, a venture to develop antibiotics from rainforest plants. He sets up a compound near Orange Walk Town and a beach house on Ambergris Caye.</span></p></div>
+  <div class="legend"><p>The alchemist builds his last laboratory. Plants go in, and something comes out that the authorities will call a drug lab.</p></div>
+</section>
+
+<section class="beat" id="ii4">
+  <div class="slug"><span class="num">II.4</span><span>The raid</span></div>
+  <div class="record"><p><span class="r">At dawn on 30 April 2012, Belize’s Gang Suppression Unit raids the Orange Walk compound looking for a meth lab. They seize firearms, shoot one of his dogs, and hold him for about 14 hours. He is released without charge. McAfee says it’s punishment for refusing to pay off a local politician.</span></p><p><span class="r">Gizmodo reported that when police burst in, he came out of his bedroom with a 17-year-old Belizean girl. Reporters describe his household as armed guards and very young women.</span></p></div>
+  <div class="legend"><p>The empire had found him. From here on, every move he makes is a countermove.</p></div>
+</section>
+
+<div class="discrepancy">
+  <span class="stamp"><span class="a">Discrepancy</span><span class="b">Open file</span></span>
+  <h3>The $4 million</h3>
+  <p>He told the Times he was nearly broke. He later called that inaccurate.</p>
+  <p class="q">Which story was the cover?</p>
+</div>
+
+<!-- ================= ACT III ================= -->
+<section class="act" aria-labelledby="act3-h">
+  <span class="act-num">Act III</span>
+  <h2 class="act-title" id="act3-h">The Vanishing</h2>
+  <div class="act-meta"><span>Nov–Dec 2012</span><span class="chip">Escape #3: a country and a murder inquiry</span></div>
+</section>
+
+<section class="beat" id="iii1">
+  <div class="slug"><span class="num">III.1</span><span>11 November 2012</span></div>
+  <div class="record"><p><span class="r">Gregory Faull, 52, an American expat living next to McAfee on Ambergris Caye, is found shot dead in his home. Faull had complained about McAfee’s dogs, which had been poisoned shortly before. Police call McAfee a “person of interest.” He is never charged. A Faull family representative said the killing of a well-liked man was getting lost in the circus.</span></p></div>
+  <div class="legend hushed"><p>McAfee had his own theory. The killers came for him and got the wrong house.</p></div>
+</section>
+
+<section class="beat" id="iii2">
+  <div class="slug"><span class="num">III.2</span><span>Under the sand</span></div>
+  <div class="record"><p><span class="r">When police came to his beach house, McAfee told Wired, he dug a shallow trench, buried himself in the sand and breathed through a cardboard box over his head for hours.</span></p></div>
+  <div class="legend"><p>This is his first rehearsal. He buries the body and keeps the mind breathing.</p></div>
+  <figure class="plate visual">
+    <svg viewBox="0 0 640 360" role="img" aria-label="Engraving: a cardboard box half-buried in beach sand, its flaps open, faint breath rising">
+      <g clip-path="url(#plateclip)">
+        <rect x="12" y="110" width="616" height="60" fill="url(#ph-z)"/>
+        <path d="M12 170Q160 150 320 168T628 160V348H12Z" class="pk"/>
+        <path d="M12 170Q160 150 320 168T628 160V348H12Z" fill="url(#ph-s)" stroke="currentColor" stroke-width="1"/>
+        <polygon points="250,210 296,194 270,160 226,176" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.2"/>
+        <polygon points="386,196 430,182 452,146 410,160" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.2"/>
+        <polygon points="250,210 386,196 392,276 254,290" class="pk"/>
+        <polygon points="250,210 386,196 392,276 254,290" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.4"/>
+        <polygon points="386,196 430,182 436,258 392,276" class="pk"/>
+        <polygon points="386,196 430,182 436,258 392,276" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.4"/>
+        <polygon points="250,210 386,196 430,182 296,194" class="pk" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M318 182q6-10 0-20q-6-10 0-20M336 180q6-10 0-20q-6-10 0-20M354 178q6-10 0-20q-6-10 0-20" fill="none" stroke="currentColor" stroke-width=".9"/>
+        <path d="M12 262Q150 238 270 270Q360 292 470 262Q560 240 628 256V348H12Z" class="pk"/>
+        <path d="M12 262Q150 238 270 270Q360 292 470 262Q560 240 628 256V348H12Z" fill="url(#ph-s)" stroke="currentColor" stroke-width="1"/>
+        <g fill="currentColor" opacity=".7"><ellipse cx="96" cy="312" rx="6" ry="3"/><ellipse cx="120" cy="326" rx="6" ry="3"/><ellipse cx="146" cy="308" rx="6" ry="3"/><ellipse cx="170" cy="322" rx="6" ry="3"/><ellipse cx="196" cy="304" rx="6" ry="3"/></g>
+      </g>
+      <rect x="6" y="6" width="628" height="348" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="12" y="12" width="616" height="336" fill="none" stroke="currentColor" stroke-width=".5"/>
+    </svg>
+    <figcaption><b>Plate III</b><i>Breathing apparatus. Ambergris Caye, November 2012.</i></figcaption>
+  </figure>
+</section>
+
+<section class="beat" id="iii3">
+  <div class="slug"><span class="num">III.3</span><span>The man of many faces</span></div>
+  <div class="record"><p><span class="r">He goes on the run with his girlfriend, Samantha Vanegas, and blogs from hiding. He says he dyed his hair and beard, stained his teeth and stuck chewed gum in his gums to fatten his face. He says he posed as a drunk German tourist and as a Guatemalan street vendor. Belize’s prime minister calls him “extremely paranoid, even bonkers.”</span></p></div>
+  <div class="legend"><p>Saint Germain crossed Europe under a string of names and titles. McAfee crossed Belize under a string of faces. Neither man was ever quite the person standing in front of you.</p></div>
+</section>
+
+<section class="beat only-believer" id="b1">
+  <div class="slug"><span class="num">B.1</span><span>Real name: unknown</span><span class="tell-tag">Believer only</span></div>
+  <div class="faces" aria-label="The faces McAfee said he wore on the run">
+    <span>The drunk German tourist.</span>
+    <span>The Guatemalan street vendor.</span>
+    <span>The grey-haired stranger.</span>
+    <span>Gum in the cheeks.</span>
+    <span>Stained teeth.</span>
+    <span>Anyone but John McAfee.</span>
+  </div>
+  <p class="faces-sg">Saint Germain. Real name: unknown. Born 1691 or 1712, depending on who you ask.</p>
+</section>
+
+<section class="beat" id="iii4" data-tell="5">
+  <div class="slug"><span class="num">III.4</span><span>The metadata</span><span class="tell-tag">Tell No. 5</span></div>
+  <div class="record"><p><span class="r">On 3 December 2012, Vice posts a photo of its editor with McAfee. The iPhone image still carries its GPS tag. Within hours, people online place him at a resort near Río Dulce, Guatemala. McAfee first blogs that he faked the location data, then admits the next day that he really is in Guatemala. Vice later publicly wondered whether it had been played.</span></p></div>
+  <div class="legend"><p>The most famous antivirus name on earth was undone by a geotag. Or this was practice: plant false data, deny it, un-deny it, and watch how fast the world believes each version.</p></div>
+  <div class="term exif visual" role="img" aria-label="The photo's metadata: an iPhone 4S, 3 December 2012, GPS coordinates redacted, near Río Dulce, Guatemala">
+    <dl>
+      <dt>Camera</dt><dd>Apple iPhone 4S</dd>
+      <dt>Date taken</dt><dd>2012:12:03</dd>
+      <dt>GPS latitude</dt><dd>██° ██′ ██″ N</dd>
+      <dt>GPS longitude</dt><dd>██° ██′ ██″ W</dd>
+      <dt>Resolves to</dt><dd>near Río Dulce, Guatemala</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="beat" id="iii5" data-tell="6">
+  <div class="slug"><span class="num">III.5</span><span>The heart · the precedent</span><span class="tell-tag">Tell No. 6</span></div>
+  <div class="record"><p><span class="r">Guatemala arrests him on 5 December and turns down his asylum request. With deportation back to Belize looming, he’s rushed to hospital, and his lawyer says he has had two mild heart attacks. McAfee later tells the AP he didn’t think it was a heart attack. He tells the Miami New Times that he faked it to buy his lawyer time. On 12 December he’s deported to Miami, not Belize.</span></p></div>
+  <div class="legend"><p>Hold onto this one. In 2012 John McAfee faked a medical emergency in custody to change where the state sent his body, and it worked. That’s not a theory. It’s on his résumé.</p></div>
+  <figure class="ekg visual" id="ekg">
+    <svg viewBox="0 0 640 120" role="img" aria-label="A heart monitor trace: a long flatline, then the rhythm comes back">
+      <path d="M0 64H250L262 64L270 24L280 104L290 64H340L352 64L360 24L370 104L380 64H430L442 64L450 24L460 104L470 64H520L532 64L540 24L550 104L560 64H640"/>
+    </svg>
+    <div class="ekg-labels"><span>Flatline</span><span>Rhythm restored · Miami, 12 Dec 2012</span></div>
+  </figure>
+</section>
+
+<section class="beat" id="iii6">
+  <div class="slug"><span class="num">III.6</span><span>The judgment</span></div>
+  <div class="record"><p><span class="r">In 2019 a Florida court ordered McAfee to pay $25 million to Faull’s estate in a wrongful-death suit. He said publicly that he wouldn’t pay.</span></p></div>
+  <div class="legend"><p>Even the verdict couldn’t find him.</p></div>
+</section>
+
+<div class="discrepancy solemn">
+  <span class="stamp"><span class="a">Discrepancy</span><span class="b">Not a clue</span></span>
+  <h3>Gregory Faull</h3>
+  <p>Belize never charged McAfee. No one has been convicted of the killing. This card never goes on the case board.</p>
+  <p class="q">The one mystery in this story that isn’t a game: who shot Gregory Faull?</p>
+</div>
+
+<!-- ================= ACT IV ================= -->
+<section class="act" aria-labelledby="act4-h">
+  <span class="act-num">Act IV</span>
+  <h2 class="act-title" id="act4-h">The Sovereign</h2>
+  <div class="act-meta"><span>2013–2020</span><span class="chip">Escape #4: the reach of the United States</span></div>
+</section>
+
+<section class="beat" id="iv1">
+  <div class="slug"><span class="num">IV.1</span><span>Uninstall</span></div>
+  <div class="record"><p><span class="r">In June 2013 he posts “How to Uninstall McAfee Antivirus.” He’s in a smoking jacket, surrounded by women, reading out hate mail about the software that carries his name, and the video gets millions of views. In January 2014 Intel, which had bought McAfee for $7.68 billion in 2011, says it will drop the McAfee name. He says publicly that he’s delighted. Around the same time he marries Janice Dyson, whom he met in Miami.</span></p></div>
+  <div class="legend"><p>He tried to delete himself from his own legacy, and it didn’t take. The brand came back. So does he.</p></div>
+  <div class="win visual" id="win">
+    <div class="win-title"><span>Uninstall</span><span aria-hidden="true">×</span></div>
+    <div class="win-body"><span class="win-icon" aria-hidden="true">!</span><span>Are you sure you want to completely remove John McAfee and all of his components?</span></div>
+    <button class="yes" id="runYes" type="button">Yes</button>
+    <button class="no" id="runNo" type="button">No</button>
+    <span class="win-msg" id="winMsg" aria-live="polite"></span>
+  </div>
+</section>
+
+<section class="beat" id="iv2">
+  <div class="slug"><span class="num">IV.2</span><span>The candidate</span></div>
+  <div class="record"><p><span class="r">He runs for president with the Libertarian Party in 2016 and finishes third at the convention with about 14% of the first-ballot delegates. In 2018 he announces a 2020 run. By January 2019 he says that campaign will be run “in exile,” from international waters. That summer his campaign headquarters is a yacht moored at Marina Hemingway outside Havana.</span></p></div>
+  <div class="legend"><p>An empire’s most wanted man runs to lead it, from a boat it can’t board.</p></div>
+</section>
+
+<section class="beat" id="iv3">
+  <div class="slug"><span class="num">IV.3</span><span>The prophet of coin</span></div>
+  <div class="record"><p><span class="r">In 2017 he bets that Bitcoin will hit $500,000 within three years, and promises a grotesque act on national TV if it doesn’t. He later raises the target to $1 million by the end of 2020. In January 2020 he calls the whole thing “a ruse to onboard new users.”</span></p><p><span class="r">Federal prosecutors later charge that from late 2017 through 2018 he and his bodyguard Jimmy Gale Watson Jr. pumped coins on Twitter and took undisclosed payments, more than $13 million in all. The SEC put the undisclosed ICO payments at more than $23 million.</span></p></div>
+  <div class="legend"><p>He told you his prophecies were bait. So which of his other statements were bait too? The tattoo? The tweets from the cell? The death?</p></div>
+</section>
+
+<section class="beat" id="iv4">
+  <div class="slug"><span class="num">IV.4</span><span>The Great Mystery</span></div>
+  <div class="record"><p><span class="r">In January 2019 he says he hasn’t paid taxes in years and is fleeing the IRS. He and Janice live aboard a yacht named The Great Mystery with guards and dogs. In July 2019 the Dominican Republic detains the group after finding high-caliber weapons, ammunition and military-style gear aboard. They’re released four days later, and he’s put on a plane to Europe.</span></p></div>
+  <div class="legend"><p>You can’t make this up, and you don’t have to. The ship was really called The Great Mystery.</p></div>
+  <figure class="plate visual">
+    <svg viewBox="0 0 640 360" role="img" aria-label="Engraving: a four-deck motor yacht at anchor, the name The Great Mystery on its hull in gold">
+      <g clip-path="url(#plateclip)">
+        <circle cx="102" cy="72" r="20" fill="url(#ph-h)" stroke="currentColor" stroke-width="1"/>
+        <rect x="12" y="236" width="616" height="112" fill="url(#ph-z)"/>
+        <line x1="12" y1="236" x2="628" y2="236" stroke="currentColor" stroke-width="1"/>
+        <path d="M120 236L520 236L566 202L106 208Z" class="pk"/>
+        <path d="M120 236L520 236L566 202L106 208Z" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.6"/>
+        <rect x="168" y="178" width="320" height="28" class="pk"/>
+        <rect x="168" y="178" width="320" height="28" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="180" y="186" width="296" height="10" class="pk" stroke="currentColor" stroke-width=".6"/>
+        <rect x="212" y="154" width="236" height="24" class="pk"/>
+        <rect x="212" y="154" width="236" height="24" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="222" y="161" width="216" height="9" class="pk" stroke="currentColor" stroke-width=".6"/>
+        <rect x="252" y="132" width="156" height="22" class="pk"/>
+        <rect x="252" y="132" width="156" height="22" fill="url(#ph-h)" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="262" y="139" width="136" height="8" class="pk" stroke="currentColor" stroke-width=".6"/>
+        <rect x="290" y="114" width="80" height="18" class="pk" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M330 114V80M314 88H346" stroke="currentColor" stroke-width="1.4"/>
+        <text x="140" y="228" class="pt goldtext">THE GREAT MYSTERY</text>
+        <path d="M546 214L604 300" class="lead"/>
+        <path d="M604 292V314M595 306Q604 318 613 306M597 297H611" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M150 250H230M260 258H380M410 250H500M190 268H290M330 276H450" stroke="currentColor" stroke-width="1.6" opacity=".55"/>
+      </g>
+      <rect x="6" y="6" width="628" height="348" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="12" y="12" width="616" height="336" fill="none" stroke="currentColor" stroke-width=".5"/>
+    </svg>
+    <figcaption><b>Plate IV</b><i>The Great Mystery at anchor. Caribbean, 2019.</i></figcaption>
+  </figure>
+</section>
+
+<section class="beat" id="iv5" data-tell="7">
+  <div class="slug"><span class="num">IV.5</span><span>The dead man’s switch</span><span class="tell-tag">Tell No. 7</span></div>
+  <div class="record"><p><span class="r">In June 2019 he claims to hold more than 31 terabytes of incriminating data on official corruption, set to go to the press if he’s arrested or disappears. In January 2020 he says it’s on a check-in switch that triggers twice a day. For scale, the entire Panama Papers leak was 2.6 terabytes.</span></p></div>
+  <div class="legend"><p>He stopped checking in on 23 June 2021, and the files never came out. A dead man’s switch that never fires can mean only one thing: someone is still checking in.</p></div>
+  <div class="bar-chart visual" role="img" aria-label="Bar chart: 31 terabytes claimed by McAfee against 2.6 terabytes in the Panama Papers">
+    <div class="bar-row"><span>McAfee’s claim</span><div class="bar big"><b>31 TB</b></div></div>
+    <div class="bar-row"><span>Panama Papers</span><div class="bar small"><b>2.6 TB</b></div></div>
+  </div>
+</section>
+
+<section class="beat" id="iv6">
+  <div class="slug"><span class="num">IV.6</span><span>The departure gate</span></div>
+  <div class="record"><p><span class="r">On 30 November 2019 he posts the $WHACKD tattoo (see P.4). On 3 October 2020, Spanish police arrest him at Barcelona airport as he boards a flight to Istanbul. The U.S. tax indictment for 2014 to 2018 is unsealed two days later.</span></p></div>
+  <div class="legend"><p>Escape #4 ends at a departure gate. For the first time in eight years he doesn’t make it out, or so the Record says.</p></div>
+</section>
+
+<section class="beat only-believer" id="b2">
+  <div class="slug"><span class="num">B.2</span><span>Count the rehearsals</span><span class="tell-tag">Believer only</span></div>
+  <div class="table-wrap">
+    <table class="rehearsals">
+      <thead><tr><th scope="col">Year</th><th scope="col">The rehearsal</th><th scope="col">What it practiced</th></tr></thead>
+      <tbody>
+        <tr><td>2012</td><td>Buried himself in sand, breathing through a box</td><td>Playing dead while police searched</td></tr>
+        <tr><td>2012</td><td>Faked a heart attack in custody</td><td>Using a medical emergency to change where the state sends you</td></tr>
+        <tr><td>2013</td><td>“How to Uninstall McAfee Antivirus”</td><td>Deleting himself in public</td></tr>
+        <tr><td>2019</td><td>The dead man’s switch</td><td>Planning for the day he stops checking in</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="kicker">Escape artists don’t improvise the big one.</p>
+</section>
+
+<div class="discrepancy">
+  <span class="stamp"><span class="a">Discrepancy</span><span class="b">Open file</span></span>
+  <h3>31 terabytes</h3>
+  <p>Nothing was ever released.</p>
+  <p class="q">Either the files never existed, or the switch is still waiting for a check-in that never comes.</p>
+</div>
+
+<!-- ================= ACT V ================= -->
+<section class="act" aria-labelledby="act5-h">
+  <span class="act-num">Act V</span>
+  <h2 class="act-title" id="act5-h">The Fifth Escape</h2>
+  <div class="act-meta"><span>2020–2025</span><span class="chip">Escape #5: the open question</span></div>
+</section>
+
+<section class="beat" id="v1">
+  <div class="slug"><span class="num">V.1</span><span>Letters from Brians 2</span></div>
+  <div class="record"><p><span class="r">From prison, McAfee keeps tweeting through his team. On 15 October 2020 he writes that he’s content, he has friends and the food is good. He adds that if he’s ever found dead “a la Epstein,” it will be no fault of his. In May 2021 he writes about the small patch of blue sky he can see over the yard walls. In March 2021 federal prosecutors in Manhattan add crypto-fraud charges to the tax case.</span></p></div>
+  <div class="legend"><p>He’s writing his alibi in public, one tweet at a time.</p></div>
+</section>
+
+<section class="beat" id="v2">
+  <div class="slug"><span class="num">V.2</span><span>The ruling</span></div>
+  <div class="record"><p><span class="r">On 15 June 2021 he appears by video at his extradition hearing in Madrid. The National Court approves extradition on tax charges covering 2016 to 2018, after dropping seven of the ten counts. His lawyer says they’re preparing an appeal. His pinned tweet from 16 June says his crypto is gone and his assets are seized. It ends: “I regret nothing.”</span></p></div>
+  <div class="legend"><p>The last trick in any escape act is convincing the audience the act is over.</p></div>
+</section>
+
+<section class="beat" id="v3">
+  <div class="slug"><span class="num">V.3</span><span>23 June 2021</span></div>
+  <div class="record"><p><span class="r">He’s found dead in his cell that day. His Spanish lawyer, Javier Villalba, says the family is stunned and that he “had not said goodbye.” Janice McAfee says he wasn’t suicidal and blames U.S. authorities.</span></p></div>
+  <div class="legend"><p>The timing, the empty cell, the tattoo, the tweet. Any one of them is a coincidence. All four together is a plan.</p></div>
+  <figure class="plate visual">
+    <svg viewBox="0 0 640 360" role="img" aria-label="Engraving: the same cell door, now swung wide open, more light on the floor">
+      <g clip-path="url(#plateclip)">
+        <rect x="12" y="12" width="616" height="336" fill="url(#ph-b)"/>
+        <rect x="12" y="300" width="616" height="48" class="pk"/>
+        <rect x="12" y="300" width="616" height="48" fill="url(#ph-z)"/>
+        <rect x="262" y="70" width="132" height="230" class="pk"/>
+        <rect x="262" y="70" width="132" height="230" class="glow"/>
+        <rect x="262" y="70" width="132" height="230" class="glow"/>
+        <polygon points="262,300 394,300 530,348 160,348" class="glow"/>
+        <polygon points="262,70 146,36 146,338 262,300" class="pk"/>
+        <polygon points="262,70 146,36 146,338 262,300" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.6"/>
+        <polygon points="168,74 232,90 232,140 168,128" class="pk" stroke="currentColor" stroke-width="1"/>
+        <path d="M184 78V132M200 82V135M216 86V138" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="262" y="70" width="132" height="230" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <line x1="12" y1="300" x2="628" y2="300" stroke="currentColor" stroke-width="1.2"/>
+      </g>
+      <rect x="6" y="6" width="628" height="348" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="12" y="12" width="616" height="336" fill="none" stroke="currentColor" stroke-width=".5"/>
+    </svg>
+    <figcaption><b>Plate V</b><i>The door, again. Wider this time.</i></figcaption>
+  </figure>
+</section>
+
+<section class="beat" id="v4" data-tell="8">
+  <div class="slug"><span class="num">V.4</span><span>Q</span><span class="tell-tag">Tell No. 8</span></div>
+  <div class="record"><p><span class="r">Within half an hour of the first English-language reports, his Instagram account, which others ran while he was in jail, posts one image: a black capital Q on white, with no caption. Within hours the account is gone. A rumor spreads that the image file hides a cryptographic key, and the user who started it later concedes it was probably Instagram’s own code. #JohnMcAfeeDidntKillHimself trends.</span></p></div>
+  <div class="legend"><p>One letter, no caption, then deletion. If you wanted to start a myth with a single keystroke, this would be the keystroke.</p></div>
+  <figure class="visual">
+    <div class="qtile" role="img" aria-label="A black capital Q on a white square">Q</div>
+    <div class="q404">404 · Sorry, this page isn’t available.</div>
+  </figure>
+</section>
+
+<section class="beat" id="v5">
+  <div class="slug"><span class="num">V.5</span><span>The voices</span></div>
+  <div class="record"><p><span class="r">By July 2021, several Telegram channels claim to be McAfee. The largest passes 125,000 subscribers.</span></p></div>
+  <div class="legend"><p>Saint Germain had his disciples on Mount Shasta. McAfee had his Telegram channels.</p></div>
+</section>
+
+<section class="beat" id="v6" data-tell="9">
+  <div class="slug"><span class="num">V.6</span><span>The morgue</span><span class="tell-tag">Tell No. 9</span></div>
+  <div class="record"><p><span class="r">The autopsy finds suicide, and a court in Martorell closes the case in February 2022. The family appeals and the body stays in a Spanish morgue. In April 2023 Janice posts that it has been 670 days with no remains and no autopsy report. In September 2023 the court rejects the final appeal, writing that there is “not a single element of suspicion.” In October 2023 it authorizes release of the body. In November 2023 she tells Cointelegraph she still just wants to see his body herself and know it really happened.</span></p></div>
+  <div class="legend"><p>For more than two years, the only people who could vouch for the body were the people holding it. The man who once faked a heart attack to choose where the state sent him had no say this time.</p></div>
+  <div class="bignum visual">670<small>Days without remains or an autopsy report, as of April 2023</small></div>
+</section>
+
+<section class="beat" id="v7" data-tell="10">
+  <div class="slug"><span class="num">V.7</span><span>The call from Texas</span><span class="tell-tag">Tell No. 10</span></div>
+  <div class="record"><p><span class="r">Netflix releases Running with the Devil: The Wild World of John McAfee on 24 August 2022. In it, his Belize ex-girlfriend Samantha Herrera says that about two weeks after his death she got a call from Texas. She says the caller said it was John, that he’d paid people to pretend he was dead, and that only three people knew. The director said he couldn’t make sense of her claim. Janice rejected it and said she wished it were true, but that John wouldn’t be hiding in Texas.</span></p></div>
+  <div class="legend"><p>Read his widow’s answer again. She didn’t say he was dead. She said he wasn’t in Texas.</p></div>
+  <div class="phone visual" role="img" aria-label="A phone showing an incoming call from a blurred Texas number">
+    <span class="ring">Incoming call</span>
+    <span class="num">(███) ███-████</span>
+    <span class="place">Texas</span>
+    <div class="acts"><span>Decline</span><span>Answer</span></div>
+  </div>
+</section>
+
+<section class="beat" id="v8" data-tell="11">
+  <div class="slug"><span class="num">V.8</span><span>Resurrection, 23 January 2025</span><span class="tell-tag">Tell No. 11</span></div>
+  <div class="record"><p><span class="r">After years of near-silence, @officialmcafee, which still has more than a million followers, posts: “I’m back with AIntivirus. An AI version of myself.” A Solana meme coin launches alongside a “chat with John” bot. Janice says she’s behind it, as a tribute. Crypto figures call it a grift, and X suspends the AIntivirus account.</span></p></div>
+  <div class="legend"><p>In 1930, Saint Germain spoke through a mining engineer on Mount Shasta. In 2025, McAfee spoke through a language model. Every immortal eventually gets a channeler.</p></div>
+  <div class="chat visual" role="img" aria-label="A chat window: a reader asks if it is really him; John is typing, and never finishes">
+    <div class="chat-head"><span>John</span><span>● online</span></div>
+    <div class="chat-body">
+      <span class="bubble">Is it really you?</span>
+      <span class="typing">John is typing <i></i><i></i><i></i></span>
+    </div>
+  </div>
+</section>
+
+<div class="discrepancy">
+  <span class="stamp"><span class="a">Discrepancy</span><span class="b">Open file</span></span>
+  <h3>The body</h3>
+  <p>More than two years in a morgue. An autopsy report his widow says she never saw. We found no solid reporting on what happened to the remains after release was authorized.</p>
+  <p class="q">If you were going to fake a death, how long would you need the paperwork to stay closed?</p>
+</div>
+
+<!-- ================= EPILOGUE ================= -->
+<section class="act" aria-labelledby="epi-h">
+  <span class="act-num">Epilogue</span>
+  <h2 class="act-title" id="epi-h">Ascended</h2>
+  <div class="act-meta"><span>1784–2025, side by side</span><span>The reader decides</span></div>
+</section>
+
+<section class="beat" id="e1">
+  <div class="slug"><span class="num">E.1</span><span>The sightings, side by side</span></div>
+  <div class="table-wrap">
+    <table class="compare">
+      <thead><tr><th scope="col"><span class="sr-only">Detail</span></th><th scope="col">The Count of Saint Germain</th><th scope="col">John McAfee</th></tr></thead>
+      <tbody>
+        <tr><td>Death on paper</td><td>27 Feb 1784, Eckernförde</td><td>23 Jun 2021, Brians 2</td></tr>
+        <tr><td>Witnesses to the end</td><td>A patron’s household</td><td>Prison staff and Spanish courts</td></tr>
+        <tr><td>First sighting after</td><td>Paris, 1789</td><td>A phone call from Texas, 2021 (as told in 2022)</td></tr>
+        <tr><td>The voices</td><td>Theosophists, and Mount Shasta in 1930</td><td>Telegram channels (2021), an AI (2025)</td></tr>
+        <tr><td>What he left behind</td><td>A burial entry, an engraving, an epigram from Voltaire</td><td>A tattoo, a letter Q, a name still sold as antivirus</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="beat" id="e2">
+  <div class="slug"><span class="num">E.2</span><span>What the Record can’t tell you</span></div>
+  <ul class="questions visual">
+    <li>Who shot Gregory Faull.</li>
+    <li>Whether the 31 terabytes ever existed.</li>
+    <li>Who called Samantha Herrera.</li>
+    <li>Why it took more than two years to release a body when the court found nothing suspicious.</li>
+  </ul>
+</section>
+
+<section class="beat only-believer" id="b3">
+  <div class="slug"><span class="num">B.3</span><span>Proof of life</span><span class="tell-tag">Believer only</span></div>
+  <div class="term log visual" id="proofLog">
+    <p>[2021-06-23] signal: Q          Instagram, deleted within hours</p>
+    <p>[2021-07]    signal: Telegram   channels claiming to be him, 125,000+ subscribers</p>
+    <p>[2021-07?]   signal: phone      a call from Texas, as told in Aug 2022</p>
+    <p>[2025-01-23] signal: “I’m back.” @officialmcafee</p>
+    <p>[----------] awaiting next signal <span class="cursor"></span></p>
+  </div>
+  <p class="note">Each signal has an ordinary explanation in the Record: a social media team, impersonators, an uncorroborated account, and his widow’s tribute project.</p>
+</section>
+
+<section class="beat" id="e3">
+  <div class="slug"><span class="num">E.3</span><span>The location</span></div>
+  <div class="legend"><p>If he’s out there, he’s somewhere warm, with bad Wi-Fi and very good encryption. He never answers his phone, and he reads every word anyone writes about him.</p><p>He’d hate this piece. He’d share it anyway.</p></div>
+  <figure class="plate visual">
+    <svg viewBox="0 0 640 360" role="img" aria-label="Engraving: a tropical horizon at dusk, a palm tree, the sun half set, and a satellite crossing the sky">
+      <g clip-path="url(#plateclip)">
+        <rect x="12" y="12" width="616" height="110" fill="url(#ph-h)" opacity=".45"/>
+        <path d="M360 40Q520 40 628 124" fill="none" stroke="currentColor" stroke-width=".8" stroke-dasharray="2 5"/>
+        <g transform="translate(506 74) rotate(-20)">
+          <rect x="-8" y="-6" width="16" height="12" class="pk" stroke="currentColor" stroke-width="1.2"/>
+          <rect x="-36" y="-4" width="24" height="8" fill="url(#ph-hd)" stroke="currentColor" stroke-width="1"/>
+          <rect x="12" y="-4" width="24" height="8" fill="url(#ph-hd)" stroke="currentColor" stroke-width="1"/>
+          <line x1="0" y1="6" x2="0" y2="14" stroke="currentColor" stroke-width="1"/>
+        </g>
+        <path d="M262 236A58 58 0 0 1 378 236Z" fill="url(#ph-x)" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M320 168V150M282 182L268 168M358 182L372 168M254 214L236 208M386 214L404 208" stroke="currentColor" stroke-width="1"/>
+        <rect x="12" y="236" width="616" height="112" fill="url(#ph-z)"/>
+        <line x1="12" y1="236" x2="628" y2="236" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M276 248H364M290 262H350M300 278H340M308 296H332" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M118 348Q126 270 168 176" fill="none" stroke="currentColor" stroke-width="7"/>
+        <path d="M116 330l12 -2M118 306l12 -2M122 282l12 -2M128 258l12 -3M136 234l12 -3M146 212l12 -3M156 192l11 -3" stroke="var(--plate-bg)" stroke-width="1.4"/>
+        <path d="M168 176Q120 150 80 184M168 176Q130 126 90 128M168 176Q178 120 216 106M168 176Q220 148 252 176M168 176Q210 184 228 220M168 176Q150 196 136 230" fill="none" stroke="currentColor" stroke-width="3"/>
+        <g fill="currentColor"><circle cx="420" cy="40" r="1.2"/><circle cx="560" cy="36" r="1"/><circle cx="600" cy="70" r="1.2"/><circle cx="452" cy="92" r="1"/><circle cx="60" cy="40" r="1"/><circle cx="240" cy="54" r="1.2"/></g>
+      </g>
+      <rect x="6" y="6" width="628" height="348" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <rect x="12" y="12" width="616" height="336" fill="none" stroke="currentColor" stroke-width=".5"/>
+    </svg>
+    <figcaption><b>Plate VI</b><i>Somewhere warm. Signal: weak.</i></figcaption>
+  </figure>
+</section>
+
+<section class="ending" id="e4" aria-labelledby="e4-h">
+  <h2 class="sr-only" id="e4-h">E.4 The last command</h2>
+  <figure class="portrait">
+    <div class="frame-sq"><canvas id="mcEnd" role="img" width="240" height="240" aria-label="A dithered portrait of John McAfee that breaks into noise after you answer"></canvas></div>
+    <figcaption><b>E.4 · The last command</b>Answer the prompt. Either way, watch the portrait.</figcaption>
+  </figure>
+  <div class="term" id="endTerm">
+    <p>C:\&gt; uninstall mcafee.exe</p>
+    <p>Are you sure? [Y/N] <span id="prefill"></span><span class="cursor"></span></p>
+    <div class="yn">
+      <button type="button" id="btnY">Y · uninstall him</button>
+      <button type="button" id="btnN">N · keep him running</button>
+    </div>
+    <pre id="endlog" aria-live="polite"></pre>
+    <p class="tally" id="tally" aria-live="polite" hidden></p>
+  </div>
+</section>
+
+<section class="final" aria-label="Final card">
+  <p>Saint Germain was buried in 1784 and seen in 1789. McAfee was declared dead in 2021 and was posting in 2025.</p>
+  <p>The paperwork says both men are dead. The paperwork never could keep up with either of them.</p>
+  <div class="term" aria-hidden="true"><p>process still running <span class="cursor"></span></p></div>
+</section>
+
+<section class="sources" aria-labelledby="src-h">
+  <h2 id="src-h">The Record: sources</h2>
+  <p>Every line set on paper in this piece traces to reporting or filings below. The Legend is interpretation and says so. Where reports conflict, the Record takes the most cautious version.</p>
+  <ul>
+    <li><a href="https://www.britannica.com/biography/comte-de-Saint-Germain">Britannica: Comte de Saint-Germain</a></li>
+    <li><a href="https://www.britannica.com/topic/I-AM-movement">Britannica: the I AM movement</a></li>
+    <li><a href="https://news.yahoo.com/john-mcafee-maverick-set-lucrative-092548907.html">Telegraph obituary</a></li>
+    <li><a href="https://fortune.com/2012/11/14/murder-in-belize-a-guide-to-the-long-strange-tale-of-john-mcafee/">Fortune: Murder in Belize (2012)</a></li>
+    <li><a href="https://www.fundinguniverse.com/company-histories/network-associates-inc-history">Network Associates company history</a></li>
+    <li><a href="https://grahamcluley.com/michelangelo-virus/">Graham Cluley: the Michelangelo scare</a></li>
+    <li><a href="https://www.sanpedrosun.com/?p=15271">San Pedro Sun: the 2012 raid</a></li>
+    <li><a href="https://gizmodo.com/secrets-schemes-and-lots-of-guns-inside-john-mcafees-5958877">Gizmodo: inside McAfee’s Belize</a></li>
+    <li><a href="https://www.theregister.com/2012/11/13/mcafee_framed_murder_denial/">The Register: Faull killing, the sand</a></li>
+    <li><a href="https://www.npr.org/sections/thetwo-way/2012/12/04/166487197/betrayed-by-metadata-john-mcafee-admits-hes-really-in-guatemala">NPR: betrayed by metadata</a></li>
+    <li><a href="https://www.miaminewtimes.com/?p=40394192">Miami New Times: the faked heart attack</a></li>
+    <li><a href="https://fortune.com/2021/06/24/john-mcafee-dead-jail-spain-us-extradition/">AP via Fortune: death and the $25M judgment</a></li>
+    <li><a href="https://www.eweek.com/networking/intel-completes-7-68b-acquisition-of-mcafee">eWeek: Intel’s $7.68B purchase</a></li>
+    <li><a href="https://reason.com/2019/01/23/john-mcafee-takes-to-the-seas-fleeing-a">Reason: the campaign in exile</a></li>
+    <li><a href="https://www.tampabay.com/news/cuba/tech-guru-found-temporary-home-in-cuba-while-running-for-president-and-running-from-trouble-20190803/">Tampa Bay Times: Cuba and the Dominican Republic</a></li>
+    <li><a href="https://politifact.com/factchecks/2021/jun/28/instagram-posts/image-suggesting-john-mcafee-stored-files-collapse/">PolitiFact: the 31 TB claim</a></li>
+    <li><a href="https://www.snopes.com/fact-check/john-mcafees-whackd-tattoo/">Snopes: the $WHACKD tattoo</a></li>
+    <li><a href="https://www.justice.gov/usao-sdny/pr/john-david-mcafee-and-executive-adviser-his-cryptocurrency-team-indicted-manhattan">U.S. DOJ: the 2021 fraud indictment</a></li>
+    <li><a href="https://decrypt.co/45226/john-mcafee-kill-himself-he-tweets-jail">Decrypt: tweets from prison</a></li>
+    <li><a href="https://wjla.com/news/nation-world/death-of-antivirus-pioneer-john-mcafee-surprised-his-family-lawyer-says">AP via WJLA: the ruling and the family</a></li>
+    <li><a href="https://firstdraftnews.org/articles/conspiracy-theories-are-spreading-about-john-mcafees-death">First Draft: the Q post</a></li>
+    <li><a href="https://news.yahoo.com/amphtml/creepy-far-plot-bring-john-082007759.html">Daily Beast: the Telegram channels</a></li>
+    <li><a href="https://kvia.com/news/ap-national/2023/09/29/a-spanish-court-rejects-appeal-to-reopen-the-investigation-into-tycoon-john-mcafees-jail-cell-death/">AP via KVIA: the final appeal</a></li>
+    <li><a href="https://tass.com/world/1698061">TASS: release of the body authorized</a></li>
+    <li><a href="https://cointelegraph-magazine.com/interview-2-years-after-john-mcafee-death-wife-janice-broke-still-grieving/">Cointelegraph Magazine: Janice McAfee, 2023</a></li>
+    <li><a href="https://coinmarketcap.com/academy/article/john-mcafee-is-alive-and-hiding-in-texas-ex-girlfriend-claims">CoinMarketCap: the call from Texas</a></li>
+    <li><a href="https://decrypt.co/302398/john-mcafees-twitter-promoting-solana-ai-token">Decrypt: the AI comeback</a></li>
+  </ul>
+</section>
+
+<footer>
+  <p class="help">If you or someone you know is struggling, call or text 988 in the U.S., or find a local line at <a href="https://findahelpline.com">findahelpline.com</a>.</p>
+  <p class="series">Mythmaking · No. 4 · Previous: The So-Called Count</p>
+  <p>Portrait dithered from a photograph supplied by the editor. Saint Germain is shown as noise on purpose. Engravings are original illustrations. Nothing on this page links to or endorses any cryptocurrency.</p>
+</footer>
+
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const PORTRAIT = 'data:image/jpeg;base64,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';
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const body = document.body;
+  const $ = (id) => document.getElementById(id);
+  const state = { believer: false, pins: [], answer: null };
+
+  /* ------------------------------------------------------------------
+     Mode switch: Record <-> Legend
+  ------------------------------------------------------------------ */
+  const sw = $('modeSwitch');
+  const promptBtn = $('promptBtn');
+  const promptLine = $('promptLine');
+  const prefill = $('prefill');
+  const btnY = $('btnY');
+  const btnN = $('btnN');
+
+  function setMode(on, opts = {}) {
+    state.believer = !!on;
+    body.classList.toggle('believer', state.believer);
+    sw.setAttribute('aria-checked', String(state.believer));
+    promptLine.textContent = state.believer
+      ? 'You’re reading the Legend now. The Record is under the black bars.'
+      : 'That’s the official version. Want the other one?';
+    promptBtn.textContent = state.believer ? 'Back to the Record' : 'Switch to the Legend';
+    document.querySelectorAll('.record').forEach((r) => {
+      if (state.believer) {
+        r.setAttribute('tabindex', '0');
+        r.setAttribute('role', 'button');
+        r.setAttribute('aria-expanded', String(r.classList.contains('open')));
+      } else {
+        r.removeAttribute('tabindex');
+        r.removeAttribute('role');
+        r.removeAttribute('aria-expanded');
+      }
+    });
+    if (!state.answer) {
+      prefill.textContent = state.believer ? 'N' : '';
+      btnN.classList.toggle('suggest', state.believer);
+    }
+    if (!state.believer) {
+      body.classList.remove('board-open');
+      $('boardBtn').setAttribute('aria-expanded', 'false');
+    }
+    try { localStorage.setItem('cbu-mode', state.believer ? 'legend' : 'record'); } catch (e) { /* storage unavailable */ }
+    redrawAll();
+    if (state.believer && !opts.silent) pinPassed();
+    requestAnimationFrame(drawString);
+  }
+
+  sw.addEventListener('click', () => setMode(!state.believer));
+  promptBtn.addEventListener('click', () => setMode(!state.believer));
+
+  function toggleRecord(r) {
+    r.classList.toggle('open');
+    r.setAttribute('aria-expanded', String(r.classList.contains('open')));
+  }
+  document.addEventListener('click', (e) => {
+    const r = e.target.closest && e.target.closest('.record');
+    if (r && state.believer) toggleRecord(r);
+  });
+  document.addEventListener('keydown', (e) => {
+    const r = e.target.closest && e.target.closest('.record');
+    if (r && state.believer && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      toggleRecord(r);
+    }
+  });
+
+  /* ------------------------------------------------------------------
+     1-bit Atkinson dither, live
+  ------------------------------------------------------------------ */
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function makeNoise(n, seed) {
+    const r = rng(seed);
+    const a = new Float32Array(n);
+    for (let i = 0; i < n; i++) a[i] = r();
+    return a;
+  }
+  const PAPER = [235, 228, 211];
+  const GOLD = [201, 164, 76];
+  const inkColor = () => (state.believer ? GOLD : PAPER);
+
+  function dither(canvas, lum, p, noise, offset = 0) {
+    const w = canvas.width, h = canvas.height, n = w * h;
+    const ctx = canvas.getContext('2d');
+    const img = ctx.createImageData(w, h);
+    const d = img.data;
+    const buf = new Float32Array(n);
+    const N = noise.length;
+    for (let i = 0; i < n; i++) buf[i] = lum[i] * p + noise[(i + offset) % N] * (1 - p);
+    const c = inkColor();
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = y * w + x;
+        const o = buf[i];
+        const v = o < 0.5 ? 0 : 1;
+        const e = (o - v) / 8;
+        if (x + 1 < w) buf[i + 1] += e;
+        if (x + 2 < w) buf[i + 2] += e;
+        if (y + 1 < h) {
+          if (x > 0) buf[i + w - 1] += e;
+          buf[i + w] += e;
+          if (x + 1 < w) buf[i + w + 1] += e;
+        }
+        if (y + 2 < h) buf[i + 2 * w] += e;
+        if (v) {
+          const k = i * 4;
+          d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2]; d[k + 3] = 255;
+        }
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  // An anonymous 18th-century bust, built from ellipses: Saint Germain never resolves past it.
+  function bustLum(w, h) {
+    const a = new Float32Array(w * h);
+    const q = (u, v, cx, cy, rx, ry) => ((u - cx) / rx) ** 2 + ((v - cy) / ry) ** 2;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const u = x / w, v = y / h;
+        let L = 0.05;
+        if (q(u, v, 0.46, 0.34, 0.25, 0.27) < 1) L = 0.62 - 0.25 * u;
+        if (q(u, v, 0.5, 1.02, 0.46, 0.3) < 1) L = 0.45 - 0.2 * u;
+        if (u > 0.47 && u < 0.62 && v > 0.5 && v < 0.7) L = 0.6;
+        const hd = q(u, v, 0.55, 0.37, 0.17, 0.21);
+        if (hd < 1) L = 0.82 - 0.35 * Math.sqrt(hd) - 0.15 * (u - 0.4);
+        a[y * w + x] = Math.max(0, Math.min(1, L));
+      }
+    }
+    return a;
+  }
+
+  const mcBridge = $('mcBridge'), mcEnd = $('mcEnd'), sgSolo = $('sgSolo'), sgBridge = $('sgBridge');
+  const MC = 240;
+  const blank = new Float32Array(MC * MC);
+  const mcNoise = makeNoise(MC * MC, 7);
+  const sgNoise = makeNoise(150 * 190 * 2, 11);
+  const sgL = bustLum(150, 190);
+  let mcLum = null;
+  let sgOff = 0;
+  let endP = 0.86;
+  let lastBridgeP = -1;
+
+  function bridgeP() {
+    const r = mcBridge.getBoundingClientRect();
+    const vh = window.innerHeight || 800;
+    const t = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.8)));
+    return 0.05 + 0.81 * t;
+  }
+  function drawBridge(force) {
+    const p = bridgeP();
+    if (!force && Math.abs(p - lastBridgeP) < 0.006) return;
+    lastBridgeP = p;
+    dither(mcBridge, mcLum || blank, mcLum ? p : 0, mcNoise);
+  }
+  function drawEnd() { dither(mcEnd, mcLum || blank, mcLum ? endP : 0, mcNoise, 31); }
+  function drawSG() {
+    dither(sgSolo, sgL, 0.3, sgNoise, sgOff);
+    dither(sgBridge, sgL, 0.3, sgNoise, sgOff + 5003);
+  }
+  function redrawAll() { drawBridge(true); drawEnd(); drawSG(); }
+
+  const portrait = new Image();
+  portrait.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = c.height = MC;
+    const x = c.getContext('2d');
+    x.drawImage(portrait, 0, 0, MC, MC);
+    const px = x.getImageData(0, 0, MC, MC).data;
+    mcLum = new Float32Array(MC * MC);
+    for (let i = 0; i < mcLum.length; i++) mcLum[i] = Math.pow(px[i * 4] / 255, 0.95);
+    redrawAll();
+  };
+  portrait.src = PORTRAIT;
+
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; drawBridge(false); });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => { drawBridge(true); drawString(); });
+
+  if (!reduce && 'IntersectionObserver' in window) {
+    const visible = new Set();
+    const io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target))));
+    io.observe(sgSolo); io.observe(sgBridge);
+    setInterval(() => {
+      if (!visible.size) return;
+      sgOff = (sgOff + 977) % sgNoise.length;
+      drawSG();
+    }, 650);
+  }
+
+  /* ------------------------------------------------------------------
+     Case board (Believer mode)
+  ------------------------------------------------------------------ */
+  const TELLS = [
+    [1, 'The empty half of a two-man cell', 'p3'],
+    [2, 'The tattoo', 'p4'],
+    [3, 'The five million', 'i5'],
+    [4, 'The $4 million', 'ii2'],
+    [5, 'The geotag he called fake, then admitted was real', 'iii4'],
+    [6, 'The heart attack he faked in custody', 'iii5'],
+    [7, 'The 31 terabytes that never fired', 'iv5'],
+    [8, 'The Q, posted and gone within hours', 'v4'],
+    [9, 'More than two years in a morgue', 'v6'],
+    [10, 'The call from Texas', 'v7'],
+    [11, 'The voice that came back in 2025', 'v8'],
+  ];
+  const list = $('boardList');
+  TELLS.forEach(([n, , id]) => {
+    const li = document.createElement('li');
+    li.className = 'slot';
+    li.dataset.n = String(n);
+    const pinEl = document.createElement('span'); pinEl.className = 'pin';
+    const no = document.createElement('span'); no.className = 'no'; no.textContent = String(n);
+    const a = document.createElement('a'); a.href = '#' + id; a.textContent = 'Not yet found';
+    li.append(pinEl, no, a);
+    list.appendChild(li);
+  });
+  list.addEventListener('click', (e) => {
+    if (e.target.closest('a')) body.classList.remove('board-open');
+  });
+
+  function pin(n) {
+    if (!n || state.pins.includes(n)) return;
+    state.pins.push(n);
+    const li = list.querySelector('[data-n="' + n + '"]');
+    if (!li) return;
+    li.classList.add('pinned', 'just');
+    li.querySelector('a').textContent = TELLS[n - 1][1];
+    setTimeout(() => li.classList.remove('just'), 600);
+    const c = state.pins.length;
+    $('boardCount').textContent = c + ' of 11';
+    $('boardBtnCount').textContent = String(c);
+    requestAnimationFrame(drawString);
+  }
+  function pinPassed() {
+    document.querySelectorAll('[data-tell]').forEach((s) => {
+      if (s.getBoundingClientRect().top < window.innerHeight * 0.7) pin(Number(s.dataset.tell));
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    const tellIO = new IntersectionObserver((es) => {
+      if (!state.believer) return;
+      es.forEach((e) => { if (e.isIntersecting) pin(Number(e.target.dataset.tell)); });
+    }, { rootMargin: '0px 0px -30% 0px', threshold: 0.15 });
+    document.querySelectorAll('[data-tell]').forEach((s) => tellIO.observe(s));
+  }
+
+  function drawString() {
+    const inner = $('boardInner');
+    const svg = $('string');
+    const path = $('stringPath');
+    if (!inner || !inner.offsetWidth) { path.setAttribute('d', ''); return; }
+    svg.setAttribute('width', String(inner.offsetWidth));
+    svg.setAttribute('height', String(inner.scrollHeight));
+    const pts = Array.from(list.querySelectorAll('.slot.pinned'))
+      .sort((a, b) => Number(a.dataset.n) - Number(b.dataset.n))
+      .map((li) => ({ x: li.offsetLeft + li.offsetWidth / 2, y: li.offsetTop + 1 }));
+    if (pts.length < 2) { path.setAttribute('d', ''); return; }
+    let d = 'M' + pts[0].x + ' ' + pts[0].y;
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i];
+      const cx = (a.x + b.x) / 2 + (i % 2 ? 46 : -46);
+      const cy = (a.y + b.y) / 2 + 6;
+      d += ' Q' + cx + ' ' + cy + ' ' + b.x + ' ' + b.y;
+    }
+    path.setAttribute('d', d);
+  }
+
+  const boardBtn = $('boardBtn');
+  boardBtn.addEventListener('click', () => {
+    const open = !body.classList.contains('board-open');
+    body.classList.toggle('board-open', open);
+    boardBtn.setAttribute('aria-expanded', String(open));
+    requestAnimationFrame(drawString);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && body.classList.contains('board-open')) {
+      body.classList.remove('board-open');
+      boardBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /* ------------------------------------------------------------------
+     IV.1: the Yes button that won't be pressed
+  ------------------------------------------------------------------ */
+  const win = $('win'), yes = $('runYes'), no = $('runNo'), msg = $('winMsg');
+  const labels = ['Yes', 'Yes?', 'Nope', 'Nice try', 'Still running'];
+  let dodges = 0;
+  function dodge() {
+    const W = win.clientWidth, H = win.clientHeight;
+    const bw = yes.offsetWidth, bh = yes.offsetHeight;
+    let x = 0, y = 0, tries = 0;
+    do {
+      x = 8 + Math.random() * Math.max(1, W - bw - 16);
+      y = 36 + Math.random() * Math.max(1, H - bh - 44);
+      tries++;
+    } while (tries < 25 && Math.abs(x - no.offsetLeft) < bw + 12 && Math.abs(y - no.offsetTop) < bh + 8);
+    yes.style.left = x + 'px';
+    yes.style.top = y + 'px';
+    dodges++;
+    yes.textContent = labels[Math.min(dodges, labels.length - 1)];
+  }
+  yes.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') dodge(); });
+  yes.addEventListener('click', (e) => {
+    e.preventDefault();
+    dodge();
+    msg.textContent = 'Removal failed. Process still running.';
+  });
+  no.addEventListener('click', () => { msg.textContent = 'Removal cancelled. He appreciates it.'; });
+
+  /* ------------------------------------------------------------------
+     III.5: heart monitor traces only while on screen
+  ------------------------------------------------------------------ */
+  if (!reduce && 'IntersectionObserver' in window) {
+    const ekg = $('ekg');
+    new IntersectionObserver((es) => es.forEach((e) => ekg.classList.toggle('run', e.isIntersecting)), { threshold: 0.4 }).observe(ekg);
+  }
+
+  /* ------------------------------------------------------------------
+     E.4: the last command
+  ------------------------------------------------------------------ */
+  const log = $('endlog');
+  const tallyEl = $('tally');
+  const endTerm = $('endTerm');
+  let endInView = false;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { endInView = e.isIntersecting; }), { threshold: 0.3 }).observe(endTerm);
+  }
+
+  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
+  function line(text, cls) {
+    const s = document.createElement('span');
+    if (cls) s.className = cls;
+    s.textContent = text + '\n';
+    log.appendChild(s);
+    return s;
+  }
+  const LOC = 'Last known location: ██°██′N ██°██′W';
+  function flicker(span) {
+    if (reduce) return;
+    setInterval(() => {
+      const s = LOC.split('');
+      const idx = [];
+      s.forEach((ch, i) => { if (ch === '█') idx.push(i); });
+      const at = idx[Math.floor(Math.random() * idx.length)];
+      s[at] = String(Math.floor(Math.random() * 10));
+      span.textContent = s.join('') + '\n';
+      setTimeout(() => { span.textContent = LOC + '\n'; }, 140);
+    }, 900);
+  }
+  function startUptime(span) {
+    const T0 = Date.UTC(2021, 5, 22, 22, 0, 0); // 23 June 2021, 00:00 in Barcelona
+    const tick = () => {
+      let s = Math.max(0, Math.floor((Date.now() - T0) / 1000));
+      const days = Math.floor(s / 86400); s %= 86400;
+      const hh = String(Math.floor(s / 3600)).padStart(2, '0');
+      const mm = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+      const ss = String(s % 60).padStart(2, '0');
+      span.textContent = 'Uptime: ' + days.toLocaleString('en-US') + ' days ' + hh + ':' + mm + ':' + ss + '\n';
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+  function dissolve() {
+    if (reduce) { endP = 0.02; drawEnd(); return; }
+    const t0 = performance.now(), from = endP;
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / 2600);
+      endP = from + (0.02 - from) * (1 - Math.pow(1 - k, 2));
+      drawEnd();
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  async function answer(a) {
+    if (state.answer) return;
+    state.answer = a;
+    btnY.disabled = true;
+    btnN.disabled = true;
+    btnN.classList.remove('suggest');
+    prefill.textContent = a;
+    castVote(a);
+    if (a === 'Y') {
+      const lines = [
+        'Removing McAfee Associates...  done',
+        'Removing Belize...             done',
+        'Removing The Great Mystery...  done',
+        'Removing 31 TB...              file not found',
+      ];
+      for (const t of lines) { await wait(420); line(t); }
+      await wait(420);
+      const bar = line('');
+      for (const pct of [0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 89, 94, 97, 99]) {
+        const f = Math.round(pct / 5);
+        bar.textContent = 'Removing John McAfee...        [' + '█'.repeat(f) + '░'.repeat(20 - f) + '] ' + String(pct).padStart(2, ' ') + '%\n';
+        await wait(130);
+      }
+      await wait(1000);
+      line('');
+      line('ERROR 0x75: process still running.', 'err');
+      flicker(line(LOC));
+    } else {
+      await wait(300);
+      line('Uninstall cancelled.');
+      await wait(650);
+      line('Good. He wasn’t going to let you anyway.');
+      await wait(700);
+      line('');
+      line('Process running.');
+      startUptime(line(''));
+    }
+    dissolve();
+    showTally();
+  }
+  btnY.addEventListener('click', () => answer('Y'));
+  btnN.addEventListener('click', () => answer('N'));
+  document.addEventListener('keydown', (e) => {
+    if (!endInView || state.answer || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const k = e.key.toLowerCase();
+    if (k === 'y') answer('Y');
+    else if (k === 'n') answer('N');
+    else if (k === 'enter' && prefill.textContent === 'N' && (e.target === document.body || e.target === document.documentElement)) answer('N');
+    else if (k === 'backspace' && prefill.textContent) {
+      e.preventDefault();
+      prefill.textContent = '';
+      btnN.classList.remove('suggest');
+    }
+  });
+
+  /* ------------------------------------------------------------------
+     The tally: every reader writes votes/<their id>; everyone reads all
+  ------------------------------------------------------------------ */
+  let db = null, me = null, counts = null, loaded = false;
+  let tallyNote = '', writeState = '';
+
+  async function initDb() {
+    const c = window.claude;
+    if (!c || typeof c.use !== 'function') { tallyNote = 'off'; showTally(); return; }
+    try { db = await c.use('db'); } catch (e) { db = null; }
+    if (!db) { tallyNote = 'unavailable'; showTally(); return; }
+    try {
+      const u = await c.use('user');
+      me = u ? await u.id() : null;
+    } catch (e) { me = null; }
+    const timer = setTimeout(() => { if (!loaded) { tallyNote = 'slow'; showTally(); } }, 10000);
+    try {
+      db.collection('votes').onSnapshot((snap) => {
+        loaded = true;
+        if (!snap.metadata.fromCache) {
+          clearTimeout(timer);
+          if (tallyNote === 'slow') tallyNote = '';
+        }
+        const next = { Y: 0, N: 0 };
+        snap.docs.forEach((d) => {
+          const v = d.data();
+          if (v && (v.answer === 'Y' || v.answer === 'N')) next[v.answer]++;
+        });
+        counts = next;
+        showTally();
+      }, () => {
+        clearTimeout(timer);
+        tallyNote = 'unavailable';
+        showTally();
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      tallyNote = 'unavailable';
+      showTally();
+    }
+  }
+
+  async function castVote(a) {
+    if (!db) {
+      // The namespace may still be resolving; give it a moment.
+      await new Promise((r) => setTimeout(r, 1500));
+      if (!db) { writeState = tallyNote === 'off' ? '' : 'no-db'; showTally(); return; }
+    }
+    if (!me) { writeState = 'no-id'; showTally(); return; }
+    let ref;
+    try { ref = db.collection('votes').doc(me); } catch (e) { writeState = 'failed'; showTally(); return; }
+    const data = { answer: a, mode: state.believer ? 'legend' : 'record', at: new Date().toISOString() };
+    try {
+      await ref.set(data);
+      writeState = 'ok';
+    } catch (e) {
+      if (e && e.code === 'unavailable') {
+        await new Promise((r) => setTimeout(r, 800 + Math.random() * 800));
+        try { await ref.set(data); writeState = 'ok'; showTally(); return; } catch (e2) { /* fall through */ }
+      }
+      writeState = e && e.code === 'invalid_argument' ? 'readonly' : 'failed';
+    }
+    showTally();
+  }
+
+  function showTally() {
+    if (!state.answer || tallyNote === 'off') { tallyEl.hidden = true; return; }
+    tallyEl.hidden = false;
+    tallyEl.textContent = '';
+    const add = (t, strong) => {
+      const el = document.createElement(strong ? 'b' : 'span');
+      el.textContent = t;
+      tallyEl.appendChild(el);
+    };
+    if (!counts) {
+      if (tallyNote === 'unavailable') add('The reader tally isn’t available in this view.');
+      else if (tallyNote === 'slow') add('The tally can’t be reached right now.');
+      else add('Counting answers…');
+      return;
+    }
+    const total = counts.Y + counts.N;
+    if (!total) { add('Counting answers…'); return; }
+    const pct = Math.round((counts.N / total) * 100);
+    add(pct + '%', true);
+    add(' of readers refused to uninstall him. (' + total.toLocaleString('en-US') + ' answer' + (total === 1 ? '' : 's') + ' so far)');
+    if (writeState === 'readonly') add(' Your answer wasn’t counted: this view can read the tally but can’t add to it.');
+    else if (writeState === 'no-id' || writeState === 'no-db') add(' Sign in to Claude to add your answer.');
+    else if (writeState === 'failed') add(' Your answer couldn’t be saved. Reload to try again.');
+    if (tallyNote === 'slow') add(' This count may be out of date.');
+  }
+
+  initDb();
+
+  /* ------------------------------------------------------------------
+     Boot, and keep the reader's place across a republish
+  ------------------------------------------------------------------ */
+  const hot = window.claude && window.claude.hot;
+  try { if (hot && typeof hot.snapshot === 'function') hot.snapshot(() => ({ believer: state.believer, pins: state.pins.slice() })); } catch (e) { /* not in viewer */ }
+
+  function start(data) {
+    data = data || {};
+    let believer = !!data.believer;
+    if (data.believer === undefined) {
+      try { believer = localStorage.getItem('cbu-mode') === 'legend'; } catch (e) { believer = false; }
+    }
+    setMode(believer, { silent: true });
+    (Array.isArray(data.pins) ? data.pins : []).forEach((n) => pin(Number(n)));
+    if (believer) pinPassed();
+  }
+  if (hot && typeof hot.ready === 'function') hot.ready(start);
+  else start((hot && hot.data) || {});
+})();
+</script>
+</body>
+</html>
