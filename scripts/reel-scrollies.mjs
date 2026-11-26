@@ -60,7 +60,8 @@
  * Horoskopos opens its house chart.
  * A page the scoring reads wrong gets a word in PICKS: `at`, places (in
  * screens from the top) that must be among its stills and lead its loop;
- * `keepWords`, for a page whose words are its picture (a product's screens,
+ * `only`, to use those places and nothing else (more moments of them fill
+ * the five); `keepWords`, for a page whose words are its picture (a product's screens,
  * a homepage design, a receipt), whose copy then counts as drawing.
  */
 import { createServer } from 'node:http';
@@ -149,6 +150,14 @@ const PICKS = {
   'depth-chart': { at: [0] },
   /* The title over its swirl of numbers. */
   'quantum-banking': { at: [0] },
+  /* Janus over the title, and the face the elements settle into; the door moves only at the edge of pages of copy. */
+  'before-and-behind': { at: [0, 2.47], only: true },
+  /* The stage is too dark to read as moving: the title, and the seed. */
+  'the-unseen-one': { at: [1.49, 1.99], only: true },
+  /* The title, the three-storey psyche set as type, and the lyre and the sea; the rest is copy and the ledger. */
+  'where-it-was': { at: [0, 4.5, 10.24], only: true },
+  /* The title over the field of points. */
+  'the-dual-thing': { at: [0] },
   /* The field of glyphs that resolves into the vase and the faces. */
   'the-double-image': { at: [4.5] },
 };
@@ -626,6 +635,7 @@ async function shoot(slug) {
      of ground: fewer of them, repeated, rather than those. */
   const live = shots.filter((s) => s.motion >= LIVE || s.fixed);
   let ranked = [...(live.length ? live : shots)].sort((a, b) => b.v - a.v);
+  if (pick.only) ranked = ranked.filter((s) => s.fixed);
   {
     /* A moving place where the motion is a sliver beside a page of copy, or far weaker than the piece's best, is left out too: its best places, again, do better. */
     const quiet = ranked.filter((s) => keep || s.fixed || s.copy <= (live.length ? 0.4 : 0.35));
