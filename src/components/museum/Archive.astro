@@ -12,9 +12,9 @@
  * the collection (src/lib/pieces.ts), so a new gallery entry is shelved
  * with no change here. It needs its reel: REEL_FRAMES stills at
  * public/reel/<id>/1.jpg … (800×420 JPEG), which the build checks for.
- * `npm run reel -- <id>` shoots them from the piece's own pictures with its
- * words put away (scripts/reel-scrollies.mjs), with the poster and loop the
- * Gallery page's tile uses.
+ * `npm run reel -- <id>` shoots them from the places where the piece
+ * animates, framed on the motion (scripts/reel-scrollies.mjs), with the
+ * poster and loop the Gallery page's tile uses.
  */
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';

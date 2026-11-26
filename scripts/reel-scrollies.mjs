@@ -1,7 +1,7 @@
 /**
- * Shoots each scroll page's previews from the page itself, with its words
- * put away, so a preview shows what the piece draws and moves rather than
- * what it says:
+ * Shoots each scroll page's previews from the page itself, aimed at what the
+ * piece animates. The copy stays where the page puts it, but a preview is
+ * framed on what moves, not on what it says:
  *
  *   public/reel/<slug>/1.jpg … 5.jpg  five stills, 800x420, in the order the
  *                                      page reaches them (the Archive's
@@ -10,35 +10,43 @@
  *                                      and the loop's poster)
  *   public/reel/<slug>/loop.mp4       a five-second muted loop, 640x336
  *                                      H.264: the three strongest stretches
- *                                      of the page, scrolled through, cross-
- *                                      faded (a Gallery tile, on hover or in
- *                                      view)
+ *                                      of the page, cross-faded (a Gallery
+ *                                      tile, on hover or in view)
  *
  * How it finds them. The built page is served from dist/ and opened at
- * 1280x672. It is walked top to bottom half a screen at a time; at each
- * step the page settles, its copy is put away, and the frame is scored:
+ * 1280x672. It is walked top to bottom half a screen at a time. At each step
+ * the page settles and is read three times: once, again half a second later
+ * (what moves on its own), and again a fifth of a screen further down (what
+ * the scroll drives). A part of the screen that changed between the first
+ * two, or that changed under the scroll in a way plain scrolling does not
+ * explain (it neither stayed put nor slid up with the page), is moving.
  *
- *   - Copy: all text set below display size is made transparent, and a
- *     run of four words or more takes the card it sits on with it (the
+ *   - Copy: text set below display size, and the card it sits on (the
  *     nearest box smaller than the screen that holds no canvas, svg, image
- *     or video of its own, nor any display type). Display type stays: six
- *     words or fewer set at 40px or more, since on these pages that is
- *     often the picture (a Greek word, a gauge's figure, a title set as an
- *     image). Text inside an svg is part of its drawing and stays too.
+ *     or video of its own, nor any display type), is left showing but
+ *     counts for nothing: it is masked out of the motion and the drawing,
+ *     and a frame that is mostly copy loses a little. So a paragraph fading
+ *     in is not "animation", and a frame is chosen for its pictures. Display
+ *     type (six words or fewer at 40px or more: a Greek word, a gauge's
+ *     figure, a title set as an image) counts as picture. Text inside an svg
+ *     is part of its drawing.
  *   - Chrome: the exits, the foot, and anything fixed or sticky and small
- *     that carries text or controls (HUDs, top bars, control bars) are
+ *     that is a control or a short label (HUDs, top bars, control bars) are
  *     hidden, as is anything marked data-og-hide.
- *   - Score: how much of the frame is drawn rather than ground, how much
- *     colour, how many edges, how much light-to-dark range, less a little
- *     for display type still showing (a frame that is only a title loses
- *     to one that draws), and more for type the frame's edge cuts in half. The five best stills are chosen apart
+ *   - Score: above all, how much of the frame moves, and how near the middle
+ *     the moving part sits; then how much of the rest is drawn rather than
+ *     ground, its colour, edges and light-to-dark range; less a little for a
+ *     frame that is mostly copy or only a title, and more for display type
+ *     the frame's edge cuts in half. The five best stills are chosen apart
  *     from one another (a screen and a half apart, and different to the
- *     eye), then put back in page order.
+ *     eye), each moved, if it helps, so its moving part sits in the middle
+ *     of the frame, then put back in page order.
  *
  * The loop records the three best stretches in real time (Chrome's
- * screencast), each a slow scroll through 0.6 of a screen around its
- * still, and joins them with half-second dissolves, faded in and out at
- * the ends so it loops cleanly.
+ * screencast) around their stills: a slow scroll through 0.6 of a screen
+ * where the scroll drives the motion, a slight drift of 0.2 where the piece
+ * moves on its own. They are joined with half-second dissolves, faded in and
+ * out at the ends so the loop is seamless.
  *
  * Run after a build, for every page or the ones named:
  *   npm run reel
@@ -52,8 +60,9 @@
  * Horoskopos opens its house chart.
  * A page the scoring reads wrong gets a word in PICKS: `at`, places (in
  * screens from the top) that must be among its stills and lead its loop;
- * `keepWords`, for a page whose words are its picture (a product's screens,
- * a homepage design), which then loses only its chrome.
+ * `only`, to use those places and nothing else (more moments of them fill
+ * the five); `keepWords`, for a page whose words are its picture (a product's screens,
+ * a homepage design, a receipt), whose copy then counts as drawing.
  */
 import { createServer } from 'node:http';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -78,6 +87,26 @@ const STILLS = 5;
 const STRETCHES = 3;
 /** How long a page settles at each step before the shot. */
 const SETTLE = 650;
+/** How long it is watched for what moves on its own. */
+const TICK = 500;
+/** The grid frames are read on: cells of 8x8 screen pixels. */
+const GW = 160;
+const GH = 84;
+const CELL = VIEW.height / GH;
+/** How far it is scrolled to see what the scroll drives (a whole number of cells, so plain scrolling lines up), and how long that settles. */
+const NUDGE = CELL * 17;
+const NUDGE_SETTLE = 450;
+/** How far a cell's colour must change (sum of R, G, B) to count as moving. */
+const MOVES = 30;
+/** How much edge (luma steps to the next cells) a cell needs for its change to be a thing moving rather than ground changing tint. */
+const EDGE = 6;
+/** How much of a frame must move for it to count as a place where the piece animates. */
+const LIVE = 0.008;
+/** How far a still or a stretch may crop in on its moving part (never past the still's own size, so nothing is enlarged). */
+const MAX_ZOOM = Math.min(1.33, VIEW.width / STILL.width);
+/** The loop's length, in seconds, and its dissolves. */
+const LOOP_S = 5.3;
+const DISSOLVE = 0.5;
 const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';
 const hasFfmpeg = spawnSync(FFMPEG, ['-version'], { stdio: 'ignore' }).status === 0;
 if (!hasFfmpeg) console.warn(`reel: ffmpeg not found (${FFMPEG}); writing stills and posters only.`);
@@ -117,10 +146,18 @@ const PICKS = {
   'lla-scrolly-homepage': { keepWords: true },
   /* A receipt is its printed lines. */
   'the-receipts': { keepWords: true },
-  /* The meteor over the title is the piece; the panels below read empty without their words. */
+  /* The meteor over the title is the piece. */
   'depth-chart': { at: [0] },
-  /* The title over its swirl of numbers; the panels below are mostly words. */
+  /* The title over its swirl of numbers. */
   'quantum-banking': { at: [0] },
+  /* Janus over the title, and the face the elements settle into; the door moves only at the edge of pages of copy. */
+  'before-and-behind': { at: [0, 2.47], only: true },
+  /* The stage is too dark to read as moving: the title, and the seed. */
+  'the-unseen-one': { at: [1.49, 1.99], only: true },
+  /* The title, the three-storey psyche set as type, and the lyre and the sea; the rest is copy and the ledger. */
+  'where-it-was': { at: [0, 4.5, 10.24], only: true },
+  /* The title over the field of points. */
+  'the-dual-thing': { at: [0] },
   /* The field of glyphs that resolves into the vase and the faces. */
   'the-double-image': { at: [4.5] },
 };
@@ -153,17 +190,20 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
 
-/* ---- in the page: put the words away ------------------------------------ */
+/* ---- in the page: the chrome away, the copy found ------------------------- */
 const HIDE_CSS = `
 .poem-exit,.descent-exit,.crumb-exit,.crumb-inline,.crumb-foot,.scroll-foot,#rail,.orchestra-pit,.pit-toggle,[data-og-hide]{display:none!important}
 .__reel-hide{visibility:hidden!important}
-.__reel-mute{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:0!important;caret-color:transparent!important}
-.__reel-mute::placeholder{color:transparent!important}
-html{scrollbar-width:none!important}::-webkit-scrollbar{display:none!important}
+html{scroll-behavior:auto!important;scrollbar-width:none!important}::-webkit-scrollbar{display:none!important}
 *{cursor:none!important}`;
 
-/** Runs in the page: hides copy and chrome; returns the share of the screen still showing text, and whether any of it is cut by the screen's edge. */
-function putWordsAway(keepWords = false) {
+/**
+ * Runs in the page: hides the chrome, and finds the copy. Returns, in screen
+ * pixels, the boxes the copy covers (each line of it, and the card it sits
+ * on), the boxes display type covers, and whether the screen's edge cuts any
+ * display type.
+ */
+function readFrame() {
   const vw = innerWidth;
   const vh = innerHeight;
   const VISUAL = 'canvas,svg,img,video,picture,iframe';
@@ -179,19 +219,52 @@ function putWordsAway(keepWords = false) {
       const t = (c.textContent || '').trim();
       return t && c.children.length === 0 && display(c, (t.match(/\S+/g) || []).length);
     });
+  const onScreen = (r) => r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < vh && r.right > 0 && r.left < vw;
+  const box = (r) => [r.left, r.top, r.right, r.bottom];
+
+  /* Small fixed or sticky chrome: a control, or a short label (HUDs, top
+     bars, control bars). Not a small fixed or sticky picture (a chart
+     wheel), and not a card of copy that stays while a picture changes. */
+  for (const el of document.body.querySelectorAll('*')) {
+    if (el.classList.contains('__reel-hide')) continue;
+    const pos = getComputedStyle(el).position;
+    if (pos !== 'fixed' && pos !== 'sticky') continue;
+    const r = el.getBoundingClientRect();
+    if (r.width * r.height > vw * vh * 0.3 || heavy(el)) continue;
+    const t = (el.textContent || '').trim();
+    /* A thin fixed bar is a progress rule or a rail. */
+    const thin = r.height <= 10 || r.width <= 10;
+    if (thin || el.matches('button,a,nav,header,footer') || el.querySelector('button,input,select,a') || (t.length > 1 && t.length < 80)) el.classList.add('__reel-hide');
+  }
+
+  const copy = [];
+  const cardBoxes = [];
+  const shown = [];
+  let cut = false;
+  const seen = new Set();
+  const cards = new Set();
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  const done = new Set();
-  for (let n = keepWords ? null : walker.nextNode(); n; n = walker.nextNode()) {
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
     const el = n.parentElement;
-    if (skip(el) || done.has(el)) continue;
+    if (skip(el)) continue;
     const t = n.nodeValue.trim();
     if (!t) continue;
+    const range = document.createRange();
+    range.selectNodeContents(n);
+    const rects = [...range.getClientRects()].filter(onScreen);
+    if (!rects.length) continue;
+    /* Copy still waiting to be revealed counts as copy too: it is about to move. */
     const words = (t.match(/\S+/g) || []).length;
-    if (display(el, words)) continue;
-    done.add(el);
-    el.classList.add('__reel-mute');
-    if (words < 4 && t.length < 28) continue;
-    if (heavy(el)) continue;
+    if (display(el, words)) {
+      for (const r of rects) {
+        shown.push(box(r));
+        if ((r.top < 0 && r.bottom > 4) || (r.top < vh - 4 && r.bottom > vh)) cut = true;
+      }
+      continue;
+    }
+    for (const r of rects) copy.push(box(r));
+    if (seen.has(el) || (words < 4 && t.length < 28) || heavy(el)) continue;
+    seen.add(el);
     /* Climb to the card the words sit on: the largest box short of a stage or a page column. */
     let card = el;
     while (card.parentElement && card.parentElement !== document.body) {
@@ -200,46 +273,39 @@ function putWordsAway(keepWords = false) {
       if (r.width > vw * 0.72 || r.height > vh * 0.92 || heavy(p) || holdsDisplay(p)) break;
       card = p;
     }
+    if (cards.has(card)) continue;
+    cards.add(card);
     const r = card.getBoundingClientRect();
-    if (r.width <= vw * 0.72 && r.height <= vh * 0.92 && !holdsDisplay(card)) card.classList.add('__reel-hide');
+    if (r.width <= vw * 0.72 && r.height <= vh * 0.92 && !holdsDisplay(card) && onScreen(r)) cardBoxes.push(box(r));
   }
-  /* Small fixed or sticky chrome that carries words or controls: HUDs, top
-     bars, control bars. Not a small fixed or sticky picture (a chart wheel). */
-  for (const el of document.body.querySelectorAll('*')) {
-    if (el.classList.contains('__reel-hide')) continue;
-    const pos = getComputedStyle(el).position;
-    if (pos !== 'fixed' && pos !== 'sticky') continue;
-    const r = el.getBoundingClientRect();
-    if (r.width * r.height > vw * vh * 0.3 || heavy(el)) continue;
-    if ((el.textContent || '').trim().length > 1 || el.querySelector('button,input,select,a')) el.classList.add('__reel-hide');
-  }
-  /* What text still shows, as a share of the screen, and whether the screen's edge cuts any. */
-  let area = 0;
-  let cut = false;
-  const w2 = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  for (let n = w2.nextNode(); n; n = w2.nextNode()) {
-    const el = n.parentElement;
-    if (!el || !n.nodeValue.trim() || el.closest('.__reel-hide,.__reel-mute,svg,canvas,script,style,noscript')) continue;
-    const cs = getComputedStyle(el);
-    if (cs.visibility === 'hidden' || cs.opacity === '0' || cs.display === 'none') continue;
-    const range = document.createRange();
-    range.selectNodeContents(n);
-    for (const r of range.getClientRects()) {
-      const w = Math.max(0, Math.min(r.right, vw) - Math.max(r.left, 0));
-      const h = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
-      area += w * h;
-      if (w > 0 && ((r.top < 0 && r.bottom > 4) || (r.top < vh - 4 && r.bottom > vh))) cut = true;
-    }
-  }
-  return { area: area / (vw * vh), cut };
+  return { copy, cards: cardBoxes, shown, cut };
 }
 
-/* ---- scoring a frame ------------------------------------------------------- */
-async function score(buf) {
-  const W = 160;
-  const H = 84;
-  const { data } = await sharp(buf).resize(W, H, { fit: 'fill' }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  const n = W * H;
+/** Jump, not glide: some pages set scroll-behavior: smooth on their root. */
+const jump = (page, y) => page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), y);
+
+/* ---- reading a frame -------------------------------------------------------- */
+const grid = (buf) => sharp(buf).resize(GW, GH, { fit: 'fill' }).removeAlpha().raw().toBuffer();
+
+/** Boxes in screen pixels, laid on the grid: 1 where they cover a cell. */
+function lay(boxes, pad = 0) {
+  const m = new Uint8Array(GW * GH);
+  const sx = GW / VIEW.width;
+  const sy = GH / VIEW.height;
+  for (const [l, t, r, b] of boxes) {
+    const x0 = Math.max(0, Math.floor(l * sx) - pad);
+    const x1 = Math.min(GW - 1, Math.ceil(r * sx) - 1 + pad);
+    const y0 = Math.max(0, Math.floor(t * sy) - pad);
+    const y1 = Math.min(GH - 1, Math.ceil(b * sy) - 1 + pad);
+    for (let y = y0; y <= y1; y++) m.fill(1, y * GW + x0, y * GW + x1 + 1);
+  }
+  return m;
+}
+const share = (m) => m.reduce((a, v) => a + (v ? 1 : 0), 0) / m.length;
+
+/** How much of the frame is drawn, its colour, edges and range, leaving out the copy. */
+async function look(data, mask) {
+  const n = GW * GH;
   /* The ground: the commonest colour, coarsely binned. */
   const bins = new Map();
   for (let i = 0; i < n; i++) {
@@ -252,6 +318,7 @@ async function score(buf) {
   const gr = ((key >> 8) & 15) * 16 + 8;
   const gg = ((key >> 4) & 15) * 16 + 8;
   const gb = (key & 15) * 16 + 8;
+  let free = 0;
   let drawn = 0;
   let srg = 0;
   let syb = 0;
@@ -264,6 +331,10 @@ async function score(buf) {
     const r = data[i * 3];
     const g = data[i * 3 + 1];
     const b = data[i * 3 + 2];
+    const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    luma[i] = l;
+    if (mask[i]) continue;
+    free++;
     if (Math.abs(r - gr) + Math.abs(g - gg) + Math.abs(b - gb) > 48) drawn++;
     const rg = r - g;
     const yb = 0.5 * (r + g) - b;
@@ -271,33 +342,179 @@ async function score(buf) {
     syb += yb;
     srg2 += rg * rg;
     syb2 += yb * yb;
-    const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    luma[i] = l;
     sl += l;
     sl2 += l * l;
   }
-  const mrg = srg / n;
-  const myb = syb / n;
-  const colour = Math.sqrt(srg2 / n - mrg * mrg + (syb2 / n - myb * myb)) + 0.3 * Math.sqrt(mrg * mrg + myb * myb);
-  const range = Math.sqrt(Math.max(0, sl2 / n - (sl / n) ** 2));
+  const f = Math.max(1, free);
+  const mrg = srg / f;
+  const myb = syb / f;
+  /* Colour and range are of what is not copy, scaled by how much of the frame that is. */
+  const colour = (Math.sqrt(Math.max(0, srg2 / f - mrg * mrg + (syb2 / f - myb * myb))) + 0.3 * Math.sqrt(mrg * mrg + myb * myb)) * (free / n);
+  const range = Math.sqrt(Math.max(0, sl2 / f - (sl / f) ** 2)) * (free / n);
   let edges = 0;
-  for (let y = 1; y < H; y++) for (let x = 1; x < W; x++) {
-    const i = y * W + x;
-    edges += Math.abs(luma[i] - luma[i - 1]) + Math.abs(luma[i] - luma[i - W]);
+  for (let y = 1; y < GH; y++) for (let x = 1; x < GW; x++) {
+    const i = y * GW + x;
+    if (mask[i]) continue;
+    edges += Math.abs(luma[i] - luma[i - 1]) + Math.abs(luma[i] - luma[i - GW]);
   }
   edges /= n;
-  /* A small grey thumbnail, to tell frames apart. */
-  const thumb = await sharp(buf).resize(32, 17, { fit: 'fill' }).greyscale().raw().toBuffer();
-  return { drawn: drawn / n, colour, range, edges, thumb };
+  return { drawn: drawn / n, colour, range, edges };
 }
+
+/**
+ * What moves. `a` and `b` are the same place half a second apart; `c` is
+ * `shift` grid rows further down the page. A cell moves if it changed from
+ * `a` to `b`, or if under the scroll it neither stayed put nor slid up with
+ * the page. Copy is left out.
+ */
+function moving(a, b, c, shift, mask) {
+  const n = GW * GH;
+  const d = (p, q, i, j) => Math.abs(p[i * 3] - q[j * 3]) + Math.abs(p[i * 3 + 1] - q[j * 3 + 1]) + Math.abs(p[i * 3 + 2] - q[j * 3 + 2]);
+  /* A flat stretch that only changes tint (a section's ground warming as it scrolls past) is not motion: a moving thing has edges. */
+  const luma = (p) => {
+    const l = new Float32Array(n);
+    for (let i = 0; i < n; i++) l[i] = 0.2126 * p[i * 3] + 0.7152 * p[i * 3 + 1] + 0.0722 * p[i * 3 + 2];
+    return l;
+  };
+  const [la, lb, lc] = [luma(a), luma(b), luma(c)];
+  const edged = (l, x, y) => {
+    const i = y * GW + x;
+    let e = 0;
+    if (x > 0) e = Math.max(e, Math.abs(l[i] - l[i - 1]));
+    if (x < GW - 1) e = Math.max(e, Math.abs(l[i] - l[i + 1]));
+    if (y > 0) e = Math.max(e, Math.abs(l[i] - l[i - GW]));
+    if (y < GH - 1) e = Math.max(e, Math.abs(l[i] - l[i + GW]));
+    return e >= EDGE;
+  };
+  let all = 0;
+  let own = 0;
+  let sy = 0;
+  const rows = new Uint32Array(GH);
+  const cols = new Uint32Array(GW);
+  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
+    const i = y * GW + x;
+    if (mask[i]) continue;
+    const y2 = y - shift;
+    const t = d(a, b, i, i) > MOVES && (edged(la, x, y) || edged(lb, x, y));
+    const s = y2 >= 0 && y2 < GH && Math.min(d(b, c, i, i), d(b, c, i, y2 * GW + x)) > MOVES && (edged(lb, x, y) || edged(lc, x, y) || edged(lc, x, y2));
+    if (!t && !s) continue;
+    all++;
+    if (t) own++;
+    sy += y;
+    rows[y]++;
+    cols[x]++;
+  }
+  /* The box most of the motion sits in: a stray cell at the edge does not stretch it. */
+  const span = (h, len) => {
+    const lo = all * 0.04;
+    const hi = all * 0.96;
+    let acc = 0;
+    let a0 = 0;
+    let a1 = len - 1;
+    for (let k = 0; k < len; k++) {
+      if (acc <= lo) a0 = k;
+      acc += h[k];
+      if (acc >= hi) {
+        a1 = k;
+        break;
+      }
+    }
+    return [a0 / len, (a1 + 1) / len];
+  };
+  const [x0, x1] = all ? span(cols, GW) : [0, 1];
+  const [y0, y1] = all ? span(rows, GH) : [0, 1];
+  return {
+    motion: all / n,
+    /* How much of what moves does so on its own, not because of the scroll. */
+    own: all ? own / all : 0,
+    /* Where the moving part's middle is, as a share of the frame, and the box around it. */
+    my: all ? (sy / all + 0.5) / GH : 0.5,
+    box: [x0, y0, x1, y1],
+  };
+}
+
+/**
+ * The part of the screen a still or a stretch shows: the moving part with a
+ * margin, at the still's shape, cropped in at most MAX_ZOOM (so nothing is
+ * enlarged and the copy around it keeps its place) and never wider than the
+ * screen. A frame that does not move shows whole.
+ */
+function cropFor(s) {
+  const whole = { left: 0, top: 0, width: VIEW.width, height: VIEW.height };
+  if (!s || s.motion < LIVE) return whole;
+  const aspect = VIEW.width / VIEW.height;
+  const [x0, y0, x1, y1] = s.box;
+  const cx = ((x0 + x1) / 2) * VIEW.width;
+  const cy = ((y0 + y1) / 2) * VIEW.height;
+  let w = Math.max((x1 - x0) * VIEW.width * 1.6, (y1 - y0) * VIEW.height * 1.6 * aspect);
+  w = Math.min(VIEW.width, Math.max(VIEW.width / MAX_ZOOM, w));
+  const h = w / aspect;
+  const even = (v) => Math.round(v / 2) * 2;
+  const width = even(w);
+  const height = even(h);
+  const left = even(Math.min(VIEW.width - width, Math.max(0, cx - width / 2)));
+  const top = even(Math.min(VIEW.height - height, Math.max(0, cy - height / 2)));
+  return { left, top, width, height };
+}
+
+/** Reads the frame `y` from the top: shot, copy, what moves. */
+async function measure(page, y, act, room, keep) {
+  await jump(page, y);
+  await page.waitForTimeout(SETTLE);
+  if (act) await act(page);
+  const at = await page.evaluate(() => scrollY);
+  const words = await page.evaluate(readFrame);
+  await page.waitForTimeout(60);
+  const buf = await page.screenshot({ type: 'jpeg', quality: 92 });
+  await page.waitForTimeout(TICK);
+  const later = await page.screenshot({ type: 'jpeg', quality: 92 });
+  const wordsLater = await page.evaluate(readFrame);
+  const y2 = at + NUDGE <= room ? at + NUDGE : Math.max(0, at - NUDGE);
+  await jump(page, y2);
+  await page.waitForTimeout(NUDGE_SETTLE);
+  await page.evaluate(() => void window.__reelRead?.());
+  const moved = await page.evaluate(() => scrollY);
+  const further = await page.screenshot({ type: 'jpeg', quality: 92 });
+  const wordsFurther = await page.evaluate(readFrame);
+  const [a, b, c] = await Promise.all([grid(buf), grid(later), grid(further)]);
+  const shift = Math.round(((moved - at) * GH) / VIEW.height);
+  /* The lines of copy wherever they were in any of the three readings (the third moved back into this frame's place too), so copy that fades or slides in is not taken for motion. Only the lines: a card can hold a picture drawn in plain boxes (a gauge, a tally), and its ground is flat, which the motion test already passes over. */
+  const back = wordsFurther.copy.map(([l, t, r, b]) => [l, t + shift * CELL, r, b + shift * CELL]);
+  const none = new Uint8Array(GW * GH);
+  const lineMask = keep ? none : lay([...words.copy, ...wordsLater.copy, ...wordsFurther.copy, ...back], 1);
+  /* How much of the frame is copy, cards and all. */
+  const copyMask = keep ? none : lay([...words.copy, ...words.cards], 1);
+  const thumb = await sharp(buf).resize(32, 17, { fit: 'fill' }).greyscale().raw().toBuffer();
+  return {
+    y: at,
+    buf,
+    thumb,
+    ...(await look(a, lineMask)),
+    ...moving(a, b, c, shift, lineMask),
+    copy: share(copyMask),
+    title: share(lay(words.shown)),
+    cut: words.cut,
+  };
+}
+
 const differ = (a, b) => {
   let d = 0;
   for (let i = 0; i < a.length; i++) d += Math.abs(a[i] - b[i]);
   return d / a.length;
 };
-/* Ground that is only a gradient counts for little: being drawn needs edges too. */
-const value = (s) =>
-  Math.min(s.drawn, 0.7) * 1.6 * Math.min(1, s.edges / 8) + Math.min(s.colour, 90) / 90 + Math.min(s.edges, 26) / 26 + Math.min(s.range, 80) / 160 - Math.min(s.text, 0.25) * 1.5 - (s.cut ? 0.6 : 0);
+
+/**
+ * What moves leads; what is drawn follows. A frame with any real motion
+ * beats one without, more motion beats less, and motion in the middle beats
+ * motion at the edge. Ground that is only a gradient counts for little:
+ * being drawn needs edges too.
+ */
+function value(s) {
+  const moves = Math.sqrt(Math.min(Math.max(0, s.motion - 0.003), 0.25) / 0.25);
+  const centred = moves * (1 - Math.min(1, Math.abs(s.my - 0.5) * 2));
+  const drawn = (Math.min(s.drawn, 0.7) * 1.6 * Math.min(1, s.edges / 8) + Math.min(s.colour, 90) / 90 + Math.min(s.edges, 26) / 26 + Math.min(s.range, 80) / 160) / 3.6;
+  return 2.5 * moves + 0.6 * centred + 1.2 * drawn - Math.max(0, s.copy - 0.2) * 1.5 - Math.min(s.title, 0.25) - (s.cut ? 0.5 : 0);
+}
 
 /* ---- the loop ------------------------------------------------------------- */
 function run(args) {
@@ -305,12 +522,17 @@ function run(args) {
   if (r.status !== 0) throw new Error(`ffmpeg: ${r.stderr}`);
 }
 
-async function recordStretch(page, cdp, centre, dir, k, keep) {
-  const span = VIEW.height * 0.6;
-  const from = Math.max(0, centre - span / 2);
-  await page.evaluate((y) => window.scrollTo(0, y), from);
+/**
+ * A stretch of the page around a still, cut to the still's frame: a slow
+ * scroll where the scroll drives the motion, a slight drift where the piece
+ * moves on its own.
+ */
+async function recordStretch(page, cdp, still, crop, len, dir, k) {
+  const span = VIEW.height * (still.own > 0.6 ? 0.08 : 0.4);
+  const from = Math.max(0, still.y - span / 2);
+  await jump(page, from);
   await page.waitForTimeout(SETTLE);
-  await page.evaluate(putWordsAway, keep);
+  await page.evaluate(readFrame);
   const frames = [];
   const onFrame = async ({ data, metadata, sessionId }) => {
     frames.push({ data, t: metadata.timestamp });
@@ -318,16 +540,16 @@ async function recordStretch(page, cdp, centre, dir, k, keep) {
   };
   cdp.on('Page.screencastFrame', onFrame);
   await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 88, maxWidth: VIEW.width, maxHeight: VIEW.height });
-  /* A slow, eased scroll through the stretch, the words kept away as new ones arrive. */
+  /* A slow, eased scroll through the stretch, new chrome put away as it arrives. */
   await page.evaluate(
     ({ from, span, ms }) =>
       new Promise((done) => {
         const t0 = performance.now();
-        const hide = setInterval(() => window.__reelHide?.(window.__reelKeep), 180);
+        const hide = setInterval(() => window.__reelRead?.(), 180);
         const step = (now) => {
           const t = Math.min(1, (now - t0) / ms);
           const e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
-          window.scrollTo(0, from + span * e);
+          window.scrollTo({ top: from + span * e, behavior: 'instant' });
           if (t < 1) requestAnimationFrame(step);
           else {
             clearInterval(hide);
@@ -336,7 +558,7 @@ async function recordStretch(page, cdp, centre, dir, k, keep) {
         };
         requestAnimationFrame(step);
       }),
-    { from, span, ms: 2000 },
+    { from, span, ms: Math.round(len * 1000) },
   );
   await page.waitForTimeout(150);
   await cdp.send('Page.stopScreencast');
@@ -353,13 +575,13 @@ async function recordStretch(page, cdp, centre, dir, k, keep) {
   list.push(`file '${join(dir, `s${k}-${String(frames.length - 1).padStart(4, '0')}.jpg`)}'`);
   writeFileSync(join(dir, `s${k}.txt`), list.join('\n'));
   const out = join(dir, `s${k}.mp4`);
-  run(['-f', 'concat', '-safe', '0', '-i', join(dir, `s${k}.txt`), '-vf', `fps=30,scale=${LOOP.width}:${LOOP.height}:flags=lanczos,format=yuv420p`, '-t', '2.1', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', out]);
+  const cut = `scale=${VIEW.width}:${VIEW.height},crop=${crop.width}:${crop.height}:${crop.left}:${crop.top}`;
+  run(['-f', 'concat', '-safe', '0', '-i', join(dir, `s${k}.txt`), '-vf', `fps=30,${cut},scale=${LOOP.width}:${LOOP.height}:flags=lanczos,format=yuv420p`, '-t', len.toFixed(2), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', out]);
   return out;
 }
 
-function joinStretches(parts, out) {
-  const D = 0.5;
-  const len = 2.1;
+function joinStretches(parts, len, out) {
+  const D = DISSOLVE;
   const inputs = parts.flatMap((p) => ['-i', p]);
   let chain = '';
   let last = '[0:v]';
@@ -385,111 +607,117 @@ async function shoot(slug) {
   await page.addStyleTag({ content: HIDE_CSS });
   const pick = PICKS[slug] ?? {};
   const keep = Boolean(pick.keepWords);
-  await page.evaluate(`window.__reelHide = ${putWordsAway.toString()}; window.__reelKeep = ${keep};`);
+  await page.evaluate(`window.__reelRead = ${readFrame.toString()};`);
   await page.waitForTimeout(1200);
   const act = ACTS[slug];
   if (act) await act(page);
   const height = await page.evaluate(() => Math.max(document.documentElement.scrollHeight, document.body.scrollHeight));
   const room = Math.max(0, height - VIEW.height);
   const steps = Math.min(90, Math.max(1, Math.ceil(room / (VIEW.height * 0.5))));
+  const read = async (y) => {
+    const s = await measure(page, Math.round(Math.min(room, Math.max(0, y))), act, room, keep);
+    s.v = value(s);
+    return s;
+  };
   const shots = [];
-  for (let i = 0; i <= steps; i++) {
-    const y = steps ? Math.round((room * i) / steps) : 0;
-    await page.evaluate((y) => window.scrollTo(0, y), y);
-    await page.waitForTimeout(SETTLE);
-    if (act) await act(page);
-    const { area: text, cut } = await page.evaluate(putWordsAway, keep);
-    await page.waitForTimeout(60);
-    const buf = await page.screenshot({ type: 'jpeg', quality: 92 });
-    const s = await score(buf);
-    shots.push({ y, buf, ...s, text, cut, v: 0 });
-  }
-  for (const s of shots) s.v = value(s);
+  for (let i = 0; i <= steps; i++) shots.push(await read(steps ? (room * i) / steps : 0));
+  if (process.env.REEL_DEBUG) console.log(`reel ${slug} walk: ${shots.map((s) => `${s.y}:${(s.motion * 100).toFixed(1)}`).join(' ')}`);
   /* An editor's places lead: shot if the walk missed them, and put first. */
   for (const at of pick.at ?? []) {
     const y = Math.round(Math.min(room, Math.max(0, at * VIEW.height)));
-    let s = shots.find((o) => o.y === y);
-    if (!s) {
-      await page.evaluate((y) => window.scrollTo(0, y), y);
-      await page.waitForTimeout(SETTLE);
-      const { area: text, cut } = await page.evaluate(putWordsAway, keep);
-      const buf = await page.screenshot({ type: 'jpeg', quality: 92 });
-      s = { y, buf, ...(await score(buf)), text, cut };
-      s.v = value(s);
-      shots.push(s);
-    }
+    let s = shots.find((o) => Math.abs(o.y - y) < 8);
+    if (!s) shots.push((s = await read(y)));
     s.v += 10;
     s.fixed = true;
   }
-  /* The best, apart from one another. */
-  const chosen = [];
-  for (const s of [...shots].sort((a, b) => b.v - a.v)) {
-    if (chosen.length >= STILLS) break;
-    if (chosen.some((c) => Math.abs(c.y - s.y) < VIEW.height * 1.4 || differ(c.thumb, s.thumb) < 9)) continue;
-    chosen.push(s);
+  /* Only the places where the piece moves, if it moves anywhere. If it does
+     not, the places that draw most, not a page of copy nor an empty stretch
+     of ground: fewer of them, repeated, rather than those. */
+  const live = shots.filter((s) => s.motion >= LIVE || s.fixed);
+  let ranked = [...(live.length ? live : shots)].sort((a, b) => b.v - a.v);
+  if (pick.only) ranked = ranked.filter((s) => s.fixed);
+  {
+    /* A moving place where the motion is a sliver beside a page of copy, or far weaker than the piece's best, is left out too: its best places, again, do better. */
+    const quiet = ranked.filter((s) => keep || s.fixed || s.copy <= (live.length ? 0.4 : 0.35));
+    if (quiet.length) ranked = quiet;
+    const top = ranked.find((s) => !s.fixed)?.v ?? 0;
+    if (top > 0) ranked = ranked.filter((s) => s.fixed || s.v >= top * (live.length ? 0.4 : 0.5));
   }
-  /* A short page may not hold five that far apart: fill from the rest, still different to the eye. */
-  for (const s of [...shots].sort((a, b) => b.v - a.v)) {
-    if (chosen.length >= STILLS) break;
-    if (!chosen.includes(s) && chosen.every((c) => differ(c.thumb, s.thumb) >= 4)) chosen.push(s);
+  /* The best places, apart from one another; a short page may not hold five that far apart, so then any that look different. */
+  const places = [];
+  for (const s of ranked) {
+    if (places.length >= STILLS) break;
+    if (places.some((c) => Math.abs(c.y - s.y) < VIEW.height * 1.4 || differ(c.thumb, s.thumb) < 9)) continue;
+    places.push(s);
   }
-  for (const s of [...shots].sort((a, b) => b.v - a.v)) {
-    if (chosen.length >= STILLS) break;
-    if (!chosen.includes(s)) chosen.push(s);
+  for (const s of ranked) {
+    if (places.length >= STILLS) break;
+    if (!places.includes(s) && places.every((c) => differ(c.thumb, s.thumb) >= 4)) places.push(s);
   }
-  /* Each chosen still, nudged a quarter screen either way if that frames it better. */
-  for (const c of chosen) {
+  /* Each place, moved so its moving part sits in the middle, or a quarter screen either way, if that frames it better. */
+  for (const c of places) {
     if (c.fixed) continue;
-    for (const dy of [-0.25, 0.25]) {
-      const y = Math.round(Math.min(room, Math.max(0, c.y + dy * VIEW.height)));
-      if (y === c.y) continue;
-      await page.evaluate((y) => window.scrollTo(0, y), y);
-      await page.waitForTimeout(SETTLE);
-      if (act) await act(page);
-      const { area: text, cut } = await page.evaluate(putWordsAway, keep);
-      await page.waitForTimeout(60);
-      const buf = await page.screenshot({ type: 'jpeg', quality: 92 });
-      const s = { y, buf, ...(await score(buf)), text, cut };
-      s.v = value(s);
-      const apart = chosen.every((o) => o === c || Math.abs(o.y - y) >= VIEW.height);
-      if (s.v > c.v && apart) Object.assign(c, s);
+    const tries = [-0.25, 0.25].map((d) => c.y + d * VIEW.height);
+    if (c.motion > 0.003 && Math.abs(c.my - 0.5) > 0.08) tries.unshift(c.y + (c.my - 0.5) * VIEW.height);
+    for (const y of tries) {
+      const t = Math.round(Math.min(room, Math.max(0, y)));
+      if (Math.abs(t - c.y) < 8) continue;
+      if (!places.every((o) => o === c || Math.abs(o.y - t) >= VIEW.height)) continue;
+      const s = await read(t);
+      if (s.v > c.v && (s.motion >= LIVE || c.motion < LIVE)) Object.assign(c, s);
     }
   }
-  chosen.sort((a, b) => b.v - a.v);
-  const best = chosen[0];
+  places.sort((a, b) => b.v - a.v);
+  /* Fewer moving places than stills: more moments of the ones there are, a little later or a little further on, rather than a still of copy. */
+  const stills = places.map((p, i) => ({ ...p, of: i, seq: 0 }));
+  const moving = places.filter((p) => p.motion >= LIVE || p.fixed);
+  for (let tries = 0, k = 0; stills.length < STILLS && moving.length && tries < STILLS * 2; tries++) {
+    const p = moving[tries % moving.length];
+    const of = places.indexOf(p);
+    const seq = stills.filter((s) => s.of === of).length;
+    const dy = p.own > 0.6 ? 0 : [0.12, -0.12, 0.24, -0.24][k++ % 4] * VIEW.height;
+    const s = await read(p.y + dy);
+    if (s.motion < LIVE / 2 && !p.fixed) continue;
+    if (stills.some((o) => o.of === of && differ(o.thumb, s.thumb) < 1.5)) continue;
+    stills.push({ ...s, of, seq });
+  }
+  for (const s of stills) s.crop = cropFor(s.motion >= LIVE ? s : places[s.of]);
+  const ordered = [...stills].sort((a, b) => places[a.of].y - places[b.of].y || a.seq - b.seq || a.y - b.y);
+  const best = places[0];
   const dir = resolve(root, 'public/reel', slug);
   mkdirSync(dir, { recursive: true });
-  const ordered = [...chosen].sort((a, b) => a.y - b.y);
-  for (let i = 0; i < STILLS; i++) {
-    const s = ordered[i] ?? ordered[ordered.length - 1];
-    await sharp(s.buf).resize(STILL.width, STILL.height, { kernel: 'lanczos3' }).jpeg({ quality: 82, mozjpeg: true }).toFile(join(dir, `${i + 1}.jpg`));
-  }
-  await sharp(best.buf).resize(STILL.width, STILL.height, { kernel: 'lanczos3' }).jpeg({ quality: 84, mozjpeg: true }).toFile(join(dir, 'poster.jpg'));
+  const still = (s, file, quality) =>
+    sharp(s.buf).extract(s.crop).resize(STILL.width, STILL.height, { kernel: 'lanczos3' }).jpeg({ quality, mozjpeg: true }).toFile(join(dir, file));
+  for (let i = 0; i < STILLS; i++) await still(ordered[i % ordered.length], `${i + 1}.jpg`, 82);
+  await still(stills[0], 'poster.jpg', 84);
   let loop = 'skipped';
   if (hasFfmpeg) {
     const tmp = mkdtempSync(join(tmpdir(), `reel-${slug}-`));
     try {
       const cdp = await page.context().newCDPSession(page);
-      const stretches = chosen.slice(0, STRETCHES).sort((a, b) => a.y - b.y);
+      const stretches = (moving.length ? moving : places).slice(0, STRETCHES).sort((a, b) => a.y - b.y);
+      /* One moving place gets the whole loop; three share it. */
+      const len = (LOOP_S + DISSOLVE * (stretches.length - 1)) / stretches.length;
       const parts = [];
       for (const [k, s] of stretches.entries()) {
         if (act) {
-          await page.evaluate((y) => window.scrollTo(0, y), s.y);
+          await jump(page, s.y);
           await act(page);
         }
-        const p = await recordStretch(page, cdp, s.y + VIEW.height / 2, tmp, k, keep);
+        const p = await recordStretch(page, cdp, s, cropFor(s), len, tmp, k);
         if (p) parts.push(p);
       }
       if (parts.length) {
-        joinStretches(parts, join(dir, 'loop.mp4'));
-        loop = `${Math.round(statSync(join(dir, 'loop.mp4')).size / 1024)} KB`;
+        joinStretches(parts, len, join(dir, 'loop.mp4'));
+        loop = `${Math.round(statSync(join(dir, 'loop.mp4')).size / 1024)} KB, ${parts.length} stretch${parts.length > 1 ? 'es' : ''}`;
       }
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
   }
-  report.push({ slug, steps, best: best.v.toFixed(2), text: best.text.toFixed(3), loop });
-  console.log(`reel ${slug}: ${steps + 1} frames read; stills at y=${ordered.map((s) => s.y).join(',')}; loop ${loop}`);
+  const fmt = (s) => `${s.y}${s.seq ? `'${s.seq}` : ''}(${(s.motion * 100).toFixed(1)}%${s.own > 0.6 ? ' own' : ''}${s.crop.width < VIEW.width ? ` x${(VIEW.width / s.crop.width).toFixed(2)}` : ''})`;
+  report.push({ slug, steps, best: best.v.toFixed(2), motion: best.motion.toFixed(3), places: moving.length, loop });
+  console.log(`reel ${slug}: ${steps + 1} frames read, ${moving.length} moving place${moving.length === 1 ? '' : 's'}; stills ${ordered.map(fmt).join(', ')}; loop ${loop}`);
   await page.close();
 }
 

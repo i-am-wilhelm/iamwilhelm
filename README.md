@@ -191,14 +191,21 @@ No WebGL, no dithering, no audio on these pages.
   build` then `npm run preview`. The 404 page offers the field, filled from
   the address that missed.
 - Previews (`npm run reel`, `scripts/reel-scrollies.mjs`): every scroll
-  page's previews are shot from the page itself with its words put away, so
-  they show what the piece draws and moves, not its copy. The script walks
-  the built page half a screen at a time, hides all text below display size
-  (and the cards it sits on) and the chrome, scores each frame for how much
-  it draws, its colour, edges and range, and keeps the five strongest frames
-  that differ (`public/reel/<id>/1.jpg`…`5.jpg`, 800×420, in page order: the
-  Archive's reading table), the strongest as `poster.jpg`, and a five-second
-  muted loop of the three strongest stretches (`loop.mp4`, 640×336). Run
+  page's previews are shot from the page itself and lead with what it
+  animates. The copy stays where the page puts it, but it is never what a
+  preview is framed on. The script walks the built page half a screen at a
+  time, hides the chrome, and reads each frame three times (once, half a
+  second later, and a fifth of a screen further down) to find what moves on
+  its own or under the scroll, leaving copy out of the count. Frames are
+  scored first for how much moves and how near the middle, then for what
+  they draw; only places that move are used, each cropped in (up to 1.33×,
+  never enlarged) so the moving part fills more of it. A piece with fewer than five
+  moving places gets more moments of the ones it has rather than a still of
+  copy. Out come five stills (`public/reel/<id>/1.jpg`…`5.jpg`, 800×420, in
+  page order: the Archive's reading table), the strongest as `poster.jpg`,
+  and a five-second muted loop of up to three moving places (`loop.mp4`,
+  640×336). A piece that never moves falls back to the frames that draw
+  most, skipping pages of copy and empty ground. Run
   `npm run reel -- <slug>` when a piece is hung, after `og:scrollies`. Needs
   Playwright's Chromium (or `CHROMIUM_PATH`) and ffmpeg (or `FFMPEG_PATH`);
   without ffmpeg it writes the stills and poster and skips the loop. A page
