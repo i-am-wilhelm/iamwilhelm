@@ -93,7 +93,7 @@ in Egypt and wrote it down (II.66). Nobody has improved on the word.
 
     The Futurist installments
     ------------------------------------------------------------
-    Six cats, hung together. In the nav now, under Futurist; the
+    Seven cats, hung together. In the nav now, under Futurist; the
     Cattery itself still is not.
 
 
@@ -173,6 +173,25 @@ in Egypt and wrote it down (II.66). Nobody has improved on the word.
           Twin rows written: 0 · Veil: full · Price: list
 
 
+    Cat. IV.13 — Free Won't
+    ------------------------------------------------------------
+    Futurist · No. 7. Paw up over the vial from IV.02. Paw back down.
+    Nothing fell. She has been holding still for five seconds now.
+
+                                                     *
+                                               .  ·
+                                         .  ·
+            /\_/\      _              .
+           ( o.o )    ( )
+            > ^ <     / /        _
+           /     \___/ /        | |
+          (  | |  ____/         |~|
+          (__|_|__)             |_|
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          Veto window: 200 ms · Vial: on the table · Nemesis: closing
+
+
 Colophon
 ------------------------------------------------------------
 No cat was harmed. No cat was consulted. Every cat is a reading,
@@ -203,6 +222,7 @@ The reading room, where the long pieces are:
     https://iamwilhelm.com/writings/          essays and close readings
     https://iamwilhelm.com/gallery/           the scroll pages
     https://iamwilhelm.com/writings/futurist/ the Futurist installments
+    https://iamwilhelm.com/tags/              every piece, filed by subject
     https://iamwilhelm.com/rss.xml            follow everything (Atom: /atom.xml)
 
 
@@ -214,6 +234,12 @@ The cats are free. I am not.
     https://backgold.com
     Book a consultation:
     https://app.backgold.com/book/backgold/web-design-consultation
+
+    A scrolly of your own, from $2,500:
+    https://iamwilhelm.com/services/
+
+    Interactive case stories for trial lawyers:
+    https://scrollbrief.com
 
     Media and sites for the liberty movement:
     https://advancinglibertymedia.com
